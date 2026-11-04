@@ -187,7 +187,8 @@ class FoundationIdentityLifecyclePostgresIntegrationTest {
         request("GET",API+"/me/permissions",firstToken,null)
                 .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
                 .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.content().string(org.hamcrest.Matchers.containsString("organization:employees:read")));
-        request("GET",BUSINESS,firstToken,null).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
+        // A route-level read grant is not global Organization personnel-directory authority.
+        request("GET",BUSINESS,firstToken,null).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isForbidden());
         request("GET",BUSINESS,secondToken,null).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isForbidden());
         request("GET",API+"/me/operation-capabilities?companyId=foreign-company&resourceType=PIPELINE&resourceId=hidden",secondToken,null)
                 .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())

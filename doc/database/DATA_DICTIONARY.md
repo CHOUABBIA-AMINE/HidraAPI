@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `082916f19c9832d27d7cf4025161e9bbf6766577`
+Captured source SHA: `97baaef0a86bcaba9c45939304b0103e19d408e2`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `4d352614906723da5d7700052a4c61b93312e077df4ce5a6fb96b1d4d91c8077`.
-Migrations: 197; JPA mappings: 470; catalog relations: 548; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `57489e4680ea4b8a8c28fd03c34dafe23772f314a480e85c47b0e1b1a717d30f`.
+Migrations: 198; JPA mappings: 470; catalog relations: 549; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -18079,6 +18079,7 @@ Persisted EmployeeJpaEntity state; semantic authority remains with organization.
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261103_004__foundation_organization_lifecycle.sql](../../src/main/resources/db/migration/V20261103_004__foundation_organization_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -18271,6 +18272,52 @@ Persisted EmployeeAssignmentJpaEntity state; semantic authority remains with org
 - `appointment_projection_transition`: CREATE TRIGGER appointment_projection_transition BEFORE INSERT OR DELETE OR UPDATE ON hidra_org_employee_assignment FOR EACH ROW EXECUTE FUNCTION hidra_org_appointment_projection_transition()
   - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_org_appointment_projection_transition()"}
   - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_org_appointment_projection_transition()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog'<br>AS $function$<br>BEGIN<br> IF TG_OP='DELETE' THEN<br>  IF OLD.appointment_version IS NOT NULL THEN<br>   RAISE EXCEPTION 'Protected appointment cannot be deleted' USING ERRCODE='23514';<br>  END IF;<br>  RETURN OLD;<br> END IF;<br> -- Keep private helper ACL checks out of the legacy CHECK-expression plan.<br> -- Only a protected row reaches this separately compiled statement.<br> IF NEW.appointment_version IS NOT NULL THEN<br>  IF NOT (public.hidra_org_appointment_exact_id(NEW.id)<br>      AND public.hidra_org_appointment_exact_id(NEW.employee_id)<br>      AND public.hidra_org_appointment_exact_id(NEW.organization_unit_id)<br>      AND public.hidra_org_appointment_exact_id(NEW.position_id)<br>      AND public.hidra_org_appointment_exact_id(NEW.binding_id)<br>      AND public.hidra_org_appointment_exact_id(NEW.policy_id)) THEN<br>   RAISE EXCEPTION 'Invalid appointment identifier' USING ERRCODE='23514';<br>  END IF;<br> END IF;<br> IF TG_OP='UPDATE' THEN<br>  -- A retained unbound row is never silently adopted, nor a protected one reset.<br>  IF (OLD.appointment_version IS NULL)&lt;&gt;(NEW.appointment_version IS NULL) THEN<br>   RAISE EXCEPTION 'Appointment ownership cannot be inferred or removed' USING ERRCODE='23514';<br>  END IF;<br>  IF OLD.appointment_version IS NOT NULL AND (<br>     NEW.id IS DISTINCT FROM OLD.id OR NEW.employee_id IS DISTINCT FROM OLD.employee_id<br>     OR NEW.created_at IS DISTINCT FROM OLD.created_at<br>     OR OLD.appointment_version=9223372036854775807<br>     OR NEW.appointment_version IS DISTINCT FROM OLD.appointment_version+1<br>     OR NEW.last_event_id IS NOT DISTINCT FROM OLD.last_event_id<br>     OR NEW.updated_at&lt;OLD.updated_at) THEN<br>   RAISE EXCEPTION 'Invalid appointment version transition' USING ERRCODE='23514';<br>  END IF;<br> ELSIF NEW.appointment_version IS NOT NULL AND NEW.appointment_version&lt;&gt;1 THEN<br>  RAISE EXCEPTION 'Appointment must start at version one' USING ERRCODE='23514';<br> END IF;<br> RETURN NEW;<br>END;<br>$function$<br>
+
+### public.hidra_org_employee_lifecycle_event
+
+Owner: **organization**; relation kind: `r`.
+
+Organization-owned immutable employee REGISTERED-to-ACTIVE event with server actor, bounded reason and exact before/after update timestamps; grants no company, appointment, Identity or responsibility authority.
+
+- Evidence: [V20261103_004__foundation_organization_lifecycle.sql](../../src/main/resources/db/migration/V20261103_004__foundation_organization_lifecycle.sql)
+- Evidence: [JpaEmployeeRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/adapter/JpaEmployeeRepositoryAdapter.java)
+- Migration mention (not inferred introduction): [V20261103_004__foundation_organization_lifecycle.sql](../../src/main/resources/db/migration/V20261103_004__foundation_organization_lifecycle.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| employee_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_id | character varying(120) | False | None; identity=; generated= | No current mapped Java column | — |
+| reason | character varying(2000) | False | None; identity=; generated= | No current mapped Java column | — |
+| previous_updated_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| updated_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| occurred_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_org_employee_lifecycle_event_actor_id_check`: CHECK (length(btrim(actor_id::text)) &gt; 0)
+  - Catalog attributes: {"columns": ["actor_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_employee_lifecycle_event_check`: CHECK (updated_at &gt; previous_updated_at)
+  - Catalog attributes: {"columns": ["updated_at", "previous_updated_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_org_employee_lifecycle_event_employee_id_fkey`: FOREIGN KEY (employee_id) REFERENCES hidra_org_employee(id)
+  - Catalog attributes: {"columns": ["employee_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_org_employee"}, "type": "f", "validated": true}
+- `hidra_org_employee_lifecycle_event_pkey`: PRIMARY KEY (id)
+  - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_org_employee_lifecycle_event_reason_check`: CHECK (length(btrim(reason::text)) &gt; 0)
+  - Catalog attributes: {"columns": ["reason"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_org_employee_lifecycle_event_pkey`: CREATE UNIQUE INDEX hidra_org_employee_lifecycle_event_pkey ON public.hidra_org_employee_lifecycle_event USING btree (id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `ix_org_employee_lifecycle_history`: CREATE INDEX ix_org_employee_lifecycle_history ON public.hidra_org_employee_lifecycle_event USING btree (employee_id, occurred_at, id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+
+#### Triggers
+
+- `trg_org_employee_lifecycle_immutable`: CREATE TRIGGER trg_org_employee_lifecycle_immutable BEFORE DELETE OR UPDATE OR TRUNCATE ON hidra_org_employee_lifecycle_event FOR EACH STATEMENT EXECUTE FUNCTION hidra_org_employee_lifecycle_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_org_employee_lifecycle_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_org_employee_lifecycle_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Employee lifecycle evidence is immutable' USING ERRCODE='55000';<br>END;<br>$function$<br>
 
 ### public.hidra_org_hierarchy_snapshot
 

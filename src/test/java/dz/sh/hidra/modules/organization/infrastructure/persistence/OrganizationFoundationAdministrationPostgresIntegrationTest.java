@@ -64,7 +64,7 @@ class OrganizationFoundationAdministrationPostgresIntegrationTest {
         String provider=id();jdbc.update("INSERT INTO public.hidra_identity_provider(id,code,name,provider_type,sync_enabled,just_in_time_provisioning_enabled,status,created_at,updated_at) VALUES (?,?,'Synthetic','LOCAL',false,false,'ACTIVE',now(),now())",provider,provider);
         admin=loginFixture(true);ordinary=loginFixture(false);type=id();position=id();
         adminUser=context.getBean("hidraJwtDecoder",org.springframework.security.oauth2.jwt.JwtDecoder.class).decode(admin).getSubject();
-        jdbc.update("INSERT INTO public.hidra_org_unit_type(id,code,kind,name_en,active,created_at,updated_at) VALUES (?,?,'STATION','Synthetic station',true,now(),now())",type,"TYPE-"+type);
+        jdbc.update("INSERT INTO public.hidra_org_unit_type(id,code,kind,name_en,active,created_at,updated_at) VALUES (?,?,'STATION_UNIT','Synthetic station',true,now(),now())",type,"TYPE-"+type);
         jdbc.update("INSERT INTO public.hidra_org_position(id,code,level,title_en,status,created_at,updated_at) VALUES (?,?,'ENGINEER','Synthetic engineer','ACTIVE',now(),now())",position,"POS-"+position);
     }
     private String loginFixture(boolean administrator) throws Exception {

@@ -31,4 +31,10 @@ public interface EmployeeRepositoryPort {
     Employee save(Employee model);
 
     Optional<Employee> findById(String id);
+
+    default Employee lockForActivation(String id) { throw new UnsupportedOperationException("Activation storage unavailable"); }
+    default java.time.Instant nextActivationTime(Employee current) { throw new UnsupportedOperationException("Activation storage unavailable"); }
+    default Employee storeActivation(Employee before,Employee after,String actor,String reason) { throw new UnsupportedOperationException("Activation storage unavailable"); }
+    default java.util.List<dz.sh.hidra.modules.organization.application.port.in.OrganizationFoundationAdministrationUseCase.ActivationEvent> activationHistory(String employeeId) { throw new UnsupportedOperationException("Activation storage unavailable"); }
 }
+

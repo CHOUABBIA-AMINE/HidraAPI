@@ -276,6 +276,24 @@ public record Employee(
         return mobileNumber;
     }
 
+    /** Activates a registered person only; no appointment or access authority is created. */
+    public Employee activate(Instant expectedUpdatedAt,Instant now,String reason) {
+        if(expectedUpdatedAt==null||expectedUpdatedAt.getNano()%1000!=0)
+            throw new IllegalArgumentException("Exact expected updatedAt required.");
+        if(updatedAt==null||!updatedAt.equals(expectedUpdatedAt))
+            throw new IllegalStateException("Employee version conflict.");
+        if(status!=EmployeeStatus.REGISTERED||terminatedAt!=null)
+            throw new IllegalStateException("Only a registered employee may be activated.");
+        if(reason==null||reason.isBlank()||reason.length()>2000)
+            throw new IllegalArgumentException("A bounded activation reason is required.");
+        if(now==null||now.getNano()%1000!=0||!now.isAfter(updatedAt))
+            throw new IllegalArgumentException("A later exact database timestamp is required.");
+        return new Employee(id,employeeNumber,firstNameAr,lastNameAr,firstNameLt,lastNameLt,
+                displayNameAr,displayNameLt,dateOfBirth,birthLocalityId,birthPlaceAr,birthPlaceFr,birthPlaceEn,
+                emailAddress,mobileNumber,employeeType,EmployeeStatus.ACTIVE,identityUserReference,
+                hiredAt==null?now:hiredAt,terminatedAt,createdAt,now);
+    }
+
     private static String join(String firstName, String lastName) {
         String first = normalize(firstName);
         String last = normalize(lastName);
@@ -303,3 +321,4 @@ public record Employee(
         return value.trim();
     }
 }
+

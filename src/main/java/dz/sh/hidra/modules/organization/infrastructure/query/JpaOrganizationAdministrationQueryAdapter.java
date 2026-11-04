@@ -39,10 +39,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class JpaOrganizationAdministrationQueryAdapter implements OrganizationAdministrationQueryUseCase {
 
     private final EntityManager entityManager;
+    private final dz.sh.hidra.modules.organization.application.port.out.OrganizationFoundationAuthorizationPort authority;
 
     private final dz.sh.hidra.modules.organization.application.port.in.EmployeeAppointmentLifecycleUseCase appointments;
 
-    public JpaOrganizationAdministrationQueryAdapter(EntityManager entityManager,dz.sh.hidra.modules.organization.application.port.in.EmployeeAppointmentLifecycleUseCase appointments) {
+    public JpaOrganizationAdministrationQueryAdapter(EntityManager entityManager,dz.sh.hidra.modules.organization.application.port.in.EmployeeAppointmentLifecycleUseCase appointments,dz.sh.hidra.modules.organization.application.port.out.OrganizationFoundationAuthorizationPort authority) {
+        this.authority=Objects.requireNonNull(authority);
         this.appointments=Objects.requireNonNull(appointments);
         this.entityManager = Objects.requireNonNull(entityManager, "EntityManager must not be null.");
     }
@@ -50,28 +52,33 @@ public class JpaOrganizationAdministrationQueryAdapter implements OrganizationAd
     @Override
     @Transactional(readOnly=true)
     public Page<OrganizationUnitView> units(String query, int page, int size) {
+        authority.administrator();
         List<OrganizationUnitView> all = entityManager
                 .createQuery("select e from OrganizationUnitJpaEntity e order by e.code", OrganizationUnitJpaEntity.class)
                 .getResultList().stream()
                 .filter(entity -> matches(query, entity.code(), entity.nameAr(), entity.nameFr(), entity.nameEn()))
                 .map(this::unitView)
                 .toList();
+        authority.administrator();
         return page(all, page, size);
     }
 
     @Override
     @Transactional(readOnly=true)
     public OrganizationUnitView unit(String id) {
+        authority.administrator();
         OrganizationUnitJpaEntity entity = entityManager.find(OrganizationUnitJpaEntity.class, id);
         if (entity == null) {
             throw new IllegalArgumentException("Unknown organization unit: " + id);
         }
+        authority.administrator();
         return unitView(entity);
     }
 
     @Override
     @Transactional(readOnly=true)
     public List<OrganizationUnitView> children(String parentUnitId) {
+        authority.administrator();
         return entityManager
                 .createQuery(
                         "select e from OrganizationUnitJpaEntity e where e.parentUnitId = :parent order by e.code",
@@ -86,6 +93,7 @@ public class JpaOrganizationAdministrationQueryAdapter implements OrganizationAd
     @Override
     @Transactional(readOnly=true)
     public List<OrganizationNodeView> hierarchy() {
+        authority.administrator();
         List<OrganizationUnitView> units = entityManager
                 .createQuery("select e from OrganizationUnitJpaEntity e order by e.code", OrganizationUnitJpaEntity.class)
                 .getResultList().stream()
@@ -104,6 +112,7 @@ public class JpaOrganizationAdministrationQueryAdapter implements OrganizationAd
     @Override
     @Transactional(readOnly=true)
     public Page<EmployeeView> employees(String query, int page, int size) {
+        authority.administrator();
         List<EmployeeView> all = entityManager
                 .createQuery("select e from EmployeeJpaEntity e order by e.employeeNumber", EmployeeJpaEntity.class)
                 .getResultList().stream()
@@ -120,16 +129,19 @@ public class JpaOrganizationAdministrationQueryAdapter implements OrganizationAd
                 ))
                 .map(this::employeeView)
                 .toList();
+        authority.administrator();
         return page(all, page, size);
     }
 
     @Override
     @Transactional(readOnly=true)
     public EmployeeView employee(String id) {
+        authority.administrator();
         EmployeeJpaEntity entity = entityManager.find(EmployeeJpaEntity.class, id);
         if (entity == null) {
             throw new IllegalArgumentException("Unknown employee: " + id);
         }
+        authority.administrator();
         return employeeView(entity);
     }
 
@@ -148,6 +160,20 @@ public class JpaOrganizationAdministrationQueryAdapter implements OrganizationAd
     private static EmployeeAssignmentView currentView(dz.sh.hidra.modules.organization.application.dto.EmployeeAppointmentResult.PinnedVersion v) {
         var a=v.snapshot().appointment().assignment();
         return new EmployeeAssignmentView(a.id(),a.employeeId(),a.organizationUnitId(),a.positionId(),a.assignmentType().name(),a.validFrom(),a.validTo(),a.status().name());
+    }
+
+    @Override @Transactional(readOnly=true)
+    public List<dz.sh.hidra.modules.organization.application.port.in.OrganizationFoundationAdministrationUseCase.Choice> unitTypes() {
+        authority.administrator();
+        return entityManager.createQuery("select e from OrganizationUnitTypeJpaEntity e where e.active = true order by e.code",dz.sh.hidra.modules.organization.infrastructure.persistence.entity.OrganizationUnitTypeJpaEntity.class)
+            .setMaxResults(1000).getResultList().stream().map(e->new dz.sh.hidra.modules.organization.application.port.in.OrganizationFoundationAdministrationUseCase.Choice(e.id(),e.code(),e.nameAr(),e.nameFr(),e.nameEn())).toList();
+    }
+    @Override @Transactional(readOnly=true)
+    public List<dz.sh.hidra.modules.organization.application.port.in.OrganizationFoundationAdministrationUseCase.Choice> positions() {
+        authority.administrator();
+        return entityManager.createQuery("select e from PositionJpaEntity e where e.status = :status order by e.code",dz.sh.hidra.modules.organization.infrastructure.persistence.entity.PositionJpaEntity.class)
+            .setParameter("status",dz.sh.hidra.modules.organization.domain.value.PositionStatus.ACTIVE).setMaxResults(1000).getResultList().stream()
+            .map(e->new dz.sh.hidra.modules.organization.application.port.in.OrganizationFoundationAdministrationUseCase.Choice(e.id(),e.code(),e.titleAr(),e.titleFr(),e.titleEn())).toList();
     }
 
     private OrganizationNodeView node(OrganizationUnitView parent, List<OrganizationUnitView> units) {
@@ -226,7 +252,8 @@ public class JpaOrganizationAdministrationQueryAdapter implements OrganizationAd
     }
 
     private static <T> Page<T> page(List<T> all, int requestedPage, int requestedSize) {
-        int page = Math.max(0, requestedPage);
+        if(requestedPage<0||requestedPage>1000||requestedSize<1||requestedSize>200)throw new IllegalArgumentException("Bounded page required");
+        int page = requestedPage;
         int size = Math.min(200, Math.max(1, requestedSize));
         int from = Math.min(all.size(), page * size);
         int to = Math.min(all.size(), from + size);
@@ -242,3 +269,4 @@ public class JpaOrganizationAdministrationQueryAdapter implements OrganizationAd
         );
     }
 }
+

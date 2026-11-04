@@ -49,22 +49,22 @@ public class OrganizationAdministrationQueryController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "50") int size
     ) {
-        return useCase.units(q, page, size);
+        return OrganizationFoundationAdministrationController.call(()->useCase.units(q, page, size));
     }
 
     @GetMapping("/units/{id}")
     public OrganizationUnitView unit(@PathVariable String id) {
-        return useCase.unit(id);
+        return OrganizationFoundationAdministrationController.call(()->useCase.unit(id));
     }
 
     @GetMapping("/units/{id}/children")
     public List<OrganizationUnitView> children(@PathVariable String id) {
-        return useCase.children(id);
+        return OrganizationFoundationAdministrationController.call(()->useCase.children(id));
     }
 
     @GetMapping("/hierarchy")
     public List<OrganizationNodeView> hierarchy() {
-        return useCase.hierarchy();
+        return OrganizationFoundationAdministrationController.call(()->useCase.hierarchy());
     }
 
     @GetMapping("/employees")
@@ -73,12 +73,12 @@ public class OrganizationAdministrationQueryController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "50") int size
     ) {
-        return useCase.employees(q, page, size);
+        return OrganizationFoundationAdministrationController.call(()->useCase.employees(q, page, size));
     }
 
     @GetMapping("/employees/{id}")
     public EmployeeView employee(@PathVariable String id) {
-        return useCase.employee(id);
+        return OrganizationFoundationAdministrationController.call(()->useCase.employee(id));
     }
 
     @GetMapping("/employees/{id}/assignments")
@@ -106,3 +106,4 @@ public class OrganizationAdministrationQueryController {
         return useCase.assignments(employeeId, organizationUnitId, status, page, size);
     }
 }
+

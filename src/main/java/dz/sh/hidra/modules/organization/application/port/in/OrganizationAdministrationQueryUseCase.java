@@ -46,6 +46,9 @@ public interface OrganizationAdministrationQueryUseCase {
 
     List<EmployeeAssignmentView> employeeAssignments(String employeeId);
 
+    default List<OrganizationFoundationAdministrationUseCase.Choice> unitTypes() { throw new UnsupportedOperationException("Catalog unavailable"); }
+    default List<OrganizationFoundationAdministrationUseCase.Choice> positions() { throw new UnsupportedOperationException("Catalog unavailable"); }
+
     record Page<T>(
             List<T> content,
             int page,
@@ -98,3 +101,4 @@ public interface OrganizationAdministrationQueryUseCase {
             String status
     ) { }
 }
+

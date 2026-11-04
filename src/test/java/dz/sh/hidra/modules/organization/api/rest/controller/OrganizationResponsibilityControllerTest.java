@@ -73,6 +73,7 @@ class OrganizationResponsibilityControllerTest {
     @AfterEach
     void clearLoggingContext() {
         LoggingContext.clearAll();
+        org.springframework.security.core.context.SecurityContextHolder.clearContext();
     }
 
     @Test
@@ -147,6 +148,11 @@ class OrganizationResponsibilityControllerTest {
     @Test
     void responsibilityReadUsesCurrentOwnerResolvedScopeDisplay() {
         authenticated();
+        var jwt=org.springframework.security.oauth2.jwt.Jwt.withTokenValue("synthetic-unit-bearer")
+                .header("alg","HS256").subject("actor-1").claim("authentication_type","LOCAL").build();
+        var bearer=new org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken(jwt,java.util.List.of(),"actor-1");
+        org.springframework.security.core.context.SecurityContextHolder.getContext().setAuthentication(bearer);
+        when(permissionResolver.resolve(bearer)).thenReturn(Set.of(HidraEffectivePermissionResolver.ALL_PERMISSIONS));
         Instant now = Instant.parse("2026-09-29T09:00:00Z");
         when(list.listByScopeId(42L)).thenReturn(List.of(
                 new ResponsibilityAssignment(
@@ -207,3 +213,4 @@ class OrganizationResponsibilityControllerTest {
                 .toList();
     }
 }
+

@@ -194,6 +194,11 @@ public class OrganizationResponsibilityController {
             @RequestParam(required = false) String assigneeId
     ) {
         requireAuthenticated();
+        var current=org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+        if(!(current instanceof org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken bearer)
+                ||bearer.getToken().getClaimAsString("authentication_type")==null
+                ||!permissions(current).contains(HidraEffectivePermissionResolver.ALL_PERMISSIONS))
+            throw new AccessDeniedException("Current Organization administrator authority required.");
 
         List<ResponsibilityAssignment> assignments;
         if (scopeId != null && assigneeType == null && (assigneeId == null || assigneeId.isBlank())) {
@@ -317,3 +322,4 @@ public class OrganizationResponsibilityController {
 
     private record RequestContext(String requestId, String correlationId) { }
 }
+

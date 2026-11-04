@@ -55,10 +55,7 @@ public interface PartyAdministrationUseCase {
         Page page=search(query,typeId,roleId,eligibleOnly,offset,limit);
         return new ViewPage(page.items().stream().map(View::from).toList(),page.total(),page.offset(),page.limit());
     }
-    default View transitionView(String id,Instant expected,boolean activate,String reason) {
-        return View.from(transition(id,expected,activate,reason));
-    }
-    default View editView(String id,Instant expected,String legalName,String tradeName,String shortName,String reason) {
-        return View.from(edit(id,expected,legalName,tradeName,shortName,reason));
-    }
+    // Mutation projections must enter through a concrete write-transaction boundary.
+    View transitionView(String id,Instant expected,boolean activate,String reason);
+    View editView(String id,Instant expected,String legalName,String tradeName,String shortName,String reason);
 }

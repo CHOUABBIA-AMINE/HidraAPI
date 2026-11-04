@@ -76,4 +76,14 @@ public class PartyAdministrationApplicationService implements PartyAdministratio
         String actor=writer();PartyLifecyclePolicy.reason(reason);PartyLifecyclePolicy.metadata(legal,trade,shortName);
         Party p=store.edit(id,expected,legal.strip(),trade,shortName,reason.strip(),actor);authority.administrator();return p;
     }
+    // REST projection entry points need their own proxied write transaction.
+    // A default interface wrapper self-calls transition/edit and bypasses their advice.
+    @Override @Transactional(isolation=Isolation.READ_COMMITTED,rollbackFor=Exception.class)
+    public View transitionView(String id,Instant expected,boolean activate,String reason) {
+        return View.from(transition(id,expected,activate,reason));
+    }
+    @Override @Transactional(isolation=Isolation.READ_COMMITTED,rollbackFor=Exception.class)
+    public View editView(String id,Instant expected,String legalName,String tradeName,String shortName,String reason) {
+        return View.from(edit(id,expected,legalName,tradeName,shortName,reason));
+    }
 }

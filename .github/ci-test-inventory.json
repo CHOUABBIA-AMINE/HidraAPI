@@ -1877,7 +1877,8 @@
         "credentialResponseContainsOnlyGenerationAndDate",
         "malformedIssuerIsDeniedBeforeIdentityLookup",
         "nativeBearerMustHaveCurrentExactBindingAndLiveAdministratorGrant",
-        "springClassProxiesCanWrapBothLifecycleBeans"
+        "springClassProxiesCanWrapBothLifecycleBeans",
+        "translatedOwnerConflictHasNonDisclosingHttp409"
       ],
       "class": "dz.sh.hidra.modules.identity.api.rest.controller.IdentityLifecycleControllerTest",
       "dependency_reason": "No live service; Mockito request DTO and native bearer checks",
@@ -1885,7 +1886,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityLifecycleControllerTest.java",
-      "source_sha256": "61b909b92a184caeb03a2bfdf8b71c206cf68eed60b6d8bbde021443508cbab3",
+      "source_sha256": "bbf34044d6066115705393c9ecc9f316069c118cfbf45f04acb0bf1f934c26f7",
       "supports": []
     },
     {
@@ -2537,7 +2538,11 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "competingNativeLifecycleWritesCommitExactlyOneAuditEvent",
         "historicalGrantRevocationAndReplay",
+        "nativeCredentialResetDeactivationStaleVersionAndExpiredBearerAreDenied",
+        "nativeLastAdministratorCannotBeDisabledOrHaveItsGrantRevoked",
+        "nativeTwoUserOnboardingCurrentPermissionsRevocationAndAdvisoryIsolation",
         "realCredentialActivationResetSessionRevocationAndImmutableAudit",
         "rollbackRestoresStatusAndAuditAtomically"
       ],
@@ -2547,7 +2552,7 @@
       "lane": "postgres-integration",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/FoundationIdentityLifecyclePostgresIntegrationTest.java",
-      "source_sha256": "55a6c6cc77fc2ccb1e4f099503a3ab9767885990d4c6ddd63bd3faec1327fd54",
+      "source_sha256": "818b03215b3ca7ce8f3a661815324cea42f8501399c6466668b02137965518a1",
       "supports": []
     },
     {

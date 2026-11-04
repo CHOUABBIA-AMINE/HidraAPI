@@ -40,6 +40,20 @@ import static org.junit.jupiter.api.Assertions.*;
 class IdentityLifecycleControllerTest {
     @AfterEach void cleanup() { SecurityContextHolder.clearContext(); }
 
+    @Test void translatedOwnerConflictHasNonDisclosingHttp409() {
+        var useCase = mock(FoundationIdentityLifecycleUseCase.class);
+        var expected = Instant.parse("2026-11-04T08:00:00Z");
+        when(useCase.deactivate("user-1",expected,"operator request")).thenThrow(
+                new org.springframework.dao.InvalidDataAccessApiUsageException("private owner detail",
+                        new IllegalStateException("Stale lifecycle version.")));
+        var failure = assertThrows(org.springframework.web.server.ResponseStatusException.class,
+                () -> new IdentityLifecycleController(useCase).deactivate("user-1",
+                        new IdentityLifecycleRequests.Transition(expected,"operator request")));
+        assertEquals(409,failure.getStatusCode().value());
+        assertEquals("Identity lifecycle conflict.",failure.getReason());
+        assertFalse(failure.getMessage().contains("private owner detail"));
+    }
+
     @Test void activationUsesExplicitExpectedVersionAndReturnsNoSecret() {
         var useCase = mock(FoundationIdentityLifecycleUseCase.class);
         var controller = new IdentityLifecycleController(useCase);

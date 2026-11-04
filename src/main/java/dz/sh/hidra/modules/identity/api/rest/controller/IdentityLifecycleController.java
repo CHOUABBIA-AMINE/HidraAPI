@@ -112,6 +112,10 @@ public final class IdentityLifecycleController {
     private static RuntimeException http(RuntimeException e) {
         if (e instanceof AccessDeniedException) return e;
         if (e instanceof ResponseStatusException) return e;
+        // Repository proxies translate owner state conflicts; retain the public 409 contract.
+        if (e instanceof org.springframework.dao.InvalidDataAccessApiUsageException
+                && e.getCause() instanceof IllegalStateException)
+            return new ResponseStatusException(HttpStatus.CONFLICT, "Identity lifecycle conflict.");
         if (e instanceof IllegalArgumentException) return new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid lifecycle request.");
         if (e instanceof NoSuchElementException) return new ResponseStatusException(HttpStatus.NOT_FOUND, "Identity resource unavailable.");
         if (e instanceof IllegalStateException) return new ResponseStatusException(HttpStatus.CONFLICT, "Identity lifecycle conflict.");

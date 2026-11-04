@@ -173,10 +173,15 @@ public class JdbcEngineeringNetworkDraftRepositoryAdapter implements Engineering
     private final JdbcTemplate jdbc;private final ProtectedTransactionExecutor executor;private final EntityManager em;
     private final EngineeringNetworkDraftCodec codec=new EngineeringNetworkDraftCodec();
     public JdbcEngineeringNetworkDraftRepositoryAdapter(JdbcTemplate j,ProtectedTransactionExecutor e,EntityManager em){jdbc=Objects.requireNonNull(j);executor=Objects.requireNonNull(e);this.em=Objects.requireNonNull(em);}
+    private dz.sh.hidra.modules.topology.application.port.out.PipelineAuthoringPersistencePort pipelines;
+    @org.springframework.beans.factory.annotation.Autowired
+    public JdbcEngineeringNetworkDraftRepositoryAdapter(JdbcTemplate j,ProtectedTransactionExecutor e,EntityManager em,
+            dz.sh.hidra.modules.topology.application.port.out.PipelineAuthoringPersistencePort pipelines){this(j,e,em);this.pipelines=Objects.requireNonNull(pipelines);}
     private final class Ticket implements Admission,TransactionSynchronization {
         final JdbcEngineeringNetworkDraftRepositoryAdapter owner=JdbcEngineeringNetworkDraftRepositoryAdapter.this;
         final Command command;final ConnectionHolder holder;final Connection connection;final Thread thread=Thread.currentThread();
         final int pid;final long xid;final String role,ordinary;boolean active=true,eligible,applied,newContext,replayed;
+        dz.sh.hidra.modules.topology.application.port.out.PipelineAuthoringPersistencePort.Admission pipelineAdmission;
         boolean graphBound,surveyBound;long graphSelected,graphObserved;
         SurveyRouteProfileRepositoryPort.Snapshot surveySnapshot;
         EngineeringGraphDraftRepositoryPort.Snapshot graphSnapshot;
@@ -342,6 +347,10 @@ public class JdbcEngineeringNetworkDraftRepositoryAdapter implements Engineering
             || !snapshot.profile().equals(t.command.survey()) || t.graphSelected!=t.latest))throw fail(Reason.UNAVAILABLE);
         t.surveySnapshot=snapshot;t.surveyBound=true;
     }
+    @Override public void bindPipelineProof(Admission admission,dz.sh.hidra.modules.topology.application.port.out.PipelineAuthoringPersistencePort.Admission pipeline){
+        var t=ticket(admission);if(pipelines==null||t.pipelineAdmission!=null||!t.graphBound||pipeline==null)throw fail(Reason.UNAVAILABLE);
+        pipelines.finalCheck(pipeline);t.pipelineAdmission=pipeline;
+    }
     @Override @Transactional(propagation=Propagation.MANDATORY)
     public Result apply(Admission a,Contribution c){try {var t=ticket(a);if(!t.eligible || t.applied || c.backendPid()!=t.pid || c.transactionId()!=t.xid
             || !c.request().companyPartyId().equals(t.command.companyPartyId()) || !c.request().pipelineSystemId().equals(t.command.pipelineSystemId()))throw fail(Reason.UNAVAILABLE);
@@ -448,6 +457,7 @@ public class JdbcEngineeringNetworkDraftRepositoryAdapter implements Engineering
             guard+=" AND EXISTS(SELECT 1 FROM public.hidra_topology_engineering_draft d WHERE d.id=? AND d.context_id=? AND d.creation_request_id=? AND d.request_sha256=?)";
             args.addAll(Arrays.asList(t.draftId,t.contextId,t.command.creationRequestId(),t.requestDigest));
         }
+        if(t.pipelineAdmission!=null){var extra=pipelines.finalCheck(t.pipelineAdmission);guard+=" AND ("+extra.sql()+")";args.addAll(extra.arguments());}
         guard+=" AND ("+CATALOG+")";
         guard+=" AND NOT EXISTS(SELECT 1 FROM (VALUES "+required+") required(relation,mode) WHERE NOT EXISTS(SELECT 1 FROM pg_locks l WHERE l.pid=pg_backend_pid() AND l.granted AND l.locktype='relation' AND l.relation=required.relation AND l.mode=required.mode))";
         for(var f:fences){args.add(f.relation());args.add(f.mode().catalog());}

@@ -97,6 +97,21 @@ public record EngineeringGraphDraft(List<Node> nodes, List<Port> ports, List<Bra
         }
     }
 
+    /** Versioned owner association; not another graph or a physical qualification. */
+    public record PipelineReference(String branchId,String pipelineId,String segmentId) {
+        public PipelineReference {branchId=identity(branchId);pipelineId=identity(pipelineId);if(segmentId!=null)segmentId=identity(segmentId);}
+    }
+    /** Every PIPE in an authored association snapshot has exactly one canonical owner reference. */
+    public List<PipelineReference> pipelineReferences(List<PipelineReference> references) {
+        var ordered=ordered(references,MAX_BRANCHES,Comparator.comparing(PipelineReference::branchId));
+        var pipes=branches.stream().filter(v->v.kind()==BranchKind.PIPE).map(Branch::id).collect(java.util.stream.Collectors.toSet());
+        var ids=new HashSet<String>();
+        for(var r:ordered)if(!ids.add(r.branchId())||!pipes.contains(r.branchId()))
+            throw new IllegalArgumentException("Duplicate or non-PIPE canonical reference");
+        if(!pipes.equals(ids))throw new IllegalArgumentException("Complete PIPE reference coverage required");
+        return ordered;
+    }
+
     private static <T> List<T> ordered(List<T> source, int max, Comparator<T> order) {
         if (source == null || source.size() > max) throw new IllegalArgumentException("Graph size limit");
         ArrayList<T> copy = new ArrayList<>(source);

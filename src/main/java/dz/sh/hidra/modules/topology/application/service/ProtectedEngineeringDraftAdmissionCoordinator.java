@@ -116,6 +116,14 @@ public class ProtectedEngineeringDraftAdmissionCoordinator {
             throw invalid();
         executor.beginProvisional(a.permit,sql);
     }catch(RuntimeException e){executor.rejectAdmission();throw e;}}
+    private static final Set<String> PIPELINE_DML_HASHES=Set.of("0073f0f61f0dde58cccb290f4072971c24aa36cfc2d5054060cb03f01f9aac2d","ad4d5cd7296afb6d1cea5e95cd83fa1f9edad9fdc1264a0856a46861d8801525","b5213967046ec2eb90655dd7169405377db35603cc81103a8607b147628298e2","ca86cfd205b224d6d79e6a3f9b7d3e1b2a83f35bde8245cd453fb1cd97da5580","d36a5bc21829462bc44ec509ef3aa41aa001e0730e86bc3a2cc3525c15cdd7b3","d57712037605ced7bdc4309987fae4a1a5193fad1e8b5af8f3fc13e21f4ab76b","ea65144cc041c124b9021fecc0670a6c647992c31f6c05881c472a015dd89035");
+    @Transactional(propagation=Propagation.MANDATORY)
+    public void beginPipelineProvisional(Admission a,Set<String> sql){try {
+        requireCurrent(a);
+        if(!compiled()||a.kind!=Kind.GRAPH_UPDATE||a.request.action()!=Action.UPDATE||sql==null||sql.size()!=7
+                ||!sql.stream().map(ProtectedEngineeringDraftAdmissionCoordinator::digest).collect(java.util.stream.Collectors.toUnmodifiableSet()).equals(PIPELINE_DML_HASHES))throw invalid();
+        executor.beginProvisional(a.permit,sql);
+    }catch(RuntimeException failure){executor.rejectAdmission();throw failure;}}
     @Transactional(propagation=Propagation.MANDATORY)
     public void endProvisional(Admission a){try {current(a);if(!compiled())throw invalid();executor.endProvisional(a.permit);requireCurrent(a);}
         catch(RuntimeException e){executor.rejectAdmission();throw e;}}

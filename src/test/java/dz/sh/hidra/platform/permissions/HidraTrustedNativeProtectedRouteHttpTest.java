@@ -1,3 +1,22 @@
+/**
+ *
+ * @Project     : HidraAPI
+ * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
+ * @Author      : Abir MEDJERAB
+ * @Owner       : Sonatrach / TRC : Digitalization Initiative
+ *
+ * @Name        : HidraTrustedNativeProtectedRouteHttpTest
+ * @CreatedOn   : 2025-06-26
+ * @UpdatedOn   : 2026-11-04
+ *
+ * @Type        : Class
+ * @Layer       : Test
+ * @Module      : platform
+ * @Package     : dz.sh.hidra.platform.permissions
+ *
+ * @Description : Preserves exact startup-verified native HTTP delegation and its negative boundaries.
+ *
+ */
 package dz.sh.hidra.platform.permissions;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -137,7 +156,7 @@ class HidraTrustedNativeProtectedRouteHttpTest {
    var resolver = org.mockito.Mockito.mock(HidraEffectivePermissionResolver.class);
    authenticated();
    var registry = new HidraTrustedNativeProtectedRouteRegistry();
-   assertEquals(13,registry.candidates().size());
+   assertEquals(16,registry.candidates().size());
    var mvc = mvc(owner, new UntrustedController(), resolver,registry);
    assertThrows(Exception.class, () ->
       mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(TRUSTED)));
@@ -146,7 +165,7 @@ class HidraTrustedNativeProtectedRouteHttpTest {
  @Test void realManufacturerTupleRegistryRejectsWrongVerbAndSiblingPattern() throws Exception {
    var registry=new HidraTrustedNativeProtectedRouteRegistry();
    var routes=registry.candidates();
-   assertEquals(13,routes.size());
+   assertEquals(16,routes.size());
    var expected=java.util.Set.of(
     "PUT /api/v1/simulation/manufacturer-characteristics/{sourceId}/revisions/{revisionId}",
     "GET /api/v1/simulation/manufacturer-characteristics/{sourceId}/revisions/{revisionId}",
@@ -160,7 +179,10 @@ class HidraTrustedNativeProtectedRouteHttpTest {
     "PUT /api/v1/topology/engineering-baselines/{manifestId}",
     "GET /api/v1/topology/engineering-baselines/{manifestId}",
     "GET /api/v1/topology/engineering-baselines/{manifestId}/revisions/{version}",
-    "POST /api/v1/topology/engineering-baselines/{manifestId}/validation");
+    "POST /api/v1/topology/engineering-baselines/{manifestId}/validation",
+    "PUT /api/v1/topology/engineering-networks/{draftId}/authored-topology",
+    "GET /api/v1/topology/engineering-networks/{draftId}/authored-topology",
+    "GET /api/v1/topology/engineering-networks/{draftId}/authoring-choices");
    assertEquals(expected,routes.stream().map(r->r.verb()+" "+r.pattern())
     .collect(java.util.stream.Collectors.toSet()));
    var controller=new dz.sh.hidra.modules.simulation.api.rest.controller
@@ -171,10 +193,14 @@ class HidraTrustedNativeProtectedRouteHttpTest {
     org.mockito.Mockito.mock(dz.sh.hidra.modules.topology.application.port.in.InstalledCharacteristicLinkUseCase.class));
    var baseline=new dz.sh.hidra.modules.topology.api.rest.controller.EngineeringBaselineDraftController(
       org.mockito.Mockito.mock(dz.sh.hidra.modules.topology.application.port.in.EngineeringBaselineDraftUseCase.class));
+    var pipeline=new dz.sh.hidra.modules.topology.api.rest.controller.PipelineAuthoringController(
+      org.mockito.Mockito.mock(dz.sh.hidra.modules.topology.application.port.in.PipelineAuthoringUseCase.class),
+      org.mockito.Mockito.mock(dz.sh.hidra.modules.topology.application.port.in.AuthoredTopologyViewUseCase.class));
     var actual=new RequestMappingHandlerMapping();
    for(var entry:routes) {
     Object owner=entry.controller().equals(controller.getClass())?controller:
-       entry.controller().equals(installed.getClass())?installed:baseline;
+       entry.controller().equals(installed.getClass())?installed:
+       entry.controller().equals(pipeline.getClass())?pipeline:baseline;
     actual.registerMapping(RequestMappingInfo.paths(entry.pattern())
       .methods(RequestMethod.valueOf(entry.verb())).build(),owner,entry.method());
    }
@@ -182,7 +208,8 @@ class HidraTrustedNativeProtectedRouteHttpTest {
    for(var entry:routes) {
     var handler=new org.springframework.web.method.HandlerMethod(
       entry.controller().equals(controller.getClass())?controller:
-       entry.controller().equals(installed.getClass())?installed:baseline,entry.method());
+       entry.controller().equals(installed.getClass())?installed:
+       entry.controller().equals(pipeline.getClass())?pipeline:baseline,entry.method());
     assertTrue(registry.isTrusted(handler,entry.verb(),entry.pattern()));
     assertTrue(!registry.isTrusted(handler,
       entry.verb().equals("GET")?"PUT":"GET",entry.pattern()));

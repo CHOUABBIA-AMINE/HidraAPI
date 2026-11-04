@@ -1,3 +1,22 @@
+/**
+ *
+ * @Project     : HidraAPI
+ * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
+ * @Author      : Abir MEDJERAB
+ * @Owner       : Sonatrach / TRC : Digitalization Initiative
+ *
+ * @Name        : HidraTrustedNativeProtectedRouteRegistry
+ * @CreatedOn   : 2025-06-26
+ * @UpdatedOn   : 2026-11-04
+ *
+ * @Type        : Class
+ * @Layer       : Platform
+ * @Module      : platform
+ * @Package     : dz.sh.hidra.platform.permissions
+ *
+ * @Description : Preserves exact startup-verified native HTTP delegation and its negative boundaries.
+ *
+ */
 package dz.sh.hidra.platform.permissions;
 
 import java.lang.reflect.Method;
@@ -11,7 +30,7 @@ import org.springframework.web.method.HandlerMethod;
 /**
  * Independently controlled Platform whitelist for native-protected HTTP routes.
  * No business module, annotation scan or application property can add entries.
- * Production activates only explicitly registered manufacturer and Topology approval tuples after
+ * Runtime activates only explicitly registered native owner tuples after
  * exact Spring MVC compilation validation. This is NOT a native Identity grant.
  */
 @Component
@@ -53,7 +72,13 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
             Class<?> baselineCreate=Class.forName(topology+"request.EngineeringBaselineDraftRequests$Create");
             Class<?> baselineUpdate=Class.forName(topology+"request.EngineeringBaselineDraftRequests$Update");
             final String baselineBase="/api/v1/topology/engineering-baselines";
+            Class<?> pipeline=Class.forName(topology+"controller.PipelineAuthoringController");
+            Class<?> pipelineWrite=Class.forName(topology+"request.PipelineAuthoringRequests$Write");
+            final String pipelineBase="/api/v1/topology/engineering-networks/{draftId}";
             return List.of(
+                new Route(pipeline,pipeline.getDeclaredMethod("write",String.class,String.class,String.class,pipelineWrite),"PUT",pipelineBase+"/authored-topology"),
+                new Route(pipeline,pipeline.getDeclaredMethod("view",String.class,String.class,String.class,Long.class),"GET",pipelineBase+"/authored-topology"),
+                new Route(pipeline,pipeline.getDeclaredMethod("choices",String.class,String.class,String.class,int.class,int.class),"GET",pipelineBase+"/authoring-choices"),
                 new Route(baseline,baseline.getDeclaredMethod("create",baselineCreate),"POST",baselineBase),
                 new Route(baseline,baseline.getDeclaredMethod("update",java.util.UUID.class,baselineUpdate),"PUT",baselineBase+"/{manifestId}"),
                 new Route(baseline,baseline.getDeclaredMethod("current",java.util.UUID.class,String.class,String.class),"GET",baselineBase+"/{manifestId}"),

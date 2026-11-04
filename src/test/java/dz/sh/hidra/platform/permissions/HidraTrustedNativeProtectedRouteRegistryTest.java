@@ -1,3 +1,22 @@
+/**
+ *
+ * @Project     : HidraAPI
+ * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
+ * @Author      : Abir MEDJERAB
+ * @Owner       : Sonatrach / TRC : Digitalization Initiative
+ *
+ * @Name        : HidraTrustedNativeProtectedRouteRegistryTest
+ * @CreatedOn   : 2025-06-26
+ * @UpdatedOn   : 2026-11-04
+ *
+ * @Type        : Class
+ * @Layer       : Test
+ * @Module      : platform
+ * @Package     : dz.sh.hidra.platform.permissions
+ *
+ * @Description : Preserves exact startup-verified native HTTP delegation and its negative boundaries.
+ *
+ */
 package dz.sh.hidra.platform.permissions;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -36,7 +55,7 @@ class HidraTrustedNativeProtectedRouteRegistryTest {
 
     @Test void productionRegistryDeclaresFiveManufacturerAndThreeTopologyApprovalTuples() throws Exception {
         var registry = new HidraTrustedNativeProtectedRouteRegistry();
-        var legacy=registry.candidates().stream().filter(r->!r.controller().getSimpleName().equals("EngineeringBaselineDraftController")).toList();
+        var legacy=registry.candidates().stream().filter(r->java.util.Set.of("ManufacturerCharacteristicRevisionController","InstalledCharacteristicLinkController").contains(r.controller().getSimpleName())).toList();
         assertEquals(8,legacy.size());
         assertEquals(java.util.Set.of("save","revision","history","certificate","qualify","approve","approvedRevision","approvalHistory"),
                 legacy.stream().map(v->v.method().getName())
@@ -48,7 +67,7 @@ class HidraTrustedNativeProtectedRouteRegistryTest {
 
     @Test void baselineRoutesDeclareOnlyFiveExactCompiledTuples(){
         var registry=new HidraTrustedNativeProtectedRouteRegistry();
-        assertEquals(13,registry.candidates().size());
+        assertEquals(16,registry.candidates().size());
         var rows=registry.candidates().stream().filter(r->r.controller().getSimpleName().equals("EngineeringBaselineDraftController")).toList();
         assertEquals(5,rows.size());
         assertEquals(java.util.Set.of("POST /api/v1/topology/engineering-baselines","PUT /api/v1/topology/engineering-baselines/{manifestId}",
@@ -122,5 +141,14 @@ class HidraTrustedNativeProtectedRouteRegistryTest {
         var registry = new HidraTrustedNativeProtectedRouteRegistry(List.of(route));
         registry.activate(List.of(route));
         assertFalse(registry.isTrusted(new HandlerMethod(new Owner(), unmarked), "POST", PATH));
+    }
+    @Test void pipelineRoutesDeclareThreeExactCompiledMarkedSignaturesAndNoSelfActivation(){
+        var registry=new HidraTrustedNativeProtectedRouteRegistry();
+        var rows=registry.candidates().stream().filter(r->r.controller().getSimpleName().equals("PipelineAuthoringController")).toList();
+        assertEquals(3,rows.size());
+        assertEquals(java.util.Set.of("PUT /api/v1/topology/engineering-networks/{draftId}/authored-topology","GET /api/v1/topology/engineering-networks/{draftId}/authored-topology","GET /api/v1/topology/engineering-networks/{draftId}/authoring-choices"),rows.stream().map(r->r.verb()+" "+r.pattern()).collect(java.util.stream.Collectors.toSet()));
+        assertEquals(java.util.Set.of("write","view","choices"),rows.stream().map(r->r.method().getName()).collect(java.util.stream.Collectors.toSet()));
+        var owner=new dz.sh.hidra.modules.topology.api.rest.controller.PipelineAuthoringController(org.mockito.Mockito.mock(dz.sh.hidra.modules.topology.application.port.in.PipelineAuthoringUseCase.class),org.mockito.Mockito.mock(dz.sh.hidra.modules.topology.application.port.in.AuthoredTopologyViewUseCase.class));
+        for(var row:rows){assertTrue(row.method().isAnnotationPresent(NativeProtectedOperation.class));assertFalse(registry.isTrusted(new HandlerMethod(owner,row.method()),row.verb(),row.pattern()));}
     }
 }

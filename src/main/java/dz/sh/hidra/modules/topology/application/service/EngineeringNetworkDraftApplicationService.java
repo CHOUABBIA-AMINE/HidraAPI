@@ -44,13 +44,21 @@ public class EngineeringNetworkDraftApplicationService implements EngineeringNet
 
     private final dz.sh.hidra.modules.topology.application.port.out.SurveyRouteProfileRepositoryPort surveys;
 
-    @Autowired
     public EngineeringNetworkDraftApplicationService(ProtectedEngineeringDraftAdmissionCoordinator c,
             EngineeringNetworkDraftRepositoryPort r, ProtectedTransactionExecutor e,
             EngineeringGraphDraftRepositoryPort graphs, EngineeringGraphStationWitnessPort witnesses,
             dz.sh.hidra.modules.topology.application.port.out.SurveyRouteProfileRepositoryPort surveys) {
         coordinator=Objects.requireNonNull(c);repository=Objects.requireNonNull(r);executor=Objects.requireNonNull(e);
         graphRepository=Objects.requireNonNull(graphs);stationWitness=Objects.requireNonNull(witnesses);this.surveys=surveys;
+    }
+    private dz.sh.hidra.modules.topology.application.port.out.PipelineAuthoringPersistencePort pipelines;
+    @Autowired
+    public EngineeringNetworkDraftApplicationService(ProtectedEngineeringDraftAdmissionCoordinator c,
+            EngineeringNetworkDraftRepositoryPort r,ProtectedTransactionExecutor e,
+            EngineeringGraphDraftRepositoryPort graphs,EngineeringGraphStationWitnessPort witnesses,
+            dz.sh.hidra.modules.topology.application.port.out.SurveyRouteProfileRepositoryPort surveys,
+            dz.sh.hidra.modules.topology.application.port.out.PipelineAuthoringPersistencePort pipelines) {
+        this(c,r,e,graphs,witnesses,surveys);this.pipelines=Objects.requireNonNull(pipelines);
     }
     /** Retained isolated graph constructor; survey operations fail closed without a repository. */
     public EngineeringNetworkDraftApplicationService(ProtectedEngineeringDraftAdmissionCoordinator c,
@@ -178,6 +186,60 @@ public class EngineeringNetworkDraftApplicationService implements EngineeringNet
             },repository::flush,()->{
                 if(!repository.finalGuard(coordinator.repository(a.get()),c.get(),coordinator.finalFences(a.get())))
                     throw new EngineeringNetworkDraftFailure(Reason.UNAVAILABLE);
+            });
+        }catch(RuntimeException failure){throw translate(failure);}
+    }
+
+    @Override public dz.sh.hidra.modules.topology.application.port.in.AuthoredTopologyViewUseCase.View executePipeline(
+            dz.sh.hidra.modules.topology.application.port.in.PipelineAuthoringUseCase.Write command){
+        Objects.requireNonNull(command);return executeAuthored(command.scope(),command,null,null,null).view();
+    }
+    @Override public dz.sh.hidra.modules.topology.application.port.in.AuthoredTopologyViewUseCase.View executeAuthoredView(
+            dz.sh.hidra.modules.topology.application.port.in.PipelineAuthoringUseCase.Scope scope,Long version){
+        if(version!=null&&version<1)throw new IllegalArgumentException("Positive as-of version required");return executeAuthored(scope,null,version,null,null).view();
+    }
+    @Override public dz.sh.hidra.modules.topology.application.port.in.AuthoredTopologyViewUseCase.Discovery executeAuthoredDiscovery(
+            dz.sh.hidra.modules.topology.application.port.in.PipelineAuthoringUseCase.Scope scope,int offset,int limit){
+        if(offset<0||offset>100000||limit<1||limit>200)throw new IllegalArgumentException("Bounded discovery required");return executeAuthored(scope,null,null,offset,limit).discovery();
+    }
+    private record AuthoredResult(dz.sh.hidra.modules.topology.application.port.in.AuthoredTopologyViewUseCase.View view,
+            dz.sh.hidra.modules.topology.application.port.in.AuthoredTopologyViewUseCase.Discovery discovery) {}
+    private AuthoredResult executeAuthored(dz.sh.hidra.modules.topology.application.port.in.PipelineAuthoringUseCase.Scope scope,
+            dz.sh.hidra.modules.topology.application.port.in.PipelineAuthoringUseCase.Write write,Long version,Integer offset,Integer limit){
+        Objects.requireNonNull(scope);requireNoOuterTransaction();
+        if(pipelines==null||graphRepository==null||stationWitness==null)throw new EngineeringNetworkDraftFailure(Reason.UNAVAILABLE);
+        boolean update=write!=null;
+        var cmd=new EngineeringNetworkDraftUseCase.Command(update?EngineeringNetworkDraftUseCase.Kind.GRAPH_UPDATE:EngineeringNetworkDraftUseCase.Kind.GRAPH_READ,
+            scope.companyPartyId(),scope.pipelineSystemId(),scope.draftId(),null,update?write.expectedVersion():null,null,version,update?write.graph():null);
+        var retained=new AtomicReference<ProtectedEngineeringDraftAdmissionCoordinator.Admission>();
+        var actor=new AtomicReference<ProtectedEngineeringDraftAdmissionCoordinator.Contribution>();
+        try {var prepared=coordinator.prepare();
+            return executor.executePublication(()->{
+                var admission=coordinator.acquire(prepared,cmd);retained.set(admission);
+                // Additional source/association locks precede sealing, in the same physical transaction.
+                var pipelineAdmission=pipelines.acquire(scope);actor.set(coordinator.collect(admission));
+                var ticket=coordinator.repository(admission);long observed=repository.currentGraphDraft(ticket,version);
+                if(update){
+                    stationWitness.requireCurrent(scope.companyPartyId(),write.graph());pipelines.prepare(pipelineAdmission,write,actor.get());
+                    var sql=new HashSet<String>(repository.graphMutationSql());sql.addAll(pipelines.mutationSql());
+                    coordinator.beginPipelineProvisional(admission,Set.copyOf(sql));
+                }
+                var base=repository.apply(ticket,actor.get());long selected=update?base.draft().version():version==null?base.draft().version():version;
+                var snapshot=update?graphRepository.append(scope.draftId(),selected,write.graph(),actor.get().transactionId()):graphRepository.asOf(scope.draftId(),selected);
+                if(update){
+                    if(snapshot==null||snapshot.version()!=selected||!snapshot.graph().equals(write.graph()))throw new EngineeringNetworkDraftFailure(Reason.UNAVAILABLE);
+                    pipelines.persist(pipelineAdmission);coordinator.endProvisional(admission);
+                }
+                var graph=snapshot==null?null:snapshot.graph();
+                var witnesses=stationWitness.requireCurrent(scope.companyPartyId(),graph==null?new dz.sh.hidra.modules.topology.domain.model.EngineeringGraphDraft(List.of(),List.of(),List.of()):graph);
+                repository.bindGraphProof(ticket,selected,snapshot,witnesses,observed);coordinator.requireCurrent(admission);
+                var result=new EngineeringGraphDraftUseCase.Result(scope.draftId(),selected,snapshot==null?null:snapshot.version(),snapshot==null?null:snapshot.sha256(),graph,graph==null?List.of("GRAPH_NOT_AUTHORED"):graph.diagnostics());
+                var view=pipelines.materialize(pipelineAdmission,result);
+                var choices=offset==null?null:pipelines.discover(pipelineAdmission,offset,limit);
+                pipelines.freeze(pipelineAdmission);repository.bindPipelineProof(ticket,pipelineAdmission);
+                return new AuthoredResult(view,choices);
+            },repository::flush,()->{
+                if(!repository.finalGuard(coordinator.repository(retained.get()),actor.get(),coordinator.finalFences(retained.get())))throw new EngineeringNetworkDraftFailure(Reason.UNAVAILABLE);
             });
         }catch(RuntimeException failure){throw translate(failure);}
     }

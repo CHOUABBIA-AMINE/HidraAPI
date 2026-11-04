@@ -1,3 +1,22 @@
+/**
+ *
+ * @Project     : HidraAPI
+ * @Product     : Hidra - Hydrocarbon Intelligence for Data, Risk, and Analytics
+ * @Author      : Abir MEDJERAB
+ * @Owner       : Sonatrach / TRC : Digitalization Initiative
+ *
+ * @Name        : HidraTrustedNativeProtectedRouteStartupValidatorTest
+ * @CreatedOn   : 2025-06-26
+ * @UpdatedOn   : 2026-11-04
+ *
+ * @Type        : Class
+ * @Layer       : Test
+ * @Module      : platform
+ * @Package     : dz.sh.hidra.platform.permissions
+ *
+ * @Description : Preserves exact startup-verified native HTTP delegation and its negative boundaries.
+ *
+ */
 package dz.sh.hidra.platform.permissions;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -41,7 +60,7 @@ class HidraTrustedNativeProtectedRouteStartupValidatorTest {
 
     @Test void productionNativeExactRoutesFailWithoutCompiledMappings() {
         var registry = new HidraTrustedNativeProtectedRouteRegistry();
-        assertTrue(registry.candidates().size()==13);
+        assertTrue(registry.candidates().size()==16);
         assertThrows(IllegalStateException.class, ()->
                 new HidraTrustedNativeProtectedRouteStartupValidator(
                     new RequestMappingHandlerMapping(), registry).validate());

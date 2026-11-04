@@ -47,4 +47,5 @@ public interface EngineeringNetworkDraftRepositoryPort {
     Result apply(Admission admission,Contribution contribution);
     void flush();
     boolean finalGuard(Admission admission,Contribution contribution,List<ProtectedRelationFence> fences);
+    default void bindPipelineProof(Admission admission,PipelineAuthoringPersistencePort.Admission pipeline){throw new IllegalStateException("Pipeline final guard unavailable");}
 }

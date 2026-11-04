@@ -38,23 +38,25 @@ import org.springframework.web.bind.annotation.RestController;
 public class TopologyMapController {
 
     private final TopologyMapVisualizationUseCase visualizationUseCase;
+    private final dz.sh.hidra.modules.topology.application.port.in.AuthoredTopologyViewUseCase authority;
 
-    public TopologyMapController(TopologyMapVisualizationUseCase visualizationUseCase) {
+    public TopologyMapController(TopologyMapVisualizationUseCase visualizationUseCase,dz.sh.hidra.modules.topology.application.port.in.AuthoredTopologyViewUseCase authority) {
+        this.authority=Objects.requireNonNull(authority);
         this.visualizationUseCase = Objects.requireNonNull(visualizationUseCase, "TopologyMapVisualizationUseCase must not be null.");
     }
 
     @GetMapping("/layers")
-    public List<LayerDescriptor> layers() { return visualizationUseCase.listLayers(); }
+    public List<LayerDescriptor> layers() { authority.requireGlobalMapAccess(); return visualizationUseCase.listLayers(); }
 
     @GetMapping("/layers/{layerId}")
-    public LayerDescriptor layer(@PathVariable String layerId) { return visualizationUseCase.layer(layerId); }
+    public LayerDescriptor layer(@PathVariable String layerId) { authority.requireGlobalMapAccess(); return visualizationUseCase.layer(layerId); }
 
     @GetMapping("/layers/{layerId}/features")
     public FeatureCollection features(@PathVariable String layerId,
             @RequestParam(name = "page", required = false) Integer page,
             @RequestParam(name = "size", required = false) Integer size,
             @RequestParam(name = "q", required = false) String query) {
-        return visualizationUseCase.features(layerId, page, size, query);
+        authority.requireGlobalMapAccess(); return visualizationUseCase.features(layerId, page, size, query);
     }
 
     @GetMapping("/geojson")
@@ -62,13 +64,13 @@ public class TopologyMapController {
             @RequestParam(name = "page", required = false) Integer page,
             @RequestParam(name = "size", required = false) Integer size,
             @RequestParam(name = "q", required = false) String query) {
-        return visualizationUseCase.geoJson(layerIds, page, size, query);
+        authority.requireGlobalMapAccess(); return visualizationUseCase.geoJson(layerIds, page, size, query);
     }
 
     @GetMapping("/search")
     public SearchResult search(@RequestParam(name = "q") String query,
             @RequestParam(name = "page", required = false) Integer page,
             @RequestParam(name = "size", required = false) Integer size) {
-        return visualizationUseCase.search(query, page, size);
+        authority.requireGlobalMapAccess(); return visualizationUseCase.search(query, page, size);
     }
 }

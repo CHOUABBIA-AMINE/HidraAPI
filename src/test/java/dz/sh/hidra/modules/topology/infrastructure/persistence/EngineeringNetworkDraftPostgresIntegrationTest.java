@@ -1641,4 +1641,108 @@ public class EngineeringNetworkDraftPostgresIntegrationTest {
         assertThatThrownBy(()->exchanges().execute(exchangeCommand(EngineeringLocalExchangeUseCase.Operation.IMPORT,Editor.SURVEY,draft,3L,bad))).isInstanceOf(EngineeringLocalExchangeFailure.class);
         assertThat(exchangeStorageState()).isEqualTo(before);assertThat(exchanges().execute(exchangeCommand(EngineeringLocalExchangeUseCase.Operation.EXPORT,Editor.METADATA,draft,null,null)).bundle().bytes()).isEqualTo(pack.bytes());
     }
+
+    @Autowired dz.sh.hidra.modules.topology.application.port.in.PipelineAuthoringUseCase pipelineAuthoring;
+    @Autowired dz.sh.hidra.modules.topology.application.port.in.AuthoredTopologyViewUseCase authoredViews;
+    private String b4Privileges(){
+        String tables="public.hidra_topology_pipeline_authoring_revision,public.hidra_topology_pipeline_graph_snapshot,public.hidra_topology_pipeline_graph_binding";
+        jdbc.execute("REVOKE ALL ON "+tables+" FROM c3_source_claim_app,c3_publication_app");
+        jdbc.execute("GRANT SELECT,INSERT,UPDATE ON "+tables+" TO c3_publication_app");
+        String type="b4-"+id();jdbc.update("INSERT INTO public.hidra_topology_pipeline_type(id,code,name_en,active,created_at,updated_at) VALUES (?,?,'Synthetic Pipeline type',true,now(),now())",type,type);return type;
+    }
+    private dz.sh.hidra.modules.topology.application.port.in.PipelineAuthoringUseCase.Scope b4Scope(UUID draft){return new dz.sh.hidra.modules.topology.application.port.in.PipelineAuthoringUseCase.Scope(COMPANY,network,draft);}
+    private dz.sh.hidra.modules.topology.application.port.in.PipelineAuthoringUseCase.Write b4Write(UUID draft,long expected,String pipeline,long revision,String type,String label,String segment){
+        var graph=stationlessSerialParallelGraph();
+        return new dz.sh.hidra.modules.topology.application.port.in.PipelineAuthoringUseCase.Write(b4Scope(draft),expected,UUID.randomUUID(),
+            new dz.sh.hidra.modules.topology.application.port.in.PipelineAuthoringUseCase.PipelineEdit(pipeline,revision,"PIPE-"+pipeline,type,null,null,label),graph,
+            List.of(new dz.sh.hidra.modules.topology.domain.model.EngineeringGraphDraft.PipelineReference("parallel-a",pipeline,segment),new dz.sh.hidra.modules.topology.domain.model.EngineeringGraphDraft.PipelineReference("parallel-b",pipeline,null)));
+    }
+    private String b4Body(dz.sh.hidra.modules.topology.application.port.in.PipelineAuthoringUseCase.Write command)throws Exception {
+        var g=command.graph();var p=command.pipeline();
+        var graph=new dz.sh.hidra.modules.topology.api.rest.request.EngineeringGraphDraftRequests.Update(command.expectedVersion(),
+            g.nodes().stream().map(n->new dz.sh.hidra.modules.topology.api.rest.request.EngineeringGraphDraftRequests.Node(n.id(),n.kind().name(),n.facilityId())).toList(),
+            g.ports().stream().map(n->new dz.sh.hidra.modules.topology.api.rest.request.EngineeringGraphDraftRequests.Port(n.id(),n.nodeId(),n.direction().name())).toList(),
+            g.branches().stream().map(n->new dz.sh.hidra.modules.topology.api.rest.request.EngineeringGraphDraftRequests.Branch(n.id(),n.kind().name(),n.fromPortId(),n.toPortId())).toList());
+        var body=new dz.sh.hidra.modules.topology.api.rest.request.PipelineAuthoringRequests.Write(command.requestId(),
+            new dz.sh.hidra.modules.topology.api.rest.request.PipelineAuthoringRequests.Pipeline(p.id(),p.expectedRevision(),p.code(),p.pipelineTypeId(),p.nameAr(),p.nameFr(),p.nameEn()),graph,
+            command.references().stream().map(r->new dz.sh.hidra.modules.topology.api.rest.request.PipelineAuthoringRequests.Reference(r.branchId(),r.pipelineId(),r.segmentId())).toList());
+        return tools.jackson.databind.json.JsonMapper.builder().build().writeValueAsString(body);
+    }
+    private String b4Route(UUID draft,String endpoint){return "/api/v1/topology/engineering-networks/"+draft+"/"+endpoint+"?companyPartyId="+COMPANY+"&pipelineSystemId="+network;}
+    @Test void b4NativeHttpCanonicalPipelineGraphAndHistoricalReferencesSurviveReload()throws Exception {
+        draftActor("LOCAL");String type=b4Privileges(),pipeline=id();UUID draft=create(UUID.randomUUID(),"B4 native").draft().draftId();
+        var command=b4Write(draft,1,pipeline,0,type,"Original Pipeline",null);
+        http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put(b4Route(draft,"authored-topology")).header("Authorization","Bearer "+rawToken).contentType("application/json").content(b4Body(command)))
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.companyPartyId").value(COMPANY))
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.pipelineSystemId").value(network))
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.graph.version").value(2))
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.bindings[0].pipeline.id").value(pipeline))
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.geometryStatus").value("NOT_SUPPLIED"));
+        drafts.execute(command(dz.sh.hidra.modules.topology.application.port.in.EngineeringNetworkDraftUseCase.Kind.UPDATE,draft,null,2L,"Metadata-only successor"));
+        var metadataOnly=authoredViews.view(b4Scope(draft),null);assertThat(metadataOnly.graph().version()).isEqualTo(3L);assertThat(metadataOnly.graph().graphVersion()).isEqualTo(2L);assertThat(metadataOnly.bindings().getFirst().pipeline().revision()).isEqualTo(1L);
+        String fromNode=id(),toNode=id();for(String node:List.of(fromNode,toNode))jdbc.update("INSERT INTO public.hidra_topology_node(id,code,node_type,status,created_at,updated_at) VALUES (?,?,'JUNCTION','DRAFT',now(),now())",node,node);
+        String segment=id();jdbc.update("INSERT INTO public.hidra_topology_pipeline_segment(id,pipeline_id,code,segment_type,from_node_id,to_node_id,flow_direction,status,created_at,updated_at) VALUES (?,?,?,'MAINLINE',?,?,'UNKNOWN','DRAFT',now(),now())",segment,pipeline,segment,fromNode,toNode);
+        pipelineAuthoring.write(b4Write(draft,3,pipeline,1,type,"Revised Pipeline",segment));
+        var old=authoredViews.view(b4Scope(draft),2L);var current=authoredViews.view(b4Scope(draft),null);
+        assertThat(old.bindings().getFirst().pipeline().nameEn()).isEqualTo("Original Pipeline");assertThat(old.bindings().getFirst().pipeline().revision()).isEqualTo(1);
+        assertThat(current.bindings().getFirst().pipeline().nameEn()).isEqualTo("Revised Pipeline");assertThat(current.bindings().getFirst().segmentId()).isEqualTo(segment);
+        assertThat(current.graph().version()).isEqualTo(4);assertThat(current.graph().graph()).isEqualTo(old.graph().graph());
+        var choices=authoredViews.discover(b4Scope(draft),0,50);assertThat(choices.totalPipelines()).isEqualTo(1);assertThat(choices.pipelines().getFirst().id()).isEqualTo(pipeline);
+        assertThat(choices.segments()).extracting(dz.sh.hidra.modules.topology.application.port.in.AuthoredTopologyViewUseCase.Choice::id).contains(segment);
+        try(var c=DriverManager.getConnection(POSTGRES.getJdbcUrl(),"c3_source_claim_app","synthetic-c3-test-only");var q=c.createStatement()){
+            var denied=org.junit.jupiter.api.Assertions.assertThrows(SQLException.class,()->q.executeQuery("SELECT * FROM public.hidra_topology_pipeline_graph_snapshot"));assertThat(denied.getSQLState()).isEqualTo("42501");
+        }
+    }
+    @Test void b4SourceCatalogForeignSegmentStaleAndReplayedWritesLeaveNoPartialGraph(){
+        draftActor("LOCAL");String type=b4Privileges(),pipeline=id();UUID draft=create(UUID.randomUUID(),"B4 conflicts").draft().draftId();
+        var first=b4Write(draft,1,pipeline,0,type,"Synthetic",null);pipelineAuthoring.write(first);
+        assertThatThrownBy(()->pipelineAuthoring.write(first)).isInstanceOf(dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure.class);
+        assertThatThrownBy(()->pipelineAuthoring.write(b4Write(draft,2,pipeline,0,type,"Stale Pipeline",null))).isInstanceOf(dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure.class);
+        assertThatThrownBy(()->pipelineAuthoring.write(b4Write(draft,2,pipeline,1,type,"Wrong Segment",id()))).isInstanceOf(dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure.class);
+        jdbc.update("UPDATE public.hidra_topology_pipeline_type SET active=false WHERE id=?",type);
+        assertThatThrownBy(()->pipelineAuthoring.write(b4Write(draft,2,pipeline,1,type,"Inactive type",null))).isInstanceOf(dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure.class);
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM public.hidra_topology_pipeline_authoring_revision WHERE pipeline_id=?",Long.class,pipeline)).isEqualTo(1);
+        assertThat(jdbc.queryForObject("SELECT max(version) FROM public.hidra_topology_engineering_draft_version WHERE draft_id=?",Long.class,draft)).isEqualTo(2);
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM public.hidra_topology_pipeline_graph_snapshot WHERE draft_id=?",Long.class,draft)).isEqualTo(1);
+    }
+    @Test void b4NativeRevocationDeniesDiscoveryCountsAndProtectedViewBeforeDisclosure()throws Exception {
+        var actor=draftActor("LOCAL");String type=b4Privileges(),pipeline=id();UUID draft=create(UUID.randomUUID(),"B4 visibility").draft().draftId();pipelineAuthoring.write(b4Write(draft,1,pipeline,0,type,"Protected",null));
+        jdbc.update("UPDATE public.hidra_identity_user_permission_grant SET status='REVOKED',revoked_at=now() WHERE user_id=? AND scope_reference_id=?",actor.user(),"topology-network:"+network);
+        for(String route:List.of("authored-topology","authoring-choices"))http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(b4Route(draft,route)).header("Authorization","Bearer "+rawToken))
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isForbidden())
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString(pipeline))))
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString("totalPipelines"))));
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM public.hidra_topology_pipeline_graph_snapshot WHERE draft_id=?",Long.class,draft)).isEqualTo(1);
+    }
+    @Test void b4ExpiredFinalGuardRollsBackCanonicalPipelineGraphAndAssociationsTogether(){
+        draftActor("LOCAL");String type=b4Privileges(),pipeline=id();UUID draft=create(UUID.randomUUID(),"B4 rollback").draft().draftId();var reached=new AtomicBoolean();
+        doAnswer(i->{var c=(dz.sh.hidra.modules.topology.application.service.ProtectedEngineeringDraftAdmissionCoordinator.Contribution)i.getArgument(1);
+            i.getArguments()[1]=new dz.sh.hidra.modules.topology.application.service.ProtectedEngineeringDraftAdmissionCoordinator.Contribution(c.request(),c.partyGeneration(),c.bindingId(),c.sessionId(),c.userId(),c.sampledAt(),c.sampledAt(),c.backendPid(),c.transactionId());reached.set(true);return i.callRealMethod();
+        }).when(draftTarget()).finalGuard(any(),any(),anyList());
+        assertThatThrownBy(()->pipelineAuthoring.write(b4Write(draft,1,pipeline,0,type,"Rollback",null))).isInstanceOf(dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure.class);assertThat(reached).isTrue();
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM public.hidra_topology_pipeline WHERE id=?",Long.class,pipeline)).isZero();
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM public.hidra_topology_pipeline_authoring_revision WHERE pipeline_id=?",Long.class,pipeline)).isZero();
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM public.hidra_topology_pipeline_graph_snapshot WHERE draft_id=?",Long.class,draft)).isZero();
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM public.hidra_topology_engineering_graph_snapshot WHERE draft_id=?",Long.class,draft)).isZero();
+        assertThat(jdbc.queryForObject("SELECT max(version) FROM public.hidra_topology_engineering_draft_version WHERE draft_id=?",Long.class,draft)).isEqualTo(1);
+    }
+    @Test void b4CompetingExpectedVersionWritersCommitOneCanonicalSuccessor()throws Exception {
+        draftActor("LOCAL");String type=b4Privileges(),pipeline=id();UUID draft=create(UUID.randomUUID(),"B4 concurrent").draft().draftId();var command=b4Write(draft,1,pipeline,0,type,"Concurrent",null);
+        var auth=SecurityContextHolder.getContext().getAuthentication();var start=new CountDownLatch(1);var wins=new AtomicInteger();var pool=Executors.newFixedThreadPool(2);
+        try{var jobs=new ArrayList<Future<?>>();for(int i=0;i<2;i++)jobs.add(pool.submit(()->{SecurityContextHolder.getContext().setAuthentication(auth);try{start.await();pipelineAuthoring.write(command);wins.incrementAndGet();}catch(dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure expected){}catch(InterruptedException interrupted){Thread.currentThread().interrupt();throw new AssertionError(interrupted);}finally{SecurityContextHolder.clearContext();}}));start.countDown();for(var job:jobs)job.get(20,TimeUnit.SECONDS);}finally{pool.shutdownNow();}
+        assertThat(wins.get()).isEqualTo(1);assertThat(jdbc.queryForObject("SELECT count(*) FROM public.hidra_topology_pipeline_authoring_revision WHERE pipeline_id=?",Long.class,pipeline)).isEqualTo(1);
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM public.hidra_topology_pipeline_graph_snapshot WHERE draft_id=?",Long.class,draft)).isEqualTo(1);
+    }
+    @Test void b4AssociationTriggerAndOrdinaryPrivilegeTamperingRejectBeforeMutation(){
+        draftActor("LOCAL");String type=b4Privileges(),pipeline=id();UUID draft=create(UUID.randomUUID(),"B4 tamper").draft().draftId();pipelineAuthoring.write(b4Write(draft,1,pipeline,0,type,"Original",null));
+        jdbc.execute("ALTER TABLE public.hidra_topology_pipeline_graph_binding DISABLE TRIGGER trg_b4_immutable_binding_rows");
+        try {assertThatThrownBy(()->pipelineAuthoring.write(b4Write(draft,2,pipeline,1,type,"Forbidden",null))).isInstanceOf(dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure.class);}
+        finally {jdbc.execute("ALTER TABLE public.hidra_topology_pipeline_graph_binding ENABLE TRIGGER trg_b4_immutable_binding_rows");}
+        jdbc.execute("GRANT SELECT ON public.hidra_topology_pipeline_graph_snapshot TO c3_source_claim_app");
+        try {assertThatThrownBy(()->pipelineAuthoring.write(b4Write(draft,2,pipeline,1,type,"Forbidden",null))).isInstanceOf(dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure.class);}
+        finally {jdbc.execute("REVOKE SELECT ON public.hidra_topology_pipeline_graph_snapshot FROM c3_source_claim_app");}
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM public.hidra_topology_pipeline_authoring_revision WHERE pipeline_id=?",Long.class,pipeline)).isEqualTo(1);
+        assertThat(jdbc.queryForObject("SELECT max(version) FROM public.hidra_topology_engineering_draft_version WHERE draft_id=?",Long.class,draft)).isEqualTo(2);
+    }
 }

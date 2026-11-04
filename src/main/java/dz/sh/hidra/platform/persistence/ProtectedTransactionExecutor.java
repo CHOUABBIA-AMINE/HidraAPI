@@ -306,6 +306,8 @@ public final class ProtectedTransactionExecutor {
         return result;
     }
     /** Accept only exact, reviewed DML templates for one use of an issued owner ticket. */
+    // HAPI-926: exact B4 statements, restricted to the existing draft coordinator.
+    private static final Set<String> PIPELINE_AUTHORING_DML_HASHES=Set.of("0073f0f61f0dde58cccb290f4072971c24aa36cfc2d5054060cb03f01f9aac2d","ad4d5cd7296afb6d1cea5e95cd83fa1f9edad9fdc1264a0856a46861d8801525","ca86cfd205b224d6d79e6a3f9b7d3e1b2a83f35bde8245cd453fb1cd97da5580","d36a5bc21829462bc44ec509ef3aa41aa001e0730e86bc3a2cc3525c15cdd7b3","d57712037605ced7bdc4309987fae4a1a5193fad1e8b5af8f3fc13e21f4ab76b");
     public void beginProvisional(ProvisionalPermit permit,Set<String> exactStatements) {
         var s=admissionScope();
         String caller=StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).getCallerClass().getName();
@@ -345,7 +347,8 @@ public final class ProtectedTransactionExecutor {
                         || sql.startsWith("INSERT INTO public.hidra_topology_engineering_draft ")
                         || sql.startsWith("INSERT INTO public.hidra_topology_engineering_draft_version ")
                         || sql.startsWith("INSERT INTO public.hidra_topology_engineering_graph_snapshot ")
-                        || sql.startsWith("INSERT INTO public.hidra_topology_engineering_survey_snapshot "))
+                        || sql.startsWith("INSERT INTO public.hidra_topology_engineering_survey_snapshot ")
+                        || PIPELINE_AUTHORING_DML_HASHES.contains(statementDigest(sql)))
                     : (sql.startsWith("INSERT INTO public.hidra_topology_station_graph_")
                         || sql.startsWith("UPDATE public.hidra_topology_station_graph_head ")))) {
                 s.reject("provisional statement not reviewed");s.healthy();
@@ -510,4 +513,3 @@ public final class ProtectedTransactionExecutor {
         throw new IllegalArgumentException("result must be immutable materialized data");
     }
 }
-

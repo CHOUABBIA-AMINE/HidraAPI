@@ -9463,6 +9463,22 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0,
+      "cases": [
+        "canonicalReferenceCoverageRejectsMissingDuplicateAndDanglingBindings",
+        "fakeGraphDigestOrCrossCompanyAssociationCannotBePersisted",
+        "pinnedCanonicalLabelsAndLegacyGraphBytesSurviveHistoricalProjection"
+      ],
+      "class": "dz.sh.hidra.modules.topology.infrastructure.persistence.AuthoredTopologyProjectionPostgresIntegrationTest",
+      "dependency_reason": "Real fresh-schema PostgreSQL migration and immutable Pipeline/graph association qualification; native HTTP cases retained in EngineeringNetworkDraftPostgresIntegrationTest",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/AuthoredTopologyProjectionPostgresIntegrationTest.java",
+      "source_sha256": "dcd6638fa0f05816db769aaaed608600e6090b2367b2efbdf7315600bdf97cb1",
+      "supports": []
+    },
+    {
       "baseline_seconds": 2.406,
       "cases": [
         "actualCatalogConfirmsAllThreeReviewedTriggersAndImmutableSecurityDefiner",
@@ -9487,6 +9503,12 @@
         "actualFinalGuardVerifiesCompleteOwnerFenceSubset",
         "actualGraphTriggerAndPrivilegeTamperingRejectBeforeMutation",
         "actualPublisherFenceWorksWhileStatementTriggersRejectUpdates",
+        "b4AssociationTriggerAndOrdinaryPrivilegeTamperingRejectBeforeMutation",
+        "b4CompetingExpectedVersionWritersCommitOneCanonicalSuccessor",
+        "b4ExpiredFinalGuardRollsBackCanonicalPipelineGraphAndAssociationsTogether",
+        "b4NativeHttpCanonicalPipelineGraphAndHistoricalReferencesSurviveReload",
+        "b4NativeRevocationDeniesDiscoveryCountsAndProtectedViewBeforeDisclosure",
+        "b4SourceCatalogForeignSegmentStaleAndReplayedWritesLeaveNoPartialGraph",
         "committedNetworkRevocationAndPartyIneligibilityPreventReplay",
         "concurrentSameExpectedVersionCommitsAtMostOneSuccessor",
         "concurrentSurveyAndGraphWritersHaveOneSuccessor",
@@ -9533,7 +9555,7 @@
       "lane": "postgres-integration",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/EngineeringNetworkDraftPostgresIntegrationTest.java",
-      "source_sha256": "28c9a822ec51b7e21171c20787a5081efc237af1b26d2dca9b39906963f0b1b7",
+      "source_sha256": "78b59ba4c4f8dbbd957017dfd6eb03e0a95f1b8cefb53d17af5256451f3357d2",
       "supports": []
     },
     {
@@ -9662,6 +9684,22 @@
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/InstalledUnitPostgresIntegrationTest.java",
       "source_sha256": "b3ecf3ff2adc75d10ba0344642f188a531c6aae57e6ac21c14650f54c19568a0",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "actualMigrationRejectsRevisionGapsOwnershipChangesAndMutableHistory",
+        "associationForeignKeysAndNoGraphPayloadDuplicationArePhysicalContracts",
+        "canonicalAndRevisionChangesRollbackTogether"
+      ],
+      "class": "dz.sh.hidra.modules.topology.infrastructure.persistence.PipelineAuthoringPostgresIntegrationTest",
+      "dependency_reason": "Real fresh-schema PostgreSQL migration and immutable Pipeline/graph association qualification; native HTTP cases retained in EngineeringNetworkDraftPostgresIntegrationTest",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "topology",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/PipelineAuthoringPostgresIntegrationTest.java",
+      "source_sha256": "794acd00a6241f7737059cd707d077a3bbfd00198ebe18a813d36b28b2a0f5a5",
       "supports": []
     },
     {
@@ -11278,20 +11316,21 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java",
-      "source_sha256": "0b066bc76661f6722958f588788e662eabbe10ca3cf1fa7483d754b97dd03e95",
+      "source_sha256": "8420179654a579d03f37723d079cb4f5784c1fd69989c65f25c14a1f1a4861ce",
       "supports": []
     },
     {
       "baseline_seconds": 0,
       "cases": [
+        "baselineRoutesDeclareOnlyFiveExactCompiledTuples",
         "duplicateAndInvalidEntriesAreRejected",
         "markedMethodCannotSelfRegister",
         "matchingRequiresBothVerifiedTupleAndMethodMarker",
+        "pipelineRoutesDeclareThreeExactCompiledMarkedSignaturesAndNoSelfActivation",
         "productionRegistryDeclaresFiveManufacturerAndThreeTopologyApprovalTuples",
         "trustedDeclarationsAreImmutableAndCannotBeSilentlyReplaced",
         "unvalidatedTrustedEntryNeverDelegates",
-        "verifiedEntryMatchesExactCompiledSignatureVerbAndRoute",
-        "baselineRoutesDeclareOnlyFiveExactCompiledTuples"
+        "verifiedEntryMatchesExactCompiledSignatureVerbAndRoute"
       ],
       "class": "dz.sh.hidra.platform.permissions.HidraTrustedNativeProtectedRouteRegistryTest",
       "dependency_reason": "HPS-023 new synthetic Platform native-route security qualification; pure JVM/standalone MVC, no database",
@@ -11299,7 +11338,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistryTest.java",
-      "source_sha256": "2b4e6adb7f8bd88e2adb027b00844391590663165c551c441feb72ea0b9df38d",
+      "source_sha256": "ae46c66b0ccf1b784962c22f1a5c93ca5eedb9fd620bbcf72163682b350005e3",
       "supports": []
     },
     {
@@ -11319,7 +11358,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteStartupValidatorTest.java",
-      "source_sha256": "4de9d6d2adf9bb29a2d14e2345d0afc346ba705f3c77fbb51ecb273be1a42769",
+      "source_sha256": "df287b2c2de2a229a9cdd9813cd559d576177046ce6f754595f1647eb8786d4d",
       "supports": []
     },
     {

@@ -675,6 +675,30 @@
     "owner": "topology",
     "purpose": "Topology-owned append-only physical source revisions with canonical payload integrity; stored provenance and digest do not establish operational approval or live asset eligibility."
   },
+  "public.hidra_topology_pipeline_authoring_revision": {
+    "owner": "topology",
+    "purpose": "Immutable canonical Pipeline owner/identity and authored label revisions; no engineering or numerical qualification.",
+    "evidence": [
+      "src/main/resources/db/migration/V20261103_005__foundation_pipeline_graph_associations.sql",
+      "src/main/java/dz/sh/hidra/modules/topology/infrastructure/query/JpaAuthoredTopologyViewAdapter.java"
+    ]
+  },
+  "public.hidra_topology_pipeline_graph_binding": {
+    "owner": "topology",
+    "purpose": "Immutable PIPE branch references to exact canonical Pipeline revisions and optional same-Pipeline Segment identities; no duplicate graph store or surveyed geometry.",
+    "evidence": [
+      "src/main/resources/db/migration/V20261103_005__foundation_pipeline_graph_associations.sql",
+      "src/main/java/dz/sh/hidra/modules/topology/infrastructure/query/JpaAuthoredTopologyViewAdapter.java"
+    ]
+  },
+  "public.hidra_topology_pipeline_graph_snapshot": {
+    "owner": "topology",
+    "purpose": "Immutable company/system-scoped association snapshot pinned to the existing exact graph snapshot and original write transaction; stores no graph payload.",
+    "evidence": [
+      "src/main/resources/db/migration/V20261103_005__foundation_pipeline_graph_associations.sql",
+      "src/main/java/dz/sh/hidra/modules/topology/infrastructure/query/JpaAuthoredTopologyViewAdapter.java"
+    ]
+  },
   "public.hidra_topology_station_configuration_head": {
     "evidence": [
       "src/main/java/dz/sh/hidra/modules/topology/domain/model/StationInstalledConfiguration.java",

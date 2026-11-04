@@ -62,4 +62,7 @@ public interface EngineeringGraphDraftUseCase {
     }
 
     Result executeGraph(Command command);
+    default AuthoredTopologyViewUseCase.View executePipeline(PipelineAuthoringUseCase.Write command){throw new IllegalStateException("Pipeline owner unavailable");}
+    default AuthoredTopologyViewUseCase.View executeAuthoredView(PipelineAuthoringUseCase.Scope scope,Long version){throw new IllegalStateException("Pipeline owner unavailable");}
+    default AuthoredTopologyViewUseCase.Discovery executeAuthoredDiscovery(PipelineAuthoringUseCase.Scope scope,int offset,int limit){throw new IllegalStateException("Pipeline owner unavailable");}
 }

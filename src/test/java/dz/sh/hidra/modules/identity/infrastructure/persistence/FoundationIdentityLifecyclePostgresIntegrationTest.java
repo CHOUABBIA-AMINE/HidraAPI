@@ -150,7 +150,7 @@ class FoundationIdentityLifecyclePostgresIntegrationTest {
         String grant=id();
         jdbc.update("INSERT INTO public.hidra_identity_user_permission_grant"
                 +"(id,user_id,permission_id,effect,scope_type,grant_reason,emergency_access,valid_from,valid_to,status,created_at)"
-                +" VALUES (?,?,?,'ALLOW','GLOBAL','Synthetic foundation route',false,clock_timestamp()-interval '1 hour',"
+                +" VALUES (?,?,?,'GRANT','GLOBAL','Synthetic foundation route',false,clock_timestamp()-interval '1 hour',"
                 +"clock_timestamp()+interval '1 hour','ACTIVE',clock_timestamp())",grant,user,permission);
         return grant;
     }
@@ -223,8 +223,14 @@ class FoundationIdentityLifecyclePostgresIntegrationTest {
                 .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
         request("GET",API+"/me",token,null).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isForbidden());
         String renewed=login(username,"replacement-synthetic-password");
+        String afterLogin=value(request("GET",API+"/users/"+user+"/lifecycle",administrator,null)
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk()),"updatedAt");
+        assertNotEquals(current,afterLogin,"Successful LOCAL login must update its owner version.");
         request("POST",API+"/users/"+user+"/deactivate",administrator,
-                "{\"expectedUpdatedAt\":\""+current+"\",\"reason\":\"disable operator\"}")
+                "{\"expectedUpdatedAt\":\""+current+"\",\"reason\":\"pre-login version is stale\"}")
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isConflict());
+        request("POST",API+"/users/"+user+"/deactivate",administrator,
+                "{\"expectedUpdatedAt\":\""+afterLogin+"\",\"reason\":\"disable operator\"}")
                 .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
         request("GET",API+"/me",renewed,null).andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isForbidden());
         request("POST",API+"/authentication/login",null,"{\"providerType\":\"LOCAL\",\"principal\":\""+username

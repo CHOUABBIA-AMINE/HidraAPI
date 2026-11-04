@@ -41,32 +41,23 @@ import java.util.Objects;
 public final class PartyApplicationService implements RegisterPartyUseCase {
 
     private final PartyRepositoryPort partyRepositoryPort;
+    private dz.sh.hidra.modules.party.application.port.in.PartyAdministrationUseCase administration;
 
     public PartyApplicationService(PartyRepositoryPort partyRepositoryPort) {
         this.partyRepositoryPort = Objects.requireNonNull(partyRepositoryPort, "Party repository port must not be null.");
+    }
+    @org.springframework.beans.factory.annotation.Autowired
+    public PartyApplicationService(PartyRepositoryPort repository,dz.sh.hidra.modules.party.application.port.in.PartyAdministrationUseCase administration) {
+        this(repository);this.administration=Objects.requireNonNull(administration);
     }
 
     @Override
     public PartySummaryDto registerParty(RegisterPartyCommand command) {
         Objects.requireNonNull(command, "Register party command must not be null.");
+        if(administration!=null)return PartyApplicationMapper.toSummary(administration.register(command));
         if (partyRepositoryPort.existsByCode(command.code())) {
             throw new InvalidPartyValueException("Party code must be unique.");
         }
-        Instant now = Instant.now();
-        Party party = new Party(
-                PartyId.newId().value(),
-                command.code(),
-                command.partyTypeId(),
-                command.legalName(),
-                command.tradeName(),
-                command.shortName(),
-                command.countryCode(),
-                command.jurisdictionCode(),
-                PartyStatus.DRAFT,
-                command.primaryRoleCodeSnapshot(),
-                now,
-                now
-        );
-        return PartyApplicationMapper.toSummary(partyRepositoryPort.save(party));
+        throw new IllegalStateException("Party administration is not wired.");
     }
 }

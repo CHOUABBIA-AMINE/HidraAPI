@@ -39,31 +39,25 @@ import java.util.Objects;
 public final class PartyRoleAssignmentApplicationService implements AssignPartyRoleUseCase {
 
     private final PartyRoleAssignmentRepositoryPort repositoryPort;
+    private dz.sh.hidra.modules.party.application.port.in.PartyAdministrationUseCase administration;
 
     public PartyRoleAssignmentApplicationService(PartyRoleAssignmentRepositoryPort repositoryPort) {
         this.repositoryPort = Objects.requireNonNull(repositoryPort, "Party role assignment repository port must not be null.");
+    }
+    @org.springframework.beans.factory.annotation.Autowired
+    public PartyRoleAssignmentApplicationService(PartyRoleAssignmentRepositoryPort repository,dz.sh.hidra.modules.party.application.port.in.PartyAdministrationUseCase administration) {
+        this(repository);this.administration=Objects.requireNonNull(administration);
     }
 
     @Override
     public String assignRole(AssignPartyRoleCommand command) {
         Objects.requireNonNull(command, "Assign party role command must not be null.");
+        if(administration!=null)return administration.assign(command);
         if (repositoryPort.existsActiveByPartyIdAndRoleId(command.partyId(), command.roleId())) {
             throw new InvalidPartyValueException(
                     "Party already has an ACTIVE assignment for the requested role."
             );
         }
-        Instant now = Instant.now();
-        PartyRoleAssignment assignment = new PartyRoleAssignment(
-                PartyId.newId().value(),
-                command.partyId(),
-                command.roleId(),
-                command.validFrom() == null ? now : command.validFrom(),
-                command.validTo(),
-                PartyRoleAssignmentStatus.ACTIVE,
-                command.qualificationRequired(),
-                now,
-                now
-        );
-        return repositoryPort.save(assignment).id();
+        throw new IllegalStateException("Party administration is not wired.");
     }
 }

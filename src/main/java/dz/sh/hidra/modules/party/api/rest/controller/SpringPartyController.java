@@ -28,7 +28,6 @@ import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,7 +38,6 @@ import org.springframework.web.bind.annotation.RestController;
  * Spring MVC adapter exposing party REST endpoints.
  */
 @RestController
-@Validated
 @RequestMapping("/api/v1/party")
 public class SpringPartyController implements PartyController {
 
@@ -78,14 +76,14 @@ public class SpringPartyController implements PartyController {
     @PostMapping({"/assign-role", "/roles/assignments"})
     public String assignRole(@Valid @RequestBody AssignPartyRoleRequest request) {
         Objects.requireNonNull(request, "AssignPartyRoleRequest must not be null.");
-        return assignPartyRoleUseCase.assignRole(PartyRestMapper.toCommand(request));
+        return PartyAdministrationController.call(() -> assignPartyRoleUseCase.assignRole(PartyRestMapper.toCommand(request)));
     }
 
     @Override
     @PostMapping({"/register-party", "/parties"})
     public PartyResponse registerParty(@Valid @RequestBody RegisterPartyRequest request) {
         Objects.requireNonNull(request, "RegisterPartyRequest must not be null.");
-        return PartyRestMapper.toResponse(registerPartyUseCase.registerParty(PartyRestMapper.toCommand(request)));
+        return PartyAdministrationController.call(() -> PartyRestMapper.toResponse(registerPartyUseCase.registerParty(PartyRestMapper.toCommand(request))));
     }
 
 }

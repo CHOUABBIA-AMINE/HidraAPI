@@ -3416,3 +3416,5 @@ The historical921-task baseline is preserved; the approved bounded extension con
 
 <a id="hapi-928"></a>
 [HAPI-928](TASKS_HPS-015.md#hapi-928) — Foundation B6.
+
+HAPI-927 same-task Full #1115 repair (2026-11-04): [HPS-018](TASKS_HPS-018.md#hapi-927) records three PostgreSQL HTTP failures from a missing JSONB JDBC type on ConfigurationValueJpaEntity. The bounded entity mapping fix retains all tests, migrations and security; HAPI-927 remains IMPLEMENTED / IN_PROGRESS pending new exact-SHA Full CI.

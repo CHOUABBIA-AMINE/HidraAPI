@@ -51,6 +51,7 @@ import java.time.Instant;
     @Column(name = "raw_value", nullable = true, length = 4000)
     private String rawValue;
 
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.JSON)
     @Column(name = "json_value", nullable = true, columnDefinition = "jsonb")
     private String jsonValue;
 

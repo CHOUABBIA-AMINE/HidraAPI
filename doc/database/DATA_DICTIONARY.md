@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `97baaef0a86bcaba9c45939304b0103e19d408e2`
+Captured source SHA: `f6db84f4f0f6781a4519d150b90c51dd084ebca0`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `57489e4680ea4b8a8c28fd03c34dafe23772f314a480e85c47b0e1b1a717d30f`.
-Migrations: 198; JPA mappings: 470; catalog relations: 549; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `03e277ed241fc6dca2d7ca5e2c57b6db9f5678621462b3ee5ccff5fdc94f2325`.
+Migrations: 199; JPA mappings: 470; catalog relations: 552; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -19744,6 +19744,7 @@ Persisted PartyJpaEntity state; semantic authority remains with party.
 - Migration mention (not inferred introduction): [V20261028_003__party_installed_unit_manufacturer_evidence_owner_lock.sql](../../src/main/resources/db/migration/V20261028_003__party_installed_unit_manufacturer_evidence_owner_lock.sql)
 - Migration mention (not inferred introduction): [V20261030_001__party_manufacturer_source_authorizations.sql](../../src/main/resources/db/migration/V20261030_001__party_manufacturer_source_authorizations.sql)
 - Migration mention (not inferred introduction): [V20261103_001__topology_engineering_baseline_drafts.sql](../../src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql)
+- Migration mention (not inferred introduction): [V20261103_005__foundation_pipeline_graph_associations.sql](../../src/main/resources/db/migration/V20261103_005__foundation_pipeline_graph_associations.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -27220,6 +27221,7 @@ Immutable company/network engineering-context binding; HAPI-587, current physica
 - Migration mention (not inferred introduction): [V20261019_001__p25_topology_engineering_drafts.sql](../../src/main/resources/db/migration/V20261019_001__p25_topology_engineering_drafts.sql)
 - Migration mention (not inferred introduction): [V20261020_002__p25_topology_engineering_publications.sql](../../src/main/resources/db/migration/V20261020_002__p25_topology_engineering_publications.sql)
 - Migration mention (not inferred introduction): [V20261103_001__topology_engineering_baseline_drafts.sql](../../src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql)
+- Migration mention (not inferred introduction): [V20261103_005__foundation_pipeline_graph_associations.sql](../../src/main/resources/db/migration/V20261103_005__foundation_pipeline_graph_associations.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -27264,6 +27266,7 @@ Immutable candidate identity and scoped creation-request replay identity; HAPI-5
 - Evidence: [V20261019_001__p25_topology_engineering_drafts.sql](../../src/main/resources/db/migration/V20261019_001__p25_topology_engineering_drafts.sql)
 - Migration mention (not inferred introduction): [V20261019_001__p25_topology_engineering_drafts.sql](../../src/main/resources/db/migration/V20261019_001__p25_topology_engineering_drafts.sql)
 - Migration mention (not inferred introduction): [V20261020_002__p25_topology_engineering_publications.sql](../../src/main/resources/db/migration/V20261020_002__p25_topology_engineering_publications.sql)
+- Migration mention (not inferred introduction): [V20261103_005__foundation_pipeline_graph_associations.sql](../../src/main/resources/db/migration/V20261103_005__foundation_pipeline_graph_associations.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -27383,6 +27386,7 @@ Immutable authored engineering network graph snapshots bound to the shared metad
 - Evidence: [V20261019_002__p25_topology_engineering_graph_snapshots.sql](../../src/main/resources/db/migration/V20261019_002__p25_topology_engineering_graph_snapshots.sql)
 - Migration mention (not inferred introduction): [V20261019_002__p25_topology_engineering_graph_snapshots.sql](../../src/main/resources/db/migration/V20261019_002__p25_topology_engineering_graph_snapshots.sql)
 - Migration mention (not inferred introduction): [V20261020_001__p25_topology_survey_profile_snapshots.sql](../../src/main/resources/db/migration/V20261020_001__p25_topology_survey_profile_snapshots.sql)
+- Migration mention (not inferred introduction): [V20261103_005__foundation_pipeline_graph_associations.sql](../../src/main/resources/db/migration/V20261103_005__foundation_pipeline_graph_associations.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -29015,6 +29019,7 @@ Persisted PipelineJpaEntity state; semantic authority remains with topology.
 - Migration mention (not inferred introduction): [V20260611_004__create_topology_tables.sql](../../src/main/resources/db/migration/V20260611_004__create_topology_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261004_042__hmr_042_topology_pipeline.sql](../../src/main/resources/db/migration/V20261004_042__hmr_042_topology_pipeline.sql)
+- Migration mention (not inferred introduction): [V20261103_005__foundation_pipeline_graph_associations.sql](../../src/main/resources/db/migration/V20261103_005__foundation_pipeline_graph_associations.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -29064,6 +29069,176 @@ Persisted PipelineJpaEntity state; semantic authority remains with topology.
 
 None captured in this catalog category.
 
+### public.hidra_topology_pipeline_authoring_revision
+
+Owner: **topology**; relation kind: `r`.
+
+Immutable canonical Pipeline owner/identity and authored label revisions; no engineering or numerical qualification.
+
+- Evidence: [V20261103_005__foundation_pipeline_graph_associations.sql](../../src/main/resources/db/migration/V20261103_005__foundation_pipeline_graph_associations.sql)
+- Evidence: [JpaAuthoredTopologyViewAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/query/JpaAuthoredTopologyViewAdapter.java)
+- Migration mention (not inferred introduction): [V20261103_005__foundation_pipeline_graph_associations.sql](../../src/main/resources/db/migration/V20261103_005__foundation_pipeline_graph_associations.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| pipeline_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| revision | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| pipeline_system_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| code | character varying(120) | False | None; identity=; generated= | No current mapped Java column | — |
+| pipeline_type_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| name_ar | character varying(255) | True | None; identity=; generated= | No current mapped Java column | — |
+| name_fr | character varying(255) | True | None; identity=; generated= | No current mapped Java column | — |
+| name_en | character varying(255) | True | None; identity=; generated= | No current mapped Java column | — |
+| actor_user_id | character varying(120) | False | None; identity=; generated= | No current mapped Java column | — |
+| recorded_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_topology_pipeline_authoring_revis_pipeline_system_id_fkey`: FOREIGN KEY (pipeline_system_id) REFERENCES hidra_topology_pipeline_system(id)
+  - Catalog attributes: {"columns": ["pipeline_system_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_pipeline_system"}, "type": "f", "validated": true}
+- `hidra_topology_pipeline_authoring_revisio_company_party_id_fkey`: FOREIGN KEY (company_party_id) REFERENCES hidra_party_party(id)
+  - Catalog attributes: {"columns": ["company_party_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_party_party"}, "type": "f", "validated": true}
+- `hidra_topology_pipeline_authoring_revisio_pipeline_type_id_fkey`: FOREIGN KEY (pipeline_type_id) REFERENCES hidra_topology_pipeline_type(id)
+  - Catalog attributes: {"columns": ["pipeline_type_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_pipeline_type"}, "type": "f", "validated": true}
+- `hidra_topology_pipeline_authoring_revision_actor_user_id_check`: CHECK (length(btrim(actor_user_id::text)) &gt; 0)
+  - Catalog attributes: {"columns": ["actor_user_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_pipeline_authoring_revision_code_check`: CHECK (length(btrim(code::text)) &gt; 0)
+  - Catalog attributes: {"columns": ["code"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_pipeline_authoring_revision_pipeline_id_fkey`: FOREIGN KEY (pipeline_id) REFERENCES hidra_topology_pipeline(id)
+  - Catalog attributes: {"columns": ["pipeline_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_pipeline"}, "type": "f", "validated": true}
+- `hidra_topology_pipeline_authoring_revision_pkey`: PRIMARY KEY (pipeline_id, revision)
+  - Catalog attributes: {"columns": ["pipeline_id", "revision"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_topology_pipeline_authoring_revision_revision_check`: CHECK (revision &gt; 0)
+  - Catalog attributes: {"columns": ["revision"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_topology_pipeline_authoring_revision_pkey`: CREATE UNIQUE INDEX hidra_topology_pipeline_authoring_revision_pkey ON public.hidra_topology_pipeline_authoring_revision USING btree (pipeline_id, revision)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `ix_b4_pipeline_scope`: CREATE INDEX ix_b4_pipeline_scope ON public.hidra_topology_pipeline_authoring_revision USING btree (company_party_id, pipeline_system_id, pipeline_id, revision)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+
+#### Triggers
+
+- `trg_b4_immutable_revision_rows`: CREATE TRIGGER trg_b4_immutable_revision_rows BEFORE DELETE OR UPDATE ON hidra_topology_pipeline_authoring_revision FOR EACH ROW EXECUTE FUNCTION hidra_p25_draft_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_p25_draft_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_p25_draft_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'Immutable engineering draft storage' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `trg_b4_immutable_revision_truncate`: CREATE TRIGGER trg_b4_immutable_revision_truncate BEFORE TRUNCATE ON hidra_topology_pipeline_authoring_revision FOR EACH STATEMENT EXECUTE FUNCTION hidra_p25_draft_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_p25_draft_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_p25_draft_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'Immutable engineering draft storage' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `trg_b4_revision_integrity`: CREATE TRIGGER trg_b4_revision_integrity BEFORE INSERT ON hidra_topology_pipeline_authoring_revision FOR EACH ROW EXECUTE FUNCTION hidra_b4_pipeline_integrity()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_b4_pipeline_integrity()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_b4_pipeline_integrity()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>DECLARE prior public.hidra_topology_pipeline_authoring_revision; s public.hidra_topology_pipeline_graph_snapshot; r public.hidra_topology_pipeline_authoring_revision;<br>BEGIN<br> IF TG_TABLE_NAME='hidra_topology_pipeline_authoring_revision' THEN<br>  SELECT * INTO prior FROM public.hidra_topology_pipeline_authoring_revision WHERE pipeline_id=NEW.pipeline_id ORDER BY revision DESC LIMIT 1;<br>  IF NEW.revision&lt;&gt;coalesce(prior.revision,0)+1 OR (prior.pipeline_id IS NOT NULL AND (NEW.company_party_id,NEW.pipeline_system_id,NEW.code,NEW.pipeline_type_id) IS DISTINCT FROM (prior.company_party_id,prior.pipeline_system_id,prior.code,prior.pipeline_type_id)) THEN RAISE EXCEPTION 'Pipeline revision conflict' USING ERRCODE='23514'; END IF;<br>  IF NOT EXISTS(SELECT 1 FROM public.hidra_topology_pipeline p WHERE p.id=NEW.pipeline_id AND (p.pipeline_system_id,p.code,p.pipeline_type_id,p.name_ar,p.name_fr,p.name_en) IS NOT DISTINCT FROM (NEW.pipeline_system_id,NEW.code,NEW.pipeline_type_id,NEW.name_ar,NEW.name_fr,NEW.name_en)) THEN RAISE EXCEPTION 'Pipeline identity mismatch' USING ERRCODE='23514'; END IF;<br> ELSIF TG_TABLE_NAME='hidra_topology_pipeline_graph_snapshot' THEN<br>  IF NEW.transaction_id&lt;&gt;txid_current() OR NOT EXISTS(SELECT 1 FROM public.hidra_topology_engineering_graph_snapshot g JOIN public.hidra_topology_engineering_draft d ON d.id=g.draft_id JOIN public.hidra_topology_engineering_context c ON c.id=d.context_id WHERE g.draft_id=NEW.draft_id AND g.version=NEW.version AND g.sha256=NEW.graph_sha256 AND g.transaction_id=NEW.transaction_id AND c.company_party_id=NEW.company_party_id AND c.pipeline_system_id=NEW.pipeline_system_id) THEN RAISE EXCEPTION 'Pipeline graph provenance mismatch' USING ERRCODE='23514'; END IF;<br> ELSE<br>  SELECT * INTO s FROM public.hidra_topology_pipeline_graph_snapshot WHERE draft_id=NEW.draft_id AND version=NEW.version;<br>  SELECT * INTO r FROM public.hidra_topology_pipeline_authoring_revision WHERE pipeline_id=NEW.pipeline_id AND revision=NEW.pipeline_revision;<br>  IF s.draft_id IS NULL OR r.pipeline_id IS NULL OR (s.company_party_id,s.pipeline_system_id) IS DISTINCT FROM (r.company_party_id,r.pipeline_system_id) OR (NEW.segment_id IS NOT NULL AND NOT EXISTS(SELECT 1 FROM public.hidra_topology_pipeline_segment p WHERE p.id=NEW.segment_id AND p.pipeline_id=NEW.pipeline_id)) THEN RAISE EXCEPTION 'Pipeline association owner mismatch' USING ERRCODE='23514'; END IF;<br> END IF;<br> RETURN NEW;<br>END; $function$<br>
+
+### public.hidra_topology_pipeline_graph_binding
+
+Owner: **topology**; relation kind: `r`.
+
+Immutable PIPE branch references to exact canonical Pipeline revisions and optional same-Pipeline Segment identities; no duplicate graph store or surveyed geometry.
+
+- Evidence: [V20261103_005__foundation_pipeline_graph_associations.sql](../../src/main/resources/db/migration/V20261103_005__foundation_pipeline_graph_associations.sql)
+- Evidence: [JpaAuthoredTopologyViewAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/query/JpaAuthoredTopologyViewAdapter.java)
+- Migration mention (not inferred introduction): [V20261103_005__foundation_pipeline_graph_associations.sql](../../src/main/resources/db/migration/V20261103_005__foundation_pipeline_graph_associations.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| draft_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| version | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| branch_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| pipeline_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| pipeline_revision | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| segment_id | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_topology_pipeline_graph_binding_branch_id_check`: CHECK (length(btrim(branch_id::text)) &gt; 0)
+  - Catalog attributes: {"columns": ["branch_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_pipeline_graph_binding_draft_id_version_fkey`: FOREIGN KEY (draft_id, version) REFERENCES hidra_topology_pipeline_graph_snapshot(draft_id, version)
+  - Catalog attributes: {"columns": ["draft_id", "version"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["draft_id", "version"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_pipeline_graph_snapshot"}, "type": "f", "validated": true}
+- `hidra_topology_pipeline_graph_binding_pkey`: PRIMARY KEY (draft_id, version, branch_id)
+  - Catalog attributes: {"columns": ["draft_id", "version", "branch_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_topology_pipeline_graph_binding_segment_id_fkey`: FOREIGN KEY (segment_id) REFERENCES hidra_topology_pipeline_segment(id)
+  - Catalog attributes: {"columns": ["segment_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_pipeline_segment"}, "type": "f", "validated": true}
+- `hidra_topology_pipeline_graph_pipeline_id_pipeline_revisio_fkey`: FOREIGN KEY (pipeline_id, pipeline_revision) REFERENCES hidra_topology_pipeline_authoring_revision(pipeline_id, revision)
+  - Catalog attributes: {"columns": ["pipeline_id", "pipeline_revision"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["pipeline_id", "revision"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_pipeline_authoring_revision"}, "type": "f", "validated": true}
+
+#### Indexes
+
+- `hidra_topology_pipeline_graph_binding_pkey`: CREATE UNIQUE INDEX hidra_topology_pipeline_graph_binding_pkey ON public.hidra_topology_pipeline_graph_binding USING btree (draft_id, version, branch_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `trg_b4_binding_integrity`: CREATE TRIGGER trg_b4_binding_integrity BEFORE INSERT ON hidra_topology_pipeline_graph_binding FOR EACH ROW EXECUTE FUNCTION hidra_b4_pipeline_integrity()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_b4_pipeline_integrity()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_b4_pipeline_integrity()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>DECLARE prior public.hidra_topology_pipeline_authoring_revision; s public.hidra_topology_pipeline_graph_snapshot; r public.hidra_topology_pipeline_authoring_revision;<br>BEGIN<br> IF TG_TABLE_NAME='hidra_topology_pipeline_authoring_revision' THEN<br>  SELECT * INTO prior FROM public.hidra_topology_pipeline_authoring_revision WHERE pipeline_id=NEW.pipeline_id ORDER BY revision DESC LIMIT 1;<br>  IF NEW.revision&lt;&gt;coalesce(prior.revision,0)+1 OR (prior.pipeline_id IS NOT NULL AND (NEW.company_party_id,NEW.pipeline_system_id,NEW.code,NEW.pipeline_type_id) IS DISTINCT FROM (prior.company_party_id,prior.pipeline_system_id,prior.code,prior.pipeline_type_id)) THEN RAISE EXCEPTION 'Pipeline revision conflict' USING ERRCODE='23514'; END IF;<br>  IF NOT EXISTS(SELECT 1 FROM public.hidra_topology_pipeline p WHERE p.id=NEW.pipeline_id AND (p.pipeline_system_id,p.code,p.pipeline_type_id,p.name_ar,p.name_fr,p.name_en) IS NOT DISTINCT FROM (NEW.pipeline_system_id,NEW.code,NEW.pipeline_type_id,NEW.name_ar,NEW.name_fr,NEW.name_en)) THEN RAISE EXCEPTION 'Pipeline identity mismatch' USING ERRCODE='23514'; END IF;<br> ELSIF TG_TABLE_NAME='hidra_topology_pipeline_graph_snapshot' THEN<br>  IF NEW.transaction_id&lt;&gt;txid_current() OR NOT EXISTS(SELECT 1 FROM public.hidra_topology_engineering_graph_snapshot g JOIN public.hidra_topology_engineering_draft d ON d.id=g.draft_id JOIN public.hidra_topology_engineering_context c ON c.id=d.context_id WHERE g.draft_id=NEW.draft_id AND g.version=NEW.version AND g.sha256=NEW.graph_sha256 AND g.transaction_id=NEW.transaction_id AND c.company_party_id=NEW.company_party_id AND c.pipeline_system_id=NEW.pipeline_system_id) THEN RAISE EXCEPTION 'Pipeline graph provenance mismatch' USING ERRCODE='23514'; END IF;<br> ELSE<br>  SELECT * INTO s FROM public.hidra_topology_pipeline_graph_snapshot WHERE draft_id=NEW.draft_id AND version=NEW.version;<br>  SELECT * INTO r FROM public.hidra_topology_pipeline_authoring_revision WHERE pipeline_id=NEW.pipeline_id AND revision=NEW.pipeline_revision;<br>  IF s.draft_id IS NULL OR r.pipeline_id IS NULL OR (s.company_party_id,s.pipeline_system_id) IS DISTINCT FROM (r.company_party_id,r.pipeline_system_id) OR (NEW.segment_id IS NOT NULL AND NOT EXISTS(SELECT 1 FROM public.hidra_topology_pipeline_segment p WHERE p.id=NEW.segment_id AND p.pipeline_id=NEW.pipeline_id)) THEN RAISE EXCEPTION 'Pipeline association owner mismatch' USING ERRCODE='23514'; END IF;<br> END IF;<br> RETURN NEW;<br>END; $function$<br>
+- `trg_b4_immutable_binding_rows`: CREATE TRIGGER trg_b4_immutable_binding_rows BEFORE DELETE OR UPDATE ON hidra_topology_pipeline_graph_binding FOR EACH ROW EXECUTE FUNCTION hidra_p25_draft_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_p25_draft_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_p25_draft_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'Immutable engineering draft storage' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `trg_b4_immutable_binding_truncate`: CREATE TRIGGER trg_b4_immutable_binding_truncate BEFORE TRUNCATE ON hidra_topology_pipeline_graph_binding FOR EACH STATEMENT EXECUTE FUNCTION hidra_p25_draft_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_p25_draft_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_p25_draft_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'Immutable engineering draft storage' USING ERRCODE='23514';<br>END;<br>$function$<br>
+
+### public.hidra_topology_pipeline_graph_snapshot
+
+Owner: **topology**; relation kind: `r`.
+
+Immutable company/system-scoped association snapshot pinned to the existing exact graph snapshot and original write transaction; stores no graph payload.
+
+- Evidence: [V20261103_005__foundation_pipeline_graph_associations.sql](../../src/main/resources/db/migration/V20261103_005__foundation_pipeline_graph_associations.sql)
+- Evidence: [JpaAuthoredTopologyViewAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/query/JpaAuthoredTopologyViewAdapter.java)
+- Migration mention (not inferred introduction): [V20261103_005__foundation_pipeline_graph_associations.sql](../../src/main/resources/db/migration/V20261103_005__foundation_pipeline_graph_associations.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| draft_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| version | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| request_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| pipeline_system_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| graph_sha256 | character varying(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_user_id | character varying(120) | False | None; identity=; generated= | No current mapped Java column | — |
+| transaction_id | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_topology_pipeline_graph_snapshot_actor_user_id_check`: CHECK (length(btrim(actor_user_id::text)) &gt; 0)
+  - Catalog attributes: {"columns": ["actor_user_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_pipeline_graph_snapshot_company_party_id_fkey`: FOREIGN KEY (company_party_id) REFERENCES hidra_party_party(id)
+  - Catalog attributes: {"columns": ["company_party_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_party_party"}, "type": "f", "validated": true}
+- `hidra_topology_pipeline_graph_snapshot_draft_id_request_id_key`: UNIQUE (draft_id, request_id)
+  - Catalog attributes: {"columns": ["draft_id", "request_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_topology_pipeline_graph_snapshot_draft_id_version_fkey`: FOREIGN KEY (draft_id, version) REFERENCES hidra_topology_engineering_graph_snapshot(draft_id, version)
+  - Catalog attributes: {"columns": ["draft_id", "version"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["draft_id", "version"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_engineering_graph_snapshot"}, "type": "f", "validated": true}
+- `hidra_topology_pipeline_graph_snapshot_graph_sha256_check`: CHECK (graph_sha256::text ~ '^[0-9a-f]{64}$'::text)
+  - Catalog attributes: {"columns": ["graph_sha256"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_pipeline_graph_snapshot_pipeline_system_id_fkey`: FOREIGN KEY (pipeline_system_id) REFERENCES hidra_topology_pipeline_system(id)
+  - Catalog attributes: {"columns": ["pipeline_system_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_pipeline_system"}, "type": "f", "validated": true}
+- `hidra_topology_pipeline_graph_snapshot_pkey`: PRIMARY KEY (draft_id, version)
+  - Catalog attributes: {"columns": ["draft_id", "version"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_topology_pipeline_graph_snapshot_transaction_id_check`: CHECK (transaction_id &gt; 0)
+  - Catalog attributes: {"columns": ["transaction_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_topology_pipeline_graph_snapshot_draft_id_request_id_key`: CREATE UNIQUE INDEX hidra_topology_pipeline_graph_snapshot_draft_id_request_id_key ON public.hidra_topology_pipeline_graph_snapshot USING btree (draft_id, request_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_topology_pipeline_graph_snapshot_pkey`: CREATE UNIQUE INDEX hidra_topology_pipeline_graph_snapshot_pkey ON public.hidra_topology_pipeline_graph_snapshot USING btree (draft_id, version)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `trg_b4_immutable_snapshot_rows`: CREATE TRIGGER trg_b4_immutable_snapshot_rows BEFORE DELETE OR UPDATE ON hidra_topology_pipeline_graph_snapshot FOR EACH ROW EXECUTE FUNCTION hidra_p25_draft_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_p25_draft_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_p25_draft_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'Immutable engineering draft storage' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `trg_b4_immutable_snapshot_truncate`: CREATE TRIGGER trg_b4_immutable_snapshot_truncate BEFORE TRUNCATE ON hidra_topology_pipeline_graph_snapshot FOR EACH STATEMENT EXECUTE FUNCTION hidra_p25_draft_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_p25_draft_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_p25_draft_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'Immutable engineering draft storage' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `trg_b4_snapshot_integrity`: CREATE TRIGGER trg_b4_snapshot_integrity BEFORE INSERT ON hidra_topology_pipeline_graph_snapshot FOR EACH ROW EXECUTE FUNCTION hidra_b4_pipeline_integrity()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_b4_pipeline_integrity()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_b4_pipeline_integrity()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>DECLARE prior public.hidra_topology_pipeline_authoring_revision; s public.hidra_topology_pipeline_graph_snapshot; r public.hidra_topology_pipeline_authoring_revision;<br>BEGIN<br> IF TG_TABLE_NAME='hidra_topology_pipeline_authoring_revision' THEN<br>  SELECT * INTO prior FROM public.hidra_topology_pipeline_authoring_revision WHERE pipeline_id=NEW.pipeline_id ORDER BY revision DESC LIMIT 1;<br>  IF NEW.revision&lt;&gt;coalesce(prior.revision,0)+1 OR (prior.pipeline_id IS NOT NULL AND (NEW.company_party_id,NEW.pipeline_system_id,NEW.code,NEW.pipeline_type_id) IS DISTINCT FROM (prior.company_party_id,prior.pipeline_system_id,prior.code,prior.pipeline_type_id)) THEN RAISE EXCEPTION 'Pipeline revision conflict' USING ERRCODE='23514'; END IF;<br>  IF NOT EXISTS(SELECT 1 FROM public.hidra_topology_pipeline p WHERE p.id=NEW.pipeline_id AND (p.pipeline_system_id,p.code,p.pipeline_type_id,p.name_ar,p.name_fr,p.name_en) IS NOT DISTINCT FROM (NEW.pipeline_system_id,NEW.code,NEW.pipeline_type_id,NEW.name_ar,NEW.name_fr,NEW.name_en)) THEN RAISE EXCEPTION 'Pipeline identity mismatch' USING ERRCODE='23514'; END IF;<br> ELSIF TG_TABLE_NAME='hidra_topology_pipeline_graph_snapshot' THEN<br>  IF NEW.transaction_id&lt;&gt;txid_current() OR NOT EXISTS(SELECT 1 FROM public.hidra_topology_engineering_graph_snapshot g JOIN public.hidra_topology_engineering_draft d ON d.id=g.draft_id JOIN public.hidra_topology_engineering_context c ON c.id=d.context_id WHERE g.draft_id=NEW.draft_id AND g.version=NEW.version AND g.sha256=NEW.graph_sha256 AND g.transaction_id=NEW.transaction_id AND c.company_party_id=NEW.company_party_id AND c.pipeline_system_id=NEW.pipeline_system_id) THEN RAISE EXCEPTION 'Pipeline graph provenance mismatch' USING ERRCODE='23514'; END IF;<br> ELSE<br>  SELECT * INTO s FROM public.hidra_topology_pipeline_graph_snapshot WHERE draft_id=NEW.draft_id AND version=NEW.version;<br>  SELECT * INTO r FROM public.hidra_topology_pipeline_authoring_revision WHERE pipeline_id=NEW.pipeline_id AND revision=NEW.pipeline_revision;<br>  IF s.draft_id IS NULL OR r.pipeline_id IS NULL OR (s.company_party_id,s.pipeline_system_id) IS DISTINCT FROM (r.company_party_id,r.pipeline_system_id) OR (NEW.segment_id IS NOT NULL AND NOT EXISTS(SELECT 1 FROM public.hidra_topology_pipeline_segment p WHERE p.id=NEW.segment_id AND p.pipeline_id=NEW.pipeline_id)) THEN RAISE EXCEPTION 'Pipeline association owner mismatch' USING ERRCODE='23514'; END IF;<br> END IF;<br> RETURN NEW;<br>END; $function$<br>
+
 ### public.hidra_topology_pipeline_segment
 
 Owner: **topology**; relation kind: `r`.
@@ -29075,6 +29250,7 @@ Persisted PipelineSegmentJpaEntity state; semantic authority remains with topolo
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261004_031__hmr_031_topology_topology_connection.sql](../../src/main/resources/db/migration/V20261004_031__hmr_031_topology_topology_connection.sql)
 - Migration mention (not inferred introduction): [V20261006_009__hmr_054_equipment_catalog_and_attachments.sql](../../src/main/resources/db/migration/V20261006_009__hmr_054_equipment_catalog_and_attachments.sql)
+- Migration mention (not inferred introduction): [V20261103_005__foundation_pipeline_graph_associations.sql](../../src/main/resources/db/migration/V20261103_005__foundation_pipeline_graph_associations.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -29138,6 +29314,7 @@ Persisted PipelineSystemJpaEntity state; semantic authority remains with topolog
 - Migration mention (not inferred introduction): [V20261004_022__hmr_022_topology_pipeline_system.sql](../../src/main/resources/db/migration/V20261004_022__hmr_022_topology_pipeline_system.sql)
 - Migration mention (not inferred introduction): [V20261019_001__p25_topology_engineering_drafts.sql](../../src/main/resources/db/migration/V20261019_001__p25_topology_engineering_drafts.sql)
 - Migration mention (not inferred introduction): [V20261103_001__topology_engineering_baseline_drafts.sql](../../src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql)
+- Migration mention (not inferred introduction): [V20261103_005__foundation_pipeline_graph_associations.sql](../../src/main/resources/db/migration/V20261103_005__foundation_pipeline_graph_associations.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -29277,6 +29454,7 @@ Persisted PipelineTypeJpaEntity state; semantic authority remains with topology.
 
 - Evidence: [PipelineTypeJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/entity/PipelineTypeJpaEntity.java)
 - Migration mention (not inferred introduction): [V20261004_042__hmr_042_topology_pipeline.sql](../../src/main/resources/db/migration/V20261004_042__hmr_042_topology_pipeline.sql)
+- Migration mention (not inferred introduction): [V20261103_005__foundation_pipeline_graph_associations.sql](../../src/main/resources/db/migration/V20261103_005__foundation_pipeline_graph_associations.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|

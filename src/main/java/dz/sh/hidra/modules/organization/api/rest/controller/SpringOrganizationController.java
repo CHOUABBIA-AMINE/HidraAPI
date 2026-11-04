@@ -45,12 +45,29 @@ public class SpringOrganizationController implements OrganizationController {
     private final AssignEmployeeUseCase assignEmployeeUseCase;
     private final dz.sh.hidra.modules.organization.application.port.in.OrganizationFoundationAdministrationUseCase foundation;
 
+    @org.springframework.beans.factory.annotation.Autowired
     public SpringOrganizationController(
             AssignEmployeeUseCase assignEmployeeUseCase,
             dz.sh.hidra.modules.organization.application.port.in.OrganizationFoundationAdministrationUseCase foundation
     ) {
         this.foundation = Objects.requireNonNull(foundation);
         this.assignEmployeeUseCase = Objects.requireNonNull(assignEmployeeUseCase, "AssignEmployeeUseCase must not be null.");
+    }
+
+    // Historical direct-construction signature used by appointment and route-interceptor tests.
+    // New personnel mutations must never execute without the native foundation authority.
+    public SpringOrganizationController(AssignEmployeeUseCase assignEmployeeUseCase,
+            dz.sh.hidra.modules.organization.application.port.in.CreateOrganizationUnitUseCase legacyUnits,
+            dz.sh.hidra.modules.organization.application.port.in.RegisterEmployeeUseCase legacyRegistration) {
+        this.assignEmployeeUseCase = Objects.requireNonNull(assignEmployeeUseCase);
+        Objects.requireNonNull(legacyUnits);Objects.requireNonNull(legacyRegistration);
+        this.foundation = null;
+    }
+
+    private dz.sh.hidra.modules.organization.application.port.in.OrganizationFoundationAdministrationUseCase guardedFoundation() {
+        if(foundation==null) throw new org.springframework.security.access.AccessDeniedException(
+                "Organization administration authority is not configured.");
+        return foundation;
     }
 
     @GetMapping("/capabilities")
@@ -91,14 +108,14 @@ public class SpringOrganizationController implements OrganizationController {
     @PostMapping({"/create-organization-unit", "/units"})
     public OrganizationUnitResponse createOrganizationUnit(@Valid @RequestBody CreateOrganizationUnitRequest request) {
         Objects.requireNonNull(request, "CreateOrganizationUnitRequest must not be null.");
-        return OrganizationFoundationAdministrationController.call(()->OrganizationRestMapper.toResponse(foundation.createUnit(OrganizationRestMapper.toCommand(request))));
+        return OrganizationFoundationAdministrationController.call(()->OrganizationRestMapper.toResponse(guardedFoundation().createUnit(OrganizationRestMapper.toCommand(request))));
     }
 
     @Override
     @PostMapping({"/register-employee", "/employees"})
     public EmployeeResponse registerEmployee(@Valid @RequestBody RegisterEmployeeRequest request) {
         Objects.requireNonNull(request, "RegisterEmployeeRequest must not be null.");
-        return OrganizationFoundationAdministrationController.call(()->OrganizationRestMapper.toResponse(foundation.registerEmployee(OrganizationRestMapper.toCommand(request))));
+        return OrganizationFoundationAdministrationController.call(()->OrganizationRestMapper.toResponse(guardedFoundation().registerEmployee(OrganizationRestMapper.toCommand(request))));
     }
 
 }

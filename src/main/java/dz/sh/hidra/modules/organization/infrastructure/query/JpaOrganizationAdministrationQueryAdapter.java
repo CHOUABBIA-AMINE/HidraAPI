@@ -43,10 +43,25 @@ public class JpaOrganizationAdministrationQueryAdapter implements OrganizationAd
 
     private final dz.sh.hidra.modules.organization.application.port.in.EmployeeAppointmentLifecycleUseCase appointments;
 
+    @org.springframework.beans.factory.annotation.Autowired
     public JpaOrganizationAdministrationQueryAdapter(EntityManager entityManager,dz.sh.hidra.modules.organization.application.port.in.EmployeeAppointmentLifecycleUseCase appointments,dz.sh.hidra.modules.organization.application.port.out.OrganizationFoundationAuthorizationPort authority) {
         this.authority=Objects.requireNonNull(authority);
         this.appointments=Objects.requireNonNull(appointments);
         this.entityManager = Objects.requireNonNull(entityManager, "EntityManager must not be null.");
+    }
+
+    // Preserve native, independently authorized appointment reads for legacy direct construction.
+    // Directory/catalog methods fail closed; production always injects the real authorization port.
+    public JpaOrganizationAdministrationQueryAdapter(EntityManager entityManager,
+            dz.sh.hidra.modules.organization.application.port.in.EmployeeAppointmentLifecycleUseCase appointments) {
+        this(entityManager,appointments,new dz.sh.hidra.modules.organization.application.port.out.OrganizationFoundationAuthorizationPort() {
+            @Override public String administrator() {
+                throw new org.springframework.security.access.AccessDeniedException("Organization directory authority is not configured.");
+            }
+            @Override public void requireActiveIdentity(String identityUserReference) {
+                throw new org.springframework.security.access.AccessDeniedException("Organization directory authority is not configured.");
+            }
+        });
     }
 
     @Override

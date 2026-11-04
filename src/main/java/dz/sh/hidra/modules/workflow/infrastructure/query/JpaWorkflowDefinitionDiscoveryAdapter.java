@@ -20,7 +20,7 @@
 package dz.sh.hidra.modules.workflow.infrastructure.query;
 
 import dz.sh.hidra.modules.identity.application.contract.workflow.WorkflowActorContract;
-import dz.sh.hidra.modules.identity.application.contract.workflow.WorkflowHumanActorContract;
+import dz.sh.hidra.modules.workflow.application.service.WorkflowTransitionApplicationService;
 import dz.sh.hidra.modules.workflow.application.contract.target.WorkflowOwnedTargetLookup;
 import dz.sh.hidra.modules.workflow.application.port.in.WorkflowDefinitionDiscoveryUseCase;
 import dz.sh.hidra.modules.workflow.domain.value.WorkflowDefinitionStatus;
@@ -37,23 +37,23 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Transactional(readOnly = true)
-public final class JpaWorkflowDefinitionDiscoveryAdapter implements WorkflowDefinitionDiscoveryUseCase {
+public class JpaWorkflowDefinitionDiscoveryAdapter implements WorkflowDefinitionDiscoveryUseCase {
     private static final String TYPE = "INSTALLED_CHARACTERISTIC_LINK_REVISION";
     private static final String PURPOSE = "INSTALLED_CHARACTERISTIC_LINK_APPROVAL";
     private static final Set<String> DECISIONS = Set.of("APPROVE", "REJECT");
     private final EntityManager entities;
     private final CurrentSecurityContext security;
     private final WorkflowActorContract actors;
-    private final WorkflowHumanActorContract humans;
+    private final WorkflowTransitionApplicationService reviewerPolicy;
     private final List<WorkflowOwnedTargetLookup> owners;
 
     public JpaWorkflowDefinitionDiscoveryAdapter(EntityManager entities, CurrentSecurityContext security,
-            WorkflowActorContract actors, WorkflowHumanActorContract humans,
+            WorkflowActorContract actors, WorkflowTransitionApplicationService reviewerPolicy,
             List<WorkflowOwnedTargetLookup> owners) {
         this.entities = Objects.requireNonNull(entities);
         this.security = Objects.requireNonNull(security);
         this.actors = Objects.requireNonNull(actors);
-        this.humans = Objects.requireNonNull(humans);
+        this.reviewerPolicy = Objects.requireNonNull(reviewerPolicy);
         this.owners = List.copyOf(owners);
     }
 
@@ -132,8 +132,7 @@ public final class JpaWorkflowDefinitionDiscoveryAdapter implements WorkflowDefi
                         && !starter.equals(r.actorId()))
                 .map(r -> actors.eligibleActor(r.actorId(), Instant.now()).orElse(null))
                 .filter(Objects::nonNull)
-                .filter(a -> humans.eligibleHuman(a.id(), Instant.now())
-                        .filter(h -> a.id().equals(h.id())).isPresent())
+                .filter(a -> reviewerPolicy.eligibleIndependentHumanReviewer(a.id(), starter))
                 .map(a -> new AssignmentChoice(a.id(), a.username(), a.displayName()))
                 .distinct().toList();
         if (choices.isEmpty()) return null;

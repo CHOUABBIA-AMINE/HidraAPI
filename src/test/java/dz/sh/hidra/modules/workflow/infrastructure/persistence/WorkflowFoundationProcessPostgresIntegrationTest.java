@@ -20,8 +20,7 @@
 package dz.sh.hidra.modules.workflow.infrastructure.persistence;
 
 import dz.sh.hidra.HidraApplication;
-import dz.sh.hidra.modules.identity.application.contract.workflow.WorkflowActorContract;
-import dz.sh.hidra.modules.identity.application.contract.workflow.WorkflowHumanActorContract;
+import dz.sh.hidra.modules.workflow.application.service.WorkflowTransitionApplicationService;
 import dz.sh.hidra.modules.workflow.application.contract.target.WorkflowOwnedTargetLookup;
 import dz.sh.hidra.modules.workflow.infrastructure.configuration.FoundationWorkflowDevelopmentProvisioner;
 import java.util.*;
@@ -70,8 +69,7 @@ class WorkflowFoundationProcessPostgresIntegrationTest {
     @Autowired JdbcTemplate jdbc;
     @Autowired WebApplicationContext context;
     @Autowired PasswordEncoder passwords;
-    @Autowired WorkflowActorContract actors;
-    @Autowired WorkflowHumanActorContract humans;
+    @Autowired WorkflowTransitionApplicationService reviewerPolicy;
     MockMvc http;
     String starter, reviewer, observer, starterToken, reviewerToken, observerToken;
     String definition, review, accepted, rejected, approve, reject, mode, reason, type, purpose, digest, locator;
@@ -270,7 +268,7 @@ class WorkflowFoundationProcessPostgresIntegrationTest {
     }
     @Test @Order(Integer.MAX_VALUE) void developmentProvisionerRequiresExplicitExistingHumanAndIsNeverAutoEnabledInTest() throws Exception {
         assertFalse(context.containsBean("foundationWorkflowDevelopmentProvisioner"));
-        var provisioner=new FoundationWorkflowDevelopmentProvisioner(jdbc,actors,humans,reviewer);
+        var provisioner=new FoundationWorkflowDevelopmentProvisioner(jdbc,reviewerPolicy,reviewer);
         provisioner.run(null);
         provisioner.run(null);
         assertEquals(1,jdbc.queryForObject("SELECT count(*) FROM hidra_workflow_definition "
@@ -278,7 +276,7 @@ class WorkflowFoundationProcessPostgresIntegrationTest {
         assertEquals(reviewer,jdbc.queryForObject("SELECT actor_id FROM hidra_workflow_step_assignment_rule "
                 +"WHERE id='foundation-dev-link-assign-v1'",String.class));
         assertThrows(RuntimeException.class,()->new FoundationWorkflowDevelopmentProvisioner(
-                jdbc,actors,humans,observer).run(null));
+                jdbc,reviewerPolicy,observer).run(null));
     }
     @Test void commentCannotMasqueradeAsDecision() throws Exception {
         String instance=start(),task=create(instance,reviewer);

@@ -95,6 +95,22 @@ public class WorkflowTransitionApplicationService implements ExecuteWorkflowTran
         this.assignmentRuleRepository = Objects.requireNonNull(assignmentRuleRepository, "WorkflowStepAssignmentRuleRepositoryPort must not be null.");
     }
 
+    /**
+     * Boundary-approved Identity human qualification. Only the existing Workflow
+     * application service may call the Identity-owned human contract. Infrastructure
+     * consumes this application policy and cannot import the foreign contract.
+     */
+    public boolean eligibleIndependentHumanReviewer(String actorId, String starterId) {
+        if (actorId == null || actorId.isBlank() || Objects.equals(actorId, starterId)
+                || publicationHumans == null) return false;
+        return ownership.resolveActor(actorId)
+                .filter(actor -> actorId.equals(actor.id()))
+                .filter(actor -> publicationHumans.eligibleHuman(actor.id(), Instant.now())
+                        .filter(human -> actor.id().equals(human.id())
+                                && actor.displayName().equals(human.displayName()))
+                        .isPresent()).isPresent();
+    }
+
     @Override
     @Transactional
     public WorkflowTransitionExecutionDto execute(ExecuteWorkflowTransitionCommand command) {

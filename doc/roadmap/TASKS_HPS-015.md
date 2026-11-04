@@ -12995,4 +12995,53 @@ if they differ. Current source review cannot establish industrial/SITE,
 HidraWEB/browser or production acceptance. Stop after exact-SHA CI
 creation/start, and do not start the next registered delivery.
 
+
+### 2026-11-04 HAPI-928 whole-B6 same-task CI #1118 targeted repair — Spring proxy and boundary regression
+
+**Actual exact-source feedback, not acceptance:** Original whole-B6 main
+`0357376e63ab956be6527695e2ee6aa82cfdd823`, parent
+`42456abe4fb0c016a00c0ae218487fd3bcfae087`, tree
+`da84cef930b76c6e50ba727db8f3a4510ba30b51`,
+exact message `feat(workflow): complete foundation task discovery and scoped reads`.
+[Documentation #904](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41905215426)
+SUCCESS; [Full CI #1118](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41905215498)
+FAILURE. All Java source compiled. Unit/architecture failed at
+`ArchitectureGuardrailTest.businessModulesMustNotReachIntoOtherModuleInternals`
+because both new Workflow infrastructure adapters directly imported
+`identity.application.contract.workflow.WorkflowHumanActorContract`.
+The new `JpaWorkflowDefinitionDiscoveryAdapter` was also `final` and
+`@Transactional(readOnly=true)`: Spring CGLIB could not subclass it, so
+PostgreSQL contexts and runtime API generation failed before B6 tests could
+qualify any behavior. The resulting cascading shard failures are **not**
+fourteen independent PostgreSQL test verdicts. No successful runtime OpenAPI,
+same-SHA physical dictionary or full synthetic workflow proof exists at #1118.
+
+**Bounded same-task repair, exact existing paths only:**
+`src/main/java/dz/sh/hidra/modules/workflow/infrastructure/query/JpaWorkflowDefinitionDiscoveryAdapter.java`,
+`src/main/java/dz/sh/hidra/modules/workflow/infrastructure/configuration/FoundationWorkflowDevelopmentProvisioner.java`,
+`src/main/java/dz/sh/hidra/modules/workflow/application/service/WorkflowTransitionApplicationService.java`,
+`src/test/java/dz/sh/hidra/modules/workflow/infrastructure/persistence/WorkflowFoundationProcessPostgresIntegrationTest.java`,
+`.github/ci-test-inventory.json`, and this append-only task evidence.
+Make the transactional discovery adapter proxyable. Route reviewer-human
+verification through the already registered Workflow application transition
+service, where the existing authorized Identity human contract is consumed;
+the Workflow infrastructure adapters no longer import the private Identity
+human contract. Retain fresh Identity eligibility and exact human
+id/display-name checks, independent starter/approver rules, original
+configured transitions, immutable evidence and native owner admission.
+Update the revised test fixture constructor and its SHA-256 inventory
+identity, preserving every existing test/case, lane and 14-shard policy.
+No architecture-test relaxation, Platform/Identity modification, migration,
+OpenAPI fabrication, frontend, numerical/P3 or production change.
+
+**Verification and remaining gate:** Re-read actual #1118 unit, PostgreSQL
+and API job logs and exact source; preflight checked replacement method
+wiring and absence of the two forbidden imports/final proxy class. Local
+Maven/PostgreSQL was unavailable, so source checks are not test proofs.
+After guarded same-message repair publication, require new exact-SHA Full
+CI and applicable Docs CI, independently inspect case-level evidence,
+runtime OpenAPI compatibility/snapshot and fresh dictionary. This
+remains HAPI-928 IMPLEMENTED / IN_PROGRESS, **not** completed or accepted.
+Stop after repair-SHA CI creation/queue/start; do not execute F1.
+
 <!-- task-register:payload:end -->

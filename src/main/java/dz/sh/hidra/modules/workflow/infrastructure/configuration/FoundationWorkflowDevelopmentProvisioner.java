@@ -19,9 +19,7 @@
  */
 package dz.sh.hidra.modules.workflow.infrastructure.configuration;
 
-import dz.sh.hidra.modules.identity.application.contract.workflow.WorkflowActorContract;
-import dz.sh.hidra.modules.identity.application.contract.workflow.WorkflowHumanActorContract;
-import java.time.Instant;
+import dz.sh.hidra.modules.workflow.application.service.WorkflowTransitionApplicationService;
 import java.util.List;
 import java.util.Objects;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,16 +47,13 @@ public class FoundationWorkflowDevelopmentProvisioner implements ApplicationRunn
     private static final String RULE = "foundation-dev-link-assign-v1";
 
     private final JdbcTemplate jdbc;
-    private final WorkflowActorContract actors;
-    private final WorkflowHumanActorContract humans;
+    private final WorkflowTransitionApplicationService reviewerPolicy;
     private final String reviewer;
 
-    public FoundationWorkflowDevelopmentProvisioner(JdbcTemplate jdbc, WorkflowActorContract actors,
-            WorkflowHumanActorContract humans,
+    public FoundationWorkflowDevelopmentProvisioner(JdbcTemplate jdbc, WorkflowTransitionApplicationService reviewerPolicy,
             @Value("${hidra.workflow.foundation-dev-provisioning.approver-actor-id:}") String reviewer) {
         this.jdbc = Objects.requireNonNull(jdbc);
-        this.actors = Objects.requireNonNull(actors);
-        this.humans = Objects.requireNonNull(humans);
+        this.reviewerPolicy = Objects.requireNonNull(reviewerPolicy);
         this.reviewer = reviewer == null ? "" : reviewer.trim();
     }
 
@@ -67,10 +62,7 @@ public class FoundationWorkflowDevelopmentProvisioner implements ApplicationRunn
     public void run(ApplicationArguments args) {
         if (reviewer.isBlank()) throw new IllegalStateException(
                 "Dev-only Workflow provisioner requires an explicit independent human approver actor ID.");
-        var actor = actors.eligibleActor(reviewer, Instant.now())
-                .orElseThrow(() -> new IllegalStateException("Configured Workflow reviewer is not eligible."));
-        if (humans.eligibleHuman(reviewer, Instant.now())
-                .filter(h -> reviewer.equals(h.id()) && actor.displayName().equals(h.displayName())).isEmpty())
+        if (!reviewerPolicy.eligibleIndependentHumanReviewer(reviewer, null))
             throw new IllegalStateException("Configured Workflow reviewer is not an eligible human.");
 
         String type = requireCatalog("WORKFLOW_TARGET_TYPE", "INSTALLED_CHARACTERISTIC_LINK_REVISION");

@@ -103,15 +103,19 @@ class FoundationIdentityLifecyclePostgresIntegrationTest {
     @Test void realCredentialActivationResetSessionRevocationAndImmutableAudit() {
         String actor=admin(), ordinary=createUser("REGISTERED");
         var before=tx().execute(s -> adapter.readUser(ordinary,actor));
-        assertThrows(IllegalStateException.class,() -> tx().execute(
+        assertTranslatedRejection("An ACTIVE LOCAL credential is required.",() -> tx().execute(
                 s -> adapter.changeUser(ordinary,before.updatedAt(),true,"activate",actor)));
+        assertEquals(before,tx().execute(s -> adapter.readUser(ordinary,actor)));
+        assertEquals(0,jdbc.queryForObject("SELECT count(*) FROM public.hidra_identity_lifecycle_event"
+                +" WHERE target_id=?",Integer.class,ordinary));
         var first=tx().execute(s -> adapter.setCredential(ordinary,
                 "$2a$10$synthetic-credential-hash-material-for-tests",0,"initial issue",actor));
         assertEquals(1L,first.securityVersion());
         var active=tx().execute(s -> adapter.changeUser(ordinary,before.updatedAt(),true,"activate",actor));
         assertEquals("ACTIVE",active.status());
-        assertThrows(IllegalStateException.class,() -> tx().execute(
+        assertTranslatedRejection("Stale lifecycle version.",() -> tx().execute(
                 s -> adapter.changeUser(ordinary,before.updatedAt(),false,"stale",actor)));
+        assertEquals(active,tx().execute(s -> adapter.readUser(ordinary,actor)));
         String session=id();
         jdbc.update("INSERT INTO public.hidra_identity_login_session"
                 +"(id,user_id,started_at,last_seen_at,expires_at,status,session_type)"
@@ -139,10 +143,22 @@ class FoundationIdentityLifecyclePostgresIntegrationTest {
         assertEquals("REVOKED",revoked.status());
         assertEquals("removal of secondary administrator",jdbc.queryForObject(
                 "SELECT revoked_reason FROM public.hidra_identity_user_role_grant WHERE id=?",String.class,grant));
-        assertThrows(IllegalStateException.class,() -> tx().execute(
+        assertTranslatedRejection("Only ACTIVE grants may be revoked.",() -> tx().execute(
                 s -> adapter.revokeGrant(GrantKind.USER_ROLE,grant,grantCreated,"replay",actor)));
+        assertEquals(revoked.revokedAt(),jdbc.queryForObject(
+                "SELECT revoked_at FROM public.hidra_identity_user_role_grant WHERE id=?",
+                (rs,n) -> rs.getTimestamp(1).toInstant(),grant));
+        assertEquals(1,jdbc.queryForObject("SELECT count(*) FROM public.hidra_identity_lifecycle_event"
+                +" WHERE target_id=?",Integer.class,grant));
         assertEquals(1,jdbc.queryForObject("SELECT count(*) FROM public.hidra_identity_user_role_grant"
                 +" WHERE id=?",Integer.class,grant));
+    }
+
+    private static void assertTranslatedRejection(String message,
+            org.junit.jupiter.api.function.Executable operation) {
+        var failure = assertThrows(org.springframework.dao.InvalidDataAccessApiUsageException.class,operation);
+        var cause = assertInstanceOf(IllegalStateException.class,failure.getCause());
+        assertEquals(message,cause.getMessage());
     }
 
     @Test void rollbackRestoresStatusAndAuditAtomically() {

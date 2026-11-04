@@ -69,7 +69,12 @@ public final class IdentityEffectivePermissionSourceAdapter implements HidraEffe
         if (!actual.getName().equals(principalName) || bindings == null || currentState == null)
             throw new AccessDeniedException("Current Identity bearer required.");
         var jwt = bearer.getToken();
-        String issuer = jwt.getIssuer() == null ? null : jwt.getIssuer().toString();
+        String issuer;
+        try {
+            issuer = jwt.getIssuer() == null ? null : jwt.getIssuer().toString();
+        } catch (IllegalArgumentException malformedIssuer) {
+            throw new AccessDeniedException("Current Identity bearer required.");
+        }
         String jti = jwt.getId();
         if (issuer == null || jti == null)
             throw new AccessDeniedException("Current Identity bearer required.");

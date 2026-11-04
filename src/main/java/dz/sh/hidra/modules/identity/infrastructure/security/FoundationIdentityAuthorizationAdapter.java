@@ -48,7 +48,12 @@ public final class FoundationIdentityAuthorizationAdapter implements FoundationI
         if (!(auth instanceof JwtAuthenticationToken token) || !auth.isAuthenticated())
             throw new AccessDeniedException("Current native authentication required.");
         var jwt = token.getToken();
-        String issuer = jwt.getIssuer() == null ? null : jwt.getIssuer().toString();
+        String issuer;
+        try {
+            issuer = jwt.getIssuer() == null ? null : jwt.getIssuer().toString();
+        } catch (IllegalArgumentException malformedIssuer) {
+            throw new AccessDeniedException("Current native authentication required.");
+        }
         String jti = jwt.getId();
         if (issuer == null || jti == null || token.getName() == null)
             throw new AccessDeniedException("Current native authentication required.");

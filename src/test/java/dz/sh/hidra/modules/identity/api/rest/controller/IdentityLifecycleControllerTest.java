@@ -72,6 +72,9 @@ class IdentityLifecycleControllerTest {
                 .issuedAt(Instant.now().minusSeconds(30)).expiresAt(Instant.now().plusSeconds(60)).build();
         SecurityContextHolder.getContext().setAuthentication(new JwtAuthenticationToken(jwt));
         assertThrows(AccessDeniedException.class,adapter::authenticatedActor);
+        verifyNoInteractions(bindings,states,admins);
+        SecurityContextHolder.getContext().setAuthentication(new JwtAuthenticationToken(jwt,java.util.List.of()));
+        assertThrows(AccessDeniedException.class,adapter::authenticatedActor);
         var binding = mock(OperationAuthenticationBinding.class);
         when(binding.userId()).thenReturn("admin-1");
         when(binding.nativeIssuer()).thenReturn("https://hidra.test");
@@ -82,6 +85,22 @@ class IdentityLifecycleControllerTest {
         when(states.current(eq(binding),any(Instant.class))).thenReturn(false);
         assertThrows(AccessDeniedException.class,adapter::administratorActor);
     }
+    @Test void malformedIssuerIsDeniedBeforeIdentityLookup() {
+        var bindings = mock(OperationAuthenticationBindingRepositoryPort.class);
+        var states = mock(AuthenticationSecurityStateQueryPort.class);
+        var admins = mock(IdentityAdministratorGrantService.class);
+        var queries = mock(dz.sh.hidra.modules.identity.application.port.in.IdentityAdministrationQueryUseCase.class);
+        var lifecycle = new FoundationIdentityAuthorizationAdapter(bindings,states,admins);
+        var permissions = new dz.sh.hidra.modules.identity.infrastructure.security.IdentityEffectivePermissionSourceAdapter(
+                queries,admins,bindings,states);
+        var jwt = Jwt.withTokenValue("synthetic-only").header("alg","HS256")
+                .issuer("not-an-absolute-url").subject("admin-1").claim("jti","jti-1").build();
+        SecurityContextHolder.getContext().setAuthentication(new JwtAuthenticationToken(jwt,java.util.List.of()));
+        assertThrows(AccessDeniedException.class,lifecycle::authenticatedActor);
+        assertThrows(AccessDeniedException.class,() -> permissions.resolve("admin-1"));
+        verifyNoInteractions(bindings,states,admins,queries);
+    }
+
     @Test void springClassProxiesCanWrapBothLifecycleBeans() {
         var service = new dz.sh.hidra.modules.identity.application.service.FoundationIdentityLifecycleApplicationService(
                 mock(dz.sh.hidra.modules.identity.application.port.out.FoundationIdentityLifecyclePersistencePort.class),

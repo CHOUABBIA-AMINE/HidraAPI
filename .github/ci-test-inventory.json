@@ -1875,6 +1875,7 @@
       "cases": [
         "activationUsesExplicitExpectedVersionAndReturnsNoSecret",
         "credentialResponseContainsOnlyGenerationAndDate",
+        "malformedIssuerIsDeniedBeforeIdentityLookup",
         "nativeBearerMustHaveCurrentExactBindingAndLiveAdministratorGrant",
         "springClassProxiesCanWrapBothLifecycleBeans"
       ],
@@ -1884,7 +1885,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityLifecycleControllerTest.java",
-      "source_sha256": "3c12880a5bd2453433442f8d9383c994d998a5a17d62b22c1665e1bd9bc3fe77",
+      "source_sha256": "61b909b92a184caeb03a2bfdf8b71c206cf68eed60b6d8bbde021443508cbab3",
       "supports": []
     },
     {
@@ -2546,7 +2547,7 @@
       "lane": "postgres-integration",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/FoundationIdentityLifecyclePostgresIntegrationTest.java",
-      "source_sha256": "45a8c5faddaac4852298691ef80078099a46110c50f85f300ce2e6956552a792",
+      "source_sha256": "55a6c6cc77fc2ccb1e4f099503a3ab9767885990d4c6ddd63bd3faec1327fd54",
       "supports": []
     },
     {

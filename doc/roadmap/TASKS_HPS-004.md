@@ -12856,3 +12856,35 @@ No DELETE. Guarded direct-main publication must verify exact parent/tree/blobs/s
 then verify new-SHA Full/Docs creation/queue/start and STOP without awaiting results.
 The next selection is this repair's CI feedback/acceptance; W2 remains the next
 reserved implementation only after backend acceptance, never automatically run.
+
+### 2026-11-05 HAPI-926 same-task Full1127 compilation repair
+
+Exact source `9b9cf4c73efcfbe025117df0c6ae47ca2031fa13`, parent
+`8ff93f488cb0a5c0a3a553d22e7d3958f993ff22`, tree
+`329790a23176d7268074dbaa1b06a0007ebf6174`: [Full1127](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42101888930)
+FAILED; [Docs916](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42101888872)
+SUCCESS. Retrieved API-contract and unit-lane logs both identify unresolved
+`guard`/`args` at JdbcEngineeringNetworkDraftRepositoryAdapter lines366–367.
+The ownership/AccessShareLock predicate was appended inside `apply`, outside
+the SQL guard builder's scope. Compilation prevented runtime/database evidence;
+missing reports/artifacts do not establish additional executed test failures.
+
+Bounded repair: move those exact two lines into `finalGuard`, immediately after
+its SQL and argument-list initialization. Preserve the predicate and argument
+order, the acquire-time ownership relation lock/catalog checks, the early
+foreign-company denial and all final authorization/transaction checks. Existing
+native foreign-owner and positive foundation journeys remain required unchanged.
+Modify only that adapter and this append-only task evidence; no CREATE/DELETE,
+DDL, test/inventory, workflow, API snapshot, dictionary or registry-status change.
+Exact registered message retained:
+`feat(topology): connect pipeline authoring to persisted graph views`.
+
+Local verification: documentation validator PASS (129 documents,8978 relative
+links,928 tasks,25 phases); exact CI inventory PASS (563 oracle classes),
+`git diff --check` PASS. Java21 `bash ./mvnw -B -q -DskipTests compile` was
+attempted but stopped before compilation: Maven Central DNS resolution failed
+for Spring Boot4.1.1 parent. No local Java/PostgreSQL pass claimed. This correction
+remains CI_ACCEPTANCE_PENDING. Genuine new runtime OpenAPI/catalog regeneration,
+strict equality and full native qualification remain open within HAPI-926;
+W2/HWEB-F12 remains blocked. After guarded direct-main publication verify
+parent/tree/blobs and exact-SHA Full/Docs creation/queue/start, then STOP.

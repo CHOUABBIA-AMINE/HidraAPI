@@ -363,8 +363,6 @@ public class JdbcEngineeringNetworkDraftRepositoryAdapter implements Engineering
             if(t.newContext && jdbc.update(CONTEXT_INS,t.contextId,t.command.companyPartyId(),t.command.pipelineSystemId())!=1)throw fail(Reason.CONFLICT);
             if(jdbc.update(DRAFT_INS,t.draftId,t.contextId,t.command.creationRequestId(),t.requestDigest)!=1)throw fail(Reason.CONFLICT);
         }
-        guard+=" AND NOT EXISTS(SELECT 1 FROM public.hidra_topology_foundation_system_owner WHERE pipeline_system_id=? AND company_party_id<>?) AND EXISTS(SELECT 1 FROM pg_locks WHERE pid=pg_backend_pid() AND granted AND locktype='relation' AND relation='public.hidra_topology_foundation_system_owner'::regclass AND mode='AccessShareLock')";
-        args.add(t.command.pipelineSystemId());args.add(t.command.companyPartyId());
         if(t.command.kind()==Kind.UPDATE || t.command.kind()==Kind.GRAPH_UPDATE || t.command.kind()==Kind.SURVEY_UPDATE || (t.command.kind()==Kind.CREATE && !t.replayed)){
             byte[] bytes=codec.encode(t.result.draft().metadata());String hash=EngineeringNetworkDraftCodec.digest(bytes);
             if(jdbc.update(VERSION_INS,t.draftId,t.result.draft().version(),EngineeringNetworkDraftCodec.FORMAT,bytes,hash,t.latestDigest,
@@ -404,6 +402,8 @@ public class JdbcEngineeringNetworkDraftRepositoryAdapter implements Engineering
         var args=new ArrayList<Object>(Arrays.asList(Timestamp.from(c.sampledAt()),Timestamp.from(c.validUntil()),t.pid,t.xid,t.role,t.role,
             t.command.companyPartyId(),c.partyGeneration(),t.command.pipelineSystemId(),t.contextId,t.command.companyPartyId(),t.command.pipelineSystemId(),t.draftId,
             t.draftId,t.latest,t.latestDigest,t.latestBytes,t.draftId,t.result.draft().version(),codec.encode(t.result.draft().metadata())));
+        guard+=" AND NOT EXISTS(SELECT 1 FROM public.hidra_topology_foundation_system_owner WHERE pipeline_system_id=? AND company_party_id<>?) AND EXISTS(SELECT 1 FROM pg_locks WHERE pid=pg_backend_pid() AND granted AND locktype='relation' AND relation='public.hidra_topology_foundation_system_owner'::regclass AND mode='AccessShareLock')";
+        args.add(t.command.pipelineSystemId());args.add(t.command.companyPartyId());
         if(t.command.kind()==Kind.UPDATE || t.command.kind()==Kind.GRAPH_UPDATE || t.command.kind()==Kind.SURVEY_UPDATE || (t.command.kind()==Kind.CREATE && !t.replayed)){
             guard+=" AND EXISTS(SELECT 1 FROM public.hidra_topology_engineering_draft_version v WHERE v.draft_id=? AND v.version=? AND v.actor_binding_id=?::uuid AND v.actor_session_id=?::uuid AND v.actor_user_id=? AND v.party_generation=? AND v.sampled_at=? AND v.valid_until=? AND v.backend_pid=? AND v.transaction_id=?)";
             args.addAll(Arrays.asList(t.draftId,t.latest,c.bindingId(),c.sessionId(),c.userId(),c.partyGeneration(),Timestamp.from(c.sampledAt()),Timestamp.from(c.validUntil()),t.pid,t.xid));

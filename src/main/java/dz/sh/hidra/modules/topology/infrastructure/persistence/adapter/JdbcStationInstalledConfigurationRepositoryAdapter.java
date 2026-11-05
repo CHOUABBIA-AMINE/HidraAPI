@@ -253,7 +253,7 @@ public class JdbcStationInstalledConfigurationRepositoryAdapter implements Stati
                 +"WHERE id=?",(r,n)->List.of(r.getString(1),r.getString(2),r.getString(3)),command.facilityId());
             // Do not distinguish a missing, foreign, withdrawn or non-station facility
             // before native Identity has authorized its exact resource scope.
-            if(owner.size()!=1 || !owner.get(0).equals(List.of(command.companyPartyId(),"ACTIVE","STATION")))
+            if(owner.size()!=1 || !owner.get(0).get(0).equals(command.companyPartyId()) || !owner.get(0).get(1).equals("ACTIVE") || !dz.sh.hidra.modules.topology.domain.value.FacilityKind.valueOf(owner.get(0).get(2)).isStation())
                 throw new org.springframework.security.access.AccessDeniedException(
                     "Protected station configuration unavailable");
             var current=current(t);

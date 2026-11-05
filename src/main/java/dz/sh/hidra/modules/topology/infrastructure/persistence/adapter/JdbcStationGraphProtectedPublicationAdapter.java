@@ -344,4 +344,5 @@ public class JdbcStationGraphProtectedPublicationAdapter implements StationGraph
             if(!Boolean.TRUE.equals(b))throw invalid();return true;
         }catch(RuntimeException error){executor.rejectAdmission();throw error;}
     }
+    @Override public String canonicalSha256(StationInternalGraphRevision revision){return codec.sha256(codec.encode(revision));}
 }

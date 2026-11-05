@@ -203,6 +203,10 @@ public class JdbcEngineeringNetworkDraftRepositoryAdapter implements Engineering
     @Override @Transactional(propagation=Propagation.MANDATORY)
     public Admission acquire(Command cmd){try {
         var h=physical();for(String r:RELATIONS)jdbc.execute("LOCK TABLE "+r+" IN SHARE ROW EXCLUSIVE MODE NOWAIT");
+        // The immutable registration owner is separate from legacy company contexts.
+        // System locking also serializes it with the sole admitted foundation writer.
+        jdbc.execute("LOCK TABLE public.hidra_topology_foundation_system_owner IN ACCESS SHARE MODE NOWAIT");
+        if(!Boolean.TRUE.equals(jdbc.queryForObject("SELECT c.relkind='r' AND c.relpersistence='p' AND NOT c.relrowsecurity AND NOT c.relforcerowsecurity AND NOT c.relispartition AND NOT pg_has_role(current_user,c.relowner,'MEMBER') AND NOT EXISTS(SELECT 1 FROM pg_inherits WHERE inhrelid=c.oid OR inhparent=c.oid) AND (SELECT count(*)=2 AND bool_and(tgenabled='O' AND tgfoid='public.hidra_p25_draft_immutable()'::regprocedure AND ((tgname='foundation_owner_immutable' AND tgtype=27) OR (tgname='foundation_owner_no_truncate' AND tgtype=34))) FROM pg_trigger WHERE tgrelid=c.oid AND NOT tgisinternal) FROM pg_class c WHERE c.oid='public.hidra_topology_foundation_system_owner'::regclass",Boolean.class)))throw fail(Reason.UNAVAILABLE);
         if(graph(cmd.kind()))for(String r:GRAPH_RELATIONS)
             // Facility DML is fenced at the master; its trigger owns generation writes.
             // Read-only generation roles may acquire ACCESS SHARE, never a DML-level lock.
@@ -262,10 +266,11 @@ public class JdbcEngineeringNetworkDraftRepositoryAdapter implements Engineering
     }
     @Override @Transactional(propagation=Propagation.MANDATORY)
     public void eligible(Admission a){try {var t=ticket(a);if(t.eligible)throw fail(Reason.UNAVAILABLE);var c=t.command;
-        var systems=jdbc.queryForList("SELECT s.status AS system_status,y.active AS type_active FROM public.hidra_topology_pipeline_system s JOIN public.hidra_topology_pipeline_system_type y ON y.id=s.system_type_id WHERE s.id=?",c.pipelineSystemId());
+        var systems=jdbc.queryForList("SELECT s.status AS system_status,y.active AS type_active,o.company_party_id AS registered_company FROM public.hidra_topology_pipeline_system s JOIN public.hidra_topology_pipeline_system_type y ON y.id=s.system_type_id LEFT JOIN public.hidra_topology_foundation_system_owner o ON o.pipeline_system_id=s.id WHERE s.id=?",c.pipelineSystemId());
         if(systems.isEmpty())throw fail(Reason.NOT_FOUND);
         var system=systems.get(0);String status=Objects.toString(system.get("system_status"),"");boolean type=Boolean.TRUE.equals(system.get("type_active"));
         if(!Set.of("DRAFT","ACTIVE").contains(status) || !type)throw fail(Reason.NOT_FOUND);
+        if(system.get("registered_company")!=null && !c.companyPartyId().equals(system.get("registered_company")))throw fail(Reason.DENIED);
         var contexts=jdbc.queryForList("SELECT id FROM public.hidra_topology_engineering_context WHERE company_party_id=? AND pipeline_system_id=?",UUID.class,c.companyPartyId(),c.pipelineSystemId());
         t.newContext=contexts.isEmpty();t.contextId=t.newContext?UUID.randomUUID():contexts.get(0);
         if(c.kind()==Kind.CREATE){
@@ -358,6 +363,8 @@ public class JdbcEngineeringNetworkDraftRepositoryAdapter implements Engineering
             if(t.newContext && jdbc.update(CONTEXT_INS,t.contextId,t.command.companyPartyId(),t.command.pipelineSystemId())!=1)throw fail(Reason.CONFLICT);
             if(jdbc.update(DRAFT_INS,t.draftId,t.contextId,t.command.creationRequestId(),t.requestDigest)!=1)throw fail(Reason.CONFLICT);
         }
+        guard+=" AND NOT EXISTS(SELECT 1 FROM public.hidra_topology_foundation_system_owner WHERE pipeline_system_id=? AND company_party_id<>?) AND EXISTS(SELECT 1 FROM pg_locks WHERE pid=pg_backend_pid() AND granted AND locktype='relation' AND relation='public.hidra_topology_foundation_system_owner'::regclass AND mode='AccessShareLock')";
+        args.add(t.command.pipelineSystemId());args.add(t.command.companyPartyId());
         if(t.command.kind()==Kind.UPDATE || t.command.kind()==Kind.GRAPH_UPDATE || t.command.kind()==Kind.SURVEY_UPDATE || (t.command.kind()==Kind.CREATE && !t.replayed)){
             byte[] bytes=codec.encode(t.result.draft().metadata());String hash=EngineeringNetworkDraftCodec.digest(bytes);
             if(jdbc.update(VERSION_INS,t.draftId,t.result.draft().version(),EngineeringNetworkDraftCodec.FORMAT,bytes,hash,t.latestDigest,

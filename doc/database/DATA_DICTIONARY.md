@@ -1,5 +1,13 @@
 # HidraAPI Physical Data Dictionary
 
+> HAPI-926 consolidated foundation completion: physical regeneration PENDING.
+> The dictionary below is retained genuine prior catalog evidence. New migration
+> `V20261105_001__topology_foundation_setup.sql` adds two setup relations; the new
+> migrated PostgreSQL catalog and strict equality have NOT been captured locally.
+> Use the genuine new-source Full CI catalog to regenerate; no inferred metadata
+> or prior-SHA result establishes this schema's acceptance.
+
+
 ## Status
 
 CURRENT

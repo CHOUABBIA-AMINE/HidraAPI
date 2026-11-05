@@ -25,4 +25,5 @@ package dz.sh.hidra.modules.party.application.contract.topology;
 public interface TopologyPartyReferenceContract {
 
     boolean exists(String partyId);
+    default boolean eligibleFacilityOwner(String partyId){return false;}
 }

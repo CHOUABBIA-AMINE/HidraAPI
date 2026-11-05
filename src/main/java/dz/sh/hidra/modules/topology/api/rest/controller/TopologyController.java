@@ -25,6 +25,6 @@ import dz.sh.hidra.modules.topology.api.rest.response.*;
  * Framework-neutral topology controller contract.
  */
 public interface TopologyController {
-    PipelineSystemResponse createPipelineSystem(CreatePipelineSystemRequest request);
-    FacilityResponse registerFacility(RegisterFacilityRequest request);
+    PipelineSystemResponse createPipelineSystem(@jakarta.validation.Valid CreatePipelineSystemRequest request);
+    FacilityResponse registerFacility(@jakarta.validation.Valid RegisterFacilityRequest request);
 }

@@ -49,6 +49,13 @@ public class ProtectedStationAdmissionCoordinator {
         this.facility=Objects.requireNonNull(facility);this.executor=Objects.requireNonNull(executor);
     }
 
+    private dz.sh.hidra.modules.topology.application.port.out.TopologyFoundationPersistencePort foundation;
+    @org.springframework.beans.factory.annotation.Autowired
+    public ProtectedStationAdmissionCoordinator(TopologyProtectedAuthorizationContract identity,
+        TopologyProtectedPartyEligibilityContract party,StationProtectedFacilityOwnershipContract facility,
+        ProtectedTransactionExecutor executor,dz.sh.hidra.modules.topology.application.port.out.TopologyFoundationPersistencePort foundation) {
+        this(identity,party,facility,executor);this.foundation=Objects.requireNonNull(foundation);
+    }
     @Transactional(propagation=Propagation.NEVER)
     public Prepared prepare() {
         if(TransactionSynchronizationManager.isActualTransactionActive()) throw invalid();
@@ -222,4 +229,66 @@ public class ProtectedStationAdmissionCoordinator {
         }
         @Override public String toString() { return "Contribution[station owner scalars]"; }
     }
+    private static final java.util.Set<String> FOUNDATION_DML_HASHES=java.util.Set.of("3e9f0118c53457bb051df326b3aaf14d963f5833d5857b46b5348986771e7a3d","2aa977fdaee6fee8511de2deb33107d2c1d0324fc852264518579ed228dcf02e","27ca72ce44403c94391c5a30ea4048582081b7ff36a1c4c3ab4d5ad22a136b5f","444a275418b2f402732619f4e7358f48ae51020c656b81d355bd1821e3380e31","36dcc0915ff2d0bed8605deb4af335379a07fbb826cd1aa53b30df955320864b","0fbf0cc9416cadba05f8100e73486797b25fe60f59b04f700f21f5b0eb4652f1");
+
+    /** Separate setup path: PLANNED/absent facilities are not admitted as active graph owners. */
+    public static final class FoundationAdmission {
+        private final ProtectedStationAdmissionCoordinator owner;private final Thread thread=Thread.currentThread();
+        private final dz.sh.hidra.modules.topology.application.port.in.TopologyFoundationUseCase.Command command;
+        private TopologyProtectedAuthorizationContract.Admission identity;
+        private dz.sh.hidra.modules.topology.application.port.out.TopologyFoundationPersistencePort.Admission storage;
+        private TopologyProtectedAuthorizationContract.Contribution origin;
+        private TopologyProtectedPartyEligibilityContract.Contribution company;
+        private java.util.List<dz.sh.hidra.platform.persistence.ProtectedRelationFence> fences;
+        private ProtectedTransactionExecutor.ProvisionalPermit permit;
+        private boolean active=true;private boolean completed;
+        private FoundationAdmission(ProtectedStationAdmissionCoordinator owner,dz.sh.hidra.modules.topology.application.port.in.TopologyFoundationUseCase.Command command){this.owner=owner;this.command=command;}
+    }
+    private void currentFoundation(FoundationAdmission a) {
+        if(a==null || a.owner!=this || a.thread!=Thread.currentThread() || !a.active || !TransactionSynchronizationManager.isActualTransactionActive())throw invalid();
+        executor.requireAdmission();identity.requireCurrent(a.identity);
+    }
+    public FoundationAdmission acquireFoundation(Prepared prepared,dz.sh.hidra.modules.topology.application.port.in.TopologyFoundationUseCase.Command command) {
+        try {
+            executor.beginAdmission();
+            if(foundation==null || prepared==null || prepared.owner!=this || prepared.thread!=Thread.currentThread() || !prepared.used.compareAndSet(false,true))throw invalid();
+            var a=new FoundationAdmission(this,command);
+            var target=command.facilityId()==null
+                ? dz.sh.hidra.modules.identity.application.contract.topology.TopologyScopedAccessContract.Target.FOUNDATION_COMPANY
+                : dz.sh.hidra.modules.identity.application.contract.topology.TopologyScopedAccessContract.Target.FOUNDATION_FACILITY;
+            var request=new Request(command.mutation()?Operation.AUTHOR:Operation.READ_CURRENT,command.companyPartyId(),command.facilityId()==null?command.companyPartyId():command.facilityId(),target);
+            a.identity=identity.acquire(prepared.identity,request);
+            var p=party.acquire(command.companyPartyId());a.storage=foundation.acquire(command);
+            a.company=party.read(p);a.origin=identity.contribute(a.identity);
+            if(a.origin.combinedDecision()!=TopologyProtectedAuthorizationContract.Decision.PERMIT)throw new org.springframework.security.access.AccessDeniedException("Current foundation authority required");
+            if(!a.origin.companyPartyId().equals(a.company.partyId()) || !a.origin.facilityId().equals(request.facilityId())
+                || a.origin.operation()!=request.operation() || a.origin.combinedDecision()!=TopologyProtectedAuthorizationContract.Decision.PERMIT
+                || a.company.backendPid()!=a.origin.backendPid() || a.company.transactionId()!=a.origin.transactionId())throw invalid();
+            var fences=new java.util.ArrayList<dz.sh.hidra.platform.persistence.ProtectedRelationFence>();fences.addAll(identity.finalFences(a.identity));fences.addAll(party.finalFences(p));
+            if(fences.size()!=26 || fences.stream().map(dz.sh.hidra.platform.persistence.ProtectedRelationFence::relation).distinct().count()!=26)throw invalid();a.fences=java.util.List.copyOf(fences);
+            a.permit=executor.sealAdmission();currentFoundation(a);
+            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization(){@Override public void suspend(){a.active=false;}@Override public void afterCompletion(int status){a.active=false;}});
+            return a;
+        }catch(RuntimeException e){executor.rejectAdmission();throw e;}
+    }
+    public dz.sh.hidra.modules.topology.application.port.in.TopologyFoundationUseCase.Result performFoundation(FoundationAdmission a) {
+        try {
+            currentFoundation(a);if(a.completed)throw invalid();
+            var result=foundation.observe(a.storage);
+            if(a.command.mutation() && result==null) {
+                var sql=foundation.mutationSql();
+                if(sql==null || sql.size()!=FOUNDATION_DML_HASHES.size() || !sql.stream().map(ProtectedStationAdmissionCoordinator::digest).collect(java.util.stream.Collectors.toSet()).equals(FOUNDATION_DML_HASHES))throw invalid();
+                executor.beginProvisional(a.permit,sql);result=foundation.persist(a.storage,foundationOrigin(a));executor.endProvisional(a.permit);
+            }
+            currentFoundation(a);foundation.freeze(a.storage);a.completed=true;return result;
+        }catch(RuntimeException e){executor.rejectAdmission();throw e;}
+    }
+    private dz.sh.hidra.modules.topology.application.port.out.TopologyFoundationPersistencePort.Origin foundationOrigin(FoundationAdmission a) {
+        var o=a.origin;return new dz.sh.hidra.modules.topology.application.port.out.TopologyFoundationPersistencePort.Origin(o.userId(),o.bindingId(),o.sessionId(),o.sampledAt(),o.validUntil(),o.backendPid(),o.transactionId(),a.company.generation());
+    }
+    public boolean finalFoundation(FoundationAdmission a) {
+        if(a==null || a.owner!=this || !a.active || a.thread!=Thread.currentThread() || !a.completed)throw invalid();
+        return foundation.finalGuard(a.storage,foundationOrigin(a),a.fences);
+    }
+
 }

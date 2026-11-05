@@ -150,6 +150,31 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
             List.of("hidra_party_party","hidra_party_role","hidra_party_role_assignment","hidra_party_manufacturer_profile"));
         provisionHelper(admin,"installed_position_lock_owner","public.hidra_topology_lock_installed_unit_position_ownership()",
             List.of("hidra_topology_equipment","hidra_topology_facility"));
+        // A separate setup/graph pool may write facility/position masters. The installed
+        // pool retains the exact read-only source privileges required by its native guards.
+        String setup="foundation_setup_publisher";
+        admin.execute("CREATE ROLE "+setup+" LOGIN PASSWORD '"+PASSWORD+"'");admin.execute("GRANT USAGE ON SCHEMA public TO "+setup);
+        admin.execute("GRANT SELECT ON ALL TABLES IN SCHEMA public TO "+setup);
+        for(var fence:JdbcIdentityAuthorityFence.requiredRelationFences())if(fence.mode()!=dz.sh.hidra.platform.persistence.ProtectedRelationFence.Mode.ACCESS_SHARE)
+            admin.execute("GRANT UPDATE ON "+fence.relation()+" TO "+setup);
+        for(String suffix:List.of("pipeline_system","pipeline_system_type","pipeline_type","facility","facility_type","equipment","equipment_type","foundation_system_owner","foundation_request","engineering_context","installed_unit_installation","station_graph_revision","station_graph_head","station_graph_operation_event"))
+            admin.execute("GRANT UPDATE ON public.hidra_topology_"+suffix+" TO "+setup);
+        admin.execute("GRANT UPDATE ON public.hidra_party_party TO "+setup);
+        for(String suffix:List.of("pipeline_system","facility","equipment","foundation_system_owner","foundation_request","station_graph_revision","station_graph_head","station_graph_operation_event"))
+            admin.execute("GRANT INSERT ON public.hidra_topology_"+suffix+" TO "+setup);
+        admin.execute("REVOKE ALL ON public.hidra_topology_foundation_system_owner,public.hidra_topology_foundation_request FROM "+APP);
+        for(String suffix:List.of("station_configuration_revision","station_configuration_member","station_configuration_request"))
+            admin.execute("GRANT INSERT ON public.hidra_topology_"+suffix+" TO "+PUBLISHER);
+        admin.execute("GRANT INSERT,UPDATE ON public.hidra_topology_station_configuration_head TO "+PUBLISHER);
+        admin.execute("GRANT EXECUTE ON FUNCTION public.hidra_station_configuration_lock_sources() TO "+PUBLISHER);
+        admin.execute("REVOKE SELECT ON public.hidra_topology_station_configuration_revision FROM "+APP);
+        for(String suffix:List.of("engineering_context","engineering_draft","engineering_draft_version","engineering_graph_snapshot","engineering_survey_snapshot","pipeline","pipeline_type","pipeline_segment","pipeline_authoring_revision","pipeline_graph_snapshot","pipeline_graph_binding"))
+            admin.execute("GRANT SELECT,INSERT,UPDATE ON public.hidra_topology_"+suffix+" TO "+setup);
+        for(String suffix:List.of("pipeline_authoring_revision","pipeline_graph_snapshot","pipeline_graph_binding"))
+            admin.execute("REVOKE ALL ON public.hidra_topology_"+suffix+" FROM "+APP);
+        r.add("hidra.platform.persistence.topology-setup.enabled",()->true);
+        r.add("hidra.platform.persistence.topology-setup.username",()->setup);
+        r.add("hidra.platform.persistence.topology-setup.password",()->PASSWORD);
         r.add("spring.datasource.url",POSTGRES::getJdbcUrl);r.add("spring.datasource.username",()->APP);r.add("spring.datasource.password",()->PASSWORD);
         r.add("spring.flyway.url",POSTGRES::getJdbcUrl);r.add("spring.flyway.user",POSTGRES::getUsername);r.add("spring.flyway.password",POSTGRES::getPassword);
         r.add("spring.jpa.hibernate.ddl-auto",()->"validate");r.add("spring.flyway.enabled",()->true);
@@ -1789,4 +1814,158 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
         installedHttp(bearer,r.command()).andExpect(status().isOk()).andExpect(jsonPath("$.replayed").value(true))
             .andExpect(jsonPath("$.replacementUnit.id").value(r.second().id()));assertThat(effects()).isEqualTo(committed);
     }
+
+    @MockitoSpyBean dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.JdbcTopologyFoundationAdapter foundationStore;
+    private void foundationGrant(Fixture actor,String code,String resourceType,String scope,String ref) {
+        var permissions=jdbc.queryForList("SELECT id FROM public.hidra_identity_permission WHERE code=?",String.class,code);
+        String permission=permissions.isEmpty()?id():permissions.getFirst();
+        if(permissions.isEmpty())jdbc.update("INSERT INTO public.hidra_identity_permission(id,code,permission_domain,resource_type,action,sensitive,status,created_at,updated_at) VALUES(?,?,'topology',?,?,false,'ACTIVE',now(),now())",permission,code,resourceType,code.substring(code.lastIndexOf(':')+1));
+        if(jdbc.queryForObject("SELECT count(*) FROM public.hidra_identity_user_permission_grant WHERE user_id=? AND permission_id=? AND scope_type=? AND scope_reference_id=? AND status='ACTIVE'",Integer.class,actor.user(),permission,scope,ref)>0)return;
+        jdbc.update("INSERT INTO public.hidra_identity_user_permission_grant(id,user_id,permission_id,effect,scope_type,scope_reference_id,grant_reason,emergency_access,valid_from,valid_to,status,created_at) VALUES(?,?,?,'GRANT',?,?,'synthetic foundation setup',false,now()-interval '1 hour',now()+interval '1 hour','ACTIVE',now())",id(),actor.user(),permission,scope,ref);
+    }
+    private void foundationScope(Fixture actor,String facility) {
+        for(String action:List.of("read","write")) {
+            foundationGrant(actor,"topology:foundation:"+action,"TOPOLOGY_FOUNDATION","CUSTOM","topology-company:"+COMPANY);
+            foundationGrant(actor,"topology:foundation:"+action,"TOPOLOGY_FOUNDATION",facility==null?"CUSTOM":"FACILITY",facility==null?"topology-foundation-company:"+COMPANY:facility);
+        }
+    }
+    private String foundationBearer(Fixture actor){login(actor);return ((org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken)SecurityContextHolder.getContext().getAuthentication()).getToken().getTokenValue();}
+    private org.springframework.test.web.servlet.ResultActions foundationHttp(String bearer,String method,String path,Object body)throws Exception {
+        var request=org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request(org.springframework.http.HttpMethod.valueOf(method),path);
+        if(body!=null)request.contentType("application/json").content(JSON.writeValueAsString(body));
+        if(bearer!=null)request.header("Authorization","Bearer "+bearer);
+        SecurityContextHolder.clearContext();return installedMvc().perform(request);
+    }
+    private tools.jackson.databind.JsonNode foundationOk(String bearer,String method,String path,Object body)throws Exception {
+        return JSON.readTree(foundationHttp(bearer,method,path,body).andDo(result->{
+            if(result.getResponse().getStatus()!=200 && result.getResponse().getStatus()!=201)throw new AssertionError("Foundation HTTP "+result.getResponse().getStatus()+" at "+path,result.getResolvedException());
+        }).andReturn().getResponse().getContentAsString());
+    }
+    private record FoundationFixture(Fixture actor,String bearer,String system,String facility,String facilityType,String kind,String position,InstalledUnit unit,String installation){}
+    private FoundationFixture foundationSetup()throws Exception {
+        var actor=fixture("LOCAL");String system=id(),facility=id(),systemType=id(),facilityType=id(),kind=id(),position=id();var db=admin();
+        db.update("INSERT INTO public.hidra_topology_pipeline_system_type(id,code,name_en,active,created_at,updated_at) VALUES(?,?,'Synthetic gas system',true,now(),now())",systemType,systemType);
+        db.update("INSERT INTO public.hidra_topology_facility_type(id,code,name,facility_kind,status,created_at,updated_at) VALUES(?,?,'Synthetic compressor station','COMPRESSOR_STATION','ACTIVE',now(),now())",facilityType,facilityType);
+        db.update("INSERT INTO public.hidra_topology_equipment_type(id,code,name,status,created_at,updated_at) VALUES(?,?,'Synthetic compressor','ACTIVE',now(),now())",kind,kind);
+        foundationScope(actor,null);foundationScope(actor,facility);String bearer=foundationBearer(actor);
+        var catalogs=foundationOk(bearer,"GET","/api/v1/topology/foundation/choices/SYSTEM_TYPES?companyPartyId="+COMPANY+"&limit=200",null);
+        assertThat(catalogs.get("items").isArray()).isTrue();
+        foundationOk(bearer,"POST","/api/v1/topology/foundation/pipeline-systems",Map.of("companyPartyId",COMPANY,"requestId",id(),"id",system,"code",system,"name","Synthetic GZ2","systemTypeId",systemType,"reason","Synthetic setup"));
+        var f=foundationOk(bearer,"POST","/api/v1/topology/foundation/facilities",Map.of("companyPartyId",COMPANY,"requestId",id(),"id",facility,"code",facility,"name","Synthetic station","facilityTypeId",facilityType,"facilityKind","COMPRESSOR_STATION","reason","Synthetic setup"));
+        assertThat(f.get("items").get(0).get("status").stringValue()).isEqualTo("PLANNED");
+        foundationOk(bearer,"POST","/api/v1/topology/foundation/facilities/"+facility+"/activation",Map.of("companyPartyId",COMPANY,"requestId",id(),"expectedUpdatedAt",f.get("items").get(0).get("updatedAt").stringValue(),"reason","Synthetic operator activation"));
+        foundationOk(bearer,"POST","/api/v1/topology/foundation/facilities/"+facility+"/equipment-positions",Map.of("companyPartyId",COMPANY,"requestId",id(),"id",position,"code",position,"name","Synthetic compressor position","equipmentKindId",kind,"reason","Synthetic position registration"));
+        var unit=new InstalledUnit(id(),COMPANY,kind,InstalledUnit.Evidence.unknown(),InstalledUnit.Evidence.unknown(),InstalledUnit.Evidence.unknown(),null);
+        var place=new Place(position,facility,kind);String installation=id();
+        installedHttp(actor,register(unit)).andExpect(status().isOk());
+        installedHttp(actor,record(unit,place,installation)).andExpect(status().isOk());
+        var readInstallation=new InstalledUnitLifecycleUseCase.Command(InstalledUnitLifecycleUseCase.Operation.READ_INSTALLATION,null,COMPANY,unit.id(),installation,null,pos(place),null,null,null,null,null,0);
+        authorize(actor,readInstallation);authorize(actor,read(unit));
+        return new FoundationFixture(actor,foundationBearer(actor),system,facility,facilityType,kind,position,unit,installation);
+    }
+    private void foundationConfigurationGrants(FoundationFixture f,String operation) {
+        var request=new dz.sh.hidra.modules.identity.application.contract.topology.TopologyStationConfigurationAuthorizationContract.Request(
+            dz.sh.hidra.modules.identity.application.contract.topology.TopologyStationConfigurationAuthorizationContract.Operation.valueOf(operation),COMPANY,f.facility(),null,List.of(f.unit().id()));
+        for(var q:request.requirements())foundationGrant(f.actor(),dz.sh.hidra.modules.identity.application.contract.topology.TopologyStationConfigurationAuthorizationContract.permissionCode(request.operation(),q.resourceType()),q.resourceType(),q.scope().name().equals("COMPANY")?"CUSTOM":"FACILITY",q.scope().name().equals("COMPANY")?"topology-company:"+q.scopeReference():q.scopeReference());
+    }
+    @Test void foundationNativeHttpSetupInstallationGraphPublicationConfigurationAndReload()throws Exception {
+        var f=foundationSetup();String bearer=f.bearer(),facility=f.facility(),revision=id();
+        for(String action:List.of("author","publish","read-current","read-history","list-history")) {
+            foundationGrant(f.actor(),"topology:station-revision:"+action,"STATION_GRAPH_REVISION","CUSTOM","topology-company:"+COMPANY);
+            foundationGrant(f.actor(),"topology:station-revision:"+action,"STATION_GRAPH_REVISION","FACILITY",facility);
+        }
+        var graph=Map.of("facilityId",facility,"revisionId",revision,"status","COMPLETE",
+            "headers",List.of(Map.of("id","suction","kind","SUCTION","portId","s"),Map.of("id","discharge","kind","DISCHARGE","portId","d")),
+            "units",List.of(Map.of("equipmentId",f.position(),"facilityId",facility,"inletPortId","i","outletPortId","o")),
+            "edges",List.of(Map.of("id","in","fromPortId","s","toPortId","i"),Map.of("id","out","fromPortId","o","toPortId","d")));
+        Map<String,Object> envelope=new LinkedHashMap<>();envelope.put("facilityId",facility);envelope.put("revisionId",revision);envelope.put("graph",graph);envelope.put("sourceClassification","SYNTHETIC");envelope.put("recordedAt",START.toString());envelope.put("effectiveFrom",START.toString());envelope.put("evidenceReference","synthetic:graph");envelope.put("qualification","STRUCTURALLY_QUALIFIED");
+        String route="/api/v1/topology/facilities/"+facility+"/station-graph";
+        foundationOk(bearer,"PUT",route+"/revisions/"+revision,Map.of("companyPartyId",COMPANY,"revision",envelope));
+        foundationOk(bearer,"POST",route+"/publications",Map.of("companyPartyId",COMPANY,"revisionId",revision,"expectedEpoch",0));
+        var published=foundationOk(bearer,"GET",route+"/publications/current?companyPartyId="+COMPANY,null);
+        assertThat(published.get("head").get("epoch").longValue()).isEqualTo(1L);assertThat(published.get("canonicalSha256").stringValue()).matches("[0-9a-f]{64}");
+        for(String op:List.of("SAVE","READ_CURRENT","LIST_HISTORY"))foundationConfigurationGrants(f,op);
+        Map<String,Object> configuration=new LinkedHashMap<>();configuration.put("requestId",id());configuration.put("companyPartyId",COMPANY);configuration.put("revisionId",id());configuration.put("expectedEpoch",0);configuration.put("graphHeadEpoch",1);configuration.put("pinnedGraph",envelope);configuration.put("graphPayloadFormat",published.get("payloadFormat").stringValue());configuration.put("graphSha256",published.get("canonicalSha256").stringValue());configuration.put("effectiveFrom",START.toString());configuration.put("sourceReference","synthetic:operator");configuration.put("positions",List.of(Map.of("positionId",f.position(),"disposition","CONNECTED","installedUnitId",f.unit().id(),"installationId",f.installation(),"installationRevision",1,"installationFrom",START.toString(),"installationEvidenceReference","synthetic occupancy")));configuration.put("activeEdgeIds",List.of("in","out"));
+        String config="/api/v1/topology/facilities/"+facility+"/installed-configuration";
+        var saved=foundationOk(bearer,"PUT",config,configuration);assertThat(saved.get("snapshot").get("selectedEpoch").longValue()).isEqualTo(1L);
+        assertThat(foundationOk(bearer,"PUT",config,configuration).get("replayed").booleanValue()).isTrue();
+        assertThat(foundationOk(bearer,"GET",config+"?companyPartyId="+COMPANY,null).get("snapshot").get("positions").get(0).get("installationId").stringValue()).isEqualTo(f.installation());
+        String choices="/api/v1/topology/foundation/facilities/"+facility;
+        assertThat(foundationOk(bearer,"GET",choices+"/equipment-positions?companyPartyId="+COMPANY,null).get("items").get(0).get("id").stringValue()).isEqualTo(f.position());
+        assertThat(foundationOk(bearer,"GET",choices+"/installations?companyPartyId="+COMPANY,null).get("installations").get(0).get("installationId").stringValue()).isEqualTo(f.installation());
+        configuration.put("requestId",id());configuration.put("revisionId",id());configuration.put("expectedEpoch",1);
+        assertThat(foundationOk(bearer,"PUT",config,configuration).get("snapshot").get("selectedEpoch").longValue()).isEqualTo(2L);
+        foundationHttp(bearer,"POST",route+"/publications",Map.of("companyPartyId",COMPANY,"revisionId",revision,"expectedEpoch",0)).andExpect(status().isServiceUnavailable());
+        assertThat(foundationOk(bearer,"GET",route+"/publications/current?companyPartyId="+COMPANY,null).get("head").get("epoch").longValue()).isEqualTo(1L);
+        // The same newly created system, active station and operator also own the persisted
+        // Pipeline/engineering graph journey. No station/position/graph is inserted by fixture SQL.
+        for(String action:List.of("create","read","update","validate"))for(String scope:List.of("topology-company:"+COMPANY,"topology-network:"+f.system()))
+            foundationGrant(f.actor(),"topology:engineering-draft:"+action,"ENGINEERING_NETWORK_DRAFT","CUSTOM",scope);
+        String pipelineType=id();admin().update("INSERT INTO public.hidra_topology_pipeline_type(id,code,name_en,active,created_at,updated_at) VALUES(?,?,'Synthetic pipeline',true,now(),now())",pipelineType,pipelineType);
+        var draft=foundationOk(bearer,"POST","/api/v1/topology/engineering-networks",Map.of("companyPartyId",COMPANY,"pipelineSystemId",f.system(),"creationRequestId",id(),"title","Synthetic GZ2 station connection","evidenceReference","synthetic:operator"));
+        String draftId=draft.get("draftId").stringValue(),pipeline=id();
+        var networkGraph=Map.of("expectedVersion",1,"nodes",List.of(Map.of("id","upstream","kind","JUNCTION"),Map.of("id","station","kind","STATION","facilityId",facility)),"ports",List.of(Map.of("id","from","nodeId","upstream","direction","OUTLET"),Map.of("id","to","nodeId","station","direction","INLET")),"branches",List.of(Map.of("id","main","kind","PIPE","fromPortId","from","toPortId","to")));
+        Map<String,Object> authored=new LinkedHashMap<>();authored.put("requestId",id());authored.put("pipeline",Map.of("id",pipeline,"expectedRevision",0,"code",pipeline,"pipelineTypeId",pipelineType,"nameEn","Synthetic mainline"));authored.put("graph",networkGraph);authored.put("references",List.of(Map.of("branchId","main","pipelineId",pipeline)));
+        String authoredRoute="/api/v1/topology/engineering-networks/"+draftId+"/authored-topology?companyPartyId="+COMPANY+"&pipelineSystemId="+f.system();
+        foundationOk(bearer,"PUT",authoredRoute,authored);
+        var reloaded=foundationOk(bearer,"GET",authoredRoute,null);assertThat(reloaded.get("bindings").get(0).get("pipeline").get("id").stringValue()).isEqualTo(pipeline);assertThat(reloaded.get("geometryStatus").stringValue()).isEqualTo("NOT_SUPPLIED");
+        var revisedGraph=new LinkedHashMap<String,Object>(networkGraph);revisedGraph.put("expectedVersion",2);
+        authored.put("requestId",id());authored.put("graph",revisedGraph);authored.put("pipeline",Map.of("id",pipeline,"expectedRevision",1,"code",pipeline,"pipelineTypeId",pipelineType,"nameEn","Revised synthetic mainline"));
+        foundationOk(bearer,"PUT",authoredRoute,authored);
+        assertThat(foundationOk(bearer,"GET",authoredRoute,null).get("bindings").get(0).get("pipeline").get("revision").longValue()).isEqualTo(2L);
+        assertThat(foundationOk(bearer,"GET",authoredRoute+"&version=2",null).get("bindings").get(0).get("pipeline").get("nameEn").stringValue()).isEqualTo("Synthetic mainline");
+        // Existing installation source guard still accepts the distinct restricted principal.
+        installedHttp(f.actor(),read(f.unit())).andExpect(status().isOk());
+    }
+    @Test void foundationNativeDeniedForeignInactiveAndReplayConflictsHaveNoPartialWrites()throws Exception {
+        var f=foundationSetup();String route="/api/v1/topology/foundation/facilities/"+f.facility()+"/equipment-positions";String position=id();
+        var body=new LinkedHashMap<String,Object>(Map.of("companyPartyId",COMPANY,"requestId",id(),"id",position,"code",position,"name","Synthetic","equipmentKindId",f.kind(),"reason","Synthetic test"));
+        foundationOk(f.bearer(),"POST",route,body);assertThat(foundationOk(f.bearer(),"POST",route,body).get("replayed").booleanValue()).isTrue();
+        body.put("name","Changed replay");foundationHttp(f.bearer(),"POST",route,body).andExpect(status().isConflict());
+        body.put("requestId",id());body.put("id",id());admin().update("UPDATE public.hidra_topology_equipment_type SET status='INACTIVE' WHERE id=?",f.kind());
+        foundationHttp(f.bearer(),"POST",route,body).andExpect(status().isConflict());
+        assertThat(admin().queryForObject("SELECT count(*) FROM public.hidra_topology_equipment WHERE id=?",Long.class,body.get("id"))).isZero();
+        body.put("actorId","forged");foundationHttp(f.bearer(),"POST",route,body).andExpect(status().isBadRequest());body.remove("actorId");
+        jdbc.update("UPDATE public.hidra_identity_user_permission_grant SET status='REVOKED' WHERE user_id=? AND permission_id IN (SELECT id FROM public.hidra_identity_permission WHERE code='topology:foundation:read')",f.actor().user());
+        foundationHttp(f.bearer(),"GET",route+"?companyPartyId="+COMPANY,null).andExpect(status().isForbidden()).andExpect(content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString(f.position()))));
+        foundationHttp(null,"GET",route+"?companyPartyId="+COMPANY,null).andExpect(status().isUnauthorized());
+    }
+    @Test void foundationNativeFinalGuardFailureRollsBackPositionAndReceiptTogether()throws Exception {
+        var f=foundationSetup();String position=id(),request=id();long before=count("foundation_request");
+        var target=org.springframework.test.util.AopTestUtils.<dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.JdbcTopologyFoundationAdapter>getUltimateTargetObject(foundationStore);
+        doReturn(false).when(target).finalGuard(any(),any(),anyList());
+        try {foundationHttp(f.bearer(),"POST","/api/v1/topology/foundation/facilities/"+f.facility()+"/equipment-positions",Map.of("companyPartyId",COMPANY,"requestId",request,"id",position,"code",position,"name","Rollback","equipmentKindId",f.kind(),"reason","Synthetic rollback")).andExpect(status().isServiceUnavailable());}
+        finally{doCallRealMethod().when(target).finalGuard(any(),any(),anyList());}
+        assertThat(count("foundation_request")).isEqualTo(before);assertThat(admin().queryForObject("SELECT count(*) FROM public.hidra_topology_equipment WHERE id=?",Long.class,position)).isZero();
+    }
+
+
+    @Test void foundationCatalogPagesBeyondTwoHundredAndForeignScopeStayExplicit()throws Exception {
+        var f=foundationSetup();String prefix="zz-"+id();
+        for(int n=0;n<201;n++){String kind=prefix+String.format("%03d",n);admin().update("INSERT INTO public.hidra_topology_equipment_type(id,code,name,status,created_at,updated_at) VALUES(?,?,'Synthetic catalog scale','ACTIVE',now(),now())",kind,kind);}
+        String path="/api/v1/topology/foundation/choices/EQUIPMENT_KINDS?companyPartyId="+COMPANY+"&limit=200";
+        var page=foundationOk(f.bearer(),"GET",path,null);var all=new HashSet<String>();int pages=0;
+        while(true){for(var item:page.get("items"))all.add(item.get("id").stringValue());pages++;var cursor=page.get("nextCursor");if(cursor==null||cursor.isNull())break;assertThat(pages).isLessThan(20);page=foundationOk(f.bearer(),"GET",path+"&cursor="+cursor.stringValue(),null);}
+        assertThat(all).contains(prefix+"200");assertThat(pages).isGreaterThan(1);
+        foundationHttp(f.bearer(),"GET",path+"&cursor=200",null).andExpect(status().isBadRequest());
+        String foreign=id(),partyType=admin().queryForObject("SELECT party_type_id FROM public.hidra_party_party WHERE id=?",String.class,COMPANY);
+        admin().update("INSERT INTO public.hidra_party_party(id,code,party_type_id,legal_name,country_code,status,created_at,updated_at) VALUES(?,?,?,'Synthetic foreign owner','DZ','ACTIVE',now(),now())",foreign,foreign,partyType);
+        foundationHttp(f.bearer(),"GET",path.replace("companyPartyId="+COMPANY,"companyPartyId="+foreign),null).andExpect(status().isForbidden()).andExpect(content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString(foreign))));
+        // Independent native company/network grants cannot override explicit registration ownership.
+        foundationGrant(f.actor(),"topology:engineering-draft:create","ENGINEERING_NETWORK_DRAFT","CUSTOM","topology-company:"+foreign);
+        foundationGrant(f.actor(),"topology:engineering-draft:create","ENGINEERING_NETWORK_DRAFT","CUSTOM","topology-network:"+f.system());
+        foundationHttp(f.bearer(),"POST","/api/v1/topology/engineering-networks",Map.of("companyPartyId",foreign,"pipelineSystemId",f.system(),"creationRequestId",id(),"title","Forbidden foreign context","evidenceReference","synthetic:negative")).andExpect(status().isForbidden());
+        assertThat(admin().queryForObject("SELECT count(*) FROM public.hidra_topology_engineering_context WHERE company_party_id=? AND pipeline_system_id=?",Long.class,foreign,f.system())).isZero();
+    }
+    @Test void foundationCompetingActivationWritesCommitOneSuccessorAndRejectStaleToken()throws Exception {
+        var f=foundationSetup();String facility=id();foundationScope(f.actor(),facility);
+        var planned=foundationOk(f.bearer(),"POST","/api/v1/topology/foundation/facilities",Map.of("companyPartyId",COMPANY,"requestId",id(),"id",facility,"code",facility,"name","Synthetic CAS station","facilityTypeId",f.facilityType(),"facilityKind","COMPRESSOR_STATION","reason","Synthetic conflict"));
+        String expected=planned.get("items").get(0).get("updatedAt").stringValue();
+        String path="/api/v1/topology/foundation/facilities/"+facility+"/activation";
+        var pool=java.util.concurrent.Executors.newFixedThreadPool(2);var gate=new java.util.concurrent.CountDownLatch(1);var winners=new java.util.concurrent.atomic.AtomicInteger();
+        try{var jobs=new ArrayList<java.util.concurrent.Future<?>>();for(int n=0;n<2;n++)jobs.add(pool.submit(()->{try{gate.await();int status=foundationHttp(f.bearer(),"POST",path,Map.of("companyPartyId",COMPANY,"requestId",id(),"expectedUpdatedAt",expected,"reason","Synthetic competing activation")).andReturn().getResponse().getStatus();if(status==200)winners.incrementAndGet();else assertThat(status).isIn(409,503);}catch(Exception e){throw new AssertionError(e);}}));gate.countDown();for(var job:jobs)job.get(20,java.util.concurrent.TimeUnit.SECONDS);}finally{pool.shutdownNow();}
+        assertThat(winners.get()).isEqualTo(1);foundationHttp(f.bearer(),"POST",path,Map.of("companyPartyId",COMPANY,"requestId",id(),"expectedUpdatedAt",expected,"reason","Stale activation")).andExpect(status().isConflict());
+        assertThat(admin().queryForObject("SELECT count(*) FROM public.hidra_topology_foundation_request WHERE resource_id=? AND operation='ACTIVATE_FACILITY'",Integer.class,facility)).isEqualTo(1);
+    }
+
 }

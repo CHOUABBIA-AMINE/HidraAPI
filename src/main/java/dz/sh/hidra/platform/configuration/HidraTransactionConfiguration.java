@@ -52,12 +52,13 @@ public class HidraTransactionConfiguration {
     @Bean
     static BeanPostProcessor protectedOperationDatasource(Environment environment) {
         var publication=ProtectedPublicationDatabaseProperties.from(environment);
+        var setup=ProtectedPublicationDatabaseProperties.from(environment,"hidra.platform.persistence.topology-setup.");
         return new BeanPostProcessor() {
             @Override
             public Object postProcessAfterInitialization(Object bean, String name) {
                 return bean instanceof DataSource ds
                                 && !(bean instanceof ProtectedOperationDataSource)
-                        ? new ProtectedOperationDataSource(new ProtectedCredentialRoutingDataSource(ds,publication))
+                        ? new ProtectedOperationDataSource(new ProtectedCredentialRoutingDataSource(ds,publication,setup))
                         : bean;
             }
         };

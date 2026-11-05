@@ -43,7 +43,8 @@ public interface ProtectedStationGraphOperationUseCase {
         }
     }
     record Result(StationGraphPublicationHead head,StationInternalGraphRevision revision,
-                  List<StationGraphPublicationEvent> history, boolean observedCommit) {
+                  List<StationGraphPublicationEvent> history, boolean observedCommit, String canonicalSha256) {
+        public Result(StationGraphPublicationHead head,StationInternalGraphRevision revision,List<StationGraphPublicationEvent> history,boolean observedCommit){this(head,revision,history,observedCommit,null);}
         public Result {
             history=List.copyOf(history);
         }

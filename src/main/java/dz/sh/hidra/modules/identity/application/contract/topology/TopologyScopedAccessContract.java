@@ -31,13 +31,21 @@ public interface TopologyScopedAccessContract {
         AUTHOR, PUBLISH, READ_CURRENT, READ_HISTORY, LIST_HISTORY, WITHDRAW, REACTIVATE, TRANSFER
     }
 
-    record Request(Operation operation, String companyPartyId, String facilityId) {
+    enum Target { STATION, FOUNDATION_COMPANY, FOUNDATION_FACILITY }
+    record Request(Operation operation, String companyPartyId, String facilityId, Target target) {
+        public Request(Operation operation,String companyPartyId,String facilityId) {
+            this(operation,companyPartyId,facilityId,Target.STATION);
+        }
+        public String resourceType() { return target == Target.STATION ? "STATION_GRAPH_REVISION" : "TOPOLOGY_FOUNDATION"; }
+        public boolean companyTarget() { return target == Target.FOUNDATION_COMPANY; }
         public Request {
-            if (operation == null) {
+            if (operation == null || target == null) {
                 throw new IllegalArgumentException("Operation must not be null.");
             }
             companyPartyId = requireReference(companyPartyId, "companyPartyId");
             facilityId = requireReference(facilityId, "facilityId");
+            if (target != Target.STATION && operation != Operation.AUTHOR && operation != Operation.READ_CURRENT || (target == Target.FOUNDATION_COMPANY && !companyPartyId.equals(facilityId)))
+                throw new IllegalArgumentException("Foundation target and permission mismatch");
         }
 
         private static String requireReference(String value, String field) {

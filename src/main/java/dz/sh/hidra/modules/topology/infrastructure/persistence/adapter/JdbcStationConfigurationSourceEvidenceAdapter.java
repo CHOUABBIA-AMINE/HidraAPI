@@ -132,7 +132,7 @@ public class JdbcStationConfigurationSourceEvidenceAdapter implements StationCon
         if(owners.size()!=1)throw unavailable();
         Owner owner=owners.get(0);
         if(!c.companyPartyId().equals(owner.company) || !"ACTIVE".equals(owner.status)
-            || !"STATION".equals(owner.kind) || !owner.present || owner.generation<1)throw unavailable();
+            || !dz.sh.hidra.modules.topology.domain.value.FacilityKind.valueOf(owner.kind).isStation() || !owner.present || owner.generation<1)throw unavailable();
         var heads=jdbc.query("""
             SELECT h.revision_id,h.head_epoch,h.state,r.payload_format,r.sha256,
                    r.canonical_payload,pg_catalog.row_to_json(h)::text

@@ -75,10 +75,33 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
             Class<?> pipeline=Class.forName(topology+"controller.PipelineAuthoringController");
             Class<?> pipelineWrite=Class.forName(topology+"request.PipelineAuthoringRequests$Write");
             final String pipelineBase="/api/v1/topology/engineering-networks/{draftId}";
+            Class<?> foundation=Class.forName(topology+"controller.TopologyFoundationController");
+            Class<?> foundationCatalog=Class.forName("dz.sh.hidra.modules.topology.application.port.in.TopologyFoundationUseCase$Catalog");
+            Class<?> foundationSystem=Class.forName(topology+"request.TopologyFoundationRequests$CreateSystem");
+            Class<?> foundationFacility=Class.forName(topology+"request.TopologyFoundationRequests$RegisterFacility");
+            Class<?> foundationActivation=Class.forName(topology+"request.TopologyFoundationRequests$ActivateFacility");
+            Class<?> foundationPosition=Class.forName(topology+"request.TopologyFoundationRequests$RegisterPosition");
+            String foundationBase="/api/v1/topology/foundation";
+            Class<?> station=Class.forName(topology+"controller.StationGraphController");
+            Class<?> stationAuthor=Class.forName(topology+"request.StationGraphRequests$Author");
+            Class<?> stationPublish=Class.forName(topology+"request.StationGraphRequests$Publish");
+            String stationBase="/api/v1/topology/facilities/{facilityId}/station-graph";
             return List.of(
+                new Route(foundation,foundation.getDeclaredMethod("choices",foundationCatalog,String.class,String.class,int.class),"GET",foundationBase+"/choices/{catalog}"),
+                new Route(foundation,foundation.getDeclaredMethod("system",foundationSystem),"POST",foundationBase+"/pipeline-systems"),
+                new Route(foundation,foundation.getDeclaredMethod("facility",foundationFacility),"POST",foundationBase+"/facilities"),
+                new Route(foundation,foundation.getDeclaredMethod("activate",String.class,foundationActivation),"POST",foundationBase+"/facilities/{facilityId}/activation"),
+                new Route(foundation,foundation.getDeclaredMethod("position",String.class,foundationPosition),"POST",foundationBase+"/facilities/{facilityId}/equipment-positions"),
+                new Route(foundation,foundation.getDeclaredMethod("positions",String.class,String.class,String.class,int.class),"GET",foundationBase+"/facilities/{facilityId}/equipment-positions"),
+                new Route(foundation,foundation.getDeclaredMethod("installations",String.class,String.class,String.class,int.class),"GET",foundationBase+"/facilities/{facilityId}/installations"),
+                new Route(station,station.getDeclaredMethod("author",String.class,String.class,stationAuthor),"PUT",stationBase+"/revisions/{revisionId}"),
+                new Route(station,station.getDeclaredMethod("publish",String.class,stationPublish),"POST",stationBase+"/publications"),
+                new Route(station,station.getDeclaredMethod("current",String.class,String.class),"GET",stationBase+"/publications/current"),
+                new Route(station,station.getDeclaredMethod("revision",String.class,String.class,String.class),"GET",stationBase+"/revisions/{revisionId}"),
+                new Route(station,station.getDeclaredMethod("history",String.class,String.class,int.class),"GET",stationBase+"/publications/history"),
                 new Route(pipeline,pipeline.getDeclaredMethod("write",String.class,String.class,String.class,pipelineWrite),"PUT",pipelineBase+"/authored-topology"),
                 new Route(pipeline,pipeline.getDeclaredMethod("view",String.class,String.class,String.class,Long.class),"GET",pipelineBase+"/authored-topology"),
-                new Route(pipeline,pipeline.getDeclaredMethod("choices",String.class,String.class,String.class,int.class,int.class),"GET",pipelineBase+"/authoring-choices"),
+                new Route(pipeline,pipeline.getDeclaredMethod("choices",String.class,String.class,String.class,int.class,int.class,String.class),"GET",pipelineBase+"/authoring-choices"),
                 new Route(baseline,baseline.getDeclaredMethod("create",baselineCreate),"POST",baselineBase),
                 new Route(baseline,baseline.getDeclaredMethod("update",java.util.UUID.class,baselineUpdate),"PUT",baselineBase+"/{manifestId}"),
                 new Route(baseline,baseline.getDeclaredMethod("current",java.util.UUID.class,String.class,String.class),"GET",baselineBase+"/{manifestId}"),

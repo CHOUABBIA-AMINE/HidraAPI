@@ -30,9 +30,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-/** No REST endpoint, implicit permission, cross-module persistence write or user callback. */
+/** Native owners remain responsible for current authority; REST is transport only. */
 @Service
-public class ProtectedStationGraphOperationService implements ProtectedStationGraphOperationUseCase {
+public class ProtectedStationGraphOperationService implements ProtectedStationGraphOperationUseCase, dz.sh.hidra.modules.topology.application.port.in.TopologyFoundationUseCase {
     private final ProtectedStationAdmissionCoordinator coordinator;
     private final StationGraphProtectedPublicationPort publication;
     private final ProtectedTransactionExecutor executor;
@@ -41,8 +41,15 @@ public class ProtectedStationGraphOperationService implements ProtectedStationGr
         coordinator=Objects.requireNonNull(c);publication=Objects.requireNonNull(p);
         executor=Objects.requireNonNull(e);
     }
+    private dz.sh.hidra.modules.topology.application.port.in.InstalledUnitLifecycleUseCase units;
+    @org.springframework.beans.factory.annotation.Autowired
+    public ProtectedStationGraphOperationService(ProtectedStationAdmissionCoordinator c,
+            StationGraphProtectedPublicationPort p,ProtectedTransactionExecutor e,
+            dz.sh.hidra.modules.topology.application.port.in.InstalledUnitLifecycleUseCase units) {
+        this(c,p,e);this.units=Objects.requireNonNull(units);
+    }
     private static IllegalStateException invalid(){return new IllegalStateException("Protected station operation unavailable");}
-    private static Operation operation(Kind k){
+    private static Operation operation(ProtectedStationGraphOperationUseCase.Kind k){
         return switch(k){
             case AUTHOR->Operation.AUTHOR;case PUBLISH->Operation.PUBLISH;
             case READ_CURRENT->Operation.READ_CURRENT;case READ_HISTORY->Operation.READ_HISTORY;
@@ -57,25 +64,25 @@ public class ProtectedStationGraphOperationService implements ProtectedStationGr
             c.facilityGeneration(),c.sampledAt(),c.validUntil(),c.backendPid(),c.transactionId());
     }
     @Override
-    public Result execute(Command cmd){
+    public ProtectedStationGraphOperationUseCase.Result execute(ProtectedStationGraphOperationUseCase.Command cmd){
         // Reject an ambient transaction without opening an empty synchronization scope.
         // Preparation may use JDBC; it must finish and release its resources before
         // the executor starts the sole protected physical transaction.
         if(TransactionSynchronizationManager.isActualTransactionActive())throw invalid();
         Objects.requireNonNull(cmd);
         Operation op=operation(cmd.kind()); // TRANSFER is unsupported before disclosing existence.
-        if(cmd.kind()==Kind.AUTHOR && (cmd.authoredRevision()==null || cmd.revisionId()==null))throw invalid();
-        if(Set.of(Kind.PUBLISH,Kind.READ_HISTORY).contains(cmd.kind()) && cmd.revisionId()==null)throw invalid();
-        if(Set.of(Kind.PUBLISH,Kind.WITHDRAW,Kind.REACTIVATE).contains(cmd.kind()) &&
+        if(cmd.kind()==ProtectedStationGraphOperationUseCase.Kind.AUTHOR && (cmd.authoredRevision()==null || cmd.revisionId()==null))throw invalid();
+        if(Set.of(ProtectedStationGraphOperationUseCase.Kind.PUBLISH,ProtectedStationGraphOperationUseCase.Kind.READ_HISTORY).contains(cmd.kind()) && cmd.revisionId()==null)throw invalid();
+        if(Set.of(ProtectedStationGraphOperationUseCase.Kind.PUBLISH,ProtectedStationGraphOperationUseCase.Kind.WITHDRAW,ProtectedStationGraphOperationUseCase.Kind.REACTIVATE).contains(cmd.kind()) &&
             (cmd.expectedEpoch()==null || cmd.expectedEpoch()<0))throw invalid();
-        if(cmd.kind()==Kind.LIST_HISTORY && cmd.limit()<1)throw invalid();
+        if(cmd.kind()==ProtectedStationGraphOperationUseCase.Kind.LIST_HISTORY && cmd.limit()<1)throw invalid();
         var prepared=coordinator.prepare();
         AtomicReference<ProtectedStationAdmissionCoordinator.Admission> auth=new AtomicReference<>();
         AtomicReference<StationGraphProtectedPublicationPort.Admission> ticket=new AtomicReference<>();
         AtomicReference<ProtectedStationAdmissionCoordinator.Contribution> evidence=new AtomicReference<>();
         AtomicReference<StationGraphPublicationHead> resultHead=new AtomicReference<>();
         AtomicReference<UUID> eventId=new AtomicReference<>();
-        Result uncommitted=executor.executePublication(()->{
+        ProtectedStationGraphOperationUseCase.Result uncommitted=executor.executePublication(()->{
             var admission=coordinator.acquire(prepared,new Request(op,cmd.companyPartyId(),cmd.facilityId()));
             auth.set(admission);
             ticket.set(publication.acquire(cmd.facilityId())); // Head/event/revision fences BEFORE common sample.
@@ -120,7 +127,7 @@ public class ProtectedStationGraphOperationService implements ProtectedStationGr
                 case WITHDRAW,REACTIVATE->{
                     if(current==null || !Objects.equals(cmd.expectedEpoch(),current.epoch()) ||
                        !Objects.equals(cmd.expectedRevisionId(),current.revisionId()))throw invalid();
-                    boolean withdrawal=cmd.kind()==Kind.WITHDRAW;
+                    boolean withdrawal=cmd.kind()==ProtectedStationGraphOperationUseCase.Kind.WITHDRAW;
                     var next=current.transitioned(current.revisionId(),
                         withdrawal?StationGraphPublicationHead.State.WITHDRAWN:StationGraphPublicationHead.State.ACTIVE,id);
                     var e=event(withdrawal?StationGraphPublicationEvent.Kind.WITHDRAW:
@@ -142,7 +149,7 @@ public class ProtectedStationGraphOperationService implements ProtectedStationGr
                 case TRANSFER->throw invalid();
             }
             coordinator.requireCurrent(admission);
-            return new Result(resultHead.get(),revision,history,false);
+            return new ProtectedStationGraphOperationUseCase.Result(resultHead.get(),revision,history,false);
         },()->{
             publication.flush();
         },()->{
@@ -151,6 +158,32 @@ public class ProtectedStationGraphOperationService implements ProtectedStationGr
                  e.companyPartyId(),e.partyGeneration(),e.facilityGeneration(),
                  resultHead.get(),eventId.get(),coordinator.finalFences(auth.get())))throw invalid();
         });
-        return new Result(uncommitted.head(),uncommitted.revision(),uncommitted.history(),true);
+        return new ProtectedStationGraphOperationUseCase.Result(uncommitted.head(),uncommitted.revision(),uncommitted.history(),true,uncommitted.revision()==null?null:publication.canonicalSha256(uncommitted.revision()));
     }
+
+    @Override public dz.sh.hidra.modules.topology.application.port.in.TopologyFoundationUseCase.Result executeFoundation(
+            dz.sh.hidra.modules.topology.application.port.in.TopologyFoundationUseCase.Command command) {
+        executor.requireNoProtectedContext();executor.requireTopologySetupCredential();Objects.requireNonNull(command);
+        if(TransactionSynchronizationManager.isActualTransactionActive())throw invalid();
+        var prepared=coordinator.prepare();var ticket=new AtomicReference<ProtectedStationAdmissionCoordinator.FoundationAdmission>();
+        var result=executor.executePublication(()->{
+            var a=coordinator.acquireFoundation(prepared,command);ticket.set(a);return coordinator.performFoundation(a);
+        },()->{},()->{if(!coordinator.finalFoundation(ticket.get()))throw invalid();});
+        var visible=new java.util.ArrayList<dz.sh.hidra.modules.topology.application.port.in.TopologyFoundationUseCase.Installation>();
+        for(var c:result.candidates()) {
+            try {
+                var observed=units.execute(new dz.sh.hidra.modules.topology.application.port.in.InstalledUnitLifecycleUseCase.Command(
+                    dz.sh.hidra.modules.topology.application.port.in.InstalledUnitLifecycleUseCase.Operation.READ_INSTALLATION,
+                    null,command.companyPartyId(),c.unitId(),c.installationId(),null,
+                    new dz.sh.hidra.modules.topology.application.port.in.InstalledUnitLifecycleUseCase.Position(c.positionId(),c.facilityId()),null,null,null,null,null,0));
+                var i=observed.installation();
+                if(i==null || !c.installationId().equals(i.installationId()) || !c.unitId().equals(i.installedUnitId()) || !c.positionId().equals(i.equipmentPositionId()) || !command.companyPartyId().equals(i.companyPartyId()))throw invalid();
+                visible.add(new dz.sh.hidra.modules.topology.application.port.in.TopologyFoundationUseCase.Installation(c.unitId(),i.installationId(),i.equipmentPositionId(),c.facilityId(),i.revision(),i.effectiveFrom(),i.effectiveUntil()));
+            } catch(dz.sh.hidra.modules.topology.application.model.InstalledUnitLifecycleFailure failure) {
+                if(failure.kind()!=dz.sh.hidra.modules.topology.application.model.InstalledUnitLifecycleFailure.Kind.DENIED && failure.kind()!=dz.sh.hidra.modules.topology.application.model.InstalledUnitLifecycleFailure.Kind.NOT_FOUND)throw failure;
+            }
+        }
+        return new dz.sh.hidra.modules.topology.application.port.in.TopologyFoundationUseCase.Result(result.items(),java.util.List.of(),visible,result.nextOffset(),result.replayed());
+    }
+
 }

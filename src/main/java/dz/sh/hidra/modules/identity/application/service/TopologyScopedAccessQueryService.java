@@ -44,6 +44,7 @@ public final class TopologyScopedAccessQueryService implements TopologyScopedAcc
 
     @Override
     public boolean permitted(Request request) {
+        if(request != null && request.target() != dz.sh.hidra.modules.identity.application.contract.topology.TopologyScopedAccessContract.Target.STATION)return false;
         if (request == null) {
             return false;
         }

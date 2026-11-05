@@ -37,6 +37,8 @@ public final class ProtectedCredentialRoutingDataSource extends AbstractDataSour
     private final DataSource ordinary;
     private final ProtectedPublicationDatabaseProperties properties;
     private DataSource publisher;
+    private DataSource setupPublisher;
+    private ProtectedPublicationDatabaseProperties setupProperties;
     private boolean closed;
     public ProtectedCredentialRoutingDataSource(DataSource ordinary,ProtectedPublicationDatabaseProperties properties) {
         this.ordinary=Objects.requireNonNull(ordinary);this.properties=Objects.requireNonNull(properties);
@@ -44,6 +46,11 @@ public final class ProtectedCredentialRoutingDataSource extends AbstractDataSour
     ProtectedCredentialRoutingDataSource(DataSource ordinary,DataSource publisher,ProtectedPublicationDatabaseProperties properties) {
         this(ordinary,properties);this.publisher=Objects.requireNonNull(publisher);
     }
+    public ProtectedCredentialRoutingDataSource(DataSource ordinary,ProtectedPublicationDatabaseProperties properties,ProtectedPublicationDatabaseProperties setup) {
+        this(ordinary,properties);this.setupProperties=Objects.requireNonNull(setup);
+        if(setup.enabled() && Objects.equals(setup.username(),properties.username()))throw unavailable();
+    }
+    boolean topologySetupEnabled(){return setupProperties!=null && setupProperties.enabled();}
     private static IllegalStateException unavailable(){return new IllegalStateException("Protected database credential unavailable");}
     private static String principal(Connection c) throws SQLException {
         try(var s=c.createStatement();var r=s.executeQuery("SELECT session_user,current_user,current_database()")) {
@@ -53,43 +60,50 @@ public final class ProtectedCredentialRoutingDataSource extends AbstractDataSour
             return session;
         }
     }
-    private synchronized Identity verify() throws SQLException {
-        if(closed || !properties.enabled())throw unavailable();
+    private synchronized Identity verify(boolean setup) throws SQLException {
+        var credentials=setup?setupProperties:properties;
+        DataSource pool=setup?setupPublisher:publisher;
+        if(closed || credentials==null || !credentials.enabled())throw unavailable();
         try(var c=ordinary.getConnection()) {
             String normal=principal(c);
-            if(normal.equals(properties.username()))throw unavailable();
+            if(normal.equals(credentials.username()))throw unavailable();
             String url=c.getMetaData().getURL();
             if(url==null || !url.startsWith("jdbc:postgresql:")
                 || url.matches("(?i).*([?&])(password|user|sslpassword)=.*"))throw unavailable();
-            if(publisher==null) {
+            if(pool==null) {
                 var config=new HikariConfig();
-                config.setJdbcUrl(url);config.setUsername(properties.username());config.setPassword(properties.password());
-                config.setPoolName("hidra-protected-publication");config.setMaximumPoolSize(properties.maximumPoolSize());
+                config.setJdbcUrl(url);config.setUsername(credentials.username());config.setPassword(credentials.password());
+                config.setPoolName(setup?"hidra-protected-topology-setup":"hidra-protected-publication");config.setMaximumPoolSize(credentials.maximumPoolSize());
                 config.setMinimumIdle(0);config.setConnectionTimeout(10000);
-                publisher=new HikariDataSource(config);
+                pool=new HikariDataSource(config);if(setup)setupPublisher=pool;else publisher=pool;
             }
-            try(var p=publisher.getConnection()) {
-                if(!url.equals(p.getMetaData().getURL()) || !properties.username().equals(principal(p)))throw unavailable();
+            try(var p=pool.getConnection()) {
+                if(!url.equals(p.getMetaData().getURL()) || !credentials.username().equals(principal(p)))throw unavailable();
                 try(var s=p.prepareStatement("""
                     SELECT NOT EXISTS(SELECT 1 FROM pg_catalog.pg_roles r
                       WHERE (r.rolname=current_user OR pg_catalog.pg_has_role(current_user,r.oid,'MEMBER'))
                         AND (r.rolsuper OR r.rolbypassrls OR r.rolcreaterole OR r.rolcreatedb OR r.rolreplication
                             OR r.rolname IN ('pg_execute_server_program','pg_read_server_files','pg_write_server_files')))
                       AND NOT pg_catalog.pg_has_role(?::name,current_user,'MEMBER')
+                      AND (?::name IS NULL OR (NOT pg_catalog.pg_has_role(?::name,current_user,'MEMBER') AND NOT pg_catalog.pg_has_role(current_user,?::name,'MEMBER')))
                     """)) {
                     s.setString(1,normal);
+                    String other=setup?(properties.enabled()?properties.username():null):(setupProperties==null || !setupProperties.enabled()?null:setupProperties.username());
+                    s.setString(2,other);s.setString(3,other);s.setString(4,other);
                     try(var r=s.executeQuery()){if(!r.next() || !r.getBoolean(1))throw unavailable();}
                 }
-                return new Identity(normal,properties.username());
+                return new Identity(normal,credentials.username());
             }
         }
     }
-    Route open() {
+    Route open(){return open(false);}
+    Route openStation(){return open(topologySetupEnabled());}
+    private Route open(boolean setup) {
         if(CURRENT.get()!=null || TransactionSynchronizationManager.isActualTransactionActive()
             || TransactionSynchronizationManager.isSynchronizationActive())throw unavailable();
         try {
-            Identity identity=verify();
-            Route route=new Route(this,identity);CURRENT.set(route);return route;
+            Identity identity=verify(setup);
+            Route route=new Route(this,identity,setup?setupPublisher:publisher);CURRENT.set(route);return route;
         }catch(SQLException error){throw new IllegalStateException("Protected database credential verification failed");}
     }
     Identity identity() {
@@ -101,8 +115,8 @@ public final class ProtectedCredentialRoutingDataSource extends AbstractDataSour
         if(closed)throw new SQLException("Datasource closed");
         Route r=CURRENT.get();
         if(r==null)return ordinary;
-        if(r.source!=this || !r.active || r.thread!=Thread.currentThread() || publisher==null)throw unavailable();
-        return publisher;
+        if(r.source!=this || !r.active || r.thread!=Thread.currentThread() || r.pool==null)throw unavailable();
+        return r.pool;
     }
     @Override public Connection getConnection() throws SQLException {return selected().getConnection();}
     @Override public Connection getConnection(String user,String password) throws SQLException {
@@ -121,7 +135,7 @@ public final class ProtectedCredentialRoutingDataSource extends AbstractDataSour
     @Override public synchronized void close() throws Exception {
         if(CURRENT.get()!=null)throw unavailable();
         if(closed)return;closed=true;
-        try {if(publisher instanceof AutoCloseable c)c.close();}
+        try {try{if(setupPublisher instanceof AutoCloseable c)c.close();}finally{if(publisher instanceof AutoCloseable c)c.close();}}
         finally {
             DataSource target=ordinary;
             while(target instanceof DelegatingDataSource d && !(target instanceof AutoCloseable))target=d.getTargetDataSource();
@@ -131,9 +145,10 @@ public final class ProtectedCredentialRoutingDataSource extends AbstractDataSour
     static final class Route implements AutoCloseable {
         private final ProtectedCredentialRoutingDataSource source;
         private final Identity identity;
+        private final DataSource pool;
         private final Thread thread=Thread.currentThread();
         private boolean active=true;
-        private Route(ProtectedCredentialRoutingDataSource source,Identity identity){this.source=source;this.identity=identity;}
+        private Route(ProtectedCredentialRoutingDataSource source,Identity identity,DataSource pool){this.source=source;this.identity=identity;this.pool=pool;}
         @Override public void close() {
             if(thread!=Thread.currentThread() || CURRENT.get()!=this)throw unavailable();
             active=false;CURRENT.remove();

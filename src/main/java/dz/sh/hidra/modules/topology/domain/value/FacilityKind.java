@@ -19,4 +19,6 @@
  */
 package dz.sh.hidra.modules.topology.domain.value;
 
-public enum FacilityKind { STATION, TERMINAL, DEPOT, PUMP_STATION, COMPRESSOR_STATION, METERING_STATION, PROCESSING_FACILITY, OTHER }
+public enum FacilityKind { STATION, TERMINAL, DEPOT, PUMP_STATION, COMPRESSOR_STATION, METERING_STATION, PROCESSING_FACILITY, OTHER;
+    public boolean isStation() { return this == STATION || this == PUMP_STATION || this == COMPRESSOR_STATION || this == METERING_STATION; }
+}

@@ -45,7 +45,7 @@ public final class StationInstalledConfigurationRestMapper {
             throw new IllegalArgumentException("Bounded non-null collection required");
         return List.copyOf(values);
     }
-    private static StationInternalGraphRevision graph(StationInstalledConfigurationRequests.GraphRevision value){
+    public static StationInternalGraphRevision graph(StationInstalledConfigurationRequests.GraphRevision value){
         if(value==null)throw new IllegalArgumentException("Exact graph revision required");
         var graph=value.graph();
         if(graph==null)throw new IllegalArgumentException("Pinned graph required");
@@ -120,14 +120,8 @@ public final class StationInstalledConfigurationRestMapper {
         }
         return new Command(Operation.LIST_HISTORY,exact(company),exact(facilityId),null,null,limit,before);
     }
-    public static Snapshot snapshot(StationInstalledConfiguration c){
-        if(c==null)return null;
-        var g=c.pinnedGraph();
-        var graph=g.graph();
-        var report=c.activeStructure();
-        return new Snapshot(c.companyPartyId(),c.facilityId(),c.revisionId(),c.requestId(),
-            c.expectedEpoch(),c.selectedEpoch(),c.graphHeadEpoch(),
-            new StationInstalledConfigurationResponses.GraphRevision(g.facilityId(),g.revisionId(),
+    public static StationInstalledConfigurationResponses.GraphRevision graphResponse(StationInternalGraphRevision g){
+        var graph=g.graph();return new StationInstalledConfigurationResponses.GraphRevision(g.facilityId(),g.revisionId(),
                 new StationInstalledConfigurationResponses.Graph(graph.facilityId(),graph.revisionId(),
                     graph.status().name(),graph.headers().stream().map(h->
                         new StationInstalledConfigurationResponses.Header(h.id(),h.kind().name(),h.portId())).toList(),
@@ -136,7 +130,16 @@ public final class StationInstalledConfigurationRestMapper {
                     graph.edges().stream().map(e->new StationInstalledConfigurationResponses.Edge(
                         e.id(),e.fromPortId(),e.toPortId())).toList()),
                 g.sourceClassification().name(),g.recordedAt(),g.effectiveFrom(),g.effectiveUntil(),
-                g.evidenceReference(),g.expectedPredecessorRevisionId(),g.qualification().name()),
+                g.evidenceReference(),g.expectedPredecessorRevisionId(),g.qualification().name());
+    }
+    public static Snapshot snapshot(StationInstalledConfiguration c){
+        if(c==null)return null;
+        var g=c.pinnedGraph();
+        var graph=g.graph();
+        var report=c.activeStructure();
+        return new Snapshot(c.companyPartyId(),c.facilityId(),c.revisionId(),c.requestId(),
+            c.expectedEpoch(),c.selectedEpoch(),c.graphHeadEpoch(),
+            graphResponse(g),
             c.graphPayloadFormat(),c.graphSha256(),c.effectiveFrom(),c.effectiveUntil(),
             c.recordedAt(),c.sourceReference(),c.actorBindingId(),c.actorSessionId(),c.actorUserId(),
             c.positions().stream().map(p->new StationInstalledConfigurationResponses.Position(

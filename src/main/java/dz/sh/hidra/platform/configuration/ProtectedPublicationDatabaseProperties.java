@@ -29,7 +29,9 @@ public record ProtectedPublicationDatabaseProperties(boolean enabled,String user
             throw new IllegalArgumentException("Publication credentials required");
     }
     public static ProtectedPublicationDatabaseProperties from(Environment env) {
-        String p="hidra.platform.persistence.publication.";
+        return from(env,"hidra.platform.persistence.publication.");
+    }
+    public static ProtectedPublicationDatabaseProperties from(Environment env,String p) {
         return new ProtectedPublicationDatabaseProperties(env.getProperty(p+"enabled",Boolean.class,false),
             env.getProperty(p+"username"),env.getProperty(p+"password"),
             env.getProperty(p+"maximum-pool-size",Integer.class,2));

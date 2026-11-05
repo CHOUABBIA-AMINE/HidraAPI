@@ -12647,3 +12647,212 @@ current-source preflight and canonical whole-scope adoption. W1's WEB acceptance
 its own exact CI remain separate. W2/browser, integrated A1, industrial calibration,
 SITE/operational acceptance, numerical/P3, release and deployment are not accepted
 or executed by this record.
+
+
+### 2026-11-05 HAPI-926 owner-approved consolidated foundation backend completion — CI-first candidate
+
+Owner explicitly approved the consolidated backend completion after the read-only
+W2 dependency-chain audit. This extends the earlier discovery-only repair, under
+HAPI-926/B4, without inventing a new delivery, ID, branch or PR. Baseline main
+`8ff93f488cb0a5c0a3a553d22e7d3958f993ff22`, parent
+`235566bc99464901753ebf9ab04f6143ff8c49b1`, tree
+`c21ae10a2e663cb7a35e0a96f8afe09622c2965f`; Documentation915
+[success](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42061243597).
+Prior Full1126 evidence remains evidence for its old source only. New work is
+**IMPLEMENTED SOURCE / CI_ACCEPTANCE_PENDING**. W2/HWEB-F12 remains blocked until
+new exact-source backend qualification and authentic generated contracts/catalog
+are reconciled. Historical completed scopes and registered statuses stay intact.
+
+Bounded context: Topology owns company/system setup, Facility lifecycle and physical
+equipment positions. InstalledUnit physical identity/placement, station graph and
+station installed configuration retain their existing protected owners. Assets
+maintenance aggregates, optional maintainableAssetId, immutable engineering history,
+operator decisions, gas-first/GZ2 and deferred P3 remain unchanged. No automatic
+business/native grants, live OT, numerical solver, production backfill, SITE,
+release or deployment is introduced.
+
+Interfaces before implementations:
+
+- `dz.sh.hidra.modules.topology.application.port.in.TopologyFoundationUseCase`
+  declares typed setup/discovery commands, scoped immutable views and private
+  installation candidates; `TopologyFoundationPersistencePort` owns its opaque
+  persistence ticket, audited mutation templates and final guard.
+- Existing `ProtectedStationAdmissionCoordinator` and
+  `ProtectedStationGraphOperationService` coordinate the separate setup admission:
+  fresh native Identity plus active Party, locked Topology sources before the common
+  sample, one reviewed exact-DML mutation window, immutable request/replay digest,
+  actor/session/binding/reason evidence, frozen source image and final physical
+  time/owner/lock guard. An absent/PLANNED facility is never passed off as an active
+  graph-owner witness. Activation is PLANNED -> ACTIVE with expected updatedAt;
+  stale or changed replay bodies conflict. A source failure never returns a partial
+  success. Read-only setup discovery also commits under current scoped admission.
+- Identity's existing eight station operation values and default STATION target
+  remain intact. An explicit FOUNDATION_COMPANY/FOUNDATION_FACILITY target uses
+  separate `topology:foundation:read`/`write` permissions and resource type
+  TOPOLOGY_FOUNDATION. Company scope is CUSTOM `topology-company:<company>`;
+  bootstrap/discovery additionally needs CUSTOM
+  `topology-foundation-company:<company>`, while facility operations need the exact
+  FACILITY scope. The advisory legacy Boolean query refuses foundation targets.
+  Native opaque request/claim readers independently bind the distinct target.
+- `TopologyFoundationController` exposes typed `/api/v1/topology/foundation`
+  system/facility registration, activation, physical-position registration,
+  scoped current/effective installation recovery and paged catalogs/systems/
+  facilities/positions. `StationGraphController` delegates AUTHOR/PUBLISH/current/
+  exact revision/history to the existing protected station graph owner. Its reply
+  supplies the actual canonical graph format/digest needed for configuration SAVE;
+  HTTP cannot claim VERIFIED source classification. Explicit DTOs/mappers exclude
+  internal candidates, grants, native tickets and database authority. Safe error
+  responses exclude SQL/identity details. Platform adds twelve exact reflective
+  route tuples; startup signature checks and negative route tests remain enforced.
+- `JdbcTopologyFoundationAdapter` validates non-owner source roles and locks,
+  active compatible catalogs, exact company-owned facilities and direct positions.
+  Its new immutable system-owner row makes newly created systems discoverable
+  before their first engineering draft. The existing draft storage owner locks and
+  validates the registration-owner catalog, rejects a different company even with
+  independent draft grants, and includes that owner constraint in its final SQL
+  guard. Legacy systems without a registration owner retain their original
+  context policy; existing systems can be found through
+  their actual company engineering context. No inferred legacy ownership/backfill.
+  Fresh migration `V20261105_001__topology_foundation_setup.sql` adds the two
+  immutable setup tables and permission catalog declarations only, no active grants.
+- Configuration source/repository checks share pure `FacilityKind.isStation()`
+  for STATION/COMPRESSOR_STATION/PUMP_STATION/METERING_STATION. Existing facility
+  registration validates an active Party through a distinct Party-owned export;
+  old existence semantics remain unchanged. Both legacy creation adapters reject
+  inactive/incompatible type references. Executable @Valid stays on the existing
+  controller interface, avoiding an overriding-method validation conflict.
+- Authoring choices no longer hide an authorized unit because its active kind lies
+  outside the displayed kind page. Catalogs honor requested offset/limit, and an
+  opaque bounded scan cursor continues potentially full candidate/catalog pages.
+  Empty visible pages are not an exhaustion signal. Installation candidates require
+  their own native READ_INSTALLATION before disclosure, preserving current unit,
+  position, facility/company and installation authority; no rejected identities,
+  rejection totals or complete-inventory claim. These are advisory separately
+  authorized observations, not an atomic multi-resource inventory snapshot.
+
+Privilege coexistence discovered during implementation: installed-unit source
+contracts deliberately require their database principal to have no master-write
+privileges on Party/facilities/equipment. Preserve those predicates. Add an opt-in
+separate `hidra.platform.persistence.topology-setup.*` pool, using the same PostgreSQL
+endpoint and distinct non-owner principal; it cannot share/inherit either ordinary
+or installed publication principals. Environment variables are
+HIDRA_TOPOLOGY_SETUP_ENABLED/USERNAME/PASSWORD/MAX_POOL_SIZE, disabled by default;
+no credentials are committed. New setup operations require this pool and fail
+closed without it. When configured, station graph and engineering draft/publication
+owners select it through their existing compiled executor-caller whitelist. Other
+operations retain their installed/configuration pool. Ordinary credential escapes,
+ambient/nested transactions, route restoration and thread confinement stay guarded.
+This is technical credential selection, never permission. The native fixture
+reproducibly provisions separate synthetic migration, ordinary, installed and setup
+principals, reviewed source-lock helpers and narrowly scoped current human grants;
+there is no general grant-writing API or production seed.
+
+Authored acceptance includes a genuine bearer/full Spring-security HTTP journey:
+discover -> create system -> create PLANNED compressor facility -> activate ->
+register physical position -> register unit -> install -> author/publish station
+graph -> save/replay/reload/revise station configuration -> author/reload canonical
+Pipeline and persisted station graph association. Only catalogs, security and
+technical role setup are fixture SQL. No SQL facility/position/unit/installation/
+station-graph publication replaces a promised user operation in this journey.
+Additional native tests cover changed replay, denied/foreign scope, inactive kind,
+unknown authority fields, final-guard rollback, catalog paging beyond200, competing
+activation and stale expected generation. Existing source/native suites remain
+required, including graph/source concurrency and rollback cases. Focused JVM
+regressions cover out-of-page unit kind, target permission separation, cursor bounds,
+station kinds, executable method-validation hierarchy and independent credential
+route restoration. Thirteen new test method identities are registered; no existing
+case is removed. Exact reflective route expectations expand16 ->28 and remain exact.
+
+Local evidence: source-linked inventory and canonical documentation validators PASS
+before the final documentation append; offline OpenAPI validates the retained old
+334-path/371-operation/418-schema snapshot only. Java21 syntax parse of all current
+production/test sources passed. Three dependency-free setup/eligibility/cursor
+classes compile with the actual Java21 compiler; isolated assertions PASS. These
+are not a Maven/JUnit/database pass. Maven compile was attempted and blocked before
+compilation because Maven Central DNS could not resolve the Spring Boot4.1.1 parent.
+No local PostgreSQL16 or browser execution is claimed.
+
+Runtime OpenAPI and physical dictionary are deliberately NOT hand-invented.
+`doc/api/openapi.yaml` and its generation provenance remain the genuine prior runtime
+snapshot; the retained DATA_DICTIONARY is explicitly pending regeneration for the
+new migration. Hosted Full CI must compile/run the new source and emit its actual
+API and PostgreSQL catalog. Runtime snapshot equality, successful-base backward
+compatibility, physical dictionary strict equality, all native cases and complete
+source-linked CI evidence remain acceptance gates. Any resulting failure stays a
+same-task HAPI-926 repair, not permission to weaken guards or advance W2.
+
+Exact owner-approved completion allowlist follows. Existing bytes in this phase,
+compact task index and reconciliation are preserved before append. No older
+migration, ROADMAP/PHASES status, workflow policy, unrelated source or immutable
+archive is changed. Exact message remains
+`feat(topology): connect pipeline authoring to persisted graph views`.
+
+CREATE (13):
+
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/StationGraphController.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/TopologyFoundationController.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/TopologyFoundationExceptionHandler.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/mapper/TopologyDiscoveryCursor.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/request/StationGraphRequests.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/request/TopologyFoundationRequests.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/response/StationGraphResponses.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/response/TopologyFoundationResponses.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/TopologyFoundationUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/TopologyFoundationPersistencePort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcTopologyFoundationAdapter.java`
+- `src/main/resources/db/migration/V20261105_001__topology_foundation_setup.sql`
+- `src/test/java/dz/sh/hidra/modules/topology/application/service/TopologyFoundationContractTest.java`
+
+MODIFY (46):
+
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringNetworkDraftRepositoryAdapter.java`
+- `.github/ci-test-inventory.json`
+- `.github/database-dictionary-ownership.json`
+- `doc/database/DATA_DICTIONARY.md`
+- `doc/model-remediation/RECONCILIATION.md`
+- `doc/roadmap/TASKS_HPS-004.md`
+- `doc/roadmap/ULTIMATE_TASKS.md`
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/topology/TopologyProtectedAuthorizationContract.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/topology/TopologyScopedAccessContract.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/TopologyScopedAccessQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedOperationIdentityParticipant.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedTopologyAuthorizationParticipant.java`
+- `src/main/java/dz/sh/hidra/modules/party/application/contract/topology/TopologyPartyReferenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/party/application/service/TopologyPartyReferenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/PipelineAuthoringController.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/SpringTopologyController.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/TopologyController.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/mapper/StationInstalledConfigurationRestMapper.java`
+- `src/main/java/dz/sh/hidra/modules/topology/api/rest/response/AuthoredTopologyResponses.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/AuthoredTopologyViewUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/in/ProtectedStationGraphOperationUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/StationGraphProtectedPublicationPort.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/FacilityApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/PipelineAuthoringApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/ProtectedStationAdmissionCoordinator.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/ProtectedStationGraphOperationService.java`
+- `src/main/java/dz/sh/hidra/modules/topology/domain/value/FacilityKind.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcStationConfigurationSourceEvidenceAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcStationGraphProtectedPublicationAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcStationInstalledConfigurationRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JpaFacilityRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JpaPipelineSystemRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/query/JpaAuthoredTopologyViewAdapter.java`
+- `src/main/java/dz/sh/hidra/platform/configuration/HidraTransactionConfiguration.java`
+- `src/main/java/dz/sh/hidra/platform/configuration/ProtectedPublicationDatabaseProperties.java`
+- `src/main/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistry.java`
+- `src/main/java/dz/sh/hidra/platform/persistence/ProtectedCredentialRoutingDataSource.java`
+- `src/main/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutor.java`
+- `src/main/resources/application.properties`
+- `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/AuthoredTopologyProjectionPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedInstalledUnitLifecyclePostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java`
+- `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistryTest.java`
+- `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteStartupValidatorTest.java`
+- `src/test/java/dz/sh/hidra/platform/persistence/ProtectedCredentialRoutingDataSourceTest.java`
+
+No DELETE. Guarded direct-main publication must verify exact parent/tree/blobs/scope,
+then verify new-SHA Full/Docs creation/queue/start and STOP without awaiting results.
+The next selection is this repair's CI feedback/acceptance; W2 remains the next
+reserved implementation only after backend acceptance, never automatically run.

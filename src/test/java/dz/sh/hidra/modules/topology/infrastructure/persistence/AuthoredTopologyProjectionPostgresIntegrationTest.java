@@ -118,4 +118,18 @@ class AuthoredTopologyProjectionPostgresIntegrationTest {
         var kinds=jdbc.queryForList(dz.sh.hidra.modules.topology.infrastructure.query.JpaAuthoredTopologyViewAdapter.EQUIPMENT_CHOICES);
         assertFalse(kinds.stream().anyMatch(row->inactive.equals(row.get("id"))));
     }
+
+    @Test void authorizedUnitOutsideDisplayedKindPageRemainsVisibleAndScanContinues(){
+        var graphs=org.mockito.Mockito.mock(dz.sh.hidra.modules.topology.application.port.in.EngineeringGraphDraftUseCase.class);
+        var auth=org.mockito.Mockito.mock(dz.sh.hidra.modules.topology.application.port.out.AuthoredTopologyAuthorizationPort.class);
+        var units=org.mockito.Mockito.mock(dz.sh.hidra.modules.topology.application.port.in.InstalledUnitLifecycleUseCase.class);
+        var scope=new dz.sh.hidra.modules.topology.application.port.in.PipelineAuthoringUseCase.Scope("company","system",UUID.randomUUID());
+        var choices=new dz.sh.hidra.modules.topology.application.port.in.AuthoredTopologyViewUseCase.Discovery("company","system",List.of(),0,0,1,List.of(),List.of(),List.of(),List.of(),List.of(),List.of("unit"));
+        org.mockito.Mockito.when(graphs.executeAuthoredDiscovery(scope,0,1)).thenReturn(choices);
+        var unit=new dz.sh.hidra.modules.topology.domain.model.InstalledUnit("unit","company","active-kind-outside-page",dz.sh.hidra.modules.topology.domain.model.InstalledUnit.Evidence.unknown(),dz.sh.hidra.modules.topology.domain.model.InstalledUnit.Evidence.unknown(),dz.sh.hidra.modules.topology.domain.model.InstalledUnit.Evidence.unknown(),null);
+        org.mockito.Mockito.when(units.execute(org.mockito.ArgumentMatchers.any())).thenReturn(new dz.sh.hidra.modules.topology.application.port.in.InstalledUnitLifecycleUseCase.Result(unit,null,null,List.of(),false));
+        var found=new dz.sh.hidra.modules.topology.application.service.PipelineAuthoringApplicationService(graphs,auth,units).discover(scope,0,1);
+        assertEquals("unit",found.installedUnits().getFirst().id());assertEquals(1,found.nextOffset());assertTrue(found.candidateInstalledUnitIds().isEmpty());
+    }
+
 }

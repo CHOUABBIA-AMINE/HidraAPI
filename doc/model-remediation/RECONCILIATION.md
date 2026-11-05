@@ -24306,3 +24306,25 @@ Exact P0 message: `docs(roadmap): register six-module functional foundation`. Sc
 
 
 P0 local verification (2026-11-03): all157 tests across the six existing workflow-required Python suites PASS (19 docs,10 snapshot,18 dictionary,18 comparison-base,38 inventory,54 full-evidence). Canonical documentation validation PASS:129 documents,8938 relative links,24 modules,928 tasks,25 phases. Offline OpenAPI snapshot PASS:305 paths/335 operations/383 schemas. Exact test inventory PASS, unchanged inventory SHA25658da48d20678984859bb628e5fcc0b06256cacc86ed362aa492b3de08ff306bd. These are local governance checks, not a new application/database/browser test run. Published exact-SHA CI remains pending at commit creation.
+
+
+## 2026-11-05 — HAPI-926 owner-approved consolidated foundation completion candidate
+
+Owner Approved expands the previously discovery-only scope after the backend-gap
+audit. Exact main8ff93f488cb0a5c0a3a553d22e7d3958f993ff22 / Docs915 SUCCESS;
+no old migration/status/history is rewritten. Append-only owning HPS-004 registers
+the exact13 CREATE /46 MODIFY /0 DELETE whole scope and unchanged message
+`feat(topology): connect pipeline authoring to persisted graph views`. Topology
+physical ownership stays distinct from Assets. New scoped native setup permissions,
+audited PLANNED->ACTIVE CAS, positions/system setup, actual station-graph owner REST,
+installation recovery, kind/reference validation and paged choices are SOURCE
+IMPLEMENTED, not accepted. A separately configured non-owner setup/graph credential
+preserves the installed-unit principal's source-read-only requirements. Thirteen
+new cases, including whole native HTTP creation->installation->graph publication->
+configuration->Pipeline reload and denial/replay/rollback/concurrent negatives,
+are authored/source-linked, not locally executed PostgreSQL proof. Java21 syntax,
+isolated dependency-free compilation/assertions and static controls are limited
+local evidence; Maven parent resolution failed on DNS. Genuine new runtime OpenAPI
+and physical dictionary regeneration, full exact-SHA CI and independent acceptance
+remain pending. Do not fabricate artifacts or advance W2/HWEB-F12. Observe new-SHA
+Full/Docs creation/queue/start after expected-head guarded publication, then STOP.

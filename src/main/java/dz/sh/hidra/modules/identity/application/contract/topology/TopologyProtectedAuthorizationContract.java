@@ -70,6 +70,10 @@ public interface TopologyProtectedAuthorizationContract {
                 };
     }
 
+    static String permissionCode(Request request) {
+        return request.target()==dz.sh.hidra.modules.identity.application.contract.topology.TopologyScopedAccessContract.Target.STATION
+            ? permissionCode(request.operation()) : "topology:foundation:"+(request.operation()==Operation.AUTHOR?"write":"read");
+    }
     static Decision combine(Decision company, Decision facility) {
         Objects.requireNonNull(company, "companyDecision");
         Objects.requireNonNull(facility, "facilityDecision");
@@ -101,8 +105,9 @@ public interface TopologyProtectedAuthorizationContract {
                 if (value == null || value.isBlank() || !value.equals(value.strip()))
                     throw new IllegalArgumentException("Invalid paired contribution reference.");
             if (operation == null
-                    || !TopologyProtectedAuthorizationContract.permissionCode(operation)
-                            .equals(permissionCode)
+                    || !(TopologyProtectedAuthorizationContract.permissionCode(operation).equals(permissionCode)
+                    || operation==Operation.AUTHOR && "topology:foundation:write".equals(permissionCode)
+                    || operation==Operation.READ_CURRENT && "topology:foundation:read".equals(permissionCode))
                     || combinedDecision != combine(companyDecision, facilityDecision)
                     || sampledAt == null
                     || validUntil == null

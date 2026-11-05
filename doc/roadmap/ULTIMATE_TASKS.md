@@ -3435,3 +3435,15 @@ dictionary proof. VERIFIED / COMPLETED for bounded synthetic backend discovery;
 Topology physical and Assets maintenance ownership remain distinct. Next reserved
 delivery W2/HWEB-F12 requires separate selection and HidraWEB adoption. W2/browser,
 A1, SITE, release and deployment remain separate.
+
+
+HAPI-926 owner-approved consolidated foundation completion (2026-11-05):
+[HPS-004](TASKS_HPS-004.md#hapi-926) extends the discovery-only repair with scoped
+setup/catalogs, audited facility activation and physical-position registration,
+native station-graph REST/publication, installation recovery, station-kind and
+reference validation, bounded continuation and separate setup credentials that
+preserve restricted installed-unit source privileges. One whole source candidate,
+13 new test identities; local full Maven/PostgreSQL unavailable, authentic new
+OpenAPI/catalog regeneration and exact-source Full CI required. IMPLEMENTED SOURCE /
+CI_ACCEPTANCE_PENDING; prior bounded acceptance remains historical, W2/HWEB-F12
+BLOCKED. No new task/stage/ID, status promotion, frontend, P3 or release/deployment.

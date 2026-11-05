@@ -836,21 +836,22 @@ public class JdbcProtectedAuthorizationEvidenceReader {
                 || (ref.startsWith("topology-company:") && text(ref.substring(17),80))))throw invalid();
         }else{
         if (!i.userId().equals(r.userId())
-                || !"STATION_GRAPH_REVISION".equals(r.resourceType())
+                || !("STATION_GRAPH_REVISION".equals(r.resourceType()) || "TOPOLOGY_FOUNDATION".equals(r.resourceType()))
                 || !text(r.resourceReferenceId(), 120)
                 || r.scope() == null
                 || r.permissionCode() == null
-                || !r.permissionCode().startsWith("topology:station-revision:")
-                || !CODES.contains(
-                        r.permissionCode().substring("topology:station-revision:".length())))
+                || !("TOPOLOGY_FOUNDATION".equals(r.resourceType())
+                    ? Set.of("topology:foundation:read","topology:foundation:write").contains(r.permissionCode())
+                    : r.permissionCode().startsWith("topology:station-revision:") && CODES.contains(
+                        r.permissionCode().substring("topology:station-revision:".length()))))
             throw invalid();
         String ref = r.scope().scopeReferenceId();
         if (r.scope().scopeType() == ScopeType.FACILITY) {
             if (!r.resourceReferenceId().equals(ref)) throw invalid();
         } else if (r.scope().scopeType() != ScopeType.CUSTOM
                 || ref == null
-                || !ref.startsWith("topology-company:")
-                || !text(ref.substring(17), 80)) throw invalid();
+                || !(ref.startsWith("topology-company:") && text(ref.substring(17),80)
+                    || "TOPOLOGY_FOUNDATION".equals(r.resourceType()) && ref.equals("topology-foundation-company:"+r.resourceReferenceId()))) throw invalid();
         }
     }
 

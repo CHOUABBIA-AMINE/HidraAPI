@@ -448,12 +448,12 @@ public class ProtectedOperationIdentityParticipant {
         Object resource = connectionResource();
         if (resource == null) throw unavailable();
         context(prepared);
-        String code = TopologyProtectedAuthorizationContract.permissionCode(request.operation());
+        String code = TopologyProtectedAuthorizationContract.permissionCode(request);
         var company =
                 new AuthorizationEvaluationRequest(
                         contribution.evidence().userId(),
                         code,
-                        "STATION_GRAPH_REVISION",
+                        request.resourceType(),
                         request.facilityId(),
                         new AuthorizationScope(
                                 ScopeType.CUSTOM,
@@ -463,9 +463,9 @@ public class ProtectedOperationIdentityParticipant {
                 new AuthorizationEvaluationRequest(
                         contribution.evidence().userId(),
                         code,
-                        "STATION_GRAPH_REVISION",
+                        request.resourceType(),
                         request.facilityId(),
-                        new AuthorizationScope(ScopeType.FACILITY, request.facilityId(), null));
+                        new AuthorizationScope(request.companyTarget()?ScopeType.CUSTOM:ScopeType.FACILITY, request.companyTarget()?"topology-foundation-company:"+request.companyPartyId():request.facilityId(), null));
         return new QualifiedClaimPair(
                 this,
                 request,

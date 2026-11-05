@@ -50,13 +50,14 @@ public class JpaPipelineSystemRepositoryAdapter implements PipelineSystemReposit
         );
     }
 
+    @org.springframework.transaction.annotation.Transactional
     public PipelineSystem save(PipelineSystem model) {
         PipelineSystemTypeJpaEntity typeEntity = typeRepository.findById(model.systemType().id())
                 .orElseThrow(() -> new InvalidTopologyValueException(
                         "Unknown PipelineSystem system type id: " + model.systemType().id()
                 ));
 
-        if (!typeEntity.code().equals(model.systemType().code())) {
+        if (!typeEntity.active() || !typeEntity.code().equals(model.systemType().code())) {
             throw new InvalidTopologyValueException(
                     "PipelineSystem system type id/code reference is inconsistent."
             );
@@ -73,6 +74,6 @@ public class JpaPipelineSystemRepositoryAdapter implements PipelineSystemReposit
 
     @Override
     public Optional<PipelineSystemType> findTypeByCode(String code) {
-        return typeRepository.findByCode(code).map(TopologyPersistenceMapper::toDomain);
+        return typeRepository.findByCode(code).filter(PipelineSystemTypeJpaEntity::active).map(TopologyPersistenceMapper::toDomain);
     }
 }

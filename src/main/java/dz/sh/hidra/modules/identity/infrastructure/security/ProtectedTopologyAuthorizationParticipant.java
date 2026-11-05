@@ -97,7 +97,7 @@ public class ProtectedTopologyAuthorizationParticipant
                 bound.evidence().sessionId(),
                 bound.evidence().userId(),
                 request.operation(),
-                TopologyProtectedAuthorizationContract.permissionCode(request.operation()),
+                TopologyProtectedAuthorizationContract.permissionCode(request),
                 request.companyPartyId(),
                 request.facilityId(),
                 company,

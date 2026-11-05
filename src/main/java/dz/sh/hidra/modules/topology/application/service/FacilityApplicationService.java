@@ -55,9 +55,9 @@ public final class FacilityApplicationService implements RegisterFacilityUseCase
         Objects.requireNonNull(command, "Register facility command must not be null.");
         if (command.ownerPartyId() != null
                 && !command.ownerPartyId().isBlank()
-                && !partyReferenceContract.exists(command.ownerPartyId())) {
+                && !partyReferenceContract.eligibleFacilityOwner(command.ownerPartyId())) {
             throw new InvalidTopologyValueException(
-                    "Facility owner Party must reference an existing Party."
+                    "Facility owner Party must reference an existing Party with ACTIVE status."
             );
         }
         Instant now = Instant.now();

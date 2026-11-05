@@ -47,4 +47,5 @@ public interface StationGraphProtectedPublicationPort {
     boolean finalGuard(Admission ticket,Instant sampledAt,Instant validUntil,String companyPartyId,
                        long partyGeneration,long facilityGeneration,StationGraphPublicationHead head,UUID eventId,
                        List<dz.sh.hidra.platform.persistence.ProtectedRelationFence> ownerFences);
+    String canonicalSha256(StationInternalGraphRevision revision);
 }

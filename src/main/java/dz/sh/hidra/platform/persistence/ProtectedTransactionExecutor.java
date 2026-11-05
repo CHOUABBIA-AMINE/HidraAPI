@@ -145,9 +145,16 @@ public final class ProtectedTransactionExecutor {
             "dz.sh.hidra.modules.topology.application.service.ProtectedStationGraphOperationService"))
             throw new IllegalStateException("Unreviewed credential route caller");
         long budgetNanos=publicationWorkBudgetNanos(caller);
-        try(var route=credentialRouter().open()) {return executeWithBudget(work,flush,guard,budgetNanos);}
+        try(var route=(caller.equals(DRAFT_SERVICE) || caller.equals(PUBLICATION_SERVICE) || caller.equals("dz.sh.hidra.modules.topology.application.service.ProtectedStationGraphOperationService"))
+                ?credentialRouter().openStation():credentialRouter().open()) {return executeWithBudget(work,flush,guard,budgetNanos);}
     }
 
+    /** New setup writes require their separate opt-in principal; no fallback to the installed-unit pool. */
+    public void requireTopologySetupCredential() {
+        String caller=StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).getCallerClass().getName();
+        if(!caller.equals("dz.sh.hidra.modules.topology.application.service.ProtectedStationGraphOperationService") || !credentialRouter().topologySetupEnabled())
+            throw new IllegalStateException("Separate topology setup credential required");
+    }
     // Only executePublication, after its unchanged exact compiled-caller check, selects this policy.
     private long publicationWorkBudgetNanos(String caller) {
         if(caller.equals(MANUFACTURER_SERVICE))return budgets.manufacturerWorkBudgetNanos();
@@ -308,6 +315,7 @@ public final class ProtectedTransactionExecutor {
     /** Accept only exact, reviewed DML templates for one use of an issued owner ticket. */
     // HAPI-926: exact B4 statements, restricted to the existing draft coordinator.
     private static final Set<String> PIPELINE_AUTHORING_DML_HASHES=Set.of("0073f0f61f0dde58cccb290f4072971c24aa36cfc2d5054060cb03f01f9aac2d","ad4d5cd7296afb6d1cea5e95cd83fa1f9edad9fdc1264a0856a46861d8801525","ca86cfd205b224d6d79e6a3f9b7d3e1b2a83f35bde8245cd453fb1cd97da5580","d36a5bc21829462bc44ec509ef3aa41aa001e0730e86bc3a2cc3525c15cdd7b3","d57712037605ced7bdc4309987fae4a1a5193fad1e8b5af8f3fc13e21f4ab76b");
+    private static final Set<String> FOUNDATION_DML_HASHES=Set.of("3e9f0118c53457bb051df326b3aaf14d963f5833d5857b46b5348986771e7a3d","2aa977fdaee6fee8511de2deb33107d2c1d0324fc852264518579ed228dcf02e","27ca72ce44403c94391c5a30ea4048582081b7ff36a1c4c3ab4d5ad22a136b5f","444a275418b2f402732619f4e7358f48ae51020c656b81d355bd1821e3380e31","36dcc0915ff2d0bed8605deb4af335379a07fbb826cd1aa53b30df955320864b","0fbf0cc9416cadba05f8100e73486797b25fe60f59b04f700f21f5b0eb4652f1");
     public void beginProvisional(ProvisionalPermit permit,Set<String> exactStatements) {
         var s=admissionScope();
         String caller=StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).getCallerClass().getName();
@@ -350,7 +358,8 @@ public final class ProtectedTransactionExecutor {
                         || sql.startsWith("INSERT INTO public.hidra_topology_engineering_survey_snapshot ")
                         || PIPELINE_AUTHORING_DML_HASHES.contains(statementDigest(sql)))
                     : (sql.startsWith("INSERT INTO public.hidra_topology_station_graph_")
-                        || sql.startsWith("UPDATE public.hidra_topology_station_graph_head ")))) {
+                        || sql.startsWith("UPDATE public.hidra_topology_station_graph_head ")
+                        || FOUNDATION_DML_HASHES.contains(statementDigest(sql))))) {
                 s.reject("provisional statement not reviewed");s.healthy();
             }
         }

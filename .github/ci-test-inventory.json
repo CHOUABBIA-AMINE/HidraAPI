@@ -9050,6 +9050,24 @@
       "supports": []
     },
     {
+      "class": "dz.sh.hidra.modules.topology.application.service.TopologyFoundationContractTest",
+      "path": "src/test/java/dz/sh/hidra/modules/topology/application/service/TopologyFoundationContractTest.java",
+      "owner": "topology",
+      "lane": "unit-architecture",
+      "fast": true,
+      "baseline_seconds": 0.0,
+      "dependency_reason": "HAPI-926 explicit setup permission targets, bounded cursor and executable create-validation contract; JVM only",
+      "supports": [],
+      "cases": [
+        "legacyCreateConstraintsRemainOnControllerInterface",
+        "scanCursorIsBoundedCanonicalAndIndependentOfAuthority",
+        "setupAndStationPermissionsAreDistinctEvenForSameActorAndTarget",
+        "setupNeedsExactScopeReasonRequestAndGeneration",
+        "stationSpecializationsShareOneEligibilityPolicy"
+      ],
+      "source_sha256": "6071ae9460de2941a05e1baed4edaba8dde7e8e44703fe136a4e5a1e0851acea"
+    },
+    {
       "baseline_seconds": 0.003,
       "cases": [
         "absentOwnerRemainsAbsentAndBlankOwnerIdIsRejected",
@@ -9510,12 +9528,13 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "authorizedUnitOutsideDisplayedKindPageRemainsVisibleAndScanContinues",
         "canonicalReferenceCoverageRejectsMissingDuplicateAndDanglingBindings",
-        "fakeGraphDigestOrCrossCompanyAssociationCannotBePersisted",
-        "pinnedCanonicalLabelsAndLegacyGraphBytesSurviveHistoricalProjection",
-        "discoveryRequiresIndividualUnitAuthorityAndNeverSerializesCandidateIdentities",
         "discoveryDoesNotReturnPartialChoicesOnIndeterminateUnitAuthority",
-        "discoverySqlRestrictsCompanyActiveKindsAndDeterministicBoundedPages"
+        "discoveryRequiresIndividualUnitAuthorityAndNeverSerializesCandidateIdentities",
+        "discoverySqlRestrictsCompanyActiveKindsAndDeterministicBoundedPages",
+        "fakeGraphDigestOrCrossCompanyAssociationCannotBePersisted",
+        "pinnedCanonicalLabelsAndLegacyGraphBytesSurviveHistoricalProjection"
       ],
       "class": "dz.sh.hidra.modules.topology.infrastructure.persistence.AuthoredTopologyProjectionPostgresIntegrationTest",
       "dependency_reason": "Real fresh-schema PostgreSQL migration and immutable Pipeline/graph association qualification; native HTTP cases retained in EngineeringNetworkDraftPostgresIntegrationTest",
@@ -9523,7 +9542,7 @@
       "lane": "postgres-integration",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/AuthoredTopologyProjectionPostgresIntegrationTest.java",
-      "source_sha256": "40ee177b6ed2cd2f7d61479f81c9e972e274636ff177d4f0f00c2eb5d091f8c5",
+      "source_sha256": "b5c447d3831637bf4ddb3cd45d7c44d72b54f6298b3d48dac1180c4ff30f74f9",
       "supports": []
     },
     {
@@ -9800,6 +9819,11 @@
         "disabledReceiptTriggerAndWrongPositionKindFailBeforeMutation",
         "expiredFinalBoundRollsBackProvisionalRootAndReceipt",
         "foreignThreadTicketMisusePoisonsOriginalWriterDespiteSwallowedFailure",
+        "foundationCatalogPagesBeyondTwoHundredAndForeignScopeStayExplicit",
+        "foundationCompetingActivationWritesCommitOneSuccessorAndRejectStaleToken",
+        "foundationNativeDeniedForeignInactiveAndReplayConflictsHaveNoPartialWrites",
+        "foundationNativeFinalGuardFailureRollsBackPositionAndReceiptTogether",
+        "foundationNativeHttpSetupInstallationGraphPublicationConfigurationAndReload",
         "installedUnitHttpAuthorizedAbsenceConflictsAndBoundedHistoryUseCurrentAuthority",
         "installedUnitHttpBearerDenialAndRevocationHideEvidence",
         "installedUnitHttpCompetingReplacementsExposeOnlyOneAtomicCommittedResult",
@@ -9845,7 +9869,7 @@
       "lane": "postgres-integration",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedInstalledUnitLifecyclePostgresIntegrationTest.java",
-      "source_sha256": "6072ea624d7b17370736c158e688f3265d1ff3cfd5fa12fa86568819fbff175d",
+      "source_sha256": "da20e45515a3ff39c1fbc5a1c0f5d95cb6187215093f6c404d81c04d065c105e",
       "supports": []
     },
     {
@@ -10808,24 +10832,6 @@
     {
       "baseline_seconds": 0,
       "cases": [
-        "currentActorRevocationImmediatelyRemovesReadDisclosure",
-        "currentTaskAndKnownUnknownIdsNeverBypassMembership",
-        "recognizedNativeTopologyTargetRequiresActualOwnerAdmission",
-        "starterAndAssignedReviewerReadOnlyTheirAuthorizedWorkflow",
-        "unrelatedAdministratorCannotReadDetailHistoryActionsOrCounts"
-      ],
-      "class": "dz.sh.hidra.modules.workflow.infrastructure.persistence.WorkflowFoundationReadAuthorizationPostgresIntegrationTest",
-      "dependency_reason": "HAPI-928 whole B6: configured LOCAL JWT HTTP/fresh PostgreSQL/actor scope/native owner denial/approval and rollback",
-      "fast": false,
-      "lane": "postgres-integration",
-      "owner": "workflow",
-      "path": "src/test/java/dz/sh/hidra/modules/workflow/infrastructure/persistence/WorkflowFoundationReadAuthorizationPostgresIntegrationTest.java",
-      "source_sha256": "c41a33e85c568d784658f4540df5ad40038677854b555abf3487f9e90f72079f",
-      "supports": []
-    },
-    {
-      "baseline_seconds": 0,
-      "cases": [
         "commentCannotMasqueradeAsDecision",
         "configuredRejectRequiresOwnerReasonAndRetainsTerminalEvidence",
         "developmentProvisionerRequiresExplicitExistingHumanAndIsNeverAutoEnabledInTest",
@@ -10842,6 +10848,24 @@
       "owner": "workflow",
       "path": "src/test/java/dz/sh/hidra/modules/workflow/infrastructure/persistence/WorkflowFoundationProcessPostgresIntegrationTest.java",
       "source_sha256": "7e03ed5e56776d9fa7d75cada7e521411983bfa6fc7741927dbd22232de82d88",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "currentActorRevocationImmediatelyRemovesReadDisclosure",
+        "currentTaskAndKnownUnknownIdsNeverBypassMembership",
+        "recognizedNativeTopologyTargetRequiresActualOwnerAdmission",
+        "starterAndAssignedReviewerReadOnlyTheirAuthorizedWorkflow",
+        "unrelatedAdministratorCannotReadDetailHistoryActionsOrCounts"
+      ],
+      "class": "dz.sh.hidra.modules.workflow.infrastructure.persistence.WorkflowFoundationReadAuthorizationPostgresIntegrationTest",
+      "dependency_reason": "HAPI-928 whole B6: configured LOCAL JWT HTTP/fresh PostgreSQL/actor scope/native owner denial/approval and rollback",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "workflow",
+      "path": "src/test/java/dz/sh/hidra/modules/workflow/infrastructure/persistence/WorkflowFoundationReadAuthorizationPostgresIntegrationTest.java",
+      "source_sha256": "c41a33e85c568d784658f4540df5ad40038677854b555abf3487f9e90f72079f",
       "supports": []
     },
     {
@@ -11403,7 +11427,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java",
-      "source_sha256": "8420179654a579d03f37723d079cb4f5784c1fd69989c65f25c14a1f1a4861ce",
+      "source_sha256": "a8e5721765c8123825159d641ee8e1a6523c7e7790430b28a495b2c7ac2909f8",
       "supports": []
     },
     {
@@ -11425,7 +11449,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistryTest.java",
-      "source_sha256": "ae46c66b0ccf1b784962c22f1a5c93ca5eedb9fd620bbcf72163682b350005e3",
+      "source_sha256": "9f4fc601c7480005cd0ad5234e195b82c34773ea04e2555f8a2a2fad6cf1b77f",
       "supports": []
     },
     {
@@ -11445,7 +11469,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteStartupValidatorTest.java",
-      "source_sha256": "df287b2c2de2a229a9cdd9813cd559d576177046ce6f754595f1647eb8786d4d",
+      "source_sha256": "93d8d71f1a2fde794a0fe0e27b0b5c2fa88dcd84f763b221157b1c42a44df56f",
       "supports": []
     },
     {
@@ -11477,11 +11501,13 @@
       "cases": [
         "closeReleasesBothOwnedPoolsExactlyOnce",
         "disabledPublisherRouteFailsBeforeConnection",
+        "enabledSetupRouteRestoresOrdinaryAndLeavesInstalledPoolIndependent",
         "explicitCredentialAndUnwrapEscapesAreRejected",
         "nestedOrAmbientRoutesAreRejected",
         "ordinaryAccessRetainsOriginalDataSource",
         "publisherRouteUsesSeparatePrincipalAndSameEndpoint",
-        "routeIsThreadConfinedAndClearedOnAllOutcomes"
+        "routeIsThreadConfinedAndClearedOnAllOutcomes",
+        "setupCredentialIsSeparateOptInAndCannotSharePublisherPrincipal"
       ],
       "class": "dz.sh.hidra.platform.persistence.ProtectedCredentialRoutingDataSourceTest",
       "dependency_reason": "Registered HAPI-584 option A route/properties/fence JVM suite; duration unmeasured, hosted acceptance pending",
@@ -11489,7 +11515,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/persistence/ProtectedCredentialRoutingDataSourceTest.java",
-      "source_sha256": "d25b6e0f96eebde845b6f041214ae28f0b80ecaa40585718ed097f17809a0045",
+      "source_sha256": "886212cf6886bfe16a99dd649de3769ad36743e1ea05dc91e0191705bcec8e5b",
       "supports": []
     },
     {

@@ -78,14 +78,14 @@ public class SpringTopologyController implements TopologyController {
 
     @Override
     @PostMapping({"/create-pipeline-system", "/pipeline-systems"})
-    public PipelineSystemResponse createPipelineSystem(@Valid @RequestBody CreatePipelineSystemRequest request) {
+    public PipelineSystemResponse createPipelineSystem(@RequestBody CreatePipelineSystemRequest request) {
         Objects.requireNonNull(request, "CreatePipelineSystemRequest must not be null.");
         return TopologyRestMapper.toResponse(createPipelineSystemUseCase.createPipelineSystem(TopologyRestMapper.toCommand(request)));
     }
 
     @Override
     @PostMapping({"/register-facility", "/facilities"})
-    public FacilityResponse registerFacility(@Valid @RequestBody RegisterFacilityRequest request) {
+    public FacilityResponse registerFacility(@RequestBody RegisterFacilityRequest request) {
         Objects.requireNonNull(request, "RegisterFacilityRequest must not be null.");
         return TopologyRestMapper.toResponse(registerFacilityUseCase.registerFacility(TopologyRestMapper.toCommand(request)));
     }

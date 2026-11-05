@@ -105,4 +105,25 @@ class ProtectedCredentialRoutingDataSourceTest {
         var s=source();s.close();s.close();assertEquals(1,ordinary.closed.get());assertEquals(1,publisher.closed.get());
         assertThrows(SQLException.class,s::getConnection);
     }
+
+    @Test void setupCredentialIsSeparateOptInAndCannotSharePublisherPrincipal()throws Exception {
+        assertThrows(IllegalStateException.class,()->new ProtectedCredentialRoutingDataSource(ordinary,
+            new ProtectedPublicationDatabaseProperties(true,"publisher","synthetic",2),
+            new ProtectedPublicationDatabaseProperties(true,"publisher","other",2)));
+        try(var s=source()){assertFalse(s.topologySetupEnabled());try(var route=s.openStation();var c=s.getConnection()){assertEquals("publisher",c.getMetaData().getUserName());}}
+    }
+    @Test void enabledSetupRouteRestoresOrdinaryAndLeavesInstalledPoolIndependent()throws Exception {
+        var setup=new Pool("setup","jdbc:postgresql://synthetic/db");
+        try(var s=source()){
+            org.springframework.test.util.ReflectionTestUtils.setField(s,"setupProperties",new ProtectedPublicationDatabaseProperties(true,"setup","synthetic",2));
+            org.springframework.test.util.ReflectionTestUtils.setField(s,"setupPublisher",setup);
+            try(var route=s.openStation();var c=s.getConnection()){
+                assertEquals("setup",c.getMetaData().getUserName());assertEquals("setup",s.identity().publisherUser());assertThrows(IllegalStateException.class,s::open);
+            }
+            try(var route=s.open();var c=s.getConnection()){assertEquals("publisher",c.getMetaData().getUserName());}
+            try(var c=s.getConnection()){assertEquals("ordinary",c.getMetaData().getUserName());}
+        }
+        assertEquals(1,setup.closed.get());
+    }
+
 }

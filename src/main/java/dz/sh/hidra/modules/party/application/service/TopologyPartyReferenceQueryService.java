@@ -43,4 +43,8 @@ public final class TopologyPartyReferenceQueryService implements TopologyPartyRe
         }
         return partyRepositoryPort.findById(partyId.trim()).isPresent();
     }
+    @Override public boolean eligibleFacilityOwner(String partyId) {
+        return partyId!=null && !partyId.isBlank() && partyRepositoryPort.findById(partyId.trim())
+            .filter(p->p.status()==dz.sh.hidra.modules.party.domain.value.PartyStatus.ACTIVE).isPresent();
+    }
 }

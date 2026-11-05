@@ -12375,4 +12375,124 @@ fresh canonical artifact reconciliation. No unrelated status change, W1 executio
 release/deployment or numerical/P3 is selected. Publish using expected-head guard,
 verify exact parent/tree/blobs, observe applicable repair-SHA CI creation/start and STOP.
 
+
+
+### 2026-11-05 HAPI-923 same-task Full1122 authentic OpenAPI reconciliation
+
+**Actual CI evidence.** Main4421494ddfb1697b247977dae6ddb7900463d5bd,
+parent a3230ab3aa446d1e84102d2c468b24f8090ed90c,
+tree d648d866db691fb5dbfa65d46180e71e79f9f46a. Docs909 SUCCESS;
+[Full1122](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42023616762)
+FAILED. Static/unit/architecture and all14 PostgreSQL shards SUCCESS.
+Independently downloaded postgres8 artifact13412818685 and parsed the actual
+FoundationIdentityLifecyclePostgresIntegrationTest XML:8 tests, zero failures,
+errors or skips, including runtimeOpenApiSeparatesCredentialInputFromSafeState
+and every seven prior cases. The genuine HTTP/OpenAPI and native credential-state
+regression passed. API job127232239891 successfully built the application and
+generated runtime OpenAPI; strict canonical equality failed. Subsequent dictionary
+capture/base compatibility were skipped, with missing evidence uploads cascading.
+This failed run does not establish whole repair acceptance.
+
+**Exact bounded repair scope.** MODIFY only this append-only owning task file,
+`doc/api/openapi.yaml`, and `.github/documentation-validation.json` (OpenAPI fields
+only). Reuse `feat(identity): complete foundation user access lifecycle`.
+Copy the authentic generated runtime document through the existing sorted compact
+canonical serialization; preserve the current raw source stamp. Do not hand-author
+schemas or modify Java/tests/inventory, migration history, physical dictionary,
+CI/validator policy, statuses or HidraWEB. The approved same-task artifact follow-up
+is not a new delivery stage.
+
+**Authentic generated provenance.** Source4421494ddfb1697b247977dae6ddb7900463d5bd,
+run42023616762 attempt1, API job127232239891, artifact13411919715
+`hidra-ci-diagnostics-4421494ddfb1697b247977dae6ddb7900463d5bd-42023616762-1-api-contract`,
+member `openapi/hidra-api.json`; downloaded ZIP SHA256
+`f6a890406efaf906c725723878c15e0e316785fcf4b2f281ea9368fbbe6fb423`,
+raw member SHA256 `b41b4d4df36c158951e64f996a2c267afdabea6861dd53c3f7ccc28ed9e3f540`.
+Exactly one schema is added: IdentityLocalCredentialState with userId,
+securityVersion(int64), changedAt(date-time). Only two existing success-response
+refs change: PUT local-credential and GET local-credential/state. Request schema
+Credential, every other schema/operation/component/metadata stays structurally
+unchanged apart from the source stamp. Counts:334 paths/371 operations/418 schemas.
+
+**Remaining explicit compatibility blocker.** Actual local execution of the unchanged
+openapi_compatibility.py against the previous canonical contract and new runtime
+FAILS with four findings, restricted to these two corrected response contracts:
+previously documented required password/reason and properties expectedSecurityVersion,
+password/reason are removed. Those were never real response fields, as confirmed
+by source and passing native response regression. Nevertheless this is a documented
+breaking change to generated consumers. No compatibility-check waiver/exception,
+base rewriting or checker relaxation is authorized by this snapshot reconciliation.
+Actual local checks: all10 snapshot-validator tests PASS; authentic generated-source
+equality PASS (334/371/418); documentation validation PASS (928 tasks/25 phases);
+exact two-response/one-schema structural delta and all non-OpenAPI manifest fields
+preserved PASS; git diff --check PASS. Canonical SHA256
+`aad9accb1a45634b7b20978142bfbda2415141afe8b86ae99c0d95e0d7be8fc4`.
+
+A precise owner decision is required before altering that compatibility policy;
+retain the failing evidence rather than claim backward compatibility. Future
+same-SHA canonical equality, base compatibility disposition, fresh physical catalog
+and whole repair acceptance remain pending. W1 remains blocked. Publish guarded,
+observe new exact-SHA CI creation/queue/start, then STOP.
+
+
+
+### 2026-11-05 HAPI-923 owner-approved exact response compatibility exception
+
+The owner explicitly approved the proposed narrowly scoped exception for the two
+corrected credential responses and regression tests preserving every other check.
+This supersedes only the preceding pending-decision / no-CI-policy-change boundary
+for this exact defect; it does not admit a generic breaking-change allowlist.
+Baseline still4421494ddfb1697b247977dae6ddb7900463d5bd (Docs909 SUCCESS,
+Full1122 FAILED as recorded above). Preserve all prior evidence append-only.
+
+**Combined exact publication scope:** MODIFY `doc/api/openapi.yaml`,
+`.github/documentation-validation.json` (OpenAPI fields only), this task evidence,
+`.github/scripts/openapi_compatibility.py`, `.github/workflows/ci.yml` (add the new
+Python regression suite to existing static/oracle validator-test commands only).
+CREATE `.github/scripts/test_openapi_compatibility.py`. No DELETE, Java/test-class
+inventory, schema/migration, database dictionary, authorization, other task status,
+HidraWEB, deployment or numerical/P3 changes. Same registered exact message
+`feat(identity): complete foundation user access lifecycle`.
+
+**Exception contract:** recognize only the reviewed successful Full1121 runtime
+base document, hashed canonically after removing only its optional CI source stamp.
+Only PUT /api/v1/identity/users/{id}/local-credential and GET its /state endpoint,
+response200 and media */*, may change the exact Credential ref to the exact
+IdentityLocalCredentialState ref. The current Credential request schema must be
+byte-structurally unchanged and the new state schema must exactly equal the verified
+Full1122 safe state (userId:string, securityVersion:int64, changedAt:date-time).
+Any other base digest, endpoint/method/status/media/ref or altered schema receives
+normal comparison and its normal failure. Keep parameter, request, response-code,
+media, other schema/operation and security checks active. Print explicit approved
+correction notices; never label this as ordinary backward compatibility.
+Once a corrected successful base is selected, the legacy-base exception cannot apply
+and ordinary comparison checks future state-field removals/types. No manufactured
+base, source-stamp trust, runtime password exposure or bulk suppression of failures.
+
+**Tests:** real comparator CLI using isolated synthetic documents and a test-only
+baseline digest pin exercises allowed correction and negative cases: altered base,
+wrong path/method/status/media/ref, tampered request/state, unrelated response loss,
+required input addition, removed operation, and post-correction state regression.
+The real downloaded Full1121 and Full1122 documents are also compared unchanged
+apart from the approved policy. Snapshot equality and fresh physical catalog remain
+strict. New exact-SHA Full/Docs, supported-base resolution, native cases and whole
+repair acceptance remain pending; W1 is not executed.
+
+**Actual validation:** all12 new comparator CLI regression tests PASS (including
+negative subcases); real Full1121-to-Full1122 runtime comparison PASS with exactly
+two explicit approved-correction notices and no other suppression; all19 existing
+documentation-validator tests and10 snapshot-validator tests PASS; documentation
+validation (928 tasks/25 phases), genuine generated snapshot equality (334 paths,
+371 operations,418 schemas), unchanged source-bound Java inventory, exact structural
+schema/response delta, non-OpenAPI manifest preservation and git diff --check PASS.
+Reviewed base digest (CI stamp excluded):
+`34354e984a49bb997175dd03c483b2e578d06157d3fe34d1ac3690f811adcb67`.
+No local Java/PostgreSQL or new hosted CI pass is claimed. The previous four
+compatibility findings are now an explicitly approved metadata correction, not a
+claim that old generated response types were correct. Fresh hosted supported-base
+comparison and migrated dictionary equality remain mandatory.
+
+Guard direct-main publication,
+verify exact paths/parent/tree/blobs/message, observe CI creation/start and STOP.
+
 <!-- task-register:payload:end -->

@@ -4,11 +4,52 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import sys
 from pathlib import Path
 from typing import Any
 
 HTTP_METHODS = {"get", "put", "post", "delete", "options", "head", "patch", "trace"}
+
+
+# Owner-approved HAPI-923 correction, 2026-11-05. This is the successful
+# Full1121 runtime document with only the optional CI source stamp removed.
+REVIEWED_CREDENTIAL_BASE_SHA256 = "34354e984a49bb997175dd03c483b2e578d06157d3fe34d1ac3690f811adcb67"
+CREDENTIAL_RESPONSES = frozenset({
+    ("/api/v1/identity/users/{id}/local-credential", "put"),
+    ("/api/v1/identity/users/{id}/local-credential/state", "get"),
+})
+REVIEWED_CREDENTIAL_STATE = {
+    "type": "object",
+    "properties": {
+        "userId": {"type": "string"},
+        "securityVersion": {"type": "integer", "format": "int64"},
+        "changedAt": {"type": "string", "format": "date-time"},
+    },
+}
+
+
+def contract_digest(document: dict[str, Any]) -> str:
+    content = {k: v for k, v in document.items() if k != "x-hidra-ci-source-sha"}
+    return hashlib.sha256(json.dumps(content, sort_keys=True, separators=(",", ":"),
+                                     allow_nan=False).encode("utf-8")).hexdigest()
+
+
+def approved_credential_response_correction(
+    base_doc: dict[str, Any], cur_doc: dict[str, Any], path: str, method: str,
+    code: str, media: str, before: Any, after: Any,
+) -> bool:
+    if ((path, method) not in CREDENTIAL_RESPONSES or code != "200" or media != "*/*"
+            or before != {"$ref": "#/components/schemas/Credential"}
+            or after != {"$ref": "#/components/schemas/IdentityLocalCredentialState"}):
+        return False
+    if contract_digest(base_doc) != REVIEWED_CREDENTIAL_BASE_SHA256:
+        return False
+    base_schemas = base_doc.get("components", {}).get("schemas", {})
+    cur_schemas = cur_doc.get("components", {}).get("schemas", {})
+    return (base_schemas.get("Credential") is not None
+            and cur_schemas.get("Credential") == base_schemas["Credential"]
+            and cur_schemas.get("IdentityLocalCredentialState") == REVIEWED_CREDENTIAL_STATE)
 
 
 def load(path: str) -> dict[str, Any]:
@@ -225,6 +266,12 @@ def compare_operation(
                 if removed_types:
                     breaks.append(f"{where} response {code}: content types removed: {removed_types}")
                 for media in sorted(set(base_content) & set(cur_content)):
+                    if approved_credential_response_correction(
+                        base_doc, cur_doc, path, method, code, media,
+                        base_content[media].get("schema", {}), cur_content[media].get("schema", {}),
+                    ):
+                        print(f"Owner-approved HAPI-923 schema correction: {where} response {code} {media}")
+                        continue
                     compare_schema(
                         base_doc,
                         cur_doc,

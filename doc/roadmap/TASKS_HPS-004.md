@@ -12888,3 +12888,58 @@ remains CI_ACCEPTANCE_PENDING. Genuine new runtime OpenAPI/catalog regeneration,
 strict equality and full native qualification remain open within HAPI-926;
 W2/HWEB-F12 remains blocked. After guarded direct-main publication verify
 parent/tree/blobs and exact-SHA Full/Docs creation/queue/start, then STOP.
+
+### 2026-11-05 HAPI-926 same-task Full1128 test compilation and generated contract repair
+
+Baseline `fd384b3b442a0dc7c3dea4a1f4f80b2b55127efb`, parent
+`9b9cf4c73efcfbe025117df0c6ae47ca2031fa13`, tree
+`180ebbb7ea69832760af090308709ebf63c0c1da`. [Full1128](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42105624544)
+FAILED. Retrieved unit-lane log identifies ambiguous `permissionCode(null)` in
+ProtectedTopologyAuthorizationParticipantTest line129: the added Request overload
+and existing Operation overload both match null. Production application compile,
+package and deterministic runtime OpenAPI generation succeeded in API job127519545539;
+its snapshot equality then failed. Catalog capture and successful-base runtime
+comparison were skipped. No native PostgreSQL execution/acceptance is inferred
+from missing reports or the subsequent upload failures.
+
+Repair keeps the original null-operation assertion and NullPointerException
+expectation: explicitly cast null to Operation. Update only that existing test's
+source hash in the exact inventory; retain all563 oracle classes, all case names,
+lane assignments and production authorization code unchanged.
+
+Genuine diagnostics artifact13450993651, member `openapi/hidra-api.json`, source
+fd384b3b442a0dc7c3dea4a1f4f80b2b55127efb, run42105624544/attempt1:
+ZIP SHA256 `2a0032bf0c7eed72767e1cfbcb9663c3c5f3a889dab4ab6b5e6aed96954cd189`
+(matches GitHub artifact digest), raw JSON SHA256
+`80dd7c4a4e18c6f1d3d70746d789332029f5145f021e36f7b32e000a6dd620fd`.
+Canonical sorted compact snapshot SHA256
+`f8d9b446467448e7216ead6b444267771df857881f56763a32c725269c40f5ff`:
+344 paths/383 operations/430 schemas. Ten additive paths expose already-authored
+foundation and station-graph operations; twelve added schemas; existing discovery
+adds optional cursor/nextCursor. No path/schema removal. Unchanged local backward
+comparator PASS against prior reviewed snapshot; this is not same-run hosted
+successful-base qualification. Manifest retains all prior provenance nested intact
+and explicitly distinguishes successful generation from failed job/workflow.
+No physical dictionary bytes are inferred or replaced: actual new catalog capture
+and strict equality remain pending after the failed snapshot step.
+
+Exact registered message remains
+`feat(topology): connect pipeline authoring to persisted graph views`.
+MODIFY only the test, `.github/ci-test-inventory.json`,
+`.github/documentation-validation.json`, `doc/api/openapi.yaml` and this append-only
+owning task record; no CREATE/DELETE, Java production, migration, dictionary,
+workflow/validator relaxation, registry status or immutable archive changes.
+HAPI-926 consolidated completion remains CI_ACCEPTANCE_PENDING; previous bounded
+acceptance remains historical. New exact-SHA Full/Docs, full native cases, actual
+runtime/base compatibility, genuine catalog/dictionary equality and independent
+acceptance remain required. HWEB-F12/W2 is not advanced. Observe guarded publication
+and new-SHA CI creation/queue/start, then STOP.
+
+Full1128 repair local validation: documentation validator PASS (129 documents,
+8978 links,928 tasks,25 phases); exact inventory PASS (563 oracle classes);
+snapshot runtime equality PASS against the recovered source-bound artifact;
+unchanged backward comparator PASS; all61 relevant Python tests PASS (10 snapshot,
+13 compatibility,38 inventory); `git diff --check` PASS. Java21
+`bash ./mvnw -B -q -DskipTests test-compile` attempted, blocked before compilation
+by Maven Central DNS resolving Spring Boot4.1.1 parent. No local Java/native
+PostgreSQL passing result is claimed. Hosted new-SHA CI remains required.

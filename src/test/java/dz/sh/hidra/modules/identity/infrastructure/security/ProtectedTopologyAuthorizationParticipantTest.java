@@ -126,7 +126,7 @@ class ProtectedTopologyAuthorizationParticipantTest {
         for (int i = 0; i < Operation.values().length; i++)
             assertThat(TopologyProtectedAuthorizationContract.permissionCode(Operation.values()[i]))
                     .isEqualTo("topology:station-revision:" + suffixes[i]);
-        assertThatThrownBy(() -> TopologyProtectedAuthorizationContract.permissionCode(null))
+        assertThatThrownBy(() -> TopologyProtectedAuthorizationContract.permissionCode((Operation) null))
                 .isInstanceOf(NullPointerException.class);
     }
 

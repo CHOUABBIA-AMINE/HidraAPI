@@ -3658,7 +3658,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/ProtectedTopologyAuthorizationParticipantTest.java",
-      "source_sha256": "107640bc00c988e68c3ec806eacb7e04058cee2037b2347cdf0e408a5be41ae0",
+      "source_sha256": "8c850aaa6d97dd808fbe70368c286f65582cbe23316512250a440be1f06259f3",
       "supports": []
     },
     {

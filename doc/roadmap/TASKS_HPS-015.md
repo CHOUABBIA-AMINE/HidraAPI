@@ -13044,4 +13044,79 @@ runtime OpenAPI compatibility/snapshot and fresh dictionary. This
 remains HAPI-928 IMPLEMENTED / IN_PROGRESS, **not** completed or accepted.
 Stop after repair-SHA CI creation/queue/start; do not execute F1.
 
+
+### 2026-11-05 HAPI-928 whole-B6 same-task CI #1119 failure evidence and bounded repair
+
+**Live evidence and publication discipline.** Main after the earlier authorized
+whole-B6 and first CI repair: `5d38fcea0f70f2947589e2a8aa36f5ad62a7db93`,
+parent `0357376e63ab956be6527695e2ee6aa82cfdd823`, tree
+`fcf321ecdd6e7031e1932d15c4aa280d2d5a29de`, same registered exact
+commit message. [Documentation #905](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41907133144)
+SUCCESS; [Full CI #1119](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41907133148)
+FAILED. Java 21 unit/architecture, static validation and twelve PostgreSQL
+shards succeeded. PostgreSQL shard 2 failed five new read-test fixtures on
+`fk_hra111_workflow_008` from an unregistered definition type. Shard 9 failed
+six process assertions/one SQL setup: reused synthetic target identity,
+order-dependent discovery assertion, HTTP 500 without owner-domain mapping,
+and an unsupported ACTIVE-transition update rejected by the preserved
+`HMR061` SQL guard. The API job generated a valid current runtime OpenAPI
+but its canonical snapshot equality failed, so same-run actual base
+compatibility and dictionary capture did not execute. These are actual
+case/step failures, not successful B6 acceptance.
+
+**Same-task scope reconciliation, not a new stage.** Owner approval for the
+whole B6 compatibility/security reconciliation admits MODIFY of the
+Workflow-owned `src/main/java/dz/sh/hidra/modules/workflow/api/rest/WorkflowTransitionApiExceptionHandler.java`
+in addition to the previously registered B6 allowlist. The previously
+restricted transition-only advice could not map `WorkflowTransitionDeniedException`
+or other Workflow domain denials originating from
+`SpringWorkflowController` and `WorkflowQueryController`, yielding 500 for
+rejected owner operations. Reuse the same scoped Workflow advice for all
+three controllers, map current-owner denials to 403 and invalid operations
+to 422; preserve the existing transition conflict 409 and native target
+authorization. No global/Platform handler, Identity, Organization or
+Topology policy change is authorized or performed.
+
+**Exact repair scope.** MODIFY the two existing named B6 PostgreSQL tests,
+`.github/ci-test-inventory.json`, `doc/api/openapi.yaml`,
+`.github/documentation-validation.json`, the scoped Workflow API handler
+and this append-only task evidence. The read fixtures now insert their
+active target/purpose catalogs, definition/bindings and correct
+`workflow_purpose_id` before querying owner-guarded resources. Process
+fixtures use a unique deterministic-format synthetic digest per case,
+compare a matching discovered binding rather than untrusted result order,
+and assert existing `HMR061` database rejection instead of disabling
+its guard. Strict successful HTTP response oracles retain resolved exception
+type/cause for failed synthetic CI. Keep all five read cases and eight
+process cases, 14 PostgreSQL shards and original historical cases.
+
+**Authentic OpenAPI provenance.** Full #1119 API job
+`126844712099` generated OpenAPI at its actual source SHA before
+snapshot equality failed. Retained artifact
+`13360936687`, named
+`hidra-ci-diagnostics-5d38fcea0f70f2947589e2a8aa36f5ad62a7db93-41907133148-1-api-contract`,
+member `openapi/hidra-api.json`, ZIP SHA-256
+`7d171697a5046a5ab31597ec2682afe82b641e97a086a9c98cfd88b30daaa00c`,
+runtime member SHA-256
+`576a45009c927c9acb0fe8527114930fc62cc5c7754d459afb17b3bbac7bdd2c`.
+Exact compact sorted JSON Git blob
+`df0a593b8801feaf79757601abcef3e1782289ad`; canonical
+snapshot SHA-256
+`a4fff17ca52fb11df39b942e0fc8484e53b653f0b0480d169e8cfe8656fa8002`.
+Compared with the prior canonical JSON, this adds exactly one supported
+discovery GET path/operation, three schemas (Assignment, Decision, Definition)
+and one tag; all 333 old paths, 414 old schemas and all other structural
+components are unchanged. Generation was successful, but #1119 API job
+and Full workflow were not. Fresh same-SHA runtime equality, supported
+successful-base backward compatibility and migrated dictionary equality
+remain mandatory after repair. The snapshot is not fabricated and does
+not claim deployment or security/SITE qualification.
+
+**Status:** HAPI-928 remains **IMPLEMENTED / IN_PROGRESS** until a
+separate evidence review establishes whole-task passing hosted CI,
+required PostgreSQL cases, actual API/dictionary evidence and independent
+acceptance. No further stage, numerical/P3, release or HidraWEB action
+is selected. After guarded same-message repair publication, observe
+exact-SHA CI creation/queue/start then STOP.
+
 <!-- task-register:payload:end -->

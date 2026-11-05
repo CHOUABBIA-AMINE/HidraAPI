@@ -10816,7 +10816,7 @@
       "lane": "postgres-integration",
       "owner": "workflow",
       "path": "src/test/java/dz/sh/hidra/modules/workflow/infrastructure/persistence/WorkflowFoundationReadAuthorizationPostgresIntegrationTest.java",
-      "source_sha256": "345a779f719ca84ea37f318666fccc2c3b4587dee0d7266820bf05a07e2d995f",
+      "source_sha256": "c41a33e85c568d784658f4540df5ad40038677854b555abf3487f9e90f72079f",
       "supports": []
     },
     {
@@ -10837,7 +10837,7 @@
       "lane": "postgres-integration",
       "owner": "workflow",
       "path": "src/test/java/dz/sh/hidra/modules/workflow/infrastructure/persistence/WorkflowFoundationProcessPostgresIntegrationTest.java",
-      "source_sha256": "d9dbdef9441d62e6d43b4a9fe89855bee8e62f546ed03fc9a671712fddfdd2cb",
+      "source_sha256": "7e03ed5e56776d9fa7d75cada7e521411983bfa6fc7741927dbd22232de82d88",
       "supports": []
     },
     {

@@ -58,7 +58,7 @@ class WorkflowFoundationReadAuthorizationPostgresIntegrationTest {
     @Autowired WebApplicationContext context;
     MockMvc http;
     String starter, reviewer, outsider, starterToken, reviewerToken, outsiderToken;
-    String definition, step, instance, task;
+    String definition, step, instance, task, purpose;
     private static final String BASE="/api/v1/workflow";
     private static final String PASSWORD="synthetic-workflow-read-password";
     private String id(){return UUID.randomUUID().toString();}
@@ -74,19 +74,32 @@ class WorkflowFoundationReadAuthorizationPostgresIntegrationTest {
         starter=id();reviewer=id();outsider=id();
         starterToken=login(starter);reviewerToken=login(reviewer);outsiderToken=login(outsider);
         definition=id();step=id();instance=id();task=id();
+        String targetType=id(); purpose=id();
+        jdbc.update("INSERT INTO public.hidra_workflow_type_catalog"
+                +"(id,catalog_name,code,active,sort_order,system_defined,created_at,updated_at)"
+                +" VALUES (?,'WORKFLOW_TARGET_TYPE',?,true,0,false,now(),now())",
+                targetType,targetType);
+        jdbc.update("INSERT INTO public.hidra_workflow_type_catalog"
+                +"(id,catalog_name,code,active,sort_order,system_defined,created_at,updated_at)"
+                +" VALUES (?,'WORKFLOW_PURPOSE',?,true,0,false,now(),now())",
+                purpose,purpose);
         jdbc.update("INSERT INTO public.hidra_workflow_definition"
                 +"(id,code,name_fr,type_id,status,version,created_at,updated_at)"
                 +" VALUES (?,?,'Synthetic private process',?,'ACTIVE',1,now(),now())",
-                definition,definition,id());
+                definition,definition,targetType);
         jdbc.update("INSERT INTO public.hidra_workflow_step"
                 +"(id,definition_id,code,name_fr,step_order,mandatory,allow_claim,allow_delegation,allow_escalation,created_at,updated_at)"
                 +" VALUES (?,?,'REVIEW','Review',1,true,false,false,false,now(),now())",
                 step,definition);
+        jdbc.update("INSERT INTO public.hidra_workflow_definition_target_binding"
+                +"(id,definition_id,target_module,target_type_id,workflow_purpose_id,active,created_at,updated_at)"
+                +" VALUES (?,?,'incident',?,?,true,now(),now())",
+                id(),definition,targetType,purpose);
         jdbc.update("INSERT INTO public.hidra_workflow_instance"
-                +"(id,definition_id,definition_version,target_module,target_type_id,target_id,status,current_step_id,"
+                +"(id,definition_id,definition_version,workflow_purpose_id,target_module,target_type_id,target_id,status,current_step_id,"
                 +"started_by_actor_id,started_by_display_name_snapshot,started_at,created_at,updated_at)"
-                +" VALUES (?, ?,1,'incident',?,'synthetic-target','STARTED',?,?, 'Synthetic Starter',now(),now(),now())",
-                instance,definition,id(),step,starter);
+                +" VALUES (?, ?,1,?,'incident',?,'synthetic-target','STARTED',?,?, 'Synthetic Starter',now(),now(),now())",
+                instance,definition,purpose,targetType,step,starter);
         jdbc.update("INSERT INTO public.hidra_workflow_task"
                 +"(id,instance_id,step_id,status,assigned_actor_id,created_at,updated_at)"
                 +" VALUES (?,?,?,'OPEN',?,now(),now())",task,instance,step,reviewer);
@@ -156,12 +169,16 @@ class WorkflowFoundationReadAuthorizationPostgresIntegrationTest {
                 +"WHERE catalog_name='WORKFLOW_TARGET_TYPE' AND code='INSTALLED_CHARACTERISTIC_LINK_REVISION'",
                 String.class);
         String nativeInstance=id();
+        jdbc.update("INSERT INTO public.hidra_workflow_definition_target_binding"
+                +"(id,definition_id,target_module,target_type_id,workflow_purpose_id,active,created_at,updated_at)"
+                +" VALUES (?,?,'topology',?,?,true,now(),now())",
+                id(),definition,type,purpose);
         jdbc.update("INSERT INTO public.hidra_workflow_instance"
-                +"(id,definition_id,definition_version,target_module,target_type_id,target_id,target_code_snapshot,"
+                +"(id,definition_id,definition_version,workflow_purpose_id,target_module,target_type_id,target_id,target_code_snapshot,"
                 +"status,current_step_id,started_by_actor_id,started_by_display_name_snapshot,started_at,created_at,updated_at)"
-                +" VALUES (?,?,1,'topology',?,?,'nonexistent-source-locator','STARTED',?,?,"
+                +" VALUES (?,?,1,?,'topology',?,?,'nonexistent-source-locator','STARTED',?,?,"
                 +"'Synthetic Starter',now(),now(),now())",
-                nativeInstance,definition,type,"b".repeat(64),step,starter);
+                nativeInstance,definition,purpose,type,"b".repeat(64),step,starter);
         get(BASE+"/instances/"+nativeInstance,starterToken).andExpect(status().is4xxClientError());
         get(BASE+"/instances/"+nativeInstance+"/timeline",starterToken).andExpect(status().is4xxClientError());
     }
@@ -169,7 +186,7 @@ class WorkflowFoundationReadAuthorizationPostgresIntegrationTest {
         get(BASE+"/instances/"+instance,reviewerToken).andExpect(status().isOk());
         get(BASE+"/instances/"+id(),reviewerToken).andExpect(status().is4xxClientError());
         get(BASE+"/tasks/"+id(),reviewerToken).andExpect(status().is4xxClientError());
-        // The domain-referenced current task is constrained to the same reader membership.
+        // The browser read is actor-scoped; existing internal reference queries remain separate.
         var query=context.getBean(dz.sh.hidra.modules.workflow.application.port.in.WorkflowQueryUseCase.class);
         org.springframework.security.core.context.SecurityContextHolder.clearContext();
         assertThrows(java.util.NoSuchElementException.class,()->query.authorizedCurrentTask(instance));

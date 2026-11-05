@@ -178,10 +178,16 @@ class TopologyScopedAccessQueryServiceTest {
     @Test
     void publicRequestContainsOnlyOperationAndNeutralReferences() {
         assertThrows(IllegalArgumentException.class, () -> new Request(null, "company-a", "facility-a"));
-        assertEquals(List.of("operation", "companyPartyId", "facilityId"),
+        assertEquals(List.of("operation", "companyPartyId", "facilityId", "target"),
                 Arrays.stream(Request.class.getRecordComponents()).map(c -> c.getName()).toList());
-        assertEquals(List.of(Operation.class, String.class, String.class),
+        assertEquals(List.of(Operation.class, String.class, String.class, TopologyScopedAccessContract.Target.class),
                 Arrays.stream(Request.class.getRecordComponents()).map(c -> c.getType()).toList());
+        assertEquals(TopologyScopedAccessContract.Target.STATION,
+                new Request(Operation.PUBLISH, "company-a", "facility-a").target());
+        assertThrows(IllegalArgumentException.class, () -> new Request(Operation.PUBLISH,
+                "company-a", "facility-a", TopologyScopedAccessContract.Target.FOUNDATION_FACILITY));
+        assertThrows(IllegalArgumentException.class, () -> new Request(Operation.AUTHOR,
+                "company-a", "facility-a", TopologyScopedAccessContract.Target.FOUNDATION_COMPANY));
         assertEquals(8, Operation.values().length);
         assertEquals(1, TopologyScopedAccessContract.class.getDeclaredMethods().length);
         assertEquals(boolean.class, TopologyScopedAccessContract.class.getDeclaredMethods()[0].getReturnType());

@@ -26,7 +26,7 @@ public class JdbcTopologyFoundationAdapter implements TopologyFoundationPersiste
     public JdbcTopologyFoundationAdapter(JdbcTemplate jdbc,ProtectedTransactionExecutor executor){this.jdbc=Objects.requireNonNull(jdbc);this.executor=Objects.requireNonNull(executor);}
     private final class Ticket implements Admission,TransactionSynchronization {
         final JdbcTopologyFoundationAdapter issuer=JdbcTopologyFoundationAdapter.this;final Thread thread=Thread.currentThread();final ConnectionHolder holder;final Command command;final String role;final int pid;final long xid;
-        boolean active=true,observed;Result result;String image;String digest;
+        boolean active=true,observed;Result result;String image;String digest;Item pendingItem;String resultTable;
         Ticket(ConnectionHolder h,Command c,int p,long x,String r){holder=h;command=c;pid=p;xid=x;role=r;digest=sha(encode(c));}
         @Override public void suspend(){active=false;}@Override public void afterCompletion(int s){active=false;}
     }
@@ -65,6 +65,7 @@ public class JdbcTopologyFoundationAdapter implements TopologyFoundationPersiste
                 var row=prior.getFirst();if(!Objects.equals(row.get("command_sha256"),t.digest))throw conflict();
                 try {var result=json.readValue((String)row.get("result_json"),Result.class);return t.result=new Result(result.items(),List.of(),List.of(),null,true);}catch(Exception e){throw unavailable();}
             }
+            prepareMutation(t);
             return null;
         }
         if(c.kind()==Kind.POSITIONS || c.kind()==Kind.INSTALLATIONS)facility(t,true);
@@ -85,33 +86,62 @@ public class JdbcTopologyFoundationAdapter implements TopologyFoundationPersiste
         args.add(c.offset());args.add(c.limit()+1);var rows=jdbc.query(select+" ORDER BY code,id OFFSET ? LIMIT ?",(r,n)->item(r),args.toArray());
         return t.result=new Result(rows.subList(0,Math.min(rows.size(),c.limit())),List.of(),List.of(),rows.size()>c.limit()?c.offset()+c.limit():null,false);
     }
-    @Override public Result persist(Admission a,Origin o){
-        var t=ticket(a);if(!t.observed||t.result!=null||!t.command.mutation())throw unavailable();var c=t.command;var at=Timestamp.from(o.sampledAt());String table;
+    // Eligibility reads run while OBSERVING under the already acquired relation fences.
+    private void prepareMutation(Ticket t){
+        var c=t.command;
         switch(c.kind()) {
             case CREATE_SYSTEM -> {
                 if(!Boolean.TRUE.equals(jdbc.queryForObject("SELECT EXISTS(SELECT 1 FROM public.hidra_topology_pipeline_system_type WHERE id=? AND active)",Boolean.class,c.typeId())))throw conflict();
-                jdbc.update(SYSTEM,c.resourceId(),c.code(),c.name(),c.typeId(),at,at);jdbc.update(OWNER,c.resourceId(),c.companyPartyId());table="hidra_topology_pipeline_system";
+                t.resultTable="hidra_topology_pipeline_system";
+                t.pendingItem=new Item(c.resourceId(),c.code(),c.name(),"PIPELINE_SYSTEM","DRAFT",null);
             }
             case REGISTER_FACILITY -> {
                 if(!Boolean.TRUE.equals(jdbc.queryForObject("SELECT EXISTS(SELECT 1 FROM public.hidra_topology_facility_type WHERE id=? AND status='ACTIVE' AND facility_kind=?)",Boolean.class,c.typeId(),c.facilityKind())))throw conflict();
-                jdbc.update(FACILITY,c.resourceId(),c.code(),c.name(),c.typeId(),c.facilityKind(),c.companyPartyId(),at,at);table="hidra_topology_facility";
+                t.resultTable="hidra_topology_facility";
+                t.pendingItem=new Item(c.resourceId(),c.code(),c.name(),c.facilityKind(),"PLANNED",null);
             }
             case ACTIVATE_FACILITY -> {
-                facility(t,false);if(!Boolean.TRUE.equals(jdbc.queryForObject("SELECT EXISTS(SELECT 1 FROM public.hidra_topology_facility f JOIN public.hidra_topology_facility_type k ON k.id=f.facility_type_id WHERE f.id=? AND k.status='ACTIVE' AND k.facility_kind=f.facility_kind)",Boolean.class,c.facilityId())))throw conflict();
-                if(!o.sampledAt().isAfter(c.expectedUpdatedAt()))throw conflict();
-                if(jdbc.update(ACTIVATE,at,c.resourceId(),c.companyPartyId(),Timestamp.from(c.expectedUpdatedAt()))!=1)throw conflict();table="hidra_topology_facility";
+                facility(t,false);
+                if(!Boolean.TRUE.equals(jdbc.queryForObject("SELECT EXISTS(SELECT 1 FROM public.hidra_topology_facility f JOIN public.hidra_topology_facility_type k ON k.id=f.facility_type_id WHERE f.id=? AND k.status='ACTIVE' AND k.facility_kind=f.facility_kind)",Boolean.class,c.facilityId())))throw conflict();
+                t.resultTable="hidra_topology_facility";
+                var before=existing(t.resultTable,c.resourceId());
+                t.pendingItem=new Item(before.id(),before.code(),before.name(),before.kind(),"ACTIVE",null);
             }
             case REGISTER_POSITION -> {
-                facility(t,true);if(!Boolean.TRUE.equals(jdbc.queryForObject("SELECT EXISTS(SELECT 1 FROM public.hidra_topology_equipment_type WHERE id=? AND status='ACTIVE')",Boolean.class,c.typeId())))throw conflict();
-                jdbc.update(POSITION,c.resourceId(),c.code(),c.name(),c.facilityId(),c.typeId(),at,at);table="hidra_topology_equipment";
+                facility(t,true);
+                if(!Boolean.TRUE.equals(jdbc.queryForObject("SELECT EXISTS(SELECT 1 FROM public.hidra_topology_equipment_type WHERE id=? AND status='ACTIVE')",Boolean.class,c.typeId())))throw conflict();
+                t.resultTable="hidra_topology_equipment";
+                t.pendingItem=new Item(c.resourceId(),c.code(),c.name(),"EQUIPMENT_POSITION","PLANNED",null);
             }
             default -> throw unavailable();
         }
-        t.result=new Result(List.of(existing(table,c.resourceId())),List.of(),List.of(),null,false);
+    }
+    @Override public Result persist(Admission a,Origin o){
+        var t=ticket(a);if(!t.observed||t.result!=null||t.pendingItem==null||!t.command.mutation())throw unavailable();var c=t.command;var at=Timestamp.from(o.sampledAt());
+        // PROVISIONAL admits only the six exact reviewed DML templates, never SELECT.
+        switch(c.kind()) {
+            case CREATE_SYSTEM -> {
+                jdbc.update(SYSTEM,c.resourceId(),c.code(),c.name(),c.typeId(),at,at);
+                jdbc.update(OWNER,c.resourceId(),c.companyPartyId());
+            }
+            case REGISTER_FACILITY -> jdbc.update(FACILITY,c.resourceId(),c.code(),c.name(),c.typeId(),c.facilityKind(),c.companyPartyId(),at,at);
+            case ACTIVATE_FACILITY -> {
+                if(!o.sampledAt().isAfter(c.expectedUpdatedAt()))throw conflict();
+                if(jdbc.update(ACTIVATE,at,c.resourceId(),c.companyPartyId(),Timestamp.from(c.expectedUpdatedAt()))!=1)throw conflict();
+            }
+            case REGISTER_POSITION -> jdbc.update(POSITION,c.resourceId(),c.code(),c.name(),c.facilityId(),c.typeId(),at,at);
+            default -> throw unavailable();
+        }
+        var item=t.pendingItem;
+        t.result=new Result(List.of(new Item(item.id(),item.code(),item.name(),item.kind(),item.status(),o.sampledAt())),List.of(),List.of(),null,false);
         jdbc.update(RECEIPT,c.companyPartyId(),c.requestId(),c.kind().name(),c.resourceId(),t.digest,encode(t.result),o.actorId(),o.bindingId(),o.sessionId(),at,Timestamp.from(o.validUntil()),o.backendPid(),o.transactionId(),c.reason());return t.result;
     }
     private static final String IMAGE="SELECT encode(sha256(convert_to(jsonb_build_object('systems',(SELECT jsonb_agg(to_jsonb(x) ORDER BY x.id) FROM public.hidra_topology_pipeline_system x),'facilities',(SELECT jsonb_agg(to_jsonb(x) ORDER BY x.id) FROM public.hidra_topology_facility x),'equipment',(SELECT jsonb_agg(to_jsonb(x) ORDER BY x.id) FROM public.hidra_topology_equipment x),'receipts',(SELECT jsonb_agg(to_jsonb(x) ORDER BY x.company_party_id,x.request_id) FROM public.hidra_topology_foundation_request x))::text,'UTF8')),'hex')";
-    @Override public void freeze(Admission a){var t=ticket(a);executor.requireAdmission();if(t.result==null||t.image!=null)throw unavailable();t.image=jdbc.queryForObject(IMAGE,String.class);}
+    @Override public void freeze(Admission a){var t=ticket(a);executor.requireAdmission();if(t.result==null||t.image!=null)throw unavailable();
+        // Back in OBSERVING, bind the response/receipt to the actual persisted row.
+        if(t.command.mutation() && !t.result.replayed()
+            && !t.result.items().equals(List.of(existing(t.resultTable,t.command.resourceId()))))throw unavailable();
+        t.image=jdbc.queryForObject(IMAGE,String.class);}
     @Override public boolean finalGuard(Admission a,Origin o,List<ProtectedRelationFence> owners){
         var t=ticket(a);if(t.image==null || owners.size()!=26)throw unavailable();
         var fences=new TreeMap<String,String>();for(var f:owners)fences.put(f.relation(),f.mode().catalog());for(String r:RELATIONS)fences.put("public."+r,"ShareRowExclusiveLock");

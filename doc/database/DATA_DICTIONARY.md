@@ -1,23 +1,15 @@
 # HidraAPI Physical Data Dictionary
 
-> HAPI-926 consolidated foundation completion: physical regeneration PENDING.
-> The dictionary below is retained genuine prior catalog evidence. New migration
-> `V20261105_001__topology_foundation_setup.sql` adds two setup relations; the new
-> migrated PostgreSQL catalog and strict equality have NOT been captured locally.
-> Use the genuine new-source Full CI catalog to regenerate; no inferred metadata
-> or prior-SHA result establishes this schema's acceptance.
-
-
 ## Status
 
 CURRENT
 
 ## Generation basis
 
-Captured source SHA: `c871ac3e118565d533b751897698db5fd25a7a7f`
+Captured source SHA: `139eda5076e026cea086a6fd38b0839d82d86546`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `f77cbd7fcfb959519878ae98cfa8f7d3f8f119aba4c69bc235500787fd407e7a`.
-Migrations: 200; JPA mappings: 470; catalog relations: 552; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `4f939de1dc7486a214427fb81975d297d954089a7ee323e83aeec9a881bcda10`.
+Migrations: 201; JPA mappings: 470; catalog relations: 554; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -10357,6 +10349,7 @@ Persisted PermissionJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261027_001__custody_fluid_property_authority.sql](../../src/main/resources/db/migration/V20261027_001__custody_fluid_property_authority.sql)
 - Migration mention (not inferred introduction): [V20261027_004__custody_product_publication_authority.sql](../../src/main/resources/db/migration/V20261027_004__custody_product_publication_authority.sql)
 - Migration mention (not inferred introduction): [V20261103_001__topology_engineering_baseline_drafts.sql](../../src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql)
+- Migration mention (not inferred introduction): [V20261105_001__topology_foundation_setup.sql](../../src/main/resources/db/migration/V20261105_001__topology_foundation_setup.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -28347,6 +28340,108 @@ Persisted FacilityTypeVersionJpaEntity state; semantic authority remains with to
 
 None captured in this catalog category.
 
+### public.hidra_topology_foundation_request
+
+Owner: **topology**; relation kind: `r`.
+
+Immutable native-authorized setup receipts with replay digest, reason, actor and transaction provenance.
+
+- Evidence: [V20261105_001__topology_foundation_setup.sql](../../src/main/resources/db/migration/V20261105_001__topology_foundation_setup.sql)
+- Evidence: [JdbcTopologyFoundationAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcTopologyFoundationAdapter.java)
+- Migration mention (not inferred introduction): [V20261105_001__topology_foundation_setup.sql](../../src/main/resources/db/migration/V20261105_001__topology_foundation_setup.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| request_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| operation | character varying(40) | False | None; identity=; generated= | No current mapped Java column | — |
+| resource_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| command_sha256 | character varying(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| result_json | jsonb | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_user_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_binding_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_session_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| sampled_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| valid_until | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| backend_pid | integer | False | None; identity=; generated= | No current mapped Java column | — |
+| transaction_id | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| reason | character varying(1024) | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_topology_foundation_request_backend_pid_check`: CHECK (backend_pid &gt; 0)
+  - Catalog attributes: {"columns": ["backend_pid"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_foundation_request_check`: CHECK (valid_until &gt; sampled_at)
+  - Catalog attributes: {"columns": ["valid_until", "sampled_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_foundation_request_command_sha256_check`: CHECK (command_sha256::text ~ '^[0-9a-f]{64}$'::text)
+  - Catalog attributes: {"columns": ["command_sha256"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_foundation_request_company_party_id_check`: CHECK (length(btrim(company_party_id::text)) &gt; 0 AND company_party_id::text = btrim(company_party_id::text))
+  - Catalog attributes: {"columns": ["company_party_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_foundation_request_operation_check`: CHECK (operation::text = ANY (ARRAY['CREATE_SYSTEM'::character varying, 'REGISTER_FACILITY'::character varying, 'ACTIVATE_FACILITY'::character varying, 'REGISTER_POSITION'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["operation"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_foundation_request_pkey`: PRIMARY KEY (company_party_id, request_id)
+  - Catalog attributes: {"columns": ["company_party_id", "request_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_topology_foundation_request_reason_check`: CHECK (length(btrim(reason::text)) &gt; 0 AND reason::text = btrim(reason::text))
+  - Catalog attributes: {"columns": ["reason"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_foundation_request_resource_id_check`: CHECK (length(btrim(resource_id::text)) &gt; 0 AND resource_id::text = btrim(resource_id::text))
+  - Catalog attributes: {"columns": ["resource_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_foundation_request_result_json_check`: CHECK (jsonb_typeof(result_json) = 'object'::text)
+  - Catalog attributes: {"columns": ["result_json"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_foundation_request_transaction_id_check`: CHECK (transaction_id &gt; 0)
+  - Catalog attributes: {"columns": ["transaction_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_topology_foundation_request_pkey`: CREATE UNIQUE INDEX hidra_topology_foundation_request_pkey ON public.hidra_topology_foundation_request USING btree (company_party_id, request_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `foundation_request_immutable`: CREATE TRIGGER foundation_request_immutable BEFORE DELETE OR UPDATE ON hidra_topology_foundation_request FOR EACH ROW EXECUTE FUNCTION hidra_p25_draft_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_p25_draft_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_p25_draft_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'Immutable engineering draft storage' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `foundation_request_no_truncate`: CREATE TRIGGER foundation_request_no_truncate BEFORE TRUNCATE ON hidra_topology_foundation_request FOR EACH STATEMENT EXECUTE FUNCTION hidra_p25_draft_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_p25_draft_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_p25_draft_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'Immutable engineering draft storage' USING ERRCODE='23514';<br>END;<br>$function$<br>
+
+### public.hidra_topology_foundation_system_owner
+
+Owner: **topology**; relation kind: `r`.
+
+Explicit immutable company ownership for newly registered foundation systems; no inferred legacy company assignment.
+
+- Evidence: [V20261105_001__topology_foundation_setup.sql](../../src/main/resources/db/migration/V20261105_001__topology_foundation_setup.sql)
+- Evidence: [JdbcTopologyFoundationAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcTopologyFoundationAdapter.java)
+- Migration mention (not inferred introduction): [V20261105_001__topology_foundation_setup.sql](../../src/main/resources/db/migration/V20261105_001__topology_foundation_setup.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| pipeline_system_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_topology_foundation_system_owner_company_party_id_check`: CHECK (length(btrim(company_party_id::text)) &gt; 0 AND company_party_id::text = btrim(company_party_id::text))
+  - Catalog attributes: {"columns": ["company_party_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_foundation_system_owner_pipeline_system_id_fkey`: FOREIGN KEY (pipeline_system_id) REFERENCES hidra_topology_pipeline_system(id)
+  - Catalog attributes: {"columns": ["pipeline_system_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_pipeline_system"}, "type": "f", "validated": true}
+- `hidra_topology_foundation_system_owner_pkey`: PRIMARY KEY (pipeline_system_id)
+  - Catalog attributes: {"columns": ["pipeline_system_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+
+#### Indexes
+
+- `hidra_topology_foundation_system_owner_pkey`: CREATE UNIQUE INDEX hidra_topology_foundation_system_owner_pkey ON public.hidra_topology_foundation_system_owner USING btree (pipeline_system_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `foundation_owner_immutable`: CREATE TRIGGER foundation_owner_immutable BEFORE DELETE OR UPDATE ON hidra_topology_foundation_system_owner FOR EACH ROW EXECUTE FUNCTION hidra_p25_draft_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_p25_draft_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_p25_draft_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'Immutable engineering draft storage' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `foundation_owner_no_truncate`: CREATE TRIGGER foundation_owner_no_truncate BEFORE TRUNCATE ON hidra_topology_foundation_system_owner FOR EACH STATEMENT EXECUTE FUNCTION hidra_p25_draft_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_p25_draft_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_p25_draft_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'Immutable engineering draft storage' USING ERRCODE='23514';<br>END;<br>$function$<br>
+
 ### public.hidra_topology_installed_characteristic_approval
 
 Owner: **topology**; relation kind: `r`.
@@ -29344,6 +29439,7 @@ Persisted PipelineSystemJpaEntity state; semantic authority remains with topolog
 - Migration mention (not inferred introduction): [V20261019_001__p25_topology_engineering_drafts.sql](../../src/main/resources/db/migration/V20261019_001__p25_topology_engineering_drafts.sql)
 - Migration mention (not inferred introduction): [V20261103_001__topology_engineering_baseline_drafts.sql](../../src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql)
 - Migration mention (not inferred introduction): [V20261103_005__foundation_pipeline_graph_associations.sql](../../src/main/resources/db/migration/V20261103_005__foundation_pipeline_graph_associations.sql)
+- Migration mention (not inferred introduction): [V20261105_001__topology_foundation_setup.sql](../../src/main/resources/db/migration/V20261105_001__topology_foundation_setup.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|

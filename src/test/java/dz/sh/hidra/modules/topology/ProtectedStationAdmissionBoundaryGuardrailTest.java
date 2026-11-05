@@ -60,6 +60,7 @@ class ProtectedStationAdmissionBoundaryGuardrailTest {
             // Do not generalize the protected-admission caller set.
             if (method.equals("requireAdmission")) {
                 withCharacteristic.add("JpaAuthoredTopologyViewAdapter.java");
+                withCharacteristic.add("JdbcTopologyFoundationAdapter.java");
             }
             expected=Set.copyOf(withCharacteristic);
             assertEquals(expected,found);
@@ -118,7 +119,7 @@ class ProtectedStationAdmissionBoundaryGuardrailTest {
             assertEquals(name.equals("ProtectedTransactionExecutor")?1:0,s.split(java.util.regex.Pattern.quote(fluidCoordinator),-1).length-1);
             // L pins the compiled issuer by name, without importing or linking a business class.
             assertEquals(name.equals("ProtectedTransactionExecutor")?3:0,s.split(java.util.regex.Pattern.quote(approved),-1).length-1);
-            assertEquals(name.equals("ProtectedTransactionExecutor")?1:0,s.split(java.util.regex.Pattern.quote(publication),-1).length-1);
+            assertEquals(name.equals("ProtectedTransactionExecutor")?3:0,s.split(java.util.regex.Pattern.quote(publication),-1).length-1);
             assertEquals(name.equals("ProtectedTransactionExecutor")?1:0,s.split(java.util.regex.Pattern.quote(appointment),-1).length-1);
             assertEquals(name.equals("ProtectedTransactionExecutor")?1:0,s.split(java.util.regex.Pattern.quote(appointmentService),-1).length-1);
             for(var reviewed:List.of(configService,configCoordinator,configRepository))
@@ -150,8 +151,8 @@ class ProtectedStationAdmissionBoundaryGuardrailTest {
     }
     // HAPI-599B admits the reviewed per-resource replacement binding; pin actual reader bytes and unchanged J contracts.
     @Test void existingReaderAndJContractsRemainUnchanged() throws Exception {
-        // B2 reviewed typed configuration-family extension; every other source pin remains unchanged.
-        assertEquals("5a50393588ef342424c1171b7477e022789ec9a5d82db89e6610512e5d2209c6",HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(Path.of("src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java")))));
+        // HAPI-926 reviewed foundation resource/permission pair and company target; all other source pins retained.
+        assertEquals("eebfe72553b245ce9c0d8b851251bb98ef9ef3264bdf2b4089c381794d2674d8",HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(Path.of("src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcProtectedAuthorizationEvidenceReader.java")))));
         assertEquals("ae4b5c36fbe2531ab5fc82988a05206ad850dfb5377792f7201d2394eb5c41cc",HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(Path.of("src/main/java/dz/sh/hidra/modules/party/application/contract/topology/TopologyProtectedPartyEligibilityContract.java")))));
         assertEquals("11a7e8b269fd96e4132437831b6efd4184c1cd17765438d52bb022decaf3e886",HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(Path.of("src/main/java/dz/sh/hidra/modules/topology/application/contract/station/StationProtectedFacilityOwnershipContract.java")))));
         assertEquals("b4ed2114a0af4d715d3da994ed096b2d0b184f5106ddf68cd16dd8cedbdc666c",HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(Path.of("src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/adapter/JdbcTopologyProtectedPartyEligibilityAdapter.java")))));

@@ -165,7 +165,7 @@ class HidraTrustedNativeProtectedRouteHttpTest {
  @Test void realManufacturerTupleRegistryRejectsWrongVerbAndSiblingPattern() throws Exception {
    var registry=new HidraTrustedNativeProtectedRouteRegistry();
    var routes=registry.candidates();
-   assertEquals(16,routes.size());
+   assertEquals(28,routes.size());
    var expected=java.util.Set.of(
     "PUT /api/v1/simulation/manufacturer-characteristics/{sourceId}/revisions/{revisionId}",
     "GET /api/v1/simulation/manufacturer-characteristics/{sourceId}/revisions/{revisionId}",
@@ -182,7 +182,19 @@ class HidraTrustedNativeProtectedRouteHttpTest {
     "POST /api/v1/topology/engineering-baselines/{manifestId}/validation",
     "PUT /api/v1/topology/engineering-networks/{draftId}/authored-topology",
     "GET /api/v1/topology/engineering-networks/{draftId}/authored-topology",
-    "GET /api/v1/topology/engineering-networks/{draftId}/authoring-choices");
+    "GET /api/v1/topology/engineering-networks/{draftId}/authoring-choices",
+    "GET /api/v1/topology/foundation/choices/{catalog}",
+    "POST /api/v1/topology/foundation/pipeline-systems",
+    "POST /api/v1/topology/foundation/facilities",
+    "POST /api/v1/topology/foundation/facilities/{facilityId}/activation",
+    "POST /api/v1/topology/foundation/facilities/{facilityId}/equipment-positions",
+    "GET /api/v1/topology/foundation/facilities/{facilityId}/equipment-positions",
+    "GET /api/v1/topology/foundation/facilities/{facilityId}/installations",
+    "PUT /api/v1/topology/facilities/{facilityId}/station-graph/revisions/{revisionId}",
+    "GET /api/v1/topology/facilities/{facilityId}/station-graph/revisions/{revisionId}",
+    "POST /api/v1/topology/facilities/{facilityId}/station-graph/publications",
+    "GET /api/v1/topology/facilities/{facilityId}/station-graph/publications/current",
+    "GET /api/v1/topology/facilities/{facilityId}/station-graph/publications/history");
    assertEquals(expected,routes.stream().map(r->r.verb()+" "+r.pattern())
     .collect(java.util.stream.Collectors.toSet()));
    var controller=new dz.sh.hidra.modules.simulation.api.rest.controller
@@ -196,20 +208,23 @@ class HidraTrustedNativeProtectedRouteHttpTest {
     var pipeline=new dz.sh.hidra.modules.topology.api.rest.controller.PipelineAuthoringController(
       org.mockito.Mockito.mock(dz.sh.hidra.modules.topology.application.port.in.PipelineAuthoringUseCase.class),
       org.mockito.Mockito.mock(dz.sh.hidra.modules.topology.application.port.in.AuthoredTopologyViewUseCase.class));
+    var foundation=new dz.sh.hidra.modules.topology.api.rest.controller.TopologyFoundationController(
+      org.mockito.Mockito.mock(dz.sh.hidra.modules.topology.application.port.in.TopologyFoundationUseCase.class));
+    var station=new dz.sh.hidra.modules.topology.api.rest.controller.StationGraphController(
+      org.mockito.Mockito.mock(dz.sh.hidra.modules.topology.application.port.in.ProtectedStationGraphOperationUseCase.class));
+    var owners=java.util.Map.<Class<?>,Object>of(controller.getClass(),controller,installed.getClass(),installed,
+      pipeline.getClass(),pipeline,baseline.getClass(),baseline,foundation.getClass(),foundation,station.getClass(),station);
     var actual=new RequestMappingHandlerMapping();
    for(var entry:routes) {
-    Object owner=entry.controller().equals(controller.getClass())?controller:
-       entry.controller().equals(installed.getClass())?installed:
-       entry.controller().equals(pipeline.getClass())?pipeline:baseline;
+    Object owner=owners.get(entry.controller());
+    assertTrue(owner!=null);
     actual.registerMapping(RequestMappingInfo.paths(entry.pattern())
       .methods(RequestMethod.valueOf(entry.verb())).build(),owner,entry.method());
    }
    new HidraTrustedNativeProtectedRouteStartupValidator(actual,registry).validate();
    for(var entry:routes) {
     var handler=new org.springframework.web.method.HandlerMethod(
-      entry.controller().equals(controller.getClass())?controller:
-       entry.controller().equals(installed.getClass())?installed:
-       entry.controller().equals(pipeline.getClass())?pipeline:baseline,entry.method());
+      owners.get(entry.controller()),entry.method());
     assertTrue(registry.isTrusted(handler,entry.verb(),entry.pattern()));
     assertTrue(!registry.isTrusted(handler,
       entry.verb().equals("GET")?"PUT":"GET",entry.pattern()));

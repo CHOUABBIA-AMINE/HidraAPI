@@ -2219,7 +2219,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/application/service/TopologyScopedAccessQueryServiceTest.java",
-      "source_sha256": "730acabf13ffc27c56e9faf763b0ca80a0f2dde4493731a24a039e40f65a5c37",
+      "source_sha256": "66fe42fa9712ff40c093c85bcc6ddef0601383f3f79ea6ad12c14f3585debdc4",
       "supports": []
     },
     {
@@ -8343,7 +8343,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java",
-      "source_sha256": "7b70325b3336a47b34af7c7544952ff4a743248b203af3d9097de16cbb5d582f",
+      "source_sha256": "d7ab004f7c24083f624a3f15fc9c6a00b2bbe5149da2f988e6af107218642aba",
       "supports": []
     },
     {
@@ -11427,7 +11427,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java",
-      "source_sha256": "a8e5721765c8123825159d641ee8e1a6523c7e7790430b28a495b2c7ac2909f8",
+      "source_sha256": "9c1bfe742344d187f698a82af9a3c3ca3d4270108826f3f9a68eb85d4fa65efc",
       "supports": []
     },
     {

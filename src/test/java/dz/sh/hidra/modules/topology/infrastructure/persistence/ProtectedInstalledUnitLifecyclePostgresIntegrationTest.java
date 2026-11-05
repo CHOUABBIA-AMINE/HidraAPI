@@ -240,11 +240,19 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
             jdbc.update("INSERT INTO public.hidra_identity_user_permission_grant(id,user_id,permission_id,effect,scope_type,scope_reference_id,grant_reason,emergency_access,valid_from,valid_to,status,created_at) VALUES(?,?,?,'GRANT',?,?,'synthetic installed writer',false,now()-interval '1 hour',now()+interval '1 hour','ACTIVE',now())",id(),f.user(),permission,scope.equals("COMPANY")?"CUSTOM":"FACILITY",ref);
         }
     }
+    // Per-test credentials only: every owner operation still performs current native authorization.
+    private final Map<Fixture,org.springframework.security.core.Authentication> journeyCredentials=new HashMap<>();
+    private void loginForJourney(Fixture f) {
+        var credential=journeyCredentials.get(f);
+        if(credential==null)login(f);
+        else SecurityContextHolder.getContext().setAuthentication(credential);
+    }
     private void login(Fixture f) {
         if(f.type().equals("LDAP") || f.type().equals("ACTIVE_DIRECTORY"))c3DirectoryPrepared(f,"memberOf");
         else ambient(authenticate(f).accessToken());
+        journeyCredentials.put(f,SecurityContextHolder.getContext().getAuthentication());
     }
-    private InstalledUnitLifecycleUseCase.Result execute(Fixture f,InstalledUnitLifecycleUseCase.Command c){authorize(f,c);login(f);return lifecycle.execute(c);}
+    private InstalledUnitLifecycleUseCase.Result execute(Fixture f,InstalledUnitLifecycleUseCase.Command c){authorize(f,c);loginForJourney(f);return lifecycle.execute(c);}
     private long count(String table){return admin().queryForObject("SELECT count(*) FROM public.hidra_topology_"+table,Long.class);}
     private String effects(){return List.of(count("installed_unit"),count("installed_unit_installation"),count("installed_unit_installation_event"),count("installed_unit_operation_request")).toString();}
 
@@ -315,6 +323,7 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
 
     @BeforeEach
     void initialize() {
+        journeyCredentials.clear();
         SecurityContextHolder.clearContext();
         cleanEvidence();
         flyway.validate();
@@ -343,6 +352,7 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
 
     @AfterEach
     void clear() {
+        journeyCredentials.clear();
         ReflectionTestUtils.setField(oidc, "verifiedClaimReceiptEnabled", false);
         ReflectionTestUtils.setField(ldap, "verifiedClaimReceiptEnabled", false);
         directPort.finishVerification();
@@ -1199,7 +1209,7 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
     }
     private String installedBearer(Fixture actor,InstalledUnitLifecycleUseCase.Command command) {
         authorize(actor,command);
-        login(actor); // LOCAL, LDAP, AD and OIDC use their accepted native producer fixtures.
+        loginForJourney(actor); // Reuse this journey's genuine producer credential; native scope is rechecked.
         var jwt=(org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken)
                 SecurityContextHolder.getContext().getAuthentication();
         return jwt.getToken().getTokenValue();
@@ -1838,7 +1848,7 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
             foundationGrant(actor,"topology:foundation:"+action,"TOPOLOGY_FOUNDATION",facility==null?"CUSTOM":"FACILITY",facility==null?"topology-foundation-company:"+COMPANY:facility);
         }
     }
-    private String foundationBearer(Fixture actor){login(actor);return ((org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken)SecurityContextHolder.getContext().getAuthentication()).getToken().getTokenValue();}
+    private String foundationBearer(Fixture actor){loginForJourney(actor);return ((org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken)SecurityContextHolder.getContext().getAuthentication()).getToken().getTokenValue();}
     private org.springframework.test.web.servlet.ResultActions foundationHttp(String bearer,String method,String path,Object body)throws Exception {
         var request=org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request(org.springframework.http.HttpMethod.valueOf(method),path);
         if(body!=null)request.contentType("application/json").content(JSON.writeValueAsString(body));

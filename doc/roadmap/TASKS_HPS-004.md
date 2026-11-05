@@ -13078,3 +13078,59 @@ PASS (563 oracle classes); all38 inventory Python tests PASS; diff whitespace ch
 PASS. Java/PostgreSQL were not rerun locally: Maven Central parent resolution is
 already blocked in this environment, and no complete environment is provisioned.
 Only fresh hosted CI can establish executable results for this revised test source.
+
+### 2026-11-05 HAPI-926 same-task Full1131 synthetic authentication census repair
+
+Baseline `26f3163a95fd409376329a2d9bceb3a0396b9673`, parent
+`a4e3e2945124c0345fcb2c76a300e6ceb4cfb426`, tree
+`b6243e73dad5aa94c0827b37702776c652104bca`.
+[Full1131](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42118973956)
+FAILED; [Docs920](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42118973921)
+SUCCESS. All19 job results retrieved: unit/architecture, static, API/dictionary
+and13/14 PostgreSQL shards succeeded. Shard1 retains141 tests/2 failures; lifecycle
+suite53 tests/2 failures. Both now preserve the same exact native exception chain:
+InstalledUnitLifecycleFailure -> protected REJECTED_BEFORE_COMMIT ->
+InvalidDataAccessApiUsageException -> IllegalStateException
+`Temporal census exceeds reviewed bound`, from JdbcIdentityTemporalEventCollector.
+This establishes the immediate cause; neither deadline nor station-kind rejection
+is evidenced. No source/API/database acceptance is inferred from the failed run.
+
+Source review: the collector deliberately projects retained users, login sessions,
+operation bindings (two projections), grants and other temporal contributors with
+a1025-row overflow probe, and rejects more than1024 inputs including selected
+binding expiry. The suite shares one disposable PostgreSQL database; cleanEvidence
+preserves guarded generations and authentication provenance. Existing execute,
+installedBearer and foundationBearer helpers repeatedly authenticate an unchanged
+actor during positive lifecycle/replay/read journeys, minting redundant sessions
+and immutable binding evidence. These records accumulate across tests.
+
+Bounded fixture correction: reuse the genuinely authenticated credential for each
+actor within a single JUnit test journey. Store only Authentication objects, never
+permission decisions, owner tickets or use-case results. Every execute still seeds
+its explicit synthetic scope and calls the genuine owner; HTTP still crosses its
+real bearer filter. First use of each LOCAL/LDAP/AD/OIDC actor still invokes its
+existing producer. Explicit login calls remain fresh and update the journey's
+credential; all revocation/expiry/source/denial tests retain their native rechecks.
+The per-instance credential map is explicitly cleared before and after every test.
+This follows the existing installedHttpWithCurrentGrant fixture policy without
+removing recorded authentication/provenance. No production collector, bound, clock,
+SQL fence, authority lifetime, security policy, retry or accepted status is changed.
+All53 lifecycle cases, diagnostic matcher, original assertions and563 oracle
+classes remain; inventory changes only this test's actual source hash.
+
+MODIFY only ProtectedInstalledUnitLifecyclePostgresIntegrationTest.java,
+`.github/ci-test-inventory.json` and this append-only task evidence. No CREATE/DELETE,
+production Java, DDL/migration, API/dictionary, CI policy or status changes.
+Exact registered message:
+`feat(topology): connect pipeline authoring to persisted graph views`.
+New exact-SHA Full/Docs must demonstrate that the bounded fixtures remain below
+the unchanged census limit and all native cases pass. Independent consolidated
+HAPI-926 acceptance and HWEB-F12/W2 remain pending; no promotion or frontend task.
+After expected-head guarded publication verify parent/tree/blobs and observe CI
+creation/queue/start, then STOP without waiting for completion.
+
+Full1131 repair local validation: documentation validator PASS (129 documents,
+8986 relative links,928 tasks,25 phases); exact source-bound inventory PASS
+(563 oracle classes); all38 inventory Python tests PASS; diff whitespace check
+PASS. Java/PostgreSQL not rerun locally because Maven Central parent resolution
+remains unavailable in this environment; no executable native pass claimed.

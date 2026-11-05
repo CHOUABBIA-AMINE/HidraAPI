@@ -7,7 +7,7 @@
  *
  * @Name        : IdentityLifecycleResponses
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-03
+ * @UpdatedOn   : 2026-11-05
  *
  * @Type        : Class
  * @Layer       : API
@@ -27,6 +27,7 @@ public final class IdentityLifecycleResponses {
     public record User(String id, String status, Instant updatedAt) {
         public static User of(FoundationIdentityLifecycleUseCase.UserState s) { return new User(s.id(), s.status(), s.updatedAt()); }
     }
+    @io.swagger.v3.oas.annotations.media.Schema(name="IdentityLocalCredentialState")
     public record Credential(String userId, long securityVersion, Instant changedAt) {
         public static Credential of(FoundationIdentityLifecycleUseCase.CredentialState s) {
             return new Credential(s.userId(), s.securityVersion(), s.changedAt());

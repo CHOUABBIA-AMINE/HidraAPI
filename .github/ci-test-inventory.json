@@ -2571,7 +2571,8 @@
         "nativeLastAdministratorCannotBeDisabledOrHaveItsGrantRevoked",
         "nativeTwoUserOnboardingCurrentPermissionsRevocationAndAdvisoryIsolation",
         "realCredentialActivationResetSessionRevocationAndImmutableAudit",
-        "rollbackRestoresStatusAndAuditAtomically"
+        "rollbackRestoresStatusAndAuditAtomically",
+        "runtimeOpenApiSeparatesCredentialInputFromSafeState"
       ],
       "class": "dz.sh.hidra.modules.identity.infrastructure.persistence.FoundationIdentityLifecyclePostgresIntegrationTest",
       "dependency_reason": "Fresh PostgreSQL/Flyway/JPA and transactional ownership validation",
@@ -2579,7 +2580,7 @@
       "lane": "postgres-integration",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/FoundationIdentityLifecyclePostgresIntegrationTest.java",
-      "source_sha256": "66a48eeae4e3b62b319d0a069027eef99f9a924770bf4ddfa749b5348b75caca",
+      "source_sha256": "83d21bd2f25a44eddcaaa3397e30381877d11d75aea5178070e5bec14d113a4b",
       "supports": []
     },
     {

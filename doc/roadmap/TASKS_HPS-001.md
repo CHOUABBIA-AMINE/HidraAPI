@@ -12316,4 +12316,63 @@ Next registered whole task: HAPI-924/B2, `feat(party): complete foundation party
 
 Local acceptance checks: exact-source aggregate ZIP/receipt/member/case reconstruction PASS; status-only HAPI-923 row edits in ROADMAP/PHASES, current owning-task header changes, append-only prior-payload preservation and one-line index navigation change PASS; `git diff --check` PASS. No new Java/database tests or full-repository documentation-validator run is claimed locally. Hosted Documentation CI validates the resulting four-document closure; the accepted Full runtime evidence stays pinned to4123ab81d6ac2d3bc6635e7f492539d682cbb6eb.
 
+
+
+### 2026-11-05 HAPI-923 approved credential OpenAPI collision repair for W1
+
+**Owner decision and actual defect.** Owner explicitly approved repairing HAPI-923's
+credential schemas before W1. Baseline main a3230ab3aa446d1e84102d2c468b24f8090ed90c,
+parent ac7d03be147368ae2b9da125bc2bbbb89973995b, tree
+8d03ee99a25c1980243e49c536c9fafa4ddf1aba; Docs908 SUCCESS.
+Application source ac7d03be has Full1121/Docs907 SUCCESS. The actual successful
+runtime artifact13395717757, member hidra-api.json SHA256
+`e96c6298e55df08fced578e5f87b3e4f3fc707efeb76fa835f7654fa5d582ef2`,
+ZIP SHA256 `99ec4c50b53659af222df3ad88a827204d55f3ee100dee513289f264a6f4446e`,
+reveals both IdentityLifecycleRequests.Credential and
+IdentityLifecycleResponses.Credential resolve to schema Credential. Both GET
+credential-state and PUT credential response reference the password-input schema,
+which lacks userId/securityVersion/changedAt and incorrectly requires password/reason.
+Actual Java responses contain only safe state; this is a transport-contract defect,
+not evidence that passwords or hashes were disclosed. W1 was stopped before
+publication; no handwritten browser DTO workaround or frontend change is authorized here.
+
+**Same-task exact repair ledger, recorded before source mutation.** MODIFY only
+`src/main/java/dz/sh/hidra/modules/identity/api/rest/request/IdentityLifecycleRequests.java`,
+`src/main/java/dz/sh/hidra/modules/identity/api/rest/response/IdentityLifecycleResponses.java`,
+`src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/FoundationIdentityLifecyclePostgresIntegrationTest.java`,
+`.github/ci-test-inventory.json` (this class hash and one genuine new case only),
+and this append-only owning task evidence. Reuse registered exact message
+`feat(identity): complete foundation user access lifecycle`. Keep the request's
+existing Credential schema name explicitly pinned for client compatibility; give the
+safe response the unique name IdentityLocalCredentialState. JSON payload fields,
+endpoints, authentication, authorization, CAS version/reason, session revocation,
+last-administrator guard and all existing tests stay unchanged. No CREATE/DELETE,
+Domain/Application/schema/migration/CI-policy or other module change.
+
+**Regression and artifact boundary.** Enable springdoc only in the existing
+synthetic native PostgreSQL test context. Add a real GET /v3/api-docs case verifying
+the request and both response refs, exact disjoint schema property sets, required
+input fields, int64 version, and real authenticated credential-state response with
+no password/hash. Retain all seven old cases and all lane/shard policies. Local
+Maven/Docker are absent; hosted CI remains the runtime oracle. Preserve canonical
+OpenAPI and provenance until new actual generated evidence exists; do not manufacture
+a snapshot from annotations or the old artifact. The strict canonical equality gate
+is expected to detect this intentional contract correction in the first repair run;
+follow-up same-task reconciliation must use its authentic generated artifact without
+weakening equality/backward-compatibility checks. No new delivery stage is invented.
+
+**Actual local checks:** Java21 compiler-front-end syntax parse of all three
+modified Java files PASS (no attribution/compilation); documentation validation
+PASS (928 tasks/25 phases); offline existing OpenAPI snapshot validation PASS
+(334 paths/371 operations/417 schemas, not corrected runtime proof); source-bound
+test inventory and exact preservation of every old class/case/lane/policy PASS;
+`git diff --check` PASS. New native HTTP/PostgreSQL/OpenAPI case is not executed
+locally because Maven and Docker are absent.
+
+The dated B1 backend acceptance remains historical; this newly discovered transport
+correction and its consumer qualification remain pending new exact-source CI and
+fresh canonical artifact reconciliation. No unrelated status change, W1 execution,
+release/deployment or numerical/P3 is selected. Publish using expected-head guard,
+verify exact parent/tree/blobs, observe applicable repair-SHA CI creation/start and STOP.
+
 <!-- task-register:payload:end -->

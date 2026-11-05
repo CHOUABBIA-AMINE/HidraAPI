@@ -7,7 +7,7 @@
  *
  * @Name        : FoundationIdentityLifecyclePostgresIntegrationTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-03
+ * @UpdatedOn   : 2026-11-05
  *
  * @Type        : Class
  * @Layer       : Infrastructure Test
@@ -53,6 +53,7 @@ class FoundationIdentityLifecyclePostgresIntegrationTest {
         r.add("spring.datasource.password",PG::getPassword);
         r.add("spring.jpa.hibernate.ddl-auto",() -> "validate");
         r.add("spring.flyway.enabled",() -> "true");
+        r.add("springdoc.api-docs.enabled",() -> "true");
         r.add("spring.flyway.validate-on-migrate",() -> "true");
         r.add("hidra.platform.security.jwt.token-issuer",() -> "https://foundation.synthetic.invalid");
     }
@@ -136,6 +137,41 @@ class FoundationIdentityLifecyclePostgresIntegrationTest {
                 .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
                 .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.status").value("ACTIVE"));
         return user;
+    }
+
+
+    @Test
+    void runtimeOpenApiSeparatesCredentialInputFromSafeState() throws Exception {
+        var ok = org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk();
+        String payload = request("GET", "/v3/api-docs", null, null)
+                .andExpect(ok).andReturn().getResponse().getContentAsString();
+        var api = com.jayway.jsonpath.JsonPath.parse(payload);
+        String put = "$['paths']['/api/v1/identity/users/{id}/local-credential']['put']";
+        String get = "$['paths']['/api/v1/identity/users/{id}/local-credential/state']['get']";
+        assertEquals("#/components/schemas/Credential", api.read(
+                put + "['requestBody']['content']['application/json']['schema']['$ref']", String.class));
+        String response = "['responses']['200']['content']['*/*']['schema']['$ref']";
+        assertEquals("#/components/schemas/IdentityLocalCredentialState", api.read(put + response, String.class));
+        assertEquals("#/components/schemas/IdentityLocalCredentialState", api.read(get + response, String.class));
+        java.util.Map<?, ?> input = api.read("$['components']['schemas']['Credential']['properties']");
+        java.util.Map<?, ?> state = api.read("$['components']['schemas']['IdentityLocalCredentialState']['properties']");
+        assertEquals(java.util.Set.of("password", "expectedSecurityVersion", "reason"), input.keySet());
+        assertEquals(java.util.Set.of("userId", "securityVersion", "changedAt"), state.keySet());
+        java.util.List<?> required = api.read("$['components']['schemas']['Credential']['required']");
+        assertTrue(required.containsAll(java.util.List.of("password", "reason")));
+        assertEquals("int64", api.read(
+                "$['components']['schemas']['IdentityLocalCredentialState']['properties']['securityVersion']['format']",
+                String.class));
+        String administrator = nativeAdministrator();
+        String user = onboard(administrator, "contract-" + id());
+        String actual = request("GET", API + "/users/" + user + "/local-credential/state", administrator, null)
+                .andExpect(ok).andReturn().getResponse().getContentAsString();
+        java.util.Map<?, ?> fields = com.jayway.jsonpath.JsonPath.parse(actual).read("$");
+        assertEquals(state.keySet(), fields.keySet());
+        assertEquals(user, fields.get("userId"));
+        assertEquals(1, ((Number) fields.get("securityVersion")).intValue());
+        assertFalse(actual.contains(PASSWORD));
+        assertFalse(actual.contains("$2"));
     }
 
     private String routeGrant(String user,String code) {

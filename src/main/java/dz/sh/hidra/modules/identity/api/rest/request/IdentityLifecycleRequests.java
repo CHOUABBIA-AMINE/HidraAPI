@@ -7,7 +7,7 @@
  *
  * @Name        : IdentityLifecycleRequests
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-03
+ * @UpdatedOn   : 2026-11-05
  *
  * @Type        : Class
  * @Layer       : API
@@ -27,6 +27,7 @@ import java.time.Instant;
 public final class IdentityLifecycleRequests {
     private IdentityLifecycleRequests() { }
     public record Transition(@NotNull Instant expectedUpdatedAt, @NotBlank String reason) { }
+    @io.swagger.v3.oas.annotations.media.Schema(name="Credential")
     public record Credential(@NotBlank String password, @Min(0) long expectedSecurityVersion, @NotBlank String reason) { }
     public record Revoke(Instant expectedCreatedAt, @NotBlank String reason) { }
 }

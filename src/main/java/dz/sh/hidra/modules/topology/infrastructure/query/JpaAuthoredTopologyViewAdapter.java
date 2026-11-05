@@ -48,7 +48,7 @@ public class JpaAuthoredTopologyViewAdapter implements PipelineAuthoringPersiste
     private final class Ticket implements Admission,TransactionSynchronization {
         final JpaAuthoredTopologyViewAdapter issuer=JpaAuthoredTopologyViewAdapter.this;final Scope scope;final ConnectionHolder holder;final Thread thread=Thread.currentThread();
         boolean active=true,prepared,persisted,frozen;Write command;Contribution actor;PipelineView edited;Timestamp previousTime;
-        List<Binding> bindings=List.of();long selected;FinalCheck check;
+        List<Binding> bindings=List.of();long selected;FinalCheck check;String discoveryDigest;int discoveryOffset,discoveryLimit;
         final Set<String> ids=new TreeSet<>(),segments=new TreeSet<>(),types=new TreeSet<>(),facilities=new TreeSet<>();final Map<String,PipelineView> pins=new TreeMap<>();
         Ticket(Scope scope,ConnectionHolder holder){this.scope=scope;this.holder=holder;}
         void pin(PipelineView p){ids.add(p.id());types.add(p.pipelineTypeId());pins.put(p.id()+":"+p.revision(),p);}
@@ -133,8 +133,18 @@ public class JpaAuthoredTopologyViewAdapter implements PipelineAuthoringPersiste
         var facilities=jdbc.query("SELECT id,code,coalesce(name_en,name_fr,name_ar,code) AS label,facility_kind AS kind FROM public.hidra_topology_facility WHERE owner_party_id=? AND status='ACTIVE' ORDER BY code,id LIMIT 200",(r,n)->new Choice(r.getString(1),r.getString(2),r.getString(3),r.getString(4)),t.scope.companyPartyId());facilities.forEach(v->t.facilities.add(v.id()));
         var types=jdbc.query("SELECT id,code,coalesce(name_en,name_fr,name_ar,code) FROM public.hidra_topology_pipeline_type WHERE active ORDER BY code,id LIMIT 200",(r,n)->new Choice(r.getString(1),r.getString(2),r.getString(3),"PIPELINE_TYPE"));types.forEach(v->t.types.add(v.id()));
         var segments=jdbc.query("SELECT s.id,s.code,s.segment_type FROM public.hidra_topology_pipeline_segment s WHERE s.pipeline_id IN (SELECT value FROM jsonb_array_elements_text(?::jsonb)) AND s.status IN ('DRAFT','ACTIVE') ORDER BY s.code,s.id LIMIT 200",(r,n)->new Choice(r.getString(1),r.getString(2),r.getString(2),r.getString(3)),json(t.ids));segments.forEach(v->t.segments.add(v.id()));
-        return new Discovery(t.scope.companyPartyId(),t.scope.pipelineSystemId(),pipelines,total,offset,limit,facilities,types,segments);
+        // Candidate enumeration is internal only. The application separately invokes
+        // the installed-unit owner READ_UNIT operation before exposing any candidate.
+        jdbc.execute("LOCK TABLE public.hidra_topology_equipment_type,public.hidra_topology_installed_unit IN SHARE MODE NOWAIT");
+        var equipmentKinds=jdbc.query(EQUIPMENT_CHOICES,(r,n)->new Choice(r.getString(1),r.getString(2),r.getString(3),"EQUIPMENT_KIND"));
+        var candidates=jdbc.queryForList(UNIT_CANDIDATES,String.class,t.scope.companyPartyId(),offset,limit);
+        t.discoveryOffset=offset;t.discoveryLimit=limit;
+        t.discoveryDigest=jdbc.queryForObject(DISCOVERY_IMAGE,String.class,t.scope.companyPartyId(),offset,limit);
+        return new Discovery(t.scope.companyPartyId(),t.scope.pipelineSystemId(),pipelines,total,offset,limit,facilities,types,segments,equipmentKinds,List.of(),candidates);
     }
+    public static final String EQUIPMENT_CHOICES="SELECT id,code,name FROM public.hidra_topology_equipment_type WHERE status='ACTIVE' ORDER BY code,id LIMIT 200";
+    public static final String UNIT_CANDIDATES="SELECT u.id FROM public.hidra_topology_installed_unit u JOIN public.hidra_topology_equipment_type k ON k.id=u.equipment_kind_id WHERE u.company_party_id=? AND k.status='ACTIVE' ORDER BY u.id OFFSET ? LIMIT ?";
+    private static final String DISCOVERY_IMAGE="SELECT encode(sha256(convert_to(jsonb_build_object('kinds',(SELECT jsonb_agg(to_jsonb(k) ORDER BY k.code,k.id) FROM ("+EQUIPMENT_CHOICES+") k),'candidates',(SELECT jsonb_agg(to_jsonb(u) ORDER BY u.id) FROM ("+UNIT_CANDIDATES+") u))::text,'UTF8')),'hex')";
     private static final String IMAGE="""
         SELECT encode(sha256(convert_to(jsonb_build_object(
         'canonical',(SELECT jsonb_agg(to_jsonb(p) ORDER BY p.id) FROM public.hidra_topology_pipeline p WHERE p.id IN (SELECT value FROM jsonb_array_elements_text(?::jsonb))),
@@ -152,6 +162,12 @@ public class JpaAuthoredTopologyViewAdapter implements PipelineAuthoringPersiste
         String digest=jdbc.queryForObject(IMAGE,String.class,args.toArray());
         String sql="("+IMAGE+")=?";args.add(digest);
         for(String relation:RELATIONS){sql+=" AND EXISTS(SELECT 1 FROM pg_locks WHERE pid=pg_backend_pid() AND granted AND locktype='relation' AND relation=?::regclass AND mode='ShareRowExclusiveLock')";args.add(relation);}
+        if(t.discoveryDigest!=null) {
+            sql+=" AND ("+DISCOVERY_IMAGE+")=?";args.add(t.scope.companyPartyId());args.add(t.discoveryOffset);args.add(t.discoveryLimit);args.add(t.discoveryDigest);
+            for(String relation:List.of("public.hidra_topology_equipment_type","public.hidra_topology_installed_unit")) {
+                sql+=" AND EXISTS(SELECT 1 FROM pg_locks WHERE pid=pg_backend_pid() AND granted AND locktype='relation' AND relation=?::regclass AND mode='ShareLock')";args.add(relation);
+            }
+        }
         t.check=new FinalCheck(sql,args);t.frozen=true;
     }
     @Override public FinalCheck finalCheck(Admission a){var t=ticket(a);if(!t.frozen||t.check==null)throw new IllegalStateException("Pipeline guard not frozen");return t.check;}

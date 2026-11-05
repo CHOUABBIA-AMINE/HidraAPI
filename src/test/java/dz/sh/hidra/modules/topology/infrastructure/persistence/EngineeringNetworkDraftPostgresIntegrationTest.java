@@ -1694,6 +1694,13 @@ public class EngineeringNetworkDraftPostgresIntegrationTest {
             .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.graph.version").value(2))
             .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.bindings[0].pipeline.id").value(pipeline))
             .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.geometryStatus").value("NOT_SUPPLIED"));
+        String discoveryKind="kind-"+id();
+        jdbc.update("INSERT INTO public.hidra_topology_equipment_type(id,code,name,status,created_at,updated_at) VALUES (?,?,?,'ACTIVE',now(),now())",discoveryKind,discoveryKind,"Synthetic discoverable kind");
+        http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(b4Route(draft,"authoring-choices")).header("Authorization","Bearer "+rawToken))
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.equipmentKinds[*].id",org.hamcrest.Matchers.hasItem(discoveryKind)))
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.installedUnits").isArray())
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.candidateInstalledUnitIds").doesNotExist());
         // MockMvc authentication is per-request; restore the valid native principal for direct calls.
         b4NativeBearer();
         drafts.execute(command(dz.sh.hidra.modules.topology.application.port.in.EngineeringNetworkDraftUseCase.Kind.UPDATE,draft,null,2L,"Metadata-only successor"));

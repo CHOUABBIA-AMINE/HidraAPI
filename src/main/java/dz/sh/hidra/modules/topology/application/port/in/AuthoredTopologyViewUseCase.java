@@ -28,8 +28,8 @@ public interface AuthoredTopologyViewUseCase {
         public View {Objects.requireNonNull(graph);bindings=List.copyOf(bindings);diagnostics=List.copyOf(diagnostics);if(!"NOT_SUPPLIED".equals(geometryStatus))throw new IllegalArgumentException("Only persisted schematic projection is admitted");}
     }
     record Choice(String id,String code,String name,String kind) {}
-    record Discovery(String companyPartyId,String pipelineSystemId,List<PipelineView> pipelines,long totalPipelines,int offset,int limit,List<Choice> facilities,List<Choice> pipelineTypes,List<Choice> segments) {
-        public Discovery {pipelines=List.copyOf(pipelines);facilities=List.copyOf(facilities);pipelineTypes=List.copyOf(pipelineTypes);segments=List.copyOf(segments);}
+    record Discovery(String companyPartyId,String pipelineSystemId,List<PipelineView> pipelines,long totalPipelines,int offset,int limit,List<Choice> facilities,List<Choice> pipelineTypes,List<Choice> segments,List<Choice> equipmentKinds,List<Choice> installedUnits,List<String> candidateInstalledUnitIds) {
+        public Discovery {pipelines=List.copyOf(pipelines);facilities=List.copyOf(facilities);pipelineTypes=List.copyOf(pipelineTypes);segments=List.copyOf(segments);equipmentKinds=List.copyOf(equipmentKinds);installedUnits=List.copyOf(installedUnits);candidateInstalledUnitIds=List.copyOf(candidateInstalledUnitIds);}
     }
     void requireGlobalMapAccess();
     View view(PipelineAuthoringUseCase.Scope scope,Long version);

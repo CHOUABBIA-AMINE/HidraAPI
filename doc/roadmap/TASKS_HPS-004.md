@@ -12422,3 +12422,80 @@ The existing `realNativeProvidersCreateReadUpdateAndValidateWithoutPublishing` c
 **Accepted boundary and retained downstream gates:** one company/network-owned draft aggregate, immutable graph snapshots under the shared monotonically increasing metadata version, current and exact as-of graph reads, authored JUNCTION/STATION nodes and interface placeholders, PIPE/CONNECTOR branches and deterministic incompleteness diagnostics. Station presence in the draft does not establish external physical network membership; graph PIPE is not a dimensioned or hydraulically qualified pipe; station interface placeholders are not installed-unit port correspondence. No effective/public governed publication or history lifecycle (HAPI-590), survey/CRS/elevation/section authoring (HAPI-589), installed configuration completion (HAPI-600), numerical engine, commissioning, deployment or OT actuation is accepted here. No real calibration/SITE data was required for synthetic software verification. Blocked downstream tasks are not automatically unblocked or selected by this acceptance.
 
 **Exact3 MODIFY scope and validation:** this phase record, `doc/roadmap/ULTIMATE_ROADMAP.md`, `doc/roadmap/ULTIMATE_PHASES.md`. Only HAPI-588's two status fields synchronize in the two frozen registries; all descriptions/objectives/IDs/priority/dependencies/order/membership and other statuses remain unchanged. Task header aligns with those rows; historical evidence is preserved. Local artifact/hash/raw-report/case-membership/source-provenance/snapshot/compatibility/dictionary checks described above actually passed; Java21/Maven/PostgreSQL results are the actual hosted runs, not newly executed local results. Publish under expected-ff065207 guard, verify parent/tree/exact3-file scope, observe this documentation-only acceptance commit's applicable CI created/started, then STOP without waiting. A future Next may review the next registered task's live prerequisites; it must not implement blocked HAPI-589/HAPI-590/HAPI-600 implicitly.
+
+
+### 2026-11-05 HAPI-926 owner-approved W2 discovery repair
+
+Owner explicitly approved the bounded HAPI-926 repair after W2/HWEB-F12 preflight
+identified missing physical equipment/installed-unit discovery. Base main
+`a90253943bbaac7bc671f0bc4d45f719229d5eb1`, parent
+`18e7a7596aea1b26e958130996c8811ae7fe27e4`, tree
+`78ca978eaafb67162e3b7b9a260a71d714a11ace`; exact-main Docs912/run42029947505
+SUCCESS. The parent implementation passed Full1124/run42028166423; main is its
+acceptance-only successor. Earlier B4 acceptance remains historical evidence for its
+then-reviewed scope; this additional repair is IMPLEMENTED / CI_ACCEPTANCE_PENDING.
+
+Ownership: Topology owns physical InstalledUnit identity/kinds and station incidence;
+Assets owns maintenance identity/condition/work orders. Optional maintainableAssetId
+is not a competing ownership claim. No Assets API/model or ownership is moved.
+
+Bounded implementation: extend existing authoring-choices GET response with
+equipmentKinds and installedUnits; retain every existing field and operation.
+Under existing native graph-read admission, candidate IDs are company-filtered,
+active-kind-filtered, sorted and paginated with the existing offset/limit (max200).
+Equipment kinds are ACTIVE catalog choices, bounded to200. SHARE source locks and
+a deterministic candidate/catalog digest participate in the existing final guard.
+These internal candidates confer no installed-unit authority and are never REST DTOs.
+
+After the graph transaction commits, the application calls the existing protected
+InstalledUnitLifecycleUseCase READ_UNIT for each candidate. Each owner call retains
+its original transaction, current native Identity/Party checks and final guard.
+DENIED/NOT_FOUND candidates are omitted without identities or rejected counts;
+unauthenticated/unavailable/indeterminate reads fail the response, not partial success.
+Only matching company/id and currently discovered equipment-kind references reach
+the DTO. The final application result clears internal candidate IDs; REST maps only
+safe id/code/name/kind choices. No serial, manufacturer, Assets record or private
+candidate/count is exposed. Empty pages are valid; no visible-unit total is invented.
+The same offset/limit bounds both pipeline and internal unit candidate pages; an
+empty visible page does not establish end-of-list. These are independently authorized
+reads, not an atomic multi-unit snapshot or permission to register/install/replace.
+Every selected write must still pass its own current native owner checks.
+
+Exact same-task MODIFY allowlist:
+- src/main/java/dz/sh/hidra/modules/topology/application/port/in/AuthoredTopologyViewUseCase.java
+- src/main/java/dz/sh/hidra/modules/topology/application/service/PipelineAuthoringApplicationService.java
+- src/main/java/dz/sh/hidra/modules/topology/api/rest/response/AuthoredTopologyResponses.java
+- src/main/java/dz/sh/hidra/modules/topology/infrastructure/query/JpaAuthoredTopologyViewAdapter.java
+- src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/AuthoredTopologyProjectionPostgresIntegrationTest.java
+- src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/EngineeringNetworkDraftPostgresIntegrationTest.java
+- .github/ci-test-inventory.json
+- doc/roadmap/TASKS_HPS-004.md (this append-only entry)
+
+No CREATE/DELETE, migration/DDL, schema dictionary, Identity grant/policy change,
+auth bypass, workflow/CI-policy change, speculative snapshot, frontend implementation,
+new task/substage, P3, deployment or release. Registered exact message remains
+`feat(topology): connect pipeline authoring to persisted graph views`.
+
+Three added cases in the existing projection PostgreSQL class exercise real
+fresh-schema SQL company/ACTIVE/page filtering, application per-unit READ_UNIT
+filtering and REST suppression of denied/internal IDs, unavailable-authority failure
+and denied native authentication before reads. The existing native B4 HTTP journey
+also requires the new equipment-kind and installed-unit arrays with no internal
+candidate property. Existing native revocation/count, final-guard/rollback,
+concurrency and historical projection assertions are preserved. Inventory updates
+only those two existing source hashes and the three new case identities.
+
+Actual local validation: documentation, source-linked inventory and offline existing
+OpenAPI snapshot checks PASS. Java21 is available; `bash mvnw -B -q -DskipTests compile`
+FAILED before compilation because Maven Central DNS resolution failed while resolving
+Spring Boot parent4.1.1. No Java/JUnit/PostgreSQL or changed-runtime OpenAPI pass is
+claimed locally. Hosted Full CI must compile/run all required cases and generate the
+authentic changed OpenAPI. The old canonical snapshot is intentionally preserved;
+its runtime equality gate is expected to require subsequent exact-artifact
+reconciliation within this same repair, without relaxing equality or compatibility.
+W2 remains blocked until the complete repair's runtime contract and CI are accepted.
+
+Publish directly main with expected-head guard, verify exact parent/tree/blobs and
+eight-file scope, observe applicable exact-SHA Full/Docs creation/start, then STOP.
+No automatic artifact refresh, acceptance or W2 continuation in this publication.
+

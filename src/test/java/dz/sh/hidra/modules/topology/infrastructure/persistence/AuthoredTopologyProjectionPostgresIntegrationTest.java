@@ -62,4 +62,60 @@ class AuthoredTopologyProjectionPostgresIntegrationTest {
         assertThrows(IllegalArgumentException.class,()->g.pipelineReferences(List.of(reference,reference)));
         assertThrows(IllegalArgumentException.class,()->g.pipelineReferences(List.of(new EngineeringGraphDraft.PipelineReference("dangling","pipeline",null))));
     }
+
+    private dz.sh.hidra.modules.topology.application.port.in.AuthoredTopologyViewUseCase.Discovery candidateChoices(List<String> ids) {
+        return new dz.sh.hidra.modules.topology.application.port.in.AuthoredTopologyViewUseCase.Discovery("company","system",List.of(),0,0,50,List.of(),List.of(),List.of(),
+            List.of(new dz.sh.hidra.modules.topology.application.port.in.AuthoredTopologyViewUseCase.Choice("kind","K","Kind","EQUIPMENT_KIND")),List.of(),ids);
+    }
+    @Test void discoveryRequiresIndividualUnitAuthorityAndNeverSerializesCandidateIdentities() throws Exception {
+        var graphs=org.mockito.Mockito.mock(dz.sh.hidra.modules.topology.application.port.in.EngineeringGraphDraftUseCase.class);
+        var auth=org.mockito.Mockito.mock(dz.sh.hidra.modules.topology.application.port.out.AuthoredTopologyAuthorizationPort.class);
+        var units=org.mockito.Mockito.mock(dz.sh.hidra.modules.topology.application.port.in.InstalledUnitLifecycleUseCase.class);
+        var scope=new dz.sh.hidra.modules.topology.application.port.in.PipelineAuthoringUseCase.Scope("company","system",UUID.randomUUID());
+        org.mockito.Mockito.when(graphs.executeAuthoredDiscovery(scope,0,50)).thenReturn(candidateChoices(List.of("denied-private-unit","permitted")));
+        org.mockito.Mockito.when(units.execute(org.mockito.ArgumentMatchers.any())).thenAnswer(call->{
+            dz.sh.hidra.modules.topology.application.port.in.InstalledUnitLifecycleUseCase.Command command=call.getArgument(0);
+            assertEquals(dz.sh.hidra.modules.topology.application.port.in.InstalledUnitLifecycleUseCase.Operation.READ_UNIT,command.operation());
+            assertEquals("company",command.companyPartyId());
+            if(command.unitId().equals("denied-private-unit"))throw new dz.sh.hidra.modules.topology.application.model.InstalledUnitLifecycleFailure(dz.sh.hidra.modules.topology.application.model.InstalledUnitLifecycleFailure.Kind.DENIED,null);
+            var unit=new dz.sh.hidra.modules.topology.domain.model.InstalledUnit("permitted","company","kind",dz.sh.hidra.modules.topology.domain.model.InstalledUnit.Evidence.unknown(),dz.sh.hidra.modules.topology.domain.model.InstalledUnit.Evidence.unknown(),dz.sh.hidra.modules.topology.domain.model.InstalledUnit.Evidence.unknown(),null);
+            return new dz.sh.hidra.modules.topology.application.port.in.InstalledUnitLifecycleUseCase.Result(unit,null,null,List.of(),false);
+        });
+        var result=new dz.sh.hidra.modules.topology.application.service.PipelineAuthoringApplicationService(graphs,auth,units).discover(scope,0,50);
+        org.mockito.Mockito.verify(auth).requireNativeAuthentication();org.mockito.Mockito.verify(units,org.mockito.Mockito.times(2)).execute(org.mockito.ArgumentMatchers.any());
+        assertEquals(List.of("permitted"),result.installedUnits().stream().map(dz.sh.hidra.modules.topology.application.port.in.AuthoredTopologyViewUseCase.Choice::id).toList());
+        assertTrue(result.candidateInstalledUnitIds().isEmpty());
+        String json=tools.jackson.databind.json.JsonMapper.builder().build().writeValueAsString(dz.sh.hidra.modules.topology.api.rest.response.AuthoredTopologyResponses.Discovery.from(result));
+        assertFalse(json.contains("denied-private-unit"));assertFalse(json.contains("candidateInstalledUnitIds"));assertFalse(json.contains("manufacturer"));assertTrue(json.contains("equipmentKinds"));
+    }
+    @Test void discoveryDoesNotReturnPartialChoicesOnIndeterminateUnitAuthority() {
+        var graphs=org.mockito.Mockito.mock(dz.sh.hidra.modules.topology.application.port.in.EngineeringGraphDraftUseCase.class);
+        var auth=org.mockito.Mockito.mock(dz.sh.hidra.modules.topology.application.port.out.AuthoredTopologyAuthorizationPort.class);
+        var units=org.mockito.Mockito.mock(dz.sh.hidra.modules.topology.application.port.in.InstalledUnitLifecycleUseCase.class);
+        var scope=new dz.sh.hidra.modules.topology.application.port.in.PipelineAuthoringUseCase.Scope("company","system",UUID.randomUUID());
+        org.mockito.Mockito.when(graphs.executeAuthoredDiscovery(scope,0,50)).thenReturn(candidateChoices(List.of("private")));
+        org.mockito.Mockito.when(units.execute(org.mockito.ArgumentMatchers.any())).thenThrow(new dz.sh.hidra.modules.topology.application.model.InstalledUnitLifecycleFailure(dz.sh.hidra.modules.topology.application.model.InstalledUnitLifecycleFailure.Kind.INDETERMINATE,null));
+        var service=new dz.sh.hidra.modules.topology.application.service.PipelineAuthoringApplicationService(graphs,auth,units);
+        assertEquals(dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure.Reason.UNAVAILABLE,assertThrows(dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure.class,()->service.discover(scope,0,50)).reason());
+        assertThrows(IllegalArgumentException.class,()->service.discover(scope,0,201));
+        org.mockito.Mockito.clearInvocations(graphs,units);
+        org.mockito.Mockito.doThrow(new org.springframework.security.access.AccessDeniedException("Denied")).when(auth).requireNativeAuthentication();
+        assertThrows(org.springframework.security.access.AccessDeniedException.class,()->service.discover(scope,0,50));
+        org.mockito.Mockito.verifyNoInteractions(graphs,units);
+    }
+    private void discoveryUnit(String id,String company,String kind) {
+        jdbc.update("INSERT INTO public.hidra_topology_installed_unit(id,company_party_id,equipment_kind_id,manufacturer_party_verification,manufacturer_model_verification,serial_verification) VALUES (?,?,?,'UNKNOWN','UNKNOWN','UNKNOWN')",id,company,kind);
+    }
+    @Test void discoverySqlRestrictsCompanyActiveKindsAndDeterministicBoundedPages() {
+        String company="discovery-"+UUID.randomUUID(),active="kind-"+UUID.randomUUID(),inactive="kind-"+UUID.randomUUID();
+        for(String kind:List.of(active,inactive))jdbc.update("INSERT INTO public.hidra_topology_equipment_type(id,code,name,status,created_at,updated_at) VALUES (?,?,?, ?,now(),now())",kind,kind,"Synthetic kind",kind.equals(active)?"ACTIVE":"SUSPENDED");
+        discoveryUnit(company+"-a",company,active);discoveryUnit(company+"-b",company,active);discoveryUnit(company+"-inactive",company,inactive);discoveryUnit(company+"-foreign","foreign-"+company,active);
+        String sql=dz.sh.hidra.modules.topology.infrastructure.query.JpaAuthoredTopologyViewAdapter.UNIT_CANDIDATES;
+        assertEquals(List.of(company+"-a"),jdbc.queryForList(sql,String.class,company,0,1));
+        assertEquals(List.of(company+"-b"),jdbc.queryForList(sql,String.class,company,1,1));
+        assertTrue(jdbc.queryForList(sql,String.class,company,2,1).isEmpty());
+        assertTrue(jdbc.queryForList(sql,String.class,"absent-"+company,0,50).isEmpty());
+        var kinds=jdbc.queryForList(dz.sh.hidra.modules.topology.infrastructure.query.JpaAuthoredTopologyViewAdapter.EQUIPMENT_CHOICES);
+        assertFalse(kinds.stream().anyMatch(row->inactive.equals(row.get("id"))));
+    }
 }

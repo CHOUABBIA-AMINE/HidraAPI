@@ -9512,7 +9512,10 @@
       "cases": [
         "canonicalReferenceCoverageRejectsMissingDuplicateAndDanglingBindings",
         "fakeGraphDigestOrCrossCompanyAssociationCannotBePersisted",
-        "pinnedCanonicalLabelsAndLegacyGraphBytesSurviveHistoricalProjection"
+        "pinnedCanonicalLabelsAndLegacyGraphBytesSurviveHistoricalProjection",
+        "discoveryRequiresIndividualUnitAuthorityAndNeverSerializesCandidateIdentities",
+        "discoveryDoesNotReturnPartialChoicesOnIndeterminateUnitAuthority",
+        "discoverySqlRestrictsCompanyActiveKindsAndDeterministicBoundedPages"
       ],
       "class": "dz.sh.hidra.modules.topology.infrastructure.persistence.AuthoredTopologyProjectionPostgresIntegrationTest",
       "dependency_reason": "Real fresh-schema PostgreSQL migration and immutable Pipeline/graph association qualification; native HTTP cases retained in EngineeringNetworkDraftPostgresIntegrationTest",
@@ -9520,7 +9523,7 @@
       "lane": "postgres-integration",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/AuthoredTopologyProjectionPostgresIntegrationTest.java",
-      "source_sha256": "dcd6638fa0f05816db769aaaed608600e6090b2367b2efbdf7315600bdf97cb1",
+      "source_sha256": "40ee177b6ed2cd2f7d61479f81c9e972e274636ff177d4f0f00c2eb5d091f8c5",
       "supports": []
     },
     {
@@ -9600,7 +9603,7 @@
       "lane": "postgres-integration",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/EngineeringNetworkDraftPostgresIntegrationTest.java",
-      "source_sha256": "7c189d1fcc33a0495afbd318433789c85ef372b3271ececab4a0305e10fab874",
+      "source_sha256": "63a23f6e10e897d0a6ec54378c8b7078e08298f085b895ca60d630aff5422c4c",
       "supports": []
     },
     {

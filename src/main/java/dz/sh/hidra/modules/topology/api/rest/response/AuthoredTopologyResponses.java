@@ -37,7 +37,7 @@ public final class AuthoredTopologyResponses {
     @Schema(name="AuthoredTopologyChoice")
     public record Choice(String id,String code,String name,String kind) {public static Choice from(AuthoredTopologyViewUseCase.Choice c){return new Choice(c.id(),c.code(),c.name(),c.kind());}}
     @Schema(name="AuthoredTopologyDiscovery")
-    public record Discovery(String companyPartyId,String pipelineSystemId,List<Pipeline> pipelines,long totalPipelines,int offset,int limit,List<Choice> facilities,List<Choice> pipelineTypes,List<Choice> segments) {
-        public static Discovery from(AuthoredTopologyViewUseCase.Discovery d){return new Discovery(d.companyPartyId(),d.pipelineSystemId(),d.pipelines().stream().map(Pipeline::from).toList(),d.totalPipelines(),d.offset(),d.limit(),d.facilities().stream().map(Choice::from).toList(),d.pipelineTypes().stream().map(Choice::from).toList(),d.segments().stream().map(Choice::from).toList());}
+    public record Discovery(String companyPartyId,String pipelineSystemId,List<Pipeline> pipelines,long totalPipelines,int offset,int limit,List<Choice> facilities,List<Choice> pipelineTypes,List<Choice> segments,List<Choice> equipmentKinds,List<Choice> installedUnits) {
+        public static Discovery from(AuthoredTopologyViewUseCase.Discovery d){return new Discovery(d.companyPartyId(),d.pipelineSystemId(),d.pipelines().stream().map(Pipeline::from).toList(),d.totalPipelines(),d.offset(),d.limit(),d.facilities().stream().map(Choice::from).toList(),d.pipelineTypes().stream().map(Choice::from).toList(),d.segments().stream().map(Choice::from).toList(),d.equipmentKinds().stream().map(Choice::from).toList(),d.installedUnits().stream().map(Choice::from).toList());}
     }
 }

@@ -13025,3 +13025,56 @@ check PASS. Source review confirms all six DML template bytes unchanged and no J
 SELECT inside persist. Java21 `bash ./mvnw -B -q -DskipTests test-compile` attempted
 but blocked before compilation by Maven Central DNS resolving Spring Boot4.1.1.
 No local Java/database pass claimed; HAPI-926 remains CI_ACCEPTANCE_PENDING.
+
+### 2026-11-05 HAPI-926 same-task Full1130 unresolved HTTP failure evidence
+
+Exact baseline `a4e3e2945124c0345fcb2c76a300e6ceb4cfb426`, parent
+`139eda5076e026cea086a6fd38b0839d82d86546`, tree
+`6d8f44c3512b3c958891d06ed813d8287ff3e678`.
+[Full1130](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42109802484)
+FAILED; [Docs919](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42109802427)
+SUCCESS. All19 job outcomes retrieved: unit/architecture, static, API contract and
+dictionary, and13/14 PostgreSQL shards SUCCESS. API runtime equality, strict
+physical dictionary comparison and successful-base compatibility lane succeeded.
+Shard1 has141 tests/2 failures/0 errors/skips; its installed lifecycle suite has53
+tests/2 failures. Full gate correctly fails; no independent acceptance is claimed.
+
+Retrieved shard1 log and genuine diagnostic artifact13454255963
+`hidra-ci-diagnostics-a4e3e2945124c0345fcb2c76a300e6ceb4cfb426-42109802484-1-postgres-1`.
+Inspected its raw ProtectedInstalledUnitLifecyclePostgresIntegrationTest XML.
+The foundation whole native journey fails at foundationSetup line1861 while recording
+an installation after successful native system/facility/activation/position/unit
+registration. Writer-first/reader-first history fails at line1740 on its initial
+positive history GET, before deliberate lock contention. Both reports show only
+`Status expected:<200> but was:<503>`; neither retains the resolved native exception.
+No source evidence proves that these failures are deadline, lock, authorization,
+station-kind or final-guard defects. Do not change budgets, bypass guards, retry
+requests, accept503 or infer a cause from elapsed whole-test time.
+
+Bounded same-task diagnostic correction: an existing test-only exact-success
+ResultMatcher still requires HTTP200 but attaches MvcResult.getResolvedException()
+as the AssertionError cause. Use it for the five positive responses in these two
+existing journeys, retaining all body/history/concurrency/nondisclosure assertions
+and expected-negative status matchers unchanged. No response body or bearer is
+added to the failure message. This records native exception chains in synthetic
+Surefire failures only; production handlers and disclosure policy remain unchanged.
+Only this test's source hash changes in the exact inventory; all53 lifecycle cases,
+563 oracle classes and lane memberships are retained.
+
+MODIFY only ProtectedInstalledUnitLifecyclePostgresIntegrationTest.java,
+`.github/ci-test-inventory.json` and this append-only task evidence; no CREATE/DELETE,
+production code, schema/migration, security, timing, workflow, API/dictionary or
+status changes. Exact registered message retained:
+`feat(topology): connect pipeline authoring to persisted graph views`.
+This is an evidence-preserving same-task repair, not a claimed business defect fix,
+new registered stage or backend acceptance. The two underlying HTTP failures remain
+UNRESOLVED pending actual native cause evidence and passing exact-source CI.
+HWEB-F12/W2 remains blocked. After guarded publication verify parent/tree/blobs and
+new-SHA Full/Docs startup, then STOP without waiting or advancing another task.
+
+Full1130 diagnostic repair local validation: documentation validator PASS
+(129 documents,8986 relative links,928 tasks,25 phases); exact source-bound inventory
+PASS (563 oracle classes); all38 inventory Python tests PASS; diff whitespace check
+PASS. Java/PostgreSQL were not rerun locally: Maven Central parent resolution is
+already blocked in this environment, and no complete environment is provisioned.
+Only fresh hosted CI can establish executable results for this revised test source.

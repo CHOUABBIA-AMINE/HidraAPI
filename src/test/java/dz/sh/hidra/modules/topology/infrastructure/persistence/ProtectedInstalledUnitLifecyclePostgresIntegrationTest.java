@@ -1273,6 +1273,15 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
         SecurityContextHolder.clearContext();
         return installedMvc().perform(request);
     }
+    // Preserve exact positive status and the native exception chain in synthetic CI failures.
+    // Expected-denial tests continue to assert their own exact status and nondisclosure contract.
+    private org.springframework.test.web.servlet.ResultMatcher installedHttpSuccess() {
+        return result -> {
+            int actual=result.getResponse().getStatus();
+            if(actual!=200)throw new AssertionError("Native installed-unit HTTP expected 200 but got "+actual,
+                result.getResolvedException());
+        };
+    }
     private org.springframework.test.web.servlet.ResultActions installedHttp(Fixture actor,
             InstalledUnitLifecycleUseCase.Command command) throws Exception {
         return installedHttp(installedBearer(actor,command),command);
@@ -1737,7 +1746,7 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
     @Test void installedUnitHttpWriterFirstAndReaderFirstKeepHistoryAtomic() throws Exception {
         var setup=installedHttpReplacementFixture();var r=setup.replacement();String bearer=setup.bearer();
         var history=new InstalledUnitLifecycleUseCase.Command(InstalledUnitLifecycleUseCase.Operation.READ_HISTORY,null,COMPANY,r.source().id(),r.command().installationId(),null,pos(r.place()),null,null,null,null,null,0);
-        authorize(r.actor(),history);installedHttp(bearer,history).andExpect(status().isOk()).andExpect(jsonPath("$.history.length()").value(1));String before=effects();
+        authorize(r.actor(),history);installedHttp(bearer,history).andExpect(installedHttpSuccess()).andExpect(jsonPath("$.history.length()").value(1));String before=effects();
         var failures=new ConcurrentLinkedQueue<Throwable>();installedCaptureOwnerFailures(failures);
         // A genuine independent writer already owns the native relation lock; the HTTP reader must fail NOWAIT.
         try(var writer=DriverManager.getConnection(POSTGRES.getJdbcUrl(),POSTGRES.getUsername(),POSTGRES.getPassword());var statement=writer.createStatement()) {
@@ -1762,8 +1771,8 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
             assertThat(JSON.readTree(result.getResponse().getContentAsString()).path("history").size()).isEqualTo(1);
             assertThat(failures.stream().anyMatch(f->installedSqlState(f,"55P03"))).isTrue();unchangedReplacement(r,before);
         }finally{release.countDown();worker.shutdownNow();assertThat(worker.awaitTermination(5,TimeUnit.SECONDS)).isTrue();reset(protectedStore,admissionCoordinator);}
-        installedHttp(bearer,r.command()).andExpect(status().isOk());
-        installedHttp(bearer,history).andExpect(status().isOk()).andExpect(jsonPath("$.history.length()").value(2))
+        installedHttp(bearer,r.command()).andExpect(installedHttpSuccess());
+        installedHttp(bearer,history).andExpect(installedHttpSuccess()).andExpect(jsonPath("$.history.length()").value(2))
             .andExpect(jsonPath("$.history[0].revision").value(1)).andExpect(jsonPath("$.history[1].revision").value(2));
     }
     @Test void installedUnitHttpRealFinalSourceFacilityRoleAndTimeRejectionsRollBack() throws Exception {
@@ -1857,8 +1866,8 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
         foundationOk(bearer,"POST","/api/v1/topology/foundation/facilities/"+facility+"/equipment-positions",Map.of("companyPartyId",COMPANY,"requestId",id(),"id",position,"code",position,"name","Synthetic compressor position","equipmentKindId",kind,"reason","Synthetic position registration"));
         var unit=new InstalledUnit(id(),COMPANY,kind,InstalledUnit.Evidence.unknown(),InstalledUnit.Evidence.unknown(),InstalledUnit.Evidence.unknown(),null);
         var place=new Place(position,facility,kind);String installation=id();
-        installedHttp(actor,register(unit)).andExpect(status().isOk());
-        installedHttp(actor,record(unit,place,installation)).andExpect(status().isOk());
+        installedHttp(actor,register(unit)).andExpect(installedHttpSuccess());
+        installedHttp(actor,record(unit,place,installation)).andExpect(installedHttpSuccess());
         var readInstallation=new InstalledUnitLifecycleUseCase.Command(InstalledUnitLifecycleUseCase.Operation.READ_INSTALLATION,null,COMPANY,unit.id(),installation,null,pos(place),null,null,null,null,null,0);
         authorize(actor,readInstallation);authorize(actor,read(unit));
         return new FoundationFixture(actor,foundationBearer(actor),system,facility,facilityType,kind,position,unit,installation);

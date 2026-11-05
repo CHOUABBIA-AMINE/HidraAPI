@@ -7,7 +7,7 @@
  *
  * @Name        : SpringWorkflowController
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-13
+ * @UpdatedOn   : 2026-11-05
  *
  * @Type        : Class
  * @Layer       : API
@@ -32,7 +32,6 @@ import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,8 +41,9 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * Spring MVC adapter exposing workflow REST endpoints.
  */
+// Request-body validation belongs to MVC; executable AOP would reject the
+// implementation-only cascades over the framework-neutral controller contract.
 @RestController
-@Validated
 @RequestMapping("/api/v1/workflow")
 public class SpringWorkflowController implements WorkflowController {
 

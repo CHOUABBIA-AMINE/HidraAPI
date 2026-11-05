@@ -13119,4 +13119,55 @@ acceptance. No further stage, numerical/P3, release or HidraWEB action
 is selected. After guarded same-message repair publication, observe
 exact-SHA CI creation/queue/start then STOP.
 
+
+
+### 2026-11-05 HAPI-928 whole-B6 same-task CI #1120 repair — MVC validation ownership
+
+**Exact-source evidence.** Main `1b885da98d099b97570d2ee7f08e9d81ffed9357`,
+parent `5d38fcea0f70f2947589e2a8aa36f5ad62a7db93`, tree
+`f9798f54c94fa9010001a0bc9d4a424fdf969b52`.
+[Full CI #1120](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41972844050)
+FAILED; [Documentation #906](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/41972843884)
+SUCCESS. Static validation, Java21 unit/architecture, API contract/dictionary
+and thirteen PostgreSQL shards succeeded. Shard9 job `127064812122`
+reported 148 tests, six failures, zero errors/skips. All six failing
+WorkflowFoundationProcessPostgresIntegrationTest cases encounter HTTP500:
+Hibernate Validator HV000151 rejects parameter constraint redefinition by
+SpringWorkflowController over its framework-neutral WorkflowController
+interface. Class-level @Validated activates executable-validation AOP;
+implementation-only @Valid parameters trigger the inheritance failure
+before the requested start operation. Missing inventory evidence and the
+failed full gate are consequences of these real failed cases.
+
+**Same-task exact scope reconciliation before source mutation.** The B6
+ledger permits a genuinely required extra path to be reconciled within
+this same task. Admit MODIFY of
+`src/main/java/dz/sh/hidra/modules/workflow/api/rest/controller/SpringWorkflowController.java`
+and this append-only task evidence only. Retain the registered message
+`feat(workflow): complete foundation task discovery and scoped reads`.
+Remove redundant controller-level @Validated and its import, leaving
+Spring MVC @Valid @RequestBody validation on all three HTTP commands.
+There are no direct method parameter/return constraints on this adapter;
+request deserialization/body validation stays with MVC. Do not change the
+framework-neutral interface, DTOs, use cases, owner authorization, domain
+invariants, security filters, exception mappings or database guards.
+All existing process tests and source hashes remain unchanged; they are
+the exact regression oracle for real configured REST transitions and
+independent reviewer/owner denial. No validation-provider inheritance
+relaxation, test weakening, schema or snapshot update is selected.
+
+**Validation and acceptance boundary.** Actual local checks PASS: `git diff --check`,
+`python3 .github/scripts/validate_docs.py` (928 tasks / 25 phases),
+`python3 .github/scripts/validate_openapi_snapshot.py` (offline snapshot
+334 paths / 371 operations / 417 schemas), and
+`python3 .github/scripts/verify_ci_test_inventory.py` (all source-bound
+classes unchanged). Offline checks are not runtime or PostgreSQL proof.
+Local Java is21.0.13; Maven and Docker are absent, so no local Maven
+build or PostgreSQL execution is claimed. HAPI-928 remains IMPLEMENTED / IN_PROGRESS.
+A new exact-repair-SHA Full CI must execute every original case and the
+API/dictionary gates before independent whole-B6 acceptance. Stop after
+repair-SHA CI creation/queue/start; next is B6 acceptance review, then
+reserved W1/HWEB-F11 only after separate selection and frontend adoption.
+No numerical/P3, frontend implementation, release or deployment selected.
+
 <!-- task-register:payload:end -->

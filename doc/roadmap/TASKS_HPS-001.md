@@ -12547,4 +12547,78 @@ base canonical digest, excluding optional CI stamp:
 `06d77bf965c2b9557e5cef9ecaaae43a51c5d1061c84f76c701d9e471c08e369`.
 This is local actual-artifact comparison proof, not a new hosted full pass.
 
+
+
+### 2026-11-05 HAPI-923 credential-contract repair independent software acceptance — Full1124
+
+**Decision and exact source.** Owner Next selects acceptance of the approved same-task
+credential schema repair; ACCEPTED for bounded synthetic backend software.
+Main18e7a7596aea1b26e958130996c8811ae7fe27e4,
+parent e8f1d842d2a75a0f4f8fce6913131455398efb8a,
+root tree5a06b61755daa8d3d17ce226ca6e6db8b316415f, registered message
+`feat(identity): complete foundation user access lifecycle`.
+[Full CI1124](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42028166423)
+and [Docs911](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42028166690)
+SUCCESS on that precise SHA. Static, unit/architecture, all14 PostgreSQL shards,
+API/dictionary lane and authenticated full gate SUCCESS. Development-partitioned
+mode did not select the optional serial oracle; no serial equivalence or release
+readiness follows. HAPI-923's existing VERIFIED/COMPLETED cells need no change;
+this append closes only the subsequently discovered transport correction.
+
+**Independent actual reports.** Downloaded aggregate artifact13416100262,
+`hidra-full-ci-evidence-18e7a7596aea1b26e958130996c8811ae7fe27e4-42028166423-1`,
+ZIP SHA256 `ff57bbfe5e2328c184e14615207c6bf0d6ada4593a0e9494db472db18768064c`.
+Parsed all562 JUnit XML suites independently:4305 tests, zero failures/errors/skips,
+matching gate.json. FoundationIdentityLifecyclePostgresIntegrationTest:8/8 with no
+failure/error/skip, preserving all7 native credential/onboarding/session-revocation,
+last-administrator, CAS/concurrency, immutable-audit and rollback cases plus
+runtimeOpenApiSeparatesCredentialInputFromSafeState. The latter proves genuine
+Spring-generated schema request/response separation and actual authenticated safe
+credential-state payload. Native synthetic HTTP/PostgreSQL tests do not establish
+live browser, supplier, engineering or SITE acceptance.
+
+**Runtime and accepted compatibility correction.** API job127247521259 SUCCESS.
+Actual runtime member SHA256
+`b9703ce80de0e9592d46553af6cf7044bf803bcd1a65ff9008da05cb9d53c25a`,
+source stamped to18e7a75,334 paths/371 operations/418 schemas; independently reran
+strict canonical equality successfully. Successful base ac7d03be / Full1121 was
+independently rebuilt on port8081; base member SHA256
+`42163560e79bc7dfeee94d7dcf5c614b67723b504d62e36a342e5a96137e583e`.
+Hosted and independent local comparators PASS with exactly the two explicit
+owner-approved HAPI-923 notices. This is accepted correction of previously false
+password-input response metadata, not an assertion of generic backward compatibility.
+The response is IdentityLocalCredentialState(userId,securityVersion,changedAt);
+request Credential stays unchanged. Exception remains locked to the exact reviewed
+base digests, two routes/methods/status/media/refs, unchanged request and exact state.
+Static job127247521786 actually ran all13 new comparator tests successfully;
+independent local rerun also13 PASS, including unknown-base/server, wrong scope,
+tampering, unrelated removal/input/security and future-state regression denials.
+
+**Strict physical dictionary proof.** Actual same-run verification member:
+PostgreSQL16.15,200 migrations,470 JPA mappings,552 relations,zero unresolved owners,
+reviewed_dictionary_checked=true. Catalog SHA256
+`53877c1a6b36caab8651308359ca412e65d92beb12de0242d186dacd16ced577`,
+generated dictionary SHA256
+`daf86f366bd5c461357441667dfa23d5d4308cd5c4cec4727b28759cda5a3c30`.
+The existing source dictionary passes strict hosted regeneration/equality; no schema,
+source-dictionary or provenance refresh is required merely to record acceptance.
+
+**Exact documentation-only publication:** MODIFY this owning task file append-only
+and the existing foundation navigation in `doc/roadmap/ULTIMATE_TASKS.md` only.
+No CREATE/DELETE, status-cell, implementation/test/CI, snapshot/manifest/dictionary,
+archive or unrelated task mutation. Reuse the same registered exact message.
+All earlier failed-run records remain historical. Next separate whole delivery is
+W1/HWEB-F11 in HidraWEB, with canonical frontend registration/adoption and current
+source/contract refresh included in that delivery. The repaired schema blocker is
+closed; frontend implementation, live browser/A1, SITE/OT, numerical/P3, release
+and deployment remain NOT ESTABLISHED/unselected. Publish expected-head guarded,
+verify exact parent/tree/blobs/scope, observe new exact-SHA Docs CI creation/start
+then STOP; do not execute W1 in this acceptance turn.
+
+Actual local acceptance checks: downloaded aggregate and all562 report totals
+verified; strict actual generated OpenAPI equality and same-base compatibility PASS;
+13 comparator tests PASS; documentation validation928/25 and git diff --check PASS;
+append-only old task payload and exact two-document scope preservation PASS.
+No new local Java/PostgreSQL execution is claimed.
+
 <!-- task-register:payload:end -->

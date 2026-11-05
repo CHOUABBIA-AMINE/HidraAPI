@@ -3394,7 +3394,7 @@ HAPI-605 delivery-2 [Full #1087](https://github.com/CHOUABBIA-AMINE/HidraAPI/act
 
 ## Owner-approved foundation navigation — 2026-11-03
 
-The historical921-task baseline is preserved; the approved bounded extension contains928 current tasks in25 phases. [Adopted foundation supplement](FOUNDATION_PRODUCTION_ROADMAP.md). Current foundation: [HAPI-928](TASKS_HPS-015.md#hapi-928) accepted VERIFIED / COMPLETED for bounded synthetic backend software after Full #1121 and Documentation #907; prior [HAPI-927/B5](TASKS_HPS-018.md#hapi-927) acceptance remains historical. The next reserved delivery is HWEB-F11/W1 in HidraWEB, not yet selected or canonically adopted for implementation. Earlier execution pointers remain historical.
+The historical921-task baseline is preserved; the approved bounded extension contains928 current tasks in25 phases. [Adopted foundation supplement](FOUNDATION_PRODUCTION_ROADMAP.md). Current foundation: [HAPI-928](TASKS_HPS-015.md#hapi-928) accepted VERIFIED / COMPLETED for bounded synthetic backend software after Full #1121 and Documentation #907; prior [HAPI-927/B5](TASKS_HPS-018.md#hapi-927) acceptance remains historical. The HAPI-923 credential-contract repair is accepted at `18e7a7596aea1b26e958130996c8811ae7fe27e4` after Full #1124/Docs #911 SUCCESS; [owning evidence](TASKS_HPS-001.md#hapi-923). Its schema blocker is closed. The next separate delivery is HWEB-F11/W1 in HidraWEB, requiring canonical frontend adoption within that whole delivery; no frontend implementation is executed by this acceptance. Earlier execution pointers remain historical.
 
 <a id="hapi-922"></a>
 [HAPI-922](TASKS_HPS-025.md#hapi-922) — Foundation P0.

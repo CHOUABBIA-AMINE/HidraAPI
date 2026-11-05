@@ -72,6 +72,24 @@ class CredentialCompatibilityTests(unittest.TestCase):
         self.base["info"] = {"title": "Changed baseline"}
         self.assertEqual(self.compare()[0], 1)
 
+    def test_only_exact_artifact_and_regenerated_server_variants_are_pinned(self):
+        artifact = copy.deepcopy(self.base)
+        artifact["servers"] = [{"url": "http://127.0.0.1:8080", "description": "Generated server url"}]
+        regenerated = copy.deepcopy(artifact)
+        regenerated["servers"][0]["url"] = "http://127.0.0.1:8081"
+        unknown = copy.deepcopy(artifact)
+        unknown["servers"][0]["url"] = "http://127.0.0.1:8082"
+        with patch.object(checker, "REVIEWED_CREDENTIAL_BASE_SHA256", checker.contract_digest(artifact)), \
+                patch.object(checker, "REVIEWED_CREDENTIAL_REGENERATED_BASE_SHA256", checker.contract_digest(regenerated)):
+            self.assertEqual(self.compare(artifact, self.current)[0], 0)
+            self.assertEqual(self.compare(regenerated, self.current)[0], 0)
+            code, output, errors = self.compare(unknown, self.current)
+            self.assertEqual(code, 1)
+            self.assertNotIn("Owner-approved", output)
+            self.assertIn("response properties removed", errors)
+            regenerated["components"]["schemas"]["Credential"]["description"] = "Changed contract"
+            self.assertEqual(self.compare(regenerated, self.current)[0], 1)
+
     def test_wrong_route_method_status_media_or_ref_is_not_exempt(self):
         for kind in ("route", "method", "status", "media", "ref"):
             with self.subTest(kind=kind):

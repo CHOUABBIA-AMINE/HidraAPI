@@ -12495,4 +12495,56 @@ comparison and migrated dictionary equality remain mandatory.
 Guard direct-main publication,
 verify exact paths/parent/tree/blobs/message, observe CI creation/start and STOP.
 
+
+
+### 2026-11-05 HAPI-923 same-exception Full1123 regenerated-base port repair
+
+**Live actual feedback:** main e8f1d842d2a75a0f4f8fce6913131455398efb8a,
+parent4421494ddfb1697b247977dae6ddb7900463d5bd,
+tree935f175919379b3903c3f69af783b3efc9e2fe16. Docs910 SUCCESS;
+[Full1123](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42026503249)
+FAILED. Static validators, unit/architecture, all14 PostgreSQL shards,
+strict current canonical OpenAPI equality and migrated dictionary equality PASS.
+API job127241926559 selected the actual successful base ac7d03be / Full1121,
+regenerated its application contract, then compatibility FAILED on the same
+incorrect legacy password-input response fields. No additional application defect
+or database dictionary drift is demonstrated. Full repair acceptance is pending.
+
+**Independently recovered root cause:** diagnostics artifact13413149838 includes
+actual openapi/hidra-api-base.json and current runtime JSON. Base raw SHA256
+`42163560e79bc7dfeee94d7dcf5c614b67723b504d62e36a342e5a96137e583e`.
+Compared recursively to the authentic successful Full1121 runtime document,
+excluding its optional CI stamp, the sole difference is generated servers[0].url:
+http://127.0.0.1:8080 in the archive versus http://127.0.0.1:8081 in the existing
+independent base-generator workflow. Every schema, path, operation and remaining
+metadata is identical. The full-document pin intentionally rejected that
+previously unrepresented exact generated-server variant.
+
+**Same approved exception, exact repair scope:** MODIFY only
+`.github/scripts/openapi_compatibility.py`,
+`.github/scripts/test_openapi_compatibility.py`, and append-only evidence here.
+Same registered message `feat(identity): complete foundation user access lifecycle`.
+Add the exact verified regenerated-base digest as a second literal accepted pin;
+preserve the original actual-artifact pin. Do not normalize/strip servers or
+trust a declared source SHA; any other server or contract change is unapproved.
+Retain the exact two route/method/response200/media/ref/request/schema guards,
+all ordinary comparison checks, strict snapshot and physical catalog equality.
+Add a genuine CLI regression for both exact pinned server variants and rejection
+of an arbitrary third variant. No Java/tests/inventory, workflow, manifest/snapshot,
+database, status, migration, W1 or other module changes. New exact-SHA hosted
+base/current comparison and independent repair acceptance remain pending; observe
+CI creation/start after guarded direct-main publication, then STOP.
+
+
+**Actual local validation:** all13 comparator CLI tests PASS including both exact
+server pins and third-server/changed-contract denials; unmodified authentic Full1123
+base/current comparison PASS with exactly the two approved notices; original
+Full1121 archive/current comparison PASS; strict generated snapshot equality PASS
+(334/371/418); documentation validation PASS (928 tasks/25 phases); independent
+full structural one-port-only comparison, exact literal pin reconstruction and
+append-only prior evidence preservation PASS; git diff --check PASS. Regenerated
+base canonical digest, excluding optional CI stamp:
+`06d77bf965c2b9557e5cef9ecaaae43a51c5d1061c84f76c701d9e471c08e369`.
+This is local actual-artifact comparison proof, not a new hosted full pass.
+
 <!-- task-register:payload:end -->

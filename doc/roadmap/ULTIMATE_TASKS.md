@@ -3424,3 +3424,14 @@ HAPI-927 same-task Full #1116 dictionary repair (2026-11-04): all 14 PostgreSQL 
 HAPI-927/B5 independent development-software acceptance (2026-11-04): [HPS-018](TASKS_HPS-018.md#hapi-927) records exact source ed3f0a65e9e1674284ae2c0a25f0ba920c1dd9c9, Full #1117/Docs #902 SUCCESS, independently verified 560 suites/4,291 zero-failure/error/skip cases including all27 Configuration cases, runtime API/compatibility and strict physical dictionary proof. VERIFIED/COMPLETED for bounded synthetic backend software only; HAPI-928/B6 is next separately selected whole task, not executed here. Frontend/SITE/release gates remain separate.
 
 HAPI-928/B6 independent backend acceptance (2026-11-05): [HPS-015](TASKS_HPS-015.md#hapi-928) records exact source `ac7d03be147368ae2b9da125bc2bbbb89973995b`, Full #1121 and Docs #907 SUCCESS, independently inspected 562 XML suites / 4,304 zero-failure/error/skip cases including 5 Workflow read and 8 Workflow process scenarios, native owner protection, runtime OpenAPI backward compatibility and strict physical dictionary proof. VERIFIED / COMPLETED for synthetic backend only; W1/HWEB-F11, frontend/browser A1, SITE, release and deployment remain separate.
+
+
+HAPI-926 bounded W2 discovery repair acceptance (2026-11-05):
+[HPS-004](TASKS_HPS-004.md#hapi-926) records exact source
+`235566bc99464901753ebf9ab04f6143ff8c49b1`, Full1126/Docs914 SUCCESS,
+independently verified562 suites/4,308 tests with0 failures/errors/skips, repaired
+native discovery HTTP200, runtime API equality/compatibility and strict physical
+dictionary proof. VERIFIED / COMPLETED for bounded synthetic backend discovery;
+Topology physical and Assets maintenance ownership remain distinct. Next reserved
+delivery W2/HWEB-F12 requires separate selection and HidraWEB adoption. W2/browser,
+A1, SITE, release and deployment remain separate.

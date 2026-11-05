@@ -12572,3 +12572,78 @@ compatibility and physical dictionary equality. Publish expected-head guarded to
 main, verify exact tree/parent/blobs/scope, observe exact-SHA Full/Docs creation or
 startup, then STOP. Independent repair acceptance and W2 remain later selections.
 
+
+
+### 2026-11-05 HAPI-926 bounded discovery repair independent acceptance — Full1126
+
+Owner Next selects acceptance of the approved W2 discovery repair at exact source
+`235566bc99464901753ebf9ab04f6143ff8c49b1`,
+parent `46870ddf7beb57f94f1526151cf9bd32a403c368`,
+tree `eb7c407e3eb8dbc13d994762163ca382b93199ad`.
+[Full CI #1126](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42059323191)
+and [Docs #914](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42059323203)
+are SUCCESS on that source. **Repair VERIFIED / COMPLETED for its bounded synthetic
+backend development-software scope.** Earlier B4 history and registered status
+remain intact; this acceptance supersedes only the repair's pending disposition.
+
+Independently downloaded full evidence artifact13431741798
+`hidra-full-ci-evidence-235566bc99464901753ebf9ab04f6143ff8c49b1-42059323191-1`,
+verified ZIP SHA2564b01b2b98b0ddc1e5ec06a82cb80807350100888035df26fbb80a0b88bfa30e0,
+parsed all562 raw XML suites and reran the repository's unchanged aggregate verifier
+with exact source/run/attempt/needs and development/cached mode. Both aggregate and
+raw reports confirm **4,308 tests,0 failures,0 errors,0 skipped**, source-linked
+inventory ca3cba37d83c12e4a65dc25753e2fd8078af5215415d808b3e9199ce9c309403.
+All14 PostgreSQL shards and Java21 unit/architecture pass. Serial verification was
+not selected: mode=development-partitioned, release_eligible=false,
+same_run_equivalence=false, serial_oracle=false, optimized_adoption_eligible=false.
+
+Actual EngineeringNetworkDraftPostgresIntegrationTest report has49 passing cases,
+including all six B4 native scenarios. The previously failing real native-bearer
+discovery GET now satisfies HTTP200, equipmentKinds/installedUnits array assertions
+and absence of internal candidate identities. Existing revocation-before-disclosure,
+source/stale/replay, final-guard rollback, concurrent-writer and immutable-tampering
+cases remain passing. AuthoredTopologyProjectionPostgresIntegrationTest has6 passing
+cases, including the3 added discovery cases: real PostgreSQL company/ACTIVE/page
+query filtering; mocked owner-port per-unit READ_UNIT filtering and REST suppression;
+and indeterminate-authority failure/denied-authentication-before-read. The mocked
+port case is application regression evidence, not a newly executed native
+installed-unit authorization scenario; the unchanged native installed-unit suites
+remain separately included in Full CI. No complete W2 equipment/browser workflow
+is claimed by these backend cases.
+
+API job127356284864 passed actual runtime snapshot equality (334 paths/371 operations/
+418 schemas), successful-base compatibility against18e7a75 and strict physical
+dictionary equality. Full evidence retains runtime SHA256
+5ee5d4254a7722f6f7e93eb6ac66ab20dbc43ca913aa7bf6b242e4ef661d6cfe;
+standalone runtime artifact13431785770, ZIP SHA256
+448efd81924c587ee6174c8bf82d38cdd80da3980a600e666636e57c34d55722.
+PostgreSQL16.15 evidence:200 migrations,470 JPA mappings,552 relations,
+zero unresolved owners, reviewed_dictionary_checked=true, catalog SHA256
+c186497edb75836c73346503ab0b7c49e9aabcd3023f3ce112ba7f750e602d96.
+No migration/dictionary, grant/policy, ownership or runtime source is changed here.
+
+Accepted behavior remains bounded/read-only choice discovery: Topology physical
+identity is distinct from Assets maintenance identity. Native graph admission owns
+candidate/catalog source locks before sealing; every disclosed installed-unit
+choice additionally passes its existing current READ_UNIT owner transaction.
+No private candidate/rejection count or manufacturer/serial/maintenance payload is
+published. Selection is advisory, not permission to install/replace; write owners
+still reauthorize. Shared candidate-page offset/limit and potentially empty visible
+pages remain documented; no atomic multi-unit snapshot or complete inventory total
+is invented.
+
+Exact acceptance-only MODIFY scope: APPEND this owning phase evidence and
+`doc/roadmap/ULTIMATE_TASKS.md` compact pointer. Preserve all prior bytes, task IDs,
+registry/phase statuses, source/tests/Flyway/OpenAPI/manifests and CI policy.
+Retain registered message
+`feat(topology): connect pipeline authoring to persisted graph views`.
+Local canonical documentation, inventory and offline snapshot validation apply;
+hosted Java/PostgreSQL results above are retrieved evidence, not a new local run.
+Guarded direct-main publication, exact parent/tree/blobs, applicable Docs CI
+creation/start, then STOP; Code CI is documentation-path-filtered.
+
+Next reserved delivery is **W2 / HWEB-F12** in HidraWEB after separate owner selection,
+current-source preflight and canonical whole-scope adoption. W1's WEB acceptance and
+its own exact CI remain separate. W2/browser, integrated A1, industrial calibration,
+SITE/operational acceptance, numerical/P3, release and deployment are not accepted
+or executed by this record.

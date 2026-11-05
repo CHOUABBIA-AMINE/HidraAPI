@@ -47,7 +47,7 @@ public class JpaAuthoredTopologyViewAdapter implements PipelineAuthoringPersiste
     public JpaAuthoredTopologyViewAdapter(JdbcTemplate jdbc,ProtectedTransactionExecutor executor){this.jdbc=Objects.requireNonNull(jdbc);this.executor=Objects.requireNonNull(executor);}
     private final class Ticket implements Admission,TransactionSynchronization {
         final JpaAuthoredTopologyViewAdapter issuer=JpaAuthoredTopologyViewAdapter.this;final Scope scope;final ConnectionHolder holder;final Thread thread=Thread.currentThread();
-        boolean active=true,prepared,persisted,frozen;Write command;Contribution actor;PipelineView edited;Timestamp previousTime;
+        boolean active=true,prepared,persisted,frozen,discovery;Write command;Contribution actor;PipelineView edited;Timestamp previousTime;
         List<Binding> bindings=List.of();long selected;FinalCheck check;String discoveryDigest;int discoveryOffset,discoveryLimit;
         final Set<String> ids=new TreeSet<>(),segments=new TreeSet<>(),types=new TreeSet<>(),facilities=new TreeSet<>();final Map<String,PipelineView> pins=new TreeMap<>();
         Ticket(Scope scope,ConnectionHolder holder){this.scope=scope;this.holder=holder;}
@@ -60,12 +60,15 @@ public class JpaAuthoredTopologyViewAdapter implements PipelineAuthoringPersiste
                 ||!(TransactionSynchronizationManager.getResource(jdbc.getDataSource()) instanceof ConnectionHolder h)||h.isRollbackOnly())throw new IllegalStateException("Protected Pipeline owner required");return h;
     }
     private Ticket ticket(Admission a){var h=physical();if(!(a instanceof JpaAuthoredTopologyViewAdapter.Ticket t)||t.issuer!=this||!t.active||t.thread!=Thread.currentThread()||t.holder!=h)throw new IllegalStateException("Invalid Pipeline admission");return t;}
-    @Override public Admission acquire(Scope scope){
-        var h=physical();for(String relation:RELATIONS)jdbc.execute("LOCK TABLE "+relation+" IN SHARE ROW EXCLUSIVE MODE NOWAIT");
+    @Override public Admission acquire(Scope scope){return acquire(scope,false);}
+    @Override public Admission acquire(Scope scope,boolean discovery){
+        var h=physical();
+        if(discovery)jdbc.execute("LOCK TABLE public.hidra_topology_equipment_type,public.hidra_topology_installed_unit IN SHARE MODE NOWAIT");
+        for(String relation:RELATIONS)jdbc.execute("LOCK TABLE "+relation+" IN SHARE ROW EXCLUSIVE MODE NOWAIT");
         var principals=executor.publicationDatabaseIdentity();
         for(String relation:RELATIONS)if(!Boolean.TRUE.equals(jdbc.queryForObject("SELECT c.relkind='r' AND c.relpersistence='p' AND NOT c.relrowsecurity AND NOT c.relforcerowsecurity AND NOT c.relispartition AND NOT pg_has_role(current_user,c.relowner,'MEMBER') AND has_table_privilege(current_user,c.oid,'SELECT') AND has_table_privilege(current_user,c.oid,'UPDATE') FROM pg_class c WHERE c.oid=?::regclass",Boolean.class,relation)))throw new IllegalStateException("Pipeline source catalog unavailable");
         for(String relation:RELATIONS.subList(3,6))if(!Boolean.TRUE.equals(jdbc.queryForObject("SELECT NOT has_table_privilege(?::name,c.oid,'SELECT,INSERT,UPDATE,DELETE,TRUNCATE,TRIGGER') AND NOT has_any_column_privilege(?::name,c.oid,'INSERT,UPDATE,REFERENCES') AND has_table_privilege(current_user,c.oid,'INSERT') AND NOT has_table_privilege(current_user,c.oid,'DELETE,TRUNCATE,TRIGGER') AND (SELECT count(*)=2 AND bool_and(tgenabled='O' AND tgfoid='public.hidra_p25_draft_immutable()'::regprocedure) FROM pg_trigger WHERE tgrelid=c.oid AND NOT tgisinternal AND tgname LIKE 'trg_b4_immutable_%') FROM pg_class c WHERE c.oid=?::regclass",Boolean.class,principals.ordinaryUser(),principals.ordinaryUser(),relation)))throw new IllegalStateException("Pipeline publication separation unavailable");
-        var t=new Ticket(Objects.requireNonNull(scope),h);TransactionSynchronizationManager.registerSynchronization(t);return t;
+        var t=new Ticket(Objects.requireNonNull(scope),h);t.discovery=discovery;TransactionSynchronizationManager.registerSynchronization(t);return t;
     }
     private PipelineView pipeline(ResultSet r)throws SQLException{return new PipelineView(r.getString("pipeline_id"),r.getLong("revision"),r.getString("company_party_id"),r.getString("pipeline_system_id"),r.getString("code"),r.getString("pipeline_type_id"),r.getString("name_ar"),r.getString("name_fr"),r.getString("name_en"));}
     private PipelineView latest(Ticket t,String id){
@@ -135,7 +138,7 @@ public class JpaAuthoredTopologyViewAdapter implements PipelineAuthoringPersiste
         var segments=jdbc.query("SELECT s.id,s.code,s.segment_type FROM public.hidra_topology_pipeline_segment s WHERE s.pipeline_id IN (SELECT value FROM jsonb_array_elements_text(?::jsonb)) AND s.status IN ('DRAFT','ACTIVE') ORDER BY s.code,s.id LIMIT 200",(r,n)->new Choice(r.getString(1),r.getString(2),r.getString(2),r.getString(3)),json(t.ids));segments.forEach(v->t.segments.add(v.id()));
         // Candidate enumeration is internal only. The application separately invokes
         // the installed-unit owner READ_UNIT operation before exposing any candidate.
-        jdbc.execute("LOCK TABLE public.hidra_topology_equipment_type,public.hidra_topology_installed_unit IN SHARE MODE NOWAIT");
+        if(!t.discovery)throw new IllegalStateException("Discovery source admission required");
         var equipmentKinds=jdbc.query(EQUIPMENT_CHOICES,(r,n)->new Choice(r.getString(1),r.getString(2),r.getString(3),"EQUIPMENT_KIND"));
         var candidates=jdbc.queryForList(UNIT_CANDIDATES,String.class,t.scope.companyPartyId(),offset,limit);
         t.discoveryOffset=offset;t.discoveryLimit=limit;

@@ -1697,6 +1697,13 @@ public class EngineeringNetworkDraftPostgresIntegrationTest {
         String discoveryKind="kind-"+id();
         jdbc.update("INSERT INTO public.hidra_topology_equipment_type(id,code,name,status,created_at,updated_at) VALUES (?,?,?,'ACTIVE',now(),now())",discoveryKind,discoveryKind,"Synthetic discoverable kind");
         http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(b4Route(draft,"authoring-choices")).header("Authorization","Bearer "+rawToken))
+            .andDo(result -> {
+                if(result.getResponse().getStatus()!=200){
+                    var exception=result.getResolvedException();
+                    throw new AssertionError("B4 native discovery returned HTTP "+result.getResponse().getStatus()
+                        +", resolved="+(exception==null?"none":exception.getClass().getName()),exception);
+                }
+            })
             .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
             .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.equipmentKinds[*].id",org.hamcrest.Matchers.hasItem(discoveryKind)))
             .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.installedUnits").isArray())

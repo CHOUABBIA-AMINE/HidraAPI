@@ -27,6 +27,8 @@ public interface PipelineAuthoringPersistencePort {
     record FinalCheck(String sql,List<Object> arguments) {public FinalCheck {Objects.requireNonNull(sql);arguments=List.copyOf(arguments);}}
     /** Acquire source/association fences while native admission is still ADMITTING. */
     Admission acquire(PipelineAuthoringUseCase.Scope scope);
+    /** Discovery source locks must be taken before native admission is sealed. */
+    Admission acquire(PipelineAuthoringUseCase.Scope scope,boolean discovery);
     void prepare(Admission admission,PipelineAuthoringUseCase.Write command,Contribution actor);
     Set<String> mutationSql();
     void persist(Admission admission);

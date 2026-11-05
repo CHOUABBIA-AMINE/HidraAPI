@@ -217,7 +217,7 @@ public class EngineeringNetworkDraftApplicationService implements EngineeringNet
             return executor.executePublication(()->{
                 var admission=coordinator.acquire(prepared,cmd);retained.set(admission);
                 // Additional source/association locks precede sealing, in the same physical transaction.
-                var pipelineAdmission=pipelines.acquire(scope);actor.set(coordinator.collect(admission));
+                var pipelineAdmission=pipelines.acquire(scope,offset!=null);actor.set(coordinator.collect(admission));
                 var ticket=coordinator.repository(admission);long observed=repository.currentGraphDraft(ticket,version);
                 if(update){
                     stationWitness.requireCurrent(scope.companyPartyId(),write.graph());pipelines.prepare(pipelineAdmission,write,actor.get());

@@ -1882,9 +1882,10 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
         authorize(actor,readInstallation);authorize(actor,read(unit));
         return new FoundationFixture(actor,foundationBearer(actor),system,facility,facilityType,kind,position,unit,installation);
     }
-    private void foundationConfigurationGrants(FoundationFixture f,String operation) {
+    private void foundationConfigurationGrants(FoundationFixture f,String operation,String revisionId) {
         var request=new dz.sh.hidra.modules.identity.application.contract.topology.TopologyStationConfigurationAuthorizationContract.Request(
-            dz.sh.hidra.modules.identity.application.contract.topology.TopologyStationConfigurationAuthorizationContract.Operation.valueOf(operation),COMPANY,f.facility(),null,List.of(f.unit().id()));
+            dz.sh.hidra.modules.identity.application.contract.topology.TopologyStationConfigurationAuthorizationContract.Operation.valueOf(operation),COMPANY,f.facility(),
+                Set.of("SAVE","READ_REVISION").contains(operation)?revisionId:null,List.of(f.unit().id()));
         for(var q:request.requirements())foundationGrant(f.actor(),dz.sh.hidra.modules.identity.application.contract.topology.TopologyStationConfigurationAuthorizationContract.permissionCode(request.operation(),q.resourceType()),q.resourceType(),q.scope().name().equals("COMPANY")?"CUSTOM":"FACILITY",q.scope().name().equals("COMPANY")?"topology-company:"+q.scopeReference():q.scopeReference());
     }
     @Test void foundationNativeHttpSetupInstallationGraphPublicationConfigurationAndReload()throws Exception {
@@ -1903,8 +1904,9 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
         foundationOk(bearer,"POST",route+"/publications",Map.of("companyPartyId",COMPANY,"revisionId",revision,"expectedEpoch",0));
         var published=foundationOk(bearer,"GET",route+"/publications/current?companyPartyId="+COMPANY,null);
         assertThat(published.get("head").get("epoch").longValue()).isEqualTo(1L);assertThat(published.get("canonicalSha256").stringValue()).matches("[0-9a-f]{64}");
-        for(String op:List.of("SAVE","READ_CURRENT","LIST_HISTORY"))foundationConfigurationGrants(f,op);
-        Map<String,Object> configuration=new LinkedHashMap<>();configuration.put("requestId",id());configuration.put("companyPartyId",COMPANY);configuration.put("revisionId",id());configuration.put("expectedEpoch",0);configuration.put("graphHeadEpoch",1);configuration.put("pinnedGraph",envelope);configuration.put("graphPayloadFormat",published.get("payloadFormat").stringValue());configuration.put("graphSha256",published.get("canonicalSha256").stringValue());configuration.put("effectiveFrom",START.toString());configuration.put("sourceReference","synthetic:operator");configuration.put("positions",List.of(Map.of("positionId",f.position(),"disposition","CONNECTED","installedUnitId",f.unit().id(),"installationId",f.installation(),"installationRevision",1,"installationFrom",START.toString(),"installationEvidenceReference","synthetic occupancy")));configuration.put("activeEdgeIds",List.of("in","out"));
+        String configurationRevision=id();
+        for(String op:List.of("SAVE","READ_CURRENT","LIST_HISTORY"))foundationConfigurationGrants(f,op,configurationRevision);
+        Map<String,Object> configuration=new LinkedHashMap<>();configuration.put("requestId",id());configuration.put("companyPartyId",COMPANY);configuration.put("revisionId",configurationRevision);configuration.put("expectedEpoch",0);configuration.put("graphHeadEpoch",1);configuration.put("pinnedGraph",envelope);configuration.put("graphPayloadFormat",published.get("payloadFormat").stringValue());configuration.put("graphSha256",published.get("canonicalSha256").stringValue());configuration.put("effectiveFrom",START.toString());configuration.put("sourceReference","synthetic:operator");configuration.put("positions",List.of(Map.of("positionId",f.position(),"disposition","CONNECTED","installedUnitId",f.unit().id(),"installationId",f.installation(),"installationRevision",1,"installationFrom",START.toString(),"installationEvidenceReference","synthetic occupancy")));configuration.put("activeEdgeIds",List.of("in","out"));
         String config="/api/v1/topology/facilities/"+facility+"/installed-configuration";
         var saved=foundationOk(bearer,"PUT",config,configuration);assertThat(saved.get("snapshot").get("selectedEpoch").longValue()).isEqualTo(1L);
         assertThat(foundationOk(bearer,"PUT",config,configuration).get("replayed").booleanValue()).isTrue();

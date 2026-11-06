@@ -13134,3 +13134,46 @@ Full1131 repair local validation: documentation validator PASS (129 documents,
 (563 oracle classes); all38 inventory Python tests PASS; diff whitespace check
 PASS. Java/PostgreSQL not rerun locally because Maven Central parent resolution
 remains unavailable in this environment; no executable native pass claimed.
+
+### 2026-11-06 HAPI-926 same-task Full1132 configuration revision fixture repair
+
+Baseline `00d5ef32bcf427139784af5d9b372fbdc4627694`, parent
+`26f3163a95fd409376329a2d9bceb3a0396b9673`, tree
+`76a338c9c484e735c67c0870c37ad404c2db561b`.
+[Full1132](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42121376568)
+FAILED; [Docs921](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42121376764)
+SUCCESS. Retrieved all19 jobs: unit/architecture, static, API/dictionary and13/14
+PostgreSQL shards succeeded. Shard1 has141 tests/0 failures/1 error/0 skips;
+installed lifecycle suite53 tests/0 failures/1 error. Prior temporal-census errors
+no longer occur; writer-first/reader-first case passes. Foundation journey now
+passes native setup/installation/station graph author/publication/reload, then
+throws IllegalArgumentException before configuration HTTP save. Full task remains
+unaccepted; successful partial flow does not qualify the whole journey.
+
+Exact stack: TopologyStationConfigurationAuthorizationContract.exact:125 ->
+Request constructor:70 -> foundationConfigurationGrants:1887. Existing contract
+requires an exact revisionId for SAVE/READ_REVISION and forbids revisionId for
+READ_CURRENT/LIST_HISTORY. The synthetic grant helper supplied null for every
+operation. Correct it to accept the configuration revision, pass it only for
+SAVE/READ_REVISION, and allocate the first configuration revision once for both
+its descriptor and actual HTTP save body. Keep read/history null revisions and
+all exact resource/scope/unit requirements, permission creation, replay/history,
+second configuration publication and Pipeline journey assertions intact.
+No runtime contract, permission, null check or validation is relaxed.
+
+MODIFY only ProtectedInstalledUnitLifecyclePostgresIntegrationTest.java,
+`.github/ci-test-inventory.json` (only that test source hash) and this append-only
+owning task evidence. All53 lifecycle cases/563 oracle classes and lane memberships
+retained. No CREATE/DELETE, production code, migration, API/dictionary, CI policy,
+status or immutable archive change. Exact registered message remains
+`feat(topology): connect pipeline authoring to persisted graph views`.
+Fresh exact-SHA Full/Docs and whole native journey qualification remain required;
+HAPI-926 CI_ACCEPTANCE_PENDING and HWEB-F12/W2 blocked. Verify guarded main
+parent/tree/blobs and CI creation/queue/start, then STOP without waiting.
+
+Full1132 repair local validation: documentation validator PASS (129 documents,
+8986 links,928 tasks,25 phases); exact inventory PASS (563 oracle classes); all38
+inventory Python tests PASS; diff whitespace check PASS. An isolated check of the
+actual configuration request constructor was attempted but could not compile:
+`javac` is not installed. No Java or PostgreSQL execution pass claimed locally.
+Hosted CI remains the executable acceptance gate.

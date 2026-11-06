@@ -1964,7 +1964,19 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
         assertThat(admin().queryForList(dz.sh.hidra.modules.topology.infrastructure.query.JpaAuthoredTopologyViewAdapter.UNIT_CANDIDATES,String.class,COMPANY,0,200)).containsExactly(f.unit().id());
         var choicesReload=foundationOk(bearer,"GET","/api/v1/topology/engineering-networks/"+draftId+"/authoring-choices?companyPartyId="+COMPANY+"&pipelineSystemId="+f.system(),null);
         assertThat(choicesReload.get("pipelines").toString()).contains(pipeline);
-        assertThat(choicesReload.get("facilities").toString()).contains(facility);
+        var discoveredFacilities=new java.util.HashSet<String>();
+        var seenCursors=new java.util.HashSet<String>();
+        while(true) {
+            for(var choice:choicesReload.get("facilities"))
+                discoveredFacilities.add(choice.get("id").stringValue());
+            var next=choicesReload.get("nextCursor");
+            if(next==null || next.isNull())break;
+            String cursor=next.stringValue();
+            assertThat(seenCursors.add(cursor)).as("discovery cursor must advance").isTrue();
+            choicesReload=foundationOk(bearer,"GET","/api/v1/topology/engineering-networks/"+draftId
+                +"/authoring-choices?companyPartyId="+COMPANY+"&pipelineSystemId="+f.system()+"&cursor="+cursor,null);
+        }
+        assertThat(discoveredFacilities).contains(facility);
         assertThat(foundationOk(bearer,"GET",config+"/history?companyPartyId="+COMPANY,null).get("history").size()).isEqualTo(2);
         // Existing installation source guard still accepts the distinct restricted principal.
         installedHttp(f.actor(),read(f.unit())).andExpect(status().isOk());

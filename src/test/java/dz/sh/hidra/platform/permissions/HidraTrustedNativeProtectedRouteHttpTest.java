@@ -156,7 +156,7 @@ class HidraTrustedNativeProtectedRouteHttpTest {
    var resolver = org.mockito.Mockito.mock(HidraEffectivePermissionResolver.class);
    authenticated();
    var registry = new HidraTrustedNativeProtectedRouteRegistry();
-   assertEquals(28,registry.candidates().size());
+   assertEquals(29,registry.candidates().size());
    var mvc = mvc(owner, new UntrustedController(), resolver,registry);
    assertThrows(Exception.class, () ->
       mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(TRUSTED)));
@@ -165,8 +165,9 @@ class HidraTrustedNativeProtectedRouteHttpTest {
  @Test void realManufacturerTupleRegistryRejectsWrongVerbAndSiblingPattern() throws Exception {
    var registry=new HidraTrustedNativeProtectedRouteRegistry();
    var routes=registry.candidates();
-   assertEquals(28,routes.size());
+   assertEquals(29,routes.size());
    var expected=java.util.Set.of(
+    "GET /api/v1/workflow/definitions/installed-characteristic-link-target",
     "PUT /api/v1/simulation/manufacturer-characteristics/{sourceId}/revisions/{revisionId}",
     "GET /api/v1/simulation/manufacturer-characteristics/{sourceId}/revisions/{revisionId}",
     "GET /api/v1/simulation/manufacturer-characteristics/{sourceId}/history",
@@ -212,8 +213,11 @@ class HidraTrustedNativeProtectedRouteHttpTest {
       org.mockito.Mockito.mock(dz.sh.hidra.modules.topology.application.port.in.TopologyFoundationUseCase.class));
     var station=new dz.sh.hidra.modules.topology.api.rest.controller.StationGraphController(
       org.mockito.Mockito.mock(dz.sh.hidra.modules.topology.application.port.in.ProtectedStationGraphOperationUseCase.class));
+    var workflow=new dz.sh.hidra.modules.workflow.api.rest.controller.WorkflowDefinitionDiscoveryController(
+      org.mockito.Mockito.mock(dz.sh.hidra.modules.workflow.application.port.in.WorkflowDefinitionDiscoveryUseCase.class));
     var owners=java.util.Map.<Class<?>,Object>of(controller.getClass(),controller,installed.getClass(),installed,
-      pipeline.getClass(),pipeline,baseline.getClass(),baseline,foundation.getClass(),foundation,station.getClass(),station);
+      pipeline.getClass(),pipeline,baseline.getClass(),baseline,foundation.getClass(),foundation,station.getClass(),station,
+      workflow.getClass(),workflow);
     var actual=new RequestMappingHandlerMapping();
    for(var entry:routes) {
     Object owner=owners.get(entry.controller());
@@ -222,6 +226,9 @@ class HidraTrustedNativeProtectedRouteHttpTest {
       .methods(RequestMethod.valueOf(entry.verb())).build(),owner,entry.method());
    }
    new HidraTrustedNativeProtectedRouteStartupValidator(actual,registry).validate();
+   assertTrue(!registry.isTrusted(new org.springframework.web.method.HandlerMethod(workflow,
+      workflow.getClass().getMethod("definitions",String.class,String.class,String.class,String.class,String.class)),
+      "GET","/api/v1/workflow/definitions"));
    for(var entry:routes) {
     var handler=new org.springframework.web.method.HandlerMethod(
       owners.get(entry.controller()),entry.method());

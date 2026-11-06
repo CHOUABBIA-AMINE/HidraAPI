@@ -86,7 +86,9 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
             Class<?> stationAuthor=Class.forName(topology+"request.StationGraphRequests$Author");
             Class<?> stationPublish=Class.forName(topology+"request.StationGraphRequests$Publish");
             String stationBase="/api/v1/topology/facilities/{facilityId}/station-graph";
+            Class<?> workflow=Class.forName("dz.sh.hidra.modules.workflow.api.rest.controller.WorkflowDefinitionDiscoveryController");
             return List.of(
+                new Route(workflow,workflow.getDeclaredMethod("installedCharacteristicLinkTarget",String.class,String.class,String.class,long.class),"GET","/api/v1/workflow/definitions/installed-characteristic-link-target"),
                 new Route(foundation,foundation.getDeclaredMethod("choices",foundationCatalog,String.class,String.class,int.class),"GET",foundationBase+"/choices/{catalog}"),
                 new Route(foundation,foundation.getDeclaredMethod("system",foundationSystem),"POST",foundationBase+"/pipeline-systems"),
                 new Route(foundation,foundation.getDeclaredMethod("facility",foundationFacility),"POST",foundationBase+"/facilities"),

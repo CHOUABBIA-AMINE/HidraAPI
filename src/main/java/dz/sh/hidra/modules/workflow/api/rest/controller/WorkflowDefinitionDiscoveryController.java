@@ -40,6 +40,7 @@ public final class WorkflowDefinitionDiscoveryController {
         this.discovery = Objects.requireNonNull(discovery);
     }
     @GetMapping("/installed-characteristic-link-target")
+    @dz.sh.hidra.platform.permissions.NativeProtectedOperation
     @Operation(operationId = "readInstalledCharacteristicLinkWorkflowTarget",
             summary = "Read owner-authorized Workflow target addressing for one exact installed link revision")
     public ResponseEntity<WorkflowDefinitionDiscoveryResponses.TargetHandoff> installedCharacteristicLinkTarget(

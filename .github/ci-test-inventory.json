@@ -10439,6 +10439,7 @@
         "consumerLostPhysicalCommitAcknowledgementIsIndeterminateAndFreshReplayIsStable",
         "crossOwnerManufacturerWriterCannotDiscloseOrMutateConsumerWhileLocked",
         "foreignCompanyAndUnauthenticatedConsumerCannotDiscoverExistingSource",
+        "handoffIsStableNativeRevisionMetadataAndFailsClosedForForeignMissingAndInactiveCatalog",
         "malformedManufacturerAxisAndLinkDigestCannotCreateConsumerRevision",
         "nineIndependentUnitSourceBindingsRemainSeparateAcrossThreeStations",
         "previousV1StationGraphDecoderKeepsExactPayloadAndRejectsCorruption",
@@ -10454,7 +10455,7 @@
       "lane": "postgres-integration",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/qualification/InstalledEquipmentOperatorQualificationTest.java",
-      "source_sha256": "7745d548b0c607de3035168c63af080d0d6ad2fe6c2b2be8ea2911bc5e65b08c",
+      "source_sha256": "e450e3e0334013c2be60262dd2e895c087acf42dea515840636695e4be233b9a",
       "supports": []
     },
     {

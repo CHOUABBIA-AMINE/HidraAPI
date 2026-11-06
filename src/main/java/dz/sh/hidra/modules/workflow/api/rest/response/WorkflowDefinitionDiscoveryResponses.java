@@ -7,7 +7,7 @@
  *
  * @Name        : WorkflowDefinitionDiscoveryResponses
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-04
+ * @UpdatedOn   : 2026-11-06
  *
  * @Type        : Class
  * @Layer       : API
@@ -24,6 +24,10 @@ import java.util.List;
 
 public final class WorkflowDefinitionDiscoveryResponses {
     private WorkflowDefinitionDiscoveryResponses() {}
+
+    @Schema(description = "Owner-authorized exact revision addressing for Workflow discovery; never an approval or authority grant.")
+    public record TargetHandoff(String targetModule, String targetTypeId, String workflowPurposeId,
+            String targetId, String targetLocator, long revisionId, String digestFormat) {}
 
     @Schema(description = "One currently supported, owner-authorized Workflow process binding.")
     public record Definition(String id, String code, String nameFr, int version,

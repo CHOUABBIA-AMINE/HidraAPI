@@ -7,7 +7,7 @@
  *
  * @Name        : InstalledEquipmentOperatorQualificationTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-01
+ * @UpdatedOn   : 2026-11-06
  *
  * @Type        : Class
  * @Layer       : Test
@@ -269,6 +269,8 @@ class InstalledEquipmentOperatorQualificationTest {
             +" VALUES (?,?,?,'ACTIVE',?,?)",id(),user,passwords.encode(PASSWORD),now,now);
         token=authentication.authenticate(new DirectAuthenticationCommand(
             ProviderType.LOCAL,user,PASSWORD,"synthetic-ip","synthetic-agent","synthetic-correlation")).accessToken();
+        admin.update("UPDATE public.hidra_identity_user SET display_name='Synthetic Workflow Starter',"
+            +"activated_at=coalesce(activated_at,now()) WHERE id=?",user);
         SecurityContextHolder.clearContext();
     }
     @AfterEach void cleanup(){SecurityContextHolder.clearContext();}
@@ -424,7 +426,7 @@ class InstalledEquipmentOperatorQualificationTest {
         authentication.setAuthenticated(true);
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
-    private ActualWorkflow terminalWorkflow(String reviewer,String digest,boolean approved){
+    private ActualWorkflow terminalWorkflow(String reviewer,String digest,boolean approved) throws Exception {
         String definition=id(),start=id(),end=id(),transition=id();
         String reason=approved?null:id();
         if(!approved) {
@@ -465,9 +467,20 @@ class InstalledEquipmentOperatorQualificationTest {
             "installed-workflow-start")).accessToken();
         String reviewerBearer=reviewerToken(reviewer);
         try {
+            String handoff=requireStatus(handoff(starter,company,link,1),200)
+                .andExpect(jsonPath("$.targetModule").value("topology"))
+                .andExpect(jsonPath("$.targetTypeId").value(type))
+                .andExpect(jsonPath("$.workflowPurposeId").value(purpose))
+                .andExpect(jsonPath("$.targetId").value(digest))
+                .andExpect(jsonPath("$.revisionId").value(1))
+                .andExpect(jsonPath("$.digestFormat").value(InstalledCharacteristicLinkApprovalTargetDigester.VERSION))
+                .andReturn().getResponse().getContentAsString();
+            // Start consumes actual HTTP handoff values; no browser-side digest/locator/catalog algorithm.
+            String handedType=com.jayway.jsonpath.JsonPath.read(handoff,"$.targetTypeId");
+            String handedPurpose=com.jayway.jsonpath.JsonPath.read(handoff,"$.workflowPurposeId");
+            String handedDigest=com.jayway.jsonpath.JsonPath.read(handoff,"$.targetId");
+            String locator=com.jayway.jsonpath.JsonPath.read(handoff,"$.targetLocator");
             useWorkflowActor(starter,user);
-            String locator=dz.sh.hidra.modules.topology.infrastructure.integration
-                .TopologyInstalledCharacteristicLinkWorkflowTargetLookup.locator(company,unit,link,1);
             // Diagnose the protected owner boundary without weakening it or logging identities.
             // The same signed starter is used for the direct owner read and Workflow target lookup.
             var nativeRevision=nativeLinkOwner.execute(
@@ -483,7 +496,7 @@ class InstalledEquipmentOperatorQualificationTest {
                 "HAPI-603 protected target resolver unavailable outside Workflow transaction");
             var instance=workflowApplication.startWorkflowInstance(
                 new dz.sh.hidra.modules.workflow.application.command.StartWorkflowInstanceCommand(
-                    definition,1,purpose,"topology",type,digest,locator,null,start,user,
+                    definition,1,handedPurpose,"topology",handedType,handedDigest,locator,null,start,user,
                     null,"Untrusted starter snapshot",null,"synthetic-link-workflow"));
             var task=workflowApplication.createWorkflowTask(
                 new dz.sh.hidra.modules.workflow.application.command.CreateWorkflowTaskCommand(
@@ -522,6 +535,43 @@ class InstalledEquipmentOperatorQualificationTest {
             """.formatted(company,w.definition(),w.type(),w.purpose(),
                 w.instance(),w.task(),w.action());
     }
+    private ResultActions handoff(String bearer,String requestedCompany,String requestedLink,long revision)
+            throws Exception {
+        var request=get("/api/v1/workflow/definitions/installed-characteristic-link-target")
+            .param("companyPartyId",requestedCompany).param("installedUnitId",unit)
+            .param("linkId",requestedLink).param("revisionId",Long.toString(revision));
+        if(bearer!=null)request.header("Authorization","Bearer "+bearer);
+        return http.perform(request);
+    }
+
+    @Test void handoffIsStableNativeRevisionMetadataAndFailsClosedForForeignMissingAndInactiveCatalog() throws Exception {
+        savedDraft();
+        String expectedLocator=dz.sh.hidra.modules.topology.infrastructure.integration
+            .TopologyInstalledCharacteristicLinkWorkflowTargetLookup.locator(company,unit,link,1);
+        String first=requireStatus(handoff(token,company,link,1),200)
+            .andExpect(jsonPath("$.targetId").value(canonicalDraftDigest()))
+            .andExpect(jsonPath("$.targetLocator").value(expectedLocator))
+            .andExpect(jsonPath("$.revisionId").value(1))
+            .andReturn().getResponse().getContentAsString();
+        assertEquals(first,requireStatus(handoff(token,company,link,1),200)
+            .andReturn().getResponse().getContentAsString());
+        requireStatus(handoff(null,company,link,1),401);
+        requireStatus(handoff(token,id(),link,1),404).andExpect(content().string(""));
+        requireStatus(handoff(token,company,id(),1),404).andExpect(content().string(""));
+        requireStatus(handoff(token,company,link,999),404).andExpect(content().string(""));
+        requireStatus(handoff(token,company,link,0),404).andExpect(content().string(""));
+        String purpose=admin.queryForObject("SELECT id FROM public.hidra_workflow_type_catalog "
+            +"WHERE catalog_name='WORKFLOW_PURPOSE' AND code='INSTALLED_CHARACTERISTIC_LINK_APPROVAL'",String.class);
+        admin.update("UPDATE public.hidra_workflow_type_catalog SET active=false WHERE id=?",purpose);
+        try {requireStatus(handoff(token,company,link,1),404).andExpect(content().string(""));}
+        finally {admin.update("UPDATE public.hidra_workflow_type_catalog SET active=true WHERE id=?",purpose);}
+        admin.update("UPDATE public.hidra_identity_user SET status='INACTIVE' WHERE id=?",user);
+        // Revoking the actor also fences a previously returned handoff.
+        int revoked=handoff(token,company,link,1).andReturn().getResponse().getStatus();
+        assertTrue(revoked==401 || revoked==403 || revoked==404);
+        assertEquals(1L,countFor("revision"));assertEquals(0L,countFor("approval"));
+    }
+
     private void savedDraft() throws Exception {
         grants();saveManufacturer();
         requireStatus(http.perform(put(linkPath()).header("Authorization","Bearer "+token)
@@ -828,6 +878,7 @@ class InstalledEquipmentOperatorQualificationTest {
             requireStatus(http.perform(get(path).header("Authorization","Bearer "+token)
                 .param("companyPartyId",company)),403);
         }
+        requireStatus(handoff(token,company,link,1),404).andExpect(content().string(""));
         assertEquals(1L,countFor("revision"));
     }
 
@@ -842,6 +893,12 @@ class InstalledEquipmentOperatorQualificationTest {
             workflowTransaction.executeWithoutResult(status -> {
                 assertTrue(org.springframework.transaction.support.TransactionSynchronizationManager.isActualTransactionActive());
                 assertTrue(org.springframework.transaction.support.TransactionSynchronizationManager.isSynchronizationActive());
+                var described=targetLookup.describeInstalledCharacteristicLink(
+                    new dz.sh.hidra.modules.workflow.application.contract.target.WorkflowOwnedTargetLookup
+                        .InstalledCharacteristicLinkAddress(company,unit,link,1)).orElseThrow();
+                assertEquals(digest,described.target().id());
+                assertEquals(locator,described.target().code());
+                assertEquals(1,described.revisionId());
                 assertTrue(targetLookup.eligibleTarget(
                     dz.sh.hidra.modules.topology.infrastructure.integration
                         .TopologyInstalledCharacteristicLinkWorkflowTargetLookup.TYPE,digest,locator).isPresent());

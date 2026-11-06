@@ -7,7 +7,7 @@
  *
  * @Name        : JpaWorkflowDefinitionDiscoveryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-04
+ * @UpdatedOn   : 2026-11-06
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -31,6 +31,7 @@ import java.time.Instant;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,6 +56,40 @@ public class JpaWorkflowDefinitionDiscoveryAdapter implements WorkflowDefinition
         this.actors = Objects.requireNonNull(actors);
         this.reviewerPolicy = Objects.requireNonNull(reviewerPolicy);
         this.owners = List.copyOf(owners);
+    }
+
+    @Override
+    public Optional<TargetHandoff> installedCharacteristicLinkTarget(String companyPartyId,
+            String installedUnitId, String linkId, long revisionId) {
+        var principal=security.currentPrincipal().filter(p -> p.authenticated()).orElse(null);
+        if(principal==null || actors.eligibleActor(principal.actorId().value(),Instant.now())
+                .filter(a -> principal.actorId().value().equals(a.id())).isEmpty())
+            return Optional.empty();
+        var matching=owners.stream().filter(o -> "topology".equals(o.module())
+                && o.targetTypeCodes().contains(TYPE)).toList();
+        if(matching.size()!=1) return Optional.empty();
+        // Owner authorization precedes even catalog/target disclosure. This is an address, not proof.
+        WorkflowOwnedTargetLookup.RevisionTarget revision;
+        try {
+            revision=matching.getFirst().describeInstalledCharacteristicLink(
+                    new WorkflowOwnedTargetLookup.InstalledCharacteristicLinkAddress(
+                            companyPartyId,installedUnitId,linkId,revisionId)).orElse(null);
+        } catch(RuntimeException unavailable) {
+            return Optional.empty();
+        }
+        if(revision==null) return Optional.empty();
+        var types=activeCatalog("WORKFLOW_TARGET_TYPE",TYPE);
+        var purposes=activeCatalog("WORKFLOW_PURPOSE",PURPOSE);
+        if(types.size()!=1 || purposes.size()!=1) return Optional.empty();
+        return Optional.of(new TargetHandoff("topology",types.getFirst().id(),purposes.getFirst().id(),
+                revision.target().id(),revision.target().code(),revision.revisionId(),revision.digestFormat()));
+    }
+
+    private List<WorkflowCatalogEntryJpaEntity> activeCatalog(String catalog,String code) {
+        return entities.createQuery("select c from WorkflowCatalogEntryJpaEntity c "
+                    + "where c.catalogName = :catalog and c.code = :code and c.active = true",
+                    WorkflowCatalogEntryJpaEntity.class)
+                .setParameter("catalog",catalog).setParameter("code",code).getResultList();
     }
 
     @Override

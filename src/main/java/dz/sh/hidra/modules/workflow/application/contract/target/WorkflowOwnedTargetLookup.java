@@ -7,7 +7,7 @@
  *
  * @Name        : WorkflowOwnedTargetLookup
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-06
+ * @UpdatedOn   : 2026-11-06
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -23,6 +23,15 @@ import java.util.Optional;
 import java.util.Set;
 public interface WorkflowOwnedTargetLookup {
     record Target(String id, String code, String label) {}
+    /** Exact owner addressing only; neither identifiers nor the result grant authority. */
+    record InstalledCharacteristicLinkAddress(String companyPartyId, String installedUnitId,
+            String linkId, long revisionId) {}
+    record RevisionTarget(Target target, long revisionId, String digestFormat) {}
+
+    /** Default denial; only the native installed-characteristic owner implements this handoff. */
+    default Optional<RevisionTarget> describeInstalledCharacteristicLink(InstalledCharacteristicLinkAddress address) {
+        return Optional.empty();
+    }
     String module();
     Set<String> targetTypeCodes();
     Optional<Target> eligibleTarget(String typeCode, String targetId);

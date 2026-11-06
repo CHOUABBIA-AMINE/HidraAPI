@@ -24328,3 +24328,8 @@ local evidence; Maven parent resolution failed on DNS. Genuine new runtime OpenA
 and physical dictionary regeneration, full exact-SHA CI and independent acceptance
 remain pending. Do not fabricate artifacts or advance W2/HWEB-F12. Observe new-SHA
 Full/Docs creation/queue/start after expected-head guarded publication, then STOP.
+
+
+### 2026-11-06 HAPI-928/B6 — owner-approved installed-link handoff integration repair
+
+From exact API main `db712ab35ff3051c489e74327090d2fc7ef47b33`, owner approval of the HidraWEB W4 blocker admits the same-task contract recorded in `doc/roadmap/TASKS_HPS-015.md`. Seven Java paths add an owner-authorized exact-revision target handoff, server-derived canonical digest/locator and active catalog IDs; native HTTP tests consume the handoff for genuine independent approval/rejection, retain original transaction and source guards, and cover foreign/missing/revoked metadata denial. Exact test inventory source/case update only; no schema, migration, permission grant, frontend or solver change. Static docs/inventory/offline snapshot, diff and Java21 syntax parsing pass. Maven dependency resolution fails on Central DNS before compilation. Hosted native qualification and genuine runtime OpenAPI artifact adoption remain pending; strict snapshot equality is preserved and expected to require that review. Prior B6 software acceptance is historical; this addition is not accepted by it. Publish only the registered ten MODIFY paths with expected-main guard and the original HAPI-928 message, observe exact-SHA CI creation/queue/start, then STOP. No W4 or later stage executes.

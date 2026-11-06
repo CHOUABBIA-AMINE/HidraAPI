@@ -97,6 +97,31 @@ public class TopologyInstalledCharacteristicLinkWorkflowTargetLookup implements 
         return withoutWorkflowTransaction(() -> eligibleTargetDetached(digest,untrustedLocator));
     }
 
+    @Override
+    public Optional<RevisionTarget> describeInstalledCharacteristicLink(InstalledCharacteristicLinkAddress address) {
+        if(address==null) return Optional.empty();
+        return withoutWorkflowTransaction(() -> {
+            try {
+                // Validate exact coordinates before invoking the same original protected owner read.
+                String canonical=locator(address.companyPartyId(),address.installedUnitId(),
+                        address.linkId(),address.revisionId());
+                var c=parse(canonical);
+                var link=owner.execute(new Command(Operation.READ_REVISION,c.company(),c.unit(),c.link(),
+                        null,null,null,c.revision(),0,null)).link();
+                if(link==null || link.linkRevision()!=c.revision()
+                        || !link.companyPartyId().equals(c.company())
+                        || !link.installedUnitId().equals(c.unit()) || !link.linkId().equals(c.link()))
+                    return Optional.empty();
+                return Optional.of(new RevisionTarget(new Target(
+                        InstalledCharacteristicLinkApprovalTargetDigester.digest(link),canonical,
+                        "Installed characteristic link revision"),link.linkRevision(),
+                        InstalledCharacteristicLinkApprovalTargetDigester.VERSION));
+            } catch(RuntimeException unavailable) {
+                return Optional.empty();
+            }
+        });
+    }
+
     private Optional<Target> eligibleTargetDetached(String digest,String untrustedLocator) {
         try {
             var c=parse(untrustedLocator);

@@ -7,7 +7,7 @@
  *
  * @Name        : WorkflowDefinitionDiscoveryController
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-04
+ * @UpdatedOn   : 2026-11-06
  *
  * @Type        : Class
  * @Layer       : API
@@ -26,6 +26,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import java.util.Objects;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,6 +39,19 @@ public final class WorkflowDefinitionDiscoveryController {
     public WorkflowDefinitionDiscoveryController(WorkflowDefinitionDiscoveryUseCase discovery) {
         this.discovery = Objects.requireNonNull(discovery);
     }
+    @GetMapping("/installed-characteristic-link-target")
+    @Operation(operationId = "readInstalledCharacteristicLinkWorkflowTarget",
+            summary = "Read owner-authorized Workflow target addressing for one exact installed link revision")
+    public ResponseEntity<WorkflowDefinitionDiscoveryResponses.TargetHandoff> installedCharacteristicLinkTarget(
+            @RequestParam String companyPartyId, @RequestParam String installedUnitId,
+            @RequestParam String linkId, @RequestParam long revisionId) {
+        return discovery.installedCharacteristicLinkTarget(companyPartyId,installedUnitId,linkId,revisionId)
+                .map(t -> ResponseEntity.ok(new WorkflowDefinitionDiscoveryResponses.TargetHandoff(
+                        t.targetModule(),t.targetTypeId(),t.workflowPurposeId(),t.targetId(),
+                        t.targetLocator(),t.revisionId(),t.digestFormat())))
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
     @GetMapping
     @Operation(summary = "Discover available active Workflow definitions for one verified target")
     public List<WorkflowDefinitionDiscoveryResponses.Definition> definitions(

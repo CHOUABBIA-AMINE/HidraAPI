@@ -7,7 +7,7 @@
  *
  * @Name        : WorkflowDefinitionDiscoveryUseCase
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-04
+ * @UpdatedOn   : 2026-11-06
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -20,10 +20,17 @@
 package dz.sh.hidra.modules.workflow.application.port.in;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface WorkflowDefinitionDiscoveryUseCase {
     List<AvailableDefinition> discover(String targetModule, String targetTypeId,
             String workflowPurposeId, String targetId, String targetLocator);
+
+    Optional<TargetHandoff> installedCharacteristicLinkTarget(String companyPartyId,
+            String installedUnitId, String linkId, long revisionId);
+
+    record TargetHandoff(String targetModule, String targetTypeId, String workflowPurposeId,
+            String targetId, String targetLocator, long revisionId, String digestFormat) {}
 
     record AssignmentChoice(String actorId, String username, String displayName) {}
     record AvailableDecision(String transitionId, String decision, String fromStepId,

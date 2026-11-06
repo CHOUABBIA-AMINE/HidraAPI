@@ -237,7 +237,7 @@ class ProtectedTransactionExecutorTest {
         assertThat(workBudget.apply(
             "dz.sh.hidra.modules.topology.application.service.EngineeringNetworkDraftApplicationService"))
             .isEqualTo(dz.sh.hidra.platform.configuration.ProtectedExecutionBudgetProperties
-                .STANDARD_WORK_BUDGET_MILLIS*1_000_000L);
+                .MAX_WORK_BUDGET_MILLIS*1_000_000L);
     }
 
     @Test
@@ -1004,7 +1004,7 @@ class ProtectedTransactionExecutorTest {
         for(String type:List.of("ProductEngineeringDraftApplicationService","SuppliedFluidPropertyRevisionApplicationService","ProductRevisionPublicationApplicationService")) {
             long selected=org.springframework.test.util.ReflectionTestUtils.invokeMethod(executor,
                     "publicationWorkBudgetNanos","dz.sh.hidra.modules.custody.application.service."+type);
-            assertThat(selected).isEqualTo(1_500_000_000L);
+            assertThat(selected).isEqualTo(1_10_000_000_000L);
         }
         long appointment=org.springframework.test.util.ReflectionTestUtils.invokeMethod(executor,
                 "publicationWorkBudgetNanos","dz.sh.hidra.modules.organization.application.service.EmployeeAppointmentLifecycleApplicationService");
@@ -1012,7 +1012,10 @@ class ProtectedTransactionExecutorTest {
         for(String caller:List.of("dz.sh.hidra.modules.topology.application.service.EngineeringNetworkDraftApplicationService",
                 "dz.sh.hidra.modules.topology.application.service.EngineeringRevisionPublicationApplicationService","unreviewed")) {
             long selected=org.springframework.test.util.ReflectionTestUtils.invokeMethod(executor,"publicationWorkBudgetNanos",caller);
-            assertThat(selected).isEqualTo(500_000_000L);
+            assertThat(selected).isEqualTo(10_000_000_000L);
+            var finite=new ProtectedOperationDataSource.Scope(selected);
+            finite.started=System.nanoTime()-selected-1;
+            assertThatThrownBy(finite::deadline).isInstanceOf(IllegalStateException.class);
         }
         // The private policy selector does not bypass the public route's unchanged caller whitelist.
         assertThatThrownBy(()->executor.executePublication(()->"forbidden",()->{},this::guard))
@@ -1043,7 +1046,7 @@ class ProtectedTransactionExecutorTest {
         for(String caller:List.of("dz.sh.hidra.modules.topology.application.service.InstalledUnitLifecycleApplicationServiceSibling",
             "dz.sh.hidra.modules.topology.application.service.EngineeringRevisionPublicationApplicationService","unreviewed")) {
             long standard=org.springframework.test.util.ReflectionTestUtils.invokeMethod(executor,"publicationWorkBudgetNanos",caller);
-            assertThat(standard).isEqualTo(500_000_000L);
+            assertThat(standard).isEqualTo(10_000_000_000L);
         }
         assertThatThrownBy(()->executor.executePublication(()->"forbidden",()->{},this::guard))
             .isInstanceOf(IllegalStateException.class).hasMessage("Unreviewed credential route caller");

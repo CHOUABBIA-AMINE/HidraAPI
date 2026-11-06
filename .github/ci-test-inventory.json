@@ -9869,7 +9869,7 @@
       "lane": "postgres-integration",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedInstalledUnitLifecyclePostgresIntegrationTest.java",
-      "source_sha256": "aae28b40b01bbdf0657b283b3ba8d6179372eb7eb068d7056162d6cb145d2637",
+      "source_sha256": "a215f4d4523104949fd349e143ac0ecf2b5164b12cc389123714b594e9baa071",
       "supports": []
     },
     {
@@ -11604,7 +11604,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutorTest.java",
-      "source_sha256": "7a00791019adda4d35b09c8ebad4ac624e06adab0cb55dc1fd0315d2a8059f30",
+      "source_sha256": "02440ff704e2f534efc69d2c29b7d137e9a805df24143cd84cbbce8039e4fe11",
       "supports": []
     },
     {

@@ -13250,3 +13250,89 @@ whitespace check PASS. Production source reviewed against both unchanged credent
 catalogs and literal caller guards. Java compiler and full local service dependencies
 are unavailable, so new Java/JVM and PostgreSQL cases remain unexecuted locally;
 no native pass or verified lock-holder identity is claimed. Exact-new-SHA CI required.
+
+### 2026-11-06 HAPI-926 owner-directed whole-journey review and consolidated repair
+
+Owner rejects serial apparent-error repairs and requests assessment of all related
+issues before the next publication; explicitly authorizes relaxing development
+performance/time limits. This is one consolidated same-task review, not a new
+roadmap stage or authorization for unrelated modules/frontend/P3/deployment.
+Baseline `f5a278b79748e93b5a1f98995e5727fa83f823f6`, parent
+`bdb60a56c9d4237d4ad5abc08257314ddbcc8670`, tree
+`4c9c230eda31ca96aba09a128abae1b46a6ae892`.
+[Full1134](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42199890568)
+FAILED; [Docs923](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42199890553)
+SUCCESS. All19 job outcomes inspected: unit/architecture, static, API/dictionary,
+and13/14 PostgreSQL shards succeeded; prior shard11 NOWAIT failure no longer occurs.
+Only shard1 fails:141 tests/1 failure, lifecycle53 tests/1 failure. No passing whole
+application/browser outcome is claimed.
+
+#### Findings across the full selected backend journey
+
+| Boundary | Exact evidence / disposition |
+|---|---|
+| Authentication and current scoped authority | Native producers, revocation/expiry/denial cases pass in current hosted lanes; prior census failures cleared by per-test credential reuse. Production1024 contributor cap retained; this review does not qualify arbitrary tenant scale. |
+| Company/system/facility setup, activation CAS, positions | Whole positive test reaches all native operations successfully in Full1134; replay/foreign/inactive/final-guard rollback/concurrent activation cases retained. |
+| Physical installation and history | Previous census failures cleared; installed native cases complete except the later integrated Pipeline step. Restricted writer preserved. |
+| Station graph author, publication and current reload | Executed successfully before the failing Pipeline step, retaining published epoch/digest and stale-epoch rejection. |
+| Installed configuration write/replay/read/two revisions | Dedicated read-only-source principal now works: Full1134 test proceeds beyond these steps. No source DML privilege relaxation. Configuration history additionally included in this consolidated qualification. |
+| Engineering draft create | Full1134 succeeds; ordinary account must retain context/draft metadata SELECT while their DML remains denied. |
+| Pipeline graph write | Definite current blocker at JdbcEngineeringNetworkDraftRepositoryAdapter.acquire:225: ordinary principal still has SELECT on engineering_graph_snapshot from fixture-wide initial GRANT SELECT. This violates the existing graph snapshot separation guard. |
+| Remaining Pipeline write/reload/revise/as-of/discovery | Reviewed controller DTO mapping, domain version/reference validation, adapter catalog/privileges, graph station witnesses, provisional DML, frozen evidence and one final SQL guard together. No additional source defect identified in this review; runtime qualification remains pending. Existing historical version2 assertion correctly selects first graph version after draft version1. Add discovery and configuration-history reload to the same integrated test. |
+| Temporal/concurrency/commit policy | Retain same transaction/PID/XID, current company/resource authority, relation locks, CAS, immutable revisions, native expiry and commit acknowledgement. No retry/accepted503 introduced. |
+| Hosted schema/API/architecture | Full1134 unit and API/catalog lanes succeed; no new schema/REST shape needed for this candidate. Green lanes do not prove the final integrated journey or UI readiness. |
+
+**Complete privilege correction, not a one-relation patch:** the ordinary fixture
+principal must have no access to engineering graph AND survey snapshots and all
+three Pipeline-owned revision/association relations. Revoke all five protected
+relations together while retaining engineering context/draft/version metadata read
+rights required by the existing guard. Before application requests, explicitly
+assert ordinary access denial and setup principal SELECT,INSERT,UPDATE rights for
+each protected relation. The native guard remains unchanged. Setup/installed/config
+roles, owner-generation immutability, source-kind eligibility and configuration
+source-read-only requirements remain consistent. No temporary privilege switching.
+
+**Owner-authorized timing disposition:** remaining admitted topology/draft/graph/
+setup publication work gets the existing finite maximum10000ms instead of500ms.
+This changes only the private publication work-policy fallback after the public
+exact compiled-caller whitelist. Existing appointment/custody/installed/config/
+manufacturer family settings are unchanged. The ordinary technical executor's
+500ms contract remains; this is not a blanket removal of transaction deadlines.
+JWT/session/source authority expiry and the original final temporal guard are
+independent and never extended. Update the three existing policy-test expectations
+and explicitly assert expiration still poisons a scope after its10s cap, using
+synthetic elapsed time rather than a ten-second sleep. This is development
+headroom, not a qualified industrial SLA. The actual Full1134 failure is privilege
+separation, not timing; no timeout cause is fabricated.
+
+**Coverage beyond the former stopping point:** the integrated case still performs
+actual Pipeline create, reload, revision2 update, current reload and version2
+historical projection. It now additionally reloads authoring choices and requires
+the actual created Pipeline/facility, reloads both configuration history entries,
+and finally rechecks installed-unit access with its distinct principal. All old
+negative assertions and53 lifecycle/563 total class identities remain. Review also
+confirms Pipeline persist uses only pinned DML, observation reads occur outside
+PROVISIONAL, current station specialized kinds match the final SQL guard, and
+HTTP mappers/version/geometry diagnostics match the test expectations.
+
+Exact registered message remains
+`feat(topology): connect pipeline authoring to persisted graph views`.
+MODIFY five existing paths only: ProtectedTransactionExecutor.java,
+ProtectedTransactionExecutorTest.java,
+ProtectedInstalledUnitLifecyclePostgresIntegrationTest.java,
+`.github/ci-test-inventory.json` (two actual source hashes) and this append-only
+task evidence. No CREATE/DELETE, migrations, API/dictionary, workflow weakening,
+status promotion, unrelated source or immutable archive changes. No extra stages.
+Fresh exact-SHA Full/Docs and independent whole-journey software acceptance still
+required; HWEB-F12/W2 not executed. Owner-directed assessment is completed before
+publication; after guarded parent/tree/blob verification observe new-SHA CI
+creation/queue/start and STOP under the existing publication rule.
+
+Whole-journey review local verification: all170 tests in the seven existing Python
+suites PASS (19 docs,10 snapshot,13 API comparison,18 dictionary,18 base resolver,
+38 inventory,54 full-evidence); documentation validator PASS (129 documents,8986
+links,928 tasks,25 phases); exact inventory PASS (563 classes); retained OpenAPI
+offline snapshot PASS (344 paths,383 operations,430 schemas); diff whitespace PASS.
+Java compiler/Maven dependencies/PostgreSQL runtime remain unavailable locally;
+source analysis is not substituted for a new executed native journey. Full1134
+proves prior progress; only new-source hosted CI can prove this candidate completes.

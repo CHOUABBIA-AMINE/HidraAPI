@@ -170,8 +170,11 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
         admin.execute("REVOKE SELECT ON public.hidra_topology_station_configuration_revision FROM "+APP);
         for(String suffix:List.of("engineering_context","engineering_draft","engineering_draft_version","engineering_graph_snapshot","engineering_survey_snapshot","pipeline","pipeline_type","pipeline_segment","pipeline_authoring_revision","pipeline_graph_snapshot","pipeline_graph_binding"))
             admin.execute("GRANT SELECT,INSERT,UPDATE ON public.hidra_topology_"+suffix+" TO "+setup);
-        for(String suffix:List.of("pipeline_authoring_revision","pipeline_graph_snapshot","pipeline_graph_binding"))
+        for(String suffix:List.of("engineering_graph_snapshot","engineering_survey_snapshot","pipeline_authoring_revision","pipeline_graph_snapshot","pipeline_graph_binding"))
             admin.execute("REVOKE ALL ON public.hidra_topology_"+suffix+" FROM "+APP);
+        // Check the complete ordinary/publication separation before attempting the journey.
+        for(String suffix:List.of("engineering_graph_snapshot","engineering_survey_snapshot","pipeline_authoring_revision","pipeline_graph_snapshot","pipeline_graph_binding"))
+            assertThat(admin.queryForObject("SELECT NOT has_table_privilege(?::name,?::text,'SELECT,INSERT,UPDATE,DELETE,TRUNCATE,TRIGGER') AND has_table_privilege(?::name,?::text,'SELECT') AND has_table_privilege(?::name,?::text,'INSERT') AND has_table_privilege(?::name,?::text,'UPDATE')",Boolean.class,APP,"public.hidra_topology_"+suffix,setup,"public.hidra_topology_"+suffix,setup,"public.hidra_topology_"+suffix,setup,"public.hidra_topology_"+suffix)).isTrue();
         // Configuration must not inherit installed-unit DML rights over its observed sources.
         String configuration="foundation_configuration_publisher";
         admin.execute("CREATE ROLE "+configuration+" LOGIN PASSWORD '"+PASSWORD+"'");
@@ -1949,6 +1952,10 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
         foundationOk(bearer,"PUT",authoredRoute,authored);
         assertThat(foundationOk(bearer,"GET",authoredRoute,null).get("bindings").get(0).get("pipeline").get("revision").longValue()).isEqualTo(2L);
         assertThat(foundationOk(bearer,"GET",authoredRoute+"&version=2",null).get("bindings").get(0).get("pipeline").get("nameEn").stringValue()).isEqualTo("Synthetic mainline");
+        var choicesReload=foundationOk(bearer,"GET","/api/v1/topology/engineering-networks/"+draftId+"/authoring-choices?companyPartyId="+COMPANY+"&pipelineSystemId="+f.system(),null);
+        assertThat(choicesReload.get("pipelines").toString()).contains(pipeline);
+        assertThat(choicesReload.get("facilities").toString()).contains(facility);
+        assertThat(foundationOk(bearer,"GET",config+"/history?companyPartyId="+COMPANY,null).get("history").size()).isEqualTo(2);
         // Existing installation source guard still accepts the distinct restricted principal.
         installedHttp(f.actor(),read(f.unit())).andExpect(status().isOk());
     }

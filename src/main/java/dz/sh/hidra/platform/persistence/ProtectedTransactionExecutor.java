@@ -162,7 +162,9 @@ public final class ProtectedTransactionExecutor {
         if(caller.equals(BASELINE_SERVICE) || caller.equals(INSTALLED_SERVICE) || caller.equals(STATION_CONFIG_SERVICE) || caller.equals(LINK_SERVICE))return budgets.installedUnitWorkBudgetNanos();
         if(caller.equals(PRODUCT_SERVICE) || caller.equals(FLUID_SERVICE) || caller.equals(PRODUCT_PUBLICATION_SERVICE))
             return budgets.custodyWorkBudgetNanos();
-        return dz.sh.hidra.platform.configuration.ProtectedExecutionBudgetProperties.STANDARD_WORK_BUDGET_MILLIS*1_000_000L;
+        // Owner-authorized development headroom for the remaining admitted topology/setup families.
+        // executePublication retains its exact caller whitelist; authority expiry is independent.
+        return dz.sh.hidra.platform.configuration.ProtectedExecutionBudgetProperties.MAX_WORK_BUDGET_MILLIS*1_000_000L;
     }
 
     /** Reject before an ordinary caller can suspend an already protected physical execution. */

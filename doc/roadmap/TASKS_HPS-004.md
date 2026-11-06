@@ -13436,3 +13436,100 @@ and exact-SHA CI startup, then STOP. No passing full application claimed.
 Local validation: documentation/inventory/diff checks PASS and38 inventory Python
 tests PASS. Java/PostgreSQL unexecuted locally (toolchain/services unavailable).
 Native root cause and whole-journey success remain pending, not represented as fixed.
+
+
+### 2026-11-06 HAPI-926 consolidated foundation backend independent acceptance — Full1137
+
+Owner Next selects independent acceptance of the complete owner-approved foundation
+extension and its same-task repairs, not another implementation substage. Exact
+implementation main `f1fdc206c916a5266f609810c045c6b5688bfd49`, parent
+`fd0fd1b5047695c55a4fc2ec007fdbdd48f81659`, tree
+`762d658a862f5449ed063b6031111fe316bc04b2` was refreshed before review.
+[Full CI #1137](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42211688855)
+and [Documentation #926](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42211688641)
+are SUCCESS on that exact SHA. **The consolidated HAPI-926 extension is VERIFIED /
+COMPLETED for bounded synthetic backend development software.** This supersedes
+its pending disposition at the preceding checkpoints. All failed-run/repair and
+historical B4/discovery evidence remains unchanged; existing VERIFIED/COMPLETED
+registry cells need no rewrite. W2 is no longer blocked by this backend extension's
+software-acceptance gate; its own repository prerequisites still require refresh.
+
+**Independent evidence verification.** Retrieved authenticated artifact13499228003,
+`hidra-full-ci-evidence-f1fdc206c916a5266f609810c045c6b5688bfd49-42211688855-1`;
+ZIP SHA256 `be7b9899a285a2706efb1a47cb47d6d9ff7c3879056ae6af98300d37f8bb7fae`
+matched GitHub's artifact digest. Re-ran the unchanged repository aggregate verifier
+against the exact local source (working files match origin/main), source/run/attempt1,
+retained dependency results, development mode and cached dependency provenance.
+Every lane receipt and retained file hash, exact source-linked class/case inventory,
+Java21 clean-verify/package receipts and raw XML payload passed; the reconstructed
+aggregate equals retained gate.json exactly. Independently reparsed all563 XML
+suites: **4,322 tests,0 failures,0 errors,0 skips**. Inventory SHA256
+`0c735824054d4276f931f2e1f341fd773f7d6e79b20a8d8cca467648c8893306`.
+All14 PostgreSQL integration shards, Java21 unit/architecture, static validation,
+API contract/dictionary and Full Verification Gate succeeded. Serial Maven oracle
+was deliberately SKIPPED under the existing development policy, not counted as a
+passing job: development-partitioned, serial_oracle=false, same_run_equivalence=false,
+release_eligible=false, optimized_adoption_eligible=false. No CI policy is changed.
+
+**Accepted native journey and regressions.** Actual
+ProtectedInstalledUnitLifecyclePostgresIntegrationTest has53 passing cases, including
+foundationNativeHttpSetupInstallationGraphPublicationConfigurationAndReload. Source
+review reconciles its real bearer/full-security operations: discover setup catalogs;
+create system; create PLANNED compressor station; activate with expected generation;
+register position and physical unit; record installation; author and publish station
+graph; save/replay/read/revise installed configuration; reload position/installation
+choices; create/revise canonical Pipeline and engineering graph association; reload
+current and exact historical identity; rediscover the persisted Pipeline/facility;
+read both configuration history entries; finally read the unit through its distinct
+restricted principal. Missing geometry remains NOT_SUPPLIED. Catalog/security/role
+fixtures are synthetic; business writes in this journey use owner APIs. This is a
+configured native Spring HTTP integration test, not a browser or external-network
+acceptance run. Its setup-principal no-op UPDATE probe receives SQLSTATE23514,
+confirming immutable installed-unit protection despite locking rights. Candidate
+isolation asserts exactly the current fixture unit before native discovery; retained
+old units/history/provenance are not deleted. The internal translated failure now
+retains its cause, while fixed REST errors and fail-closed discovery remain intact.
+
+The same53-case suite includes denied/foreign/inactive/replay no-partial-write,
+final-guard rollback, catalog paging beyond200 and competing activation cases.
+EngineeringNetworkDraftPostgresIntegrationTest49/49 includes canonical historical
+references, revocation-before-disclosure, foreign/stale/replay rejection, atomic
+rollback, source/privilege tampering and competing version writers.
+AuthoredTopologyProjectionPostgresIntegrationTest7/7 includes current company/ACTIVE
+SQL paging, out-of-page unit kinds, retained legacy graph bytes and indeterminate
+read failure. Its mocked per-unit authority cases remain application regressions,
+not independent native-authorization proof. TopologyFoundationContractTest5/5 and
+the retained route, credential-routing, installed-unit and configuration suites pass
+within the source-bound aggregate. Authority is still checked by each actual owner;
+choice previews never confer write permission.
+
+**Generated contracts and physical catalog.** API job127871604447 logs confirm
+runtime snapshot equality:344 paths/383 operations/430 schemas, plus successful-base
+backward compatibility against `235566bc99464901753ebf9ab04f6143ff8c49b1`.
+Retained current runtime API SHA256
+`da4326497b4c65f9dcbeb286b64c1c9840a6fc73b91c3543c48633f682fb3fba`.
+The unchanged aggregate verifier independently validates the actual PostgreSQL16.15
+catalog and reviewed dictionary equality:201 migrations,554 relations,470 JPA
+mappings,zero unresolved owners, reviewed_dictionary_checked=true; catalog SHA256
+`a6436728945c8f3b7039428deb4f77c52da346a3e0eeafb306595edb875ac721`,
+rendered dictionary SHA256
+`44baf34b5605d909b253c7398628c83994fd7ed30f8f8a206e3b01faf07b8042`.
+No manual schema inference or fresh local database execution is substituted.
+
+**Publication boundary.** Exact acceptance-only scope: APPEND this phase record and
+`doc/roadmap/ULTIMATE_TASKS.md` compact pointer,2 MODIFY/0 CREATE/0 DELETE. Preserve
+all previous bytes, registry statuses, source/tests, migrations, generated artifacts,
+manifests and workflow policy. Retain registered exact message
+`feat(topology): connect pipeline authoring to persisted graph views`.
+Run available documentation-validator tests, documentation/snapshot/inventory and
+whitespace/preservation checks. Those local checks are distinct from retrieved
+hosted Java/PostgreSQL results above. Publish directly to existing main under an
+expected-f1fdc206 guard; verify exact parent/tree/blobs/scope, then observe new-SHA
+Documentation CI creation/queue/start and STOP. Full CI is documentation-path-filtered;
+this documentation commit does not claim a new Java/PostgreSQL run.
+
+Next reserved whole delivery: **HWEB-F12 / W2** in HidraWEB, only after separate owner
+selection, refreshed WEB source/W1 evidence and canonical adoption of its existing
+scope. No frontend implementation is performed here. Browser-integrated A1,
+industrial calibration, SITE/operational acceptance, live enterprise/OT integration,
+numerical/P3, release and deployment remain separate and unexecuted.

@@ -3447,3 +3447,20 @@ preserve restricted installed-unit source privileges. One whole source candidate
 OpenAPI/catalog regeneration and exact-source Full CI required. IMPLEMENTED SOURCE /
 CI_ACCEPTANCE_PENDING; prior bounded acceptance remains historical, W2/HWEB-F12
 BLOCKED. No new task/stage/ID, status promotion, frontend, P3 or release/deployment.
+
+
+HAPI-926 consolidated foundation backend independent acceptance (2026-11-06):
+[HPS-004](TASKS_HPS-004.md#hapi-926) pins exact implementation
+`f1fdc206c916a5266f609810c045c6b5688bfd49`,
+[Full #1137](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42211688855)
+and [Docs #926](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42211688641)
+SUCCESS. Independently verified authenticated raw evidence:563 suites/4,322 tests,
+zero failures/errors/skips; all14 PostgreSQL shards, native setup->installation->
+station graph->configuration->Pipeline reload journey, runtime API equality and
+compatibility, strict201-migration/554-relation physical dictionary proof.
+**Consolidated extension VERIFIED / COMPLETED for bounded synthetic backend software**;
+prior pending entries are historical. Development-partitioned verification excludes
+the serial oracle and is not release qualification. Registry status cells unchanged.
+Next reserved whole delivery is HWEB-F12/W2 after separate owner selection, refreshed
+HidraWEB/W1 evidence and canonical adoption. Browser/A1, SITE, P3 and deployment
+remain separate; no frontend work executed by this acceptance.

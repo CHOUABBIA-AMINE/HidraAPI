@@ -565,10 +565,10 @@ class InstalledEquipmentOperatorQualificationTest {
         admin.update("UPDATE public.hidra_workflow_type_catalog SET active=false WHERE id=?",purpose);
         try {requireStatus(handoff(token,company,link,1),404).andExpect(content().string(""));}
         finally {admin.update("UPDATE public.hidra_workflow_type_catalog SET active=true WHERE id=?",purpose);}
-        admin.update("UPDATE public.hidra_identity_user SET status='INACTIVE' WHERE id=?",user);
+        admin.update("UPDATE public.hidra_identity_user SET status=? WHERE id=?",
+            dz.sh.hidra.modules.identity.domain.value.UserStatus.DISABLED.name(),user);
         // Revoking the actor also fences a previously returned handoff.
-        int revoked=handoff(token,company,link,1).andReturn().getResponse().getStatus();
-        assertTrue(revoked==401 || revoked==403 || revoked==404);
+        requireStatus(handoff(token,company,link,1),404).andExpect(content().string(""));
         assertEquals(1L,countFor("revision"));assertEquals(0L,countFor("approval"));
     }
 

@@ -159,7 +159,8 @@ class WorkflowFoundationReadAuthorizationPostgresIntegrationTest {
     }
     @Test void currentActorRevocationImmediatelyRemovesReadDisclosure() throws Exception {
         get(BASE+"/tasks/"+task,reviewerToken).andExpect(status().isOk());
-        jdbc.update("UPDATE public.hidra_identity_user SET status='INACTIVE' WHERE id=?",reviewer);
+        jdbc.update("UPDATE public.hidra_identity_user SET status=? WHERE id=?",
+                dz.sh.hidra.modules.identity.domain.value.UserStatus.DISABLED.name(),reviewer);
         get(BASE+"/tasks/"+task,reviewerToken).andExpect(status().is4xxClientError());
         get(BASE+"/instances/"+instance+"/timeline",reviewerToken).andExpect(status().is4xxClientError());
         get(BASE+"/tasks?view=all",reviewerToken).andExpect(status().is4xxClientError());

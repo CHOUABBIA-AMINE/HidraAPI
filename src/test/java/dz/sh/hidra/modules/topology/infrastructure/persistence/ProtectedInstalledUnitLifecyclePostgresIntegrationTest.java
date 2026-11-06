@@ -172,6 +172,9 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
             admin.execute("GRANT SELECT,INSERT,UPDATE ON public.hidra_topology_"+suffix+" TO "+setup);
         for(String suffix:List.of("engineering_graph_snapshot","engineering_survey_snapshot","pipeline_authoring_revision","pipeline_graph_snapshot","pipeline_graph_binding"))
             admin.execute("REVOKE ALL ON public.hidra_topology_"+suffix+" FROM "+APP);
+        // PostgreSQL SHARE locks require UPDATE privilege; the immutable row trigger still rejects edits.
+        admin.execute("GRANT UPDATE ON public.hidra_topology_installed_unit TO "+setup);
+        assertThat(admin.queryForObject("SELECT has_table_privilege(?::name,'public.hidra_topology_installed_unit','SELECT') AND has_table_privilege(?::name,'public.hidra_topology_installed_unit','UPDATE') AND NOT has_table_privilege(?::name,'public.hidra_topology_installed_unit','INSERT,DELETE,TRUNCATE,TRIGGER')",Boolean.class,setup,setup,setup)).isTrue();
         // Check the complete ordinary/publication separation before attempting the journey.
         for(String suffix:List.of("engineering_graph_snapshot","engineering_survey_snapshot","pipeline_authoring_revision","pipeline_graph_snapshot","pipeline_graph_binding"))
             assertThat(admin.queryForObject("SELECT NOT has_table_privilege(?::name,?::text,'SELECT,INSERT,UPDATE,DELETE,TRUNCATE,TRIGGER') AND has_table_privilege(?::name,?::text,'SELECT') AND has_table_privilege(?::name,?::text,'INSERT') AND has_table_privilege(?::name,?::text,'UPDATE')",Boolean.class,APP,"public.hidra_topology_"+suffix,setup,"public.hidra_topology_"+suffix,setup,"public.hidra_topology_"+suffix,setup,"public.hidra_topology_"+suffix)).isTrue();
@@ -1952,6 +1955,9 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
         foundationOk(bearer,"PUT",authoredRoute,authored);
         assertThat(foundationOk(bearer,"GET",authoredRoute,null).get("bindings").get(0).get("pipeline").get("revision").longValue()).isEqualTo(2L);
         assertThat(foundationOk(bearer,"GET",authoredRoute+"&version=2",null).get("bindings").get(0).get("pipeline").get("nameEn").stringValue()).isEqualTo("Synthetic mainline");
+        var setupProbe=new JdbcTemplate(new DriverManagerDataSource(POSTGRES.getJdbcUrl(),"foundation_setup_publisher",PASSWORD));
+        assertThatThrownBy(()->setupProbe.update("UPDATE public.hidra_topology_installed_unit SET id=id WHERE id=?",f.unit().id()))
+            .satisfies(failure->assertThat(installedSqlState(failure,"23514")).isTrue());
         var choicesReload=foundationOk(bearer,"GET","/api/v1/topology/engineering-networks/"+draftId+"/authoring-choices?companyPartyId="+COMPANY+"&pipelineSystemId="+f.system(),null);
         assertThat(choicesReload.get("pipelines").toString()).contains(pipeline);
         assertThat(choicesReload.get("facilities").toString()).contains(facility);

@@ -13336,3 +13336,66 @@ offline snapshot PASS (344 paths,383 operations,430 schemas); diff whitespace PA
 Java compiler/Maven dependencies/PostgreSQL runtime remain unavailable locally;
 source analysis is not substituted for a new executed native journey. Full1134
 proves prior progress; only new-source hosted CI can prove this candidate completes.
+
+### 2026-11-06 HAPI-926 Full1135 regression correction and discovery locking rights
+
+Baseline `a76010423cf42a14e5a77033f4748f19cd4147ab`, parent
+`f5a278b79748e93b5a1f98995e5727fa83f823f6`, tree
+`10b456130eb814bf25cf020f4bc93f7149d0d1d8`.
+[Full1135](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42206909541)
+FAILED; [Docs924](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42206909787)
+SUCCESS. All19 jobs retrieved: static, API/catalog and13/14 PostgreSQL shards
+succeed; unit lane2518 tests/1 failure and shard1 141 tests/1 failure. The final
+gate correctly fails. Two specific issues remain, neither a work deadline.
+
+**Avoidable test regression introduced by the preceding change.** A substring
+replacement of500_000_000L also changed Custody's1_500_000_000L expectation into
+1_10_000_000_000L (110seconds). Actual configured Custody result remains1.5seconds,
+which is correct. Restore that exact assertion using
+TimeUnit.MILLISECONDS.toNanos(1500), rather than another ambiguous numeric text
+replacement. Review all nearby budget assertions: topology publication10seconds,
+appointment2seconds and custom installed/config/Custody families retain their
+existing values; ordinary technical500ms and finite-expiry tests remain. No
+production budget change is necessary for this regression.
+
+**Remaining integrated discovery failure.** Exact native chain reaches
+JpaAuthoredTopologyViewAdapter.acquire and SQL
+`LOCK TABLE public.hidra_topology_equipment_type,public.hidra_topology_installed_unit IN SHARE MODE NOWAIT`,
+then PostgreSQL rejects permission on hidra_topology_installed_unit. Setup already
+has SELECT on the unit table but PostgreSQL SHARE relation locking requires an
+appropriate DML privilege. Add only UPDATE to the synthetic setup principal for
+this immutable unit identity table, matching the existing immutable-table lock
+permission pattern. Do not grant INSERT,DELETE,TRUNCATE,TRIGGER, role ownership or
+membership. The dedicated configuration principal remains source-read-only and
+the installed-unit writer remains separate. No native authorization substitute.
+Startup fixture assertions now check source SELECT/UPDATE and absence of forbidden
+rights before execution. The integrated case additionally attempts a direct
+no-op UPDATE through the real setup credential and requires SQLSTATE23514 from the
+unchanged immutable trigger before executing discovery. Thus relation locking
+rights do not silently permit rewriting installed-unit identity. Existing executor
+DML pins also remain unchanged; no production SQL admission is expanded.
+
+Full1135 now executes Pipeline write/current reload/update/current revision2 and
+historical graph version2 successfully before discovery. Configuration-history
+reload follows discovery and remains pending native execution, together with the
+final distinct installed-unit read. No full journey acceptance is claimed.
+
+MODIFY only ProtectedTransactionExecutorTest.java,
+ProtectedInstalledUnitLifecyclePostgresIntegrationTest.java,
+`.github/ci-test-inventory.json` (two source hashes only) and this append-only task
+record. Four MODIFY, no CREATE/DELETE; no production source, migration, schema,
+API/dictionary, runtime rights, workflow/status or immutable archive changes.
+All existing test identities, expected statuses and mandatory negative assertions
+are retained; two fixture privilege/immutability assertions added within the same
+integrated case. Exact message:
+`feat(topology): connect pipeline authoring to persisted graph views`.
+New exact-SHA CI/whole native qualification and independent HAPI-926 acceptance
+remain necessary; HWEB-F12/W2 not executed. Verify guarded publication, exact
+parent/tree/blobs and CI startup, then STOP under the publication rule.
+
+Full1135 correction local validation: exact inventory PASS (563 classes), all38
+inventory Python tests PASS, documentation validator PASS (129 documents,8986
+links,928 tasks,25 phases), diff whitespace PASS. Reviewed all remaining numeric
+work-policy expectations and the complete discovery source-lock privilege pair.
+Java/PostgreSQL runtime unavailable locally; new native lock/immutability probes
+and complete test journey are authored, not claimed executed. No timeout inferred.

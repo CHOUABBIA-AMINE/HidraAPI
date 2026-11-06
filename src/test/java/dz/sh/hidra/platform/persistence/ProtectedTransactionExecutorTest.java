@@ -1004,7 +1004,7 @@ class ProtectedTransactionExecutorTest {
         for(String type:List.of("ProductEngineeringDraftApplicationService","SuppliedFluidPropertyRevisionApplicationService","ProductRevisionPublicationApplicationService")) {
             long selected=org.springframework.test.util.ReflectionTestUtils.invokeMethod(executor,
                     "publicationWorkBudgetNanos","dz.sh.hidra.modules.custody.application.service."+type);
-            assertThat(selected).isEqualTo(1_10_000_000_000L);
+            assertThat(selected).isEqualTo(java.util.concurrent.TimeUnit.MILLISECONDS.toNanos(1500));
         }
         long appointment=org.springframework.test.util.ReflectionTestUtils.invokeMethod(executor,
                 "publicationWorkBudgetNanos","dz.sh.hidra.modules.organization.application.service.EmployeeAppointmentLifecycleApplicationService");

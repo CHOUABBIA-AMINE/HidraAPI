@@ -46,7 +46,10 @@ public final class PipelineAuthoringApplicationService implements PipelineAuthor
                 switch(failure.kind()) {
                     case DENIED,NOT_FOUND -> { /* Neither identity nor denied counts are disclosed. */ }
                     case UNAUTHENTICATED -> throw new dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure(dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure.Reason.DENIED);
-                    default -> throw new dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure(dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure.Reason.UNAVAILABLE);
+                    default -> {
+                        var translated=new dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure(dz.sh.hidra.modules.topology.application.model.EngineeringNetworkDraftFailure.Reason.UNAVAILABLE);
+                        translated.initCause(failure);throw translated;
+                    }
                 }
             }
         }

@@ -13399,3 +13399,40 @@ links,928 tasks,25 phases), diff whitespace PASS. Reviewed all remaining numeric
 work-policy expectations and the complete discovery source-lock privilege pair.
 Java/PostgreSQL runtime unavailable locally; new native lock/immutability probes
 and complete test journey are authored, not claimed executed. No timeout inferred.
+
+### 2026-11-06 HAPI-926 Full1136 discovery fixture isolation and retained cause
+
+Baseline fd0fd1b5047695c55a4fc2ec007fdbdd48f81659. Full1136
+(run42208708432) FAILED; Docs925 SUCCESS. All19 jobs inspected: unit/architecture,
+static/API/database and13/14 PostgreSQL shards pass. Only the integrated discovery
+case fails (141 shard cases/1 failure). Previous budget assertion and locking
+privilege defects cleared. Pipeline writes/revisions/history complete beforehand.
+
+Exact stack now originates from PipelineAuthoringApplicationService.discover:49,
+which maps a native READ_UNIT failure to UNAVAILABLE while discarding its cause.
+The actual nested cause is unavailable in Full1136 and is NOT assumed to be timing.
+Preserve it internally via initCause; REST still exposes only the existing fixed
+problem reason. Discovery still fails closed on unavailable/indeterminate evidence;
+no candidate is silently skipped or accepted without current unit authority.
+
+Concrete fixture contamination also found: all tests retain immutable installed
+units under synthetic-company, while manufacturer-negative tests explicitly delete
+their manufacturer profiles/role assignments during cleanup. Discovery enumerates
+units of every ACTIVE equipment kind in that company, so unrelated retained units
+enter this positive journey. At foundationSetup start, mark equipment kinds of
+previously retained company units INACTIVE before creating this journey's fresh
+ACTIVE kind. Do not delete units/history/provenance or change production filters.
+Immediately before discovery assert the real candidate SQL returns exactly this
+journey's unit. This is test-fixture isolation; whether it clears the native error
+requires new CI, since the original inner exception was discarded.
+
+Four MODIFY paths only: PipelineAuthoringApplicationService.java, existing installed
+lifecycle test, its source hash in .github/ci-test-inventory.json and this append-only
+evidence. All53 lifecycle cases/563 class identities remain. No CREATE/DELETE,
+permission/SQL/budget/API/schema/workflow/status weakening. Registered message:
+`feat(topology): connect pipeline authoring to persisted graph views`.
+HAPI-926 acceptance pending; HWEB-F12 blocked. Verify guarded direct-main publication
+and exact-SHA CI startup, then STOP. No passing full application claimed.
+Local validation: documentation/inventory/diff checks PASS and38 inventory Python
+tests PASS. Java/PostgreSQL unexecuted locally (toolchain/services unavailable).
+Native root cause and whole-journey success remain pending, not represented as fixed.

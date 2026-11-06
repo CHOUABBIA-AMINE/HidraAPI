@@ -1883,6 +1883,9 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
     private record FoundationFixture(Fixture actor,String bearer,String system,String facility,String facilityType,String kind,String position,InstalledUnit unit,String installation){}
     private FoundationFixture foundationSetup()throws Exception {
         var actor=fixture("LOCAL");String system=id(),facility=id(),systemType=id(),facilityType=id(),kind=id(),position=id();var db=admin();
+        // Retained immutable units from other tests must not become this journey's discovery fixtures.
+        // Their old manufacturers may deliberately have been removed by negative-test cleanup.
+        db.update("UPDATE public.hidra_topology_equipment_type SET status='INACTIVE' WHERE id IN (SELECT equipment_kind_id FROM public.hidra_topology_installed_unit WHERE company_party_id=?)",COMPANY);
         db.update("INSERT INTO public.hidra_topology_pipeline_system_type(id,code,name_en,active,created_at,updated_at) VALUES(?,?,'Synthetic gas system',true,now(),now())",systemType,systemType);
         db.update("INSERT INTO public.hidra_topology_facility_type(id,code,name,facility_kind,status,created_at,updated_at) VALUES(?,?,'Synthetic compressor station','COMPRESSOR_STATION','ACTIVE',now(),now())",facilityType,facilityType);
         db.update("INSERT INTO public.hidra_topology_equipment_type(id,code,name,status,created_at,updated_at) VALUES(?,?,'Synthetic compressor','ACTIVE',now(),now())",kind,kind);
@@ -1958,6 +1961,7 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
         var setupProbe=new JdbcTemplate(new DriverManagerDataSource(POSTGRES.getJdbcUrl(),"foundation_setup_publisher",PASSWORD));
         assertThatThrownBy(()->setupProbe.update("UPDATE public.hidra_topology_installed_unit SET id=id WHERE id=?",f.unit().id()))
             .satisfies(failure->assertThat(installedSqlState(failure,"23514")).isTrue());
+        assertThat(admin().queryForList(dz.sh.hidra.modules.topology.infrastructure.query.JpaAuthoredTopologyViewAdapter.UNIT_CANDIDATES,String.class,COMPANY,0,200)).containsExactly(f.unit().id());
         var choicesReload=foundationOk(bearer,"GET","/api/v1/topology/engineering-networks/"+draftId+"/authoring-choices?companyPartyId="+COMPANY+"&pipelineSystemId="+f.system(),null);
         assertThat(choicesReload.get("pipelines").toString()).contains(pipeline);
         assertThat(choicesReload.get("facilities").toString()).contains(facility);

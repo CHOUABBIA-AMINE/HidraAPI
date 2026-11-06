@@ -3464,3 +3464,17 @@ the serial oracle and is not release qualification. Registry status cells unchan
 Next reserved whole delivery is HWEB-F12/W2 after separate owner selection, refreshed
 HidraWEB/W1 evidence and canonical adoption. Browser/A1, SITE, P3 and deployment
 remain separate; no frontend work executed by this acceptance.
+
+
+HAPI-928 W4 target-handoff prerequisite acceptance (2026-11-06):
+[HPS-015](TASKS_HPS-015.md#hapi-928) records exact source
+`5817406923e53761577ac41bbc3f318b517c3977`,
+[Full1140](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42299943400)
+and [Docs930](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42299943450)
+SUCCESS; independently recomputed authenticated raw evidence,563 suites/4323
+zero-failure/error/skip tests, native handoff/approval/rejection/revocation,
+runtime API equality/backward compatibility and strict physical dictionary.
+Bounded backend handoff VERIFIED / COMPLETED; earlier pending records historical.
+Existing status cells unchanged. Next reserved whole delivery HWEB-F14/W4 requires
+separate owner selection and refreshed HidraWEB evidence/contract adoption.
+No frontend/browser/A1, SITE, P3, release or deployment acceptance.

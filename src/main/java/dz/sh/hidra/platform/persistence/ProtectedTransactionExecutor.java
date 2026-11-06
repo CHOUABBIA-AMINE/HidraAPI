@@ -146,7 +146,7 @@ public final class ProtectedTransactionExecutor {
             throw new IllegalStateException("Unreviewed credential route caller");
         long budgetNanos=publicationWorkBudgetNanos(caller);
         try(var route=(caller.equals(DRAFT_SERVICE) || caller.equals(PUBLICATION_SERVICE) || caller.equals("dz.sh.hidra.modules.topology.application.service.ProtectedStationGraphOperationService"))
-                ?credentialRouter().openStation():credentialRouter().open()) {return executeWithBudget(work,flush,guard,budgetNanos);}
+                ?credentialRouter().openStation():caller.equals(STATION_CONFIG_SERVICE)?credentialRouter().openConfiguration():credentialRouter().open()) {return executeWithBudget(work,flush,guard,budgetNanos);}
     }
 
     /** New setup writes require their separate opt-in principal; no fallback to the installed-unit pool. */

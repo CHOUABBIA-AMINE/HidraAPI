@@ -172,6 +172,20 @@ public class ProtectedInstalledUnitLifecyclePostgresIntegrationTest {
             admin.execute("GRANT SELECT,INSERT,UPDATE ON public.hidra_topology_"+suffix+" TO "+setup);
         for(String suffix:List.of("pipeline_authoring_revision","pipeline_graph_snapshot","pipeline_graph_binding"))
             admin.execute("REVOKE ALL ON public.hidra_topology_"+suffix+" FROM "+APP);
+        // Configuration must not inherit installed-unit DML rights over its observed sources.
+        String configuration="foundation_configuration_publisher";
+        admin.execute("CREATE ROLE "+configuration+" LOGIN PASSWORD '"+PASSWORD+"'");
+        admin.execute("GRANT USAGE ON SCHEMA public TO "+configuration);
+        admin.execute("GRANT SELECT ON ALL TABLES IN SCHEMA public TO "+configuration);
+        for(var fence:JdbcIdentityAuthorityFence.requiredRelationFences())if(fence.mode()!=dz.sh.hidra.platform.persistence.ProtectedRelationFence.Mode.ACCESS_SHARE)
+            admin.execute("GRANT UPDATE ON "+fence.relation()+" TO "+configuration);
+        for(String suffix:List.of("station_configuration_revision","station_configuration_member","station_configuration_request"))
+            admin.execute("GRANT INSERT ON public.hidra_topology_"+suffix+" TO "+configuration);
+        admin.execute("GRANT INSERT,UPDATE ON public.hidra_topology_station_configuration_head TO "+configuration);
+        admin.execute("GRANT EXECUTE ON FUNCTION public.hidra_station_configuration_lock_sources() TO "+configuration);
+        r.add("hidra.platform.persistence.station-configuration.enabled",()->true);
+        r.add("hidra.platform.persistence.station-configuration.username",()->configuration);
+        r.add("hidra.platform.persistence.station-configuration.password",()->PASSWORD);
         r.add("hidra.platform.persistence.topology-setup.enabled",()->true);
         r.add("hidra.platform.persistence.topology-setup.username",()->setup);
         r.add("hidra.platform.persistence.topology-setup.password",()->PASSWORD);

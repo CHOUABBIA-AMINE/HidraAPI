@@ -13177,3 +13177,76 @@ inventory Python tests PASS; diff whitespace check PASS. An isolated check of th
 actual configuration request constructor was attempted but could not compile:
 `javac` is not installed. No Java or PostgreSQL execution pass claimed locally.
 Hosted CI remains the executable acceptance gate.
+
+### 2026-11-06 HAPI-926 same-task Full1133 credential isolation repair
+
+Baseline `bdb60a56c9d4237d4ad5abc08257314ddbcc8670`, parent
+`00d5ef32bcf427139784af5d9b372fbdc4627694`, tree
+`2214586445cb5b44bb5e1e85f083ccf941082324`.
+[Full1133](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42178372009)
+FAILED; [Docs922](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42178372112)
+SUCCESS. All19 jobs retrieved: unit/architecture/static/API-dictionary and12/14
+PostgreSQL shards succeeded. Shard1:141 tests/1 failure; installed lifecycle53
+cases/1 failure. Shard11:84 tests/1 error in the16-case product authorization suite.
+
+**Configuration cause:** fixture now passes the revision descriptor and reaches
+configuration HTTP save. Exact chain points to
+JdbcStationInstalledConfigurationRepositoryAdapter.catalog:171 during acquire:190.
+Its existing CATALOG requires no INSERT/UPDATE/DELETE on installed-unit sources;
+the configured installed_writer_publisher has INSERT/UPDATE on those tables by
+design. These two valid least-privilege contracts cannot share that writer.
+The guard is retained unchanged; no source rights are revoked from installed-unit
+operations and none are added to the configuration source reader.
+
+**Correction and preservation:** optional dedicated station-configuration pool,
+bound from `hidra.platform.persistence.station-configuration.*`, selected only by
+the executor's existing exact STATION_CONFIG_SERVICE caller. Disabled preserves
+existing standalone publication routing; combined deployments/fixtures enable it.
+Enabled credentials must differ from publication/setup and ordinary principals;
+verification retains same database/URL, non-owner/no-elevated-role checks and now
+checks mutual role membership against every other enabled protected pool. Routing
+remains thread-confined, selected before transaction start, rejects nested or
+ambient transactions, restores ordinary access and closes each owned pool once.
+No permission is conferred by routing. All owner authorization/catalog/final guards,
+SQL pins, timing and schemas remain unchanged. Four environment parameters:
+HIDRA_STATION_CONFIGURATION_ENABLED (false), USERNAME, PASSWORD, MAX_POOL_SIZE (2).
+No secrets are committed. The native fixture provisions a separate synthetic
+configuration principal with source SELECT only, Identity fence lock rights,
+configuration INSERT/head CAS and fixed locking helper EXECUTE. Ordinary revision
+SELECT denial remains. Existing installed and setup roles are unchanged.
+
+The router JVM test adds real mock-pool selection, legacy fallback, principal
+identity, nesting rejection, ordinary restoration, writer independence, single
+closure and duplicate-principal rejection. Existing cases remain. Three changed
+test source hashes and one new test method enter the unchanged CI lane inventory.
+
+**Independent shard11 fixture isolation:** exact SQLSTATE55P03 shows NOWAIT Identity
+lock acquisition colliding on hidra_identity_permission in
+companyProductAndActionCannotBeSubstituted. The log does not identify the other
+backend. Its disposable container still enables background autovacuum despite
+frequent fixture deletes. Disable autovacuum only for this synthetic container,
+matching the existing installed-unit fixture's isolation pattern. This removes
+background maintenance as a possible competitor; it does not prove the historical
+lock holder's identity. No production vacuum setting, NOWAIT behavior, retry,
+security expectation or authorization test is removed or relaxed.
+
+Exact message remains `feat(topology): connect pipeline authoring to persisted graph views`.
+MODIFY exactly nine existing paths: HidraTransactionConfiguration.java,
+ProtectedCredentialRoutingDataSource.java, ProtectedTransactionExecutor.java,
+application.properties, ProtectedCredentialRoutingDataSourceTest.java,
+ProtectedInstalledUnitLifecyclePostgresIntegrationTest.java,
+ProtectedProductDraftAuthorizationPostgresIntegrationTest.java,
+`.github/ci-test-inventory.json` and this append-only task evidence. No CREATE/DELETE,
+migration/API/dictionary/status/immutable archive or workflow-policy changes.
+HAPI-926 remains CI_ACCEPTANCE_PENDING. Fresh Full/Docs, dedicated-principal native
+configuration and complete journey, shard11 qualification and independent backend
+acceptance required; HWEB-F12/W2 stays blocked. Verify guarded main publication and
+exact-SHA CI creation/queue/start, then STOP without waiting or advancing.
+
+Full1133 repair local validation: exact source/case inventory PASS (563 classes,
+with one added routing case); documentation validator PASS (129 documents,8986
+relative links,928 tasks,25 phases); all38 inventory Python tests PASS; diff
+whitespace check PASS. Production source reviewed against both unchanged credential
+catalogs and literal caller guards. Java compiler and full local service dependencies
+are unavailable, so new Java/JVM and PostgreSQL cases remain unexecuted locally;
+no native pass or verified lock-holder identity is claimed. Exact-new-SHA CI required.

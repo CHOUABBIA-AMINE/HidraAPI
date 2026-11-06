@@ -126,4 +126,24 @@ class ProtectedCredentialRoutingDataSourceTest {
         assertEquals(1,setup.closed.get());
     }
 
+    @Test void configurationRouteKeepsSourceWriterSeparateAndRestoresOrdinary()throws Exception {
+        var configuration=new Pool("configuration","jdbc:postgresql://synthetic/db");
+        try(var s=source()) {
+            try(var route=s.openConfiguration();var c=s.getConnection()){assertEquals("publisher",c.getMetaData().getUserName());}
+            org.springframework.test.util.ReflectionTestUtils.setField(s,"configurationProperties",new ProtectedPublicationDatabaseProperties(true,"configuration","synthetic",2));
+            org.springframework.test.util.ReflectionTestUtils.setField(s,"configurationPublisher",configuration);
+            try(var route=s.openConfiguration();var c=s.getConnection()) {
+                assertEquals("configuration",c.getMetaData().getUserName());
+                assertEquals("configuration",s.identity().publisherUser());assertThrows(IllegalStateException.class,s::open);
+            }
+            try(var route=s.open();var c=s.getConnection()){assertEquals("publisher",c.getMetaData().getUserName());}
+            try(var c=s.getConnection()){assertEquals("ordinary",c.getMetaData().getUserName());}
+        }
+        assertEquals(1,configuration.closed.get());
+        assertThrows(IllegalStateException.class,()->new ProtectedCredentialRoutingDataSource(ordinary,
+            new ProtectedPublicationDatabaseProperties(true,"publisher","synthetic",2),
+            new ProtectedPublicationDatabaseProperties(true,"setup","synthetic",2),
+            new ProtectedPublicationDatabaseProperties(true,"setup","synthetic",2)));
+    }
+
 }

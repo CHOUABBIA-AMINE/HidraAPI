@@ -107,6 +107,9 @@ public class ProtectedProductDraftAuthorizationPostgresIntegrationTest {
                             "log_error_verbosity=terse",
                             "-c",
                             "track_commit_timestamp=on",
+                            // Disposable fixture cleanup must not introduce background NOWAIT contention.
+                            "-c",
+                            "autovacuum=off",
                             "-c",
                             "log_min_error_statement=panic",
                             "-c",

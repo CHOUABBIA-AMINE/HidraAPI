@@ -38,6 +38,8 @@ public final class ProtectedCredentialRoutingDataSource extends AbstractDataSour
     private final ProtectedPublicationDatabaseProperties properties;
     private DataSource publisher;
     private DataSource setupPublisher;
+    private DataSource configurationPublisher;
+    private ProtectedPublicationDatabaseProperties configurationProperties;
     private ProtectedPublicationDatabaseProperties setupProperties;
     private boolean closed;
     public ProtectedCredentialRoutingDataSource(DataSource ordinary,ProtectedPublicationDatabaseProperties properties) {
@@ -50,6 +52,12 @@ public final class ProtectedCredentialRoutingDataSource extends AbstractDataSour
         this(ordinary,properties);this.setupProperties=Objects.requireNonNull(setup);
         if(setup.enabled() && Objects.equals(setup.username(),properties.username()))throw unavailable();
     }
+    public ProtectedCredentialRoutingDataSource(DataSource ordinary,ProtectedPublicationDatabaseProperties properties,
+            ProtectedPublicationDatabaseProperties setup,ProtectedPublicationDatabaseProperties configuration) {
+        this(ordinary,properties,setup);this.configurationProperties=Objects.requireNonNull(configuration);
+        if(configuration.enabled() && (Objects.equals(configuration.username(),properties.username())
+            || setup.enabled() && Objects.equals(configuration.username(),setup.username())))throw unavailable();
+    }
     boolean topologySetupEnabled(){return setupProperties!=null && setupProperties.enabled();}
     private static IllegalStateException unavailable(){return new IllegalStateException("Protected database credential unavailable");}
     private static String principal(Connection c) throws SQLException {
@@ -60,9 +68,9 @@ public final class ProtectedCredentialRoutingDataSource extends AbstractDataSour
             return session;
         }
     }
-    private synchronized Identity verify(boolean setup) throws SQLException {
-        var credentials=setup?setupProperties:properties;
-        DataSource pool=setup?setupPublisher:publisher;
+    private synchronized Identity verify(boolean setup,boolean configuration) throws SQLException {
+        var credentials=configuration?configurationProperties:setup?setupProperties:properties;
+        DataSource pool=configuration?configurationPublisher:setup?setupPublisher:publisher;
         if(closed || credentials==null || !credentials.enabled())throw unavailable();
         try(var c=ordinary.getConnection()) {
             String normal=principal(c);
@@ -73,9 +81,9 @@ public final class ProtectedCredentialRoutingDataSource extends AbstractDataSour
             if(pool==null) {
                 var config=new HikariConfig();
                 config.setJdbcUrl(url);config.setUsername(credentials.username());config.setPassword(credentials.password());
-                config.setPoolName(setup?"hidra-protected-topology-setup":"hidra-protected-publication");config.setMaximumPoolSize(credentials.maximumPoolSize());
+                config.setPoolName(configuration?"hidra-protected-station-configuration":setup?"hidra-protected-topology-setup":"hidra-protected-publication");config.setMaximumPoolSize(credentials.maximumPoolSize());
                 config.setMinimumIdle(0);config.setConnectionTimeout(10000);
-                pool=new HikariDataSource(config);if(setup)setupPublisher=pool;else publisher=pool;
+                pool=new HikariDataSource(config);if(configuration)configurationPublisher=pool;else if(setup)setupPublisher=pool;else publisher=pool;
             }
             try(var p=pool.getConnection()) {
                 if(!url.equals(p.getMetaData().getURL()) || !credentials.username().equals(principal(p)))throw unavailable();
@@ -87,23 +95,29 @@ public final class ProtectedCredentialRoutingDataSource extends AbstractDataSour
                       AND NOT pg_catalog.pg_has_role(?::name,current_user,'MEMBER')
                       AND (?::name IS NULL OR (NOT pg_catalog.pg_has_role(?::name,current_user,'MEMBER') AND NOT pg_catalog.pg_has_role(current_user,?::name,'MEMBER')))
                     """)) {
-                    s.setString(1,normal);
-                    String other=setup?(properties.enabled()?properties.username():null):(setupProperties==null || !setupProperties.enabled()?null:setupProperties.username());
-                    s.setString(2,other);s.setString(3,other);s.setString(4,other);
-                    try(var r=s.executeQuery()){if(!r.next() || !r.getBoolean(1))throw unavailable();}
+                    // Each enabled protected principal must remain independent of every other pool.
+                    var others=new java.util.ArrayList<String>();
+                    for(var candidate:new ProtectedPublicationDatabaseProperties[]{properties,setupProperties,configurationProperties})
+                        if(candidate!=null && candidate.enabled() && candidate!=credentials)others.add(candidate.username());
+                    if(others.isEmpty())others.add(null);
+                    for(String other:others) {
+                        s.setString(1,normal);s.setString(2,other);s.setString(3,other);s.setString(4,other);
+                        try(var r=s.executeQuery()){if(!r.next() || !r.getBoolean(1))throw unavailable();}
+                    }
                 }
                 return new Identity(normal,credentials.username());
             }
         }
     }
-    Route open(){return open(false);}
-    Route openStation(){return open(topologySetupEnabled());}
-    private Route open(boolean setup) {
+    Route open(){return open(false,false);}
+    Route openStation(){return open(topologySetupEnabled(),false);}
+    Route openConfiguration(){return open(false,configurationProperties!=null && configurationProperties.enabled());}
+    private Route open(boolean setup,boolean configuration) {
         if(CURRENT.get()!=null || TransactionSynchronizationManager.isActualTransactionActive()
             || TransactionSynchronizationManager.isSynchronizationActive())throw unavailable();
         try {
-            Identity identity=verify(setup);
-            Route route=new Route(this,identity,setup?setupPublisher:publisher);CURRENT.set(route);return route;
+            Identity identity=verify(setup,configuration);
+            Route route=new Route(this,identity,configuration?configurationPublisher:setup?setupPublisher:publisher);CURRENT.set(route);return route;
         }catch(SQLException error){throw new IllegalStateException("Protected database credential verification failed");}
     }
     Identity identity() {
@@ -135,7 +149,7 @@ public final class ProtectedCredentialRoutingDataSource extends AbstractDataSour
     @Override public synchronized void close() throws Exception {
         if(CURRENT.get()!=null)throw unavailable();
         if(closed)return;closed=true;
-        try {try{if(setupPublisher instanceof AutoCloseable c)c.close();}finally{if(publisher instanceof AutoCloseable c)c.close();}}
+        try {try{if(configurationPublisher instanceof AutoCloseable c)c.close();}finally{try{if(setupPublisher instanceof AutoCloseable c)c.close();}finally{if(publisher instanceof AutoCloseable c)c.close();}}}
         finally {
             DataSource target=ordinary;
             while(target instanceof DelegatingDataSource d && !(target instanceof AutoCloseable))target=d.getTargetDataSource();

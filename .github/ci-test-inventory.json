@@ -3021,7 +3021,7 @@
       "lane": "postgres-integration",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedProductDraftAuthorizationPostgresIntegrationTest.java",
-      "source_sha256": "5f54190713e3966332386d9a4331c4ad22db0801acc45e12542290572f5cffc8",
+      "source_sha256": "c8eca20d7ca79dbf62c70fcbc831aa37a9caff2ce645354f9695eac3428c7daa",
       "supports": []
     },
     {
@@ -9869,7 +9869,7 @@
       "lane": "postgres-integration",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/infrastructure/persistence/ProtectedInstalledUnitLifecyclePostgresIntegrationTest.java",
-      "source_sha256": "fde048f0d121dca67ff055706bb577138358d3c7507d2622706ad6bbcc5fd360",
+      "source_sha256": "aae28b40b01bbdf0657b283b3ba8d6179372eb7eb068d7056162d6cb145d2637",
       "supports": []
     },
     {
@@ -11500,6 +11500,7 @@
       "baseline_seconds": 0.079,
       "cases": [
         "closeReleasesBothOwnedPoolsExactlyOnce",
+        "configurationRouteKeepsSourceWriterSeparateAndRestoresOrdinary",
         "disabledPublisherRouteFailsBeforeConnection",
         "enabledSetupRouteRestoresOrdinaryAndLeavesInstalledPoolIndependent",
         "explicitCredentialAndUnwrapEscapesAreRejected",
@@ -11515,7 +11516,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/persistence/ProtectedCredentialRoutingDataSourceTest.java",
-      "source_sha256": "886212cf6886bfe16a99dd649de3769ad36743e1ea05dc91e0191705bcec8e5b",
+      "source_sha256": "7274971a2f6c3034e9e072c21a58514c7708ecb3c9e41ce4846d9b8bd81bbed2",
       "supports": []
     },
     {

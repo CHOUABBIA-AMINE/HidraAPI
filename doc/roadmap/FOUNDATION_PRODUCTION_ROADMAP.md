@@ -2083,3 +2083,60 @@ These are exact proposed transport choices for registration, not discoveries or 
 | B6 | Existing GET task/instance/timeline/action routes corrected | Existing response DTOs retained | Explicit eligible reader/supervisor policy before existence/history disclosure; protect native target authority |
 
 The final field names/versioning, error mapping and route permission descriptors must be adopted in P0's technical registration. These are proposed contracts, not runtime OpenAPI evidence. New state transitions must be domain operations with defined preconditions, not a generic `status` setter. Scope/status decisions absent from existing domain policy are explicit adoption decisions in P0; they must not be guessed by the implementation.
+
+## Owner-approved A1 Journey B acceptance revision — 2026-11-07
+
+The owner selected revision of Journey B after HidraWEB recorded the missing
+Organization responsibility approval producer. This amendment supersedes the
+Journey B acceptance criterion in section 6 and the related Organization and
+Party A1 scorecard requirements in section 9 only. A1 remains the whole
+HWEB-F15 delivery with all five native A–E journeys, its original dependencies
+and the registered message
+`test(foundation): verify six-module live backend browser journeys`.
+[HidraWEB blocker record](https://github.com/CHOUABBIA-AMINE/HidraWEB/commit/fe4a40b8993796ad2faa359fb56067b86d316bd7)
+
+Journey B passes when one native run demonstrates all of the following.
+
+1. **Organization hierarchy and employee.** In HidraWEB, an authorized
+   administrator creates a parent unit and a child unit using the Organization
+   type catalog. Register and activate an employee and select the created unit
+   and an available position from owner-provided choices. Verify the hierarchy
+   relationship and the employee's active status and lifecycle history through
+   the owning API after browser reload.
+2. **Initial appointment.** Submit one appointment for that employee from the
+   existing HidraWEB assignment form with a valid effective start. Use a
+   synthetic native actor with the required company, unit and employee
+   authority and the approved disposable reference policy. Verify the exact
+   employee, unit, position and effective start through the native current
+   appointment read. Use the returned identifiers and backend state as evidence.
+3. **Party eligibility and reuse.** Register a synthetic Party in HidraWEB,
+   activate it and assign a supported role from the Party catalog. Verify the
+   activation and role history, find the exact Party through eligible-only
+   lookup, and select that same Party in the Topology company chooser. Use the
+   same Party identifier for the corresponding Topology operation in Journey C.
+4. **Access boundaries.** Use a separate authenticated LOCAL actor without
+   the required authority to probe existing Organization directory and employee
+   history records, the protected appointment, and Party detail and history.
+   Check denial before protected records or counts are returned. Verify the
+   authorized control requests against the same records so a missing resource
+   cannot satisfy a denial assertion.
+
+Use real HidraWEB and owner REST operations against the accepted pinned HidraAPI
+runtime and fresh PostgreSQL. Fixtures may supply synthetic catalogs,
+appointment policy, owner bindings and separated credentials. The browser and
+owner APIs must create the units, employee, appointment, Party and role
+assignment. Record the tested API and WEB SHAs, exact CI and test results.
+
+Appointment transfer and end, and Workflow-approved operational responsibility
+assignment and revocation, are outside the revised A1 gate. Their capability
+and qualification gaps remain tracked in their owning scopes. Journey E
+retains its configured Workflow start, independent decisions and denial
+criteria. This amendment changes only A1 acceptance criteria. The existing
+backend and W1–W4 acceptance records retain their original scope.
+
+The scope revision is recorded by
+`docs(foundation): revise A1 journey B acceptance` in this supplement.
+After its exact-SHA Documentation Validation succeeds, the next selectable
+delivery is the whole HWEB-F15/A1 qualification in HidraWEB. Reconcile the
+historical blocker in the WEB roadmap, contract and gap register within that
+delivery. Integrated acceptance remains pending execution of A–E.

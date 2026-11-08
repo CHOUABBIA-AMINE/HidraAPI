@@ -12781,4 +12781,57 @@ commit must be observed separately; no SITE, operational or deployment acceptanc
 Previously registered state remains NOT_IMPLEMENTED/REGISTERED_PENDING until
 evidence-based status acceptance permits a targeted status-cell change.
 
+
+
+### HAPI-929 same-task repair after CI #1143 — 2026-11-08
+
+Exact source `0ff15b5fcf0fc213835aaff463a98beb6edd7c11` failed
+[HidraAPI CI #1143](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42481718640)
+because the generated runtime OpenAPI did not equal the older canonical
+snapshot; the subsequent dictionary and runtime-base checks were skipped.
+Java unit/architecture and all fourteen real PostgreSQL shards passed.
+Those results do not constitute Full CI or usable HTTP refresh acceptance.
+
+**HAPI-929 approved security behavior reconciliation:** The Spring Security
+filter already permits anonymous refresh/logout, but the MVC
+`HidraRouteAuthorizationInterceptor` ordinary route-permission gate did not
+exempt their two exact paths. The OpenAPI security customizer likewise
+advertised a Hidra bearer requirement, contradicting HAPI-929's
+bearer-independent one-time opaque refresh/logout proof. For this same
+indivisible selected task, reconcile four additional exact MODIFY paths
+under the existing whole-task scope:
+- `src/main/java/dz/sh/hidra/platform/permissions/HidraRouteAuthorizationInterceptor.java`
+- `src/main/java/dz/sh/hidra/platform/configuration/HidraOpenApiSecurityConfiguration.java`
+- `src/test/java/dz/sh/hidra/platform/permissions/HidraRouteAuthorizationInterceptorTest.java`
+- `src/test/java/dz/sh/hidra/platform/configuration/HidraOpenApiSecurityConfigurationTest.java`
+
+Permit these two existing `POST` Identity endpoints through the public
+transport/ordinary-permission layers only; the separate Identity
+refresh-token cryptographic proof, replay revocation and current authority
+checks are not bypassed or relaxed. Regression tests cover anonymous
+refresh/logout, sibling path rejection and matching OpenAPI security.
+The existing `.github/ci-test-inventory.json` scope is updated with the
+source hashes and new case identity. No other route is made public and
+no historical migration or security test is weakened.
+
+**Exact migrated-catalog evidence:** successful shard 12 retained the full
+real PostgreSQL 16 migrated catalog for this head, source-bundle digest
+`e9fb463199fc3e3f9c2edc8a137425ed9a1cefe28c74494323d3c020f88f0b1a`,
+202 migrations, 470 JPA mappings, 556 physical relations and zero
+unresolved owners. The source-linked generated physical dictionary matches
+the captured generator digest
+`c02ec17459db3b713e2f158bb902f4edc06297e7568e10e6f1d7149fa85adfb4`;
+original relations are preserved, two Identity refresh tables and their
+verified migration mentions are added. This evidence does not substitute
+for the skipped canonical API-lane strict comparison.
+
+The failed run generated an OpenAPI artifact with **the former incorrect
+bearer declarations**. To avoid fabricating a corrected runtime contract,
+the canonical OpenAPI snapshot/manifest are not manually modified by this
+repair; they must be reconciled from a new exact-SHA runtime artifact after
+the security fix. Maven, HTTP and same-run CI on the repair are NOT YET
+VERIFIED. This is a bounded HAPI-929 CI defect repair, not a new phase or
+selection. HAPI-929 remains pending whole-task acceptance; no deployment,
+production or SITE result is asserted.
+
 <!-- task-register:payload:end -->

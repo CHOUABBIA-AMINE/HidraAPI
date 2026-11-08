@@ -44,7 +44,9 @@ public final class HidraRouteAuthorizationInterceptor implements HandlerIntercep
 
     private static final Set<String> PUBLIC_PATHS = Set.of(
             "/api/v1/security/oidc",
-            "/api/v1/identity/authentication/login"
+            "/api/v1/identity/authentication/login",
+            "/api/v1/identity/authentication/refresh",
+            "/api/v1/identity/authentication/logout"
     );
 
     private static final Set<String> AUTHENTICATED_ONLY_PATHS = Set.of(

@@ -104,6 +104,11 @@ class HidraOpenApiSecurityConfigurationTest {
                 .get("/api/v1/security/oidc")
                 .getGet()
                 .getSecurity()).isEmpty();
+        for (String path : java.util.List.of(
+                "/api/v1/identity/authentication/refresh",
+                "/api/v1/identity/authentication/logout")) {
+            assertThat(openApi.getPaths().get(path).getPost().getSecurity()).isEmpty();
+        }
         assertThat(openApi.getPaths()
                 .get("/actuator/health")
                 .getGet()
@@ -131,6 +136,14 @@ class HidraOpenApiSecurityConfigurationTest {
                 .addPathItem(
                         "/api/v1/identity/authentication/oidc/complete",
                         new PathItem().post(new Operation().operationId("completeOidc"))
+                )
+                .addPathItem(
+                        "/api/v1/identity/authentication/refresh",
+                        new PathItem().post(new Operation().operationId("refresh"))
+                )
+                .addPathItem(
+                        "/api/v1/identity/authentication/logout",
+                        new PathItem().post(new Operation().operationId("logout"))
                 )
                 .addPathItem(
                         "/api/v1/security/oidc",

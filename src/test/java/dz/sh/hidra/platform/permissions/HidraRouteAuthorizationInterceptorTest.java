@@ -254,6 +254,26 @@ class HidraRouteAuthorizationInterceptorTest {
     }
 
     @Test
+    void permitsAnonymousLocalRefreshAndLogoutWithoutGeneralPermissionBypass() throws Exception {
+        var resolver = org.mockito.Mockito.mock(HidraEffectivePermissionResolver.class);
+        var interceptor = new HidraRouteAuthorizationInterceptor(resolver, naming, true, "jwt");
+        for (String path : List.of(
+                "/api/v1/identity/authentication/refresh",
+                "/api/v1/identity/authentication/logout")) {
+            var request = new MockHttpServletRequest("POST", path);
+            request.setAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE, path);
+            assertTrue(interceptor.preHandle(request, new MockHttpServletResponse(), handlerMethod()));
+        }
+        org.mockito.Mockito.verifyNoInteractions(resolver);
+        var nearMiss = new MockHttpServletRequest(
+                "POST", "/api/v1/identity/authentication/refresh/other");
+        nearMiss.setAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE,
+                "/api/v1/identity/authentication/refresh/other");
+        assertThrows(AccessDeniedException.class,
+                () -> interceptor.preHandle(nearMiss, new MockHttpServletResponse(), handlerMethod()));
+    }
+
+    @Test
     void anonymousProtectedRouteStillRequiresPermission() throws Exception {
         HidraEffectivePermissionResolver resolver = new HidraEffectivePermissionResolver(List.of());
         HidraRouteAuthorizationInterceptor interceptor = new HidraRouteAuthorizationInterceptor(resolver, naming, true, "jwt");

@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `139eda5076e026cea086a6fd38b0839d82d86546`
+Captured source SHA: `0ff15b5fcf0fc213835aaff463a98beb6edd7c11`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `4f939de1dc7486a214427fb81975d297d954089a7ee323e83aeec9a881bcda10`.
-Migrations: 201; JPA mappings: 470; catalog relations: 554; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `e9fb463199fc3e3f9c2edc8a137425ed9a1cefe28c74494323d3c020f88f0b1a`.
+Migrations: 202; JPA mappings: 470; catalog relations: 556; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -9930,6 +9930,7 @@ Identity-owned LOCAL credentials with database-enforced monotonic security gener
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261108_001__identity_refresh_token_rotation.sql](../../src/main/resources/db/migration/V20261108_001__identity_refresh_token_rotation.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9996,6 +9997,7 @@ Persisted LoginSessionJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261108_001__identity_refresh_token_rotation.sql](../../src/main/resources/db/migration/V20261108_001__identity_refresh_token_rotation.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -10071,6 +10073,7 @@ Immutable format-one native bearer/session provenance snapshots with private pro
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261108_001__identity_refresh_token_rotation.sql](../../src/main/resources/db/migration/V20261108_001__identity_refresh_token_rotation.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -10422,6 +10425,7 @@ Identity provider with database-owned monotonic security generation and ordinary
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261108_001__identity_refresh_token_rotation.sql](../../src/main/resources/db/migration/V20261108_001__identity_refresh_token_rotation.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -10496,6 +10500,127 @@ Identity provider with database-owned monotonic security generation and ordinary
 - `trg_p25_provider_security_write`: CREATE TRIGGER trg_p25_provider_security_write BEFORE INSERT OR UPDATE ON hidra_identity_provider FOR EACH ROW EXECUTE FUNCTION hidra_identity_provider_security_guard()
   - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_identity_provider_security_guard()"}
   - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_identity_provider_security_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'public'<br>AS $function$<br>BEGIN<br>    IF TG_OP IN ('DELETE', 'TRUNCATE') THEN<br>        RAISE EXCEPTION 'provider identity must be retained; disable instead of deleting or truncating'<br>            USING ERRCODE = '23514';<br>    END IF;<br>    IF TG_OP = 'INSERT' THEN<br>        IF NEW.security_version IS DISTINCT FROM 1::bigint THEN<br>            RAISE EXCEPTION 'Initial provider security generation must be 1'<br>                USING ERRCODE = '23514';<br>        END IF;<br>        RETURN NEW;<br>    END IF;<br>    IF NEW.id IS DISTINCT FROM OLD.id<br>        OR NEW.created_at IS DISTINCT FROM OLD.created_at THEN<br>        RAISE EXCEPTION 'provider identity and creation evidence are immutable'<br>            USING ERRCODE = '23514';<br>    END IF;<br>    IF NEW.security_version IS DISTINCT FROM OLD.security_version THEN<br>        RAISE EXCEPTION 'provider security generation is database-owned'<br>            USING ERRCODE = '23514';<br>    END IF;<br>    IF NEW.code IS DISTINCT FROM OLD.code<br>        OR NEW.provider_type IS DISTINCT FROM OLD.provider_type<br>        OR NEW.issuer_uri IS DISTINCT FROM OLD.issuer_uri<br>        OR NEW.authorization_endpoint IS DISTINCT FROM OLD.authorization_endpoint<br>        OR NEW.token_endpoint IS DISTINCT FROM OLD.token_endpoint<br>        OR NEW.jwks_uri IS DISTINCT FROM OLD.jwks_uri<br>        OR NEW.directory_base_dn IS DISTINCT FROM OLD.directory_base_dn<br>        OR NEW.user_search_base IS DISTINCT FROM OLD.user_search_base<br>        OR NEW.group_search_base IS DISTINCT FROM OLD.group_search_base<br>        OR NEW.username_attribute IS DISTINCT FROM OLD.username_attribute<br>        OR NEW.email_attribute IS DISTINCT FROM OLD.email_attribute<br>        OR NEW.display_name_attribute IS DISTINCT FROM OLD.display_name_attribute<br>        OR NEW.external_id_attribute IS DISTINCT FROM OLD.external_id_attribute<br>        OR NEW.group_membership_attribute IS DISTINCT FROM OLD.group_membership_attribute<br>        OR NEW.sync_enabled IS DISTINCT FROM OLD.sync_enabled<br>        OR NEW.just_in_time_provisioning_enabled IS DISTINCT FROM OLD.just_in_time_provisioning_enabled<br>        OR NEW.status IS DISTINCT FROM OLD.status<br>        OR NEW.metadata IS DISTINCT FROM OLD.metadata<br>        OR NEW.secret_reference IS DISTINCT FROM OLD.secret_reference THEN<br>        IF OLD.security_version = 9223372036854775807::bigint THEN<br>            RAISE EXCEPTION 'provider security generation is exhausted'<br>                USING ERRCODE = '22003';<br>        END IF;<br>        NEW.security_version := OLD.security_version + 1;<br>    ELSE<br>        NEW.security_version := OLD.security_version;<br>    END IF;<br>    RETURN NEW;<br>END;<br>$function$<br>
+
+### public.hidra_identity_refresh_family
+
+Owner: **identity**; relation kind: `r`.
+
+Fixed-expiry LOCAL refresh family and source generation snapshots; revocation never confers Identity permissions.
+
+- Evidence: [V20261108_001__identity_refresh_token_rotation.sql](../../src/main/resources/db/migration/V20261108_001__identity_refresh_token_rotation.sql)
+- Evidence: [JdbcRefreshTokenRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcRefreshTokenRepositoryAdapter.java)
+- Migration mention (not inferred introduction): [V20261108_001__identity_refresh_token_rotation.sql](../../src/main/resources/db/migration/V20261108_001__identity_refresh_token_rotation.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| id | character varying(36) | False | None; identity=; generated= | No current mapped Java column | — |
+| user_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| provider_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| credential_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| provider_generation | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| credential_generation | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| rights_digest | bytea | False | None; identity=; generated= | No current mapped Java column | — |
+| created_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| deadline | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| revoked_at | timestamp with time zone | True | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `ck_hidra_identity_refresh_family_interval`: CHECK (isfinite(created_at) AND isfinite(deadline) AND created_at &lt; deadline AND deadline &lt;= (created_at + '720:00:00'::interval) AND (revoked_at IS NULL OR isfinite(revoked_at) AND revoked_at &gt;= created_at))
+  - Catalog attributes: {"columns": ["created_at", "deadline", "revoked_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `ck_hidra_identity_refresh_family_uuid`: CHECK (id::text ~ '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'::text)
+  - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_identity_refresh_family_credential_generation_check`: CHECK (credential_generation &gt; 0)
+  - Catalog attributes: {"columns": ["credential_generation"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_identity_refresh_family_credential_id_fkey`: FOREIGN KEY (credential_id) REFERENCES hidra_identity_local_credential(id)
+  - Catalog attributes: {"columns": ["credential_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_identity_local_credential"}, "type": "f", "validated": true}
+- `hidra_identity_refresh_family_pkey`: PRIMARY KEY (id)
+  - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_identity_refresh_family_provider_generation_check`: CHECK (provider_generation &gt; 0)
+  - Catalog attributes: {"columns": ["provider_generation"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_identity_refresh_family_provider_id_fkey`: FOREIGN KEY (provider_id) REFERENCES hidra_identity_provider(id)
+  - Catalog attributes: {"columns": ["provider_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_identity_provider"}, "type": "f", "validated": true}
+- `hidra_identity_refresh_family_rights_digest_check`: CHECK (octet_length(rights_digest) = 32)
+  - Catalog attributes: {"columns": ["rights_digest"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_identity_refresh_family_user_id_fkey`: FOREIGN KEY (user_id) REFERENCES hidra_identity_user(id)
+  - Catalog attributes: {"columns": ["user_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_identity_user"}, "type": "f", "validated": true}
+
+#### Indexes
+
+- `hidra_identity_refresh_family_pkey`: CREATE UNIQUE INDEX hidra_identity_refresh_family_pkey ON public.hidra_identity_refresh_family USING btree (id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `ix_hidra_identity_refresh_family_user`: CREATE INDEX ix_hidra_identity_refresh_family_user ON public.hidra_identity_refresh_family USING btree (user_id) WHERE (revoked_at IS NULL)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+
+#### Triggers
+
+- `trg_hidra_identity_refresh_family_guard`: CREATE TRIGGER trg_hidra_identity_refresh_family_guard BEFORE DELETE OR UPDATE ON hidra_identity_refresh_family FOR EACH ROW EXECUTE FUNCTION hidra_identity_refresh_family_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_identity_refresh_family_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_identity_refresh_family_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'public'<br>AS $function$<br>BEGIN<br>    IF TG_OP &lt;&gt; 'UPDATE' OR OLD.revoked_at IS NOT NULL<br>        OR NEW.revoked_at IS NULL<br>        OR (to_jsonb(NEW)-'revoked_at') IS DISTINCT FROM (to_jsonb(OLD)-'revoked_at')<br>    THEN<br>        RAISE EXCEPTION 'Invalid refresh-family mutation' USING ERRCODE='23514';<br>    END IF;<br>    RETURN NEW;<br>END;<br>$function$<br>
+
+### public.hidra_identity_refresh_token
+
+Owner: **identity**; relation kind: `r`.
+
+Keyed digest only, monotone generation and immutable native-bound token history; server-side single-use consumes and replay.
+
+- Evidence: [V20261108_001__identity_refresh_token_rotation.sql](../../src/main/resources/db/migration/V20261108_001__identity_refresh_token_rotation.sql)
+- Evidence: [JdbcRefreshTokenRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcRefreshTokenRepositoryAdapter.java)
+- Migration mention (not inferred introduction): [V20261108_001__identity_refresh_token_rotation.sql](../../src/main/resources/db/migration/V20261108_001__identity_refresh_token_rotation.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| family_id | character varying(36) | False | None; identity=; generated= | No current mapped Java column | — |
+| generation | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| digest | bytea | False | None; identity=; generated= | No current mapped Java column | — |
+| binding_id | character varying(36) | False | None; identity=; generated= | No current mapped Java column | — |
+| native_issuer | text | False | None; identity=; generated= | No current mapped Java column | — |
+| native_jti | character varying(36) | False | None; identity=; generated= | No current mapped Java column | — |
+| session_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| issued_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| consumed_at | timestamp with time zone | True | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `ck_hidra_identity_refresh_token_interval`: CHECK (isfinite(issued_at) AND (consumed_at IS NULL OR isfinite(consumed_at) AND consumed_at &gt;= issued_at))
+  - Catalog attributes: {"columns": ["issued_at", "consumed_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_identity_refresh_token_binding_id_fkey`: FOREIGN KEY (binding_id) REFERENCES hidra_identity_operation_binding(binding_id)
+  - Catalog attributes: {"columns": ["binding_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["binding_id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_identity_operation_binding"}, "type": "f", "validated": true}
+- `hidra_identity_refresh_token_digest_check`: CHECK (octet_length(digest) = 32)
+  - Catalog attributes: {"columns": ["digest"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_identity_refresh_token_family_id_fkey`: FOREIGN KEY (family_id) REFERENCES hidra_identity_refresh_family(id)
+  - Catalog attributes: {"columns": ["family_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_identity_refresh_family"}, "type": "f", "validated": true}
+- `hidra_identity_refresh_token_generation_check`: CHECK (generation &gt;= 0)
+  - Catalog attributes: {"columns": ["generation"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_identity_refresh_token_session_id_fkey`: FOREIGN KEY (session_id) REFERENCES hidra_identity_login_session(id)
+  - Catalog attributes: {"columns": ["session_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_identity_login_session"}, "type": "f", "validated": true}
+- `pk_hidra_identity_refresh_token`: PRIMARY KEY (family_id, generation)
+  - Catalog attributes: {"columns": ["family_id", "generation"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `uq_hidra_identity_refresh_token_binding`: UNIQUE (binding_id)
+  - Catalog attributes: {"columns": ["binding_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `uq_hidra_identity_refresh_token_digest`: UNIQUE (digest)
+  - Catalog attributes: {"columns": ["digest"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `uq_hidra_identity_refresh_token_session`: UNIQUE (session_id)
+  - Catalog attributes: {"columns": ["session_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+
+#### Indexes
+
+- `ix_hidra_identity_refresh_token_family`: CREATE INDEX ix_hidra_identity_refresh_token_family ON public.hidra_identity_refresh_token USING btree (family_id, generation DESC)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+- `pk_hidra_identity_refresh_token`: CREATE UNIQUE INDEX pk_hidra_identity_refresh_token ON public.hidra_identity_refresh_token USING btree (family_id, generation)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `uq_hidra_identity_refresh_token_binding`: CREATE UNIQUE INDEX uq_hidra_identity_refresh_token_binding ON public.hidra_identity_refresh_token USING btree (binding_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `uq_hidra_identity_refresh_token_digest`: CREATE UNIQUE INDEX uq_hidra_identity_refresh_token_digest ON public.hidra_identity_refresh_token USING btree (digest)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `uq_hidra_identity_refresh_token_session`: CREATE UNIQUE INDEX uq_hidra_identity_refresh_token_session ON public.hidra_identity_refresh_token USING btree (session_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `trg_hidra_identity_refresh_token_guard`: CREATE TRIGGER trg_hidra_identity_refresh_token_guard BEFORE DELETE OR UPDATE ON hidra_identity_refresh_token FOR EACH ROW EXECUTE FUNCTION hidra_identity_refresh_token_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_identity_refresh_token_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_identity_refresh_token_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'public'<br>AS $function$<br>BEGIN<br>    IF TG_OP &lt;&gt; 'UPDATE' OR OLD.consumed_at IS NOT NULL<br>        OR NEW.consumed_at IS NULL<br>        OR (to_jsonb(NEW)-'consumed_at') IS DISTINCT FROM (to_jsonb(OLD)-'consumed_at')<br>    THEN<br>        RAISE EXCEPTION 'Invalid refresh-token mutation' USING ERRCODE='23514';<br>    END IF;<br>    RETURN NEW;<br>END;<br>$function$<br>
 
 ### public.hidra_identity_role
 
@@ -10795,6 +10920,7 @@ Persisted UserJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261103_002__foundation_identity_lifecycle.sql](../../src/main/resources/db/migration/V20261103_002__foundation_identity_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261108_001__identity_refresh_token_rotation.sql](../../src/main/resources/db/migration/V20261108_001__identity_refresh_token_rotation.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|

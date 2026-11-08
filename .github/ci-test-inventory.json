@@ -11247,7 +11247,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/configuration/HidraOpenApiSecurityConfigurationTest.java",
-      "source_sha256": "4f081d872348c927ecddd23172cb69d21e55313006079803b8c18ef8d8d86aff",
+      "source_sha256": "0fd972d647c22a2d118e87f72528dea395439c13110679f9e8e77481144998c7",
       "supports": []
     },
     {
@@ -11401,7 +11401,8 @@
         "suppliedFluidDelegationRequiresExactAuthenticatedOwnerTuples",
         "surveyDelegationRequiresExactNativeControllerMethodAndAuthentication",
         "trustedPlatformRegistryStillRequiresAuthenticatedExactCompiledTuple",
-        "characteristicLinkDelegationRequiresFourExactAuthenticatedOwnerTuples"
+        "characteristicLinkDelegationRequiresFourExactAuthenticatedOwnerTuples",
+        "permitsAnonymousLocalRefreshAndLogoutWithoutGeneralPermissionBypass"
       ],
       "class": "dz.sh.hidra.platform.permissions.HidraRouteAuthorizationInterceptorTest",
       "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
@@ -11409,7 +11410,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraRouteAuthorizationInterceptorTest.java",
-      "source_sha256": "95d530a11eb228d81e3cf93a6b7353988d7cb49cf78a2c1e5fb674e3b2b02f95",
+      "source_sha256": "3f09e4f881e07d59b74e029b96a9c0a77b53d514e60282542d88eeea307ac391",
       "supports": []
     },
     {

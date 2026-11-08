@@ -47,6 +47,8 @@ public class HidraOpenApiSecurityConfiguration {
     private static final Set<String> PUBLIC_API_PATHS = Set.of(
             "/api/v1/security/oidc",
             "/api/v1/identity/authentication/login",
+            "/api/v1/identity/authentication/refresh",
+            "/api/v1/identity/authentication/logout",
             "/actuator/health",
             "/actuator/info"
     );

@@ -1816,3 +1816,11 @@ Bounded append-only membership extension approved with the foundation roadmap. O
 | HPS-004 | Physical Network Topology | [HAPI-926](TASKS_HPS-004.md#hapi-926) | Foundation B4; no legacy replacement | connect pipeline authoring to persisted graph views | Whole approved B4 delivery; see owning task definition | P1 | HAPI-923, HAPI-924 | VERIFIED | COMPLETED |
 | HPS-018 | Engineering Baselines and Configuration | [HAPI-927](TASKS_HPS-018.md#hapi-927) | Foundation B5; no legacy replacement | complete typed foundation configuration lifecycle | Whole approved B5 delivery; see owning task definition | P1 | HAPI-923 | VERIFIED | COMPLETED |
 | HPS-015 | Workflow and Approvals | [HAPI-928](TASKS_HPS-015.md#hapi-928) | Foundation B6; no legacy replacement | complete foundation task discovery and scoped reads | Whole approved B6 delivery; see owning task definition | P1 | HAPI-923, HAPI-925, HAPI-926 | VERIFIED | COMPLETED |
+
+## Owner-approved Identity refresh membership extension — 2026-11-08
+
+The explicit owner amendment adds one HPS-001 task, HAPI-929; it does not alter any of the preceding 928 task rows or the existing 25 phase descriptions. Its complete technical ledger belongs to [HPS-001](TASKS_HPS-001.md#hapi-929).
+
+| Task ID | Task Name | Deliverable | Priority | Dependencies | Implementation Status | Planning Status |
+|---|---|---|---|---|---|---|
+| [HAPI-929](TASKS_HPS-001.md#hapi-929) | implement rotating identity refresh tokens | Whole LOCAL rotating refresh-token and revocation lifecycle, current Identity checks and protected-native-token proof | P0 | HAPI-923 | NOT_IMPLEMENTED | REGISTERED_PENDING |

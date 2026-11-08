@@ -12656,4 +12656,91 @@ Registered message: `feat(identity): complete foundation user access lifecycle`.
 The accepted B1 history remains preserved; HWEB-F11 and A1 browser acceptance
 remain separate and are not executed by this repair.
 
+
+<a id="hapi-929"></a>
+## HAPI-929 — implement rotating identity refresh tokens
+
+Phase: HPS-001 — Identity and Authentication
+
+Legacy IDs: None — owner-approved 2026-11-08 extension; no earlier legacy task replaced.
+
+Priority: P0
+
+Implementation Status: NOT_IMPLEMENTED
+
+Planning Status: REGISTERED_PENDING
+
+Owning Module: `identity`
+
+Dependencies: HAPI-923 (accepted native LOCAL verification, session, immutable binding and original-transaction authorization)
+
+Cross-Repository Dependencies: HidraWEB token storage/renewal handoff is a separate frontend delivery, not implicitly selected.
+
+### Owner selection and exact execution message
+
+The repository owner explicitly approved adding **HAPI-929** on 2026-11-08 after asking for refresh-token capability. This is **one complete, indivisible backend delivery**, not a set of A/B/C, S0/S1 or serial "Next" parts. Registered implementation commit message: `feat(identity): implement rotating refresh tokens`. This registration itself changes no runtime capability, migrated schema or existing accepted task status.
+
+### Scope and safe provider policy
+
+Implement LOCAL native-session refresh only. LDAP/Active Directory/OIDC (including aliases) must fail closed on refresh and require an actual new upstream authentication unless a separately approved, fresh source-proof contract is designed; never extend external token/source-claim validity by copying earlier claims. This bounded policy is explicit, rather than silently converting a refresh token into a new password/IdP verification.
+
+The native access token remains short-lived (default 900 seconds). Provide a separately bounded **absolute refresh-family lifetime**, default seven days and with a security-enforced maximum; no sliding indefinite extension. Use 256-bit CSPRNG opaque values; store only a domain-separated keyed digest, never raw refresh tokens, JWT values or credential material. Derive key material from configured external secret through an isolated cryptographic context or require a separate external key; never embed a production secret or log token values. Preserve a secure default-disabled feature switch in non-development configurations; dev opt-in still requires valid key material.
+
+The LOCAL login response may add optional `refreshToken` and `refreshExpiresAt` without replacing existing JWT metadata. Define `POST /api/v1/identity/authentication/refresh` (opaque token in bounded JSON body, no expired access bearer required) and `POST /api/v1/identity/authentication/logout` (idempotent revocation of the refresh family, with non-disclosing response). No browser cookie, localStorage or persistent frontend credential-storage policy is authorized here. A browser must not store the opaque refresh credential in a URL, console, trace or unencrypted disk.
+
+### Aggregate boundary, invariants and integration
+
+Identity owns one opaque refresh **family** and its one-time descendants. A token has a unique persisted digest, issuing native binding, monotonically advancing rotation generation, original family hard deadline, consumption/revocation evidence and immutable source references. A consumed token must never renew; concurrent reuse must serialize under PostgreSQL row locks. Reuse of a consumed token revokes the entire family and prevents subsequent descendants being used, even if the legitimate client observed a successful earlier rotation. A dead-letter, rollback, exception or server restart cannot manufacture a second bearer or reset an already consumed generation.
+
+On each refresh, revalidate the original persisted binding's private producer authenticator, current LOCAL provider/credential security generations, active human account, lock status, session termination and current effective grants **using fresh server-side evidence**. An expired *access* JWT cannot authorize refresh on its own; the separate one-time refresh secret must be proven. Create a **new** signed JWT, unique JTI, new immutable producer-authenticated binding and newly persisted session within one READ_COMMITTED owner transaction. Retire the old bound session so the old bearer loses authority immediately. Enforce the existing bound-session database guards, producer-key isolation, foreign keys, time precision, lock order, append-only audit and rollback semantics. Never change historical V* migrations or weaken producer-proof/authorization tests.
+
+Credential reset, account disabling/locking, logout and administrator revocation must invalidate refresh ability. Current grant changes must not be promoted from stale JWT claims: either disallow the family after relevant authority changes or rebuild a reduced-current-authority token under exact native verification without stale promotion. Protected operation admission must still run its own original-transaction Identity/Authorization checks. Never invent an operator decision, SCADA permission, company scope or global administrator grant.
+
+### Exact CREATE allowlist
+
+- `src/main/java/dz/sh/hidra/modules/identity/domain/model/RefreshTokenFamily.java`
+- `src/main/java/dz/sh/hidra/modules/identity/domain/service/RefreshTokenRotationPolicy.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/RotateLocalRefreshTokenUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RefreshTokenRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RefreshTokenEvidencePort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/RefreshTokenRotationApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/request/RefreshTokenRequest.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcRefreshTokenRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedRefreshTokenEvidenceAdapter.java`
+- `src/main/resources/db/migration/V20261108_001__identity_refresh_token_rotation.sql`
+- `src/test/java/dz/sh/hidra/modules/identity/domain/service/RefreshTokenRotationPolicyTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityRefreshTokenControllerTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/RefreshTokenRotationPostgresIntegrationTest.java`
+
+### Exact MODIFY allowlist
+
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/AuthenticationCompletionApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/model/AuthenticationResult.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/response/AuthenticationLoginResponse.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/mapper/IdentityAuthenticationWebMapper.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityAuthenticationController.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/TrustedAuthenticationVerificationRegistry.java`
+- `src/main/java/dz/sh/hidra/platform/configuration/HidraSecurityConfiguration.java`
+- `src/main/resources/application.properties`
+- `src/main/resources/application-dev.properties`
+- `src/test/java/dz/sh/hidra/modules/identity/OperationAuthenticationBoundaryGuardrailTest.java` (only to extend the approved genuine producer proof)
+- `.github/ci-test-inventory.json` (add exact new cases/hashes, preserve existing)
+- `.github/database-dictionary-ownership.json` (new Identity-owned relation)
+- `doc/api/openapi.yaml` (only from actual generated runtime snapshot)
+- `.github/documentation-validation.json` (only actual generated contract/provenance metadata)
+- `doc/database/DATA_DICTIONARY.md` (only from actual PostgreSQL migrated capture)
+- `docs/AUTHENTICATION_DEPLOYMENT_RUNBOOK.md` (configuration, keys, client integration, revocation)
+- `doc/roadmap/TASKS_HPS-001.md` (append-only evidence inside this owning definition)
+
+This is the approved bounded initial file inventory, not permission to silently mutate unlisted code. If implementing the security contract truly requires an additional path or a different reserved Flyway version, reconcile the **whole HAPI-929 task** in this owning ledger before mutation; no independent new stage is implied. Production `application.properties`, historical V* checks, CI and test lists remain guarded. No MySQL portability, simulation/P3 or deployment proof follows.
+
+### Whole-task acceptance gate
+
+Required focused Java/Spring/real PostgreSQL/HTTP tests: successful LOCAL login -> refresh -> authenticated `/me` and protected API with a **new** JTI/session/binding; expired access JWT with valid refresh credential; exact client refresh family hard expiration; unknown/malformed/expired/replayed token rejection without private disclosure; simultaneous refresh collision where at most one succeeds and replay revokes descendants; logout family termination; disabled/locked user, stale provider/credential version, reset/revocation and stale current grants; current native origin tag and source-claim barriers; JWT key rotation; restart persistence and stale token replay; injection/oversize/rate-boundary behavior; rollback/no partial writes; retained existing bound-operation security suites. Runtime OpenAPI compatibility, mandatory test inventory, real migrated dictionary strict equality, zero-downgrade schema and exact-SHA Full + Docs CI must be independently verified. Web/browser A1, live IdP/SITE, deployment and industrial OT acceptance remain separate **NOT ESTABLISHED** gates.
+
+### Registration-only evidence — 2026-11-08
+
+Owner approval and exact existing source established the missing refresh endpoint/persistence, existing `TOKEN_REFRESH` event vocabulary, 900-second access TTL, immutable one-session-per-native-binding model and private verification guard. No functionality, test execution, migration or schema change has occurred in this registration. The accepted HAPI-923 source and frozen 928 earlier registry entries remain untouched. The first implementation work for HAPI-929 must execute this complete approved scope after refreshing live `main` and exact-SHA CI. Do not claim the present governance registration provides usable refresh tokens.
+
+
 <!-- task-register:payload:end -->

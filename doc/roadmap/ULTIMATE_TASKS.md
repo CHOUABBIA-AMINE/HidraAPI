@@ -3478,3 +3478,10 @@ Bounded backend handoff VERIFIED / COMPLETED; earlier pending records historical
 Existing status cells unchanged. Next reserved whole delivery HWEB-F14/W4 requires
 separate owner selection and refreshed HidraWEB evidence/contract adoption.
 No frontend/browser/A1, SITE, P3, release or deployment acceptance.
+
+## Owner-approved Identity refresh registration — 2026-11-08
+
+The owner approved adding **HAPI-929** as one whole independent Identity delivery after the accepted HAPI-923 foundation. The canonical count is **929** across the existing **25 phases**; historical 928-task context stays historical. The new task remains **NOT_IMPLEMENTED / REGISTERED_PENDING**: this governance record does not ship refresh tokens, migrations or HTTP endpoints. The owning definition fixes its file allowlist, exact implementation message, deterministic security policy, cases and remaining gates.
+
+<a id="hapi-929"></a>
+[HAPI-929](TASKS_HPS-001.md#hapi-929) — rotating LOCAL refresh-token lifecycle.

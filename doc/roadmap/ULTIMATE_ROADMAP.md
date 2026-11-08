@@ -2139,3 +2139,9 @@ Bounded append-only membership extension approved with the foundation roadmap. O
 | HPS-004 | Physical Network Topology | [HAPI-926](TASKS_HPS-004.md#hapi-926) | Foundation B4; no legacy replacement | connect pipeline authoring to persisted graph views | Whole approved B4 delivery; see owning task definition | P1 | HAPI-923, HAPI-924 | VERIFIED | COMPLETED |
 | HPS-018 | Engineering Baselines and Configuration | [HAPI-927](TASKS_HPS-018.md#hapi-927) | Foundation B5; no legacy replacement | complete typed foundation configuration lifecycle | Whole approved B5 delivery; see owning task definition | P1 | HAPI-923 | VERIFIED | COMPLETED |
 | HPS-015 | Workflow and Approvals | [HAPI-928](TASKS_HPS-015.md#hapi-928) | Foundation B6; no legacy replacement | complete foundation task discovery and scoped reads | Whole approved B6 delivery; see owning task definition | P1 | HAPI-923, HAPI-925, HAPI-926 | VERIFIED | COMPLETED |
+
+## Owner-approved Identity refresh extension — 2026-11-08
+
+The owner selected a structural registration of one whole backend HAPI-929 delivery, outside the frozen 12-delivery foundation supplement. Original HAPI-001–928 meanings, statuses, 25-phase membership, historical records and prior acceptance remain unchanged. Technical scope and approval evidence live only in the owning [HPS-001 task definition](TASKS_HPS-001.md#hapi-929). No implementation, CI pass or operational acceptance is inferred by registration.
+
+| HPS-001 | Identity and Authentication | [HAPI-929](TASKS_HPS-001.md#hapi-929) | Owner-approved refresh extension; no legacy replacement | implement rotating identity refresh tokens | Whole rotating LOCAL refresh-token issuance, reuse detection, family revocation and new current bound bearer; external providers fail closed until newly authorized source re-verification | P0 | HAPI-923 | NOT_IMPLEMENTED | REGISTERED_PENDING |

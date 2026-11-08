@@ -2145,3 +2145,10 @@ Bounded append-only membership extension approved with the foundation roadmap. O
 The owner selected a structural registration of one whole backend HAPI-929 delivery, outside the frozen 12-delivery foundation supplement. Original HAPI-001–928 meanings, statuses, 25-phase membership, historical records and prior acceptance remain unchanged. Technical scope and approval evidence live only in the owning [HPS-001 task definition](TASKS_HPS-001.md#hapi-929). No implementation, CI pass or operational acceptance is inferred by registration.
 
 | HPS-001 | Identity and Authentication | [HAPI-929](TASKS_HPS-001.md#hapi-929) | Owner-approved refresh extension; no legacy replacement | implement rotating identity refresh tokens | Whole rotating LOCAL refresh-token issuance, reuse detection, family revocation and new current bound bearer; external providers fail closed until newly authorized source re-verification | P0 | HAPI-923 | NOT_IMPLEMENTED | REGISTERED_PENDING |
+
+## Owner-directed GZ2 Alarm resource-authorization extension — 2026-11-08
+
+The owner's contextual `Next` after the HWEB-F16 HOLD authorizes registration of one complete HAPI-930 prerequisite in the existing HPS-011 phase; [its owning technical definition](TASKS_HPS-011.md#hapi-930) records source, policy gates, exact registration message, candidate future file scope and acceptance. The original 929 tasks and 25 phase definitions remain preserved. HAPI-930 is NOT_IMPLEMENTED/BLOCKED until approved current company/asset authority and replay semantics; HWEB-F16 remains HOLD. Registration-only message: `docs(roadmap): register GZ2 alarm authorization prerequisite`; future whole implementation is separately selected. This registration edits six governance files only and starts no executable code or release.
+
+| HPS-011 | Alarms and Events | [HAPI-930](TASKS_HPS-011.md#hapi-930) | HWEB-F16 prerequisite; no legacy replacement | enforce scoped Alarm resource access and acknowledgement | Protect Alarm list/count/detail, acknowledgement and related resource routes with current company/asset scope | P0 | HAPI-923, HAPI-925, HAPI-926; owner policy | NOT_IMPLEMENTED | BLOCKED |
+

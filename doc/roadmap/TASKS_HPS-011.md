@@ -9552,4 +9552,79 @@ Future discoveries, refined exact file scope, accepted tests, blockers and decis
 docs/data definition/Notification.md:1622 | NOTIF-016 | architecture tests | Deferred conceptual sequence
 ~~~~~~~~
 
+
+<a id="hapi-930"></a>
+## HAPI-930 — enforce scoped Alarm resource access and acknowledgement
+
+Phase: HPS-011 — Alarms and Events
+
+Legacy IDs: None superseded; new prerequisite identified by HWEB-F16 GZ2 acknowledgement HOLD.
+
+Priority: P0
+
+Implementation Status: NOT_IMPLEMENTED
+
+Planning Status: BLOCKED
+
+Owning Module: `alarm` (Identity, Topology and Organization own their respective exported semantics).
+
+Dependencies: HAPI-923, HAPI-925, HAPI-926, current protected-authority provider contracts and the decisions below; HAPI-929 refresh tokens are not an assumed precondition.
+
+Cross-Repository Dependencies: HidraWEB HWEB-F16 remains HOLD; WEB re-pinning and native browser acceptance are independent.
+
+### 1. Registration boundary
+
+The owner replied `Next` after being offered registration of one Alarm resource-authorization prerequisite. This is a documentation-only, whole-task registration under the adopted six-document task baseline; it does not authorize implementation, grant a permission, silently change Alarm semantics or select release/deployment. Historical HAPI-001–929 and all existing 25 phases remain intact. Registration message: `docs(roadmap): register GZ2 alarm authorization prerequisite`. Future complete implementation message, not selected: `feat(alarm): enforce scoped alarm access and acknowledgement`.
+
+### 2. Verified source and unresolved implementation gap
+
+HidraAPI source `70490d28e1a290a14578c2fc6320d242b4a76ec3`, parent `ce0e059b16db85d4b61da06f5a0ad1a1944d1015`, tree `a0e2115c2bea1bfac12c11002e8374b658925f4f`, [Full #1145 SUCCESS](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42485536476), [Docs #937 SUCCESS](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42485536750). HidraWEB source `e518f7113f66c38157c2cc35f239828e8dcbc295`, [Docs #64 SUCCESS](https://github.com/CHOUABBIA-AMINE/HidraWEB/actions/runs/42490948209). The [WEB F16 findings](https://github.com/CHOUABBIA-AMINE/HidraWEB/blob/e518f7113f66c38157c2cc35f239828e8dcbc295/docs/roadmap/HidraAPI-Frontend-Backend-Gap-Register.md#hweb-f16--gz2-alarm-acknowledgement-preflight-hold-2026-11-08) are source review, not actual native GZ2 browser acceptance.
+
+- `AlarmQueryController` delegates GET list/detail/shelving history to `AlarmQueryUseCase` and `JpaAlarmQueryAdapter`. The adapter currently loads all alarm rows, filters/paginates after materialization, discloses `totalElements` and loads direct detail by ID without current actor/asset/company authorization.
+- `SpringAlarmController` resolves actor and principal name from `CurrentActorResolver`; `AlarmApplicationService` acquires an alarm lock and checks lifecycle, then `JpaAlarmAcknowledgementRepositoryAdapter` persists actor/time/state and lifecycle event transactionally. There is no proved Alarm-specific company/resource authorization. The optional request `organizationUnitId` and `organizationUnitCode` are caller-provided, not trust evidence.
+- Existing `identity.application.contract.topology.TopologyScopedAccessContract` is **Topology-only**, not an Alarm grant; `topology.application.contract.organization.TopologyOperationalScopeTargetContract` proves identity/assignability, not company ownership. `topology.application.contract.station.StationProtectedFacilityOwnershipContract` is station-specific. Reuse owner patterns, not private cross-module aggregates.
+- Existing `AlarmAcknowledgementSemanticPostgresIntegrationTest` permits multiple distinct acknowledgements while enforcing transactional history. Preserve that behavior until the business owner explicitly chooses idempotent/once-only treatment.
+
+### 3. Whole-task requirements
+
+**Domain boundary:** Alarm owns state/acknowledgement lifecycle and audit history; Topology owns canonical asset/network identity, Organization owns responsibility, Identity owns authoritative current actor/company/resource permissions. No duplicated cross-module domain state.
+
+**Reads and counts:** Apply current company/resource/asset authorization **before** disclosing existence, list rows, count, paging totals, detail, alarm-specific history or source context. Scope filtering belongs at the protected application and database query boundary; never load unscoped datasets and post-filter in WEB. User-supplied topology filters and stored display snapshots do not authorize access. Unknown/ambiguous associations fail closed.
+
+**Writes and transactions:** The exact acknowledgement alarm/actor/operation must be authorized within the original transaction with appropriate current-grant/owner concurrency fencing. Denial leaves no updated state, acknowledgement record, event, history or count. Continue deriving actor and operation time on server. Do not let the request's organization unit fields become authorization facts. Preserve existing legitimate multiple historical acknowledgements unless separately approved.
+
+**Neighboring routes:** Inventory read/write Alarm surfaces that can expose or modify the same protected alarm, including shelving, closure and suppression. Apply equivalent protection where applicable, or keep an unsafe surface unavailable to this release. Route-level `alarm:alarms:read` and `alarm:alarms:execute` remain independently enforced but are insufficient for resource scope.
+
+**Errors and replay:** The responsible owners must approve 403 versus non-disclosing 404, same-grant out-of-scope list semantics, stale 409 where supported, and explicit distinction between a single operator action and strict once-only/idempotent backend guarantees. No silent historical semantics change.
+
+### 4. Scope and exact file inventory
+
+**This registration's only MODIFY allowlist** is `AGENTS.md`, `.github/documentation-validation.json`, `doc/roadmap/ULTIMATE_ROADMAP.md`, `doc/roadmap/ULTIMATE_PHASES.md`, `doc/roadmap/ULTIMATE_TASKS.md`, and `doc/roadmap/TASKS_HPS-011.md`. No executable source, migration, contract snapshot, test or workflow is touched.
+
+**Verified existing implementation seams for future bounded MODIFY authorization** (not modified now):
+
+- `src/main/java/dz/sh/hidra/modules/alarm/application/port/in/AlarmQueryUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/api/rest/controller/AlarmQueryController.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/api/rest/controller/SpringAlarmController.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/application/service/AlarmApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/infrastructure/query/JpaAlarmQueryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/infrastructure/persistence/adapter/JpaAlarmAcknowledgementRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/infrastructure/persistence/adapter/JpaAlarmRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/api/rest/controller/AlarmSuppressionController.java` if its same-Alarm exposure requires fencing
+- `src/main/java/dz/sh/hidra/platform/permissions/HidraRouteAuthorizationInterceptor.java` only if a reviewed native operation requires explicit route registration, never weakened enforcement
+
+**Proposed new files, NOT existing or approved execution paths:** `alarm/application/port/out/AlarmResourceAuthorizationPort.java`, `alarm/application/service/AlarmScopedQueryApplicationService.java`, `alarm/infrastructure/security/AlarmResourceAuthorizationAdapter.java`, `identity/application/contract/alarm/AlarmScopedAuthorizationContract.java`, `topology/application/contract/alarm/AlarmTopologyOwnershipContract.java`, `organization/application/contract/alarm/AlarmResponsibilityScopeContract.java`, and dedicated unit, HTTP and PostgreSQL scope tests under the owning Alarm test packages. These are candidate names under `src/main/java/dz/sh/hidra/modules/` or `src/test/java/dz/sh/hidra/modules/`, not evidence of implemented APIs. The exact CREATE/MODIFY/test allowlist, cross-owner public contracts, transaction design and any necessary additive migration version must be owner-reviewed and reserved here before executing this one whole code task. Do not split it into extra roadmap stages. No existing Flyway migration is rewritten.
+
+### 5. Blocked decisions
+
+Before code, obtain accountable Alarm/Identity/Topology/Organization and business/security agreement on (a) canonical GZ2 alarm asset-to-company and responsibility authority including reassignment and cross-company grants; (b) current native permission, lock/fence and 403/404 policy; (c) the acknowledged business meaning of one-click versus exactly-once/idempotency, preserving the current multiple-record history until selected. Owner needs to approve supported semantics, NOT supply actual plant metrics, calibration or live OT records. If appropriate owner contracts do not exist, design/export them with independent review inside this same whole task rather than inventing a universal permission adapter.
+
+### 6. Native and CI acceptance after separate implementation selection
+
+Use fresh migrated disposable PostgreSQL, synthetic GZ2 assets/alarms, three genuine authenticated actors with **identical route grants**: in-scope operator, same-company out-of-scope operator and cross-company out-of-scope operator. Test list/total/page, direct detail/history, acknowledgement and fresh readback; confirm denied accesses disclose no existence/count, denied writes preserve row/event/state counts, authorised actor/time are durable, duplicate/stale/concurrent grant revocation or owner reassignment obey admitted policy, and rollback leaves no split evidence. Run source and architecture guards; register actual tests in CI inventory, verify runtime OpenAPI compatibility and database dictionary if changed. Exact implementation SHA must pass applicable Full and Docs CI with independent raw-case review. A refreshed WEB Orval pin, native browser, SITE, release and deployment are separate gates.
+
+### 7. Status and stopping rule
+
+**NOT_IMPLEMENTED / BLOCKED.** Registration is not Alarm security remediation or software acceptance. Publish only this governance commit guarded to prior API HEAD; verify parent/tree/blobs and Documentation CI created/queued or started, then STOP. One future owner-selected whole task executes `feat(alarm): enforce scoped alarm access and acknowledgement` after resolving the above decisions. HWEB-F16 remains HOLD until actual protected backend and native WEB acceptance.
+
 <!-- task-register:payload:end -->

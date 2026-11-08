@@ -823,3 +823,8 @@ Only this bounded supplement supersedes older foundation sequencing pointers. Pr
 ## Owner-approved standalone Identity refresh-token registration — 2026-11-08
 
 The owner explicitly selected the structural addition of **HAPI-929** to the existing **HPS-001** phase, bringing the canonical registry to **929 tasks in 25 phases**. Prior historical 921/928 statements remain historical; HAPI-001–928 rows, task evidence, immutable archives and old CI acceptance remain unchanged. The owning source of technical scope, exact full implementation message, tests and prerequisites is [HAPI-929](doc/roadmap/TASKS_HPS-001.md#hapi-929). It is **NOT_IMPLEMENTED / REGISTERED_PENDING** after registration, not a shipped API. Execute the whole task once separately selected and verified; no A/B/C or serial stages. This amendment authorizes no release, live OT, numerical/P3, frontend work or bypass of native Identity provenance.
+
+## Owner-directed GZ2 Alarm authorization membership — 2026-11-08
+
+After HWEB-F16's recorded HOLD and the offered next action to register its owning API prerequisite, the owner's contextual `Next` selected **documentation-only registration** of HAPI-930 in existing HPS-011. The canonical count is now 930 tasks in 25 phases; all previous task IDs, statuses, immutable archives and older acceptance remain unchanged. [HAPI-930 owning definition](doc/roadmap/TASKS_HPS-011.md#hapi-930) is NOT_IMPLEMENTED/BLOCKED pending exact company/asset authorization policy and cross-owner agreement. No implementation, frontend scope, production/SITE, P3 or deployment is selected.
+

@@ -1824,3 +1824,12 @@ The explicit owner amendment adds one HPS-001 task, HAPI-929; it does not alter 
 | Task ID | Task Name | Deliverable | Priority | Dependencies | Implementation Status | Planning Status |
 |---|---|---|---|---|---|---|
 | [HAPI-929](TASKS_HPS-001.md#hapi-929) | implement rotating identity refresh tokens | Whole LOCAL rotating refresh-token and revocation lifecycle, current Identity checks and protected-native-token proof | P0 | HAPI-923 | NOT_IMPLEMENTED | REGISTERED_PENDING |
+
+## Owner-directed GZ2 Alarm membership extension — 2026-11-08
+
+This owner-selected structural addition adds HAPI-930 to existing HPS-011 only. All earlier task rows and statuses and all 25 phase definitions remain unchanged. [HPS-011](TASKS_HPS-011.md#hapi-930) owns the technical scope and unresolved approval decisions.
+
+| Task ID | Task Name | Deliverable | Priority | Dependencies | Implementation Status | Planning Status |
+|---|---|---|---|---|---|---|
+| [HAPI-930](TASKS_HPS-011.md#hapi-930) | enforce scoped Alarm resource access and acknowledgement | Scoped Alarm list/count/detail and acknowledgement current-owner enforcement | P0 | HAPI-923, HAPI-925, HAPI-926; owner policy | NOT_IMPLEMENTED | BLOCKED |
+

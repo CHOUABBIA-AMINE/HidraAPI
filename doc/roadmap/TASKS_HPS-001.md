@@ -12621,4 +12621,39 @@ verified; strict actual generated OpenAPI equality and same-base compatibility P
 append-only old task payload and exact two-document scope preservation PASS.
 No new local Java/PostgreSQL execution is claimed.
 
+
+### 2026-11-08 HAPI-923 local-development bearer issuer correction — source repair candidate
+
+Owner-reported real Windows `hidra_deb` LOCAL authentication succeeded, while subsequent
+`/api/v1/identity/me`, `/me/permissions` and permission catalog/routes returned
+`Current Identity bearer required.` with HTTP 403. The owner supplied read-only
+PostgreSQL observations showing active, unexpired login sessions, present native
+bindings, matching provider/credential generations and consistent session tuples.
+Source inspection shows `IdentityEffectivePermissionSourceAdapter` obtains the JWT
+issuer through `Jwt.getIssuer()`; the inherited `hidra-api` token-issuer
+default is an opaque identifier, not an absolute URL suitable for this lookup.
+The owner's subsequent login success does not prove all protected endpoints on
+the new configuration; independent end-to-end qualification remains pending.
+
+This **same HAPI-923** requested development-configuration repair changes only
+`src/main/resources/application-dev.properties` to supply the HTTP URI-form
+`http://localhost:8080/hidra-api` fallback for `HIDRA_JWT_TOKEN_ISSUER` in the
+`dev` profile. Operator-provided values still override that fallback; production
+`application.properties`, JWT trust semantics, runtime authorization, session
+binding, schema/migrations, tests and CI configuration are unchanged. The
+separately delivered Windows local kit supplies the same issuer explicitly,
+retains the pinned-SHA guard, adds opt-in developer-only Identity permission
+provisioning and LOCAL-provider fixture, and never disables the security
+triggers. This repair has no new task ID, no frontend implementation, no
+status-cell change and no industrial deployment/SITE acceptance.
+
+Validation before publication: exact-SHA source review and bounded config
+insertion check PASS; ZIP member-byte and archive integrity checks PASS; no
+local Windows PowerShell/PostgreSQL execution or Java/Maven tests performed.
+The historical exact-head Documentation CI #932 SUCCESS for the parent is
+not evidence for this source change. Exact-new-SHA hosted CI is PENDING.
+Registered message: `feat(identity): complete foundation user access lifecycle`.
+The accepted B1 history remains preserved; HWEB-F11 and A1 browser acceptance
+remain separate and are not executed by this repair.
+
 <!-- task-register:payload:end -->

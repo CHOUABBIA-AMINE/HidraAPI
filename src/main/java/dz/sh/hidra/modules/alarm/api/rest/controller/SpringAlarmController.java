@@ -27,7 +27,7 @@ import dz.sh.hidra.modules.alarm.api.rest.response.AlarmResponse;
 import dz.sh.hidra.modules.alarm.application.port.in.AcknowledgeAlarmUseCase;
 import dz.sh.hidra.modules.alarm.application.port.in.CloseAlarmUseCase;
 import dz.sh.hidra.modules.alarm.application.port.in.RaiseAlarmUseCase;
-import dz.sh.hidra.modules.alarm.application.port.out.AlarmResourceAuthorizationPort;
+import dz.sh.hidra.modules.alarm.application.port.in.AlarmResourceScopeUseCase;
 import dz.sh.hidra.platform.security.CurrentActorResolver;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -52,14 +52,14 @@ public class SpringAlarmController implements AlarmController {
     private final CloseAlarmUseCase closeAlarmUseCase;
     private final RaiseAlarmUseCase raiseAlarmUseCase;
     private final CurrentActorResolver actorResolver;
-    private final AlarmResourceAuthorizationPort scopedAuthorization;
+    private final AlarmResourceScopeUseCase scopedAuthorization;
 
     public SpringAlarmController(
             AcknowledgeAlarmUseCase acknowledgeAlarmUseCase,
             CloseAlarmUseCase closeAlarmUseCase,
             RaiseAlarmUseCase raiseAlarmUseCase,
             CurrentActorResolver actorResolver,
-            AlarmResourceAuthorizationPort scopedAuthorization
+            AlarmResourceScopeUseCase scopedAuthorization
     ) {
         this.acknowledgeAlarmUseCase = Objects.requireNonNull(acknowledgeAlarmUseCase, "AcknowledgeAlarmUseCase must not be null.");
         this.closeAlarmUseCase = Objects.requireNonNull(closeAlarmUseCase, "CloseAlarmUseCase must not be null.");

@@ -113,3 +113,12 @@ Without an explicit approved architecture change, consumers must not replace the
 ## Change Control
 
 Adding an exported package requires the corresponding architecture/roadmap decision and an update to the architecture enforcement allowlist. Stale exported packages should be removed when no longer used rather than retained as an implicit compatibility surface.
+
+## HAPI-930 narrow Alarm owner exports — 2026-11-08
+
+HAPI-930's approved resource-authorization boundary introduces **two exact, provider-owned application-contract types**, consumed only by `dz.sh.hidra.modules.alarm.infrastructure.security.AlarmResourceAuthorizationAdapter`:
+
+- `dz.sh.hidra.modules.identity.application.contract.alarm.AlarmScopedAuthorizationContract`: current exact company-and-asset permission decision, not an Identity persistence or domain export.
+- `dz.sh.hidra.modules.topology.application.contract.alarm.AlarmTopologyOwnershipContract` and its nested `OwnedAsset` projection: current Topology asset and owner identity, not a permission decision.
+
+These are **exact consumer/type exceptions**, not new package-wide exceptions in the existing historical 63-package exported set. The two independently enforced guardrails, `ArchitectureGuardrailTest` and `ForensicRemediationClosureTest`, permit only these named types for the named Alarm adapter, with positive and negative tests; unrelated consumers, sibling types and private owners remain forbidden. HAPI-930 is PARTIAL / IN_PROGRESS; successful source compilation, exact-SHA CI and native permission proof are independent acceptance gates. The earlier October 2026 70-file/63-package inventory remains historical and is not retroactively rewritten.

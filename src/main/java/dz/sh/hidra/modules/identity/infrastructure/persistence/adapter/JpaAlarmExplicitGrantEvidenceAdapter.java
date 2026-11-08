@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 @Component
-public final class JpaAlarmExplicitGrantEvidenceAdapter implements AlarmExplicitGrantEvidencePort {
+public class JpaAlarmExplicitGrantEvidenceAdapter implements AlarmExplicitGrantEvidencePort {
     private final EntityManager em;
     public JpaAlarmExplicitGrantEvidenceAdapter(EntityManager em){this.em=Objects.requireNonNull(em);}
     @Override

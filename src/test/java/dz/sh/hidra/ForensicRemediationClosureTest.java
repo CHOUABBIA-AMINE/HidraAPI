@@ -143,6 +143,16 @@ class ForensicRemediationClosureTest {
 
     @Test
     void crossModulePrivateImportsRemainClosed() throws IOException {
+        String alarmConsumer = "dz.sh.hidra.modules.alarm.infrastructure.security.AlarmResourceAuthorizationAdapter";
+        String alarmIdentity = "dz.sh.hidra.modules.identity.application.contract.alarm.AlarmScopedAuthorizationContract";
+        String alarmTopology = "dz.sh.hidra.modules.topology.application.contract.alarm.AlarmTopologyOwnershipContract";
+        assertTrue(isAlarmOwnerExport(alarmConsumer, alarmIdentity));
+        assertTrue(isAlarmOwnerExport(alarmConsumer, alarmTopology));
+        assertTrue(isAlarmOwnerExport(alarmConsumer, alarmTopology + ".OwnedAsset"));
+        assertFalse(isAlarmOwnerExport(alarmConsumer + "Sibling", alarmTopology));
+        assertFalse(isAlarmOwnerExport(alarmConsumer, alarmIdentity + "Sibling"));
+        assertFalse(isAlarmOwnerExport(alarmConsumer,
+                "dz.sh.hidra.modules.identity.infrastructure.security.ProtectedOperationIdentityParticipant"));
         String productConsumer="dz.sh.hidra.modules.custody.application.service.ProtectedProductDraftAdmissionCoordinator";
         String productRoot="dz.sh.hidra.modules.party.application.contract.custody.CustodyProtectedPartyEligibilityContract";
         assertTrue(custodyProductOwnerExport(productConsumer,productRoot));
@@ -240,6 +250,7 @@ class ForensicRemediationClosureTest {
                 if (organizationOwnerExport(source.fqcn(), imported)) continue;
                 if (custodyProductOwnerExport(source.fqcn(), imported)) continue;
                 if (baselineOwnerExport(source.fqcn(), imported)) continue;
+                if (isAlarmOwnerExport(source.fqcn(), imported)) continue;
                 violations.add(source.fqcn() + " -> " + imported);
             }
         }
@@ -247,6 +258,21 @@ class ForensicRemediationClosureTest {
     }
 
     /** HAPI-605: exact imported types and consumers; no cross-module package-wide bypass. */
+    /**
+     * HAPI-930: only Alarm's reviewed infrastructure coordinator can import exactly the
+     * two owner-exported Alarm contracts and their nested scalar projection types.
+     * No other consumer, sibling type or owner infrastructure is made public.
+     */
+    private static boolean isAlarmOwnerExport(String source, String target) {
+        String consumer = "dz.sh.hidra.modules.alarm.infrastructure.security.AlarmResourceAuthorizationAdapter";
+        if (!consumer.equals(source)) return false;
+        return java.util.Set.of(
+                "dz.sh.hidra.modules.identity.application.contract.alarm.AlarmScopedAuthorizationContract",
+                "dz.sh.hidra.modules.topology.application.contract.alarm.AlarmTopologyOwnershipContract")
+                .stream().anyMatch(root -> target.equals(root) || target.startsWith(root + "$")
+                        || target.startsWith(root + "."));
+    }
+
     private static boolean baselineOwnerExport(String source,String imported) {
         String coordinator="dz.sh.hidra.modules.topology.application.service.ProtectedEngineeringBaselineAdmissionCoordinator";
         String reader="dz.sh.hidra.modules.topology.infrastructure.integration.EngineeringBaselineSourceAdapter";

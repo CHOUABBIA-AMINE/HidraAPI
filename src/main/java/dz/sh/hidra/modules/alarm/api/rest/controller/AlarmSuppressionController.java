@@ -22,7 +22,7 @@ package dz.sh.hidra.modules.alarm.api.rest.controller;
 import dz.sh.hidra.modules.alarm.application.command.CreateAlarmSuppressionCommand;
 import dz.sh.hidra.modules.alarm.application.command.ReleaseAlarmSuppressionCommand;
 import dz.sh.hidra.modules.alarm.application.dto.AlarmSuppressionDto;
-import dz.sh.hidra.modules.alarm.application.port.out.AlarmResourceAuthorizationPort;
+import dz.sh.hidra.modules.alarm.application.port.in.AlarmResourceScopeUseCase;
 import dz.sh.hidra.modules.alarm.domain.exception.AlarmResourceNotFoundException;
 import dz.sh.hidra.modules.alarm.application.dto.AlarmSuppressionPageDto;
 import dz.sh.hidra.modules.alarm.application.port.in.AlarmSuppressionQueryUseCase;
@@ -49,18 +49,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/alarm/suppressions")
-public final class AlarmSuppressionController {
+public class AlarmSuppressionController {
 
     private final ManageAlarmSuppressionUseCase manageUseCase;
     private final AlarmSuppressionQueryUseCase queryUseCase;
     private final CurrentActorResolver actorResolver;
-    private final AlarmResourceAuthorizationPort scopedAuthorization;
+    private final AlarmResourceScopeUseCase scopedAuthorization;
 
     public AlarmSuppressionController(
             ManageAlarmSuppressionUseCase manageUseCase,
             AlarmSuppressionQueryUseCase queryUseCase,
             CurrentActorResolver actorResolver,
-            AlarmResourceAuthorizationPort scopedAuthorization
+            AlarmResourceScopeUseCase scopedAuthorization
     ) {
         this.manageUseCase = Objects.requireNonNull(manageUseCase);
         this.queryUseCase = Objects.requireNonNull(queryUseCase);
@@ -108,13 +108,13 @@ public final class AlarmSuppressionController {
     }
 
     @GetMapping("/{suppressionId}")
-    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    @org.springframework.transaction.annotation.Transactional
     public AlarmSuppressionDto suppression(@PathVariable String suppressionId) {
         return checkedSuppression(suppressionId,"alarm:suppressions:read");
     }
 
     @GetMapping
-    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    @org.springframework.transaction.annotation.Transactional
     public AlarmSuppressionPageDto suppressions(
             @RequestParam(required = false) String suppressionId,
             @RequestParam(required = false) AlarmSuppressionScopeType scopeType,

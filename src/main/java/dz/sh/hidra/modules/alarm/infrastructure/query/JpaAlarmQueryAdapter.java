@@ -41,8 +41,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
-@Transactional(readOnly = true)
-public final class JpaAlarmQueryAdapter implements AlarmQueryUseCase {
+@Transactional
+public class JpaAlarmQueryAdapter implements AlarmQueryUseCase {
     private final EntityManager em;
     private final AlarmResourceAuthorizationPort scopes;
     public JpaAlarmQueryAdapter(EntityManager em,AlarmResourceAuthorizationPort scopes) {

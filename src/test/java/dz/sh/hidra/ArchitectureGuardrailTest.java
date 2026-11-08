@@ -416,6 +416,7 @@ class ArchitectureGuardrailTest {
                 if (isCustodyProductOwnerExport(source.getName(), target.getName())) continue;
                 if (isManufacturerOwnerExport(source.getName(), target.getName())) continue;
                 if (isCharacteristicManufacturerPartyExport(source.getName(),target.getName())) continue;
+                if (isAlarmOwnerExport(source.getName(),target.getName())) continue;
 
                 violations.add(source.getName() + " -> " + target.getName());
             }
@@ -511,6 +512,19 @@ class ArchitectureGuardrailTest {
                         "dz.sh.hidra.modules.alarm.application.service.AlarmSuppressionExpiryOrchestrator",
                         "dz.sh.hidra.modules.audit.application.contract.alarm.AlarmSuppressionAuditContract"),
                 "The deliberate Audit suppression contract exported to Alarm must remain allowed.");
+        // HAPI-930 exact root and nested type, with negative sibling/private/foreign cases.
+        String alarmConsumer = "dz.sh.hidra.modules.alarm.infrastructure.security.AlarmResourceAuthorizationAdapter";
+        String ownerRoot = "dz.sh.hidra.modules.topology.application.contract.alarm.AlarmTopologyOwnershipContract";
+        String identityRoot = "dz.sh.hidra.modules.identity.application.contract.alarm.AlarmScopedAuthorizationContract";
+        assertFalse(isForbiddenCrossModuleDependency(alarmConsumer, ownerRoot));
+        assertFalse(isForbiddenCrossModuleDependency(alarmConsumer, ownerRoot + "$OwnedAsset"));
+        assertFalse(isForbiddenCrossModuleDependency(alarmConsumer, identityRoot));
+        assertTrue(isForbiddenCrossModuleDependency(alarmConsumer + "Sibling", ownerRoot));
+        assertTrue(isForbiddenCrossModuleDependency(alarmConsumer, identityRoot + "Sibling"));
+        assertTrue(isForbiddenCrossModuleDependency(alarmConsumer,
+                "dz.sh.hidra.modules.topology.infrastructure.persistence.entity.FacilityJpaEntity"));
+        assertTrue(isForbiddenCrossModuleDependency(
+                "dz.sh.hidra.modules.organization.application.service.Other", identityRoot));
     }
 
     @Test
@@ -748,6 +762,21 @@ class ArchitectureGuardrailTest {
         assertTrue(isForbiddenCrossModuleDependency(coordinator,"dz.sh.hidra.modules.identity.infrastructure.security.ProtectedEngineeringBaselineAuthorizationParticipant"));
         assertTrue(isForbiddenCrossModuleDependency(reader,"dz.sh.hidra.modules.custody.infrastructure.integration.TopologyBaselineProductSourceAdapter"));
     }
+    /**
+     * HAPI-930: only Alarm's reviewed infrastructure coordinator can import exactly the
+     * two owner-exported Alarm contracts and their nested scalar projection types.
+     * No other consumer, sibling type or owner infrastructure is made public.
+     */
+    private static boolean isAlarmOwnerExport(String source, String target) {
+        String consumer = "dz.sh.hidra.modules.alarm.infrastructure.security.AlarmResourceAuthorizationAdapter";
+        if (!consumer.equals(source)) return false;
+        return java.util.Set.of(
+                "dz.sh.hidra.modules.identity.application.contract.alarm.AlarmScopedAuthorizationContract",
+                "dz.sh.hidra.modules.topology.application.contract.alarm.AlarmTopologyOwnershipContract")
+                .stream().anyMatch(root -> target.equals(root) || target.startsWith(root + "$")
+                        || target.startsWith(root + "."));
+    }
+
     private static boolean isForbiddenCrossModuleDependency(
             String sourceClassName, String targetClassName) {
         String sourcePackage = packageName(sourceClassName);
@@ -759,6 +788,7 @@ class ArchitectureGuardrailTest {
             return false;
         }
         if(isBaselineOwnerExport(sourceClassName,targetClassName))return false;
+        if(isAlarmOwnerExport(sourceClassName,targetClassName))return false;
         // HAPI-605: generic exported-package allowances must not admit unauthorized
         // consumers of the three new source-owner contracts (or nested credentials).
         if(List.of(

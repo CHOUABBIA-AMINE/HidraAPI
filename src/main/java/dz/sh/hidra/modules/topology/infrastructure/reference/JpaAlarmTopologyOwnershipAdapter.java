@@ -27,7 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Transactional(readOnly = true)
-public final class JpaAlarmTopologyOwnershipAdapter implements AlarmTopologyOwnershipContract {
+public class JpaAlarmTopologyOwnershipAdapter implements AlarmTopologyOwnershipContract {
     private static final int MAX_SCOPED_ASSETS = 500;
     private final EntityManager em;
     private final TopologyPartyReferenceContract parties;

@@ -29,7 +29,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public final class AlarmScopedAuthorizationQueryService implements AlarmScopedAuthorizationContract {
+public class AlarmScopedAuthorizationQueryService implements AlarmScopedAuthorizationContract {
     private final FoundationIdentityAuthorizationPort actors;
     private final AlarmExplicitGrantEvidencePort direct;
     private final AuthorizationEvidencePort evidence;

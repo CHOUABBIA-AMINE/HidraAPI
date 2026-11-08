@@ -12834,4 +12834,38 @@ VERIFIED. This is a bounded HAPI-929 CI defect repair, not a new phase or
 selection. HAPI-929 remains pending whole-task acceptance; no deployment,
 production or SITE result is asserted.
 
+### HAPI-929 same-task repair after CI #1144 — 2026-11-08
+
+[HidraAPI CI #1144](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42484109851)
+failed on exact source `ce0e059b16db85d4b61da06f5a0ad1a1944d1015`.
+Documentation #936, static validation, Java 21 unit/architecture and 13 of
+14 PostgreSQL shards passed. The Full Verification Gate failed because
+its API contract and shard 10 dependencies failed.
+
+The API job built the application and generated the runtime contract
+successfully in step 9. Step 10 failed against the earlier snapshot.
+The checked-in snapshot and manifest now derive from that exact runtime
+artifact. The structural diff is two additive POST paths (refresh and
+logout), one request schema and two optional login response properties.
+Both new operations declare an empty bearer security requirement. The
+unchanged offline snapshot validator, exact equality check against the
+recovered artifact and compatibility comparator against the prior reviewed
+snapshot passed. The API lane skipped strict migrated-dictionary comparison
+and successful-base runtime compatibility in #1144. Those gates remain due.
+
+For this `Fail` repair only, reconcile one additional exact MODIFY path:
+`src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedTopologyInstalledUnitAuthorizationPostgresIntegrationTest.java`.
+The retained HAPI-599 authorization regression on shard 10 encountered
+PostgreSQL SQLSTATE 55P03 on `hidra_identity_permission` while acquiring
+the real SHARE ROW EXCLUSIVE NOWAIT fence. The conflicting backend was
+not identified in the log. Isolate the suite's own disposable container from
+automatic vacuum/analyze, as in neighboring Identity fence fixtures, and
+update only its source digest in the strict inventory. Existing conflict,
+permission and scope cases retain their assertions and real transactions.
+Java and PostgreSQL rerun evidence is pending exact-repair-SHA CI.
+
+The registered implementation message and task status are retained.
+Whole-task acceptance remains pending independent exact-SHA Full and Docs
+CI and the registered security and HTTP evidence review.
+
 <!-- task-register:payload:end -->

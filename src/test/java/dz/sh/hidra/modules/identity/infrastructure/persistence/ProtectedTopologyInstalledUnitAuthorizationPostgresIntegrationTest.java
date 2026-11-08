@@ -107,6 +107,9 @@ public class ProtectedTopologyInstalledUnitAuthorizationPostgresIntegrationTest 
                             "log_error_verbosity=terse",
                             "-c",
                             "track_commit_timestamp=on",
+                            // Keep background maintenance out of the disposable NOWAIT fixture.
+                            "-c",
+                            "autovacuum=off",
                             "-c", "max_locks_per_transaction=256",
                             "-c",
                             "log_min_error_statement=panic",

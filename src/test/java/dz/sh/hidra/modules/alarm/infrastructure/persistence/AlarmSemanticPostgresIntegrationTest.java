@@ -99,7 +99,7 @@ public class AlarmSemanticPostgresIntegrationTest {
                 public Optional<AlarmLifecycleEvent> findById(String id) {return eventAdapter.findById(id);}
             }:proxy(eventAdapter,AlarmLifecycleEventRepositoryPort.class);
             alarms=proxy(new JpaAlarmRepositoryAdapter(repositories.getRepository(AlarmJpaRepository.class),catalogs,events,()->new AlarmLifecycleActorPort.Actor("actor","Operator")),AlarmRepositoryPort.class);
-            raise=proxy(new AlarmApplicationService(alarms,mock(AlarmAcknowledgementRepositoryPort.class),mock(AlarmClosureRepositoryPort.class)),RaiseAlarmUseCase.class);
+            raise=proxy(new AlarmApplicationService(alarms,mock(AlarmAcknowledgementRepositoryPort.class),mock(AlarmClosureRepositoryPort.class),org.mockito.Mockito.mock(dz.sh.hidra.modules.alarm.application.port.out.AlarmResourceAuthorizationPort.class)),RaiseAlarmUseCase.class);
         }
         public <T> T proxy(Object target,Class<T> type) {
             var proxy=new ProxyFactory(target);proxy.addAdvice(new TransactionInterceptor(manager,new AnnotationTransactionAttributeSource()));

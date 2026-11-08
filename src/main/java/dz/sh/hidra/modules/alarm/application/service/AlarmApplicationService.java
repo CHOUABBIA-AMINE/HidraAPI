@@ -32,6 +32,7 @@ import dz.sh.hidra.modules.alarm.application.port.in.RaiseAlarmUseCase;
 import dz.sh.hidra.modules.alarm.application.port.out.AlarmAcknowledgementRepositoryPort;
 import dz.sh.hidra.modules.alarm.application.port.out.AlarmClosureRepositoryPort;
 import dz.sh.hidra.modules.alarm.application.port.out.AlarmRepositoryPort;
+import dz.sh.hidra.modules.alarm.application.port.out.AlarmResourceAuthorizationPort;
 import dz.sh.hidra.modules.alarm.domain.model.Alarm;
 import dz.sh.hidra.modules.alarm.domain.model.AlarmAcknowledgement;
 import dz.sh.hidra.modules.alarm.domain.model.AlarmClosure;
@@ -49,17 +50,20 @@ import java.util.Objects;
 public class AlarmApplicationService implements RaiseAlarmUseCase, AcknowledgeAlarmUseCase, CloseAlarmUseCase {
 
     private final AlarmRepositoryPort alarmRepositoryPort;
+    private final AlarmResourceAuthorizationPort scopedAuthorization;
     private final AlarmAcknowledgementRepositoryPort acknowledgementRepositoryPort;
     private final AlarmClosureRepositoryPort closureRepositoryPort;
 
     public AlarmApplicationService(
             AlarmRepositoryPort alarmRepositoryPort,
             AlarmAcknowledgementRepositoryPort acknowledgementRepositoryPort,
-            AlarmClosureRepositoryPort closureRepositoryPort
+            AlarmClosureRepositoryPort closureRepositoryPort,
+            AlarmResourceAuthorizationPort scopedAuthorization
     ) {
         this.alarmRepositoryPort = Objects.requireNonNull(alarmRepositoryPort, "Alarm repository port must not be null.");
         this.acknowledgementRepositoryPort = Objects.requireNonNull(acknowledgementRepositoryPort, "Alarm acknowledgement repository port must not be null.");
         this.closureRepositoryPort = Objects.requireNonNull(closureRepositoryPort, "Alarm closure repository port must not be null.");
+        this.scopedAuthorization = Objects.requireNonNull(scopedAuthorization);
     }
 
     @Override
@@ -110,11 +114,12 @@ public class AlarmApplicationService implements RaiseAlarmUseCase, AcknowledgeAl
     }
 
     @Override
-    @org.springframework.transaction.annotation.Transactional
+    @org.springframework.transaction.annotation.Transactional(isolation = org.springframework.transaction.annotation.Isolation.SERIALIZABLE)
     public String acknowledgeAlarm(AcknowledgeAlarmCommand command) {
         Objects.requireNonNull(command, "Acknowledge alarm command must not be null.");
         Alarm alarm = alarmRepositoryPort.findByIdForUpdate(command.alarmId())
-                .orElseThrow(() -> new IllegalArgumentException("Unknown alarm: " + command.alarmId()));
+                .orElseThrow(() -> new dz.sh.hidra.modules.alarm.domain.exception.AlarmResourceNotFoundException());
+        scopedAuthorization.requireAsset("alarm:alarms:execute",alarm.topologyAssetTypeCode(),alarm.topologyAssetId());
         new dz.sh.hidra.modules.alarm.domain.service.AlarmLifecycleGuard().ensureCanAcknowledge(alarm);
         AlarmAcknowledgement acknowledgement = new AlarmAcknowledgement(
                 AlarmId.newId().value(),
@@ -131,11 +136,12 @@ public class AlarmApplicationService implements RaiseAlarmUseCase, AcknowledgeAl
     }
 
     @Override
-    @org.springframework.transaction.annotation.Transactional
+    @org.springframework.transaction.annotation.Transactional(isolation = org.springframework.transaction.annotation.Isolation.SERIALIZABLE)
     public String closeAlarm(CloseAlarmCommand command) {
         Objects.requireNonNull(command, "Close alarm command must not be null.");
         Alarm alarm = alarmRepositoryPort.findByIdForUpdate(command.alarmId())
-                .orElseThrow(() -> new IllegalArgumentException("Unknown alarm: " + command.alarmId()));
+                .orElseThrow(() -> new dz.sh.hidra.modules.alarm.domain.exception.AlarmResourceNotFoundException());
+        scopedAuthorization.requireAsset("alarm:alarms:execute",alarm.topologyAssetTypeCode(),alarm.topologyAssetId());
         new dz.sh.hidra.modules.alarm.domain.service.AlarmLifecycleGuard().ensureCanClose(alarm,
                 command.closureType() == dz.sh.hidra.modules.alarm.domain.value.AlarmClosureType.CANCELLED);
         AlarmClosure closure = new AlarmClosure(

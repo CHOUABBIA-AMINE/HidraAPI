@@ -9562,9 +9562,9 @@ Legacy IDs: None superseded; new prerequisite identified by HWEB-F16 GZ2 acknowl
 
 Priority: P0
 
-Implementation Status: NOT_IMPLEMENTED
+Implementation Status: PARTIAL
 
-Planning Status: BLOCKED
+Planning Status: IN_PROGRESS
 
 Owning Module: `alarm` (Identity, Topology and Organization own their respective exported semantics).
 
@@ -9626,5 +9626,53 @@ Use fresh migrated disposable PostgreSQL, synthetic GZ2 assets/alarms, three gen
 ### 7. Status and stopping rule
 
 **NOT_IMPLEMENTED / BLOCKED.** Registration is not Alarm security remediation or software acceptance. Publish only this governance commit guarded to prior API HEAD; verify parent/tree/blobs and Documentation CI created/queued or started, then STOP. One future owner-selected whole task executes `feat(alarm): enforce scoped alarm access and acknowledgement` after resolving the above decisions. HWEB-F16 remains HOLD until actual protected backend and native WEB acceptance.
+
+
+### HAPI-930 owner policy approval and whole-task implementation candidate — 2026-11-08
+
+**Policy selection.** Following the full registered preflight, the owner explicitly approved these exact first-release security semantics: (1) current, explicit **company AND exact asset** authorization, no implicit cross-company access, and fail-closed unknown ownership; (2) zero unauthorized list/count disclosures and non-disclosing HTTP 404 for inaccessible individual Alarm resources; (3) every distinct authorized human acknowledgement remains a separate immutable audit event; the existing multiple-acknowledgement semantics are retained, without a new exactly-once/idempotency contract. These approvals resolve the three HAPI-930 policy-choice questions; they do not establish deployment or native acceptance.
+
+**Source and CI preflight.** The selected initial implementation base is HidraAPI main `71be83a6cd33b118db9f80948ab3348ce0c14301`, parent `70490d28e1a290a14578c2fc6320d242b4a76ec3`, tree `f05e0868291530d0a84b978f531e887fe1e18acc`. [Full CI #1146](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42491895440) and [Documentation CI #938](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42491895417) completed SUCCESS on this base. Existing HidraWEB main `e518f7113f66c38157c2cc35f239828e8dcbc295`, Docs #64 SUCCESS, retains [HWEB-F16 HOLD](https://github.com/CHOUABBIA-AMINE/HidraWEB/blob/e518f7113f66c38157c2cc35f239828e8dcbc295/docs/roadmap/HidraAPI-Frontend-Backend-Gap-Register.md#hweb-f16--gz2-alarm-acknowledgement-preflight-hold-2026-11-08).
+
+**Selected whole-task message.** `feat(alarm): enforce scoped alarm access and acknowledgement`. This is one whole HAPI-930 source candidate; an exact-SHA Full/Docs CI repair, if later necessary, stays **inside HAPI-930**, not a new task.
+
+**Conservative owner-backed grant interpretation.** Identity requires a fresh native bound actor plus two simultaneous direct, current, exact grants for the *same* Alarm permission code: `ScopeType.CUSTOM` reference `alarm-company:<companyPartyId>` and `ScopeType.FACILITY` or `ScopeType.EQUIPMENT` reference equal to the canonical target ID. The original Identity policy evaluator also runs independently on both exact scopes with DENY precedence; route grants, GLOBAL grants and browser filters do not substitute for either explicit pair. This is a source-backed expression of the approved minimum, **not** a new grant issued to an operator. Revocation/ownership races are not claimed qualified merely from this source implementation.
+
+**Topology ownership boundary.** In the inspected current data model the authoritative `Facility.ownerPartyId` is only usable for a current ACTIVE Facility with an eligible active Party; Equipment is supported only when active and bound to such a Facility. An Alarm `topologyAssetTypeCode` of `PIPELINE_SYSTEM`, `PIPELINE` or any other/unbound/inactive/ambiguous type has no approved current company owner contract at this baseline and **fails closed**. The source implementation does not claim that an actual GZ2 system or pipeline alarm has been admitted. The read whitelist is bounded (500 ACTIVE Facility/Equipment inventory items maximum) and errors rather than returning truncated counts.
+
+**Protection mechanics.** Scoped Alarm list and count share one database-side asset whitelist and stable page ordering; direct detail and shelving history require current owner and native Identity pair. Acknowledgement and close commands, shelving/unshelving, manual REST raise and ALARM-scoped suppression REST routes enforce the resource gate with original-transaction boundaries. Suppression broad-scope REST enumeration is unavailable/empty in this narrow slice instead of leaking protected counts, while the retained legacy internal suppression model/scheduler is not represented as native HAPI-930 acceptance. Non-disclosing AlarmResourceNotFoundException is mapped to a stable HTTP 404. Historic source replay and multiple immutable acknowledgement records remain preserved.
+
+**Exact implementation CREATE file set:**
+- `src/main/java/dz/sh/hidra/modules/alarm/application/port/out/AlarmResourceAuthorizationPort.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/domain/exception/AlarmResourceNotFoundException.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/api/rest/AlarmResourceExceptionHandler.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/infrastructure/security/AlarmResourceAuthorizationAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/contract/alarm/AlarmTopologyOwnershipContract.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/reference/JpaAlarmTopologyOwnershipAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/alarm/AlarmScopedAuthorizationContract.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/AlarmExplicitGrantEvidencePort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaAlarmExplicitGrantEvidenceAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/AlarmScopedAuthorizationQueryService.java`
+- `src/test/java/dz/sh/hidra/modules/alarm/infrastructure/security/AlarmResourceAuthorizationAdapterTest.java`
+
+**Exact implementation MODIFY file set:**
+- `src/main/java/dz/sh/hidra/modules/alarm/application/service/AlarmApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/application/service/AlarmShelvingApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/infrastructure/query/JpaAlarmQueryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/api/rest/controller/SpringAlarmController.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/api/rest/controller/AlarmSuppressionController.java`
+- `src/test/java/dz/sh/hidra/modules/alarm/infrastructure/persistence/AlarmSemanticPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/alarm/infrastructure/persistence/AlarmAcknowledgementSemanticPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/alarm/infrastructure/persistence/AlarmClosureSemanticPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/alarm/infrastructure/persistence/AlarmShelvingSemanticPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/alarm/api/rest/controller/SpringAlarmControllerActorAttributionTest.java`
+- `src/test/java/dz/sh/hidra/modules/alarm/api/rest/controller/AlarmSuppressionControllerTest.java`
+- `src/test/java/dz/sh/hidra/modules/alarm/api/rest/controller/AlarmSuppressionRoutePermissionTest.java`
+- `.github/ci-test-inventory.json` — existing seven test source SHA256 entries updated; one new four-case unit test registered, original entries and case lists retained
+- `doc/roadmap/TASKS_HPS-011.md` — append-only owning evidence and exact source scope, status metadata only for HAPI-930
+- `doc/roadmap/ULTIMATE_ROADMAP.md` — HAPI-930 table status cells only
+- `doc/roadmap/ULTIMATE_PHASES.md` — HAPI-930 table status cells only
+
+**Validation truthful boundaries.** New/changed tests were checked against the strict existing manifest by source SHA256 and JSON round trip; a new four-case mocked scope adapter unit test is included. Existing semantic test fixtures receive explicit mock resource-authority dependencies solely to preserve their previously selected historical scope; they **do not** prove end-to-end new native permissions. No newly executed local Maven compile, full Flyway/PostgreSQL migration, authenticated three-principal HTTP/browser proof, actual HTTP denial status, concurrency/revocation race trace, runtime OpenAPI artifact or GZ2 owner binding is claimed at source publication. Original migrations, the 930-task index, other modules' published source and historical evidence are unchanged. Independent exact-SHA Full/Docs CI and source/fixture corrections are the **same HAPI-930 acceptance gate**, not a second registered delivery. HWEB-F16 stays HOLD; enterprise SITE, calibration, live OT, numerical P3 and release/deployment remain unselected. **HAPI-930 status PARTIAL / IN_PROGRESS**, not VERIFIED / COMPLETED.
 
 <!-- task-register:payload:end -->

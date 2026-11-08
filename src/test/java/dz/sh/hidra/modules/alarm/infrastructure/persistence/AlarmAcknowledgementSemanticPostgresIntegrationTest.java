@@ -45,7 +45,7 @@ class AlarmAcknowledgementSemanticPostgresIntegrationTest {
     }
     @Test void liveAndDirectAcknowledgementsAreAtomicAndMultipleHistoryRowsRemainLegal() throws Exception {
         try(var r=new RuntimeFixture(db,false)) {
-            var port=port(r);var service=r.proxy(new AlarmApplicationService(r.alarms,port,mock(AlarmClosureRepositoryPort.class)),AcknowledgeAlarmUseCase.class);
+            var port=port(r);var service=r.proxy(new AlarmApplicationService(r.alarms,port,mock(AlarmClosureRepositoryPort.class),org.mockito.Mockito.mock(dz.sh.hidra.modules.alarm.application.port.out.AlarmResourceAuthorizationPort.class)),AcknowledgeAlarmUseCase.class);
             service.acknowledgeAlarm(new AcknowledgeAlarmCommand("a","actor","Operator",null,null,null,"corr"));
             var ack=AlarmAcknowledgementSemanticRemediationTest.acknowledgement("direct","a");port.save(ack);port.save(ack);
             assertEquals(2,db.count("hidra_alarm_acknowledgement"));assertEquals(2,db.count("hidra_alarm_lifecycle_event"));

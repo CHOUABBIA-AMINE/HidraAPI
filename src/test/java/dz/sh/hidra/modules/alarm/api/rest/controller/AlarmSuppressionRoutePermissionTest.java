@@ -69,7 +69,8 @@ class AlarmSuppressionRoutePermissionTest {
                 new AlarmSuppressionController(
                         org.mockito.Mockito.mock(dz.sh.hidra.modules.alarm.application.port.in.ManageAlarmSuppressionUseCase.class),
                         org.mockito.Mockito.mock(dz.sh.hidra.modules.alarm.application.port.in.AlarmSuppressionQueryUseCase.class),
-                        org.mockito.Mockito.mock(dz.sh.hidra.platform.security.CurrentActorResolver.class)
+                        org.mockito.Mockito.mock(dz.sh.hidra.platform.security.CurrentActorResolver.class),
+                        org.mockito.Mockito.mock(dz.sh.hidra.modules.alarm.application.port.out.AlarmResourceAuthorizationPort.class)
                 ),
                 method
         );

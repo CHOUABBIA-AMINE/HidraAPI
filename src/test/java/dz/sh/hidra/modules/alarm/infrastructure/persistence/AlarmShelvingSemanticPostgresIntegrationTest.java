@@ -63,7 +63,7 @@ class AlarmShelvingSemanticPostgresIntegrationTest {
     }
     @Test void liveShelveUnshelveSynchronizeAlarmAndRecordExactlyTwoEvents() throws Exception {
         migrate();try(var r=new RuntimeFixture(db,false)) {
-            var p=port(r);var service=r.proxy(new AlarmShelvingApplicationService(r.alarms,p),ManageAlarmShelvingUseCase.class);
+            var p=port(r);var service=r.proxy(new AlarmShelvingApplicationService(r.alarms,p,org.mockito.Mockito.mock(dz.sh.hidra.modules.alarm.application.port.out.AlarmResourceAuthorizationPort.class)),ManageAlarmShelvingUseCase.class);
             String id=service.shelve(new ManageAlarmShelvingUseCase.ShelveAlarmCommand("a","reason",null,"actor",Instant.now().plusSeconds(60),"corr"));
             assertEquals(AlarmState.SHELVED,r.alarms.findById("a").orElseThrow().currentState());
             service.unshelve(new ManageAlarmShelvingUseCase.UnshelveAlarmCommand("a",id,"operator",null));

@@ -47,7 +47,7 @@ class AlarmSuppressionControllerTest {
         when(actors.currentActorId()).thenReturn(ActorId.of("actor-authenticated"));
         when(manage.createSuppression(any())).thenReturn(dto());
 
-        var controller = new AlarmSuppressionController(manage, query, actors);
+        var controller = new AlarmSuppressionController(manage, query, actors, org.mockito.Mockito.mock(dz.sh.hidra.modules.alarm.application.port.out.AlarmResourceAuthorizationPort.class));
         controller.create(new AlarmSuppressionController.CreateSuppressionRequest(
                 AlarmSuppressionScopeType.ALARM,
                 "alarm-1",

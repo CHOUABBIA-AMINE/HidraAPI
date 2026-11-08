@@ -27,6 +27,7 @@ import dz.sh.hidra.modules.alarm.api.rest.response.AlarmResponse;
 import dz.sh.hidra.modules.alarm.application.port.in.AcknowledgeAlarmUseCase;
 import dz.sh.hidra.modules.alarm.application.port.in.CloseAlarmUseCase;
 import dz.sh.hidra.modules.alarm.application.port.in.RaiseAlarmUseCase;
+import dz.sh.hidra.modules.alarm.application.port.out.AlarmResourceAuthorizationPort;
 import dz.sh.hidra.platform.security.CurrentActorResolver;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -51,17 +52,20 @@ public class SpringAlarmController implements AlarmController {
     private final CloseAlarmUseCase closeAlarmUseCase;
     private final RaiseAlarmUseCase raiseAlarmUseCase;
     private final CurrentActorResolver actorResolver;
+    private final AlarmResourceAuthorizationPort scopedAuthorization;
 
     public SpringAlarmController(
             AcknowledgeAlarmUseCase acknowledgeAlarmUseCase,
             CloseAlarmUseCase closeAlarmUseCase,
             RaiseAlarmUseCase raiseAlarmUseCase,
-            CurrentActorResolver actorResolver
+            CurrentActorResolver actorResolver,
+            AlarmResourceAuthorizationPort scopedAuthorization
     ) {
         this.acknowledgeAlarmUseCase = Objects.requireNonNull(acknowledgeAlarmUseCase, "AcknowledgeAlarmUseCase must not be null.");
         this.closeAlarmUseCase = Objects.requireNonNull(closeAlarmUseCase, "CloseAlarmUseCase must not be null.");
         this.raiseAlarmUseCase = Objects.requireNonNull(raiseAlarmUseCase, "RaiseAlarmUseCase must not be null.");
         this.actorResolver = Objects.requireNonNull(actorResolver, "CurrentActorResolver must not be null.");
+        this.scopedAuthorization = Objects.requireNonNull(scopedAuthorization);
     }
 
     @GetMapping("/capabilities")
@@ -110,8 +114,10 @@ public class SpringAlarmController implements AlarmController {
 
     @Override
     @PostMapping({"/raise-alarm", "/alarms"})
+    @org.springframework.transaction.annotation.Transactional(isolation = org.springframework.transaction.annotation.Isolation.SERIALIZABLE)
     public AlarmResponse raiseAlarm(@Valid @RequestBody RaiseAlarmRequest request) {
         Objects.requireNonNull(request, "RaiseAlarmRequest must not be null.");
+        scopedAuthorization.requireAsset("alarm:alarms:execute",request.topologyAssetTypeCode(),request.topologyAssetId());
         return AlarmRestMapper.toResponse(raiseAlarmUseCase.raiseAlarm(AlarmRestMapper.toCommand(request)));
     }
 }

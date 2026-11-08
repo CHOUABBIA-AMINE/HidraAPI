@@ -167,7 +167,7 @@
       "lane": "unit-architecture",
       "owner": "alarm",
       "path": "src/test/java/dz/sh/hidra/modules/alarm/api/rest/controller/AlarmSuppressionControllerTest.java",
-      "source_sha256": "ba428ed7a6a73aaf2d11af4b0244e3e1fe03c20428bb6f4443bca9096d456762",
+      "source_sha256": "05c237f6cfbf62741d1b9cf3f27d9b72384d0391addc0e0475e1decf54259a17",
       "supports": []
     },
     {
@@ -181,7 +181,7 @@
       "lane": "unit-architecture",
       "owner": "alarm",
       "path": "src/test/java/dz/sh/hidra/modules/alarm/api/rest/controller/AlarmSuppressionRoutePermissionTest.java",
-      "source_sha256": "e746cfbd9a9bdb39f8a9c6169993c55f426819cd7c9680ab0fa94b4846a8b9ab",
+      "source_sha256": "7deb6384aee4aafce2062f8f1b18b234e4cb92a4a707b836b2521aacaa8909f2",
       "supports": []
     },
     {
@@ -196,7 +196,7 @@
       "lane": "unit-architecture",
       "owner": "alarm",
       "path": "src/test/java/dz/sh/hidra/modules/alarm/api/rest/controller/SpringAlarmControllerActorAttributionTest.java",
-      "source_sha256": "da4baa51f208d0a40a37add26fab78961d74f4856b2bfda35a814f42dbd59590",
+      "source_sha256": "c70c9880b2a495dcff12998153f0c2026e6a68e0ba263062edcee3975fb3a754",
       "supports": []
     },
     {
@@ -265,7 +265,7 @@
       "lane": "postgres-integration",
       "owner": "alarm",
       "path": "src/test/java/dz/sh/hidra/modules/alarm/infrastructure/persistence/AlarmAcknowledgementSemanticPostgresIntegrationTest.java",
-      "source_sha256": "b08fa6742d6823a732c0aa1e0d6f8f74e714361976aa3d2031e4656e5ce7cd14",
+      "source_sha256": "febd7647663dfed0fd37268dcf28a84298770e3c66a2008c3ec9de3b45e8e78b",
       "supports": []
     },
     {
@@ -283,7 +283,7 @@
       "lane": "postgres-integration",
       "owner": "alarm",
       "path": "src/test/java/dz/sh/hidra/modules/alarm/infrastructure/persistence/AlarmClosureSemanticPostgresIntegrationTest.java",
-      "source_sha256": "500023b8bfb39a2fa4cabd4c5c5082f8d666ec3b9025173ee9735ba6ec7bd9b7",
+      "source_sha256": "79f1c199fc955d0701b77aae9da1898d36c56088bd7ab6796da075461fe3b7e8",
       "supports": []
     },
     {
@@ -302,7 +302,7 @@
       "lane": "postgres-integration",
       "owner": "alarm",
       "path": "src/test/java/dz/sh/hidra/modules/alarm/infrastructure/persistence/AlarmSemanticPostgresIntegrationTest.java",
-      "source_sha256": "783791503a8c3b4e5160aaa8e0412ab2ca8eacdf88c35e97dc39114b68c5add3",
+      "source_sha256": "42b387cfb9d9e9a80283f7e59d1dc9820184df503818f814d8b5a1c3ee4341ea",
       "supports": []
     },
     {
@@ -328,7 +328,7 @@
       "lane": "postgres-integration",
       "owner": "alarm",
       "path": "src/test/java/dz/sh/hidra/modules/alarm/infrastructure/persistence/AlarmShelvingSemanticPostgresIntegrationTest.java",
-      "source_sha256": "1ffcbcd33ba2fd5e53ac86eaf6cf4774b6c484655682304f72ad3c62adcc8b5c",
+      "source_sha256": "447b293aa0d5f6ad36a4058f91cdd2528609d7e529c4ef6a4d93ec7210699044",
       "supports": []
     },
     {
@@ -417,6 +417,23 @@
       "owner": "alarm",
       "path": "src/test/java/dz/sh/hidra/modules/alarm/infrastructure/security/AlarmLifecycleActorAdapterTest.java",
       "source_sha256": "76bcd676a7f8455a1f360e944eb01e7b257aa98af96e9269cdc1420f2c74959c",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0.05,
+      "cases": [
+        "anOutOfScopeActorCannotAccessAnExistingOwnedAsset",
+        "distinctCompaniesAndAssetsAreIndependentlyFilteredBeforeDatabasePage",
+        "permittedAcknowledgementRequiresAnExplicitOperationGrant",
+        "unsupportedAndMissingTargetsHaveIndistinguishableDeniedOutcome"
+      ],
+      "class": "dz.sh.hidra.modules.alarm.infrastructure.security.AlarmResourceAuthorizationAdapterTest",
+      "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "alarm",
+      "path": "src/test/java/dz/sh/hidra/modules/alarm/infrastructure/security/AlarmResourceAuthorizationAdapterTest.java",
+      "source_sha256": "7414bc0b350371d5bae464ca7fc554349993863a5b047835a9f08a1f7b7b4dc9",
       "supports": []
     },
     {

@@ -45,7 +45,7 @@ class AlarmClosureSemanticPostgresIntegrationTest {
     AlarmClosureRepositoryPort port(RuntimeFixture r) {return r.proxy(new JpaAlarmClosureRepositoryAdapter(r.repositories.getRepository(AlarmClosureJpaRepository.class),r.alarms,r.events),AlarmClosureRepositoryPort.class);}
     @Test void liveClosureRequiresClearAndCancellationIsRecordedWithoutMandatoryReviewWorkflow() throws Exception {
         migrate();try(var r=new RuntimeFixture(db,false)) {
-            var port=port(r);var service=r.proxy(new AlarmApplicationService(r.alarms,mock(AlarmAcknowledgementRepositoryPort.class),port),CloseAlarmUseCase.class);
+            var port=port(r);var service=r.proxy(new AlarmApplicationService(r.alarms,mock(AlarmAcknowledgementRepositoryPort.class),port,org.mockito.Mockito.mock(dz.sh.hidra.modules.alarm.application.port.out.AlarmResourceAuthorizationPort.class)),CloseAlarmUseCase.class);
             assertThrows(RuntimeException.class,()->service.closeAlarm(new CloseAlarmCommand("a",AlarmClosureType.NORMALIZED,null,null,"actor",true,null,"corr")));
             service.closeAlarm(new CloseAlarmCommand("a",AlarmClosureType.CANCELLED,null,null,"actor",true,null,"corr"));
             assertEquals(AlarmState.CANCELLED,r.alarms.findById("a").orElseThrow().currentState());

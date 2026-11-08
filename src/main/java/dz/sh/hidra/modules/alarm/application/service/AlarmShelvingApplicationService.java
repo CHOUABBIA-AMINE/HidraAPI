@@ -21,6 +21,7 @@ package dz.sh.hidra.modules.alarm.application.service;
 
 import dz.sh.hidra.modules.alarm.application.port.in.ManageAlarmShelvingUseCase;
 import dz.sh.hidra.modules.alarm.application.port.out.AlarmRepositoryPort;
+import dz.sh.hidra.modules.alarm.application.port.out.AlarmResourceAuthorizationPort;
 import dz.sh.hidra.modules.alarm.application.port.out.AlarmShelvingRepositoryPort;
 import dz.sh.hidra.modules.alarm.domain.model.AlarmShelving;
 import dz.sh.hidra.modules.alarm.domain.value.AlarmId;
@@ -33,22 +34,26 @@ import org.springframework.stereotype.Service;
 public class AlarmShelvingApplicationService implements ManageAlarmShelvingUseCase {
 
     private final AlarmRepositoryPort alarmRepositoryPort;
+    private final AlarmResourceAuthorizationPort scopedAuthorization;
     private final AlarmShelvingRepositoryPort shelvingRepositoryPort;
 
     public AlarmShelvingApplicationService(
             AlarmRepositoryPort alarmRepositoryPort,
-            AlarmShelvingRepositoryPort shelvingRepositoryPort
+            AlarmShelvingRepositoryPort shelvingRepositoryPort,
+            AlarmResourceAuthorizationPort scopedAuthorization
     ) {
         this.alarmRepositoryPort = Objects.requireNonNull(alarmRepositoryPort, "AlarmRepositoryPort must not be null.");
         this.shelvingRepositoryPort = Objects.requireNonNull(shelvingRepositoryPort, "AlarmShelvingRepositoryPort must not be null.");
+        this.scopedAuthorization = Objects.requireNonNull(scopedAuthorization);
     }
 
     @Override
-    @org.springframework.transaction.annotation.Transactional
+    @org.springframework.transaction.annotation.Transactional(isolation = org.springframework.transaction.annotation.Isolation.SERIALIZABLE)
     public String shelve(ShelveAlarmCommand command) {
         Objects.requireNonNull(command, "ShelveAlarmCommand must not be null.");
         var alarm = alarmRepositoryPort.findByIdForUpdate(command.alarmId())
-                .orElseThrow(() -> new IllegalArgumentException("Unknown alarm: " + command.alarmId()));
+                .orElseThrow(() -> new dz.sh.hidra.modules.alarm.domain.exception.AlarmResourceNotFoundException());
+        scopedAuthorization.requireAsset("alarm:alarms:execute",alarm.topologyAssetTypeCode(),alarm.topologyAssetId());
         dz.sh.hidra.modules.alarm.domain.policy.AlarmShelvingPolicy.ensureCanShelve(alarm);
         Instant now = Instant.now();
         if (command.shelvedUntil() == null || !command.shelvedUntil().isAfter(now)) {
@@ -63,11 +68,12 @@ public class AlarmShelvingApplicationService implements ManageAlarmShelvingUseCa
     }
 
     @Override
-    @org.springframework.transaction.annotation.Transactional
+    @org.springframework.transaction.annotation.Transactional(isolation = org.springframework.transaction.annotation.Isolation.SERIALIZABLE)
     public String unshelve(UnshelveAlarmCommand command) {
         Objects.requireNonNull(command, "UnshelveAlarmCommand must not be null.");
-        alarmRepositoryPort.findByIdForUpdate(command.alarmId())
-                .orElseThrow(() -> new IllegalArgumentException("Unknown alarm: " + command.alarmId()));
+        var alarm = alarmRepositoryPort.findByIdForUpdate(command.alarmId())
+                .orElseThrow(() -> new dz.sh.hidra.modules.alarm.domain.exception.AlarmResourceNotFoundException());
+        scopedAuthorization.requireAsset("alarm:alarms:execute",alarm.topologyAssetTypeCode(),alarm.topologyAssetId());
         AlarmShelving existing = shelvingRepositoryPort.findById(command.shelvingId())
                 .orElseThrow(() -> new IllegalArgumentException("Unknown alarm shelving: " + command.shelvingId()));
         if (!Objects.equals(existing.alarmId(), command.alarmId())) {

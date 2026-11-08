@@ -111,7 +111,8 @@ class SpringAlarmControllerActorAttributionTest {
                 acknowledge,
                 close,
                 raise,
-                new CurrentActorResolver(securityContext)
+                new CurrentActorResolver(securityContext),
+                org.mockito.Mockito.mock(dz.sh.hidra.modules.alarm.application.port.out.AlarmResourceAuthorizationPort.class)
         );
     }
 }

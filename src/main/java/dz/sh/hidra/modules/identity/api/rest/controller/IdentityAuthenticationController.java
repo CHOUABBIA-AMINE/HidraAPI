@@ -21,6 +21,13 @@ package dz.sh.hidra.modules.identity.api.rest.controller;
 
 import dz.sh.hidra.modules.identity.api.rest.mapper.IdentityAuthenticationWebMapper;
 import dz.sh.hidra.modules.identity.api.rest.request.AuthenticationLoginRequest;
+import dz.sh.hidra.modules.identity.api.rest.request.RefreshTokenRequest;
+import dz.sh.hidra.modules.identity.application.port.in.RotateLocalRefreshTokenUseCase;
+import dz.sh.hidra.modules.identity.domain.service.RefreshTokenRotationPolicy;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import dz.sh.hidra.modules.identity.api.rest.response.AuthenticationLoginResponse;
 import dz.sh.hidra.modules.identity.application.model.AuthenticatedPrincipalInput;
 import dz.sh.hidra.modules.identity.application.model.AuthenticationResult;
@@ -45,13 +52,22 @@ public final class IdentityAuthenticationController {
 
     private final AuthenticateDirectUserUseCase authenticateDirectUserUseCase;
     private final CompleteAuthenticatedPrincipalUseCase completionUseCase;
+    private final RotateLocalRefreshTokenUseCase rotation;
 
     public IdentityAuthenticationController(
             AuthenticateDirectUserUseCase authenticateDirectUserUseCase,
-            CompleteAuthenticatedPrincipalUseCase completionUseCase
-    ) {
+            CompleteAuthenticatedPrincipalUseCase completionUseCase) {
+        this(authenticateDirectUserUseCase,completionUseCase,null);
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired
+    public IdentityAuthenticationController(
+            AuthenticateDirectUserUseCase authenticateDirectUserUseCase,
+            CompleteAuthenticatedPrincipalUseCase completionUseCase,
+            RotateLocalRefreshTokenUseCase rotation) {
         this.authenticateDirectUserUseCase = Objects.requireNonNull(authenticateDirectUserUseCase);
         this.completionUseCase = Objects.requireNonNull(completionUseCase);
+        this.rotation=rotation;
     }
 
     @PostMapping("/login")
@@ -70,6 +86,29 @@ public final class IdentityAuthenticationController {
                 header(servletRequest, "X-Correlation-Id")
         ));
         return IdentityAuthenticationWebMapper.response(result);
+    }
+
+    /** No expired bearer needed: the single-use opaque LOCAL credential is independently proved. */
+    @PostMapping("/refresh")
+    public AuthenticationLoginResponse refresh(
+            @Valid @RequestBody RefreshTokenRequest input, HttpServletRequest request) {
+        if(rotation==null)throw new ResponseStatusException(
+                HttpStatus.UNAUTHORIZED,"Invalid refresh credentials.");
+        try {
+            return IdentityAuthenticationWebMapper.response(rotation.rotate(input.refreshToken(),
+                    clientIp(request),header(request,"User-Agent"),
+                    header(request,"X-Correlation-Id")));
+        } catch (BadCredentialsException | RefreshTokenRotationPolicy.Replay
+                | RefreshTokenRotationPolicy.Rejected denial) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"Invalid refresh credentials.");
+        }
+    }
+
+    /** Idempotent family revocation; a bearer is not required for a lost/expired access JWT. */
+    @PostMapping("/logout")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void logout(@Valid @RequestBody RefreshTokenRequest input) {
+        if(rotation!=null)rotation.logout(input.refreshToken());
     }
 
     @PostMapping("/oidc/complete")

@@ -12,6 +12,13 @@ import dz.sh.hidra.modules.identity.application.model.*;
 import dz.sh.hidra.modules.identity.application.port.in.CompleteAuthenticatedPrincipalUseCase;
 import dz.sh.hidra.modules.identity.application.port.out.*;
 import dz.sh.hidra.modules.identity.domain.model.HidraPrincipal;
+import dz.sh.hidra.modules.identity.domain.model.RefreshTokenFamily;
+import dz.sh.hidra.modules.identity.domain.service.RefreshTokenRotationPolicy;
+import dz.sh.hidra.modules.identity.domain.model.AuthenticationEvent;
+import dz.sh.hidra.modules.identity.domain.value.AuthenticationEventType;
+import dz.sh.hidra.modules.identity.domain.value.AuthenticationProtocol;
+import dz.sh.hidra.modules.identity.domain.value.ProviderType;
+import org.springframework.security.authentication.BadCredentialsException;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -36,6 +43,9 @@ public class AuthenticationCompletionApplicationService
     private final AuthenticationSecurityStateQueryPort states;
     private final Clock clock;
     private final BoundSourceClaimEvidenceRepositoryPort sourceClaims;
+    private final RefreshTokenRepositoryPort refreshTokens;
+    private final RefreshTokenEvidencePort refreshEvidence;
+    private final AuthenticationEventRepositoryPort refreshEvents;
 
     public AuthenticationCompletionApplicationService(
             AccessTokenIssuerPort issuer,
@@ -44,7 +54,18 @@ public class AuthenticationCompletionApplicationService
             OperationAuthenticationBindingRepositoryPort bindings,
             AuthenticationSecurityStateQueryPort states,
             @Qualifier("identityAuthenticationClock") Clock clock) {
-        this(issuer, lifecycle, verification, bindings, states, clock, null);
+        this(issuer,lifecycle,verification,bindings,states,clock,null,null,null,null);
+    }
+
+    public AuthenticationCompletionApplicationService(
+            AccessTokenIssuerPort issuer,
+            AuthenticationSessionLifecycleApplicationService lifecycle,
+            TrustedAuthenticationVerificationPort verification,
+            OperationAuthenticationBindingRepositoryPort bindings,
+            AuthenticationSecurityStateQueryPort states,
+            @Qualifier("identityAuthenticationClock") Clock clock,
+            BoundSourceClaimEvidenceRepositoryPort sourceClaims) {
+        this(issuer,lifecycle,verification,bindings,states,clock,sourceClaims,null,null,null);
     }
 
     @org.springframework.beans.factory.annotation.Autowired
@@ -55,7 +76,13 @@ public class AuthenticationCompletionApplicationService
             OperationAuthenticationBindingRepositoryPort bindings,
             AuthenticationSecurityStateQueryPort states,
             @Qualifier("identityAuthenticationClock") Clock clock,
-            BoundSourceClaimEvidenceRepositoryPort sourceClaims) {
+            BoundSourceClaimEvidenceRepositoryPort sourceClaims,
+            RefreshTokenRepositoryPort refreshTokens,
+            RefreshTokenEvidencePort refreshEvidence,
+            AuthenticationEventRepositoryPort refreshEvents) {
+        this.refreshTokens=refreshTokens;
+        this.refreshEvidence=refreshEvidence;
+        this.refreshEvents=refreshEvents;
         this.issuer = Objects.requireNonNull(issuer);
         this.lifecycle = Objects.requireNonNull(lifecycle);
         this.verification = Objects.requireNonNull(verification);
@@ -72,6 +99,41 @@ public class AuthenticationCompletionApplicationService
             String clientIp,
             String userAgent,
             String correlationId) {
+        return completeOwner(input,clientIp,userAgent,correlationId,null,null);
+    }
+
+    /**
+     * A successful refresh retires the old session and creates a fresh attested session/JWT
+     * in the SAME new owner transaction. Only known-token replay or stale Identity denial
+     * commits its revocation; any issuance failure rolls back every mutation.
+     */
+    @Transactional(isolation = Isolation.READ_COMMITTED, rollbackFor = Exception.class,
+            noRollbackFor={RefreshTokenRotationPolicy.Replay.class,
+                           RefreshTokenRotationPolicy.Rejected.class})
+    public AuthenticationResult rotateLocal(String raw, String clientIp,
+            String userAgent, String correlationId) {
+        if (refreshEvidence==null || refreshTokens==null || !refreshEvidence.enabled())
+            throw new BadCredentialsException("Invalid refresh credentials.");
+        var proof=refreshEvidence.proof(raw);
+        var consumed=refreshTokens.consume(proof.familyId(),proof.digest(),clock.instant());
+        try {
+            AuthenticatedPrincipalInput input;
+            try {
+                input=refreshEvidence.verifyAndBegin(consumed,clock.instant());
+            } catch(BadCredentialsException denied) {
+                refreshTokens.revokeFamily(consumed.family().id(),clock.instant());
+                throw new RefreshTokenRotationPolicy.Rejected();
+            }
+            var next=refreshEvidence.fresh(consumed.family().id());
+            return completeOwner(input,clientIp,userAgent,correlationId,consumed,next);
+        } finally {
+            refreshEvidence.finish();
+        }
+    }
+
+    private AuthenticationResult completeOwner(AuthenticatedPrincipalInput input,
+            String clientIp, String userAgent, String correlationId,
+            RefreshTokenRepositoryPort.Consumed rotated, RefreshTokenEvidencePort.Opaque next) {
         if (!TransactionSynchronizationManager.isActualTransactionActive()
                 || TransactionSynchronizationManager.isCurrentTransactionReadOnly()
                 || !TransactionSynchronizationManager.isSynchronizationActive()
@@ -131,11 +193,45 @@ public class AuthenticationCompletionApplicationService
             throw new IllegalStateException(
                     "Issued native token does not match its authenticated tuple.");
         bindings.append(binding);
+        String refreshRaw=null;
+        Instant refreshExpiry=null;
+        if (rotated!=null) {
+            if (refreshTokens==null || refreshEvidence==null || next==null
+                    || principal.authenticationType()!=ProviderType.LOCAL
+                    || !rotated.family().userId().equals(principal.userId()))
+                throw new IllegalStateException("Invalid LOCAL refresh completion.");
+            refreshTokens.attachRotation(rotated.family().id(),rotated.generation(),next.digest(),
+                    binding.bindingId(),binding.nativeIssuer(),binding.jti(),
+                    binding.sessionId(),issued);
+            refreshRaw=next.raw();
+            refreshExpiry=rotated.family().deadline();
+        } else if (principal.authenticationType()==ProviderType.LOCAL
+                && refreshEvidence!=null && refreshEvidence.enabled()) {
+            if (refreshTokens==null)throw new IllegalStateException("Refresh storage unavailable.");
+            var familyId=UUID.randomUUID().toString();
+            var opaque=refreshEvidence.fresh(familyId);
+            refreshExpiry=RefreshTokenRotationPolicy.deadline(issued,refreshEvidence.familyTtlSeconds());
+            var family=new RefreshTokenFamily(familyId,principal.userId(),binding.providerId(),
+                    binding.providerSecurityVersion(),binding.credentialId(),
+                    binding.credentialSecurityVersion(),refreshEvidence.rightsDigest(principal),
+                    issued,refreshExpiry);
+            refreshTokens.create(family,opaque.digest(),binding.bindingId(),
+                    binding.nativeIssuer(),binding.jti(),binding.sessionId());
+            refreshRaw=opaque.raw();
+        }
         var evidence = trusted.attestSourceClaims(binding);
         if (capturedClaims != evidence.isPresent())
             throw new IllegalStateException("Bound source-claim capture is inconsistent.");
         if (capturedClaims) sourceClaims.append(evidence.orElseThrow());
-        lifecycle.recordBoundSuccess(principal, session);
+        if (rotated==null) {
+            lifecycle.recordBoundSuccess(principal,session);
+        } else {
+            if(refreshEvents==null)throw new IllegalStateException("Refresh audit repository unavailable.");
+            refreshEvents.save(new AuthenticationEvent(UUID.randomUUID().toString(),
+                    principal.userId(),principal.identityProviderId(),null,null,
+                    AuthenticationEventType.TOKEN_REFRESH,AuthenticationProtocol.LOCAL,
+                    clientIp,userAgent,null,null,issued,correlationId));
+        }
         if (!clock.instant().isBefore(expires))
             throw new IllegalStateException("Completion deadline elapsed.");
         trusted.publishAfterCommit(binding);
@@ -152,6 +248,8 @@ public class AuthenticationCompletionApplicationService
                 principal.authenticationType(),
                 principal.identityProviderId(),
                 principal.roles(),
-                principal.permissions());
+                principal.permissions(),
+                refreshRaw,
+                refreshExpiry);
     }
 }

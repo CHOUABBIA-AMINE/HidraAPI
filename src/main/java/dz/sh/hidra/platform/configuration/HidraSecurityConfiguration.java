@@ -121,7 +121,9 @@ public class HidraSecurityConfiguration {
                         "/swagger-ui/**",
                         "/swagger-ui.html",
                         "/api/v1/security/oidc",
-                        "/api/v1/identity/authentication/login"
+                        "/api/v1/identity/authentication/login",
+                        "/api/v1/identity/authentication/refresh",
+                        "/api/v1/identity/authentication/logout"
                 ).permitAll()
                 .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                 .anyRequest().authenticated()

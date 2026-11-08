@@ -319,3 +319,65 @@ truststore passwords
 ```
 
 Store deployment secrets in the environment's approved secret-management system and inject them only at runtime.
+
+
+## HAPI-929 — LOCAL refresh, development opt-in (2026-11-08)
+
+This whole Identity backend feature is **CI-first development software**, not an
+operational/SITE deployment approval. LOCAL login is unchanged by default:
+`HIDRA_IDENTITY_REFRESH_ENABLED=false`. On a synthetic PostgreSQL development
+schema and with a reviewed signing key (at least32 effective UTF-8 bytes), explicitly set:
+```powershell
+$env:HIDRA_IDENTITY_REFRESH_ENABLED = 'true'
+$env:HIDRA_IDENTITY_REFRESH_FAMILY_TTL_SECONDS = '604800'
+# Existing external HIDRA_JWT_HMAC_SECRET must be configured by the local kit.
+```
+The refresh digest key is domain-separated from the configured native signing key;
+a different signing key invalidates existing refresh proofs. Production and staging
+keep refresh disabled unless separately approved and fully verified. Default native
+JWT TTL remains900 seconds; refresh hard expiry defaults604800 seconds (seven days),
+permitted300..2592000 seconds (maximum30 days). No sliding extension.
+
+Only `LOCAL` authentication returns optional `refreshToken` plus
+`refreshExpiresAt` in addition to the existing result. External
+LDAP/AD/OIDC authentication returns null refresh fields and must use its real IdP.
+
+```http
+POST /api/v1/identity/authentication/refresh
+Content-Type: application/json
+
+{"refreshToken":"<80-character opaque LOCAL credential>"}
+```
+No bearer header (especially no expired bearer) is required. On success replace
+both credentials atomically in volatile client memory. The previously issued
+native bearer is retired when refresh commits, and the replacement response
+contains a new JTI, native session, signed access JWT, opaque refresh credential
+and the original absolute refresh deadline. Retrying a previously consumed
+token after an unknown commit revokes its entire descendant family, so do not
+automatically retry a timed-out refresh.
+
+```http
+POST /api/v1/identity/authentication/logout
+Content-Type: application/json
+
+{"refreshToken":"<currently held opaque LOCAL credential>"}
+```
+Logout returns204 without disclosing whether the family exists and revokes all
+of that family's current bearer sessions. Refresh and logout use bounded JSON
+bodies, never URLs. No persistent browser credential-store, cookies, localStorage,
+IdP refresh, mobile behavior or HidraWEB changes are authorized here.
+
+The database owner must run the new forward Flyway migration, verify trigger
+states and provision SELECT/INSERT and the narrowly scoped `revoked_at` /
+`consumed_at` UPDATE column grants on the two refresh-owned tables to the
+runtime database role. Do not disable immutable binding/session/security-version
+triggers. Existing installations receive no retrospective refresh grants: each
+user must perform a successful fresh LOCAL login after enablement.
+
+Verify on a disposable database: login, refresh, new `/me` response, old bearer
+denial, consumed-token reuse, concurrent same-token race, family revocation,
+account/credential disablement, key rotation, and original-transaction rollback.
+Protected operations still recheck Identity/Authorization live and never inherit
+scope from a refresh credential. Runtime OpenAPI and database physical dictionary
+must match generated actual values before whole-task technical acceptance.
+

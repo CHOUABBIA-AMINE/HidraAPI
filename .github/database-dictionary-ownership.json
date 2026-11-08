@@ -787,5 +787,21 @@
       "src/main/resources/db/migration/V20261105_001__topology_foundation_setup.sql",
       "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcTopologyFoundationAdapter.java"
     ]
+  },
+  "public.hidra_identity_refresh_family": {
+    "owner": "identity",
+    "purpose": "Fixed-expiry LOCAL refresh family and source generation snapshots; revocation never confers Identity permissions.",
+    "evidence": [
+      "src/main/resources/db/migration/V20261108_001__identity_refresh_token_rotation.sql",
+      "src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcRefreshTokenRepositoryAdapter.java"
+    ]
+  },
+  "public.hidra_identity_refresh_token": {
+    "owner": "identity",
+    "purpose": "Keyed digest only, monotone generation and immutable native-bound token history; server-side single-use consumes and replay.",
+    "evidence": [
+      "src/main/resources/db/migration/V20261108_001__identity_refresh_token_rotation.sql",
+      "src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcRefreshTokenRepositoryAdapter.java"
+    ]
   }
 }

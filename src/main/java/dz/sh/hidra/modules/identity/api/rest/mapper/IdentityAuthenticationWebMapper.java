@@ -68,7 +68,9 @@ public final class IdentityAuthenticationWebMapper {
                 result.authenticationType(),
                 result.identityProviderId(),
                 result.roles(),
-                result.permissions()
+                result.permissions(),
+                result.refreshToken(),
+                result.refreshExpiresAt()
         );
     }
 }

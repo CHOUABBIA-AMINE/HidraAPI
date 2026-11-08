@@ -32,6 +32,26 @@ import java.util.Set;
 import java.util.UUID;
 
 class OperationAuthenticationBoundaryGuardrailTest {
+    @Test void refreshProducerSeamHasOnlyRealLockedStorageVerifierCaller() throws Exception {
+        var registry = dz.sh.hidra.modules.identity.infrastructure.security
+                .TrustedAuthenticationVerificationRegistry.class;
+        var reviewed = java.util.Arrays.stream(registry.getDeclaredMethods())
+                .filter(method -> method.getName().equals("verifiedLocalRefresh"))
+                .toList();
+        assertThat(reviewed).hasSize(1);
+        assertThat(java.lang.reflect.Modifier.isPublic(reviewed.getFirst().getModifiers())).isFalse();
+        assertThat(java.lang.reflect.Modifier.isPrivate(reviewed.getFirst().getModifiers())).isFalse();
+        Path root=IDENTITY.resolve("infrastructure/security");
+        var callers=new java.util.ArrayList<String>();
+        try(var files=Files.list(root)){
+            for(var path:files.filter(p -> p.toString().endsWith(".java")).toList())
+                if(!path.getFileName().toString().equals("TrustedAuthenticationVerificationRegistry.java")
+                        && Files.readString(path).contains(".verifiedLocalRefresh("))
+                    callers.add(path.getFileName().toString());
+        }
+        assertThat(callers).containsExactly("TrustedRefreshTokenEvidenceAdapter.java");
+    }
+
     @Test void appointmentGroupHasPrivateIssuerConstructionAndNoIndependentTransaction() throws Exception {
         var group = dz.sh.hidra.modules.identity.infrastructure.security.ProtectedOperationIdentityParticipant.OrganizationClaimGroup.class;
         assertThat(group.getDeclaredConstructors()).allMatch(c -> java.lang.reflect.Modifier.isPrivate(c.getModifiers()));

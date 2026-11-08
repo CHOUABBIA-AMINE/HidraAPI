@@ -12743,4 +12743,42 @@ Required focused Java/Spring/real PostgreSQL/HTTP tests: successful LOCAL login 
 Owner approval and exact existing source established the missing refresh endpoint/persistence, existing `TOKEN_REFRESH` event vocabulary, 900-second access TTL, immutable one-session-per-native-binding model and private verification guard. No functionality, test execution, migration or schema change has occurred in this registration. The accepted HAPI-923 source and frozen 928 earlier registry entries remain untouched. The first implementation work for HAPI-929 must execute this complete approved scope after refreshing live `main` and exact-SHA CI. Do not claim the present governance registration provides usable refresh tokens.
 
 
+
+### HAPI-929 whole delivery: owner-selected LOCAL security implementation candidate — 2026-11-08
+
+This continues the registered HAPI-929 (Option A) without changing its owner
+selection, task title, dependencies, allowed files or approved exact commit message
+`feat(identity): implement rotating refresh tokens`. The previous 928 task IDs
+and acceptance evidence are preserved. This is the **whole implementation
+candidate**, not a newly registered A/B/C or automatically approved frontend.
+
+The Identity-owned implementation adds a fixed-deadline LOCAL refresh family and
+one-use credential descendants, 256-bit random opaque secrets with keyed,
+domain-separated HMAC digests (no stored plaintext), PostgreSQL row-lock
+serialisation, consumed-token replay revocation of its entire family and active
+native sessions, and full rollback for failed issuance. A successful renewal
+retires its old bound login session and creates a new short-lived signed JWT,
+JTI, native session, privately attested immutable authentication binding and
+TOKEN_REFRESH audit event in an original READ_COMMITTED owner transaction.
+External LDAP/AD/OIDC refresh is unsupported and requires an actual upstream
+reauthentication. The LOGIN/response DTO remains additive and defaults to
+no refresh unless `HIDRA_IDENTITY_REFRESH_ENABLED=true`; the absolute
+`HIDRA_IDENTITY_REFRESH_FAMILY_TTL_SECONDS` default is604800 with a
+300..2592000-second policy bound.
+
+Strict local prepublication evidence: live main, parent and exact-SHA CI reviewed;
+registered allowlists checked; fixed registered filenames used; source-level
+invariant and SQL row-lock/trigger compatibility reviewed; three focused
+JUnit/Mockito/PostgreSQL test classes and exact-source inventory entries prepared;
+immutable old migration contents untouched; no external provider role/claim
+promotion; optional refresh feature defaults disabled. Trigger and DB lock
+contention outcomes, Java compilation, runtime OpenAPI equality, migrated
+physical dictionary and full CI remain **UNVERIFIED** until independently
+executed. Docker/PostgreSQL/Maven and live runtime OpenAPI generation were not
+available to the authoring environment, so no source-only result is falsely
+reported as runtime proof. Documentation Validation/Full CI on the implementation
+commit must be observed separately; no SITE, operational or deployment acceptance.
+Previously registered state remains NOT_IMPLEMENTED/REGISTERED_PENDING until
+evidence-based status acceptance permits a targeted status-cell change.
+
 <!-- task-register:payload:end -->

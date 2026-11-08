@@ -329,6 +329,25 @@ public final class TrustedAuthenticationVerificationRegistry
         return token;
     }
 
+    /**
+     * Package-private, reviewed LOCAL refresh producer seam. The caller must first consume a
+     * database-locked, keyed token and revalidate current account/credential/binding provenance.
+     * This does not provide an API or platform route for manufacturing authentication receipts.
+     */
+    Authentication verifiedLocalRefresh(Authentication authenticated,
+            AuthenticationVerificationSnapshot snapshot) {
+        var context=invocation.get();
+        if(context==null || context.token!=null || snapshot==null
+                || !"LOCAL".equals(snapshot.authenticationType())
+                || authenticated==null || !authenticated.isAuthenticated()
+                || !(authenticated.getPrincipal() instanceof HidraPrincipal p)
+                || p.authenticationType()!=dz.sh.hidra.modules.identity.domain.value.ProviderType.LOCAL
+                || !snapshot.userId().equals(p.userId())
+                || !snapshot.providerId().equals(p.identityProviderId()))
+            throw denied();
+        return verifiedDirect(authenticated,snapshot);
+    }
+
     Authentication verifiedDirect(
             Authentication actual,
             AuthenticationVerificationSnapshot snapshot,

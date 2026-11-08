@@ -1918,7 +1918,8 @@
         "splitIdentityAdmissionRemainsOpaqueAndMandatory",
         "suppliedFluidSeamsHaveOnlyTheirExactPrivateOwnerCallers",
         "topologyExportHasNoArgumentsAndOpaqueDenialHasNoIdentity",
-        "verificationSnapshotsRejectMalformedSourceAndUnrepresentableDeadlines"
+        "verificationSnapshotsRejectMalformedSourceAndUnrepresentableDeadlines",
+        "refreshProducerSeamHasOnlyRealLockedStorageVerifierCaller"
       ],
       "class": "dz.sh.hidra.modules.identity.OperationAuthenticationBoundaryGuardrailTest",
       "dependency_reason": "050A local Java21 unit/architecture evidence; no live service. New timing hint is unmeasured (0), pending hosted baseline; receipt callbacks are simulated, not PostgreSQL/commit proof.",
@@ -1926,7 +1927,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/OperationAuthenticationBoundaryGuardrailTest.java",
-      "source_sha256": "29e85de2f9ca7bd3dafdef7652a5486e324b44f5051f593abbbaf5eb396a6506",
+      "source_sha256": "fa698f35560e90ca89e05ccc1c1d18c8167fea55d504dcbc8407e819efa79a25",
       "supports": []
     },
     {
@@ -11739,6 +11740,60 @@
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/workbench/HidraOperationalWorkbenchServiceTest.java",
       "source_sha256": "42e8fc8e06f115844a0d461745e4c9cd06c389fdb9c6a9a9dd1de5617ec5b424",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "defaultsToSevenDayAbsoluteLifetimeAndCapsThirtyDays",
+        "familyIsImmutableAndNeverContainsRawRefreshToken",
+        "onlyLocalAuthenticationMayRefresh"
+      ],
+      "class": "dz.sh.hidra.modules.identity.domain.service.RefreshTokenRotationPolicyTest",
+      "dependency_reason": "HAPI-929 original owner LOCAL refresh, non-leaking token proof, single-use replay and real PostgreSQL test coverage; actual hosted timings pending.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/domain/service/RefreshTokenRotationPolicyTest.java",
+      "source_sha256": "9900c2a022c6e1afa2f21552a1ea811f187e4254bf3305a84972036b2d2776ea",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "deniedAndReplayedTokensNeverExposeStoredPrincipalOrDigest",
+        "logoutIsIdempotentAndDoesNotRequireBearer",
+        "refreshOnlyDelegatesOpaqueProofAndPreservesNewMetadata"
+      ],
+      "class": "dz.sh.hidra.modules.identity.api.rest.controller.IdentityRefreshTokenControllerTest",
+      "dependency_reason": "HAPI-929 original owner LOCAL refresh, non-leaking token proof, single-use replay and real PostgreSQL test coverage; actual hosted timings pending.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityRefreshTokenControllerTest.java",
+      "source_sha256": "4d400096ce0411ebc154dcf27f3004094b853624e712f8ab4272c48e6af8b2c7",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "concurrentUseCannotCreateTwoLiveDescendants",
+        "consumedTokenReplayIrrevocablyRevokesDescendants",
+        "disabledAccountOrCredentialGenerationChangeInvalidatesFamily",
+        "localLoginRefreshCreatesNewGenuineBoundSessionAndRetiresOldBearer",
+        "logoutIsIdempotentAndInvalidatesOutstandingBearers",
+        "unknownProofCannotRevokeOrMintAnyNativeSession",
+        "passwordResetBumpsDatabaseOwnedGenerationAndDeniesRefresh",
+        "providerDeactivationAndUserLockBothRequireFreshLogin",
+        "refreshProofKeyRotationChangesOnlyCryptographicDigest"
+      ],
+      "class": "dz.sh.hidra.modules.identity.infrastructure.persistence.RefreshTokenRotationPostgresIntegrationTest",
+      "dependency_reason": "HAPI-929 original owner LOCAL refresh, non-leaking token proof, single-use replay and real PostgreSQL test coverage; actual hosted timings pending.",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/RefreshTokenRotationPostgresIntegrationTest.java",
+      "source_sha256": "4e7def4c304856e04ea7c74e17eb62edbc76e3fe30922a745453688727cbb232",
       "supports": []
     }
   ],

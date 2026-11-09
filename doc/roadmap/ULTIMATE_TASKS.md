@@ -3506,3 +3506,20 @@ The task is VERIFIED / COMPLETED for its bounded backend software scope followin
 
 <a id="hapi-931"></a>
 [HAPI-931](TASKS_HPS-001.md#hapi-931) — validate usable LOCAL bearer issuer configuration
+
+## Owner-selected FD-02 backend runtime registration — 2026-11-09
+
+The owner's API-only `Next` selects documentation-only registration of
+**HAPI-932 / FD-02** in existing HPS-025: one restricted application +
+PostgreSQL synthetic runtime qualification. This raises the canonical
+register to **932 tasks and 25 unchanged phases**. Earlier HAPI-001–931,
+immutable records and statuses remain unchanged. This is NOT_IMPLEMENTED /
+REGISTERED_PENDING; no script, test, migration, runtime, release or deployment
+is implemented by this registration. The earlier conversational "HAPI-932"
+Pipeline/System Alarm ownership label was an **unregistered suggestion**,
+not a reserved task ID; that proposal remains open for future adoption
+under another explicitly selected ID. Its technical owner and complete
+future implementation scope are in the HPS-025 task definition.
+
+<a id="hapi-932"></a>
+[HAPI-932](TASKS_HPS-025.md#hapi-932) — qualify one restricted single-node API runtime

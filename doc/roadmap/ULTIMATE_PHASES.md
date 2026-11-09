@@ -1842,3 +1842,14 @@ Earlier 930 registrations and all 25 phase definitions are preserved.
 | Task ID | Task Name | Deliverable | Priority | Dependencies | Implementation Status | Planning Status |
 |---|---|---|---|---|---|---|
 | [HAPI-931](TASKS_HPS-001.md#hapi-931) | validate usable LOCAL bearer issuer configuration | Explicit production issuer validation with HTTP or HTTPS accepted; retained native bearer/security behavior and focused tests | P0 | HAPI-923; existing JWT contract | VERIFIED | COMPLETED |
+
+## Owner-selected FD-02 single-node API runtime membership — 2026-11-09
+
+One whole HAPI-932 registration belongs to the existing HPS-025 phase,
+without renumbering HAPI-001–931, changing their status or adding a new phase.
+The technical scope and no-deployment qualification boundary are in
+[HPS-025](TASKS_HPS-025.md#hapi-932). This is registration only.
+
+| Task ID | Task Name | Deliverable | Priority | Dependencies | Implementation Status | Planning Status |
+|---|---|---|---|---|---|---|
+| [HAPI-932](TASKS_HPS-025.md#hapi-932) | qualify one restricted single-node API runtime | Disposable PostgreSQL 16 migration/least-privilege proof plus independent native HTTP, one process restart and durable same-database readback; no release action | P0 | HAPI-923–928, HAPI-931; approved synthetic role/catalog policy | NOT_IMPLEMENTED | REGISTERED_PENDING |

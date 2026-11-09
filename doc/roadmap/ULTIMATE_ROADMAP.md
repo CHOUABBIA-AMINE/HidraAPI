@@ -2163,3 +2163,18 @@ refresh lifecycle remain unchanged. Technical admission and the exact commit
 message reside in the owning [HPS-001 definition](TASKS_HPS-001.md#hapi-931).
 
 | HPS-001 | Identity and Authentication | [HAPI-931](TASKS_HPS-001.md#hapi-931) | FD-01; owner-approved native issuer preflight | validate usable LOCAL bearer issuer configuration | Explicit valid production issuer; preserve existing current bearer, sessions, permissions, revocation and LOCAL HTTP regression proof | P0 | HAPI-923; existing HAPI-929 JWT contract | VERIFIED | COMPLETED |
+
+## Owner-selected FD-02 restricted single-node runtime registration — 2026-11-09
+
+This documentation-only membership extension adds **HAPI-932** to existing
+**HPS-025**, following the owner's API-only `Next` selection of FD-02.
+It preserves all 931 earlier registered tasks, their historical evidence and
+current statuses, all 25 phases and immutable archives. The existing accepted
+HAPI-931 issuer contract is a prerequisite, not reimplemented. See the owning
+[HPS-025 definition](TASKS_HPS-025.md#hapi-932) for one indivisible future
+qualification, exact file allowlist, test boundaries, and delivery message.
+Registration is not a running JAR, release candidate, or deployment.
+The previously suggested "HAPI-932" pipeline-level Alarm ownership alias was
+not a registered or reserved ID; the underlying proposal remains unregistered.
+
+| HPS-025 | Deployment and Operational Readiness | [HAPI-932](TASKS_HPS-025.md#hapi-932) | FD-02; API-only runtime qualification; no legacy replacement | qualify one restricted single-node API runtime | Reproducible fresh-schema PostgreSQL 16 + one Java application process, independent migration/runtime authority, protected native REST, bootstrap-off restart and persisted readback using synthetic fixtures | P0 | HAPI-923–928, HAPI-931; approved synthetic role and catalog policy | NOT_IMPLEMENTED | REGISTERED_PENDING |

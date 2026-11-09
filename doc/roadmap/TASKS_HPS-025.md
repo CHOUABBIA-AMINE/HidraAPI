@@ -4792,4 +4792,178 @@ Governance-only registration, no runtime implementation. Local documentation/Ope
 
 P0 local verification (2026-11-03): all157 tests across the six existing workflow-required Python suites PASS (19 docs,10 snapshot,18 dictionary,18 comparison-base,38 inventory,54 full-evidence). Canonical documentation validation PASS:129 documents,8938 relative links,24 modules,928 tasks,25 phases. Offline OpenAPI snapshot PASS:305 paths/335 operations/383 schemas. Exact test inventory PASS, unchanged inventory SHA25658da48d20678984859bb628e5fcc0b06256cacc86ed362aa492b3de08ff306bd. These are local governance checks, not a new application/database/browser test run. Published exact-SHA CI remains pending at commit creation.
 
+
+<a id="hapi-932"></a>
+## HAPI-932 — qualify one restricted single-node API runtime
+
+Phase: HPS-025 — Deployment and Operational Readiness
+
+Legacy IDs: FD-02/R02 proposal handle from the owner-supplied 2026-11-07 REST
+functional assessment; no legacy registered task replaced.
+
+Priority: P0
+
+Implementation Status: NOT_IMPLEMENTED
+
+Planning Status: REGISTERED_PENDING
+
+Owning Module: `platform/runtime-qualification` (non-business boundary).
+Identity, Organization, Party, Topology, Configuration, Workflow and database
+security remain owned by their existing modules/adapters.
+
+Dependencies: HAPI-923–928 bounded software foundations; HAPI-931 validated
+native JWT issuer; actual approved synthetic native role/grant and reference
+catalog fixtures; fresh PostgreSQL 16 migration and independent restricted
+service-principal configuration.
+
+Cross-Repository Dependencies: None. WEB A1 and HWEB-F16 acceptance are not
+reopened or silently claimed by this API-only task.
+
+### Owner selection and status
+
+On 2026-11-09 the owner selected the offered **next proposed API-only action:
+register FD-02**. This is **one indivisible future backend qualification**
+with one acceptance decision, NOT a release or phased implementation.
+Only the documentation register is authorized now. Exact registration message:
+`docs(roadmap): register FD-02 single-node API qualification`.
+The future whole-task implementation requires an independent owner `Next`
+after registration CI and must use:
+`test(runtime): qualify restricted single-node REST consumption`.
+
+The earlier conversational suggestion of **HAPI-932** for direct
+PIPELINE_SYSTEM/PIPELINE Alarm ownership had no canonical registration,
+task-status row or reserved ID. This registration assigns the next contiguous
+available ID to the selected FD-02; the **separate Alarm owner proposal remains
+open and must receive a newly approved ID** when independently selected.
+No Alarm behavior, GZ2 asset ownership, HAPI-929/930/931 status, WEB
+acceptance or historical traceability is changed.
+
+### Objective and absolute scope
+
+Qualify a reproducible, **development-only, disposable** one-application
+Java 21 Spring Boot and one PostgreSQL 16 instance. The artifact is built
+at a pinned exact source SHA and launched as a real OS application process;
+configuration and secrets come from the synthetic isolated runner
+environment, never from committed credentials. Use actual supported
+`HIDRA_ENVIRONMENT=production` and `SPRING_PROFILES_ACTIVE=production`
+guards for configuration compatibility **without claiming production use**.
+Retain the owner-approved absolute **HTTP or HTTPS** JWT issuer rule;
+do not impose the rejected HTTPS-only FD-01 interpretation.
+
+Qualify separated database identities: migration authority for fresh-schema
+Flyway, a restricted ordinary runtime principal, and any existing
+owner-specific protected writer principals that source actually requires.
+Verify least-privilege positive and negative permissions with real PostgreSQL,
+without broad superuser fallback or hidden privilege escalation. Use
+approved synthetic catalogs and bounded native LOCAL actors only.
+Demonstrate relevant existing Identity/Organization/Party/Topology/
+Configuration/Workflow native REST operations from actual client-issued
+IDs under the same disposable database, including representative forbidden
+operations. Preserve same-actor current grants, independent approval,
+source-of-truth reads, native permission fences, transaction provenance
+and immutable audit histories. Do not substitute SQL-seeded *business
+transitions* or mocked HTTP for the required client operations.
+Reuse already-accepted full source fixtures rather than copying WEB code.
+
+Stop the actual Java process, relaunch a fresh OS process with bootstrap
+**disabled** and the *same* PostgreSQL database and appropriate stable
+synthetic signing key; prove committed owner state and protected reads
+survive restart. Existing in-process context restart tests from HAPI-929
+do **not** establish this distinct-process requirement.
+
+### Exact future whole-task source and evidence allowlist
+
+CREATE only:
+- `scripts/qualification/fd02_one_node_runtime.sh` — reproducible,
+  fail-closed disposable lifecycle, separate schema migration/runtime
+  principals and true stop/restart orchestration.
+- `scripts/qualification/fd02_native_http_checks.py` — redacted
+  identity, permission, six-module representative request/readback and
+  negative controls; no secrets/tokens in emitted evidence.
+- `scripts/qualification/test_fd02_native_http_checks.py` —
+  deterministic positive/negative fixture and evidence-contract tests.
+- `doc/operations/FD02_ONE_NODE_API_QUALIFICATION.md` — exact
+  operator-independent instructions, synthetic inputs, observed outcomes,
+  evidence hashes and limitations.
+
+MODIFY only:
+- `doc/operations/ENVIRONMENT_CONFIGURATION.md` — clarify actual
+  separation and synthetic invocation; no live credential examples.
+- `doc/roadmap/TASKS_HPS-025.md` — append source and exact-SHA
+  acceptance evidence, preserving this registered definition.
+- `.github/workflows/ci-qualification.yml` — add an isolated,
+  explicitly bounded, synthetic single-node qualification job if its
+  hosted PostgreSQL/process setup is supported; it does not change release
+  workflow eligibility, bypass the Full CI gate or use real secrets.
+
+No production REST source, Flyway migration, JPA entity, native security
+policy, role/authorization grants, API DTO, OpenAPI baseline, other HPS
+task or release/deployment workflow may be changed by this task. If
+implementation uncovers a required unlisted path or an unsatisfied
+native role/owner authority decision, **stop and seek an owner-approved
+whole-task scope amendment before editing**; never weaken security,
+exclude required tests or split this task into parts.
+
+### Synthetic qualification and acceptance cases
+
+1. Pin Java/Maven/JAR artifact identities, source SHA, PostgreSQL 16
+   exact version, migration count/checksum and effective config names
+   without leaking values. Clean database migration and Hibernate
+   validation pass with the approved migration authority.
+2. Startup guard rejects absent/invalid mandatory production-profile
+   settings. In the disposable configuration, readiness, valid LOCAL
+   authentication and signed `/api/v1/identity/me` work with the
+   accepted issuer format; missing/wrong/expired/revoked identity or
+   grants deny with expected non-disclosing results.
+3. With the required restricted runtime/writer principals, execute
+   representative **actual native HTTP** Identity onboarding,
+   Organization + eligible Party binding, Topology authorized reference
+   readback, typed Configuration effective state and Workflow
+   independently approved action. Demonstrate the same returned IDs,
+   current authorization and real PostgreSQL persistence. If a
+   required source-approved native operation cannot run under intended
+   privileges, this task **fails/HOLD**, not partial success.
+4. A separate nonprivileged principal cannot use Flyway DDL, modify a
+   protected owner's records or read unauthorized existence/counts.
+   Denied or stale transitions leave persisted/audit state unchanged.
+   Do not elevate the ordinary runtime user to pass a test.
+5. Kill the first actual application process cleanly, disable bootstrap,
+   start a **new OS JVM/process** on the original database, then
+   verify readiness, same persisted canonical IDs, protected authorized
+   readbacks, durable history and unchanged permission restrictions.
+   Repeat negative access under current bindings.
+6. Preserve provenance: evidence records exact SHA, contract digest,
+   migration outcome, process identities as nonsecret markers,
+   public HTTP status/structural assertions, runtime principal
+   separation, test counts and redacted failures. Run the admitted
+   focused tests and the applicable exact-SHA Full/Documentation CI;
+   report the actual mode, skip/limitations and source-bound artifacts.
+
+Acceptance is a **bounded single-instance development-software proof**.
+It is not a production deployment, release tag, serial release-candidate
+oracle, real enterprise IdP acceptance, HA/DR performance qualification,
+HidraWEB A1, SITE, real company/onboarding acceptance, live OT telemetry
+or numerical simulation. Do not call a generic green CI success a
+restricted runtime qualification unless the case-specific true
+process/role/HTTP evidence was actually produced.
+
+### Registration-only commit and verification boundary
+
+This registration alone MODIFYs exactly:
+- `AGENTS.md`
+- `doc/roadmap/ULTIMATE_ROADMAP.md` (new HAPI-932 row only)
+- `doc/roadmap/ULTIMATE_PHASES.md` (new HAPI-932 row only)
+- `doc/roadmap/ULTIMATE_TASKS.md` (index and compatibility anchor only)
+- `doc/roadmap/TASKS_HPS-025.md` (this new owning definition)
+- `.github/documentation-validation.json` (`task_register.task_count`
+  931 → 932 only).
+
+Leave immutable archive payloads and HAPI-001–931 exact statuses untouched.
+Do not run the live runtime, launch deployment, change source, create an
+additional HAPI identifier or automatically proceed to implementation.
+The new direct-main commit requires expected-head CAS, exact parent,
+tree, files and blob preservation proof; observe actual exact-SHA
+applicable CI created/queued or started, then **STOP**. Documentation
+acceptance alone does not mark the future qualification implemented.
+
 <!-- task-register:payload:end -->

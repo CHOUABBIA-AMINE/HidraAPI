@@ -840,3 +840,25 @@ control is removed. The exact registered message is `fix(identity): validate LOC
 See [HAPI-931](doc/roadmap/TASKS_HPS-001.md#hapi-931). Preserve all previous
 930 tasks, 25 phases, immutable evidence, and independent HAPI-930 status.
 No WEB, OT, release, deployment or other phase is authorized.
+
+## Owner-selected FD-02 API runtime qualification registration — 2026-11-09
+
+The owner's contextual `Next`, following the API-only proposed-task trace,
+selects **documentation-only registration** of **HAPI-932 / FD-02** in the
+existing **HPS-025 Deployment and Operational Readiness** phase. This registers
+one indivisible synthetic **single-application + PostgreSQL** backend
+qualification; implementation is NOT_IMPLEMENTED / REGISTERED_PENDING and
+requires a later explicit selection after this registration's exact-SHA
+documentation validation. No release, production deployment, SITE, browser,
+live OT, numerical/P3 or future task execution is selected.
+
+HAPI-932 is the next contiguous unregistered ID after accepted HAPI-931.
+The previously mentioned *HAPI-932* label for direct Pipeline/Pipeline-System
+Alarm ownership was only a noncanonical suggestion, **not a registered
+identifier or reservation**. That separate Alarm ownership proposal remains
+open, unnamed in the canonical register, and must obtain a new owner-approved
+identifier if selected. No existing HAPI-001–931 meaning or accepted status is
+changed. The technical owner, exact future message, complete file allowlist,
+synthetic acceptance and limits live only in
+[HPS-025 HAPI-932](doc/roadmap/TASKS_HPS-025.md#hapi-932);
+the 25-phase structure and immutable archives remain unchanged.

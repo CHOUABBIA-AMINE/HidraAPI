@@ -12666,9 +12666,9 @@ Legacy IDs: None — owner-approved 2026-11-08 extension; no earlier legacy task
 
 Priority: P0
 
-Implementation Status: PARTIAL
+Implementation Status: VERIFIED
 
-Planning Status: IN_PROGRESS
+Planning Status: COMPLETED
 
 Owning Module: `identity`
 
@@ -13135,6 +13135,70 @@ proof eligibility unless outstanding families are revoked by policy.
 Do not claim production, SITE, live IdP or HidraWEB acceptance.
 Keep HAPI-929 PARTIAL / IN_PROGRESS until the exact-SHA acceptance
 gate is adjudicated, without modifying HAPI-930/HAPI-931 statuses.
+
+
+### HAPI-929 bounded development-software acceptance — 2026-11-09
+
+**Evidence and task identity.** This is the acceptance reconciliation of the
+existing, owner-approved indivisible HAPI-929, not another task, serial stage,
+sub-package, branch or release. Production source/acceptance candidate
+`720e9222b30fa45b7423ede9c9f141ab87298024` (parent
+`75b81071a063d3c7deffcc52fbb832e513f65929`) passed
+[Full CI #1161, attempt 1](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42632933656)
+and [Documentation Validation #955](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42632933970),
+both **completed/SUCCESS on the exact SHA**. Its authenticated Full Verification
+Gate aggregated **571 reported classes and 4,368 tests, zero failures, errors
+or skips**, plus Java 21 unit/architecture, static validation, all 14 genuine
+PostgreSQL shards, runtime OpenAPI equality and migrated database-dictionary
+equality. The optional alternate serial Maven verification lane is skipped by
+CI design, not counted as proof of execution. The previously failed Maven
+distribution download in CI #1160 attempt 1 was retried at the *same* SHA
+and attempt 2 completed success; it was not a source defect.
+
+**Accepted backend software contract.** Existing tests and the additional
+real PostgreSQL 16/Spring MVC cases cover LOCAL password login and refresh
+with new genuine JTI, bound session and permissions, retiring the old bearer;
+unknown/malformed/replayed opaque secrets and entire descendant revocation;
+concurrent one-use rotation; logout and disabled/locked/stale provider,
+credential and effective-grant invalidation; immutable producer-origin
+binding and live protected-native checks; owner-transaction atomicity and
+audit-write failure rollback; 256-bit opaque secrets with keyed digest;
+fixed seven-day default family expiry, five-minute hard-deadline expiry
+qualification with after-lock database clock floor and no resurrection;
+anonymous refresh after a **genuinely expired access JWT**; closure of one
+Spring application context followed by a fresh context sharing the same
+disposable PostgreSQL database, including old-secret replay after renewal;
+full configured native-HMAC *cold key replacement* denying the old signed
+bearer and old refresh proof, while a new LOCAL login under the replacement
+key succeeds. Owner-approved Option A applies server-side non-disclosing
+HTTP 429 throttling with configured fixed-window, per family/server-observed
+source quotas, bounded per-process storage, and synthetic HTTP/concurrency
+tests. No historical Flyway migration, existing security trigger, public
+REST contract or previously accepted HAPI-930/HAPI-931 behavior was weakened.
+
+**Acceptance disposition.** Update **only** HAPI-929's current statuses to
+`VERIFIED / COMPLETED` in this HPS-001 owning definition, the adopted
+`ULTIMATE_ROADMAP.md` and `ULTIMATE_PHASES.md`; update the compact index's
+current pointer while preserving the earlier registration and PARTIAL
+passages as **historical evidence**. This is one documentation-only acceptance
+commit with message `docs(identity): accept HAPI-929 LOCAL refresh software`.
+It records independently successful source-SHA CI, not additional runtime
+execution. Any new exact-SHA Documentation/Full workflow must be observed
+separately after publication.
+
+**Explicit remaining limitations, not secretly accepted.** The restart
+test reconstructs a Spring context within a single JVM; a distinct
+operating-system JVM/process restart, cross-node/rolling deployment,
+production rollback, operational key/certificate lifecycle, *seamless*
+hot/dual-key JWT rotation, and globally consistent multi-instance
+request-throttling are **NOT ESTABLISHED**. The cold key change intentionally
+invalidates old refresh proofs; reusing the historical key may restore
+eligibility of still-unrevoked prior families, so key retirement/reversion
+requires explicit operational revocation controls. External LDAP/AD/OIDC
+refresh remains fail-closed pending fresh upstream proof. No browser/HidraWEB
+token storage, deployment/release, SITE/live SCADA or industrial operator
+qualification follows. Those are separate policies/gates, not inferred
+from a passing synthetic backend suite.
 
 <a id="hapi-931"></a>
 ## HAPI-931 — validate usable LOCAL bearer issuer configuration (FD-01)

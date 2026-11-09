@@ -3486,7 +3486,7 @@ The owner approved adding **HAPI-929** as one whole independent Identity deliver
 <a id="hapi-929"></a>
 [HAPI-929](TASKS_HPS-001.md#hapi-929) — rotating LOCAL refresh-token lifecycle.
 
-Current executable disposition (2026-11-09): PARTIAL / IN_PROGRESS, distinct from the historical registration-only NOT_IMPLEMENTED passage above. Existing LOCAL refresh/logout code, original binding/replay/rotation and native HTTP tests passed exact-SHA Full #1158; the owning HPS-001 record supplies all evidence and the still-unverified expiry, restart, key rotation and full acceptance gates. No WEB, external provider, SITE or deployment authorization is implied.
+Current software disposition (2026-11-09): VERIFIED / COMPLETED for the bounded LOCAL backend contract, superseding the historical registration-only and intermediate PARTIAL observations above. Exact implementation `720e9222b30fa45b7423ede9c9f141ab87298024` passed Full CI #1161 and Docs #955; the owning HPS-001 ledger records tests, source evidence, and unqualified separate-process, hot-rotation, production, external-provider, WEB and SITE limits. No release or deployment is authorized.
 
 ## Owner-directed GZ2 Alarm prerequisite registration — 2026-11-08
 

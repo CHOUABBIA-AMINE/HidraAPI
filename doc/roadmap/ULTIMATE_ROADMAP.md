@@ -2144,7 +2144,7 @@ Bounded append-only membership extension approved with the foundation roadmap. O
 
 The owner selected a structural registration of one whole backend HAPI-929 delivery, outside the frozen 12-delivery foundation supplement. Original HAPI-001–928 meanings, statuses, 25-phase membership, historical records and prior acceptance remain unchanged. Technical scope and approval evidence live only in the owning [HPS-001 task definition](TASKS_HPS-001.md#hapi-929). No implementation, CI pass or operational acceptance is inferred by registration.
 
-| HPS-001 | Identity and Authentication | [HAPI-929](TASKS_HPS-001.md#hapi-929) | Owner-approved refresh extension; no legacy replacement | implement rotating identity refresh tokens | Whole rotating LOCAL refresh-token issuance, reuse detection, family revocation and new current bound bearer; external providers fail closed until newly authorized source re-verification | P0 | HAPI-923 | PARTIAL | IN_PROGRESS |
+| HPS-001 | Identity and Authentication | [HAPI-929](TASKS_HPS-001.md#hapi-929) | Owner-approved refresh extension; no legacy replacement | implement rotating identity refresh tokens | Whole rotating LOCAL refresh-token issuance, reuse detection, family revocation and new current bound bearer; external providers fail closed until newly authorized source re-verification | P0 | HAPI-923 | VERIFIED | COMPLETED |
 
 ## Owner-directed GZ2 Alarm resource-authorization extension — 2026-11-08
 

@@ -91,6 +91,12 @@ class Gz2AlarmScopedOperatorPostgresIntegrationTest {
     @Autowired WebApplicationContext context;
     @Autowired AuthenticateDirectUserUseCase authenticate;
     @Autowired PasswordEncoder passwords;
+    @Autowired @org.springframework.beans.factory.annotation.Qualifier("hidraJwtDecoder")
+    org.springframework.security.oauth2.jwt.JwtDecoder nativeDecoder;
+    @Autowired dz.sh.hidra.modules.identity.application.port.out.OperationAuthenticationBindingRepositoryPort
+            operationBindings;
+    @Autowired dz.sh.hidra.modules.identity.application.port.out.AuthenticationSecurityStateQueryPort
+            authenticationStates;
 
     private JdbcTemplate db;
     private MockMvc http;
@@ -204,13 +210,30 @@ class Gz2AlarmScopedOperatorPostgresIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON).content(request))
                 .andDo(mvcResult -> {
                     if (mvcResult.getResponse().getStatus() != 200) {
+                        var decoded = nativeDecoder.decode(actor.bearer());
+                        var issuer = decoded.getIssuer();
+                        var jti = decoded.getId();
+                        java.util.Optional<dz.sh.hidra.modules.identity.domain.model.OperationAuthenticationBinding>
+                                persisted = issuer == null || jti == null
+                                        ? java.util.Optional.empty()
+                                        : operationBindings.findByNativeIssuerAndJti(issuer.toString(), jti);
+                        boolean bindingCurrent = persisted
+                                .map(binding -> authenticationStates.current(binding, Instant.now()))
+                                .orElse(false);
                         System.err.println("HAPI-930 native alarm-raise diagnostics: status="
                                 + mvcResult.getResponse().getStatus()
                                 + ", matchedRoute=" + mvcResult.getRequest().getAttribute(
                                         org.springframework.web.servlet.HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE)
                                 + ", handler=" + mvcResult.getHandler()
                                 + ", resolvedException=" + mvcResult.getResolvedException()
-                                + ", responseBody=" + mvcResult.getResponse().getContentAsString());
+                                + ", responseBody=" + mvcResult.getResponse().getContentAsString()
+                                + ", subjectMatchesActor=" + actor.id().equals(decoded.getSubject())
+                                + ", issuerPresent=" + (issuer != null)
+                                + ", jtiPresent=" + (jti != null)
+                                + ", bindingPresent=" + persisted.isPresent()
+                                + ", bindingActorMatches=" + persisted
+                                        .map(binding -> actor.id().equals(binding.userId())).orElse(false)
+                                + ", bindingCurrent=" + bindingCurrent);
                     }
                 })
                 .andExpect(status().isOk()).andReturn();

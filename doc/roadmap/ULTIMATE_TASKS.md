@@ -3493,3 +3493,12 @@ The owner-selected, documentation-only HAPI-930 extension belongs to HPS-011. It
 <a id="hapi-930"></a>
 [HAPI-930](TASKS_HPS-011.md#hapi-930) — enforce scoped Alarm resource access and acknowledgement
 
+
+## Owner-approved FD-01 Identity issuer preflight — 2026-11-09
+
+HAPI-931 is the single whole approved backend FD-01 delivery, excluding
+HTTPS-only point 1. It preserves the existing 930 tasks and 25 phases.
+The task is IMPLEMENTED / IN_PROGRESS pending exact-SHA CI acceptance.
+
+<a id="hapi-931"></a>
+[HAPI-931](TASKS_HPS-001.md#hapi-931) — validate usable LOCAL bearer issuer configuration

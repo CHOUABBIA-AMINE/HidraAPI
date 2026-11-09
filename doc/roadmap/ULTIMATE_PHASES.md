@@ -1833,3 +1833,12 @@ This owner-selected structural addition adds HAPI-930 to existing HPS-011 only. 
 |---|---|---|---|---|---|---|
 | [HAPI-930](TASKS_HPS-011.md#hapi-930) | enforce scoped Alarm resource access and acknowledgement | Scoped Alarm list/count/detail and acknowledgement current-owner enforcement | P0 | HAPI-923, HAPI-925, HAPI-926; owner policy | PARTIAL | IN_PROGRESS |
 
+
+## Owner-approved FD-01 Identity issuer membership extension — 2026-11-09
+
+HAPI-931 is one newly admitted HPS-001 task, excluding HTTPS-only point 1.
+Earlier 930 registrations and all 25 phase definitions are preserved.
+
+| Task ID | Task Name | Deliverable | Priority | Dependencies | Implementation Status | Planning Status |
+|---|---|---|---|---|---|---|
+| [HAPI-931](TASKS_HPS-001.md#hapi-931) | validate usable LOCAL bearer issuer configuration | Explicit production issuer validation with HTTP or HTTPS accepted; retained native bearer/security behavior and focused tests | P0 | HAPI-923; existing JWT contract | IMPLEMENTED | IN_PROGRESS |

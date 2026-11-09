@@ -53,7 +53,7 @@ The configured mode determines which identity inputs below are actually required
 | `HIDRA_JWT_HMAC_SECRET` | REQUIRED SECRET when Hidra token issuance/HMAC validation is used | Must be externalized; never Git |
 | `HIDRA_JWT_ISSUER_URI` | CONDITIONAL | External issuer validation when configured |
 | `HIDRA_JWT_JWK_SET_URI` | CONDITIONAL | External JWK validation when configured |
-| `HIDRA_JWT_TOKEN_ISSUER` | OPTIONAL | Default `hidra-api` |
+| `HIDRA_JWT_TOKEN_ISSUER` | REQUIRED EXPLICITLY FOR PRODUCTION | Absolute `http://` or `https://` URI with host, no userinfo/query/fragment. FD-01 does not enforce an HTTPS-only scheme; legacy non-production default `hidra-api` is unchanged. |
 | `HIDRA_JWT_AUDIENCE` | OPTIONAL | Default `hidra-api` |
 | `HIDRA_JWT_ACCESS_TOKEN_TTL_SECONDS` | OPTIONAL | Default 900 seconds |
 | `HIDRA_JWT_PRINCIPAL_CLAIM` | OPTIONAL | Default `sub` |
@@ -199,6 +199,7 @@ For a production runtime it fails fast when:
 - CORS is enabled but no allowed production origin is configured;
 - authentication mode is not `jwt`;
 - the Hidra JWT HMAC secret is empty;
+- the native `HIDRA_JWT_TOKEN_ISSUER` is missing or is not a valid absolute HTTP(S) URI with host;
 - administrator bootstrap is enabled without a bootstrap password.
 
 The guard runs before normal bean creation and complements, rather than replaces, existing Spring placeholder validation and security-component validation.

@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.platform.configuration;
 
+import java.net.URI;
 import java.util.Arrays;
 import java.util.Locale;
 import org.springframework.boot.SpringApplication;
@@ -78,6 +79,8 @@ public final class HidraProductionStartupGuard implements EnvironmentPostProcess
         }
 
         require(environment, "hidra.platform.security.jwt.hmac-secret", "HIDRA_JWT_HMAC_SECRET");
+        require(environment, "hidra.platform.security.jwt.token-issuer", "HIDRA_JWT_TOKEN_ISSUER");
+        requireAbsoluteNativeIssuer(read(environment, "hidra.platform.security.jwt.token-issuer"));
 
         boolean bootstrapEnabled = Boolean.parseBoolean(normalizeOrDefault(
                 read(environment, "hidra.security.bootstrap.enabled"),
@@ -98,6 +101,29 @@ public final class HidraProductionStartupGuard implements EnvironmentPostProcess
         if (value == null || value.isBlank()) {
             throw new IllegalStateException(
                     "Production runtime requires non-empty " + externalName + " (" + propertyName + ")."
+            );
+        }
+    }
+
+    /** Validate the production issuer identity without mandating an HTTPS scheme. */
+    private static void requireAbsoluteNativeIssuer(String value) {
+        try {
+            URI issuer = URI.create(value.trim());
+            String scheme = issuer.getScheme();
+            if (!issuer.isAbsolute()
+                    || scheme == null
+                    || (!"http".equalsIgnoreCase(scheme) && !"https".equalsIgnoreCase(scheme))
+                    || issuer.getHost() == null
+                    || issuer.getHost().isBlank()
+                    || issuer.getRawUserInfo() != null
+                    || issuer.getRawQuery() != null
+                    || issuer.getRawFragment() != null) {
+                throw new IllegalArgumentException("Invalid native issuer URI");
+            }
+        } catch (IllegalArgumentException invalid) {
+            throw new IllegalStateException(
+                    "HIDRA_JWT_TOKEN_ISSUER must be an absolute http:// or https:// URI with a host.",
+                    invalid
             );
         }
     }

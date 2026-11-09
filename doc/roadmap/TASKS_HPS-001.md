@@ -12868,4 +12868,68 @@ The registered implementation message and task status are retained.
 Whole-task acceptance remains pending independent exact-SHA Full and Docs
 CI and the registered security and HTTP evidence review.
 
+
+<a id="hapi-931"></a>
+## HAPI-931 — validate usable LOCAL bearer issuer configuration (FD-01)
+
+Phase: HPS-001 — Identity and Authentication
+
+Implementation Status: IMPLEMENTED
+Planning Status: IN_PROGRESS
+
+### Owner decision and bounded execution
+
+On 2026-11-09 the owner approved registering and executing FD-01 as one
+indivisible backend task, explicitly **skipping HTTPS point 1**. This task
+does not require an HTTPS issuer, terminate TLS, or change network transports.
+Native issuer identity and HTTPS network policy are distinct concerns.
+The exact implementation message is `fix(identity): validate LOCAL bearer issuer preflight`.
+
+### Source-backed scope and invariants
+
+HAPI-930's previously accepted Identity repair obtains signed native
+`iss` as a String rather than coercing it through `Jwt.getIssuer()`; the
+legacy non-URL `hidra-api` issuer remains compatible in non-production
+tests. This task does not reverse that repair. Ordinary JWT signing,
+audience, expiry, current native binding/session/credential checks,
+effective grant revocation, OIDC separation and browser contract stay intact.
+
+Only production preflight requires an explicitly supplied, nonblank,
+absolute HTTP **or** HTTPS native issuer URI with host and no userinfo,
+query or fragment. The production profile no longer inherits the common
+opaque default. This validates issuer identity without requiring HTTPS
+as part of FD-01. Development retains its existing local HTTP issuer;
+other source/test issuer compatibility is unchanged.
+
+### Exact authorized file scope
+
+MODIFY only:
+- `src/main/java/dz/sh/hidra/platform/configuration/HidraProductionStartupGuard.java`
+- `src/test/java/dz/sh/hidra/platform/configuration/HidraProductionStartupGuardTest.java`
+- `src/main/resources/application-production.properties`
+- `src/main/resources/application-dev.properties` (stale comment only)
+- `docs/AUTHENTICATION_DEPLOYMENT_RUNBOOK.md`
+- `doc/operations/ENVIRONMENT_CONFIGURATION.md`
+- `.github/ci-test-inventory.json` (exact test case and hash admission)
+- `.github/documentation-validation.json` (931 task identities)
+- `AGENTS.md`, `doc/roadmap/ULTIMATE_ROADMAP.md`,
+  `doc/roadmap/ULTIMATE_PHASES.md`, `doc/roadmap/ULTIMATE_TASKS.md`,
+  and this owning `doc/roadmap/TASKS_HPS-001.md`.
+
+Zero CREATE/DELETE, migrations, public API/controller, token-issuer
+implementation, decoder, security interceptor or business-authorization
+changes. Earlier source, task statuses and append-only evidence remain.
+
+### Acceptance and independent gates
+
+Previously accepted native LOCAL HTTP/PostgreSQL login,
+`/identity/me`, `/me/permissions`, permitted protected read,
+invalid bearer and revoked-current-grant test identities remain required
+CI evidence. The production guard test now rejects missing/malformed
+issuer inputs and accepts absolute HTTP and HTTPS schemes. The strict
+test inventory records its exact case and source digest. Current Full
+and Documentation CI on the new SHA are required but not yet observed;
+this record does not claim a pass. No deployment, SITE, browser A1,
+live operator authorization or numerical simulation is selected.
+
 <!-- task-register:payload:end -->

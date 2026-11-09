@@ -112,6 +112,25 @@ class HidraProductionStartupGuardTest {
     }
 
     @Test
+    void rejectsProductionWhenNativeIssuerIsMissingOrMalformed() {
+        String[] invalidIssuers = {
+                "", " ", "hidra-api", "not a uri", "/relative",
+                "ftp://issuer.invalid/hidra", "http://",
+                "https://user:password@issuer.invalid/hidra",
+                "http://issuer.invalid/hidra?query=1",
+                "http://issuer.invalid/hidra#fragment"
+        };
+        for (String value : invalidIssuers) {
+            MockEnvironment environment = validProductionEnvironment();
+            environment.setProperty("hidra.platform.security.jwt.token-issuer", value);
+            assertThatThrownBy(() -> guard.postProcessEnvironment(environment, null))
+                    .as("Rejected native issuer configuration: %s", value)
+                    .isInstanceOf(IllegalStateException.class)
+                    .hasMessageContaining("HIDRA_JWT_TOKEN_ISSUER");
+        }
+    }
+
+    @Test
     void rejectsEnabledBootstrapWithoutBootstrapPassword() {
         MockEnvironment environment = validProductionEnvironment();
         environment.setProperty("hidra.security.bootstrap.enabled", "true");
@@ -126,6 +145,9 @@ class HidraProductionStartupGuardTest {
     void acceptsCompleteProductionRuntimeContract() {
         MockEnvironment environment = validProductionEnvironment();
 
+        assertThatCode(() -> guard.postProcessEnvironment(environment, null))
+                .doesNotThrowAnyException();
+        environment.setProperty("hidra.platform.security.jwt.token-issuer", "https://issuer.invalid/hidra");
         assertThatCode(() -> guard.postProcessEnvironment(environment, null))
                 .doesNotThrowAnyException();
     }
@@ -143,6 +165,10 @@ class HidraProductionStartupGuardTest {
         environment.setProperty(
                 "hidra.platform.security.jwt.hmac-secret",
                 "0123456789abcdef0123456789abcdef"
+        );
+        environment.setProperty(
+                "hidra.platform.security.jwt.token-issuer",
+                "http://issuer.invalid/hidra"
         );
         environment.setProperty("hidra.security.bootstrap.enabled", "false");
         return environment;

@@ -197,7 +197,7 @@ Ordinary protected APIs accept the standardized Hidra-issued JWT, not the extern
 | Environment variable | Default / requirement | Purpose |
 |---|---|---|
 | `HIDRA_JWT_HMAC_SECRET` | Required in JWT mode; at least 32 UTF-8 bytes | HS256 signing and validation material for Hidra-issued access tokens |
-| `HIDRA_JWT_TOKEN_ISSUER` | `hidra-api` | `iss` value of Hidra-issued tokens |
+| `HIDRA_JWT_TOKEN_ISSUER` | Explicit absolute HTTP(S) URI required for production; non-production inherited default `hidra-api`, dev fallback `http://localhost:8080/hidra-api` | Signed Hidra `iss` identity; FD-01 does not require an HTTPS scheme. Production preflight rejects blank/malformed values. |
 | `HIDRA_JWT_AUDIENCE` | `hidra-api` | Expected audience |
 | `HIDRA_JWT_ACCESS_TOKEN_TTL_SECONDS` | `900` | Access-token lifetime in seconds |
 | `HIDRA_JWT_PRINCIPAL_CLAIM` | `sub` | Principal claim used by Spring Security |
@@ -230,7 +230,7 @@ Before enabling an environment, verify:
 - `SPRING_PROFILES_ACTIVE` selects the intended profile.
 - `HIDRA_SECURITY_AUTHENTICATION_MODE=jwt` for normal protected-API operation.
 - `HIDRA_JWT_HMAC_SECRET` is externally supplied and contains at least 32 UTF-8 bytes.
-- `HIDRA_JWT_TOKEN_ISSUER`, audience, and TTL match the intended Hidra token contract.
+- `HIDRA_JWT_TOKEN_ISSUER` is explicitly supplied as an absolute HTTP(S) URI in production (either scheme accepted by FD-01); audience and TTL match the intended Hidra token contract. Issuer identity is distinct from network TLS deployment.
 - Required IdentityProvider and ExternalIdentity records are active/linked.
 - LDAP is enabled only when required.
 - staging/production LDAP uses `ldaps://`.

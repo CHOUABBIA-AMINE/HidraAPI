@@ -11316,7 +11316,8 @@
         "rejectsProductionProfileWhenJwtSecretIsMissing",
         "rejectsProductionProfileWhenMandatoryDatasourcePasswordIsMissing",
         "rejectsProductionProfileWhenMandatoryDatasourceUrlIsMissing",
-        "rejectsProductionProfileWhenMandatoryDatasourceUsernameIsMissing"
+        "rejectsProductionProfileWhenMandatoryDatasourceUsernameIsMissing",
+        "rejectsProductionWhenNativeIssuerIsMissingOrMalformed"
       ],
       "class": "dz.sh.hidra.platform.configuration.HidraProductionStartupGuardTest",
       "dependency_reason": "Excluded; actual DB/container/transaction",
@@ -11324,7 +11325,7 @@
       "lane": "postgres-integration",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/configuration/HidraProductionStartupGuardTest.java",
-      "source_sha256": "adba84c59e69fa3646b54dfd267a6f26af11df79408280bbfac689092a693339",
+      "source_sha256": "236cfc9f802455e31d513b3be79478b02b8491ff01d02251148ede90920df468",
       "supports": []
     },
     {

@@ -828,3 +828,15 @@ The owner explicitly selected the structural addition of **HAPI-929** to the exi
 
 After HWEB-F16's recorded HOLD and the offered next action to register its owning API prerequisite, the owner's contextual `Next` selected **documentation-only registration** of HAPI-930 in existing HPS-011. The canonical count is now 930 tasks in 25 phases; all previous task IDs, statuses, immutable archives and older acceptance remain unchanged. [HAPI-930 owning definition](doc/roadmap/TASKS_HPS-011.md#hapi-930) is NOT_IMPLEMENTED/BLOCKED pending exact company/asset authorization policy and cross-owner agreement. No implementation, frontend scope, production/SITE, P3 or deployment is selected.
 
+
+## Owner-approved FD-01 native bearer issuer preflight — 2026-11-09
+
+The owner approved registration and whole-task execution of **HAPI-931** in existing
+**HPS-001** as FD-01, expressly excluding the proposal's HTTPS-only point 1.
+The bounded task validates explicit production native issuer configuration and
+regresses existing LOCAL bearer/permission denial behavior. Both HTTP and HTTPS
+issuer schemes are allowed; no TLS deployment policy or protected authorization
+control is removed. The exact registered message is `fix(identity): validate LOCAL bearer issuer preflight`.
+See [HAPI-931](doc/roadmap/TASKS_HPS-001.md#hapi-931). Preserve all previous
+930 tasks, 25 phases, immutable evidence, and independent HAPI-930 status.
+No WEB, OT, release, deployment or other phase is authorized.

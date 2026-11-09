@@ -9562,9 +9562,9 @@ Legacy IDs: None superseded; new prerequisite identified by HWEB-F16 GZ2 acknowl
 
 Priority: P0
 
-Implementation Status: PARTIAL
+Implementation Status: VERIFIED
 
-Planning Status: IN_PROGRESS
+Planning Status: COMPLETED
 
 Owning Module: `alarm` (Identity, Topology and Organization own their respective exported semantics).
 
@@ -9797,5 +9797,70 @@ No new API, schema, migration, grant, WEB, other task status, numerical/P3
 or release/deployment scope. HAPI-930 remains PARTIAL / IN_PROGRESS until
 independent exact-SHA Full/Docs CI and new native test acceptance; no
 Maven/PostgreSQL run is claimed from source authoring.
+
+
+### HAPI-930 exact-SHA native Alarm software acceptance — 2026-11-09
+
+**Implementation source and provenance:** `810721be7b6453d80c2771f2c5555e9bccd70ed7`,
+parent `7886963ed196596c0dbd983ccb473d46270f4f5d`,
+tree `4c717971e33907004255c6decc87498886d2b80e`,
+exact repair message
+`fix(alarm): fence current topology ownership during protected access`.
+[HidraAPI Full CI #1156](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42608217313)
+and [Documentation Validation #949](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42608217353)
+completed **SUCCESS**, both on that exact source SHA. The Full Gate's
+authenticated same-run artifact verifier reported **568 selected classes,
+4,348 tests, zero failures, errors or skips**. All fourteen PostgreSQL
+integration shards, Java 21 unit and architecture checks, static validation,
+API contract/runtime snapshot and strict migrated PostgreSQL dictionary
+checks, and the Full Verification Gate concluded SUCCESS. The selected
+development-partitioned CI mode skipped the separate serial Maven oracle;
+this is not an unreported release/SITE qualification.
+
+**Native and concurrent gate:** PostgreSQL shard 3 recorded 10 classes
+and 136 tests, with zero failures/errors/skips. Its logs independently
+show the native
+`Gz2AlarmScopedOperatorPostgresIntegrationTest` started against
+PostgreSQL 16.15. The exact admitted source and strict test inventory
+contain two native methods: (1) the three-genuine-LOCAL-operator synthetic
+FACILITY Alarm REST proof for current company-and-asset grants, scoped
+list/count/detail/shelving history, indistinguishable out-of-scope
+404/empty list, denial without write/event mutation, two immutable
+authorized acknowledgements, current-grant revocation and reassignment,
+and unsupported PIPELINE_SYSTEM denial; and (2) current owner and bounded
+catalog pessimistic-lock transaction proof, requiring SQLSTATE 55P03
+against an independent concurrent reassignment attempt, then native REST
+denial once ownership lawfully changes. The CI gate verified both selected
+raw test identities with no skip. The owner-backed Identity exact-scope
+and Topology public contracts remain distinct.
+
+**Disposition:** HAPI-930 **VERIFIED / COMPLETED only for the approved
+bounded synthetic backend software scope**: explicitly owned ACTIVE
+FACILITY assets and supported attached EQUIPMENT under the same current
+owner/Identity checks; API route and repository protections; immutable
+acknowledgement histories; and verified current-owner lock protection.
+Do **not** infer full industrial GZ2 pipeline/system-owner support:
+`PIPELINE_SYSTEM`, `PIPELINE`, unbound or unknown assets intentionally
+fail closed until a separately authorized owner contract exists. The
+existing 500-item fail-closed query cap is retained, not a proof of
+capacity at industrial inventory scale. Native HTTP proof is for synthetic
+FACILITY, not an independent native EQUIPMENT browser or every suppression
+concurrency interleaving. Current source and automated CI do not establish
+production data, actual company/asset onboarding, operational calibration,
+site acceptance, live SCADA/OT, full serial release verification or
+deployment readiness.
+
+**Evidence-only acceptance publication:** update this owning task status
+and append this exact-SHA disposition, update only HAPI-930 status rows in
+`ULTIMATE_ROADMAP.md` and `ULTIMATE_PHASES.md`, and update its
+`ULTIMATE_TASKS.md` index status pointer. No application code, source
+tests, CI inventory, schema, Flyway, security policy, route, other task,
+or WEB change. Exact evidence-acceptance message:
+`docs(roadmap): accept HAPI-930 scoped alarm evidence`. The new
+documentation-only acceptance SHA requires Documentation Validation
+started/queued and is separately reported; the accepted implementation
+Full CI belongs to the unchanged source SHA above. The next independently
+registered API-only candidate is HAPI-929 rotating LOCAL refresh tokens;
+it is not executed by this acceptance.
 
 <!-- task-register:payload:end -->

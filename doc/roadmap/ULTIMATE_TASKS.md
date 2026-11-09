@@ -3493,6 +3493,8 @@ The owner-selected, documentation-only HAPI-930 extension belongs to HPS-011. It
 <a id="hapi-930"></a>
 [HAPI-930](TASKS_HPS-011.md#hapi-930) — enforce scoped Alarm resource access and acknowledgement
 
+HAPI-930 is VERIFIED / COMPLETED for the bounded synthetic backend Alarm owner/Identity authorization and original-transaction fencing scope: exact implementation `810721be7b6453d80c2771f2c5555e9bccd70ed7`, Full CI #1156 and Docs #949 SUCCESS. The owning HPS-011 record contains detailed evidence and unsupported asset/SITE/deployment limitations. No API-only follow-on work or WEB task was executed by this acceptance.
+
 
 ## Owner-approved FD-01 Identity issuer preflight — 2026-11-09
 

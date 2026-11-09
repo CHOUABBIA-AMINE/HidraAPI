@@ -2150,7 +2150,7 @@ The owner selected a structural registration of one whole backend HAPI-929 deliv
 
 The owner's contextual `Next` after the HWEB-F16 HOLD authorizes registration of one complete HAPI-930 prerequisite in the existing HPS-011 phase; [its owning technical definition](TASKS_HPS-011.md#hapi-930) records source, policy gates, exact registration message, candidate future file scope and acceptance. The original 929 tasks and 25 phase definitions remain preserved. HAPI-930 is NOT_IMPLEMENTED/BLOCKED until approved current company/asset authority and replay semantics; HWEB-F16 remains HOLD. Registration-only message: `docs(roadmap): register GZ2 alarm authorization prerequisite`; future whole implementation is separately selected. This registration edits six governance files only and starts no executable code or release.
 
-| HPS-011 | Alarms and Events | [HAPI-930](TASKS_HPS-011.md#hapi-930) | HWEB-F16 prerequisite; no legacy replacement | enforce scoped Alarm resource access and acknowledgement | Protect Alarm list/count/detail, acknowledgement and related resource routes with current company/asset scope | P0 | HAPI-923, HAPI-925, HAPI-926; owner policy | PARTIAL | IN_PROGRESS |
+| HPS-011 | Alarms and Events | [HAPI-930](TASKS_HPS-011.md#hapi-930) | HWEB-F16 prerequisite; no legacy replacement | enforce scoped Alarm resource access and acknowledgement | Protect Alarm list/count/detail, acknowledgement and related resource routes with current company/asset scope | P0 | HAPI-923, HAPI-925, HAPI-926; owner policy | VERIFIED | COMPLETED |
 
 
 ## Owner-approved FD-01 native issuer preflight extension — 2026-11-09

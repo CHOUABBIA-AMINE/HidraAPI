@@ -11860,6 +11860,35 @@
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/InMemoryRefreshAttemptThrottleAdapterTest.java",
       "source_sha256": "dc54f6c8aacf3d1de0ca4e3451ef2e5a23176987da857d88d21be04623db8d6e",
       "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "actualPostgresFamilyDeadlineRevokesSessionWithoutConsumingProof"
+      ],
+      "class": "dz.sh.hidra.modules.identity.infrastructure.persistence.RefreshTokenFamilyHardExpiryPostgresIntegrationTest",
+      "dependency_reason": "HAPI-929 original rotating LOCAL refresh acceptance: genuine PostgreSQL expiry, native HTTP, application restart lifecycle and signing-key replacement; exact-SHA CI qualification pending.",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/RefreshTokenFamilyHardExpiryPostgresIntegrationTest.java",
+      "source_sha256": "d27f3da391d208df8a22aedd6f0bfb6c26ca06873b5cec5948fec8b21b1320f4",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "applicationContextRestartPreservesOneTimeRefreshAfterRealBearerExpiry",
+        "newSigningKeyFailsClosedForOldProofAndBearerAcrossRestart"
+      ],
+      "class": "dz.sh.hidra.modules.identity.infrastructure.persistence.RefreshTokenRestartPostgresIntegrationTest",
+      "dependency_reason": "HAPI-929 original rotating LOCAL refresh acceptance: genuine PostgreSQL expiry, native HTTP, application restart lifecycle and signing-key replacement; exact-SHA CI qualification pending.",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/RefreshTokenRestartPostgresIntegrationTest.java",
+      "source_sha256": "43c8036dcb195ab3a79d2f9250311ede3c120959291d41e378c99c31e6de4d9f",
+      "supports": []
     }
   ],
   "format": 1,

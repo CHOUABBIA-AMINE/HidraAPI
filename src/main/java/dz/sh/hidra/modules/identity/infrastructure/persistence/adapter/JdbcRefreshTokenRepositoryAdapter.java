@@ -80,7 +80,12 @@ public final class JdbcRefreshTokenRepositoryAdapter implements RefreshTokenRepo
         // Evaluate expiry after acquiring the family row lock. Before-lock timestamps can
         // stale across another transaction that rotates and publishes a newer session.
         Instant afterLock=jdbc.queryForObject("SELECT clock_timestamp()",Timestamp.class).toInstant();
-        if(!afterLock.isBefore(family.family().deadline())
+        // Never trust a pre-lock instant over PostgreSQL time: the later of both
+        // server-controlled clocks is fail-closed for absolute family expiry.
+        // This also allows deterministic future-clock qualification without
+        // changing the database clock, immutable family or installed schema.
+        Instant observed=at.isAfter(afterLock)?at:afterLock;
+        if(!observed.isBefore(family.family().deadline())
                 || !"ACTIVE".equals(row.sessionStatus()) || row.endedAt()!=null) {
             revokeFamilyLocked(familyId,at);
             throw new RefreshTokenRotationPolicy.Rejected();

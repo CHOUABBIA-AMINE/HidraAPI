@@ -414,3 +414,30 @@ source family quota cannot prevent an attacker cycling many unknown UUIDs,
 although the bounded key map fails closed. This software proof does not
 establish production load, anti-DDoS or industrial SITE behavior.
 
+
+
+### Refresh-family expiry and signing-key restart acceptance
+
+The persisted LOCAL refresh family has a fixed hard deadline. In the original
+READ_COMMITTED owner transaction PostgreSQL samples `clock_timestamp()`
+**after** the family row lock is acquired. The later of that authoritative
+database instant and the server-observed application instant is used to
+fail closed if the deadline has elapsed. Revocation is committed without
+consuming the one-time proof or creating a new session; a subsequent
+clock rollback cannot restore a revoked family. The seven-day default is
+still bounded by the existing 300..2592000-second policy.
+
+A new application context using the same database and the **same** JWT HMAC
+secret can refresh a still-live single-use LOCAL family after the original
+application context closes, even after its short-lived access JWT has
+actually expired. The old JWT is not itself sufficient for renewal.
+Changing the native HMAC secret invalidates old JWT signatures and existing
+refresh HMAC proofs; users need a fresh LOCAL login under the new key.
+No seamless multikey overlap or automatic database-wide family revocation
+is provided. Changing back to a former signing key is a security-sensitive
+operational reversal: operators should explicitly revoke outstanding
+families before retiring or restoring keys.
+
+Synthetic tests exercise separate closed/restarted Spring contexts on
+PostgreSQL 16; they do not establish a separate operating-system process
+restart, a rolling cluster migration, hot key rotation, or SITE acceptance.

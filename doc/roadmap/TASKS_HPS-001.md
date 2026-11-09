@@ -13077,6 +13077,65 @@ load. HAPI-929 stays PARTIAL / IN_PROGRESS until the original full hard-family
 expiry, expired bearer, process restart and key-rotation/fault-boundary gates
 receive real independent acceptance; do not silently promote it.
 
+
+### HAPI-929 original hard-deadline, bearer-expiry and restart acceptance — 2026-11-09
+
+**Base evidence.** HAPI-929's owner-approved Option A implementation at
+`75b81071a063d3c7deffcc52fbb832e513f65929` passed
+[HidraAPI CI #1160 attempt 2](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42627895165)
+and [Documentation Validation #954](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42627895299)
+on its exact source SHA. Original attempt 1 had a transient Apache Maven
+3.9.11 ZIP download failure in PostgreSQL shard 11, not a Java/test error.
+The failed jobs were rerun on the same commit; no code was altered merely
+to recover a runner download. HAPI-929 remains a single registered task.
+
+**Original contract completion candidate.** Extend the existing
+`JdbcRefreshTokenRepositoryAdapter.consume` after-lock expiry comparison
+to use the later of PostgreSQL's freshly sampled `clock_timestamp()` and
+the application-supplied server observation. A stale before-lock instant
+can never override DB time. This is fail-closed on application-clock
+skew, not an access-token or permission bypass; the original PostgreSQL
+row lock, transaction and immutable family schema are unchanged.
+
+Admit two same-task CREATE paths, with no schema, API or migration edits:
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/RefreshTokenFamilyHardExpiryPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/RefreshTokenRestartPostgresIntegrationTest.java`
+
+Same-task MODIFY paths: the existing JDBC refresh adapter,
+`.github/ci-test-inventory.json` (exactly admitted methods and source digests),
+`docs/AUTHENTICATION_DEPLOYMENT_RUNBOOK.md` and this append-only owning ledger.
+The unchanged registered delivery contract is
+`feat(identity): implement rotating refresh tokens`; this acceptance source
+candidate uses `test(identity): qualify refresh expiry and restart security`
+under HAPI-929, not a new registered task or stage.
+
+Real PostgreSQL 16 integration candidates prove (a) canonical
+five-minute hard deadline with immutable family and genuine LOCAL
+binding/session, deterministic server clock advance, after-lock database
+clock floor, committed family/session revocation, unconsumed stale
+credential, no descendant and rollback-time non-resurrection; (b) two
+sequentially closed/recreated real Spring applications sharing the same
+disposable database, an actually expired 10-second native bearer beyond
+the JWT validator's normal clock tolerance, anonymous renewal with
+fresh session and bearer, replay revoking descendants; (c) a distinct
+native HMAC key after application context restart denying old signed
+access JWT and refresh proof without granting unwanted revocation,
+while fresh LOCAL login/refresh with the replacement key works.
+No LOCAL/IdP authority model, native signing contract, industrial
+value, browser credential storage or production migration changes.
+
+**Validation discipline.** This is a source candidate. Real Java,
+PostgreSQL, HTTP, actual elapsed-time expiry and docs validation are
+**UNVERIFIED until exact-SHA Full/Docs CI succeeds**. A closed/reopened
+Spring application context proves application bean lifecycle across
+the same database, NOT a new OS process, multi-replica rollout or
+hot multi-key rotation. The existing signing key remains the keyed
+refresh-digest secret; operational key reversion can restore former
+proof eligibility unless outstanding families are revoked by policy.
+Do not claim production, SITE, live IdP or HidraWEB acceptance.
+Keep HAPI-929 PARTIAL / IN_PROGRESS until the exact-SHA acceptance
+gate is adjudicated, without modifying HAPI-930/HAPI-931 statuses.
+
 <a id="hapi-931"></a>
 ## HAPI-931 — validate usable LOCAL bearer issuer configuration (FD-01)
 

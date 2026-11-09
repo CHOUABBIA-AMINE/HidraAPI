@@ -12927,6 +12927,56 @@ must be evidenced or explicitly resolved before promotion to
 VERIFIED / COMPLETED. No SITE, production, external IdP, OT or frontend
 qualification is inferred.
 
+
+### HAPI-929 same-task native security edge qualification — 2026-11-09
+
+At refreshed main `349822efc7029e434a53de727f4d47d8fbd29baf`,
+[Full CI #1157](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42615058269)
+and [Docs #951](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42615058359)
+completed SUCCESS on the exact SHA. The Full Verification Gate authenticated
+568 classes/4,351 tests with zero failures, errors or skips, including all 14
+real PostgreSQL shards and the regenerated runtime OpenAPI/dictionary checks.
+PostgreSQL shard 2 completed 10 classes/139 tests, including the three newly
+admitted true native HTTP login/refresh, consumed-token replay and logout
+cases, all passing. The other existing HAPI-929 security tests remained green.
+
+**Remaining bounded evidence package:** Extend only the existing
+`RefreshTokenRotationPostgresIntegrationTest` with four further real
+PostgreSQL fixture cases for (a) post-login effective-grant addition
+invalidating the old refresh family, including no descendant and session
+revocation; (b) late transactional audit INSERT failure induced by a
+temporary test-only trigger on the disposable PostgreSQL schema,
+requiring full rollback and ability to retry the original unconsumed
+credential once the temporary trigger is removed; (c) durable family and
+token evidence visible over a separately opened database connection
+before and after rotation (not an actual server restart); and (d) a
+bounded SQL-injection-shaped opaque HTTP token rejected without disclosing
+the credential or revoking the legitimate family. No live data, production
+triggers, existing migration history or original tests are altered.
+
+**Exact changed paths:**
+`src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/RefreshTokenRotationPostgresIntegrationTest.java`,
+`.github/ci-test-inventory.json` (only its exact source digest and four
+new method identities), and this append-only owning task evidence.
+Exact source message:
+`test(identity): prove refresh rollback and current authorization`.
+The local authoring environment did not run Maven, PostgreSQL or MockMvc;
+these cases are source candidates until their exact-SHA Full/Docs CI proves
+them. HAPI-929 remains **NOT_IMPLEMENTED / REGISTERED_PENDING** in the
+historic status cells: code exists and is already CI-executed, but the
+original full-security acceptance is not yet complete.
+
+**Outstanding qualified gates:** No independent controlled-clock test
+proves actual hard-family expiry; separately open DB connections are not
+application/process restart evidence; key-derivation change is not full
+live-key rotation acceptance. Explicit expired JWT and refresh pairing,
+live effective-grant revocation interleavings, provider security-version
+race, actual restart persistence, complete invalid-token/rate-limit
+behavior and release/SITE are not asserted. These require further
+source-backed verification or explicit disposition, without promoting
+HAPI-929 prematurely. The accepted HAPI-930 and HAPI-931 statuses remain
+unchanged; no WEB or industrial control work is selected.
+
 <a id="hapi-931"></a>
 ## HAPI-931 — validate usable LOCAL bearer issuer configuration (FD-01)
 

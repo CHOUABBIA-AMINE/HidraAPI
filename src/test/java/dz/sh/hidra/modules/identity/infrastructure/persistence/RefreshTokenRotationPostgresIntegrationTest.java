@@ -330,4 +330,108 @@ class RefreshTokenRotationPostgresIntegrationTest {
                 .andReturn().getResponse().getStatus();
         assertThat(ended).isIn(401, 403);
     }
+
+    @Test void currentGrantChangeRejectsAndRevokesExistingFamily() {
+        var first=initial();
+        String permissionId=UUID.randomUUID().toString();
+        String permissionCode="identity:refresh:synthetic-"+UUID.randomUUID();
+        jdbc.update("INSERT INTO public.hidra_identity_permission "
+                +"(id,code,permission_domain,resource_type,action,sensitive,status,created_at,updated_at) "
+                +"VALUES (?,?,'identity','USER','read',false,'ACTIVE',now(),now())",
+                permissionId,permissionCode);
+        jdbc.update("INSERT INTO public.hidra_identity_user_permission_grant "
+                +"(id,user_id,permission_id,effect,scope_type,scope_reference_id,grant_reason,"
+                +"emergency_access,valid_from,valid_to,status,created_at) "
+                +"VALUES (?,?,?,'GRANT','GLOBAL',NULL,'synthetic refresh authority change',false,"
+                +"now()-interval '1 hour',now()+interval '1 hour','ACTIVE',now())",
+                UUID.randomUUID().toString(),user,permissionId);
+        assertThatThrownBy(()->rotate.rotate(first.refreshToken(),null,null,null))
+                .isInstanceOf(RefreshTokenRotationPolicy.Rejected.class);
+        assertThat(count("SELECT count(*) FROM public.hidra_identity_refresh_family "
+                +"WHERE user_id=? AND revoked_at IS NOT NULL")).isEqualTo(1);
+        assertThat(count("SELECT count(*) FROM public.hidra_identity_refresh_token t "
+                +"JOIN public.hidra_identity_refresh_family f ON f.id=t.family_id "
+                +"WHERE f.user_id=? AND t.generation=1")).isZero();
+        assertThat(jdbc.queryForObject("SELECT status FROM public.hidra_identity_login_session "
+                +"WHERE id=?",String.class,first.sessionId())).isEqualTo("REVOKED");
+    }
+
+    @Test void failedRefreshAuditInsertRollsBackTokenSessionAndBinding() {
+        var first=initial();
+        // Disposable fresh-schema test fixture only; no production migration or
+        // previously installed security trigger is modified.
+        jdbc.execute("""
+                CREATE FUNCTION public.hapi_929_synthetic_refresh_audit_failure()
+                RETURNS trigger LANGUAGE plpgsql AS $$
+                BEGIN
+                    RAISE EXCEPTION 'Synthetic TOKEN_REFRESH rollback exercise'
+                        USING ERRCODE='P0001';
+                END;
+                $$
+                """);
+        jdbc.execute("""
+                CREATE TRIGGER hapi_929_synthetic_refresh_audit_failure
+                BEFORE INSERT ON public.hidra_identity_authentication_event
+                FOR EACH ROW EXECUTE FUNCTION public.hapi_929_synthetic_refresh_audit_failure()
+                """);
+        try {
+            assertThatThrownBy(()->rotate.rotate(first.refreshToken(),null,null,null))
+                    .isInstanceOf(RuntimeException.class);
+            assertThat(jdbc.queryForObject("SELECT status FROM public.hidra_identity_login_session "
+                    +"WHERE id=?",String.class,first.sessionId())).isEqualTo("ACTIVE");
+            assertThat(count("SELECT count(*) FROM public.hidra_identity_refresh_token t "
+                    +"JOIN public.hidra_identity_refresh_family f ON f.id=t.family_id "
+                    +"WHERE f.user_id=? AND t.generation=0 AND t.consumed_at IS NULL")).isEqualTo(1);
+            assertThat(count("SELECT count(*) FROM public.hidra_identity_refresh_token t "
+                    +"JOIN public.hidra_identity_refresh_family f ON f.id=t.family_id "
+                    +"WHERE f.user_id=? AND t.generation>0")).isZero();
+            assertThat(count("SELECT count(*) FROM public.hidra_identity_authentication_event "
+                    +"WHERE user_id=? AND event_type='TOKEN_REFRESH'")).isZero();
+        } finally {
+            jdbc.execute("DROP TRIGGER IF EXISTS hapi_929_synthetic_refresh_audit_failure "
+                    +"ON public.hidra_identity_authentication_event");
+            jdbc.execute("DROP FUNCTION IF EXISTS public.hapi_929_synthetic_refresh_audit_failure()");
+        }
+        // A commit failure must not turn the only good secret into a consumed token.
+        var retry=rotate.rotate(first.refreshToken(),null,null,null);
+        assertThat(retry.refreshToken()).hasSize(80).isNotEqualTo(first.refreshToken());
+        assertThat(retry.jti()).isNotEqualTo(first.jti());
+    }
+
+    @Test void persistedRefreshCredentialSurvivesIndependentDatabaseConnection() {
+        var first=initial();
+        String family=first.refreshToken().substring(0,36);
+        var independent=new JdbcTemplate(new org.springframework.jdbc.datasource.DriverManagerDataSource(
+                POSTGRES.getJdbcUrl(),POSTGRES.getUsername(),POSTGRES.getPassword()));
+        assertThat(independent.queryForObject(
+                "SELECT count(*) FROM public.hidra_identity_refresh_family WHERE id=?",
+                Integer.class,family)).isEqualTo(1);
+        assertThat(independent.queryForObject(
+                "SELECT count(*) FROM public.hidra_identity_refresh_token WHERE family_id=? "
+                +"AND generation=0 AND consumed_at IS NULL",Integer.class,family)).isEqualTo(1);
+        var renewed=rotate.rotate(first.refreshToken(),null,null,null);
+        assertThat(renewed.refreshToken()).hasSize(80);
+        assertThat(independent.queryForObject(
+                "SELECT count(*) FROM public.hidra_identity_refresh_token WHERE family_id=? "
+                +"AND generation=1 AND consumed_at IS NULL",Integer.class,family)).isEqualTo(1);
+    }
+
+    @Test void nativeHttpInjectionShapedRefreshCannotMutateValidFamily() throws Exception {
+        var http=nativeHttp();
+        var first=loginOverHttp(http);
+        String genuine=first.path("refreshToken").asText();
+        String malformed=genuine.substring(0,37)
+                +("' OR 1=1 --".repeat(4)).substring(0,43);
+        String json=JSON.writeValueAsString(java.util.Map.of("refreshToken",malformed));
+        var denial=http.perform(post(AUTH+"/refresh")
+                .contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpect(status().isUnauthorized()).andReturn();
+        assertThat(denial.getResponse().getContentAsString()).doesNotContain(malformed);
+        assertThat(count("SELECT count(*) FROM public.hidra_identity_refresh_family "
+                +"WHERE user_id=? AND revoked_at IS NULL")).isEqualTo(1);
+        assertThat(count("SELECT count(*) FROM public.hidra_identity_login_session "
+                +"WHERE user_id=? AND status='ACTIVE'")).isEqualTo(1);
+        http.perform(post(AUTH+"/refresh").contentType(MediaType.APPLICATION_JSON)
+                .content(refreshBody(genuine))).andExpect(status().isOk());
+    }
 }

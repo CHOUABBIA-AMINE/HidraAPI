@@ -108,11 +108,51 @@ class IdentityLifecycleControllerTest {
         var permissions = new dz.sh.hidra.modules.identity.infrastructure.security.IdentityEffectivePermissionSourceAdapter(
                 queries,admins,bindings,states);
         var jwt = Jwt.withTokenValue("synthetic-only").header("alg","HS256")
-                .issuer("not-an-absolute-url").subject("admin-1").claim("jti","jti-1").build();
+                .claim("iss",42).subject("admin-1").claim("jti","jti-1").build();
         SecurityContextHolder.getContext().setAuthentication(new JwtAuthenticationToken(jwt,java.util.List.of()));
         assertThrows(AccessDeniedException.class,lifecycle::authenticatedActor);
         assertThrows(AccessDeniedException.class,() -> permissions.resolve("admin-1"));
         verifyNoInteractions(bindings,states,admins,queries);
+    }
+
+    @Test void nonUrlConfiguredNativeIssuerRequiresExactCurrentBindingAndGrants() {
+        var bindings = mock(OperationAuthenticationBindingRepositoryPort.class);
+        var states = mock(AuthenticationSecurityStateQueryPort.class);
+        var admins = mock(IdentityAdministratorGrantService.class);
+        var queries = mock(dz.sh.hidra.modules.identity.application.port.in.IdentityAdministrationQueryUseCase.class);
+        var lifecycle = new FoundationIdentityAuthorizationAdapter(bindings, states, admins);
+        var permissions = new dz.sh.hidra.modules.identity.infrastructure.security.IdentityEffectivePermissionSourceAdapter(
+                queries, admins, bindings, states);
+        // Adapter-only test; actual signed bearer and decoder are covered by the native HTTP test.
+        var jwt = Jwt.withTokenValue("synthetic-only").header("alg", "HS256")
+                .claim("iss", "hidra-api").subject("operator-1").claim("jti", "jti-1")
+                .issuedAt(Instant.now().minusSeconds(30))
+                .expiresAt(Instant.now().plusSeconds(60)).build();
+        SecurityContextHolder.getContext().setAuthentication(
+                new JwtAuthenticationToken(jwt, java.util.List.of()));
+        var binding = mock(OperationAuthenticationBinding.class);
+        when(binding.userId()).thenReturn("operator-1");
+        when(binding.nativeIssuer()).thenReturn("hidra-api");
+        when(bindings.findByNativeIssuerAndJti("hidra-api", "jti-1"))
+                .thenReturn(Optional.of(binding));
+        when(states.current(eq(binding), any(Instant.class))).thenReturn(true);
+        when(queries.principal(eq("operator-1"), eq(java.util.List.of())))
+                .thenReturn(new dz.sh.hidra.modules.identity.application.port.in.IdentityAdministrationQueryUseCase.PrincipalView(
+                        "operator-1", "LOCAL", "operator-1", "operator-1", "Synthetic operator", null,
+                        java.util.List.of(), java.util.List.of("alarm:alarms:execute")));
+
+        assertEquals("operator-1", lifecycle.authenticatedActor());
+        assertEquals(java.util.Set.of("alarm:alarms:execute"), permissions.resolve("operator-1"));
+        verify(bindings, atLeastOnce()).findByNativeIssuerAndJti("hidra-api", "jti-1");
+
+        // The current binding remains compulsory even for a previously issued JWT.
+        when(states.current(eq(binding), any(Instant.class))).thenReturn(false);
+        assertThrows(AccessDeniedException.class, lifecycle::authenticatedActor);
+        assertThrows(AccessDeniedException.class, () -> permissions.resolve("operator-1"));
+        when(states.current(eq(binding), any(Instant.class))).thenReturn(true);
+        when(binding.nativeIssuer()).thenReturn("unexpected-issuer");
+        assertThrows(AccessDeniedException.class, lifecycle::authenticatedActor);
+        assertThrows(AccessDeniedException.class, () -> permissions.resolve("operator-1"));
     }
 
     @Test void springClassProxiesCanWrapBothLifecycleBeans() {

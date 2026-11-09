@@ -462,7 +462,7 @@
       "lane": "postgres-integration",
       "owner": "alarm",
       "path": "src/test/java/dz/sh/hidra/modules/alarm/qualification/Gz2AlarmScopedOperatorPostgresIntegrationTest.java",
-      "source_sha256": "c7e799f3c4d7ca087be6ac6911d98fb55bb92556c09a73ba0c92baf539c60d87",
+      "source_sha256": "2cbea4bd8584b7bdf4e872d9348696dabf4ff9366d8066e9bcf69a706ef4f8a6",
       "supports": []
     },
     {
@@ -2012,6 +2012,7 @@
         "credentialResponseContainsOnlyGenerationAndDate",
         "malformedIssuerIsDeniedBeforeIdentityLookup",
         "nativeBearerMustHaveCurrentExactBindingAndLiveAdministratorGrant",
+        "nonUrlConfiguredNativeIssuerRequiresExactCurrentBindingAndGrants",
         "springClassProxiesCanWrapBothLifecycleBeans",
         "translatedOwnerConflictHasNonDisclosingHttp409"
       ],
@@ -2021,7 +2022,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityLifecycleControllerTest.java",
-      "source_sha256": "bbf34044d6066115705393c9ecc9f316069c118cfbf45f04acb0bf1f934c26f7",
+      "source_sha256": "6d568d0c95437694a5b5ceafdce130c7ebafa6954b946b21e52b834d465fc262",
       "supports": []
     },
     {

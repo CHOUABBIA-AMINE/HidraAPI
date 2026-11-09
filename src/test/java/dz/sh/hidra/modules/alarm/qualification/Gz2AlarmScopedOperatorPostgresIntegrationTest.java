@@ -211,12 +211,13 @@ class Gz2AlarmScopedOperatorPostgresIntegrationTest {
                 .andDo(mvcResult -> {
                     if (mvcResult.getResponse().getStatus() != 200) {
                         var decoded = nativeDecoder.decode(actor.bearer());
-                        var issuer = decoded.getIssuer();
+                        Object issuerClaim = decoded.getClaims().get("iss");
+                        String issuer = issuerClaim instanceof String ? (String) issuerClaim : null;
                         var jti = decoded.getId();
                         java.util.Optional<dz.sh.hidra.modules.identity.domain.model.OperationAuthenticationBinding>
                                 persisted = issuer == null || jti == null
                                         ? java.util.Optional.empty()
-                                        : operationBindings.findByNativeIssuerAndJti(issuer.toString(), jti);
+                                        : operationBindings.findByNativeIssuerAndJti(issuer, jti);
                         boolean bindingCurrent = persisted
                                 .map(binding -> authenticationStates.current(binding, Instant.now()))
                                 .orElse(false);

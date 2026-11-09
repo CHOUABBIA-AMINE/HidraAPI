@@ -24,6 +24,7 @@ import dz.sh.hidra.HidraApplication;
 import dz.sh.hidra.modules.identity.application.model.DirectAuthenticationCommand;
 import dz.sh.hidra.modules.identity.application.port.in.AuthenticateDirectUserUseCase;
 import dz.sh.hidra.modules.identity.domain.value.ProviderType;
+import dz.sh.hidra.modules.topology.application.contract.alarm.AlarmTopologyOwnershipContract;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
@@ -91,6 +92,8 @@ class Gz2AlarmScopedOperatorPostgresIntegrationTest {
     @Autowired WebApplicationContext context;
     @Autowired AuthenticateDirectUserUseCase authenticate;
     @Autowired PasswordEncoder passwords;
+    @Autowired org.springframework.transaction.PlatformTransactionManager transactionManager;
+    @Autowired AlarmTopologyOwnershipContract topologyOwners;
     @Autowired @org.springframework.beans.factory.annotation.Qualifier("hidraJwtDecoder")
     org.springframework.security.oauth2.jwt.JwtDecoder nativeDecoder;
     @Autowired dz.sh.hidra.modules.identity.application.port.out.OperationAuthenticationBindingRepositoryPort
@@ -356,4 +359,55 @@ class Gz2AlarmScopedOperatorPostgresIntegrationTest {
                 "\"topologyAssetCode\":\"GZ2\"}"))
                 .andExpect(status().isNotFound());
     }
+    @Test
+    void currentOwnerAndScopedCatalogFenceCompanyReassignmentWithinTransaction() {
+        var transaction = new org.springframework.transaction.support.TransactionTemplate(transactionManager);
+        for (boolean listing : new boolean[]{false, true}) {
+            transaction.executeWithoutResult(ignored -> {
+                if (listing) {
+                    assertTrue(topologyOwners.boundedOwnedAssets().stream().anyMatch(
+                            a -> a.typeCode().equals("FACILITY")
+                                    && a.assetId().equals(facilityA)
+                                    && a.companyPartyId().equals(companyA)));
+                } else {
+                    assertEquals(companyA,
+                            topologyOwners.currentOwner("FACILITY", facilityA).orElseThrow().companyPartyId());
+                }
+                // An independent PostgreSQL transaction cannot reassign this owner
+                // before the original protected authorization transaction ends.
+                try (var competing = java.sql.DriverManager.getConnection(
+                        PG.getJdbcUrl(), PG.getUsername(), PG.getPassword())) {
+                    competing.setAutoCommit(false);
+                    try {
+                        try (var statement = competing.createStatement()) {
+                            statement.execute("SET LOCAL lock_timeout = '350ms'");
+                        }
+                        var denied = assertThrows(java.sql.SQLException.class, () -> {
+                            try (var statement = competing.prepareStatement(
+                                    "UPDATE hidra_topology_facility SET owner_party_id=?,updated_at=now() WHERE id=?")) {
+                                statement.setString(1, companyB);
+                                statement.setString(2, facilityA);
+                                statement.executeUpdate();
+                            }
+                        });
+                        assertEquals("55P03", denied.getSQLState());
+                    } finally {
+                        competing.rollback();
+                    }
+                } catch (java.sql.SQLException e) {
+                    throw new IllegalStateException("Synthetic owner fencing proof failed.", e);
+                }
+            });
+        }
+        db.update("UPDATE hidra_topology_facility SET owner_party_id=?,updated_at=now() WHERE id=?",
+                companyB, facilityA);
+        try {
+            http.perform(get(ROOT + "/" + alarmA)
+                    .header("Authorization", "Bearer " + inScope.bearer()))
+                    .andExpect(status().isNotFound());
+        } catch (Exception e) {
+            throw new IllegalStateException("Native Alarm owner-reassignment denial failed.", e);
+        }
+    }
+
 }

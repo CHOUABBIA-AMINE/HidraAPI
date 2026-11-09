@@ -18,6 +18,7 @@ import dz.sh.hidra.modules.topology.infrastructure.persistence.entity.FacilityJp
 import dz.sh.hidra.modules.topology.infrastructure.persistence.entity.EquipmentJpaEntity;
 import dz.sh.hidra.modules.party.application.contract.topology.TopologyPartyReferenceContract;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -26,7 +27,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
-@Transactional(readOnly = true)
+@Transactional
 public class JpaAlarmTopologyOwnershipAdapter implements AlarmTopologyOwnershipContract {
     private static final int MAX_SCOPED_ASSETS = 500;
     private final EntityManager em;
@@ -37,14 +38,14 @@ public class JpaAlarmTopologyOwnershipAdapter implements AlarmTopologyOwnershipC
     @Override public Optional<OwnedAsset> currentOwner(String type,String id) {
         if(id==null||id.isBlank()||!id.equals(id.trim()))return Optional.empty();
         if("FACILITY".equals(type)){
-            var f=em.find(FacilityJpaEntity.class,id);
+            var f=em.find(FacilityJpaEntity.class,id,LockModeType.PESSIMISTIC_READ);
             return f==null?Optional.empty():owner(type,id,f);
         }
         if("EQUIPMENT".equals(type)){
-            var e=em.find(EquipmentJpaEntity.class,id);
+            var e=em.find(EquipmentJpaEntity.class,id,LockModeType.PESSIMISTIC_READ);
             if(e==null||e.status()!=EquipmentStatus.ACTIVE
                 ||e.facilityId()==null||e.facilityId().isBlank())return Optional.empty();
-            var f=em.find(FacilityJpaEntity.class,e.facilityId());
+            var f=em.find(FacilityJpaEntity.class,e.facilityId(),LockModeType.PESSIMISTIC_READ);
             return f==null?Optional.empty():owner(type,id,f);
         }
         return Optional.empty(); // Pipeline/system/unbound mappings are not authoritative.
@@ -56,18 +57,24 @@ public class JpaAlarmTopologyOwnershipAdapter implements AlarmTopologyOwnershipC
         return Optional.of(new OwnedAsset(type,id,f.ownerPartyId()));
     }
     @Override public List<OwnedAsset> boundedOwnedAssets(){
-        var facilities=em.createQuery("select f from FacilityJpaEntity f where f.status = :status order by f.id",FacilityJpaEntity.class)
-                .setParameter("status",FacilityStatus.ACTIVE).setMaxResults(MAX_SCOPED_ASSETS+1).getResultList();
-        if(facilities.size()>MAX_SCOPED_ASSETS)throw new IllegalStateException("Alarm owner catalog exceeds limit.");
+        // Match single-equipment authorization lock order: equipment first, then facilities.
+        // SHARE locks prevent reassignment between native authorization and commit.
         var equipment=em.createQuery("select e from EquipmentJpaEntity e where e.status = :status order by e.id",EquipmentJpaEntity.class)
-                .setParameter("status",EquipmentStatus.ACTIVE).setMaxResults(MAX_SCOPED_ASSETS+1).getResultList();
+                .setParameter("status",EquipmentStatus.ACTIVE)
+                .setLockMode(LockModeType.PESSIMISTIC_READ)
+                .setMaxResults(MAX_SCOPED_ASSETS+1).getResultList();
+        if(equipment.size()>MAX_SCOPED_ASSETS)throw new IllegalStateException("Alarm owner catalog exceeds limit.");
+        var facilities=em.createQuery("select f from FacilityJpaEntity f where f.status = :status order by f.id",FacilityJpaEntity.class)
+                .setParameter("status",FacilityStatus.ACTIVE)
+                .setLockMode(LockModeType.PESSIMISTIC_READ)
+                .setMaxResults(MAX_SCOPED_ASSETS+1).getResultList();
         if(facilities.size()+equipment.size()>MAX_SCOPED_ASSETS)
             throw new IllegalStateException("Alarm owner catalog exceeds limit.");
         var result=new ArrayList<OwnedAsset>();
         for(var f:facilities)owner("FACILITY",f.id(),f).ifPresent(result::add);
         for(var e:equipment) {
             if(e.facilityId()==null||e.facilityId().isBlank())continue;
-            var f=em.find(FacilityJpaEntity.class,e.facilityId());
+            var f=em.find(FacilityJpaEntity.class,e.facilityId(),LockModeType.PESSIMISTIC_READ);
             if(f!=null)owner("EQUIPMENT",e.id(),f).ifPresent(result::add);
         }
         return List.copyOf(result);

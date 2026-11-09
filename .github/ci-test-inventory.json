@@ -454,7 +454,8 @@
     {
       "baseline_seconds": 0,
       "cases": [
-        "pairedCurrentCompanyAndAssetScopesProtectNativeReadsCountsAndAcknowledgementHistory"
+        "pairedCurrentCompanyAndAssetScopesProtectNativeReadsCountsAndAcknowledgementHistory",
+        "currentOwnerAndScopedCatalogFenceCompanyReassignmentWithinTransaction"
       ],
       "class": "dz.sh.hidra.modules.alarm.qualification.Gz2AlarmScopedOperatorPostgresIntegrationTest",
       "dependency_reason": "HAPI-930 native three-LOCAL-actor Spring HTTP and fresh PostgreSQL GZ2 facility scope qualification; current company and exact-asset grants, isolation, denied writes, acknowledgements, revocation and synthetic reassignment; PIPELINE_SYSTEM remains unsupported.",
@@ -462,7 +463,7 @@
       "lane": "postgres-integration",
       "owner": "alarm",
       "path": "src/test/java/dz/sh/hidra/modules/alarm/qualification/Gz2AlarmScopedOperatorPostgresIntegrationTest.java",
-      "source_sha256": "27085dec3a2df90f0f5ca990b2832172314059d1287db6f99053478d9cb08f86",
+      "source_sha256": "76f9d4ce55f9c6c9446919a9c327d9c73ca49ecf2604cb3ea097cf89b3d25762",
       "supports": []
     },
     {
@@ -9088,7 +9089,7 @@
       "owner": "topology",
       "lane": "unit-architecture",
       "fast": true,
-      "baseline_seconds": 0.0,
+      "baseline_seconds": 0,
       "dependency_reason": "HAPI-926 explicit setup permission targets, bounded cursor and executable create-validation contract; JVM only",
       "supports": [],
       "cases": [

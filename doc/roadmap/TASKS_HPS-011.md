@@ -9754,4 +9754,48 @@ At live main `7f2c4bcfc12cb391f01184c8bc832850d7b65b06`, [Full CI #1150](https:/
 
 **Validation and remaining gate:** Source patch and SHA256/JSON alignment checked; no local Maven or PostgreSQL/Docker validation. Exact-SHA Full/Docs CI and independent 3-actor Alarm resource proof remain pending. HAPI-930 remains PARTIAL / IN_PROGRESS, HWEB-F16 HOLD. Guarded main publish, verify workflow created/started, STOP.
 
+
+### HAPI-930 current-owner transactional fencing repair — 2026-11-09
+
+The reviewer inspected the successful exact-source implementation
+`6c5252f6ab5c338f96aeae67f25f30b0c92de777`.
+[Full #1155](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42604456386)
+and [Docs #947](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42604456385)
+completed SUCCESS. Full run's authenticated verifier counted
+568 classes/4,347 tests, zero failures, errors or skips. PostgreSQL shard 3
+started the native `Gz2AlarmScopedOperatorPostgresIntegrationTest` on
+PostgreSQL 16 and checked 10 classes/135 tests, all passing. Synthetic
+native coverage shows three LOCAL operators, explicit current company and
+exact FACILITY grants, list/count/detail/history, denied acknowledgement
+without mutation, multiple audit events, revoked grants, later reassignment
+and unsupported PIPELINE_SYSTEM fail-closed behavior.
+
+**Remaining source-backed gap:** Current Topology owner lookup and the
+bounded owner catalog were not holding any database owner-row fence until
+the original protected Alarm transaction committed. Identity's current
+grant shared-row lock does not protect an independently updated Topology
+owner. The prior sequential reassignment HTTP assertion could not prove
+this registered concurrency invariant.
+
+**Same-task repair:** Use shared pessimistic locks on current Facility and
+Equipment ownership and on both bounded catalog selections; order equipment
+then Facility acquisition consistently, retain the 500-item fail-closed
+policy, and provide a lock-capable Topology-owner transaction. The added
+real PostgreSQL native fixture asserts that a separate competing transaction
+gets SQLSTATE 55P03 on company reassignment while either owner lookup or
+bounded catalog retains its original transaction. Once the lock releases,
+an updated owner is reflected by an old actor's non-disclosing REST denial.
+These checks do not claim full race replay for every Alarm route.
+
+**Exact modified paths:**
+`src/main/java/dz/sh/hidra/modules/topology/infrastructure/reference/JpaAlarmTopologyOwnershipAdapter.java`;
+`src/test/java/dz/sh/hidra/modules/alarm/qualification/Gz2AlarmScopedOperatorPostgresIntegrationTest.java`;
+`.github/ci-test-inventory.json` (one digest and one added test identity);
+and this append-only owning evidence. Exact repair commit message:
+`fix(alarm): fence current topology ownership during protected access`.
+No new API, schema, migration, grant, WEB, other task status, numerical/P3
+or release/deployment scope. HAPI-930 remains PARTIAL / IN_PROGRESS until
+independent exact-SHA Full/Docs CI and new native test acceptance; no
+Maven/PostgreSQL run is claimed from source authoring.
+
 <!-- task-register:payload:end -->

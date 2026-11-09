@@ -12666,9 +12666,9 @@ Legacy IDs: None — owner-approved 2026-11-08 extension; no earlier legacy task
 
 Priority: P0
 
-Implementation Status: NOT_IMPLEMENTED
+Implementation Status: PARTIAL
 
-Planning Status: REGISTERED_PENDING
+Planning Status: IN_PROGRESS
 
 Owning Module: `identity`
 
@@ -12977,6 +12977,61 @@ source-backed verification or explicit disposition, without promoting
 HAPI-929 prematurely. The accepted HAPI-930 and HAPI-931 statuses remain
 unchanged; no WEB or industrial control work is selected.
 
+
+### HAPI-929 current executable-status reconciliation and final user-lock/key-digest qualification — 2026-11-09
+
+**Observed exact-SHA acceptance evidence.** Source
+`f6c1266f74217ba101bd3a815f4ac9d9bb803532` passed
+[Full CI #1158](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42617423882)
+and [Documentation #952](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42617423876).
+The Full Verification Gate authenticated 568 classes, **4,355 tests**,
+zero failures, errors or skips across all 14 PostgreSQL shards,
+Java 21 unit/architecture, static and strict runtime API/dictionary checks.
+PostgreSQL shard 2 explicitly started
+`RefreshTokenRotationPostgresIntegrationTest` against PostgreSQL 16
+and passed its selected 10 classes/143 tests with zero skips.
+The four newly tested source cases passed: effective-grant modification
+denied refresh and revoked the family; simulated audit-write exception
+rolled back rotation and allowed safe retry; independent database
+connections observed committed family/child state (not a process restart);
+malformed injection-shaped HTTP credential did not expose or revoke
+a legitimate family. Prior native HTTP and concurrency cases were retained.
+
+**Precise remaining implementation discrepancy.** The registered test
+`providerDeactivationAndUserLockBothRequireFreshLogin` covers provider
+deactivation in its body but contains no actual user `locked_until` assertion.
+To close that verified coverage gap, add a genuine LOCAL locked-user
+PostgreSQL case that requires `RefreshTokenRotationPolicy.Rejected`,
+persisted family/session revocation and no newly minted descendant.
+Add a second actual PostgreSQL check using a separately constructed
+cryptographic evidence adapter with a different signing key: its
+domain-separated keyed refresh digest must have no matching persisted
+token row and must not revoke the original family; the original genuine
+secret must remain consumable through the original owner. This latter
+case is **key-mismatch evidence, not a full hot key-rotation exercise**.
+
+**Governance correctness.** The initial HAPI-929 registration-only
+`NOT_IMPLEMENTED / REGISTERED_PENDING` status is now factually stale
+after multiple successful exact-SHA functional implementation runs.
+Set only HAPI-929 current status to **PARTIAL / IN_PROGRESS** in its owning
+task and the adopted roadmap/phases current rows. Keep all historical
+registration passages append-only; add an explanatory current-status
+pointer to the task index. This is not a completed-task approval and does
+not alter HAPI-930, HAPI-931, schema, REST, runtime code, WEB or releases.
+
+**One same-task bounded package:** the existing
+`RefreshTokenRotationPostgresIntegrationTest.java`, strict
+`.github/ci-test-inventory.json` (one source digest/two case IDs),
+`TASKS_HPS-001.md`, `ULTIMATE_ROADMAP.md`,
+`ULTIMATE_PHASES.md`, and `ULTIMATE_TASKS.md`.
+Exact message: `test(identity): qualify locked user and refresh key isolation`.
+Local authoring is source-only; new native database cases require new
+exact-SHA Full/Docs CI before their success can be claimed. HAPI-929
+remains **PARTIAL / IN_PROGRESS**: actual family hard-expiry,
+expired-bearer/valid-refresh timing, full application restart/key
+rotation and relevant concurrency/fault edge acceptance are NOT
+ESTABLISHED by previously passed tests. Industrial/SITE/production,
+external IdP and WEB acceptance remain independent.
 <a id="hapi-931"></a>
 ## HAPI-931 — validate usable LOCAL bearer issuer configuration (FD-01)
 

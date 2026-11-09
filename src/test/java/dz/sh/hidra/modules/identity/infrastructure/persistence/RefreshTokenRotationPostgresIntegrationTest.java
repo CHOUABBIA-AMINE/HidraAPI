@@ -434,4 +434,43 @@ class RefreshTokenRotationPostgresIntegrationTest {
         http.perform(post(AUTH+"/refresh").contentType(MediaType.APPLICATION_JSON)
                 .content(refreshBody(genuine))).andExpect(status().isOk());
     }
+
+    @Test void lockedHumanActorCannotRenewAndFamilyRevokes() {
+        var first=initial();
+        jdbc.update("UPDATE public.hidra_identity_user SET locked_until=now()+interval '1 hour' "
+                +"WHERE id=?",user);
+        assertThatThrownBy(()->rotate.rotate(first.refreshToken(),null,null,null))
+                .isInstanceOf(RefreshTokenRotationPolicy.Rejected.class);
+        assertThat(count("SELECT count(*) FROM public.hidra_identity_refresh_family "
+                +"WHERE user_id=? AND revoked_at IS NOT NULL")).isEqualTo(1);
+        assertThat(jdbc.queryForObject("SELECT status FROM public.hidra_identity_login_session "
+                +"WHERE id=?",String.class,first.sessionId())).isEqualTo("REVOKED");
+        assertThat(count("SELECT count(*) FROM public.hidra_identity_refresh_token t "
+                +"JOIN public.hidra_identity_refresh_family f ON f.id=t.family_id "
+                +"WHERE f.user_id=? AND t.generation>0")).isZero();
+    }
+
+    @Test void rotatedProofKeyCannotResolveOrRevokeExistingFamily() {
+        var first=initial();
+        var rotatedKeyEvidence=new dz.sh.hidra.modules.identity.infrastructure.security.TrustedRefreshTokenEvidenceAdapter(
+                true,604800,"synthetic-independent-rotated-refresh-key-only",
+                registry,bindings,
+                org.mockito.Mockito.mock(dz.sh.hidra.modules.identity.application.port.out.AuthenticationSecurityStateQueryPort.class),
+                org.mockito.Mockito.mock(dz.sh.hidra.modules.identity.infrastructure.persistence.repository.UserJpaRepository.class),
+                org.mockito.Mockito.mock(dz.sh.hidra.modules.identity.application.port.in.IdentityAdministrationQueryUseCase.class),
+                org.mockito.Mockito.mock(dz.sh.hidra.modules.identity.infrastructure.security.IdentityAdministratorGrantService.class));
+        var rotatedProof=rotatedKeyEvidence.proof(first.refreshToken());
+        assertThat(jdbc.queryForObject(
+                "SELECT count(*) FROM public.hidra_identity_refresh_token t "
+                +"JOIN public.hidra_identity_refresh_family f ON f.id=t.family_id "
+                +"WHERE f.user_id=? AND t.digest=?",Integer.class,user,rotatedProof.digest()))
+                .isZero();
+        assertThat(count("SELECT count(*) FROM public.hidra_identity_refresh_family "
+                +"WHERE user_id=? AND revoked_at IS NOT NULL")).isZero();
+        // A mismatched digest is not a revocation authority. The genuine key and
+        // original one-time LOCAL secret remain usable by the trusted owner.
+        var valid=rotate.rotate(first.refreshToken(),null,null,null);
+        assertThat(valid.refreshToken()).hasSize(80).isNotEqualTo(first.refreshToken());
+        assertThat(valid.jti()).isNotEqualTo(first.jti());
+    }
 }

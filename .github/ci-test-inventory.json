@@ -11827,7 +11827,9 @@
         "currentGrantChangeRejectsAndRevokesExistingFamily",
         "failedRefreshAuditInsertRollsBackTokenSessionAndBinding",
         "persistedRefreshCredentialSurvivesIndependentDatabaseConnection",
-        "nativeHttpInjectionShapedRefreshCannotMutateValidFamily"
+        "nativeHttpInjectionShapedRefreshCannotMutateValidFamily",
+        "lockedHumanActorCannotRenewAndFamilyRevokes",
+        "rotatedProofKeyCannotResolveOrRevokeExistingFamily"
       ],
       "class": "dz.sh.hidra.modules.identity.infrastructure.persistence.RefreshTokenRotationPostgresIntegrationTest",
       "dependency_reason": "HAPI-929 original owner LOCAL refresh, non-leaking token proof, single-use replay and real PostgreSQL test coverage; actual hosted timings pending.",
@@ -11835,7 +11837,7 @@
       "lane": "postgres-integration",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/RefreshTokenRotationPostgresIntegrationTest.java",
-      "source_sha256": "3a7e495bf99c738fd50bb0a34b86a63e14cf283938486e23b5ece7e620d545ce",
+      "source_sha256": "dc0d3f1b65ca4c1dffafd7fdfbe510c3d09ae56551d17cc13274018f636e4ee1",
       "supports": []
     }
   ],

@@ -12874,8 +12874,8 @@ CI and the registered security and HTTP evidence review.
 
 Phase: HPS-001 — Identity and Authentication
 
-Implementation Status: IMPLEMENTED
-Planning Status: IN_PROGRESS
+Implementation Status: VERIFIED
+Planning Status: COMPLETED
 
 ### Owner decision and bounded execution
 
@@ -12931,5 +12931,41 @@ test inventory records its exact case and source digest. Current Full
 and Documentation CI on the new SHA are required but not yet observed;
 this record does not claim a pass. No deployment, SITE, browser A1,
 live operator authorization or numerical simulation is selected.
+
+
+### HAPI-931 exact-SHA software acceptance — 2026-11-09
+
+The one-whole-task implementation is pinned to source commit
+`6c5252f6ab5c338f96aeae67f25f30b0c92de777` (parent
+`02c2d130b902547c113b8fbea83b9affcfd4e892`, tree
+`8edab8862d22d7e79dc074de9f6dae355ade192b`).
+[Full CI #1155](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42604456386)
+and [Documentation #947](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42604456385)
+both completed **SUCCESS** on that exact commit. Retrieved Full run job
+summaries independently confirm 14/14 PostgreSQL integration shards, Java 21
+unit/architecture, static validation, runtime API contract/dictionary
+generation, and Full Verification Gate all succeeded. The Full gate's
+"Require complete test coverage, provenance and mode-specific evidence"
+step succeeded and its authenticated evidence-bundle artifact is available.
+These are inspected workflow results, not an independent recount or
+reexecution of every raw XML test report.
+
+The bounded FD-01 acceptance is **VERIFIED / COMPLETED** for backend
+software and configuration: the issuer is now a required explicit valid
+HTTP(S) URI for production, not an HTTPS-only URL; development retains its
+HTTP default. Existing signed LOCAL authentication, current binding checks,
+permissions, revocation, external-provider separation and refresh behavior
+were not modified by HAPI-931. The earlier registered test selection was
+included in successful exact-source CI. Real deployment/TLS/host,
+operator-provided configuration, local Windows/browser A1 verification,
+production/SITE, OT and hydraulic simulation remain not established.
+
+This is a status/evidence-only acceptance under the same registered
+`fix(identity): validate LOCAL bearer issuer preflight` message. Modify only this phase task metadata/evidence and
+the HAPI-931 status row in ROADMAP/PHASES, plus the index's HAPI-931
+current-status pointer. No Java, tests, migrations, tooling, API contract,
+other task status or HAPI-930/HAPI-929 scope is changed. Full CI on the
+unchanged implementation SHA is the software evidence; documentation CI
+on this acceptance-only commit remains to be observed separately.
 
 <!-- task-register:payload:end -->

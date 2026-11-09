@@ -3498,7 +3498,7 @@ The owner-selected, documentation-only HAPI-930 extension belongs to HPS-011. It
 
 HAPI-931 is the single whole approved backend FD-01 delivery, excluding
 HTTPS-only point 1. It preserves the existing 930 tasks and 25 phases.
-The task is IMPLEMENTED / IN_PROGRESS pending exact-SHA CI acceptance.
+The task is VERIFIED / COMPLETED for its bounded backend software scope following exact-SHA Full CI #1155 and Documentation #947 success; the owning HPS-001 record retains evidence and explicit non-deployment limits.
 
 <a id="hapi-931"></a>
 [HAPI-931](TASKS_HPS-001.md#hapi-931) — validate usable LOCAL bearer issuer configuration

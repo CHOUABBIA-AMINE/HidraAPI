@@ -1841,4 +1841,4 @@ Earlier 930 registrations and all 25 phase definitions are preserved.
 
 | Task ID | Task Name | Deliverable | Priority | Dependencies | Implementation Status | Planning Status |
 |---|---|---|---|---|---|---|
-| [HAPI-931](TASKS_HPS-001.md#hapi-931) | validate usable LOCAL bearer issuer configuration | Explicit production issuer validation with HTTP or HTTPS accepted; retained native bearer/security behavior and focused tests | P0 | HAPI-923; existing JWT contract | IMPLEMENTED | IN_PROGRESS |
+| [HAPI-931](TASKS_HPS-001.md#hapi-931) | validate usable LOCAL bearer issuer configuration | Explicit production issuer validation with HTTP or HTTPS accepted; retained native bearer/security behavior and focused tests | P0 | HAPI-923; existing JWT contract | VERIFIED | COMPLETED |

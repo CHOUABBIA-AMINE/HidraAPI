@@ -2162,4 +2162,4 @@ both permitted by this task. HAPI-930's separate Alarm scope and HAPI-929's
 refresh lifecycle remain unchanged. Technical admission and the exact commit
 message reside in the owning [HPS-001 definition](TASKS_HPS-001.md#hapi-931).
 
-| HPS-001 | Identity and Authentication | [HAPI-931](TASKS_HPS-001.md#hapi-931) | FD-01; owner-approved native issuer preflight | validate usable LOCAL bearer issuer configuration | Explicit valid production issuer; preserve existing current bearer, sessions, permissions, revocation and LOCAL HTTP regression proof | P0 | HAPI-923; existing HAPI-929 JWT contract | IMPLEMENTED | IN_PROGRESS |
+| HPS-001 | Identity and Authentication | [HAPI-931](TASKS_HPS-001.md#hapi-931) | FD-01; owner-approved native issuer preflight | validate usable LOCAL bearer issuer configuration | Explicit valid production issuer; preserve existing current bearer, sessions, permissions, revocation and LOCAL HTTP regression proof | P0 | HAPI-923; existing HAPI-929 JWT contract | VERIFIED | COMPLETED |

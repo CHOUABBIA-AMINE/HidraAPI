@@ -12869,6 +12869,64 @@ Whole-task acceptance remains pending independent exact-SHA Full and Docs
 CI and the registered security and HTTP evidence review.
 
 
+
+### HAPI-929 native protected HTTP acceptance qualification — 2026-11-09
+
+**Exact implementation observation.** HidraAPI main was checked at
+`4023e56f3b62c5620e469f6a409eec8bc639f6a4` (docs-only HAPI-930
+acceptance), with previous HAPI-930 source implementation
+`810721be7b6453d80c2771f2c5555e9bccd70ed7`.
+[Full CI #1156](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42608217313),
+[Docs #949](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42608217353)
+and acceptance [Docs #950](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42613629595)
+completed SUCCESS. The same-run Full evidence records 568 classes/4,348
+zero-failure/error/skip tests and all 14 PostgreSQL shards, API snapshot,
+strict migrated dictionary, Java/architecture and static validation
+SUCCESS. Existing HAPI-929 selected tests include three refresh-policy
+units, three controller-mocking cases and nine PostgreSQL cases for
+LOCAL new session/JTI, replay and descendants, concurrent rotation,
+logout, account disablement, password and provider generations, and
+key-derivation variance. This establishes implemented source and
+selected test success, **not** all the originally registered native HTTP,
+expiry, restart and fault-rollback cases.
+
+**Source-backed missing native HTTP evidence.** Previous
+`IdentityRefreshTokenControllerTest` directly constructed a mocked
+controller, and `RefreshTokenRotationPostgresIntegrationTest` exercised
+the refresh application port without a Spring Security and MVC HTTP
+journey. Under the originally approved HAPI-929 whole-task contract, add
+three real-PostgreSQL native HTTP test identities to the latter existing
+test class: LOCAL HTTP login then anonymous refresh and protected
+`/api/v1/identity/me`/`/me/permissions` with new JTI/session,
+old-bearer denial and fixed deadline; consumed-token replay returning
+non-disclosing 401, revoking descendants; and unknown/malformed-length
+credentials plus idempotent logout and old-bearer denial. Use a real
+Spring Security MockMvc filter chain and genuine LOCAL sessions, never
+mock the refresh security owner. No refresh credentials are logged.
+
+**Exact same-task write scope:**
+`src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/RefreshTokenRotationPostgresIntegrationTest.java`;
+`.github/ci-test-inventory.json` (only the exact updated source SHA256
+and three additional identities for that one class); and append-only
+`doc/roadmap/TASKS_HPS-001.md` (this admission). The allowed source
+test path is already registered in HAPI-929; no Java production code,
+schema/Flyway change, route/security grant, OpenAPI snapshot, other task,
+WEB or deployment work is authorized. Exact qualification message:
+`test(identity): qualify native LOCAL refresh HTTP security`.
+
+**Gate and truthful limitations:** New tests are source-selected but
+have not been locally executed; independent exact-SHA Full and Docs CI
+are mandatory. The task remains **NOT_IMPLEMENTED / REGISTERED_PENDING
+in historical status cells until its comprehensive acceptance is
+adjudicated**; executable source already exists, so these cells are
+stale and must not be interpreted as absence of HTTP handlers.
+Remaining registered edge cases (especially hard-family expiration
+under a controlled clock, restart replay, original-transaction failure
+rollback, effective-grant staleness and full key-rotation behavior)
+must be evidenced or explicitly resolved before promotion to
+VERIFIED / COMPLETED. No SITE, production, external IdP, OT or frontend
+qualification is inferred.
+
 <a id="hapi-931"></a>
 ## HAPI-931 — validate usable LOCAL bearer issuer configuration (FD-01)
 

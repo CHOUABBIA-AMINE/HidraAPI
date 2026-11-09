@@ -14,6 +14,14 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -61,6 +69,9 @@ class RefreshTokenRotationPostgresIntegrationTest {
         r.add("spring.flyway.enabled",()->"true");
         r.add("spring.jpa.hibernate.ddl-auto",()->"validate");
     }
+    private static final ObjectMapper JSON = new ObjectMapper();
+    private static final String AUTH = "/api/v1/identity/authentication";
+    @Autowired WebApplicationContext webContext;
     @Autowired JdbcTemplate jdbc;
     @Autowired PasswordEncoder passwords;
     @Autowired AuthenticateDirectUserUseCase login;
@@ -213,5 +224,110 @@ class RefreshTokenRotationPostgresIntegrationTest {
     private String outcome(String raw) {
         try { rotate.rotate(raw,null,null,null); return "OK"; }
         catch(RefreshTokenRotationPolicy.Replay reused) {return "REPLAY";}
+    }
+
+    private MockMvc nativeHttp() {
+        org.springframework.security.core.context.SecurityContextHolder.clearContext();
+        return MockMvcBuilders.webAppContextSetup(webContext)
+                .apply(org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity())
+                .build();
+    }
+
+    private JsonNode loginOverHttp(MockMvc http) throws Exception {
+        var request = "{\"providerType\":\"LOCAL\",\"principal\":\"" + user
+                + "\",\"credentials\":\"synthetic-refresh-password\"}";
+        var result = http.perform(post(AUTH + "/login")
+                .contentType(MediaType.APPLICATION_JSON).content(request))
+                .andExpect(status().isOk()).andReturn();
+        return JSON.readTree(result.getResponse().getContentAsString());
+    }
+
+    private static String refreshBody(String opaque) {
+        return "{\"refreshToken\":\"" + opaque + "\"}";
+    }
+
+    @Test void nativeHttpLoginRefreshAndMeRequireNewCurrentBearer() throws Exception {
+        var http = nativeHttp();
+        var first = loginOverHttp(http);
+        var oldBearer = first.path("accessToken").asText();
+        var originalRefresh = first.path("refreshToken").asText();
+        assertThat(originalRefresh).hasSize(80);
+        assertThat(first.path("authenticationType").asText()).isEqualTo("LOCAL");
+
+        http.perform(get("/api/v1/identity/me")
+                .header("Authorization", "Bearer " + oldBearer)).andExpect(status().isOk());
+        var nextResult = http.perform(post(AUTH + "/refresh")
+                .contentType(MediaType.APPLICATION_JSON).content(refreshBody(originalRefresh)))
+                .andExpect(status().isOk()).andReturn();
+        var second = JSON.readTree(nextResult.getResponse().getContentAsString());
+        var replacement = second.path("accessToken").asText();
+        assertThat(replacement).isNotBlank().isNotEqualTo(oldBearer);
+        assertThat(second.path("jti").asText()).isNotEqualTo(first.path("jti").asText());
+        assertThat(second.path("sessionId").asText()).isNotEqualTo(first.path("sessionId").asText());
+        assertThat(second.path("refreshExpiresAt").asText())
+                .isEqualTo(first.path("refreshExpiresAt").asText());
+        assertThat(second.path("refreshToken").asText()).hasSize(80)
+                .isNotEqualTo(originalRefresh);
+        http.perform(get("/api/v1/identity/me")
+                .header("Authorization", "Bearer " + replacement))
+                .andExpect(status().isOk());
+        http.perform(get("/api/v1/identity/me/permissions")
+                .header("Authorization", "Bearer " + replacement))
+                .andExpect(status().isOk());
+        int oldStatus = http.perform(get("/api/v1/identity/me")
+                .header("Authorization", "Bearer " + oldBearer))
+                .andReturn().getResponse().getStatus();
+        assertThat(oldStatus).isIn(401, 403);
+        // The refresh endpoint did not need the old access bearer at all.
+        assertThat(count("SELECT count(*) FROM public.hidra_identity_authentication_event"
+                + " WHERE user_id=? AND event_type='TOKEN_REFRESH'")).isEqualTo(1);
+    }
+
+    @Test void nativeHttpReplayRevokesDescendantsWithoutCredentialDisclosure() throws Exception {
+        var http = nativeHttp();
+        var first = loginOverHttp(http);
+        var raw = first.path("refreshToken").asText();
+        var secondResponse = http.perform(post(AUTH + "/refresh")
+                .contentType(MediaType.APPLICATION_JSON).content(refreshBody(raw)))
+                .andExpect(status().isOk()).andReturn();
+        var second = JSON.readTree(secondResponse.getResponse().getContentAsString());
+        var denied = http.perform(post(AUTH + "/refresh")
+                .contentType(MediaType.APPLICATION_JSON).content(refreshBody(raw)))
+                .andExpect(status().isUnauthorized()).andReturn();
+        assertThat(denied.getResponse().getContentAsString()).doesNotContain(raw);
+        int descendantStatus = http.perform(get("/api/v1/identity/me")
+                .header("Authorization", "Bearer " + second.path("accessToken").asText()))
+                .andReturn().getResponse().getStatus();
+        assertThat(descendantStatus).isIn(401, 403);
+        http.perform(post(AUTH + "/refresh").contentType(MediaType.APPLICATION_JSON)
+                .content(refreshBody(second.path("refreshToken").asText())))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test void nativeHttpLogoutAndMalformedRefreshRemainNonDisclosing() throws Exception {
+        var http = nativeHttp();
+        var first = loginOverHttp(http);
+        var raw = first.path("refreshToken").asText();
+        var unknown = "A".repeat(80);
+        var denied = http.perform(post(AUTH + "/refresh")
+                .contentType(MediaType.APPLICATION_JSON).content(refreshBody(unknown)))
+                .andExpect(status().isUnauthorized()).andReturn();
+        assertThat(denied.getResponse().getContentAsString()).doesNotContain(unknown);
+        http.perform(post(AUTH + "/refresh")
+                .contentType(MediaType.APPLICATION_JSON).content(refreshBody("B".repeat(81))))
+                .andExpect(status().isBadRequest());
+        http.perform(post(AUTH + "/logout")
+                .contentType(MediaType.APPLICATION_JSON).content(refreshBody(raw)))
+                .andExpect(status().isNoContent());
+        http.perform(post(AUTH + "/logout")
+                .contentType(MediaType.APPLICATION_JSON).content(refreshBody(raw)))
+                .andExpect(status().isNoContent());
+        http.perform(post(AUTH + "/refresh")
+                .contentType(MediaType.APPLICATION_JSON).content(refreshBody(raw)))
+                .andExpect(status().isUnauthorized());
+        int ended = http.perform(get("/api/v1/identity/me")
+                .header("Authorization", "Bearer " + first.path("accessToken").asText()))
+                .andReturn().getResponse().getStatus();
+        assertThat(ended).isIn(401, 403);
     }
 }

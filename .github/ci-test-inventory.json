@@ -11820,7 +11820,10 @@
         "unknownProofCannotRevokeOrMintAnyNativeSession",
         "passwordResetBumpsDatabaseOwnedGenerationAndDeniesRefresh",
         "providerDeactivationAndUserLockBothRequireFreshLogin",
-        "refreshProofKeyRotationChangesOnlyCryptographicDigest"
+        "refreshProofKeyRotationChangesOnlyCryptographicDigest",
+        "nativeHttpLoginRefreshAndMeRequireNewCurrentBearer",
+        "nativeHttpReplayRevokesDescendantsWithoutCredentialDisclosure",
+        "nativeHttpLogoutAndMalformedRefreshRemainNonDisclosing"
       ],
       "class": "dz.sh.hidra.modules.identity.infrastructure.persistence.RefreshTokenRotationPostgresIntegrationTest",
       "dependency_reason": "HAPI-929 original owner LOCAL refresh, non-leaking token proof, single-use replay and real PostgreSQL test coverage; actual hosted timings pending.",
@@ -11828,7 +11831,7 @@
       "lane": "postgres-integration",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/RefreshTokenRotationPostgresIntegrationTest.java",
-      "source_sha256": "4e7def4c304856e04ea7c74e17eb62edbc76e3fe30922a745453688727cbb232",
+      "source_sha256": "1386d484caab733fb2198fa13729e850799066c9b89a08d35e1a42065f69ac52",
       "supports": []
     }
   ],

@@ -202,15 +202,15 @@ class Gz2AlarmScopedOperatorPostgresIntegrationTest {
                 """.formatted(number, alarmType, severity, facility, facility);
         var result = http.perform(post(ROOT).header("Authorization", "Bearer " + actor.bearer())
                 .contentType(MediaType.APPLICATION_JSON).content(request))
-                .andDo(result -> {
-                    if (result.getResponse().getStatus() != 200) {
+                .andDo(mvcResult -> {
+                    if (mvcResult.getResponse().getStatus() != 200) {
                         System.err.println("HAPI-930 native alarm-raise diagnostics: status="
-                                + result.getResponse().getStatus()
-                                + ", matchedRoute=" + result.getRequest().getAttribute(
+                                + mvcResult.getResponse().getStatus()
+                                + ", matchedRoute=" + mvcResult.getRequest().getAttribute(
                                         org.springframework.web.servlet.HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE)
-                                + ", handler=" + result.getHandler()
-                                + ", resolvedException=" + result.getResolvedException()
-                                + ", responseBody=" + result.getResponse().getContentAsString());
+                                + ", handler=" + mvcResult.getHandler()
+                                + ", resolvedException=" + mvcResult.getResolvedException()
+                                + ", responseBody=" + mvcResult.getResponse().getContentAsString());
                     }
                 })
                 .andExpect(status().isOk()).andReturn();

@@ -9716,4 +9716,12 @@ At live main `0d95210209ee0517b044d6c41f733fc7555aa9d5`, [HidraAPI CI #1149](htt
 
 The unchanged positive and negative assertions must still pass in an independent native PostgreSQL CI run before HAPI-930 can advance beyond PARTIAL / IN_PROGRESS. No production code, migrations, grant policy, routes, historical evidence or WEB files change. HWEB-F16 remains HOLD. This source-only change does not resolve the observed 403; it makes the causal denial observable in CI before a separately justified same-task correction.
 
+### HAPI-930 CI #1150 test compilation repair — 2026-11-09
+
+At live main `7f2c4bcfc12cb391f01184c8bc832850d7b65b06`, [Full CI #1150](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42582797128) **FAILED**, while [Docs #942](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42582797281) **SUCCEEDED**. The primary failure across the Java unit/architecture and PostgreSQL lanes was at `Gz2AlarmScopedOperatorPostgresIntegrationTest.java:205`: `variable result is already defined in method raise(...)`. The previous HAPI-930 failure-only diagnostic lambda named its argument `result`, shadowing the enclosing method's pre-existing `var result` variable and preventing `testCompile` before any native PostgreSQL qualification could execute.
+
+**Same-task bounded repair:** rename only that diagnostic callback argument to `mvcResult` and its six uses; retain exact 200 expectation, JWT/native three-operator fixture, protected resource scope checks, error diagnostics and all production security semantics. Recompute only this test's source SHA256 in the existing strict CI inventory. No production code, migrations, acceptance assertions or previously published history changes.
+
+**Repair publication message:** `test(alarm): fix native GZ2 diagnostic callback compilation`. This source-level correction does not establish Maven/PostgreSQL acceptance or resolve the earlier native HTTP 403; the latter remains an open HAPI-930 gate pending CI evidence. HAPI-930 stays PARTIAL / IN_PROGRESS; HWEB-F16 remains HOLD.
+
 <!-- task-register:payload:end -->

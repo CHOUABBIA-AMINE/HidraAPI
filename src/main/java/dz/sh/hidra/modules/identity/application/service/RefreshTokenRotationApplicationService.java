@@ -2,6 +2,7 @@ package dz.sh.hidra.modules.identity.application.service;
 
 import dz.sh.hidra.modules.identity.application.model.AuthenticationResult;
 import dz.sh.hidra.modules.identity.application.port.in.RotateLocalRefreshTokenUseCase;
+import dz.sh.hidra.modules.identity.application.port.out.RefreshAttemptThrottlePort;
 import dz.sh.hidra.modules.identity.application.port.out.RefreshTokenEvidencePort;
 import dz.sh.hidra.modules.identity.application.port.out.RefreshTokenRepositoryPort;
 import java.time.Instant;
@@ -20,15 +21,20 @@ public class RefreshTokenRotationApplicationService implements RotateLocalRefres
     private final AuthenticationCompletionApplicationService completion;
     private final RefreshTokenRepositoryPort tokens;
     private final RefreshTokenEvidencePort evidence;
+    private final RefreshAttemptThrottlePort throttle;
     public RefreshTokenRotationApplicationService(AuthenticationCompletionApplicationService completion,
-            RefreshTokenRepositoryPort tokens, RefreshTokenEvidencePort evidence) {
+            RefreshTokenRepositoryPort tokens, RefreshTokenEvidencePort evidence,
+            RefreshAttemptThrottlePort throttle) {
         this.completion = Objects.requireNonNull(completion);
         this.tokens = Objects.requireNonNull(tokens);
         this.evidence = Objects.requireNonNull(evidence);
+        this.throttle = Objects.requireNonNull(throttle);
     }
     @Override
     public AuthenticationResult rotate(String token, String ip, String agent, String correlation) {
         if (!evidence.enabled()) throw new BadCredentialsException("Invalid refresh credentials.");
+        // Rate admission never consumes the opaque proof or starts the owner transaction.
+        throttle.check(token, ip);
         return completion.rotateLocal(token, ip, agent, correlation);
     }
     @Override

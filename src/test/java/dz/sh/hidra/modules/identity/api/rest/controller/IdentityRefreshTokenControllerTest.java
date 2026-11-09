@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 import dz.sh.hidra.modules.identity.api.rest.request.RefreshTokenRequest;
 import dz.sh.hidra.modules.identity.application.model.AuthenticationResult;
 import dz.sh.hidra.modules.identity.application.port.in.*;
+import dz.sh.hidra.modules.identity.application.port.out.RefreshAttemptThrottlePort;
 import dz.sh.hidra.modules.identity.domain.service.RefreshTokenRotationPolicy;
 import dz.sh.hidra.modules.identity.domain.value.ProviderType;
 import java.time.Instant;
@@ -60,4 +61,17 @@ class IdentityRefreshTokenControllerTest {
         verify(rotations,times(2)).logout(SECRET);
         assertFalse(new RefreshTokenRequest(SECRET).toString().contains(SECRET));
     }
+    @Test void throttledRefreshResponds429WithoutExposingCredential() {
+        var rotations=mock(RotateLocalRefreshTokenUseCase.class);
+        var controller=new IdentityAuthenticationController(
+                mock(AuthenticateDirectUserUseCase.class),
+                mock(CompleteAuthenticatedPrincipalUseCase.class),rotations);
+        when(rotations.rotate(eq(SECRET),any(),any(),any()))
+                .thenThrow(new RefreshAttemptThrottlePort.Limited());
+        var denial=assertThrows(ResponseStatusException.class,
+                ()->controller.refresh(new RefreshTokenRequest(SECRET),new MockHttpServletRequest()));
+        assertEquals(HttpStatus.TOO_MANY_REQUESTS,denial.getStatusCode());
+        assertFalse(denial.getMessage().contains(SECRET));
+    }
+
 }

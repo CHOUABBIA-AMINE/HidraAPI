@@ -52,6 +52,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
         properties={
             "hidra.identity.refresh.enabled=true",
             "hidra.identity.refresh.family-ttl-seconds=604800",
+            "hidra.identity.refresh.throttle.max-attempts=4",
             "hidra.platform.security.jwt.hmac-secret=synthetic-refresh-signing-key-for-integration-only",
             "hidra.platform.security.jwt.token-issuer=https://hidra.synthetic.invalid/local",
             "hidra.platform.security.jwt.audience=hidra-api"
@@ -473,4 +474,27 @@ class RefreshTokenRotationPostgresIntegrationTest {
         assertThat(valid.refreshToken()).hasSize(80).isNotEqualTo(first.refreshToken());
         assertThat(valid.jti()).isNotEqualTo(first.jti());
     }
+    @Test void nativeHttpRefreshOverloadIsNonDisclosingAndDoesNotConsumeFamily() throws Exception {
+        var http=nativeHttp();
+        var first=loginOverHttp(http);
+        String genuine=first.path("refreshToken").asText();
+        // An attacker with only a family identifier cannot guess the 256-bit proof.
+        String invalid=genuine.substring(0,37)+"A".repeat(43);
+        assertThat(invalid).isNotEqualTo(genuine);
+        for (int i=0;i<4;i++) {
+            http.perform(post(AUTH+"/refresh").contentType(MediaType.APPLICATION_JSON)
+                    .content(refreshBody(invalid))).andExpect(status().isUnauthorized());
+        }
+        var response=http.perform(post(AUTH+"/refresh")
+                .contentType(MediaType.APPLICATION_JSON).content(refreshBody(genuine)))
+                .andExpect(status().isTooManyRequests()).andReturn();
+        assertThat(response.getResponse().getContentAsString())
+                .doesNotContain(genuine).doesNotContain(invalid);
+        assertThat(count("SELECT count(*) FROM public.hidra_identity_refresh_family"
+                +" WHERE user_id=? AND revoked_at IS NULL")).isEqualTo(1);
+        assertThat(count("SELECT count(*) FROM public.hidra_identity_refresh_token t"
+                +" JOIN public.hidra_identity_refresh_family f ON f.id=t.family_id"
+                +" WHERE f.user_id=? AND t.generation=0 AND t.consumed_at IS NULL")).isEqualTo(1);
+    }
+
 }

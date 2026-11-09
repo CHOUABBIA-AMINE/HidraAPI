@@ -13032,6 +13032,51 @@ expired-bearer/valid-refresh timing, full application restart/key
 rotation and relevant concurrency/fault edge acceptance are NOT
 ESTABLISHED by previously passed tests. Industrial/SITE/production,
 external IdP and WEB acceptance remain independent.
+
+### HAPI-929 owner-approved Option A: request admission security (2026-11-09)
+
+The owner explicitly selected Option A, configurable server-side refresh
+request throttling with non-disclosing rejections and tests, within the
+existing **single indivisible HAPI-929**. The original selection and
+`feat(identity): implement rotating refresh tokens` implementation message
+remain binding; this is not a new HAPI task, A/B/C package or frontend scope.
+The admitted software policy is a default-on fixed-window budget of 30
+attempts per 60 seconds per (cryptographic family ID, server-observed remote
+address), with a bounded 32768-key per-process in-memory admission map.
+Config is externalized through `HIDRA_IDENTITY_REFRESH_THROTTLE_*`.
+A legitimate group behind a corporate NAT does not share one family budget.
+The adapter stores only SHA-256 bucket keys, rejects excess with generic HTTP
+429 **before** original-transaction token consumption, never revokes a
+family on overload, and fails closed when memory bounds are reached.
+The malformed-length request remains rejected by the existing bounded DTO.
+
+The approved initial CREATE inventory is extended for this same task by:
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/RefreshAttemptThrottlePort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/security/InMemoryRefreshAttemptThrottleAdapter.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/InMemoryRefreshAttemptThrottleAdapterTest.java`
+
+The same-task MODIFY inventory is extended by:
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/RefreshTokenRotationApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityAuthenticationController.java`
+- `src/test/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityRefreshTokenControllerTest.java`
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/RefreshTokenRotationPostgresIntegrationTest.java`
+- `src/main/resources/application.properties`
+- `.github/ci-test-inventory.json` (actual case identities and source hashes)
+- `docs/AUTHENTICATION_DEPLOYMENT_RUNBOOK.md` and this append-only ledger.
+
+No Flyway version, legacy binding trigger, current JWT issuer, token persistence,
+public request/response schema, or historical status is altered. Unit tests
+cover per-family/source quotas, corporate NAT separation, deterministic expiry,
+bounded storage, concurrent admission and invalid configuration. The existing
+genuine PostgreSQL/MockMvc suite gains a valid-family HTTP overload test proving
+429 non-disclosure and no consumption/revocation; the controller test checks
+HTTP 429 mapping. These are **source candidates only** until actual exact-SHA
+Full and Documentation CI have reported. Scope remains single server; this
+does not establish global limits under multiple instances or production attack
+load. HAPI-929 stays PARTIAL / IN_PROGRESS until the original full hard-family
+expiry, expired bearer, process restart and key-rotation/fault-boundary gates
+receive real independent acceptance; do not silently promote it.
+
 <a id="hapi-931"></a>
 ## HAPI-931 — validate usable LOCAL bearer issuer configuration (FD-01)
 

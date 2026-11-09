@@ -23,6 +23,7 @@ import dz.sh.hidra.modules.identity.api.rest.mapper.IdentityAuthenticationWebMap
 import dz.sh.hidra.modules.identity.api.rest.request.AuthenticationLoginRequest;
 import dz.sh.hidra.modules.identity.api.rest.request.RefreshTokenRequest;
 import dz.sh.hidra.modules.identity.application.port.in.RotateLocalRefreshTokenUseCase;
+import dz.sh.hidra.modules.identity.application.port.out.RefreshAttemptThrottlePort;
 import dz.sh.hidra.modules.identity.domain.service.RefreshTokenRotationPolicy;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.http.HttpStatus;
@@ -98,6 +99,9 @@ public final class IdentityAuthenticationController {
             return IdentityAuthenticationWebMapper.response(rotation.rotate(input.refreshToken(),
                     clientIp(request),header(request,"User-Agent"),
                     header(request,"X-Correlation-Id")));
+        } catch (RefreshAttemptThrottlePort.Limited denied) {
+            throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS,
+                    "Refresh temporarily unavailable.");
         } catch (BadCredentialsException | RefreshTokenRotationPolicy.Replay
                 | RefreshTokenRotationPolicy.Rejected denial) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"Invalid refresh credentials.");

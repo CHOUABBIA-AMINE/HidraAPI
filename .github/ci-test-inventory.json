@@ -11798,7 +11798,8 @@
       "cases": [
         "deniedAndReplayedTokensNeverExposeStoredPrincipalOrDigest",
         "logoutIsIdempotentAndDoesNotRequireBearer",
-        "refreshOnlyDelegatesOpaqueProofAndPreservesNewMetadata"
+        "refreshOnlyDelegatesOpaqueProofAndPreservesNewMetadata",
+        "throttledRefreshResponds429WithoutExposingCredential"
       ],
       "class": "dz.sh.hidra.modules.identity.api.rest.controller.IdentityRefreshTokenControllerTest",
       "dependency_reason": "HAPI-929 original owner LOCAL refresh, non-leaking token proof, single-use replay and real PostgreSQL test coverage; actual hosted timings pending.",
@@ -11806,7 +11807,7 @@
       "lane": "unit-architecture",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/api/rest/controller/IdentityRefreshTokenControllerTest.java",
-      "source_sha256": "4d400096ce0411ebc154dcf27f3004094b853624e712f8ab4272c48e6af8b2c7",
+      "source_sha256": "66e78dae46d03a25c3c5776b705832f8aeba93ab7e7eacacaceed2f439855ddd",
       "supports": []
     },
     {
@@ -11829,7 +11830,8 @@
         "persistedRefreshCredentialSurvivesIndependentDatabaseConnection",
         "nativeHttpInjectionShapedRefreshCannotMutateValidFamily",
         "lockedHumanActorCannotRenewAndFamilyRevokes",
-        "rotatedProofKeyCannotResolveOrRevokeExistingFamily"
+        "rotatedProofKeyCannotResolveOrRevokeExistingFamily",
+        "nativeHttpRefreshOverloadIsNonDisclosingAndDoesNotConsumeFamily"
       ],
       "class": "dz.sh.hidra.modules.identity.infrastructure.persistence.RefreshTokenRotationPostgresIntegrationTest",
       "dependency_reason": "HAPI-929 original owner LOCAL refresh, non-leaking token proof, single-use replay and real PostgreSQL test coverage; actual hosted timings pending.",
@@ -11837,7 +11839,26 @@
       "lane": "postgres-integration",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/RefreshTokenRotationPostgresIntegrationTest.java",
-      "source_sha256": "dc0d3f1b65ca4c1dffafd7fdfbe510c3d09ae56551d17cc13274018f636e4ee1",
+      "source_sha256": "753c461ef68c66fb84c924b065c1558f3039b35170765793b8b4a917a57b0319",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "boundedStorageFailsClosedWithoutDiscardingActiveQuota",
+        "concurrencyCannotAdmitMoreThanConfiguredLimit",
+        "manyOperatorsBehindOneAddressHaveSeparateFamilyQuotas",
+        "perFamilySourceQuotaIsNonDisclosing",
+        "unsafeConfigurationIsRejectedAtStartup",
+        "windowExpiryAllowsTheNextAttempt"
+      ],
+      "class": "dz.sh.hidra.modules.identity.infrastructure.security.InMemoryRefreshAttemptThrottleAdapterTest",
+      "dependency_reason": "HAPI-929 owner-approved Option A default-on bounded per-process refresh admission; deterministic concurrency, expiry, config and corporate-NAT isolation; hosted timing pending.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/security/InMemoryRefreshAttemptThrottleAdapterTest.java",
+      "source_sha256": "dc54f6c8aacf3d1de0ca4e3451ef2e5a23176987da857d88d21be04623db8d6e",
       "supports": []
     }
   ],

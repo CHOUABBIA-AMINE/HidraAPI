@@ -381,3 +381,36 @@ Protected operations still recheck Identity/Authorization live and never inherit
 scope from a refresh credential. Runtime OpenAPI and database physical dictionary
 must match generated actual values before whole-task technical acceptance.
 
+
+### LOCAL refresh attempt throttling (HAPI-929, owner-approved Option A)
+
+The backend applies a server-side, default-on limit **when the refresh feature is
+enabled**. Configuration: `HIDRA_IDENTITY_REFRESH_THROTTLE_ENABLED` (default true),
+`HIDRA_IDENTITY_REFRESH_THROTTLE_MAX_ATTEMPTS` (default 30),
+`HIDRA_IDENTITY_REFRESH_THROTTLE_WINDOW_SECONDS` (default 60), and
+`HIDRA_IDENTITY_REFRESH_THROTTLE_MAX_KEYS` (default 32768, hard maximum 65536).
+Values outside the verified constructor bounds fail startup rather than silently
+removing protection. A single bucket covers one canonical 36-character LOCAL
+refresh family and the server-observed servlet remote address. The key is held
+as a SHA-256 digest, not as a raw credential; neither the JWT, the opaque
+secret nor a supplied forwarding header is retained. Distinct families behind
+one company NAT do not share an operator quota.
+
+Exceeding the quota responds with a non-disclosing **429** and never enters
+the Identity owner rotation transaction. A full bounded bucket map also
+fails closed for new keys until old windows expire; this protects memory but
+can deny service under high-cardinality adversarial traffic. The counter uses
+a 60-second default fixed window; reset/restart clears admission counters,
+**not** persisted refresh families, rotations or session state. Excessive
+attempts do not revoke a family or consume a one-time token. The caller must
+not retry continuously after a 429; honor the configured window. Oversized
+JSON fails existing validation before family admission.
+
+**Deployment boundary:** this is an in-memory **per-process** limiter for the
+one-application-server topology. It is NOT a cluster-wide rate guarantee;
+a load-balanced or multi-replica deployment needs an explicitly tested shared
+rate limiter/edge abuse policy before production acceptance. The generic
+source family quota cannot prevent an attacker cycling many unknown UUIDs,
+although the bounded key map fails closed. This software proof does not
+establish production load, anti-DDoS or industrial SITE behavior.
+

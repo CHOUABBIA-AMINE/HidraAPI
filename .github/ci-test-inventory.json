@@ -452,6 +452,20 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0,
+      "cases": [
+        "pairedCurrentCompanyAndAssetScopesProtectNativeReadsCountsAndAcknowledgementHistory"
+      ],
+      "class": "dz.sh.hidra.modules.alarm.qualification.Gz2AlarmScopedOperatorPostgresIntegrationTest",
+      "dependency_reason": "HAPI-930 native three-LOCAL-actor Spring HTTP and fresh PostgreSQL GZ2 facility scope qualification; current company and exact-asset grants, isolation, denied writes, acknowledgements, revocation and synthetic reassignment; PIPELINE_SYSTEM remains unsupported.",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "alarm",
+      "path": "src/test/java/dz/sh/hidra/modules/alarm/qualification/Gz2AlarmScopedOperatorPostgresIntegrationTest.java",
+      "source_sha256": "e22537887d53af338e52dcb8a77675078abcf71c249a9a85586e729088caa6e0",
+      "supports": []
+    },
+    {
       "baseline_seconds": 0.035,
       "cases": [
         "directSaveUpdatesStateAndWritesExactlyOneActionWhileReplayIsImmutable",

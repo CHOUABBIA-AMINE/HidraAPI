@@ -33,7 +33,6 @@ import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,7 +43,9 @@ import org.springframework.web.bind.annotation.RestController;
  * Spring MVC adapter exposing alarm REST endpoints.
  */
 @RestController
-@Validated
+// MVC request-body validation remains on the handler parameters.
+// The inherited AlarmController contract has no method-parameter constraints;
+// class-level method validation instead raises Hibernate Validator HV000151.
 @RequestMapping("/api/v1/alarm")
 public class SpringAlarmController implements AlarmController {
 

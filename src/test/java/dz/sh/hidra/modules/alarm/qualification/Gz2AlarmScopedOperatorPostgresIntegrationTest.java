@@ -59,7 +59,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = HidraApplication.class, webEnvironment = SpringBootTest.WebEnvironment.MOCK,
         properties = {
                 "hidra.platform.security.jwt.hmac-secret=synthetic-alarm-native-qualification-key-32-bytes",
-                "hidra.platform.security.jwt.token-issuer=hidra-api",
+                "hidra.platform.security.jwt.token-issuer=https://identity.hidra.invalid/gz2",
                 "hidra.platform.security.jwt.audience=hidra-api"
         })
 @ActiveProfiles("test")
@@ -187,6 +187,15 @@ class Gz2AlarmScopedOperatorPostgresIntegrationTest {
         String bearer = authenticate.authenticate(new DirectAuthenticationCommand(
                 ProviderType.LOCAL, user, PASSWORD, "synthetic-ip", "synthetic-agent",
                 "synthetic-gz2-login")).accessToken();
+        // Reserved synthetic HTTPS issuer; no deployed endpoint or external trust is claimed.
+        var jwt = nativeDecoder.decode(bearer);
+        String issuedBy = java.util.Objects.requireNonNull(jwt.getIssuer()).toString();
+        assertEquals("https://identity.hidra.invalid/gz2", issuedBy);
+        var issuerUri = java.net.URI.create(issuedBy);
+        assertEquals("https", issuerUri.getScheme());
+        assertNotNull(issuerUri.getHost());
+        assertEquals(user, jwt.getSubject());
+        assertTrue(operationBindings.findByNativeIssuerAndJti(issuedBy, jwt.getId()).isPresent());
         SecurityContextHolder.clearContext();
         return new Actor(user, bearer, company, facility);
     }

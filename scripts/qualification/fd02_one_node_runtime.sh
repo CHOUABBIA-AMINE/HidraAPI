@@ -154,36 +154,54 @@ export HIDRA_OPENAPI_ENABLED='false' HIDRA_SWAGGER_UI_ENABLED='false'
 # Emit only a fixed-category diagnostic derived from private startup logs.
 # Never upload/publish the JVM logs, exception messages, SQL literals or secrets.
 fd02_startup_diagnostic() {
-  python3 - "$work/jvm-${1}.log" <<'PY'
+  python3 - "$work/jvm-${1}.log" "$2" <<'PY'
+import json
 from pathlib import Path
 import re
 import sys
 
-log = Path(sys.argv[1])
-body = log.read_text(errors="replace") if log.exists() else ""
-category = "UNCLASSIFIED"
-resource = ""
-match = re.search(r"permission denied for (table|schema|sequence) ([a-zA-Z0-9_]+)", body, re.I)
-if match:
-    category = "POSTGRES_PERMISSION_DENIED"
-    # Object names are public migration identifiers; emit only a narrow safe token.
-    if re.fullmatch(r"hidra_[a-z0-9_]+", match.group(2)):
-        resource = ":" + match.group(2)
-elif "violates foreign key constraint" in body:
-    category = "POSTGRES_REFERENCE_CONSTRAINT"
-elif "violates check constraint" in body:
-    category = "POSTGRES_CHECK_CONSTRAINT"
-elif "Schema-validation: missing table" in body:
-    category = "HIBERNATE_MISSING_TABLE"
-elif "Schema-validation: wrong column type" in body:
-    category = "HIBERNATE_COLUMN_TYPE"
-elif "Production runtime requires" in body or "HIDRA_JWT_TOKEN_ISSUER must be" in body:
-    category = "PRODUCTION_CONFIGURATION_GUARD"
-elif "APPLICATION FAILED TO START" in body:
-    category = "SPRING_STARTUP_FAILURE"
-elif not body.strip():
-    category = "EMPTY_JVM_LOG"
-print("FD02_STARTUP_DIAGNOSTIC=" + category + resource)
+body = Path(sys.argv[1]).read_text(encoding='utf-8', errors='replace')
+exit_status = sys.argv[2]
+if exit_status != 'TIMEOUT' and not re.fullmatch(r'[0-9]{1,3}', exit_status):
+    raise ValueError('Unexpected process status')
+if exit_status != 'TIMEOUT' and int(exit_status) > 255:
+    raise ValueError('Unexpected process status')
+low = body.lower()
+rules = (
+    ('JAR_NOT_EXECUTABLE', 'no main manifest attribute'),
+    ('JAR_UNAVAILABLE', 'unable to access jarfile'),
+    ('MAIN_CLASS_MISSING', 'could not find or load main class'),
+    ('JAVA_CLASS_LINKAGE', 'noclassdeffounderror'),
+    ('POSTGRES_ACCESS_DENIED', 'permission denied for'),
+    ('POSTGRES_REFERENCE_FAILURE', 'violates foreign key constraint'),
+    ('POSTGRES_CHECK_FAILURE', 'violates check constraint'),
+    ('HIBERNATE_SCHEMA', 'schema-validation:'),
+    ('SPRING_DATASOURCE', 'failed to configure a datasource'),
+    ('SPRING_BINDING', 'failed to bind properties'),
+    ('PRODUCTION_GUARD', 'production runtime requires'),
+    ('PRODUCTION_GUARD', 'hidra_jwt_token_issuer must be'),
+    ('SPRING_STARTUP_FAILURE', 'application failed to start'),
+)
+category = next((kind for kind, marker in rules if marker in low), None)
+classes = re.findall(
+    r'(?:Caused by:\s*|Exception in thread "[^"]*"\s+|^\s*)'
+    r'(?:[A-Za-z_$][\w$]*\.)*([A-Z][A-Za-z0-9_$]{0,63}(?:Exception|Error))(?=[:\s]|$)',
+    body, re.M)
+classes = list(dict.fromkeys(classes))[-4:]
+if category is None:
+    category = ('NOT_READY_TIMEOUT' if exit_status == 'TIMEOUT'
+                else 'PROCESS_TERMINATED' if int(exit_status) in (137, 143)
+                else 'JAVA_EXCEPTION_UNCLASSIFIED' if classes
+                else 'EMPTY_LOG' if not body.strip()
+                else 'OTHER_NONEMPTY_LOG')
+stage = ('GUARD' if 'HidraProductionStartupGuard' in body
+         else 'ADMIN_BOOTSTRAP' if 'LocalAdministratorBootstrapRunner' in body
+         else 'BEAN_CREATION' if 'BeanCreationException' in body
+         else 'UNKNOWN')
+summary = {'category': category, 'exit_status': exit_status,
+           'exception_types': classes, 'stage': stage,
+           'log_lines': min(len(body.splitlines()), 999999)}
+print('FD02_STARTUP_DIAGNOSTIC=' + json.dumps(summary, sort_keys=True))
 PY
 }
 
@@ -192,8 +210,11 @@ start_jvm() {
   jvm_pid="$!"
   for _ in $(seq 1 150); do
     if ! kill -0 "$jvm_pid" 2>/dev/null; then
-      fd02_startup_diagnostic "$1" >&2
-      echo "FD02 JVM ${1} exited before readiness; private log retained only until cleanup" >&2; exit 1
+      jvm_exit_status=0
+      wait "$jvm_pid" || jvm_exit_status=$?
+      jvm_pid=''
+      fd02_startup_diagnostic "$1" "$jvm_exit_status" >&2
+      echo "FD02 JVM ${1} exited before readiness; private log discarded on cleanup" >&2; exit 1
     fi
     if curl --silent --fail --max-time 2 "$FD02_BASE_URL/actuator/health/readiness" \
         | grep -q '"status":"UP"'; then
@@ -201,7 +222,7 @@ start_jvm() {
     fi
     sleep 2
   done
-  fd02_startup_diagnostic "$1" >&2
+  fd02_startup_diagnostic "$1" TIMEOUT >&2
   echo "FD02 JVM ${1} did not become ready; private log retained only until cleanup" >&2; exit 1
 }
 stop_jvm() {

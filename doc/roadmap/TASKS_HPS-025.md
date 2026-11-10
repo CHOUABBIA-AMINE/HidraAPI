@@ -5077,4 +5077,8 @@ REGISTERED_PENDING in the frozen roadmap status rows until real JAR/PG16/HTTP/
 restart evidence and applicable gates pass. No application code, migration,
 workflow, status row, phase or other task is modified.
 
+### HAPI-932 isolated runtime #7 diagnostic correction — 2026-11-10
+
+[Full CI #1165](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42768189816) and [Documentation #960](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42768189757) succeeded on `e94398e8832789d83550f4cbe52e1c2cd0a55486`. [Isolated Qualification #7](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42768189897) failed: the first JVM exited before readiness. The previous diagnostic emitted `UNCLASSIFIED`; the exact underlying error is still unknown. This repair records bounded JVM exit status, exception type names, and fixed startup categories without exposing any log message or SQL. No runtime privileges, application code, migrations, security controls, qualification assertions or status rows are changed. The isolated JAR/PostgreSQL/HTTP/restart acceptance remains pending.
+
 <!-- task-register:payload:end -->

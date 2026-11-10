@@ -261,3 +261,98 @@ For each increment, size the smallest coherent external journey and assign one a
 **Acceptance.** Use signed native HTTP and PostgreSQL with two companies and two assets in one company. Prove that two companies may reuse a code, that a same-company duplicate is rejected, and that company and exact asset restrictions hold for creation, detail, list, and totals. Exercise foreign and unknown identifiers, revocation, descendant read bypass attempts, and restart readback. Verify actual Flyway/JPA constraints and the OpenAPI contract.
 
 **Registration scope.** Only `doc/roadmap/ROADMAP.md` changes in this registration. Implementation still requires an exact source and test allowlist, migration filename, implementation commit message, and separate selection under the task execution protocol.
+
+### T01 implementation envelope — 2026-11-10
+
+**Baseline.** Main `fbb21945f4c3f3172042d7b6df9f4d94489f75c2` passed [Documentation Validation #978](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42853830035). Its source baseline `e7afe49a46b56c2cee637f56ea855c8d540c72b0` passed [Full CI #1176, attempt 2](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42841011012/attempts/2). T01 remains PLANNED. The implementation message is `feat(planning): enforce company and asset scope`. Reserve `src/main/resources/db/migration/V20261110_002__planning_company_scope.sql`. Refresh the exact HEAD, migration ordering and evidence before implementation.
+
+**Ownership and transaction.** Planning owns the immutable period company and company/code invariant. A plan derives its company from its period. Party establishes current company eligibility, Topology establishes current asset ownership, Identity evaluates current grants, and Organization retains responsibility and unit eligibility. Consume owner contracts through application boundaries. Resolve the actor from the authenticated request. Use a single transaction per operation and keep checked evidence current for the transaction. For reads, build the authorized company and exact company/type/asset tuples first, and constrain both SQL rows and count before pagination. Missing, inactive, ambiguous or unavailable owner evidence denies access. For writes, bind the owner and grant checks to the write transaction. Keep exact permit and deny precedence. Current JWT or a global route grant alone does not establish company or asset access.
+
+**Supported ownership evidence.** Resolve PIPELINE_SYSTEM through the immutable Foundation system-owner record. Resolve PIPELINE through its exact system relationship and the verified system owner. Resolve FACILITY through its explicit current owner. Validate the corresponding asset lifecycle and active eligible company. Existing supported asset types remain meaningful where these owner records prove their scope. The owner lookup stays in Topology. Do not infer ownership from an identifier prefix, a Planning snapshot, or the caller's grant.
+
+**Persistence and API.** Add the company association using a forward migration. Enforce same-company code uniqueness in PostgreSQL, preserve period date and catalog checks, and exclude unproven legacy ownership from scoped reads. The migration must require company ownership for new writes without inventing a historical owner. Replace the global uniqueness rule only with the database-backed company/code rule. Plans join through their period, and revision, nomination, target and approval detail reads inherit the same plan boundary. Cover POST aliases for period and plan creation, GET list and detail operations for periods and operational plans, and the existing revision, nomination, target and approval reads. Existing descendant mutation behavior belongs to its respective task. Preserve responsible-unit validation and route permissions. Accept an optional legacy actor field only if it matches the signed actor when supplied. It cannot confer authority. Return a uniform non-disclosing missing-resource outcome for foreign and missing protected identifiers, and a conflict for a proven same-company duplicate.
+
+**Unresolved API compatibility gate.** `CreatePlanningPeriodRequest` has no company selector. T01 requires explicit validated ownership. A new required request property on either existing v1 period-create route fails the enforced OpenAPI compatibility rule. No authoritative selected-company context is established for these routes. The owner must decide the versioning and legacy behavior before implementation. Proposed approach is a versioned scoped period-create contract with an explicit company, plus an explicitly approved fail-closed policy for v1 callers without a company. Retain the compatibility gate and document the actual behavior. Do not hide a required field or select an implicit company to satisfy CI.
+
+#### T01 implementation file envelope
+
+The following paths are implementation candidates, gated by the API compatibility decision and separate task selection. No path authorizes changes outside its stated purpose. The registration commit is `docs(roadmap): register T01 implementation envelope` and changes only `doc/roadmap/ROADMAP.md`.
+
+**Modify Planning domain and application.**
+
+- `src/main/java/dz/sh/hidra/modules/planning/domain/model/PlanningPeriod.java`
+- `src/main/java/dz/sh/hidra/modules/planning/application/command/CreatePlanningPeriodCommand.java`
+- `src/main/java/dz/sh/hidra/modules/planning/application/dto/PlanningPeriodSummaryDto.java`
+- `src/main/java/dz/sh/hidra/modules/planning/application/mapper/PlanningApplicationMapper.java`
+- `src/main/java/dz/sh/hidra/modules/planning/application/port/in/PlanningQueryUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/planning/application/port/out/PlanningPeriodRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/planning/application/port/out/PlanningQueryPort.java`
+- `src/main/java/dz/sh/hidra/modules/planning/application/service/PlanningPeriodApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/planning/application/service/OperationalPlanApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/planning/application/service/PlanningQueryApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/planning/application/service/PlanningApprovalApplicationService.java`
+
+**Modify Planning REST.**
+
+- `src/main/java/dz/sh/hidra/modules/planning/api/rest/controller/SpringPlanningController.java`
+- `src/main/java/dz/sh/hidra/modules/planning/api/rest/controller/PlanningQueryController.java`
+- `src/main/java/dz/sh/hidra/modules/planning/api/rest/controller/PlanningController.java`
+- `src/main/java/dz/sh/hidra/modules/planning/api/rest/request/CreatePlanningPeriodRequest.java`
+- `src/main/java/dz/sh/hidra/modules/planning/api/rest/response/PlanningPeriodResponse.java`
+- `src/main/java/dz/sh/hidra/modules/planning/api/rest/mapper/PlanningRestMapper.java`
+- `src/main/java/dz/sh/hidra/modules/planning/api/rest/mapper/PlanningGeneratedRestMapper.java`
+
+**Modify Planning persistence.**
+
+- `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/entity/PlanningPeriodJpaEntity.java`
+- `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/mapper/PlanningPersistenceMapper.java`
+- `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/adapter/JpaPlanningPeriodRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/adapter/JpaPlanningQueryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/repository/PlanningPeriodJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/repository/OperationalPlanJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/repository/PlanRevisionJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/repository/NominationJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/repository/PlanTargetJpaRepository.java`
+
+**Add Planning scope enforcement.**
+
+- `src/main/java/dz/sh/hidra/modules/planning/application/service/PlanningAccessService.java`
+- `src/main/java/dz/sh/hidra/modules/planning/domain/exception/PlanningPeriodCodeConflictException.java`
+- `src/main/java/dz/sh/hidra/modules/planning/api/rest/PlanningScopeApiExceptionHandler.java`
+
+**Add Identity scope enforcement.**
+
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/planning/PlanningScopedAuthorizationContract.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/PlanningScopedAuthorizationQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/PlanningExplicitGrantEvidencePort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaPlanningExplicitGrantEvidenceAdapter.java`
+
+**Add Party scope enforcement.**
+
+- `src/main/java/dz/sh/hidra/modules/party/application/contract/planning/PlanningCompanyEligibilityContract.java`
+- `src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/adapter/JdbcPlanningCompanyEligibilityAdapter.java`
+
+**Add Topology scope enforcement.**
+
+- `src/main/java/dz/sh/hidra/modules/topology/application/contract/planning/PlanningAssetOwnershipContract.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcPlanningAssetOwnershipAdapter.java`
+
+**Migration, validation and generated evidence.**
+
+- Add `src/main/resources/db/migration/V20261110_002__planning_company_scope.sql`.
+- Add `src/test/java/dz/sh/hidra/modules/planning/infrastructure/persistence/PlanningCompanyScopeNativeHttpPostgresIntegrationTest.java`.
+- Update `src/test/java/dz/sh/hidra/modules/planning/application/service/PlanningApprovalApplicationServiceTest.java` where constructor, fixture or scoped-read behavior changes.
+- Update `src/test/java/dz/sh/hidra/modules/planning/application/service/PlanningQueryApplicationServiceTest.java` where constructor, fixture or scoped-read behavior changes.
+- Update `src/test/java/dz/sh/hidra/modules/planning/semantic/PlanningPeriodSemanticRemediationTest.java` where constructor, fixture or scoped-read behavior changes.
+- Update `src/test/java/dz/sh/hidra/modules/planning/semantic/OperationalPlanSemanticRemediationTest.java` where constructor, fixture or scoped-read behavior changes.
+- Update `src/test/java/dz/sh/hidra/modules/planning/infrastructure/persistence/PlanningSemanticPostgresTest.java` where constructor, fixture or scoped-read behavior changes.
+- Update `.github/ci-test-inventory.json` for T01 evidence only, when the corresponding change requires it.
+- Update `.github/database-dictionary-ownership.json` for T01 evidence only, when the corresponding change requires it.
+- Update `.github/documentation-validation.json` for T01 evidence only, when the corresponding change requires it.
+- Update `doc/api/openapi.yaml` for T01 evidence only, when the corresponding change requires it.
+- Update `doc/database/DATA_DICTIONARY.md` for T01 evidence only, when the corresponding change requires it.
+- Update `doc/roadmap/ROADMAP.md` for T01 evidence only, when the corresponding change requires it.
+
+**Validation.** Preserve existing test cases. Run focused Planning tests and the registered PostgreSQL native HTTP suite with synthetic fixtures. Exercise duplicate-code races, active company evidence, same-company wrong asset, foreign company, descendant reads and page totals, grant revocation and restart readback. Prove that old unproven ownership remains excluded and the database rejects unowned new writes. Full CI must execute the native test with Docker and PostgreSQL, verify inventory coverage, and compare runtime OpenAPI and the migrated physical dictionary. Generate contract and dictionary evidence from actual runtime and PostgreSQL, preserving strict comparison. A skipped PostgreSQL test supplies no database proof.
+
+**Execution gate.** Resolve the period-create compatibility decision before selecting T01 implementation. If the decision requires paths beyond this file envelope, register the exact path change in the roadmap before source edits.

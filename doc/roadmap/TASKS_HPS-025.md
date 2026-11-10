@@ -4966,4 +4966,48 @@ tree, files and blob preservation proof; observe actual exact-SHA
 applicable CI created/queued or started, then **STOP**. Documentation
 acceptance alone does not mark the future qualification implemented.
 
+### Owner-approved production-first refinement — 2026-11-10
+
+The owner selected a production-first narrowing of **the same HAPI-932/FD-02
+whole task**, without a new task ID, phase, release or subsequent stage. This
+technical acceptance amendment supersedes the broader objective/acceptance
+paragraphs above *for this implementation only*, while retaining the exact
+source allowlist, direct-main message, security invariants and original
+registration trace. No roadmap membership/status row or archival content changes.
+
+**Minimum real runtime acceptance:** a Java 21 executable built from an exact
+SHA must run with `HIDRA_ENVIRONMENT=production` and Spring's production
+profile against one freshly migrated PostgreSQL 16 database; separate
+non-superuser migration and ordinary runtime identities must perform required
+SQL operations while the ordinary runtime lacks schema DDL and protected
+engineering read authority. Explicit native HTTP(S) JWT issuer, real LOCAL
+login, bearer-authenticated identity, at least one actual API-owned Identity
+create/read with canonical returned ID, unauthorized denial, and a distinct
+OS JVM after bootstrap is disabled with persisted ID/readback are required.
+Sampled REST GET routes must confirm Organization, Party, Topology,
+Configuration and Workflow are reachable, **not** six-module completed
+business transactions. Preserve the existing module-specific native
+authorization, approval, audit and database tests in Full CI; do not repeat
+the full approval choreography within this smoke or treat missing synthetic
+catalog approval as a separate delivery prerequisite. Never elevate the
+ordinary runtime account to make the test pass, suppress failed tests or
+assert that route reachability proves a business workflow.
+
+**Evidence:** an isolated host may build and exercise the JAR/PG16 workflow
+using ephemeral synthetic secrets, a redacted request/status report and an
+exact-SHA hosted CI run. Source-only, unit-only or a green unrelated Full CI
+never substitutes for observed real JVM/DB/HTTP/restart success. This remains
+a development-software smoke, **not** a production rollout, deployment
+credential policy, six-module functional acceptance, enterprise IdP,
+HidraWEB, SITE or industrial qualification. Successful implementation is
+not VERIFIED until the new smoke and applicable exact-SHA gates actually
+pass. Explicit owner acceptance remains a separate status decision.
+
+**Authorized execution message:** `test(runtime): qualify restricted single-node REST consumption`.
+
+**Before publication:** the local Python client fixture and shell syntax may
+be checked without PostgreSQL; absence of local Maven/PostgreSQL means actual
+runtime acceptance is deferred to the isolated hosted job, not claimed.
+
+
 <!-- task-register:payload:end -->

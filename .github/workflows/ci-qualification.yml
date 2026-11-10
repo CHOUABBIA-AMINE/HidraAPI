@@ -1,5 +1,12 @@
 name: HidraAPI CI Qualification (isolated)
 'on':
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/qualification/**'
+      - 'doc/operations/FD02_ONE_NODE_API_QUALIFICATION.md'
+      - 'doc/roadmap/TASKS_HPS-025.md'
+      - '.github/workflows/ci-qualification.yml'
   workflow_dispatch:
 permissions:
   contents: read
@@ -98,3 +105,46 @@ jobs:
         python3 .github/scripts/test_verify_full_ci_evidence.py -v
     - name: Qualification boundary
       run: echo 'Real aggregate-verifier unit fixtures executed on hosted runner; no injected failure in production Full workflow.'
+
+  fd02-runtime:
+    name: FD02 real JAR / PostgreSQL 16 / native HTTP / restart
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: fd02-ci-${{ github.run_id }}-${{ github.run_attempt }}
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Install PostgreSQL client
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq postgresql-client
+      - name: Bounded Python HTTP/evidence unit fixtures
+        run: python3 -m unittest discover -s scripts/qualification -p 'test_fd02_native_http_checks.py' -v
+      - name: Runtime script syntax and actual one-node qualification
+        env:
+          FD02_PG_ADMIN_PASSWORD: fd02-ci-${{ github.run_id }}-${{ github.run_attempt }}
+          FD02_EVIDENCE_DIR: ${{ runner.temp }}/fd02-evidence
+        run: |
+          set -euo pipefail
+          bash -n scripts/qualification/fd02_one_node_runtime.sh
+          bash scripts/qualification/fd02_one_node_runtime.sh
+      - name: Preserve redacted FD02 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hidra-fd02-${{ github.sha }}
+          path: ${{ runner.temp }}/fd02-evidence/
+          if-no-files-found: warn

@@ -211,3 +211,19 @@ Optional OIDC/LDAP integration inputs remain conditional on those integration pa
 The application-side production configuration contract is documented.
 
 The concrete production platform, secret-injection implementation, TLS/network implementation and deployment automation remain **NOT ESTABLISHED**.
+
+## FD-02 disposable production-profile smoke — 2026-11-10
+
+HAPI-932 verifies that a Java 21 JAR can start with the already-defined
+`HIDRA_ENVIRONMENT=production`, `SPRING_PROFILES_ACTIVE=production`, explicit
+native HTTP(S) issuer, a non-superuser runtime database identity and a
+separately migrated PostgreSQL 16 schema. The isolated workflow creates
+random synthetic credentials; no production secret or approved infrastructure
+is selected by this test. The runner explicitly sets `SPRING_FLYWAY_ENABLED=false`
+for the application process **only after** a separate non-superuser Flyway
+migration and validation step; `spring.jpa.hibernate.ddl-auto=validate`
+remains effective. The native LOCAL bootstrap is enabled only for the initial
+JVM and disabled for the independent second JVM on the same database. See
+[FD-02 qualification](FD02_ONE_NODE_API_QUALIFICATION.md) for reproducible
+commands, evidence limitations and the distinction between a smoke and
+production permission/deployment acceptance.

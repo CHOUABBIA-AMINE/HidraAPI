@@ -26,6 +26,16 @@ import dz.sh.hidra.HidraApplication;
 import dz.sh.hidra.modules.identity.application.model.DirectAuthenticationCommand;
 import dz.sh.hidra.modules.identity.application.port.in.AuthenticateDirectUserUseCase;
 import dz.sh.hidra.modules.identity.domain.value.ProviderType;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.Duration;
+import java.util.ArrayList;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
@@ -35,6 +45,9 @@ import java.util.concurrent.Callable;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -55,6 +68,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Testcontainers(disabledWithoutDocker=true)
 @SpringBootTest(classes=HidraApplication.class,webEnvironment=SpringBootTest.WebEnvironment.MOCK,
     properties={
@@ -234,6 +248,128 @@ class TelemetryReadingIngestionNativeHttpPostgresIntegrationTest {
         }
         assertEquals(1L,countReadings());
         assertEquals(1L,db.queryForObject("SELECT count(*) FROM hidra_telemetry_reading_ingest_receipt WHERE point_id=?",Long.class,point));
+    }
+    // Same HAPI-933 acceptance: close the original application context, then require
+    // a NEW OS JVM (not a second MockMvc or JDBC connection) to serve the original
+    // authorized history, latest, trend and replay from the same committed PostgreSQL.
+    @Test @Order(Integer.MAX_VALUE)
+    void protectedReadingAndReplaySurviveSeparateApplicationJvmRestart() throws Exception {
+        String stamp=Instant.now().minusSeconds(4).toString();
+        String originalBody=payload("seq-restart","41.75",quality,unit,stamp);
+        JsonNode committed=JSON.readTree(http.perform(post(route())
+                .header("Authorization","Bearer "+producer)
+                .contentType(MediaType.APPLICATION_JSON).content(originalBody))
+                .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString());
+        String reading=committed.path("id").asText();
+        String receivedAt=committed.path("receivedAt").asText();
+        assertFalse(reading.isBlank());
+        assertFalse(receivedAt.isBlank());
+        assertEquals(1L,countReadings());
+
+        ((org.springframework.context.ConfigurableApplicationContext)context).close();
+        int port;
+        try(ServerSocket socket=new ServerSocket(0,0,InetAddress.getLoopbackAddress())) {
+            port=socket.getLocalPort();
+        }
+        String classpath=System.getProperty("surefire.test.class.path");
+        if(classpath==null||classpath.isBlank())classpath=System.getProperty("java.class.path");
+        assertNotNull(classpath,"A child JVM requires the current test runtime classpath.");
+        Path logfile=Files.createTempFile("hapi933-restarted-jvm-", ".log");
+        var command=new ArrayList<>(List.of(
+                Path.of(System.getProperty("java.home"),"bin","java").toString(),
+                "-cp",classpath,RestartedRuntime.class.getName(),
+                "--spring.profiles.active=test",
+                "--server.address=127.0.0.1",
+                "--server.port="+port,
+                "--management.server.port="+port,
+                "--spring.datasource.url="+PG.getJdbcUrl(),
+                "--spring.datasource.username="+PG.getUsername(),
+                "--spring.datasource.password="+PG.getPassword(),
+                "--spring.flyway.url="+PG.getJdbcUrl(),
+                "--spring.flyway.user="+PG.getUsername(),
+                "--spring.flyway.password="+PG.getPassword(),
+                "--spring.jpa.hibernate.ddl-auto=validate",
+                "--hidra.platform.security.jwt.hmac-secret=synthetic-hapi933-secure-local-native-key-32-bytes",
+                "--hidra.platform.security.jwt.token-issuer=https://identity.hidra.invalid/telemetry",
+                "--hidra.platform.security.jwt.audience=hidra-api"));
+        Process child=new ProcessBuilder(command).redirectErrorStream(true)
+                .redirectOutput(logfile.toFile()).start();
+        try {
+            assertNotEquals(ProcessHandle.current().pid(),child.pid());
+            var client=HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(2)).build();
+            String base="http://127.0.0.1:"+port;
+            boolean started=false;
+            long deadline=System.nanoTime()+TimeUnit.SECONDS.toNanos(75);
+            while(System.nanoTime()<deadline&&child.isAlive()) {
+                try {
+                    var health=client.send(HttpRequest.newBuilder(URI.create(base+"/actuator/health"))
+                            .timeout(Duration.ofSeconds(2)).GET().build(),
+                            HttpResponse.BodyHandlers.ofString());
+                    if(health.statusCode()==200){started=true;break;}
+                } catch(java.io.IOException unavailable) {
+                    // Another process is still starting. No HTTP result is inferred.
+                }
+                Thread.sleep(350);
+            }
+            if(!started) {
+                String diagnostics=Files.readString(logfile);
+                fail("Separate JVM did not reach health (exit="
+                        +(child.isAlive()?"running":child.exitValue())+"): "
+                        +diagnostics.substring(Math.max(0,diagnostics.length()-3000)));
+            }
+            HttpResponse<String> history=restartedRequest(client,base,"GET",route(),null);
+            assertEquals(200,history.statusCode());
+            JsonNode saved=JSON.readTree(history.body()).path("content").path(0);
+            assertEquals(reading,saved.path("id").asText());
+            assertEquals(receivedAt,saved.path("receivedAt").asText());
+            assertEquals(unit,saved.path("unitId").asText());
+            assertEquals(stamp,saved.path("sourceTimestamp").asText());
+            HttpResponse<String> latest=restartedRequest(client,base,"GET",route()+"/latest",null);
+            assertEquals(200,latest.statusCode());
+            assertEquals(reading,JSON.readTree(latest.body()).path("id").asText());
+            HttpResponse<String> trend=restartedRequest(client,base,"GET",
+                    "/api/v1/telemetry/points/"+point+"/trend",null);
+            assertEquals(200,trend.statusCode());
+            assertEquals(reading,JSON.readTree(trend.body()).path(0).path("id").asText());
+
+            HttpResponse<String> retry=restartedRequest(client,base,"POST",route(),originalBody);
+            assertEquals(200,retry.statusCode());
+            assertEquals(reading,JSON.readTree(retry.body()).path("id").asText());
+            assertTrue(JSON.readTree(retry.body()).path("replayed").asBoolean());
+            assertEquals(409,restartedRequest(client,base,"POST",route(),
+                    payload("seq-restart","43.75",quality,unit,stamp)).statusCode());
+            assertEquals(1L,countReadings());
+            assertEquals(1L,db.queryForObject(
+                    "SELECT count(*) FROM hidra_telemetry_reading_ingest_receipt WHERE reading_id=?",
+                    Long.class,reading));
+
+            db.update("UPDATE hidra_identity_user_permission_grant SET status='REVOKED',revoked_at=now() WHERE scope_reference_id=?",
+                    "telemetry-source-point:"+source+":"+point);
+            assertEquals(403,restartedRequest(client,base,"GET",route(),null).statusCode());
+            assertEquals(403,restartedRequest(client,base,"POST",route(),originalBody).statusCode());
+            assertEquals(1L,countReadings());
+        } finally {
+            child.destroy();
+            if(!child.waitFor(10,TimeUnit.SECONDS))child.destroyForcibly();
+            Files.deleteIfExists(logfile);
+        }
+    }
+
+    private HttpResponse<String> restartedRequest(HttpClient client,String base,String method,
+                                                   String path,String body) throws Exception {
+        var request=HttpRequest.newBuilder(URI.create(base+path)).timeout(Duration.ofSeconds(10))
+                .header("Authorization","Bearer "+producer);
+        if("POST".equals(method))request.header("Content-Type","application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(body));
+        else request.GET();
+        return client.send(request.build(),HttpResponse.BodyHandlers.ofString());
+    }
+
+    public static final class RestartedRuntime {
+        private RestartedRuntime() { }
+        public static void main(String[] args) {
+            org.springframework.boot.SpringApplication.run(HidraApplication.class,args);
+        }
     }
     private long countReadings() {
         return db.queryForObject("SELECT count(*) FROM hidra_telemetry_reading WHERE point_id=?",Long.class,point);

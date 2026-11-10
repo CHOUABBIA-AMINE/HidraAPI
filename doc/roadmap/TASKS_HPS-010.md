@@ -10616,4 +10616,43 @@ strict migrated dictionary equality, independent JVM restart/readback
 and remaining acceptance cases are explicitly evidenced. Stop after
 confirming the new exact-SHA workflows were created/queued/started.
 
+
+### 11. Same-task synthetic OS-JVM restart acceptance extension — 2026-11-10
+
+At main `33b7824d2afbc19967196d501f346b876b4a49ca`, [Full CI #1171](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42798991872)
+and [Documentation #968](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42798991914)
+both finished **SUCCESS** on that exact SHA. The Full gate confirmed all
+14 PostgreSQL shards, unit/architecture, current runtime OpenAPI generation
+and backward compatibility, and strict regenerated physical dictionary equality.
+
+That success does **not** alone satisfy the separately registered independent
+OS-JVM restart acceptance. The existing Telemetry native HTTP/PostgreSQL test
+re-read committed observations inside the same Spring application context and
+never stopped its JVM or started another one. The remaining gap is actual
+separate-process authorized history/latest/trend/replay readback.
+
+The owner-selected HAPI-933 acceptance contract already requires this outcome.
+This is a same-task completion repair, **not** HAPI-934, an A/B/C stage or
+independent deliverable. The bounded patch modifies only:
+- `src/test/java/dz/sh/hidra/modules/telemetry/infrastructure/persistence/TelemetryReadingIngestionNativeHttpPostgresIntegrationTest.java`: adds a deterministic last-running test
+  which writes through the original signed LOCAL/native HTTP boundary, closes
+  that Spring context, launches a separate OS Java process and real embedded HTTP
+  server against the unchanged disposable PostgreSQL, verifies persisted ID,
+  received/source time and units through authorized history/latest/trend, checks
+  duplicate replay and conflict, and requires revocation to deny both GET/POST;
+- `.github/ci-test-inventory.json`: adds the test method identity and
+  exact source SHA-256 to the mandatory PostgreSQL CI inventory;
+- this owning HPS-010 evidence append only.
+
+No new endpoint, producer authority, grant bypass, migration, business row,
+external OT integration, numerical solver, release, SITE activity or roadmap
+status is introduced. The registered HAPI-933 implementation message
+`feat(telemetry): implement protected native reading ingestion`
+remains the commit identity for this same-task acceptance correction.
+No local Maven/Docker runtime was available for independent execution;
+the new test and source digest are prepared, **not asserted passed**.
+HAPI-933 stays **PARTIAL / IN_PROGRESS** until the new exact-SHA Full CI
+actually executes this OS-JVM test and all remaining acceptance evidence
+is accepted; verify CI created/queued/started then stop.
+
 <!-- task-register:payload:end -->

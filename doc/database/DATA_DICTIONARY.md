@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `e1b0126544b3a151f24a0037e5f6327caf348737`
+Captured source SHA: `d42628cb9b136b01bd89d821f39c59aa2bf2ace1`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `f7ed1cf908efc8bb76d0997f7a4edc20124a38b2512f3dfb7ae8d21ea95158c8`.
-Migrations: 203; JPA mappings: 470; catalog relations: 557; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `84ca4245b1450737435cffc8b3b02747df54261d1e79f8ea075d34591f244525`.
+Migrations: 204; JPA mappings: 470; catalog relations: 557; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -10354,6 +10354,7 @@ Persisted PermissionJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261103_001__topology_engineering_baseline_drafts.sql](../../src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql)
 - Migration mention (not inferred introduction): [V20261105_001__topology_foundation_setup.sql](../../src/main/resources/db/migration/V20261105_001__topology_foundation_setup.sql)
 - Migration mention (not inferred introduction): [V20261110_001__telemetry_ingestion_replay_identity.sql](../../src/main/resources/db/migration/V20261110_001__telemetry_ingestion_replay_identity.sql)
+- Migration mention (not inferred introduction): [V20261110_002__planning_company_scope.sql](../../src/main/resources/db/migration/V20261110_002__planning_company_scope.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -19894,6 +19895,7 @@ Persisted PartyJpaEntity state; semantic authority remains with party.
 - Migration mention (not inferred introduction): [V20261030_001__party_manufacturer_source_authorizations.sql](../../src/main/resources/db/migration/V20261030_001__party_manufacturer_source_authorizations.sql)
 - Migration mention (not inferred introduction): [V20261103_001__topology_engineering_baseline_drafts.sql](../../src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql)
 - Migration mention (not inferred introduction): [V20261103_005__foundation_pipeline_graph_associations.sql](../../src/main/resources/db/migration/V20261103_005__foundation_pipeline_graph_associations.sql)
+- Migration mention (not inferred introduction): [V20261110_002__planning_company_scope.sql](../../src/main/resources/db/migration/V20261110_002__planning_company_scope.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -21238,6 +21240,7 @@ Persisted PlanningPeriodJpaEntity state; semantic authority remains with plannin
 - Migration mention (not inferred introduction): [V20260611_006__create_planning_tables.sql](../../src/main/resources/db/migration/V20260611_006__create_planning_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261004_006__hmr_006_planning_planning_period.sql](../../src/main/resources/db/migration/V20261004_006__hmr_006_planning_planning_period.sql)
+- Migration mention (not inferred introduction): [V20261110_002__planning_company_scope.sql](../../src/main/resources/db/migration/V20261110_002__planning_company_scope.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -21254,6 +21257,7 @@ Persisted PlanningPeriodJpaEntity state; semantic authority remains with plannin
 | created_by_actor_id | character varying(80) | False | None; identity=; generated= | createdByActorId: String; {"length": "80", "nullable": "false"}; columnDefinition=None | — |
 | created_at | timestamp with time zone | False | None; identity=; generated= | createdAt: Instant; {"nullable": "false"}; columnDefinition=None | — |
 | updated_at | timestamp with time zone | False | None; identity=; generated= | updatedAt: Instant; {"nullable": "false"}; columnDefinition=None | — |
+| company_party_id | character varying(80) | True | None; identity=; generated= | companyPartyId: String; {"length": "80", "updatable": "false"}; columnDefinition=None | — |
 
 #### Constraints
 
@@ -21261,6 +21265,8 @@ Persisted PlanningPeriodJpaEntity state; semantic authority remains with plannin
   - Catalog attributes: {"columns": ["period_start", "period_end"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
 - `fk_hra111_planning_017`: FOREIGN KEY (period_type_id) REFERENCES hidra_planning_catalog_entry(id) ON DELETE RESTRICT
   - Catalog attributes: {"columns": ["period_type_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_planning_catalog_entry"}, "type": "f", "validated": true}
+- `fk_t01_planning_period_company`: FOREIGN KEY (company_party_id) REFERENCES hidra_party_party(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["company_party_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_party_party"}, "type": "f", "validated": true}
 - `hidra_planning_period_pkey`: PRIMARY KEY (id)
   - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
 
@@ -21280,12 +21286,14 @@ Persisted PlanningPeriodJpaEntity state; semantic authority remains with plannin
   - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
 - `ix_hidra_planning_period_updated_at`: CREATE INDEX ix_hidra_planning_period_updated_at ON public.hidra_planning_period USING btree (updated_at)
   - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
-- `uk_hmr006_planning_period_code`: CREATE UNIQUE INDEX uk_hmr006_planning_period_code ON public.hidra_planning_period USING btree (code)
+- `uk_t01_planning_period_company_code`: CREATE UNIQUE INDEX uk_t01_planning_period_company_code ON public.hidra_planning_period USING btree (company_party_id, code)
   - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
 
 #### Triggers
 
-None captured in this catalog category.
+- `trg_t01_planning_period_company`: CREATE TRIGGER trg_t01_planning_period_company BEFORE INSERT OR UPDATE OF company_party_id ON hidra_planning_period FOR EACH ROW EXECUTE FUNCTION hidra_t01_planning_period_company_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t01_planning_period_company_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t01_planning_period_company_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'public'<br>AS $function$<br>BEGIN<br>    IF TG_OP = 'INSERT' THEN<br>        IF NEW.company_party_id IS NULL OR NEW.company_party_id = ''<br>                OR NEW.company_party_id &lt;&gt; btrim(NEW.company_party_id) THEN<br>            RAISE EXCEPTION 'Planning period company is required' USING ERRCODE = '23514';<br>        END IF;<br>    ELSIF NEW.company_party_id IS DISTINCT FROM OLD.company_party_id THEN<br>        RAISE EXCEPTION 'Planning period company is immutable' USING ERRCODE = '23514';<br>    END IF;<br>    RETURN NEW;<br>END<br>$function$<br>
 
 ### public.hidra_planning_plan_approval_reference
 

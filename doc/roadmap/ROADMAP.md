@@ -385,3 +385,13 @@ The owner selected T01 with a limit of one implementation and one documentation 
 **Scoped grants.** Identity owns `planning:scoped-period:read`, `planning:scoped-period:create`, `planning:scoped-plan:read` and `planning:scoped-plan:create`. Company grants use the exact CUSTOM reference `planning-company:<partyId>`. Plan access also requires the exact `PIPELINE_SYSTEM`, `PIPELINE` or `FACILITY` grant and current Topology ownership in that company. These permissions supplement the existing route permissions.
 
 **Acceptance pending.** Verify the implementation SHA in HidraAPI CI. Use the retained runtime OpenAPI and PostgreSQL catalog to refresh both canonical snapshots together, then confirm strict equality and exact-SHA test evidence before marking T01 complete.
+
+### T01 generated contract and dictionary reconciliation — 2026-11-10
+
+**Repair scope.** Refresh only `doc/api/openapi.yaml`, `doc/database/DATA_DICTIONARY.md`, `.github/documentation-validation.json` and this roadmap. The documentation commit message is `docs(planning): refresh T01 generated API and database evidence`.
+
+**Implementation evidence.** Source `d42628cb9b136b01bd89d821f39c59aa2bf2ace1` completed [HidraAPI CI #1177](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42904589933). Static validation, the unit/architecture lane and all fourteen PostgreSQL shards passed. The API job built the application, generated runtime OpenAPI, captured the migrated physical dictionary and passed backward compatibility against successful source `e7afe49a46b56c2cee637f56ea855c8d540c72b0`. The job failed strict OpenAPI snapshot equality. Dictionary equality and final evidence sealing were skipped. The missing API evidence upload and aggregate gate failures follow that earlier failure. Full CI did not pass.
+
+**Artifact provenance.** The runtime contract comes from artifact `13804067686`, member `hidra-api.json`, ZIP SHA-256 `9e266bb5c054d325ed0ce33706cd6671c9c2752172dc29f8afb237e52c806ddb`. The database catalog and dictionary come from diagnostic artifact `13805230625`, members `database/schema.json`, `database/DATA_DICTIONARY.md` and `database/verification.json`, ZIP SHA-256 `b1687dc5a4d84aecab32ce02d028854ae304d0a7a70b3f2afc7e592cdb981932`. The diagnostic contract member matches the dedicated OpenAPI artifact byte for byte. Source identities remain those of the actual implementation generator.
+
+**Acceptance gate.** T01 remains IN PROGRESS. The documentation repair requires fresh exact-SHA CI, strict runtime snapshot equality, strict migrated dictionary equality and successful complete evidence sealing before completion. The next registered implementation task is T02 after T01 acceptance.

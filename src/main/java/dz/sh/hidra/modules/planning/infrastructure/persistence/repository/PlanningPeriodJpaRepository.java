@@ -21,6 +21,7 @@ package dz.sh.hidra.modules.planning.infrastructure.persistence.repository;
 
 import dz.sh.hidra.modules.planning.infrastructure.persistence.entity.PlanningPeriodJpaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -29,9 +30,9 @@ import org.springframework.stereotype.Repository;
  * Spring Data JPA repository for PlanningPeriod.
  */
 @Repository
-public interface PlanningPeriodJpaRepository extends JpaRepository<PlanningPeriodJpaEntity, String> {
+public interface PlanningPeriodJpaRepository extends JpaRepository<PlanningPeriodJpaEntity, String>, JpaSpecificationExecutor<PlanningPeriodJpaEntity> {
 
-    boolean existsByCode(String code);
+    boolean existsByCompanyPartyIdAndCode(String companyPartyId, String code);
 
     @Query(value = """
             SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END

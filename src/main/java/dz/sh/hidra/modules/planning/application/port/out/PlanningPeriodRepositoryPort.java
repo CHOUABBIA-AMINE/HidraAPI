@@ -32,7 +32,7 @@ public interface PlanningPeriodRepositoryPort {
 
     Optional<PlanningPeriod> findById(String id);
 
-    boolean existsByCode(String code);
+    boolean existsByCompanyPartyIdAndCode(String companyPartyId, String code);
 
     boolean isActivePeriodType(String periodTypeId);
 }

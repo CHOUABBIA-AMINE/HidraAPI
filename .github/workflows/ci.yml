@@ -357,8 +357,6 @@ jobs:
         payload['x-hidra-ci-source-sha'] = '${{ github.sha }}'
         path.write_text(json.dumps(payload, indent=2, sort_keys=True) + '\n', encoding='utf-8')
         PY
-    - name: Enforce canonical OpenAPI snapshot equality
-      run: python3 .github/scripts/validate_openapi_snapshot.py --generated target/openapi/hidra-api.json --generated-source-sha "${{ github.sha }}"
     - name: Capture current migrated database dictionary evidence
       shell: bash
       env:
@@ -382,27 +380,6 @@ jobs:
           --render target/database/DATA_DICTIONARY.md \
           "${DICTIONARY_ARGS[@]}" > target/database/verification.json
         cat target/database/verification.json
-        # Strict comparison remains mandatory after real migrated catalog capture.
-        python3 .github/scripts/generate_data_dictionary.py \
-          --input target/database/schema.json \
-          --source-sha "${{ github.sha }}" \
-          --render target/database/DATA_DICTIONARY.md \
-          --ownership .github/database-dictionary-ownership.json \
-          --check doc/database/DATA_DICTIONARY.md > target/database/comparison.json
-        cat target/database/comparison.json
-        # Promote only the actual successful strict comparison receipt; failed checks stop above.
-        cp target/database/comparison.json target/database/verification.json
-    - name: Retain current database dictionary evidence
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: hidra-database-schema-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}-api-contract
-        path: |
-          target/database/schema.json
-          target/database/DATA_DICTIONARY.md
-          target/database/verification.json
-          target/database/comparison.json
-        if-no-files-found: error
     - name: Resolve OpenAPI compatibility base
       id: openapi-base
       shell: bash
@@ -474,6 +451,33 @@ jobs:
         path: target/openapi/hidra-api.json
         if-no-files-found: error
         retention-days: 30
+    - name: Enforce canonical OpenAPI snapshot equality
+      run: python3 .github/scripts/validate_openapi_snapshot.py --generated target/openapi/hidra-api.json --generated-source-sha "${{ github.sha }}"
+    - name: Enforce canonical database dictionary equality
+      shell: bash
+      run: |
+        set -euo pipefail
+        # Strict comparison remains mandatory after real migrated catalog capture.
+        python3 .github/scripts/generate_data_dictionary.py \
+          --input target/database/schema.json \
+          --source-sha "${{ github.sha }}" \
+          --render target/database/DATA_DICTIONARY.md \
+          --ownership .github/database-dictionary-ownership.json \
+          --check doc/database/DATA_DICTIONARY.md > target/database/comparison.json
+        cat target/database/comparison.json
+        # Promote only the actual successful strict comparison receipt; failed checks stop above.
+        cp target/database/comparison.json target/database/verification.json
+    - name: Retain current database dictionary evidence
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: hidra-database-schema-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}-api-contract
+        path: |
+          target/database/schema.json
+          target/database/DATA_DICTIONARY.md
+          target/database/verification.json
+          target/database/comparison.json
+        if-no-files-found: error
     - name: Seal source and runtime evidence
       run: python3 .github/scripts/verify_full_ci_evidence.py stamp --kind api-contract --output target/ci/api-contract/evidence.json
       env:
@@ -672,8 +676,6 @@ jobs:
         payload['x-hidra-ci-source-sha'] = '${{ github.sha }}'
         path.write_text(json.dumps(payload, indent=2, sort_keys=True) + '\n', encoding='utf-8')
         PY
-    - name: Enforce canonical OpenAPI snapshot equality
-      run: python3 .github/scripts/validate_openapi_snapshot.py --generated target/openapi/hidra-api.json --generated-source-sha "${{ github.sha }}"
     - name: Capture current migrated database dictionary evidence
       shell: bash
       env:
@@ -692,7 +694,7 @@ jobs:
         mkdir -p target/database
         DICTIONARY_ARGS=()
         if [ -f .github/database-dictionary-ownership.json ]; then
-          DICTIONARY_ARGS+=(--ownership .github/database-dictionary-ownership.json --check doc/database/DATA_DICTIONARY.md)
+          DICTIONARY_ARGS+=(--ownership .github/database-dictionary-ownership.json)
         fi
         python3 .github/scripts/generate_data_dictionary.py \
           --collect target/database/schema.json \
@@ -700,15 +702,6 @@ jobs:
           --render target/database/DATA_DICTIONARY.md \
           "${DICTIONARY_ARGS[@]}" > target/database/verification.json
         cat target/database/verification.json
-    - name: Retain current database dictionary evidence
-      uses: actions/upload-artifact@v4
-      with:
-        name: hidra-database-schema-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}-oracle
-        path: |
-          target/database/schema.json
-          target/database/DATA_DICTIONARY.md
-          target/database/verification.json
-        if-no-files-found: error
     - name: Resolve OpenAPI compatibility base
       id: openapi-base
       shell: bash
@@ -781,6 +774,33 @@ jobs:
         path: target/openapi/hidra-api.json
         if-no-files-found: error
         retention-days: 30
+    - name: Enforce canonical OpenAPI snapshot equality
+      run: python3 .github/scripts/validate_openapi_snapshot.py --generated target/openapi/hidra-api.json --generated-source-sha "${{ github.sha }}"
+    - name: Enforce canonical database dictionary equality
+      shell: bash
+      run: |
+        set -euo pipefail
+        # Strict comparison remains mandatory after real migrated catalog capture.
+        python3 .github/scripts/generate_data_dictionary.py \
+          --input target/database/schema.json \
+          --source-sha "${{ github.sha }}" \
+          --render target/database/DATA_DICTIONARY.md \
+          --ownership .github/database-dictionary-ownership.json \
+          --check doc/database/DATA_DICTIONARY.md > target/database/comparison.json
+        cat target/database/comparison.json
+        # Promote only the actual successful strict comparison receipt; failed checks stop above.
+        cp target/database/comparison.json target/database/verification.json
+    - name: Retain current database dictionary evidence
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: hidra-database-schema-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}-oracle
+        path: |
+          target/database/schema.json
+          target/database/DATA_DICTIONARY.md
+          target/database/verification.json
+          target/database/comparison.json
+        if-no-files-found: error
     - name: Seal source and runtime evidence
       run: python3 .github/scripts/verify_full_ci_evidence.py stamp --kind oracle --output target/ci/oracle/evidence.json
       env:

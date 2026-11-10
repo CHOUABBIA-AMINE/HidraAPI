@@ -23,6 +23,7 @@ import dz.sh.hidra.modules.planning.infrastructure.persistence.entity.PlanTarget
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.Lock;
@@ -34,7 +35,7 @@ import java.util.Optional;
  * Spring Data JPA repository for PlanTarget.
  */
 @Repository
-public interface PlanTargetJpaRepository extends JpaRepository<PlanTargetJpaEntity, String> {
+public interface PlanTargetJpaRepository extends JpaRepository<PlanTargetJpaEntity, String>, JpaSpecificationExecutor<PlanTargetJpaEntity> {
 
     Page<PlanTargetJpaEntity> findByRevisionId(String revisionId, Pageable pageable);
     @Lock(LockModeType.PESSIMISTIC_WRITE)

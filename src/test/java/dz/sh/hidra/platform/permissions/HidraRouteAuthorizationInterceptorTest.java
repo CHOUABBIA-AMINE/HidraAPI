@@ -39,6 +39,21 @@ import org.springframework.web.servlet.HandlerMapping;
 
 class HidraRouteAuthorizationInterceptorTest {
 
+    @Test
+    void v2PeriodCreateEnforcesExistingPlanningRoutePermission() throws Exception {
+        var resolver = new HidraEffectivePermissionResolver(List.of());
+        var interceptor = new HidraRouteAuthorizationInterceptor(resolver, naming, true, "jwt");
+        var handler = handlerMethod();
+        var request = new MockHttpServletRequest("POST", "/api/v2/planning/periods");
+        request.setAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE, "/api/v2/planning/periods");
+        assertThrows(AccessDeniedException.class,
+                () -> interceptor.preHandle(request, new MockHttpServletResponse(), handler));
+
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
+                "operator", "n/a", List.of(new SimpleGrantedAuthority("SCOPE_planning:periods:execute"))));
+        assertTrue(interceptor.preHandle(request, new MockHttpServletResponse(), handler));
+    }
+
     @Test void appointmentDelegationRequiresEveryExactControllerMethodVerbAndPattern() throws Exception {
         var interceptor=new HidraRouteAuthorizationInterceptor(org.mockito.Mockito.mock(HidraEffectivePermissionResolver.class),naming,true,"jwt");
         var operation=new dz.sh.hidra.modules.organization.api.rest.controller.EmployeeAppointmentLifecycleController(

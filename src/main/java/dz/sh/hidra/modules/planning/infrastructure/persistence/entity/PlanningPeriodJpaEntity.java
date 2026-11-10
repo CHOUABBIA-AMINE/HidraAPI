@@ -39,6 +39,9 @@ import java.time.Instant;
     @Column(name = "id", nullable = false, length = 80)
     private String id;
 
+    @Column(name = "company_party_id", length = 80, updatable = false)
+    private String companyPartyId;
+
     @Column(name = "code", nullable = false, length = 80)
     private String code;
 
@@ -93,7 +96,8 @@ import java.time.Instant;
             PlanningPeriodStatus status,
             String createdByActorId,
             Instant createdAt,
-            Instant updatedAt
+            Instant updatedAt,
+            String companyPartyId
         ) {
             this.id = id;
         this.code = code;
@@ -108,6 +112,7 @@ import java.time.Instant;
         this.createdByActorId = createdByActorId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.companyPartyId = companyPartyId;
         }
 
 
@@ -115,6 +120,10 @@ import java.time.Instant;
         return id;
     }
 
+
+    public String companyPartyId() {
+        return companyPartyId;
+    }
 
     public String code() {
         return code;

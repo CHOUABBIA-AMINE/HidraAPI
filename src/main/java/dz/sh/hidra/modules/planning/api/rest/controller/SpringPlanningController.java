@@ -25,11 +25,12 @@ import dz.sh.hidra.modules.planning.api.rest.response.OperationalPlanResponse;
 import dz.sh.hidra.modules.planning.api.rest.response.PlanningPeriodResponse;
 import dz.sh.hidra.modules.planning.application.port.in.CreateOperationalPlanUseCase;
 import dz.sh.hidra.modules.planning.application.port.in.CreatePlanningPeriodUseCase;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,7 +41,6 @@ import org.springframework.web.bind.annotation.RestController;
  * Spring MVC adapter exposing planning REST endpoints.
  */
 @RestController
-@Validated
 @RequestMapping("/api/v1/planning")
 public class SpringPlanningController implements PlanningController {
 
@@ -70,7 +70,7 @@ public class SpringPlanningController implements PlanningController {
         ),
                 "resourceEndpoints", List.of(
                 "POST /api/v1/planning/operational-plans",
-                "POST /api/v1/planning/periods"
+                "POST /api/v2/planning/periods"
         )
         );
     }
@@ -84,6 +84,9 @@ public class SpringPlanningController implements PlanningController {
 
     @Override
     @PostMapping({"/create-planning-period", "/periods"})
+    @Operation(description = "Requires verified company context. For explicit company selection, use POST /api/v2/planning/periods.")
+    @ApiResponse(responseCode = "200", description = "OK", useReturnTypeSchema = true)
+    @ApiResponse(responseCode = "403", description = "Verified company context is unavailable.")
     public PlanningPeriodResponse createPlanningPeriod(@Valid @RequestBody CreatePlanningPeriodRequest request) {
         Objects.requireNonNull(request, "CreatePlanningPeriodRequest must not be null.");
         return PlanningRestMapper.toResponse(createPlanningPeriodUseCase.createPlanningPeriod(PlanningRestMapper.toCommand(request)));

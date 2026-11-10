@@ -33,6 +33,7 @@ public record PlanningPeriodResponse(
         Instant periodStart,
         Instant periodEnd,
         String timeZone,
-        PlanningPeriodStatus status
+        PlanningPeriodStatus status,
+        String companyPartyId
 ) {
 }

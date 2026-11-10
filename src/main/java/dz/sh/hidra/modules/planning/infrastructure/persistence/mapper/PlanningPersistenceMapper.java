@@ -46,7 +46,8 @@ public final class PlanningPersistenceMapper {
                         model.status(),
                         model.createdByActorId(),
                         model.createdAt(),
-                        model.updatedAt()
+                        model.updatedAt(),
+                        model.companyPartyId()
             );
         }
 
@@ -64,7 +65,8 @@ public final class PlanningPersistenceMapper {
                         entity.status(),
                         entity.createdByActorId(),
                         entity.createdAt(),
-                        entity.updatedAt()
+                        entity.updatedAt(),
+                        entity.companyPartyId()
             );
         }
 

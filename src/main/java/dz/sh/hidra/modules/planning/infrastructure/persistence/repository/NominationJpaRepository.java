@@ -23,6 +23,7 @@ import dz.sh.hidra.modules.planning.infrastructure.persistence.entity.Nomination
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.Lock;
@@ -34,7 +35,7 @@ import java.util.Optional;
  * Spring Data JPA repository for Nomination.
  */
 @Repository
-public interface NominationJpaRepository extends JpaRepository<NominationJpaEntity, String> {
+public interface NominationJpaRepository extends JpaRepository<NominationJpaEntity, String>, JpaSpecificationExecutor<NominationJpaEntity> {
 
     Page<NominationJpaEntity> findByRevisionId(String revisionId, Pageable pageable);
     boolean existsByRevisionIdAndCodeAndIdNot(String revisionId,String code,String id);

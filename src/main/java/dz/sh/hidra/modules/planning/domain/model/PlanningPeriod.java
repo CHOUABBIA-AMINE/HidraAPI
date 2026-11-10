@@ -41,6 +41,7 @@ import java.time.ZoneId;
      * @param createdByActorId createdByActorId
      * @param createdAt createdAt
      * @param updatedAt updatedAt
+     * @param companyPartyId authoritative owner, or null for an unowned legacy row
      */
     public record PlanningPeriod(
             String id,
@@ -55,7 +56,8 @@ import java.time.ZoneId;
         PlanningPeriodStatus status,
         String createdByActorId,
         Instant createdAt,
-        Instant updatedAt
+        Instant updatedAt,
+        String companyPartyId
     ) {
 
         public PlanningPeriod {
@@ -111,6 +113,9 @@ import java.time.ZoneId;
             throw new InvalidPlanningValueException("PlanningPeriod time zone must be a valid IANA zone id.");
         }
         createdByActorId = normalize(createdByActorId);
+        if (companyPartyId != null && (companyPartyId.isBlank() || !companyPartyId.equals(companyPartyId.strip()))) {
+            throw new InvalidPlanningValueException("PlanningPeriod company identity is invalid.");
+        }
         }
 
         public boolean allowsNewPlanRevisions() {

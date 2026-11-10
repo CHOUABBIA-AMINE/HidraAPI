@@ -85,7 +85,8 @@ public final class HidraRoutePermissionCatalogService {
         Set<String> patterns = new TreeSet<>(info.getPatternValues());
         Set<String> methods = methods(info);
         return patterns.stream()
-                .filter(pattern -> pattern.startsWith("/api/v1"))
+                .filter(pattern -> pattern.startsWith("/api/v1")
+                        || HidraRouteAuthorizationInterceptor.PLANNING_PERIOD_CREATE_V2.equals(pattern))
                 .map(pattern -> descriptor(pattern, methods, method))
                 .toList();
     }

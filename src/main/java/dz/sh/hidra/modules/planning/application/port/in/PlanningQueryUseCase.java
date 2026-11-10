@@ -60,7 +60,8 @@ public interface PlanningQueryUseCase {
             String status,
             String createdByActorId,
             Instant createdAt,
-            Instant updatedAt
+            Instant updatedAt,
+            String companyPartyId
     ) { }
 
     record OperationalPlanView(

@@ -21,11 +21,12 @@ package dz.sh.hidra.modules.planning.infrastructure.persistence.repository;
 
 import dz.sh.hidra.modules.planning.infrastructure.persistence.entity.OperationalPlanJpaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 /**
  * Spring Data JPA repository for OperationalPlan.
  */
 @Repository
-public interface OperationalPlanJpaRepository extends JpaRepository<OperationalPlanJpaEntity, String> {
+public interface OperationalPlanJpaRepository extends JpaRepository<OperationalPlanJpaEntity, String>, JpaSpecificationExecutor<OperationalPlanJpaEntity> {
 }

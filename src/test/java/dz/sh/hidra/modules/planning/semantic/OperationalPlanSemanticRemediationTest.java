@@ -29,9 +29,14 @@ import dz.sh.hidra.modules.planning.infrastructure.persistence.repository.Operat
 import dz.sh.hidra.modules.topology.application.contract.planning.PlanningTopologyScopeContract;
 import dz.sh.hidra.modules.identity.application.contract.planning.PlanningCreatorContract;
 import dz.sh.hidra.modules.organization.application.contract.planning.PlanningResponsibleUnitContract;
-import dz.sh.hidra.platform.security.CurrentSecurityContext;
-import dz.sh.hidra.platform.security.AuthenticatedPrincipal;
-import dz.sh.hidra.kernel.domain.value.ActorId;
+import dz.sh.hidra.modules.planning.application.service.PlanningAccessService;
+import dz.sh.hidra.modules.identity.application.contract.planning.PlanningScopedAuthorizationContract.Access;
+import dz.sh.hidra.modules.identity.application.contract.planning.PlanningScopedAuthorizationContract.Asset;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import org.springframework.security.access.AccessDeniedException;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import java.time.Instant;
 import java.util.Optional;
 import dz.sh.hidra.modules.planning.infrastructure.persistence.adapter.JpaPlanningCatalogEligibilityAdapter;
@@ -48,10 +53,8 @@ class OperationalPlanSemanticRemediationTest {
         public Optional<OperationalPlan> findById(String id){return Optional.ofNullable(saved);}
         public OperationalPlan save(OperationalPlan value){saves++;return saved=value;}
     }
-    static class Security implements CurrentSecurityContext {
-        boolean authenticated=true;
-        public Optional<AuthenticatedPrincipal> currentPrincipal(){return Optional.of(new AuthenticatedPrincipal(new ActorId("actor"),"Alice",authenticated));}
-        public void clear(){}
+    static class Security {
+        boolean authenticated = true;
     }
     static final PlanningCatalogEligibilityPort CATALOGS=(id,family)->{if(!"type".equals(id)||!"PLAN_TYPE".equals(family))throw new IllegalArgumentException("catalog");};
     static final PlanningTopologyScopeContract TOPOLOGY=(type,id)->"PIPELINE".equals(type)&&"pipe".equals(id)?Optional.of(new PlanningTopologyScopeContract.Scope("pipe","OWNER-CODE","Owner label")):Optional.empty();
@@ -61,7 +64,17 @@ class OperationalPlanSemanticRemediationTest {
         return new CreateOperationalPlanCommand("period","P",null,name,null,catalog,null,type,"pipe","caller-code","caller label",unit,actor);
     }
     OperationalPlanApplicationService service(Plans plans,Security security,PlanningCreatorContract creators) {
-        return new OperationalPlanApplicationService(plans,CATALOGS,TOPOLOGY,creators,UNITS,security);
+        var periods = mock(PlanningPeriodRepositoryPort.class);
+        when(periods.findById("period")).thenReturn(Optional.of(new PlanningPeriod(
+                "period", "P", null, "Période", null, "period-type", NOW, NOW.plusSeconds(3600),
+                "Africa/Algiers", PlanningPeriodStatus.OPEN, "actor", NOW, NOW, "company")));
+        var access = new PlanningAccessService(operation -> {
+            if (!security.authenticated) {
+                throw new AccessDeniedException("Current native authentication required.");
+            }
+            return new Access("actor", Set.of("company"), Set.of(new Asset("PIPELINE", "pipe")));
+        }, "company"::equals, (type, id) -> Optional.of("company"), periods);
+        return new OperationalPlanApplicationService(plans,CATALOGS,TOPOLOGY,creators,UNITS,access);
     }
     @Test void supportedCreationUsesOwnerSnapshotsAndOptionalUnitRemainsOptional() {
         var plans=new Plans();var service=service(plans,new Security(),CREATORS);
@@ -73,14 +86,14 @@ class OperationalPlanSemanticRemediationTest {
     @Test void unsupportedOrMissingScopeRejectedBeforeSave() {
         var plans=new Plans();var service=service(plans,new Security(),CREATORS);
         for(String type:new String[]{"REGION","NETWORK","UNKNOWN",null})
-            assertThrows(IllegalArgumentException.class,()->service.createOperationalPlan(command(type,"actor",null,"type","Plan")));
+            assertThrows(NoSuchElementException.class,()->service.createOperationalPlan(command(type,"actor",null,"type","Plan")));
         assertEquals(0,plans.saves);
     }
     @Test void creatorImpersonationAnonymousOrIneligibleActorRejected() {
         var plans=new Plans();var security=new Security();var service=service(plans,security,CREATORS);
-        assertThrows(SecurityException.class,()->service.createOperationalPlan(command("PIPELINE","other",null,"type","Plan")));
+        assertThrows(AccessDeniedException.class,()->service.createOperationalPlan(command("PIPELINE","other",null,"type","Plan")));
         security.authenticated=false;
-        assertThrows(SecurityException.class,()->service.createOperationalPlan(command("PIPELINE","actor",null,"type","Plan")));
+        assertThrows(AccessDeniedException.class,()->service.createOperationalPlan(command("PIPELINE","actor",null,"type","Plan")));
         security.authenticated=true;var denied=service(plans,security,(id,at)->Optional.empty());
         assertThrows(IllegalArgumentException.class,()->denied.createOperationalPlan(command("PIPELINE","actor",null,"type","Plan")));
         assertEquals(0,plans.saves);

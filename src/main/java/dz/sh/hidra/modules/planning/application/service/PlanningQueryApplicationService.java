@@ -27,92 +27,103 @@ import dz.sh.hidra.modules.planning.domain.model.OperationalPlan;
 import dz.sh.hidra.modules.planning.domain.model.PlanRevision;
 import dz.sh.hidra.modules.planning.domain.model.PlanTarget;
 import dz.sh.hidra.modules.planning.domain.model.PlanningPeriod;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.Function;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(isolation = Isolation.REPEATABLE_READ)
 public class PlanningQueryApplicationService implements PlanningQueryUseCase {
 
     private static final int MAX_PAGE_SIZE = 200;
     private final PlanningQueryPort queryPort;
 
-    public PlanningQueryApplicationService(PlanningQueryPort queryPort) {
+    private final PlanningAccessService access;
+
+    public PlanningQueryApplicationService(PlanningQueryPort queryPort, PlanningAccessService access) {
         this.queryPort = Objects.requireNonNull(queryPort, "PlanningQueryPort must not be null.");
+        this.access = Objects.requireNonNull(access);
     }
 
     @Override
     public Page<PlanningPeriodView> periods(int page, int size) {
         validatePage(page, size);
-        return page(queryPort.findPeriods(page, size), page, size, this::toPeriodView);
+        return page(queryPort.findPeriods(access.readableCompanies(), page, size), page, size, this::toPeriodView);
     }
 
     @Override
     public PlanningPeriodView period(String id) {
         String normalizedId = requireId(id, "planning period");
-        return queryPort.findPeriodById(normalizedId)
+        return queryPort.findPeriodById(access.readableCompanies(), normalizedId)
                 .map(this::toPeriodView)
-                .orElseThrow(() -> new NoSuchElementException("Unknown planning period: " + normalizedId));
+                .orElseThrow(PlanningAccessService::unavailable);
     }
 
     @Override
     public Page<OperationalPlanView> operationalPlans(int page, int size) {
         validatePage(page, size);
-        return page(queryPort.findOperationalPlans(page, size), page, size, this::toPlanView);
+        return page(queryPort.findOperationalPlans(access.readableAssets(), page, size), page, size, this::toPlanView);
     }
 
     @Override
     public OperationalPlanView operationalPlan(String id) {
         String normalizedId = requireId(id, "operational plan");
-        return queryPort.findOperationalPlanById(normalizedId)
+        return queryPort.findOperationalPlanById(access.readableAssets(), normalizedId)
                 .map(this::toPlanView)
-                .orElseThrow(() -> new NoSuchElementException("Unknown operational plan: " + normalizedId));
+                .orElseThrow(PlanningAccessService::unavailable);
     }
 
     @Override
     public Page<PlanRevisionView> revisions(String planId, int page, int size) {
         String normalizedPlanId = requireId(planId, "operational plan");
         validatePage(page, size);
-        return page(queryPort.findRevisionsByPlanId(normalizedPlanId, page, size), page, size, this::toRevisionView);
+        var assets = access.readableAssets();
+        queryPort.findOperationalPlanById(assets, normalizedPlanId).orElseThrow(PlanningAccessService::unavailable);
+        return page(queryPort.findRevisionsByPlanId(assets, normalizedPlanId, page, size), page, size, this::toRevisionView);
     }
 
     @Override
     public PlanRevisionView revision(String id) {
         String normalizedId = requireId(id, "plan revision");
-        return queryPort.findRevisionById(normalizedId)
+        return queryPort.findRevisionById(access.readableAssets(), normalizedId)
                 .map(this::toRevisionView)
-                .orElseThrow(() -> new NoSuchElementException("Unknown plan revision: " + normalizedId));
+                .orElseThrow(PlanningAccessService::unavailable);
     }
 
     @Override
     public Page<NominationView> nominations(String revisionId, int page, int size) {
         String normalizedRevisionId = requireId(revisionId, "plan revision");
         validatePage(page, size);
-        return page(queryPort.findNominationsByRevisionId(normalizedRevisionId, page, size), page, size, this::toNominationView);
+        var assets = access.readableAssets();
+        queryPort.findRevisionById(assets, normalizedRevisionId).orElseThrow(PlanningAccessService::unavailable);
+        return page(queryPort.findNominationsByRevisionId(assets, normalizedRevisionId, page, size), page, size, this::toNominationView);
     }
 
     @Override
     public NominationView nomination(String id) {
         String normalizedId = requireId(id, "nomination");
-        return queryPort.findNominationById(normalizedId)
+        return queryPort.findNominationById(access.readableAssets(), normalizedId)
                 .map(this::toNominationView)
-                .orElseThrow(() -> new NoSuchElementException("Unknown nomination: " + normalizedId));
+                .orElseThrow(PlanningAccessService::unavailable);
     }
 
     @Override
     public Page<PlanTargetView> targets(String revisionId, int page, int size) {
         String normalizedRevisionId = requireId(revisionId, "plan revision");
         validatePage(page, size);
-        return page(queryPort.findTargetsByRevisionId(normalizedRevisionId, page, size), page, size, this::toTargetView);
+        var assets = access.readableAssets();
+        queryPort.findRevisionById(assets, normalizedRevisionId).orElseThrow(PlanningAccessService::unavailable);
+        return page(queryPort.findTargetsByRevisionId(assets, normalizedRevisionId, page, size), page, size, this::toTargetView);
     }
 
     @Override
     public PlanTargetView target(String id) {
         String normalizedId = requireId(id, "plan target");
-        return queryPort.findTargetById(normalizedId)
+        return queryPort.findTargetById(access.readableAssets(), normalizedId)
                 .map(this::toTargetView)
-                .orElseThrow(() -> new NoSuchElementException("Unknown plan target: " + normalizedId));
+                .orElseThrow(PlanningAccessService::unavailable);
     }
 
     private void validatePage(int page, int size) {
@@ -148,7 +159,7 @@ public class PlanningQueryApplicationService implements PlanningQueryUseCase {
         return new PlanningPeriodView(
                 period.id(), period.code(), period.nameAr(), period.nameFr(), period.nameEn(), period.periodTypeId(),
                 period.periodStart(), period.periodEnd(), period.timeZone(), name(period.status()), period.createdByActorId(),
-                period.createdAt(), period.updatedAt()
+                period.createdAt(), period.updatedAt(), period.companyPartyId()
         );
     }
 

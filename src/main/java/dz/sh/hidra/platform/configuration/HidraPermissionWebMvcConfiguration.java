@@ -42,6 +42,6 @@ public final class HidraPermissionWebMvcConfiguration implements WebMvcConfigure
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(authorizationInterceptor).addPathPatterns("/api/v1/**");
+        registry.addInterceptor(authorizationInterceptor).addPathPatterns("/api/v1/**", HidraRouteAuthorizationInterceptor.PLANNING_PERIOD_CREATE_V2);
     }
 }

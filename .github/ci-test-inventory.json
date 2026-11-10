@@ -7006,7 +7006,7 @@
       "lane": "unit-architecture",
       "owner": "planning",
       "path": "src/test/java/dz/sh/hidra/modules/planning/application/service/PlanningApprovalApplicationServiceTest.java",
-      "source_sha256": "1c63d32ed5fb8178de8cdc392635e809cb34a4882f3067c31cdabe994ca164cf",
+      "source_sha256": "5314e60e43f8aff05de6f30f92fd7dbcb0a88d87ab278422ac41709345f3c88a",
       "supports": []
     },
     {
@@ -7022,7 +7022,7 @@
       "lane": "unit-architecture",
       "owner": "planning",
       "path": "src/test/java/dz/sh/hidra/modules/planning/application/service/PlanningQueryApplicationServiceTest.java",
-      "source_sha256": "d4f7940420178edc71b7fc06baafddd1c0bfdd6e040b5659c6534b13c07e5c8d",
+      "source_sha256": "59e074901d60fe49d5a9caa58cfe529febb80af189036e183406cf27313f677d",
       "supports": []
     },
     {
@@ -7065,6 +7065,23 @@
       "owner": "planning",
       "path": "src/test/java/dz/sh/hidra/modules/planning/infrastructure/persistence/NominationSemanticPostgresIntegrationTest.java",
       "source_sha256": "d1d1f7d706c66bc08e9c0842a3bd172091f8cacfbd9e7a73bbb0bc1f1d680e12",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0.0,
+      "cases": [
+        "concurrentSameCompanyCreatesHaveExactlyOneWinner",
+        "enforcesVersionedPeriodContractAndCompanyUniqueness",
+        "filtersPlansAndDescendantsBeforeDisclosureAndHonorsCurrentDenies",
+        "publishesRuntimeContractAndCatalogAndReadsPersistedPeriodAfterApplicationRestart"
+      ],
+      "class": "dz.sh.hidra.modules.planning.infrastructure.persistence.PlanningCompanyScopeNativeHttpPostgresIntegrationTest",
+      "dependency_reason": "T01 signed native Planning HTTP acceptance against a fresh PostgreSQL/Flyway schema.",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "planning",
+      "path": "src/test/java/dz/sh/hidra/modules/planning/infrastructure/persistence/PlanningCompanyScopeNativeHttpPostgresIntegrationTest.java",
+      "source_sha256": "49cd876ee144f21537d68bbeaa26a2f2859746b7881994c0388d339d72851b68",
       "supports": []
     },
     {
@@ -7168,7 +7185,7 @@
       "lane": "unit-architecture",
       "owner": "planning",
       "path": "src/test/java/dz/sh/hidra/modules/planning/semantic/OperationalPlanSemanticRemediationTest.java",
-      "source_sha256": "1a85d227d98fb337a68277212c556d3c09122996ddf6ee5475dd77aa6e277c42",
+      "source_sha256": "2969ad6077afa9562ef10324291d8d647664da6fc252a68ba097e370bbb0ceca",
       "supports": []
     },
     {
@@ -7189,7 +7206,7 @@
       "lane": "unit-architecture",
       "owner": "planning",
       "path": "src/test/java/dz/sh/hidra/modules/planning/semantic/PlanningPeriodSemanticRemediationTest.java",
-      "source_sha256": "b3410791c70fe3c30652a4310e519536b956a1d91e67dc9b7f87b06ae95b293b",
+      "source_sha256": "d77428e05845b831af69eff929574649b8ca6a3e68c954d98f5c571609072c0d",
       "supports": []
     },
     {
@@ -11586,7 +11603,8 @@
         "surveyDelegationRequiresExactNativeControllerMethodAndAuthentication",
         "trustedPlatformRegistryStillRequiresAuthenticatedExactCompiledTuple",
         "characteristicLinkDelegationRequiresFourExactAuthenticatedOwnerTuples",
-        "permitsAnonymousLocalRefreshAndLogoutWithoutGeneralPermissionBypass"
+        "permitsAnonymousLocalRefreshAndLogoutWithoutGeneralPermissionBypass",
+        "v2PeriodCreateEnforcesExistingPlanningRoutePermission"
       ],
       "class": "dz.sh.hidra.platform.permissions.HidraRouteAuthorizationInterceptorTest",
       "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
@@ -11594,7 +11612,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraRouteAuthorizationInterceptorTest.java",
-      "source_sha256": "3f09e4f881e07d59b74e029b96a9c0a77b53d514e60282542d88eeea307ac391",
+      "source_sha256": "117a39990a12edb7ade5a9b2646ace3a5d998d98f5624b86bd4151c1ae170c3b",
       "supports": []
     },
     {

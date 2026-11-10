@@ -20,6 +20,7 @@
 package dz.sh.hidra.modules.planning.application.service;
 
 import dz.sh.hidra.modules.planning.application.port.in.PlanningApprovalUseCase;
+import dz.sh.hidra.modules.planning.application.port.in.PlanningQueryUseCase;
 import dz.sh.hidra.modules.planning.application.port.out.PlanRevisionRepositoryPort;
 import dz.sh.hidra.modules.planning.domain.model.PlanRevision;
 import dz.sh.hidra.modules.planning.domain.value.PlanRevisionStatus;
@@ -32,6 +33,7 @@ import java.util.Objects;
 import java.util.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.annotation.Isolation;
 
 @Service
 public class PlanningApprovalApplicationService implements PlanningApprovalUseCase {
@@ -41,18 +43,22 @@ public class PlanningApprovalApplicationService implements PlanningApprovalUseCa
 
     private final PlanRevisionRepositoryPort revisionRepository;
     private final PlanningWorkflowContract workflow;
+    private final PlanningQueryUseCase queries;
 
     public PlanningApprovalApplicationService(
             PlanRevisionRepositoryPort revisionRepository,
-            PlanningWorkflowContract workflow
+            PlanningWorkflowContract workflow,
+            PlanningQueryUseCase queries
     ) {
         this.revisionRepository = Objects.requireNonNull(revisionRepository, "PlanRevisionRepositoryPort must not be null.");
         this.workflow = Objects.requireNonNull(workflow, "PlanningWorkflowContract must not be null.");
+        this.queries = Objects.requireNonNull(queries);
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public ApprovalView approval(String revisionId, String actorReference, Set<String> effectivePermissions) {
+        queries.revision(revisionId);
         PlanRevision revision = revision(revisionId);
         PlanningWorkflowContract.InstanceView instance = validatedInstance(revision);
         if (TERMINAL_WORKFLOW_STATES.contains(normalizeState(instance.status()))) {

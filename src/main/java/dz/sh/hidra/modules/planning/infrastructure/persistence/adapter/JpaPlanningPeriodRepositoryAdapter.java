@@ -21,6 +21,9 @@ package dz.sh.hidra.modules.planning.infrastructure.persistence.adapter;
 
 import dz.sh.hidra.modules.planning.application.port.out.PlanningPeriodRepositoryPort;
 import dz.sh.hidra.modules.planning.domain.model.PlanningPeriod;
+import dz.sh.hidra.modules.planning.domain.exception.PlanningPeriodCodeConflictException;
+import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import dz.sh.hidra.modules.planning.infrastructure.persistence.mapper.PlanningPersistenceMapper;
 import dz.sh.hidra.modules.planning.infrastructure.persistence.repository.PlanningPeriodJpaRepository;
 import org.springframework.stereotype.Component;
@@ -42,7 +45,17 @@ public class JpaPlanningPeriodRepositoryAdapter implements PlanningPeriodReposit
 
     @Override
     public PlanningPeriod save(PlanningPeriod model) {
-        return PlanningPersistenceMapper.toDomain(repository.save(PlanningPersistenceMapper.toEntity(model)));
+        try {
+            return PlanningPersistenceMapper.toDomain(repository.saveAndFlush(PlanningPersistenceMapper.toEntity(model)));
+        } catch (DataIntegrityViolationException failure) {
+            for (Throwable cause = failure; cause != null; cause = cause.getCause()) {
+                if (cause instanceof ConstraintViolationException constraint
+                        && "uk_t01_planning_period_company_code".equals(constraint.getConstraintName())) {
+                    throw new PlanningPeriodCodeConflictException();
+                }
+            }
+            throw failure;
+        }
     }
 
     @Override
@@ -51,8 +64,8 @@ public class JpaPlanningPeriodRepositoryAdapter implements PlanningPeriodReposit
     }
 
     @Override
-    public boolean existsByCode(String code) {
-        return repository.existsByCode(code);
+    public boolean existsByCompanyPartyIdAndCode(String companyPartyId, String code) {
+        return repository.existsByCompanyPartyIdAndCode(companyPartyId, code);
     }
 
     @Override

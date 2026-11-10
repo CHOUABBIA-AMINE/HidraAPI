@@ -19,7 +19,9 @@
  */
 package dz.sh.hidra.modules.planning.application.service;
 
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import dz.sh.hidra.modules.planning.application.command.CreatePlanningPeriodCommand;
 import dz.sh.hidra.modules.planning.application.dto.PlanningPeriodSummaryDto;
@@ -27,6 +29,7 @@ import dz.sh.hidra.modules.planning.application.mapper.PlanningApplicationMapper
 import dz.sh.hidra.modules.planning.application.port.in.CreatePlanningPeriodUseCase;
 import dz.sh.hidra.modules.planning.application.port.out.PlanningPeriodRepositoryPort;
 import dz.sh.hidra.modules.planning.domain.exception.InvalidPlanningValueException;
+import dz.sh.hidra.modules.planning.domain.exception.PlanningPeriodCodeConflictException;
 import dz.sh.hidra.modules.planning.domain.model.PlanningPeriod;
 import dz.sh.hidra.modules.planning.domain.value.PlanningId;
 import dz.sh.hidra.modules.planning.domain.value.PlanningPeriodStatus;
@@ -38,20 +41,27 @@ import java.util.Objects;
  * Application service for planning periods.
  */
 @Service
-public final class PlanningPeriodApplicationService implements CreatePlanningPeriodUseCase {
+public class PlanningPeriodApplicationService implements CreatePlanningPeriodUseCase {
 
     private final PlanningPeriodRepositoryPort repositoryPort;
 
-    public PlanningPeriodApplicationService(PlanningPeriodRepositoryPort repositoryPort) {
+    private final PlanningAccessService access;
+
+    public PlanningPeriodApplicationService(PlanningPeriodRepositoryPort repositoryPort, PlanningAccessService access) {
         this.repositoryPort = Objects.requireNonNull(repositoryPort, "Planning period repository port must not be null.");
+        this.access = Objects.requireNonNull(access);
     }
 
     @Override
     public PlanningPeriodSummaryDto createPlanningPeriod(CreatePlanningPeriodCommand command) {
+        throw new AccessDeniedException("Planning operation unavailable.");
+    }
+
+    @Override
+    @Transactional
+    public PlanningPeriodSummaryDto createCompanyPlanningPeriod(String companyPartyId, CreatePlanningPeriodCommand command) {
         Objects.requireNonNull(command, "Create planning period command must not be null.");
-        if (repositoryPort.existsByCode(command.code())) {
-            throw new InvalidPlanningValueException("PlanningPeriod code must be unique.");
-        }
+        String actor = access.periodCreator(companyPartyId, command.createdByActorId());
         if (!repositoryPort.isActivePeriodType(command.periodTypeId())) {
             throw new InvalidPlanningValueException(
                     "PlanningPeriod period type must reference an active PERIOD_TYPE catalog entry."
@@ -71,10 +81,14 @@ public final class PlanningPeriodApplicationService implements CreatePlanningPer
                         ? "Africa/Algiers"
                         : command.timeZone(),
                 PlanningPeriodStatus.OPEN,
-                command.createdByActorId(),
+                actor,
                 now,
-                now
+                now,
+                companyPartyId
         );
+        if (repositoryPort.existsByCompanyPartyIdAndCode(period.companyPartyId(), period.code())) {
+            throw new PlanningPeriodCodeConflictException();
+        }
         return PlanningApplicationMapper.toSummary(repositoryPort.save(period));
     }
 }

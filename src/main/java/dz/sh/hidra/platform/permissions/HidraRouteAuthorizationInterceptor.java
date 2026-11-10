@@ -42,6 +42,8 @@ import org.springframework.web.servlet.HandlerMapping;
 @Component
 public final class HidraRouteAuthorizationInterceptor implements HandlerInterceptor {
 
+    public static final String PLANNING_PERIOD_CREATE_V2 = "/api/v2/planning/periods";
+
     private static final Set<String> PUBLIC_PATHS = Set.of(
             "/api/v1/security/oidc",
             "/api/v1/identity/authentication/login",
@@ -102,7 +104,7 @@ public final class HidraRouteAuthorizationInterceptor implements HandlerIntercep
 
         Object patternAttribute = request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
         String routePattern = patternAttribute == null ? path : patternAttribute.toString();
-        if (!routePattern.startsWith("/api/v1")) {
+        if (!routePattern.startsWith("/api/v1") && !PLANNING_PERIOD_CREATE_V2.equals(routePattern)) {
             return true;
         }
 

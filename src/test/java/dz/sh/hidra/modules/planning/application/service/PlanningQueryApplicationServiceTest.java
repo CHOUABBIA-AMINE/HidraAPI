@@ -30,11 +30,13 @@ import dz.sh.hidra.modules.planning.domain.model.PlanningPeriod;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 class PlanningQueryApplicationServiceTest {
 
-    private final PlanningQueryApplicationService service = new PlanningQueryApplicationService(new EmptyPlanningQueryPort());
+    private final PlanningQueryApplicationService service = new PlanningQueryApplicationService(
+            new EmptyPlanningQueryPort(), org.mockito.Mockito.mock(PlanningAccessService.class));
 
     @Test
     void rejectsInvalidPaging() {
@@ -62,52 +64,52 @@ class PlanningQueryApplicationServiceTest {
     private static final class EmptyPlanningQueryPort implements PlanningQueryPort {
 
         @Override
-        public Slice<PlanningPeriod> findPeriods(int page, int size) {
+        public Slice<PlanningPeriod> findPeriods(Set<String> companies, int page, int size) {
             return new Slice<>(List.of(), 0);
         }
 
         @Override
-        public Optional<PlanningPeriod> findPeriodById(String id) {
+        public Optional<PlanningPeriod> findPeriodById(Set<String> companies, String id) {
             return Optional.empty();
         }
 
         @Override
-        public Slice<OperationalPlan> findOperationalPlans(int page, int size) {
+        public Slice<OperationalPlan> findOperationalPlans(Set<AssetScope> assets, int page, int size) {
             return new Slice<>(List.of(), 0);
         }
 
         @Override
-        public Optional<OperationalPlan> findOperationalPlanById(String id) {
+        public Optional<OperationalPlan> findOperationalPlanById(Set<AssetScope> assets, String id) {
             return Optional.empty();
         }
 
         @Override
-        public Slice<PlanRevision> findRevisionsByPlanId(String planId, int page, int size) {
+        public Slice<PlanRevision> findRevisionsByPlanId(Set<AssetScope> assets, String planId, int page, int size) {
             return new Slice<>(List.of(), 0);
         }
 
         @Override
-        public Optional<PlanRevision> findRevisionById(String id) {
+        public Optional<PlanRevision> findRevisionById(Set<AssetScope> assets, String id) {
             return Optional.empty();
         }
 
         @Override
-        public Slice<Nomination> findNominationsByRevisionId(String revisionId, int page, int size) {
+        public Slice<Nomination> findNominationsByRevisionId(Set<AssetScope> assets, String revisionId, int page, int size) {
             return new Slice<>(List.of(), 0);
         }
 
         @Override
-        public Optional<Nomination> findNominationById(String id) {
+        public Optional<Nomination> findNominationById(Set<AssetScope> assets, String id) {
             return Optional.empty();
         }
 
         @Override
-        public Slice<PlanTarget> findTargetsByRevisionId(String revisionId, int page, int size) {
+        public Slice<PlanTarget> findTargetsByRevisionId(Set<AssetScope> assets, String revisionId, int page, int size) {
             return new Slice<>(List.of(), 0);
         }
 
         @Override
-        public Optional<PlanTarget> findTargetById(String id) {
+        public Optional<PlanTarget> findTargetById(Set<AssetScope> assets, String id) {
             return Optional.empty();
         }
     }

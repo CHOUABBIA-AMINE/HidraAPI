@@ -34,7 +34,7 @@ public final class PlanningApplicationMapper {
     }
 
     public static PlanningPeriodSummaryDto toSummary(PlanningPeriod period) {
-        return new PlanningPeriodSummaryDto(period.id(), period.code(), period.nameFr(), period.periodStart(), period.periodEnd(), period.timeZone(), period.status());
+        return new PlanningPeriodSummaryDto(period.id(), period.code(), period.nameFr(), period.periodStart(), period.periodEnd(), period.timeZone(), period.status(), period.companyPartyId());
     }
 
     public static OperationalPlanSummaryDto toSummary(OperationalPlan plan) {

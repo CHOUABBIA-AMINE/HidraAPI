@@ -33,6 +33,7 @@ public record PlanningPeriodSummaryDto(
         Instant periodStart,
         Instant periodEnd,
         String timeZone,
-        PlanningPeriodStatus status
+        PlanningPeriodStatus status,
+        String companyPartyId
 ) {
 }

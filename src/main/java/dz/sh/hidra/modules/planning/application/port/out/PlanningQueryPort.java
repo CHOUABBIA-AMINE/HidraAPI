@@ -26,28 +26,31 @@ import dz.sh.hidra.modules.planning.domain.model.PlanTarget;
 import dz.sh.hidra.modules.planning.domain.model.PlanningPeriod;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface PlanningQueryPort {
 
-    Slice<PlanningPeriod> findPeriods(int page, int size);
+    Slice<PlanningPeriod> findPeriods(Set<String> companies, int page, int size);
 
-    Optional<PlanningPeriod> findPeriodById(String id);
+    Optional<PlanningPeriod> findPeriodById(Set<String> companies, String id);
 
-    Slice<OperationalPlan> findOperationalPlans(int page, int size);
+    Slice<OperationalPlan> findOperationalPlans(Set<AssetScope> assets, int page, int size);
 
-    Optional<OperationalPlan> findOperationalPlanById(String id);
+    Optional<OperationalPlan> findOperationalPlanById(Set<AssetScope> assets, String id);
 
-    Slice<PlanRevision> findRevisionsByPlanId(String planId, int page, int size);
+    Slice<PlanRevision> findRevisionsByPlanId(Set<AssetScope> assets, String planId, int page, int size);
 
-    Optional<PlanRevision> findRevisionById(String id);
+    Optional<PlanRevision> findRevisionById(Set<AssetScope> assets, String id);
 
-    Slice<Nomination> findNominationsByRevisionId(String revisionId, int page, int size);
+    Slice<Nomination> findNominationsByRevisionId(Set<AssetScope> assets, String revisionId, int page, int size);
 
-    Optional<Nomination> findNominationById(String id);
+    Optional<Nomination> findNominationById(Set<AssetScope> assets, String id);
 
-    Slice<PlanTarget> findTargetsByRevisionId(String revisionId, int page, int size);
+    Slice<PlanTarget> findTargetsByRevisionId(Set<AssetScope> assets, String revisionId, int page, int size);
 
-    Optional<PlanTarget> findTargetById(String id);
+    Optional<PlanTarget> findTargetById(Set<AssetScope> assets, String id);
+
+    record AssetScope(String companyPartyId, String type, String assetId) { }
 
     record Slice<T>(List<T> content, long totalElements) { }
 }

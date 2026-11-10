@@ -22,6 +22,8 @@ package dz.sh.hidra.modules.planning.semantic;
 import dz.sh.hidra.modules.planning.application.command.CreatePlanningPeriodCommand;
 import dz.sh.hidra.modules.planning.application.port.out.PlanningPeriodRepositoryPort;
 import dz.sh.hidra.modules.planning.application.service.PlanningPeriodApplicationService;
+import dz.sh.hidra.modules.planning.application.service.PlanningAccessService;
+import dz.sh.hidra.modules.planning.domain.exception.PlanningPeriodCodeConflictException;
 import dz.sh.hidra.modules.planning.domain.exception.InvalidPlanningValueException;
 import dz.sh.hidra.modules.planning.domain.model.PlanningPeriod;
 import dz.sh.hidra.modules.planning.domain.value.PlanningPeriodStatus;
@@ -54,7 +56,7 @@ class PlanningPeriodSemanticRemediationTest {
         assertThatThrownBy(() -> new PlanningPeriod(
                 "period-1", "P-1", null, " ", null, "period-type",
                 START, END, "Africa/Algiers", PlanningPeriodStatus.OPEN,
-                "actor-1", START, START
+                "actor-1", START, START, "company-1"
         ))
                 .isInstanceOf(InvalidPlanningValueException.class)
                 .hasMessageContaining("French name");
@@ -78,14 +80,15 @@ class PlanningPeriodSemanticRemediationTest {
     @Test
     void rejectsDuplicateCodeBeforeSave() {
         PlanningPeriodRepositoryPort repository = mock(PlanningPeriodRepositoryPort.class);
-        PlanningPeriodApplicationService service = new PlanningPeriodApplicationService(repository);
+        PlanningPeriodApplicationService service = service(repository);
         CreatePlanningPeriodCommand command = command("P-1", "period-type", null);
 
-        when(repository.existsByCode("P-1")).thenReturn(true);
+        when(repository.isActivePeriodType("period-type")).thenReturn(true);
+        when(repository.existsByCompanyPartyIdAndCode("company-1", "P-1")).thenReturn(true);
 
-        assertThatThrownBy(() -> service.createPlanningPeriod(command))
-                .isInstanceOf(InvalidPlanningValueException.class)
-                .hasMessageContaining("unique");
+        assertThatThrownBy(() -> service.createCompanyPlanningPeriod("company-1", command))
+                .isInstanceOf(PlanningPeriodCodeConflictException.class)
+                .hasMessageContaining("selected company");
 
         verify(repository, never()).save(org.mockito.ArgumentMatchers.any());
     }
@@ -93,13 +96,13 @@ class PlanningPeriodSemanticRemediationTest {
     @Test
     void rejectsPeriodTypeOutsideActivePeriodTypeFamily() {
         PlanningPeriodRepositoryPort repository = mock(PlanningPeriodRepositoryPort.class);
-        PlanningPeriodApplicationService service = new PlanningPeriodApplicationService(repository);
+        PlanningPeriodApplicationService service = service(repository);
         CreatePlanningPeriodCommand command = command("P-1", "wrong-type", "Africa/Algiers");
 
-        when(repository.existsByCode("P-1")).thenReturn(false);
+        when(repository.existsByCompanyPartyIdAndCode("company-1", "P-1")).thenReturn(false);
         when(repository.isActivePeriodType("wrong-type")).thenReturn(false);
 
-        assertThatThrownBy(() -> service.createPlanningPeriod(command))
+        assertThatThrownBy(() -> service.createCompanyPlanningPeriod("company-1", command))
                 .isInstanceOf(InvalidPlanningValueException.class)
                 .hasMessageContaining("PERIOD_TYPE");
 
@@ -109,14 +112,14 @@ class PlanningPeriodSemanticRemediationTest {
     @Test
     void defaultsBlankTimeZoneToAfricaAlgiers() {
         PlanningPeriodRepositoryPort repository = mock(PlanningPeriodRepositoryPort.class);
-        PlanningPeriodApplicationService service = new PlanningPeriodApplicationService(repository);
+        PlanningPeriodApplicationService service = service(repository);
         CreatePlanningPeriodCommand command = command("P-1", "period-type", " ");
 
-        when(repository.existsByCode("P-1")).thenReturn(false);
+        when(repository.existsByCompanyPartyIdAndCode("company-1", "P-1")).thenReturn(false);
         when(repository.isActivePeriodType("period-type")).thenReturn(true);
         when(repository.save(org.mockito.ArgumentMatchers.any())).thenAnswer(invocation -> invocation.getArgument(0));
 
-        var result = service.createPlanningPeriod(command);
+        var result = service.createCompanyPlanningPeriod("company-1", command);
 
         assertThat(result.timeZone()).isEqualTo("Africa/Algiers");
     }
@@ -131,6 +134,12 @@ class PlanningPeriodSemanticRemediationTest {
         assertThat(sql).contains("CHECK (period_start < period_end)");
     }
 
+    private static PlanningPeriodApplicationService service(PlanningPeriodRepositoryPort repository) {
+        var access = mock(PlanningAccessService.class);
+        when(access.periodCreator("company-1", "actor-1")).thenReturn("actor-1");
+        return new PlanningPeriodApplicationService(repository, access);
+    }
+
     private static PlanningPeriod period(
             Instant start,
             Instant end,
@@ -139,7 +148,7 @@ class PlanningPeriodSemanticRemediationTest {
     ) {
         return new PlanningPeriod(
                 "period-1", "P-1", null, "Période", null, "period-type",
-                start, end, timeZone, status, "actor-1", START, START
+                start, end, timeZone, status, "actor-1", START, START, "company-1"
         );
     }
 

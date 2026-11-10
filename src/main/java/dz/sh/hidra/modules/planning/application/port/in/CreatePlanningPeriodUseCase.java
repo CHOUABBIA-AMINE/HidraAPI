@@ -28,4 +28,6 @@ import dz.sh.hidra.modules.planning.application.dto.PlanningPeriodSummaryDto;
 public interface CreatePlanningPeriodUseCase {
 
     PlanningPeriodSummaryDto createPlanningPeriod(CreatePlanningPeriodCommand command);
+
+    PlanningPeriodSummaryDto createCompanyPlanningPeriod(String companyPartyId, CreatePlanningPeriodCommand command);
 }

@@ -249,24 +249,15 @@ class TelemetryReadingIngestionNativeHttpPostgresIntegrationTest {
         assertEquals(1L,countReadings());
         assertEquals(1L,db.queryForObject("SELECT count(*) FROM hidra_telemetry_reading_ingest_receipt WHERE point_id=?",Long.class,point));
     }
-    // Same HAPI-933 acceptance: close the original application context, then require
-    // a NEW OS JVM (not a second MockMvc or JDBC connection) to serve the original
-    // authorized history, latest, trend and replay from the same committed PostgreSQL.
+    // Both real HTTP requests run in separate OS JVMs. The first process commits
+    // the observation and stops; the second must independently resolve native
+    // authority, persisted history, replay and revocation from the same PostgreSQL.
+    // Spring's own @SpringBootTest context remains under Spring Test lifecycle control.
     @Test @Order(Integer.MAX_VALUE)
     void protectedReadingAndReplaySurviveSeparateApplicationJvmRestart() throws Exception {
-        String stamp=Instant.now().minusSeconds(4).toString();
+        String stamp=Instant.now().minusSeconds(4)
+                .truncatedTo(java.time.temporal.ChronoUnit.MICROS).toString();
         String originalBody=payload("seq-restart","41.75",quality,unit,stamp);
-        JsonNode committed=JSON.readTree(http.perform(post(route())
-                .header("Authorization","Bearer "+producer)
-                .contentType(MediaType.APPLICATION_JSON).content(originalBody))
-                .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString());
-        String reading=committed.path("id").asText();
-        String receivedAt=committed.path("receivedAt").asText();
-        assertFalse(reading.isBlank());
-        assertFalse(receivedAt.isBlank());
-        assertEquals(1L,countReadings());
-
-        ((org.springframework.context.ConfigurableApplicationContext)context).close();
         int port;
         try(ServerSocket socket=new ServerSocket(0,0,InetAddress.getLoopbackAddress())) {
             port=socket.getLocalPort();
@@ -298,42 +289,52 @@ class TelemetryReadingIngestionNativeHttpPostgresIntegrationTest {
             assertNotEquals(ProcessHandle.current().pid(),child.pid());
             var client=HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(2)).build();
             String base="http://127.0.0.1:"+port;
-            boolean started=false;
-            long deadline=System.nanoTime()+TimeUnit.SECONDS.toNanos(75);
-            while(System.nanoTime()<deadline&&child.isAlive()) {
-                try {
-                    var health=client.send(HttpRequest.newBuilder(URI.create(base+"/actuator/health"))
-                            .timeout(Duration.ofSeconds(2)).GET().build(),
-                            HttpResponse.BodyHandlers.ofString());
-                    if(health.statusCode()==200){started=true;break;}
-                } catch(java.io.IOException unavailable) {
-                    // Another process is still starting. No HTTP result is inferred.
-                }
-                Thread.sleep(350);
+            awaitSeparateJvmReady(child,client,base,logfile);
+            HttpResponse<String> first=restartedRequest(client,base,"POST",route(),originalBody);
+            assertEquals(201,first.statusCode(),first.body());
+            JsonNode committed=JSON.readTree(first.body());
+            String reading=committed.path("id").asText();
+            String receivedAt=committed.path("receivedAt").asText();
+            assertFalse(reading.isBlank());
+            assertFalse(receivedAt.isBlank());
+            assertEquals(1L,countReadings());
+            assertEquals(1L,db.queryForObject(
+                    "SELECT count(*) FROM hidra_telemetry_reading_ingest_receipt WHERE reading_id=?",
+                    Long.class,reading));
+
+            // A truly independent restart, not another MockMvc or Spring context.
+            long originalPid=child.pid();
+            child.destroy();
+            if(!child.waitFor(10,TimeUnit.SECONDS)) {
+                child.destroyForcibly();
+                assertTrue(child.waitFor(10,TimeUnit.SECONDS),"First OS JVM must terminate.");
             }
-            if(!started) {
-                String diagnostics=Files.readString(logfile);
-                fail("Separate JVM did not reach health (exit="
-                        +(child.isAlive()?"running":child.exitValue())+"): "
-                        +diagnostics.substring(Math.max(0,diagnostics.length()-3000)));
-            }
+            assertFalse(child.isAlive());
+            child=new ProcessBuilder(command).redirectErrorStream(true)
+                    .redirectOutput(logfile.toFile()).start();
+            assertNotEquals(originalPid,child.pid());
+            assertNotEquals(ProcessHandle.current().pid(),child.pid());
+            awaitSeparateJvmReady(child,client,base,logfile);
+
             HttpResponse<String> history=restartedRequest(client,base,"GET",route(),null);
-            assertEquals(200,history.statusCode());
+            assertEquals(200,history.statusCode(),history.body());
             JsonNode saved=JSON.readTree(history.body()).path("content").path(0);
             assertEquals(reading,saved.path("id").asText());
-            assertEquals(receivedAt,saved.path("receivedAt").asText());
+            // PostgreSQL TIMESTAMPTZ retains microseconds rather than JVM nanoseconds.
+            assertEquals(Instant.parse(receivedAt).truncatedTo(java.time.temporal.ChronoUnit.MICROS),
+                    Instant.parse(saved.path("receivedAt").asText()));
             assertEquals(unit,saved.path("unitId").asText());
-            assertEquals(stamp,saved.path("sourceTimestamp").asText());
+            assertEquals(Instant.parse(stamp),Instant.parse(saved.path("sourceTimestamp").asText()));
             HttpResponse<String> latest=restartedRequest(client,base,"GET",route()+"/latest",null);
-            assertEquals(200,latest.statusCode());
+            assertEquals(200,latest.statusCode(),latest.body());
             assertEquals(reading,JSON.readTree(latest.body()).path("id").asText());
             HttpResponse<String> trend=restartedRequest(client,base,"GET",
                     "/api/v1/telemetry/points/"+point+"/trend",null);
-            assertEquals(200,trend.statusCode());
+            assertEquals(200,trend.statusCode(),trend.body());
             assertEquals(reading,JSON.readTree(trend.body()).path(0).path("id").asText());
 
             HttpResponse<String> retry=restartedRequest(client,base,"POST",route(),originalBody);
-            assertEquals(200,retry.statusCode());
+            assertEquals(200,retry.statusCode(),retry.body());
             assertEquals(reading,JSON.readTree(retry.body()).path("id").asText());
             assertTrue(JSON.readTree(retry.body()).path("replayed").asBoolean());
             assertEquals(409,restartedRequest(client,base,"POST",route(),
@@ -350,8 +351,34 @@ class TelemetryReadingIngestionNativeHttpPostgresIntegrationTest {
             assertEquals(1L,countReadings());
         } finally {
             child.destroy();
-            if(!child.waitFor(10,TimeUnit.SECONDS))child.destroyForcibly();
+            if(!child.waitFor(10,TimeUnit.SECONDS)) {
+                child.destroyForcibly();
+                child.waitFor(10,TimeUnit.SECONDS);
+            }
             Files.deleteIfExists(logfile);
+        }
+    }
+
+    private void awaitSeparateJvmReady(Process child,HttpClient client,String base,Path logfile)
+            throws Exception {
+        boolean started=false;
+        long deadline=System.nanoTime()+TimeUnit.SECONDS.toNanos(75);
+        while(System.nanoTime()<deadline&&child.isAlive()) {
+            try {
+                var health=client.send(HttpRequest.newBuilder(URI.create(base+"/actuator/health"))
+                        .timeout(Duration.ofSeconds(2)).GET().build(),
+                        HttpResponse.BodyHandlers.ofString());
+                if(health.statusCode()==200){started=true;break;}
+            } catch(java.io.IOException unavailable) {
+                // Readiness is not inferred from a refused connection while the OS JVM starts.
+            }
+            Thread.sleep(350);
+        }
+        if(!started) {
+            String diagnostics=Files.readString(logfile);
+            fail("Separate JVM did not reach health (exit="
+                    +(child.isAlive()?"running":child.exitValue())+"): "
+                    +diagnostics.substring(Math.max(0,diagnostics.length()-3000)));
         }
     }
 

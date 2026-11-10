@@ -10655,4 +10655,45 @@ HAPI-933 stays **PARTIAL / IN_PROGRESS** until the new exact-SHA Full CI
 actually executes this OS-JVM test and all remaining acceptance evidence
 is accepted; verify CI created/queued/started then stop.
 
+
+### 12. Fail repair — Full CI #1172 JVM restart test and timestamp precision — 2026-11-10
+
+At exact main `177e4b2fb78dc1b2fb8a22b63f1c4d53a060ab84`, [Full CI #1172](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42801987541)
+completed **FAILURE**; [Documentation #969](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42801987241)
+completed **SUCCESS**. All 13 other PostgreSQL shards, the unit/architecture
+lane, static validation, runtime OpenAPI compatibility, and strict migrated
+database dictionary succeeded. The shard-5 failure belongs only to the new
+HAPI-933 separate-process test, not to the existing ingestion business code.
+
+Exact job `129781559311` reports
+`protectedReadingAndReplaySurviveSeparateApplicationJvmRestart:326` failed:
+the input Java `Instant` carried nanoseconds, but PostgreSQL `TIMESTAMPTZ`
+persisted its microsecond representation. The same test also prematurely
+closed the Spring-managed `@SpringBootTest` context; Spring Test's
+`afterTestExecution`/`afterTestClass` callbacks then reported
+`LifecycleProcessor not initialized`. Full Verification Gate failed
+downstream because the required shard was unsuccessful.
+
+This bounded **same-HAPI-933 Fail repair** updates only the original
+`TelemetryReadingIngestionNativeHttpPostgresIntegrationTest.java`, its
+strict `.github/ci-test-inventory.json` source SHA-256, and this owning
+append-only task record. The exact test case identity and inventory membership
+remain unchanged. The test now writes through genuine signed-LOCAL HTTP in
+OS JVM #1, waits for durable PostgreSQL receipt, terminates OS JVM #1,
+starts distinct OS JVM #2 using the **same database**, and verifies authorized
+history/latest/trend, canonical replay/conflict, and current grant revocation
+through HTTP in OS JVM #2. It leaves Spring's test context to Spring lifecycle
+management. Timestamp assertions explicitly preserve PostgreSQL microsecond
+precision; no test or application contract is weakened.
+
+No production source, migration, runtime OpenAPI, external OT, simulator,
+release, deployment, unrelated task or status table is changed. Strict CI
+inventory and all existing assertions remain required. Execution environment
+has no local Maven/PostgreSQL test run; the patch is **not claimed tested**.
+HAPI-933 remains **PARTIAL / IN_PROGRESS** pending new exact-SHA Full CI and
+remaining software acceptance. Same-task registered message:
+`feat(telemetry): implement protected native reading ingestion`.
+After expected-head guarded publication, verify applicable CI started, then stop.
+
+
 <!-- task-register:payload:end -->

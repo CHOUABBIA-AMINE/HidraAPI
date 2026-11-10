@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `0ff15b5fcf0fc213835aaff463a98beb6edd7c11`
+Captured source SHA: `e1b0126544b3a151f24a0037e5f6327caf348737`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `e9fb463199fc3e3f9c2edc8a137425ed9a1cefe28c74494323d3c020f88f0b1a`.
-Migrations: 202; JPA mappings: 470; catalog relations: 556; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `f7ed1cf908efc8bb76d0997f7a4edc20124a38b2512f3dfb7ae8d21ea95158c8`.
+Migrations: 203; JPA mappings: 470; catalog relations: 557; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -10353,6 +10353,7 @@ Persisted PermissionJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261027_004__custody_product_publication_authority.sql](../../src/main/resources/db/migration/V20261027_004__custody_product_publication_authority.sql)
 - Migration mention (not inferred introduction): [V20261103_001__topology_engineering_baseline_drafts.sql](../../src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql)
 - Migration mention (not inferred introduction): [V20261105_001__topology_foundation_setup.sql](../../src/main/resources/db/migration/V20261105_001__topology_foundation_setup.sql)
+- Migration mention (not inferred introduction): [V20261110_001__telemetry_ingestion_replay_identity.sql](../../src/main/resources/db/migration/V20261110_001__telemetry_ingestion_replay_identity.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -26031,6 +26032,7 @@ Persisted TelemetryExternalTagMappingJpaEntity state; semantic authority remains
 - Migration mention (not inferred introduction): [V20260611_005__create_telemetry_tables.sql](../../src/main/resources/db/migration/V20260611_005__create_telemetry_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261004_033__hmr_033_telemetry_telemetry_reading.sql](../../src/main/resources/db/migration/V20261004_033__hmr_033_telemetry_telemetry_reading.sql)
+- Migration mention (not inferred introduction): [V20261110_001__telemetry_ingestion_replay_identity.sql](../../src/main/resources/db/migration/V20261110_001__telemetry_ingestion_replay_identity.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -26276,6 +26278,7 @@ Persisted TelemetryPointJpaEntity state; semantic authority remains with telemet
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261004_005__hmr_005_telemetry_telemetry_point.sql](../../src/main/resources/db/migration/V20261004_005__hmr_005_telemetry_telemetry_point.sql)
 - Migration mention (not inferred introduction): [V20261006_008__hmr_053_trusted_telemetry_gate.sql](../../src/main/resources/db/migration/V20261006_008__hmr_053_trusted_telemetry_gate.sql)
+- Migration mention (not inferred introduction): [V20261110_001__telemetry_ingestion_replay_identity.sql](../../src/main/resources/db/migration/V20261110_001__telemetry_ingestion_replay_identity.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -26584,6 +26587,7 @@ Persisted TelemetryReadingJpaEntity state; semantic authority remains with telem
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261004_033__hmr_033_telemetry_telemetry_reading.sql](../../src/main/resources/db/migration/V20261004_033__hmr_033_telemetry_telemetry_reading.sql)
 - Migration mention (not inferred introduction): [V20261006_008__hmr_053_trusted_telemetry_gate.sql](../../src/main/resources/db/migration/V20261006_008__hmr_053_trusted_telemetry_gate.sql)
+- Migration mention (not inferred introduction): [V20261110_001__telemetry_ingestion_replay_identity.sql](../../src/main/resources/db/migration/V20261110_001__telemetry_ingestion_replay_identity.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -26646,6 +26650,69 @@ Persisted TelemetryReadingJpaEntity state; semantic authority remains with telem
   - Catalog attributes: {"enabled": "O", "function_identity": "public.hmr033_guard_telemetry_reading_quality()"}
   - Function evidence: CREATE OR REPLACE FUNCTION public.hmr033_guard_telemetry_reading_quality()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    IF NOT EXISTS (<br>        SELECT 1<br>        FROM hidra_telemetry_type_catalog quality<br>        WHERE quality.id = NEW.quality_code_id<br>          AND quality.catalog_name = 'QUALITY_CODE'<br>    ) THEN<br>        RAISE EXCEPTION<br>            'TelemetryReading quality_code_id must resolve to QUALITY_CODE: %',<br>            NEW.quality_code_id<br>            USING ERRCODE = '23514';<br>    END IF;<br>    RETURN NEW;<br>END;<br>$function$<br>
 
+### public.hidra_telemetry_reading_ingest_receipt
+
+Owner: **telemetry**; relation kind: `r`.
+
+Telemetry-owned immutable raw-reading replay receipt; one source-point-sequence reserves one untrusted canonical observation and its digest; no trust or operational approval is inferred.
+
+- Evidence: [V20261110_001__telemetry_ingestion_replay_identity.sql](../../src/main/resources/db/migration/V20261110_001__telemetry_ingestion_replay_identity.sql)
+- Evidence: [TelemetryReadingReplayPort.java](../../src/main/java/dz/sh/hidra/modules/telemetry/application/port/out/TelemetryReadingReplayPort.java)
+- Evidence: [JdbcTelemetryReadingReplayAdapter.java](../../src/main/java/dz/sh/hidra/modules/telemetry/infrastructure/persistence/adapter/JdbcTelemetryReadingReplayAdapter.java)
+- Migration mention (not inferred introduction): [V20261110_001__telemetry_ingestion_replay_identity.sql](../../src/main/resources/db/migration/V20261110_001__telemetry_ingestion_replay_identity.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| source_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| point_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| source_sequence_number | character varying(160) | False | None; identity=; generated= | No current mapped Java column | — |
+| reading_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| payload_digest | character varying(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| unit_id | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+| mapping_id | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+| received_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `ck_hapi933_ingest_digest`: CHECK (payload_digest::text ~ '^[0-9a-f]{64}$'::text)
+  - Catalog attributes: {"columns": ["payload_digest"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `ck_hapi933_ingest_sequence`: CHECK (length(btrim(source_sequence_number::text)) &gt; 0)
+  - Catalog attributes: {"columns": ["source_sequence_number"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `ck_hapi933_ingest_time`: CHECK (isfinite(received_at))
+  - Catalog attributes: {"columns": ["received_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `fk_hapi933_ingest_reading`: FOREIGN KEY (reading_id) REFERENCES hidra_telemetry_reading(id) DEFERRABLE INITIALLY DEFERRED
+  - Catalog attributes: {"columns": ["reading_id"], "deferrable": true, "initially_deferred": true, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_telemetry_reading"}, "type": "f", "validated": true}
+- `hidra_telemetry_reading_ingest_receipt_mapping_id_fkey`: FOREIGN KEY (mapping_id) REFERENCES hidra_telemetry_external_tag_mapping(id)
+  - Catalog attributes: {"columns": ["mapping_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_telemetry_external_tag_mapping"}, "type": "f", "validated": true}
+- `hidra_telemetry_reading_ingest_receipt_point_id_fkey`: FOREIGN KEY (point_id) REFERENCES hidra_telemetry_point(id)
+  - Catalog attributes: {"columns": ["point_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_telemetry_point"}, "type": "f", "validated": true}
+- `hidra_telemetry_reading_ingest_receipt_source_id_fkey`: FOREIGN KEY (source_id) REFERENCES hidra_telemetry_source(id)
+  - Catalog attributes: {"columns": ["source_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_telemetry_source"}, "type": "f", "validated": true}
+- `hidra_telemetry_reading_ingest_receipt_unit_id_fkey`: FOREIGN KEY (unit_id) REFERENCES hidra_telemetry_unit(id)
+  - Catalog attributes: {"columns": ["unit_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_telemetry_unit"}, "type": "f", "validated": true}
+- `pk_hapi933_ingest_replay`: PRIMARY KEY (source_id, point_id, source_sequence_number)
+  - Catalog attributes: {"columns": ["source_id", "point_id", "source_sequence_number"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `uq_hapi933_ingest_reading`: UNIQUE (reading_id)
+  - Catalog attributes: {"columns": ["reading_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+
+#### Indexes
+
+- `ix_hapi933_ingest_point`: CREATE INDEX ix_hapi933_ingest_point ON public.hidra_telemetry_reading_ingest_receipt USING btree (point_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+- `pk_hapi933_ingest_replay`: CREATE UNIQUE INDEX pk_hapi933_ingest_replay ON public.hidra_telemetry_reading_ingest_receipt USING btree (source_id, point_id, source_sequence_number)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `uq_hapi933_ingest_reading`: CREATE UNIQUE INDEX uq_hapi933_ingest_reading ON public.hidra_telemetry_reading_ingest_receipt USING btree (reading_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `trg_hapi933_receipt_immutable`: CREATE TRIGGER trg_hapi933_receipt_immutable BEFORE DELETE OR UPDATE ON hidra_telemetry_reading_ingest_receipt FOR EACH ROW EXECUTE FUNCTION hidra_hapi933_receipt_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_hapi933_receipt_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_hapi933_receipt_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'public'<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'HAPI-933 ingestion receipt is immutable' USING ERRCODE='23514';<br>END<br>$function$<br>
+- `trg_hapi933_receipt_no_truncate`: CREATE TRIGGER trg_hapi933_receipt_no_truncate BEFORE TRUNCATE ON hidra_telemetry_reading_ingest_receipt FOR EACH STATEMENT EXECUTE FUNCTION hidra_hapi933_receipt_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_hapi933_receipt_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_hapi933_receipt_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'public'<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'HAPI-933 ingestion receipt is immutable' USING ERRCODE='23514';<br>END<br>$function$<br>
+
 ### public.hidra_telemetry_source
 
 Owner: **telemetry**; relation kind: `r`.
@@ -26656,6 +26723,7 @@ Persisted TelemetrySourceJpaEntity state; semantic authority remains with teleme
 - Migration mention (not inferred introduction): [V20260611_005__create_telemetry_tables.sql](../../src/main/resources/db/migration/V20260611_005__create_telemetry_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261004_030__hmr_030_telemetry_telemetry_source.sql](../../src/main/resources/db/migration/V20261004_030__hmr_030_telemetry_telemetry_source.sql)
+- Migration mention (not inferred introduction): [V20261110_001__telemetry_ingestion_replay_identity.sql](../../src/main/resources/db/migration/V20261110_001__telemetry_ingestion_replay_identity.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -26960,6 +27028,7 @@ Persisted TelemetryUnitJpaEntity state; semantic authority remains with telemetr
 - Migration mention (not inferred introduction): [V20261008_025__hmr_080_nomination_owner_reference_policies.sql](../../src/main/resources/db/migration/V20261008_025__hmr_080_nomination_owner_reference_policies.sql)
 - Migration mention (not inferred introduction): [V20261008_026__hmr_080_planning_nomination_integrity.sql](../../src/main/resources/db/migration/V20261008_026__hmr_080_planning_nomination_integrity.sql)
 - Migration mention (not inferred introduction): [V20261027_002__telemetry_fluid_unit_policy.sql](../../src/main/resources/db/migration/V20261027_002__telemetry_fluid_unit_policy.sql)
+- Migration mention (not inferred introduction): [V20261110_001__telemetry_ingestion_replay_identity.sql](../../src/main/resources/db/migration/V20261110_001__telemetry_ingestion_replay_identity.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|

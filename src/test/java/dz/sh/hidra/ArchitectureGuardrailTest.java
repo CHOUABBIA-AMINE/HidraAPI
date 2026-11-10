@@ -417,6 +417,7 @@ class ArchitectureGuardrailTest {
                 if (isManufacturerOwnerExport(source.getName(), target.getName())) continue;
                 if (isCharacteristicManufacturerPartyExport(source.getName(),target.getName())) continue;
                 if (isAlarmOwnerExport(source.getName(),target.getName())) continue;
+                if (isTelemetryNativeOwnerExport(source.getName(),target.getName())) continue;
 
                 violations.add(source.getName() + " -> " + target.getName());
             }

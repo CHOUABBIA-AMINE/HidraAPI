@@ -3577,3 +3577,18 @@ The existing strict actual PostgreSQL dictionary comparison remains mandatory;
 no operator/site, production/OT, trusted reading or separate-JVM restart result
 is claimed. HAPI-933 stays PARTIAL / IN_PROGRESS pending CI and remaining
 acceptance evidence. No HAPI-934 stage is selected.
+
+## HAPI-933 CI #1170 evidence repair — 2026-11-10
+
+Full #1170 FAILED and Documentation #967 PASSED at
+`e1b0126544b3a151f24a0037e5f6327caf348737`. All fourteen PostgreSQL
+integration shards were green. The remaining test failure was one omitted
+exact Telemetry owner-export check in the separate architecture loop;
+the prior exactness/negative tests are preserved. The API lane's live
+PostgreSQL 16 capture generated 203 migrations / 470 JPA mappings /
+557 physical relations and zero unresolved owners. The checked-in current
+physical dictionary is updated from the exact generated blob
+`298f6dc6c949a833157f9ad2b97bf6d2722923d6`, not inferred SQL;
+strict CI comparison stays active. HAPI-933 remains PARTIAL / IN_PROGRESS
+pending new CI, same-run runtime compatibility, and separate-JVM readback.
+No other task or release is selected.

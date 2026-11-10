@@ -10574,4 +10574,46 @@ trusted evidence, release, P3 or SITE acceptance. Next evidence gate is
 exact-repair-SHA CI startup followed by explicit feedback on its actual result.
 Stop after verifying new CI was created/queued or started.
 
+### 10. Fail repair — exact CI #1170 and genuine PostgreSQL dictionary capture
+
+The first bounded HAPI-933 repair at
+`e1b0126544b3a151f24a0037e5f6327caf348737` started Full #1170
+and Documentation #967 on its exact SHA. Documentation #967 **SUCCESS**;
+Full #1170 **FAILURE**, despite **all 14 PostgreSQL integration shards passing**.
+The unit/architecture lane contained one source-derived omission:
+`ArchitectureGuardrailTest.businessModulesMustNotReachIntoOtherModuleInternals`
+independently enumerates exact owner imports, but did not call the
+already-tested `isTelemetryNativeOwnerExport` helper. Add ONLY that
+reviewed Telemetry adapter -> exact Identity/Topology contract check to
+that loop. Leave the narrow negative siblings/private-export tests
+unchanged and update the exact source SHA in CI test inventory.
+
+The API contract and dictionary lane generated the runtime OpenAPI
+and the *full migrated PostgreSQL 16 dictionary*; strict dictionary
+equality failed against its earlier checked-in 556-relation baseline.
+The genuine CI #1170 database artifact
+`hidra-database-schema-e1b0126544b3a151f24a0037e5f6327caf348737-42794883146-1-api-contract`
+(artifact ID `13752554229`) contains:
+- `schema.json`: the complete read-only 203-migration, 470-JPA,
+  557-physical-relation PostgreSQL 16 capture, with zero unresolved owners;
+- `DATA_DICTIONARY.md`: 557-relation generated output, SHA-256
+  `c1efdede558d01639eff23cfa882336927bbf0a843b2ac9bbd902fe16fffd1a9`,
+  exact Git blob `298f6dc6c949a833157f9ad2b97bf6d2722923d6`.
+
+The reviewed dictionary is refreshed to that *byte-identical*
+generated artifact. This is not hand-authored schema or a validator
+exception: the existing `--check` compares all physical content
+after normalizing only the captured commit identity, and remains intact.
+The source-only architecture repair changes neither Flyway history nor
+current persisted table/column metadata. All original HAPI-933
+producer authorization, immutable receipt and transaction checks
+remain intact; no release, operational trust, external OT or P3 work
+is added.
+
+HAPI-933 remains **PARTIAL / IN_PROGRESS** until actual repair-SHA
+Full/Documentation CI, same-run base-runtime OpenAPI compatibility,
+strict migrated dictionary equality, independent JVM restart/readback
+and remaining acceptance cases are explicitly evidenced. Stop after
+confirming the new exact-SHA workflows were created/queued/started.
+
 <!-- task-register:payload:end -->

@@ -3542,6 +3542,9 @@ authority. See the owner task for candidates and acceptance.
 <a id="hapi-933"></a>
 [HAPI-933](TASKS_HPS-010.md#hapi-933) — deliver authorized native telemetry reading ingestion
 
+<a id="hapi-934"></a>
+[HAPI-934](TASKS_HPS-013.md#hapi-934) — deliver client-authored planning revisions and targets with independent Workflow approval
+
 
 ## HAPI-933 owner-approved ingestion policy — 2026-11-10
 

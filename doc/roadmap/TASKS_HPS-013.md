@@ -4051,4 +4051,37 @@ inferred. The approved policy itself is not runtime validation.
 
 **Decision-only message:** `docs(roadmap): approve HAPI-934 planning policy`.
 
+### 9. HAPI-934 legacy task-directory CI repair — 2026-11-10
+
+Source baseline: registration `137ef75871a682331d534db56074736922a9595e`,
+policy `1e39c4f3688ef7886d87fcb1a32a3e90e2e6e97d`.
+[Full CI #1175](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42821219992)
+on the registration SHA completed **FAILURE**, and
+[Documentation #974](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42822732406)
+on the policy SHA completed **FAILURE**. Both fail at canonical
+`.github/scripts/validate_docs.py` with the exact diagnostic
+`Task register compatibility directory missing/duplicate entries`.
+Full #1175's 14 PostgreSQL integration shards, unit/architecture lane
+and API contract/dictionary passed, but static documentation validation
+failed and the mandatory Full Verification Gate was correctly red.
+
+Root cause is one omitted `HAPI-934` backward-compatible anchor/link
+in `doc/roadmap/ULTIMATE_TASKS.md` despite the correctly registered
+HPS-013 owner task, ROADMAP/PHASES rows and manifest's count of 934.
+The bounded same-registration repair inserts the canonical
+`<a id="hapi-934"></a>` followed immediately by the exact
+`[HAPI-934](TASKS_HPS-013.md#hapi-934)` link, preserving all 933
+existing directory entries. In-memory source invariant: **934
+matching anchors/links and 934 unique task identities**. Strict
+validator and status-table agreement remain enabled without changes.
+
+No Java, test inventory, migrations, OpenAPI, workflow, runtime,
+previous task statuses or HAPI-934 owner-approved policy is modified.
+HAPI-934 stays `PARTIAL / BLOCKED` as a whole implementation. Next
+exact-SHA Documentation Validation must succeed; the prior failed
+Full #1175 remains historical, not silently labeled green. This is
+a **CI repair within the existing registration**, not source
+implementation or a new sub-stage. Preserve the already-admitted
+registration message `docs(roadmap): register FD-04 planning workflow journey`.
+
 <!-- task-register:payload:end -->

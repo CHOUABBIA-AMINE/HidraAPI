@@ -503,7 +503,7 @@ HAPI-602 S3 original-transaction immutable link approval (2026-11-02): [Full #10
 | HPS-010 — Telemetry and Monitoring | [HPS-010 tasks](TASKS_HPS-010.md) | 64 |
 | HPS-011 — Alarms and Events | [HPS-011 tasks](TASKS_HPS-011.md) | 46 |
 | HPS-012 — Incidents, HSE and Integrity | [HPS-012 tasks](TASKS_HPS-012.md) | 56 |
-| HPS-013 — Planning and Nominations | [HPS-013 tasks](TASKS_HPS-013.md) | 16 |
+| HPS-013 — Planning and Nominations | [HPS-013 tasks](TASKS_HPS-013.md) | 17 |
 | HPS-014 — Custody and Measurement | [HPS-014 tasks](TASKS_HPS-014.md) | 7 |
 | HPS-015 — Workflow and Approvals | [HPS-015 tasks](TASKS_HPS-015.md) | 46 |
 | HPS-016 — Risk and Operational Intelligence | [HPS-016 tasks](TASKS_HPS-016.md) | 36 |
@@ -3608,3 +3608,24 @@ and independent OS-JVM persisted readback. The earlier registration/policy
 and partial statements above are historical. No live OT, production deployment,
 SITE, calibrated engineering qualification, release or HAPI-934 stage is
 implemented or selected.
+
+
+## Owner-selected FD-04 / R06 Planning/Workflow registration — 2026-11-10
+
+The owner's `Next` after the attached API-only trace registers the
+previously proposed **FD-04 / R06** as
+[HAPI-934](TASKS_HPS-013.md#hapi-934) in existing HPS-013, with
+**PARTIAL / BLOCKED** status for the whole native authoring-to-independent-
+approval journey. Existing narrower period/plan creation, revision
+metadata CAS, Planning read and already-linked Workflow approval actions
+are reusable and unchanged. The owning HPS-013 task records current
+source evidence, unresolved revision/target lifecycle and independent
+Workflow submission/authority/transaction policies, candidate owners,
+native HTTP/PostgreSQL acceptance and a proposed future implementation
+message. This is **registration only**: no new REST operation, class,
+DDL, source test, deployment, SITE or HidraWEB browser work.
+
+The canonical register now has **934 tasks in 25 unchanged phases**.
+Prior historical statements that FD-04/HAPI-934 was unregistered remain
+time-bound and do not supersede this current registration. The future
+source-changing task is not authorized by this governance-only selection.

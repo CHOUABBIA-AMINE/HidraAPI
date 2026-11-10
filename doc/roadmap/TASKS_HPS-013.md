@@ -3672,4 +3672,257 @@ Future discoveries, refined exact file scope, accepted tests, blockers and decis
 docs/roadmap/planning.md:44 | PLN-004 | feat(planning): publish revision concurrency contract | Completed | Publish an explicit concurrency-protected update for the current editable plan revision's change-reason metadata. `expectedUpdatedAt` is the authoritative client precondition; stale requests return deterministic `409 PLANNING_REVISION_CONFLICT`; the successful response returns the refreshed revision including its new `updatedAt`. No status or workflow lifecycle mutation is added. Tracks issue #72. Final merge `7bbdb49dbc40c5637d93a05863e69f9576a2edba`; merge-SHA OpenAPI artifact `10298289002`.
 ~~~~~~~~
 
+
+<a id="hapi-934"></a>
+## HAPI-934 — deliver client-authored planning revisions and targets with independent Workflow approval
+
+Phase: HPS-013 — Planning and Nominations
+
+Legacy proposal handle: **FD-04 / R06** from the owner-supplied
+`HidraAPI_Proposed_Task_Traceability_2026-11-09(2).md`.
+No existing PLN/HAPI task is replaced. HAPI-797 / PLN-002 remains independently
+accepted for its bounded revision-scoped approval action, HAPI-799 / PLN-004
+for the metadata-only revision CAS contract, and existing planning read and
+create primitives retain their original acceptance limits.
+
+Priority: P1
+
+Implementation Status: PARTIAL
+
+Planning Status: BLOCKED
+
+Owning module: **planning** (period/plan/revision/target authoring, submission,
+lineage, deterministic lifecycle, authoritative target state). **workflow**
+owns the workflow definition, instance, task, independent decision and history;
+**topology** owns asset reference truth; **telemetry** owns point/unit reference
+truth; **identity/organization** own actor authorization and responsibility.
+Planning must consume other owners only through their supported public
+application contracts. No cross-module persistence aggregate coupling.
+
+Dependencies: HAPI-923 Identity, HAPI-925 Organization, HAPI-926 Topology,
+HAPI-928 Workflow foundation; accepted PLN-001 / HAPI-796 read contracts,
+PLN-002 / HAPI-797 approval consumer, PLN-004 / HAPI-799 revision metadata CAS;
+effective Telemetry point/unit public references. HAPI-933 supplies a separately
+accepted synthetic reading producer but is **not a mandatory implementation
+dependency** for creating a plan target. FD-05 / R07 later depends on both
+FD-03 and FD-04 plus its own trusted-comparison policy.
+
+Cross-repository dependency: no HidraWEB/browser implementation is selected.
+The outcome must be consumable independently by a native authenticated REST
+client. No outside SCADA/OT, external approval provider, deployment, SITE
+acceptance or numerical simulator is implied.
+
+### 1. Owner selection and live-source evidence — registration only
+
+The owner's `Next` after explicitly receiving FD-04 / R06 as the recommended
+next registration selects a **documentation-only membership change** to
+HAPI-934 within existing HPS-013. Its source preflight is exact main
+`a71de63913a820d7ce3c87b389c59f4215cf1199`, tree
+`7439b23110229ff2c27fc8e689ee46de039ce7c9`. HAPI-933's
+implementation `7d4f2a3f0a6e753caa4ad9b008cb17aea769b75c` passed
+[Full CI #1174](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42807169083)
+and [Documentation #971](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42807168897);
+its software-acceptance pointer at current main passed
+[Documentation #972](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42808909371).
+
+Current source at registration:
+- `SpringPlanningController` exposes existing POST
+  `/api/v1/planning/periods` and
+  `/api/v1/planning/operational-plans`; the latter's application service
+  verifies authenticated creator, eligible Topology scope and optional
+  Organization unit and creates an OperationalPlan in DRAFT.
+- `PlanningQueryController` exposes period/operational-plan/revision/target
+  list and detail GETs; this is **not** proof of client-authored target creation.
+- `PlanRevisionCommandController` exposes
+  PATCH `/api/v1/planning/revisions/{revisionId}` for
+  `expectedUpdatedAt` and *change-reason metadata only*; it does not create
+  a new revision, attach a target, submit or approve a new plan.
+- `PlanningApprovalController` exposes revision-scoped Workflow approval
+  status and transition execution. `PlanningApprovalApplicationService`
+  validates an **already-linked** Workflow instance's
+  `targetModule=planning` and `targetId=revisionId`; it cannot itself
+  prove native creation/submission/linking of a new revision.
+- `PlanningWorkflowContract` currently provides
+  `instance`, `currentTask`, `availableActions`, and `execute`, but no
+  Planning-owned workflow-instance creation/submission operation. The owner
+  must approve a focused public Workflow producer contract, not reach into
+  Workflow infrastructure or invent a generic integration adapter.
+- `PlanRevision` and `PlanTarget` domain models, their repository ports
+  and JPA adapters, and `PlanTargetReferenceValidation` already exist and
+  must be reused rather than duplicated. The accepted
+  `PlanningTelemetryPointReferenceContract` and
+  `MonitoringPlanTargetReferenceContract` are candidate public seams to
+  inspect, not proof that an authorable producer transaction exists.
+
+This **PARTIAL / BLOCKED** disposition describes the complete new
+client-authorable end-to-end journey, not absence of the existing narrower
+accepted APIs.
+
+### 2. One indivisible future objective
+
+Deliver native-client creation of a valid PlanningPeriod, OperationalPlan,
+editable new PlanRevision and versioned PlanTarget(s), then authoritative
+revision submission with a durable exact Workflow target, independently
+authorized reviewer decision, and readback of the final approved or rejected
+revision and its **specific immutable/reproducible target**. Return real server
+IDs and current revision/version tokens throughout. A pre-existing plan or
+out-of-band manual database setup is not an acceptable substitute for a
+client-authorable journey.
+
+This entire scope — Domain, inbound/outbound ports, current owner contracts,
+REST DTO/mappers, service orchestration, scoped authority, PostgreSQL
+transactions, native tests and CI — is **one whole task**. No A/B/C
+subpackages, partial implementation stages or synthetic-green replacements.
+
+### 3. Material business/security decisions required before source mutation
+
+1. **Revision/target lifecycle and authoring.** Approve how a new revision is
+   based on the current revision, numbering/code uniqueness, which statuses
+   permit authoring, target value/time/unit policy, whether a target is
+   immutable on submission, the meaning of approval for linked target records
+   and handling correction/rejection. Define a target eligibility policy
+   consistent with `PlanTarget` rather than equating a metadata PATCH with
+   revision creation. Keep plan/currentRevisionId, revision status and targets
+   under Planning's aggregate transition invariants.
+2. **Current protected authority.** Approve exact creator company, scope and
+   asset/point/unit resolution through current Identity, Organization,
+   Topology and Telemetry public contracts. Require authorization on every
+   protected create/read/submit/review; enforce current DENY, stale/revoked
+   rights, effective responsibility, non-disclosing errors and reviewer
+   independence. Never accept caller claims of grants, company, approver,
+   target ownership or approval state.
+3. **Independent Workflow submission/approval.** Approve the exact Planning
+   revision target type, Workflow definition/instance registration mechanism,
+   linkage uniqueness, actor independence and original-transaction decision
+   fence. The current `PlanningWorkflowContract` is an approval **consumer**
+   boundary; select an owner-approved public producer/start/link operation
+   rather than binding Planning to Workflow's concrete adapters. Define
+   transaction/compensation if one owner cannot atomically commit the
+   intended linkage; no orphan instance/plan target is permitted.
+4. **Concurrency, error and schema contracts.** Preserve PLN-004
+   `expectedUpdatedAt` CAS; approve new revision/target submission CAS and
+   retry semantics, concurrent writers, uniqueness constraints and
+   wrong-target/replay denial. Review actual PostgreSQL/JPA/Flyway schema
+   before authorizing a *specific* additive migration. Do not rewrite an
+   existing Flyway file or presume a migration is required.
+5. **Native test identity and API contract.** Approve exact new REST routes,
+   request/response shapes, target units and failure codes, deterministic
+   synthetic fixtures, independent reviewers, negative cases and case names.
+   Current JWT/permission routing cannot be bypassed. Preserve
+   `PLANNING_REVISION_CONFLICT` for the already accepted metadata CAS
+   while choosing compatible errors for new transitions.
+
+These unresolved approvals **block implementation**, not registration.
+They must be resolved and entered as a single whole-task executable allowlist
+before the next source-changing `Next`.
+
+### 4. Candidate implementation ledger — NOT an edit allowlist
+
+Existing **REUSE / INSPECT**:
+- `src/main/java/dz/sh/hidra/modules/planning/domain/model/OperationalPlan.java`
+- `src/main/java/dz/sh/hidra/modules/planning/domain/model/PlanRevision.java`
+- `src/main/java/dz/sh/hidra/modules/planning/domain/model/PlanTarget.java`
+- `src/main/java/dz/sh/hidra/modules/planning/application/port/in/CreatePlanningPeriodUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/planning/application/port/in/CreateOperationalPlanUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/planning/application/port/in/UpdatePlanRevisionUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/planning/application/port/in/PlanningApprovalUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/planning/application/port/out/PlanRevisionRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/planning/application/port/out/PlanTargetRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/planning/api/rest/controller/SpringPlanningController.java`
+- `src/main/java/dz/sh/hidra/modules/planning/api/rest/controller/PlanningQueryController.java`
+- `src/main/java/dz/sh/hidra/modules/planning/api/rest/controller/PlanRevisionCommandController.java`
+- `src/main/java/dz/sh/hidra/modules/planning/api/rest/controller/PlanningApprovalController.java`
+- `src/main/java/dz/sh/hidra/modules/planning/application/service/PlanningApprovalApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/adapter/JpaPlanRevisionRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/adapter/JpaPlanTargetRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/adapter/PlanTargetReferenceValidation.java`
+- `src/main/java/dz/sh/hidra/modules/workflow/application/contract/planning/PlanningWorkflowContract.java`
+- `src/main/java/dz/sh/hidra/modules/telemetry/application/contract/planning/PlanningTelemetryPointReferenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/planning/application/contract/monitoring/MonitoringPlanTargetReferenceContract.java`
+
+**Possible new contracts and adapters:** narrow Planning revision/target
+create-and-submit inbound use cases and commands; immutable Domain transitions;
+a focused Workflow public instance-start/link contract and corresponding owner
+adapter, source/asset/unit authorization ports, explicit REST request/response
+DTOs and mappers, persistence and concurrency adapters, and
+signed-JWT/real-PostgreSQL end-to-end tests. Their exact filenames,
+implementations, route paths and *optional* forward-only migration version
+remain **DISCOVERY_REQUIRED / NOT AUTHORIZED**. No new class/SQL filename is
+asserted to exist by this registration.
+
+### 5. Native REST and data guarantees
+
+- Versioned server-controlled revision/target identifiers, statuses and
+  timestamps. REST never exposes JPA entities.
+- No unrelated plan, period, company, asset, point or Workflow task may be
+  disclosed or mutated. Non-disclosing 403/404 and bounded protected reads.
+- Explicit ISO/UTC time and engineering units; current supported catalog and
+  Topology/Telemetry references checked at original commit transaction.
+- Business 400 validation, 401 unauthenticated, exact native permission 403,
+  missing non-disclosing resource 404 where policy allows, deterministic 409
+  stale CAS or already-processed/incorrect-target conflict, safe 5xx for
+  genuinely unavailable necessary owners. Exact mappings require approval.
+- PostgreSQL must guarantee no duplicate revision numbering/approval
+  linkage, stale transition or orphan target/Workflow instance. Domain
+  invariants remain inside Planning; Workflow owns decision provenance.
+  Source revision/target history remains reproducible after new revisions.
+
+### 6. Mandatory future whole-task acceptance
+
+- Using native signed LOCAL authentication and approved synthetic references,
+  create period -> plan -> new editable revision -> at least one exact
+  topology/telemetry/unit-qualified target -> submit -> linked Workflow
+  instance -> independent reviewer approve, with server-returned IDs on each
+  operation. Verify final authorized GET revision/target after a distinct
+  application-process restart over the same fresh PostgreSQL 16 DB.
+- Negative cases: stale expected-version CAS, invalid/mismatched target
+  asset/point/unit, inactive/foreign company or asset, unauthorized actor,
+  absent or revoked reviewer, same actor reviewing own submission where
+  disallowed, wrong Workflow target, repeated transition/replay, two
+  concurrent submitters, rejected/cancelled flow and zero partial/orphan
+  writes under forced owner failure. Preserve older approval consumer cases.
+- Verify approved PlanTarget maps to exactly the matching PlanRevision,
+  expected plan/currentRevisionId, valid time, original unit/value/provenance
+  and immutable approval state. Do not infer approved plan data from a
+  Workflow instance alone.
+- New unit/domain, application, integration PostgreSQL/Flyway, genuine JWT
+  HTTP, architecture and OpenAPI compatibility tests must be executed and
+  added to strict CI inventory with exact class/case/source SHA-256.
+  Required Full CI and Documentation Validation must pass the **implementation
+  SHA** before claiming software acceptance.
+- This is synthetic backend software, not HidraWEB browser acceptance,
+  FD-05 planned/actual computation, simulation, live OT or SITE acceptance.
+
+### 7. Registration scope, accepted task status and next gate
+
+This selection registers exactly **one** new ID, HAPI-934, in existing HPS-013,
+raising the canonical total from **933 to 934** across the same **25** phases.
+Do not alter pre-existing HAPI-001–933 task statuses, provenance, task IDs,
+legacy alias mappings, source tests, migration history, generated OpenAPI,
+runtime or release artifacts.
+
+The registration's **exact** commit message is:
+`docs(roadmap): register FD-04 planning workflow journey`.
+
+The ONLY permitted writes for this registration are:
+`AGENTS.md`, `doc/roadmap/ULTIMATE_ROADMAP.md`,
+`doc/roadmap/ULTIMATE_PHASES.md`, `doc/roadmap/ULTIMATE_TASKS.md`,
+`doc/roadmap/TASKS_HPS-013.md`, and
+`.github/documentation-validation.json` (task count 933 -> 934).
+Index HPS-013 membership count rises from 16 to 17. No other phase,
+source file, migration, test, workflow or schema changes.
+
+The source implementation task is **not approved by this registration**.
+A later, separately selected whole-task `Next` may begin only after the
+blockers above are resolved, all required exact file paths and migration
+authorization are admitted, exact-SHA CI is refreshed, and the user
+selects that complete deliverable. Implementation message is **PROPOSED
+ONLY**, subject to owner admission:
+`feat(planning): deliver authorable revision targets and workflow approval`.
+
+Current status for the **whole client-authorable journey**:
+**PARTIAL / BLOCKED**. The 2026-11-09 proposal is historical as of this
+registration; native planning creation/approval *fragments* are real but
+do not establish a completed producer-to-approval workflow.
+
 <!-- task-register:payload:end -->

@@ -1866,3 +1866,17 @@ No endpoint is implemented by this status registration.
 | Task ID | Task Name | Deliverable | Priority | Dependencies | Implementation Status | Planning Status |
 |---|---|---|---|---|---|---|
 | [HAPI-933](TASKS_HPS-010.md#hapi-933) | deliver authorized native telemetry reading ingestion | JWT-authenticated synthetic raw ingestion, actual PostgreSQL readback/restart, units/quality/replay; no automatic trust or live OT | P1 | HAPI-923, HAPI-926, HAPI-931, HAPI-932; producer/replay policy | VERIFIED | COMPLETED |
+
+
+## Owner-selected FD-04 / R06 Planning and Workflow task — 2026-11-10
+
+HAPI-934 is registered in existing HPS-013 without renumbering
+HAPI-001–933, creating a phase, or changing historic status/acceptance.
+Its source authoring, target, reviewer and transaction decisions remain
+BLOCKED in the [owning HPS-013 record](TASKS_HPS-013.md#hapi-934).
+Existing period/plan and approval *fragments* are not this whole journey.
+No frontend, FD-05, numerical/P3, release or SITE work is selected.
+
+| Task ID | Task Name | Deliverable | Priority | Dependencies | Implementation Status | Planning Status |
+|---|---|---|---|---|---|---|
+| [HAPI-934](TASKS_HPS-013.md#hapi-934) | deliver client-authored planning revisions and targets with independent Workflow approval | One native period/plan/revision/target/submit/Workflow-independent-approval journey and restart persistence; no frontend/OT/release | P1 | HAPI-923, HAPI-925, HAPI-926, HAPI-928; owner policy and transactions | PARTIAL | BLOCKED |

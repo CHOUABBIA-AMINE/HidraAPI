@@ -932,3 +932,22 @@ and ULTIMATE_PHASES.md and the HPS-010 task header are updated accordingly.
 Earlier NOT_IMPLEMENTED/PARTIAL policy and development evidence above are
 historical, not current status. This does not authorize a new task ID,
 HAPI-934/FD-04, production release, SITE acceptance, SCADA/OT or P3.
+
+
+## Owner-selected FD-04 / R06 Planning registration — 2026-11-10
+
+The owner selected documentation-only registration of **HAPI-934** within
+the existing **HPS-013 — Planning and Nominations** phase following
+HAPI-933 synthetic backend software acceptance. The canonical task
+count is **934 in 25 unchanged phases**, with HAPI-001–933 and all prior
+phase statuses, historical work and archived evidence preserved.
+[The owning HPS-013 task](doc/roadmap/TASKS_HPS-013.md#hapi-934)
+tracks the complete client-authorable period -> plan -> revision -> target ->
+submission -> exact Workflow linkage -> independent decision journey as
+**PARTIAL / BLOCKED** pending explicit owner-approved lifecycle, company/
+resource, reviewer, transaction/CAS and exact implementation-path policies.
+Existing Planning REST create/read and revision-scoped approval primitives
+are reusable but not accepted as the complete journey. Current registration
+creates no Java, migrations, REST contract, tests, workflow instance,
+simulation, live OT, release, deployment or frontend scope. A future
+whole-task implementation requires separate user selection and approvals.

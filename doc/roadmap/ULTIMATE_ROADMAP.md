@@ -2193,3 +2193,19 @@ contract, policy blockers, proposed source ledger, acceptance and message.
 Preserve all 932 prior tasks, 25 phases and prior source acceptance.
 
 | HPS-010 | Telemetry and Monitoring | [HAPI-933](TASKS_HPS-010.md#hapi-933) | FD-03/R05; no existing task replaced | deliver authorized native telemetry reading ingestion | Synthetic protected raw reading POST, authorized source/point/unit/quality/replay, existing history/latest/trend and distinct JVM persisted readback | P1 | HAPI-923, HAPI-926, HAPI-931, HAPI-932; approved producer/replay policy | VERIFIED | COMPLETED |
+
+
+## Owner-selected FD-04 / R06 Planning authoring and Workflow registration — 2026-11-10
+
+The owner's contextual `Next` after the attached API-only 2026-11-09
+proposal trace selects **documentation-only registration** of
+[HAPI-934](TASKS_HPS-013.md#hapi-934) in the existing HPS-013 phase.
+It preserves HAPI-001–933 and all previously accepted PLN-001/002/004
+and HAPI-933 capabilities, 25 existing phases and immutable evidence.
+The attached historical FD-04 proposal was not a registered executable
+task; this registration establishes its current owner, obligations and
+explicit blocker policy, but no source implementation, new endpoint or
+approved consumer Workflow journey. The owning HPS-013 record governs
+future whole-task admission, exact source allowlist and acceptance.
+
+| HPS-013 | Planning and Nominations | [HAPI-934](TASKS_HPS-013.md#hapi-934) | FD-04/R06; new native delivery, no legacy replacement | deliver client-authored planning revisions and targets with independent Workflow approval | Authenticated period/plan/revision/target creation, submission, exact Workflow target link, independent decision and durable approved target readback | P1 | HAPI-923, HAPI-925, HAPI-926, HAPI-928; approved revision/target/Workflow authority and transaction policy | PARTIAL | BLOCKED |

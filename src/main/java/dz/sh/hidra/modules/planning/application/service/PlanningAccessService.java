@@ -27,6 +27,7 @@ import dz.sh.hidra.modules.party.application.contract.planning.PlanningCompanyEl
 import dz.sh.hidra.modules.planning.application.port.out.PlanningPeriodRepositoryPort;
 import dz.sh.hidra.modules.planning.application.port.out.PlanningQueryPort.AssetScope;
 import dz.sh.hidra.modules.topology.application.contract.planning.PlanningAssetOwnershipContract;
+import dz.sh.hidra.modules.planning.domain.model.OperationalPlan;
 import java.util.Comparator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -67,6 +68,15 @@ public class PlanningAccessService {
     public String planCreator(String periodId, String type, String assetId, String claimedActor) {
         Access access = identity.current(Operation.PLAN_CREATE);
         requireMatchingActor(access, claimedActor);
+        return requirePlanScope(access, periodId, type, assetId);
+    }
+
+    public String planAuthor(OperationalPlan plan) {
+        Access access = identity.current(Operation.PLAN_AUTHOR);
+        return requirePlanScope(access, plan.periodId(), plan.topologyScopeType(), plan.topologyScopeId());
+    }
+
+    private String requirePlanScope(Access access, String periodId, String type, String assetId) {
         if (periodId == null || periodId.isBlank() || type == null || assetId == null
                 || !access.assets().contains(new Asset(type, assetId))) {
             throw unavailable();

@@ -26,9 +26,7 @@ import dz.sh.hidra.modules.planning.domain.exception.PlanningRevisionConflictExc
 import dz.sh.hidra.modules.planning.domain.model.OperationalPlan;
 import dz.sh.hidra.modules.planning.domain.model.PlanRevision;
 import dz.sh.hidra.modules.planning.application.port.out.PlanningCatalogEligibilityPort;
-import dz.sh.hidra.modules.planning.domain.value.PlanRevisionStatus;
 import java.time.Instant;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,15 +37,18 @@ public class PlanRevisionUpdateApplicationService implements UpdatePlanRevisionU
     private final PlanRevisionRepositoryPort revisionRepository;
     private final OperationalPlanRepositoryPort planRepository;
     private final PlanningCatalogEligibilityPort catalogs;
+    private final PlanningAccessService access;
 
     public PlanRevisionUpdateApplicationService(
             PlanRevisionRepositoryPort revisionRepository,
             OperationalPlanRepositoryPort planRepository,
-            PlanningCatalogEligibilityPort catalogs
+            PlanningCatalogEligibilityPort catalogs,
+            PlanningAccessService access
     ) {
         this.revisionRepository = Objects.requireNonNull(revisionRepository, "PlanRevisionRepositoryPort must not be null.");
         this.planRepository = Objects.requireNonNull(planRepository, "OperationalPlanRepositoryPort must not be null.");
         this.catalogs = Objects.requireNonNull(catalogs);
+        this.access = Objects.requireNonNull(access);
     }
 
     @Override
@@ -58,14 +59,17 @@ public class PlanRevisionUpdateApplicationService implements UpdatePlanRevisionU
         }
         Objects.requireNonNull(command, "Plan revision update command must not be null.");
 
-        PlanRevision revision = revisionRepository.findByIdForUpdate(revisionId.trim())
-                .orElseThrow(() -> new NoSuchElementException("Unknown plan revision: " + revisionId.trim()));
-        if (revision.status() == PlanRevisionStatus.APPROVED) {
-            throw new PlanningRevisionConflictException("Approved revisions are immutable; create a new revision.");
-        }
-        OperationalPlan plan = planRepository.findById(revision.planId())
-                .orElseThrow(() -> new NoSuchElementException("Unknown operational plan: " + revision.planId()));
-
+        String normalizedId = revisionId.trim();
+        String planId = revisionRepository.planIdForRevision(normalizedId)
+                .orElseThrow(PlanningAccessService::unavailable);
+        OperationalPlan plan = planRepository.findByIdForUpdate(planId)
+                .orElseThrow(PlanningAccessService::unavailable);
+        access.planAuthor(plan);
+        plan.requireDraftAuthoring();
+        PlanRevision revision = revisionRepository.findByIdForUpdate(normalizedId)
+                .filter(value -> plan.id().equals(value.planId()))
+                .orElseThrow(PlanningAccessService::unavailable);
+        revision.requireEditableDraft();
         if (!revision.id().equals(plan.currentRevisionId())) {
             throw new PlanningRevisionConflictException(
                     "Plan revision is no longer the current editable revision. Refetch the operational plan before retrying."
@@ -80,9 +84,9 @@ public class PlanRevisionUpdateApplicationService implements UpdatePlanRevisionU
         if (command.changeReasonCodeId() != null) {
             catalogs.requireActive(command.changeReasonCodeId(), "REVISION_REASON");
         }
-        Instant updatedAt = Instant.now();
+        Instant updatedAt = Instant.now().truncatedTo(java.time.temporal.ChronoUnit.MICROS);
         if (!updatedAt.isAfter(revision.updatedAt())) {
-            updatedAt = revision.updatedAt().plusNanos(1);
+            updatedAt = revision.updatedAt().plusNanos(1000);
         }
 
         PlanRevision saved = revisionRepository.save(new PlanRevision(

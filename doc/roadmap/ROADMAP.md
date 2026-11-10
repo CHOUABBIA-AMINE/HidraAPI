@@ -63,8 +63,8 @@ A task includes its required authorization, REST contract, persistence, failure 
 
 | Task | Owner | Depends on | Deliverable | Pass condition | Status |
 |---|---|---|---|---|---|
-| **T01 · Make periods and plans company-scoped** | Planning with Identity, Organization and Topology | Existing foundation | Complete company-owned period and exact-asset plan creation, list, detail and count. Derive actor server-side. Enforce period-code uniqueness per company with forward-only ownership constraints. Close existing descendant read paths that could bypass period or plan scope. | Two companies and two assets in the same company prove that entitled actors see only authorized records and counts. Revocation and wrong ownership fail before disclosure. Authorized data survives restart. **FG-03 / A03.** | IN PROGRESS |
-| **T02 · Author versioned plan revisions and targets** | Planning with Topology and Telemetry | T01 | Expose draft creation, target create/update and scoped revision/target readback. Generate identifiers and revision versions server-side. Validate point, asset, unit and effective window. | A client authors and retrieves a draft with returned IDs. Stale writes, mismatched points and incompatible units fail atomically. Existing metadata CAS remains compatible. **FG-03 / A03.** | PLANNED |
+| **T01 · Make periods and plans company-scoped** | Planning with Identity, Organization and Topology | Existing foundation | Complete company-owned period and exact-asset plan creation, list, detail and count. Derive actor server-side. Enforce period-code uniqueness per company with forward-only ownership constraints. Close existing descendant read paths that could bypass period or plan scope. | Two companies and two assets in the same company prove that entitled actors see only authorized records and counts. Revocation and wrong ownership fail before disclosure. Authorized data survives restart. **FG-03 / A03.** | COMPLETED |
+| **T02 · Author versioned plan revisions and targets** | Planning with Topology and Telemetry | T01 | Expose draft creation, target create/update and scoped revision/target readback. Generate identifiers and revision versions server-side. Validate point, asset, unit and effective window. | A client authors and retrieves a draft with returned IDs. Stale writes, mismatched points and incompatible units fail atomically. Existing metadata CAS remains compatible. **FG-03 / A03.** | IN PROGRESS |
 | **T03 · Submit and independently decide a revision** | Planning with Workflow and Identity | T02 | Bind submission to the exact revision and active Workflow definition in one transaction. Freeze submitted targets. Publish the decision and activate targets only on committed approval. | Distinct signed reviewer approves or rejects. Self-review, revocation, wrong target and concurrent/repeated actions are handled as specified. Forced failure leaves no orphan Workflow instance. A restarted client retrieves the exact target and decision. **FG-03/18 / A03/A18.** | PLANNED |
 
 ### Increment 2 — Approved engineering configuration
@@ -395,3 +395,56 @@ The owner selected T01 with a limit of one implementation and one documentation 
 **Artifact provenance.** The runtime contract comes from artifact `13804067686`, member `hidra-api.json`, ZIP SHA-256 `9e266bb5c054d325ed0ce33706cd6671c9c2752172dc29f8afb237e52c806ddb`. The database catalog and dictionary come from diagnostic artifact `13805230625`, members `database/schema.json`, `database/DATA_DICTIONARY.md` and `database/verification.json`, ZIP SHA-256 `b1687dc5a4d84aecab32ce02d028854ae304d0a7a70b3f2afc7e592cdb981932`. The diagnostic contract member matches the dedicated OpenAPI artifact byte for byte. Source identities remain those of the actual implementation generator.
 
 **Acceptance gate.** T01 remains IN PROGRESS. The documentation repair requires fresh exact-SHA CI, strict runtime snapshot equality, strict migrated dictionary equality and successful complete evidence sealing before completion. The next registered implementation task is T02 after T01 acceptance.
+
+### T01 software acceptance and T02 execution envelope — 2026-11-10
+
+**T01 evidence.** Source `e084bed5553ff3efa6ab23f60edf268e12df2ccc` passed [Full CI #1178](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42912274553) and [Documentation Validation #982](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42912274019). All fourteen PostgreSQL partitions, unit/architecture checks, runtime OpenAPI equality, backward compatibility, migrated dictionary equality and complete evidence sealing passed. T01 is software accepted. Industrial qualification and operational acceptance remain separate.
+
+**Selected stage.** Execute T02 under `feat(planning): author scoped draft revisions and targets`. Use one implementation commit and one subsequent generated-documentation commit. Record this execution scope in the working roadmap before source edits. Include T01 status/evidence in the T02 implementation commit.
+
+**Contract.** Add `POST /api/v1/planning/operational-plans/{planId}/revisions`, `POST /api/v1/planning/revisions/{revisionId}/targets` and `PUT /api/v1/planning/targets/{targetId}`. Retain the existing revision metadata PATCH contract. Require its current company/exact-asset author grant through Identity permission `planning:scoped-plan:author`, alongside the derived route permission. Generate revision and target identities, revision sequence, DRAFT status and version timestamps on the server. The first revision has no base. Later revisions use the plan's current terminal revision as their base. An existing DRAFT or SUBMITTED head blocks another draft.
+
+**Concurrency.** Acquire the Planning plan lock before revision and target locks. Revision creation compares `expectedPlanUpdatedAt`. Target changes compare `expectedRevisionUpdatedAt`, and target replacement also compares `expectedTargetUpdatedAt`. Advance the revision token after every target edit. Existing metadata PATCH continues to compare its revision token. Use PostgreSQL microsecond timestamps and reject stale, noncurrent or non-DRAFT edits with a conflict. Preserve atomic rollback and existing database uniqueness/parent constraints.
+
+**Target meaning.** Targets use the exact authorized plan asset, the current active TARGET_TYPE representation policy, optional same-revision scenario/nomination, and a nonempty effective window contained in the period. Numeric targets require an active Telemetry unit. When a point is supplied, Telemetry verifies its active source/device/point, representation, exact asset binding and binding coverage for the complete target window. Numeric units must match the point's current unit. TEXT targets keep their existing representation rules. This stage introduces no unit conversion or industrial default values.
+
+**Add.**
+
+- `src/main/java/dz/sh/hidra/modules/planning/application/port/in/AuthorPlanningDraftUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/planning/application/service/PlanningDraftApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/planning/api/rest/controller/PlanningDraftController.java`
+- `src/main/java/dz/sh/hidra/modules/telemetry/application/contract/planning/PlanningTargetTelemetryContract.java`
+- `src/main/java/dz/sh/hidra/modules/telemetry/infrastructure/persistence/adapter/JdbcPlanningTargetTelemetryAdapter.java`
+- `src/main/resources/db/migration/V20261110_003__planning_draft_author_permission.sql`
+
+**Modify.**
+
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/planning/PlanningScopedAuthorizationContract.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/PlanningScopedAuthorizationQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/planning/application/service/PlanningAccessService.java`
+- `src/main/java/dz/sh/hidra/modules/planning/application/service/PlanRevisionUpdateApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/planning/application/port/out/OperationalPlanRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/planning/application/port/out/PlanRevisionRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/planning/application/port/out/PlanTargetRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/planning/application/mapper/PlanningApplicationMapper.java`
+- `src/main/java/dz/sh/hidra/modules/planning/application/service/PlanningQueryApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/planning/domain/model/PlanRevision.java`
+- `src/main/java/dz/sh/hidra/modules/planning/domain/model/OperationalPlan.java`
+- `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/adapter/JpaOperationalPlanRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/adapter/JpaPlanRevisionRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/adapter/JpaPlanTargetRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/repository/OperationalPlanJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/repository/PlanRevisionJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/planning/api/rest/PlanningRevisionApiExceptionHandler.java`
+- `src/test/java/dz/sh/hidra/modules/planning/application/service/PlanRevisionUpdateApplicationServiceTest.java`
+- `src/test/java/dz/sh/hidra/modules/planning/infrastructure/persistence/PlanningCompanyScopeNativeHttpPostgresIntegrationTest.java`
+- `.github/ci-test-inventory.json`
+- `doc/roadmap/ROADMAP.md`
+
+**Acceptance.** Extend the existing native Planning HTTP/PostgreSQL suite to prove draft/target create, replace and scoped readback with returned IDs and tokens. Cover wrong asset/point/unit/window, foreign/missing identifiers, stale metadata and target tokens, competing draft creation, current author grant revocation and non-DRAFT immutability. Invalid writes leave the revision token and target rows unchanged. Run focused Java tests and architecture/mapper checks. Full exact-SHA CI retains generated OpenAPI and dictionary evidence for the one documentation refresh. T03 retains submission, Workflow binding, independent review and activation.
+
+**Lock lookup path.** Include `src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/repository/PlanTargetJpaRepository.java` for scalar parent lookup. Resolve parent IDs without loading mutable entities before the plan/revision/target locks, so concurrency checks use the locked current rows.
+
+**Constructor regression coverage.** Include `src/test/java/dz/sh/hidra/modules/planning/semantic/PlanRevisionSemanticRemediationTest.java` to preserve its existing metadata cases with the newly required current author authorization dependency.
+
+**Local validation.** The focused run passed 88 cases, including seven native Planning HTTP cases against disposable PostgreSQL 16.6, existing metadata CAS tests, architecture and generated-mapper checks. The local runtime used the same application and case assertions with a scratch-only datasource bootstrap replacing Docker startup. Target readback succeeded through a restarted application context. Generated runtime OpenAPI passed supported backward compatibility. Documentation validation and its 21 tests passed. Hosted exact-SHA CI must verify the registered Testcontainers harness and retain the generated artifacts. Canonical OpenAPI and dictionary regeneration remain pending the one T02 documentation commit.

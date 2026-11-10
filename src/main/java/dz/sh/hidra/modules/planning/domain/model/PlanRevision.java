@@ -99,6 +99,20 @@ import java.time.Instant;
         workflowInstanceId = normalize(workflowInstanceId);
         }
 
+        public void requireEditableDraft() {
+            if (status != PlanRevisionStatus.DRAFT) {
+                throw new dz.sh.hidra.modules.planning.domain.exception.PlanningRevisionConflictException(
+                        "Only a DRAFT revision is editable. Approved and submitted revisions are immutable.");
+            }
+        }
+
+        public PlanRevision advanceDraftVersion(Instant at) {
+            requireEditableDraft();
+            return new PlanRevision(id, planId, revisionNumber, revisionCode, status, changeReasonCodeId,
+                    changeReasonText, baseRevisionId, submittedByActorId, submittedAt, approvedByActorId,
+                    approvedAt, workflowInstanceId, createdAt, at);
+        }
+
         private static String normalize(String value) {
             if (value == null || value.isBlank()) {
                 return null;

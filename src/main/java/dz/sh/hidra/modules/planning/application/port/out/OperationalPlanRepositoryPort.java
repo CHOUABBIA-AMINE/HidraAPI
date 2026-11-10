@@ -31,4 +31,8 @@ public interface OperationalPlanRepositoryPort {
     OperationalPlan save(OperationalPlan model);
 
     Optional<OperationalPlan> findById(String id);
+
+    default Optional<OperationalPlan> findByIdForUpdate(String id) {
+        return findById(id);
+    }
 }

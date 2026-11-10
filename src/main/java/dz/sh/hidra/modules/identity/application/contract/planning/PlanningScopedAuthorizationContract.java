@@ -23,7 +23,7 @@ import java.util.Set;
 
 public interface PlanningScopedAuthorizationContract {
 
-    enum Operation { PERIOD_READ, PERIOD_CREATE, PLAN_READ, PLAN_CREATE }
+    enum Operation { PERIOD_READ, PERIOD_CREATE, PLAN_READ, PLAN_CREATE, PLAN_AUTHOR }
 
     record Asset(String type, String id) { }
 

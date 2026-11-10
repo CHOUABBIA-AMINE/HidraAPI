@@ -38,6 +38,9 @@ import java.util.Optional;
 public interface PlanTargetJpaRepository extends JpaRepository<PlanTargetJpaEntity, String>, JpaSpecificationExecutor<PlanTargetJpaEntity> {
 
     Page<PlanTargetJpaEntity> findByRevisionId(String revisionId, Pageable pageable);
+    @Query("select target.revisionId from PlanTargetJpaEntity target where target.id = :id")
+    Optional<String> revisionIdForTarget(@Param("id") String id);
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select reference from PlanTargetJpaEntity reference where reference.id = :id")
     Optional<PlanTargetJpaEntity> findByIdForUpdate(@Param("id") String id);

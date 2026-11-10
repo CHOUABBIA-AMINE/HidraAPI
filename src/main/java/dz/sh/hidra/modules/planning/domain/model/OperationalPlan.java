@@ -126,6 +126,23 @@ import java.time.Instant;
         createdByActorId = normalize(createdByActorId);
         }
 
+        public void requireDraftAuthoring() {
+            if (status == OperationalPlanStatus.CLOSED || status == OperationalPlanStatus.CANCELLED
+                    || status == OperationalPlanStatus.SUPERSEDED || status == OperationalPlanStatus.SUBMITTED) {
+                throw new dz.sh.hidra.modules.planning.domain.exception.PlanningRevisionConflictException(
+                        "The operational plan does not allow draft authoring in its current state.");
+            }
+        }
+
+        public OperationalPlan withCurrentRevision(String revisionId, Instant at) {
+            if (revisionId == null || revisionId.isBlank()) {
+                throw new InvalidPlanningValueException("A current revision identity is required.");
+            }
+            return new OperationalPlan(id, periodId, code, nameAr, nameFr, nameEn, planTypeId, productTypeId,
+                    topologyScopeType, topologyScopeId, topologyScopeCode, topologyScopeNameSnapshot,
+                    responsibleOrganizationUnitId, status, revisionId, approvedRevisionId, createdByActorId, createdAt, at);
+        }
+
         private static String normalize(String value) {
             if (value == null || value.isBlank()) {
                 return null;

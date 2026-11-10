@@ -51,14 +51,15 @@ class PlanRevisionUpdateApplicationServiceTest {
     void setUp() {
         revisionRepository = mock(PlanRevisionRepositoryPort.class);
         planRepository = mock(OperationalPlanRepositoryPort.class);
-        service = new PlanRevisionUpdateApplicationService(revisionRepository, planRepository, (id, family) -> {});
+        service = new PlanRevisionUpdateApplicationService(revisionRepository, planRepository, (id, family) -> {}, mock(PlanningAccessService.class));
     }
 
     @Test
     void updatesCurrentRevisionWhenExpectedTokenMatchesAndReturnsApplicationResult() {
         PlanRevision revision = revision("REV-2", TOKEN);
+        when(revisionRepository.planIdForRevision("REV-2")).thenReturn(Optional.of("PLAN-1"));
         when(revisionRepository.findByIdForUpdate("REV-2")).thenReturn(Optional.of(revision));
-        when(planRepository.findById("PLAN-1")).thenReturn(Optional.of(plan("REV-2")));
+        when(planRepository.findByIdForUpdate("PLAN-1")).thenReturn(Optional.of(plan("REV-2")));
         when(revisionRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
         UpdatePlanRevisionUseCase.Result result = service.update(
@@ -83,8 +84,9 @@ class PlanRevisionUpdateApplicationServiceTest {
     @Test
     void rejectsStaleExpectedTokenWithoutSaving() {
         PlanRevision revision = revision("REV-2", TOKEN);
+        when(revisionRepository.planIdForRevision("REV-2")).thenReturn(Optional.of("PLAN-1"));
         when(revisionRepository.findByIdForUpdate("REV-2")).thenReturn(Optional.of(revision));
-        when(planRepository.findById("PLAN-1")).thenReturn(Optional.of(plan("REV-2")));
+        when(planRepository.findByIdForUpdate("PLAN-1")).thenReturn(Optional.of(plan("REV-2")));
 
         PlanningRevisionConflictException error = assertThrows(
                 PlanningRevisionConflictException.class,
@@ -105,8 +107,9 @@ class PlanRevisionUpdateApplicationServiceTest {
     @Test
     void rejectsRevisionThatIsNoLongerCurrentWithoutSaving() {
         PlanRevision revision = revision("REV-1", TOKEN);
+        when(revisionRepository.planIdForRevision("REV-1")).thenReturn(Optional.of("PLAN-1"));
         when(revisionRepository.findByIdForUpdate("REV-1")).thenReturn(Optional.of(revision));
-        when(planRepository.findById("PLAN-1")).thenReturn(Optional.of(plan("REV-2")));
+        when(planRepository.findByIdForUpdate("PLAN-1")).thenReturn(Optional.of(plan("REV-2")));
 
         assertThrows(
                 PlanningRevisionConflictException.class,

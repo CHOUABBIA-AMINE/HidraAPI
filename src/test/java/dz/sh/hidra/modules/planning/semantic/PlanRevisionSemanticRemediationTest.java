@@ -24,6 +24,8 @@ import dz.sh.hidra.modules.planning.domain.value.*;
 import dz.sh.hidra.modules.planning.application.port.out.*;
 import dz.sh.hidra.modules.planning.application.port.in.UpdatePlanRevisionUseCase;
 import dz.sh.hidra.modules.planning.application.service.PlanRevisionUpdateApplicationService;
+import dz.sh.hidra.modules.planning.application.service.PlanningAccessService;
+import static org.mockito.Mockito.mock;
 import java.time.Instant;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -55,17 +57,17 @@ class PlanRevisionSemanticRemediationTest {
     }
     @Test void approvedMetadataRejectedBeforeAnySaveOrCatalogLookup() {
         var repository=new Revisions(revision(1,null,PlanRevisionStatus.APPROVED));
-        var service=new PlanRevisionUpdateApplicationService(repository,new Plans(),(id,family)->{throw new AssertionError();});
+        var service=new PlanRevisionUpdateApplicationService(repository,new Plans(),(id,family)->{throw new AssertionError();},mock(PlanningAccessService.class));
         assertThrows(RuntimeException.class,()->service.update("rev",new UpdatePlanRevisionUseCase.Command(NOW,null,"edit")));
         assertEquals(0,repository.saves);
     }
     @Test void wrongOrInactiveReasonRejectedAndValidReasonUsesExactFamily() {
         var repository=new Revisions(revision(1,null,PlanRevisionStatus.DRAFT));
         PlanningCatalogEligibilityPort denied=(id,family)->{throw new IllegalArgumentException("inactive/wrong family");};
-        var service=new PlanRevisionUpdateApplicationService(repository,new Plans(),denied);
+        var service=new PlanRevisionUpdateApplicationService(repository,new Plans(),denied,mock(PlanningAccessService.class));
         assertThrows(IllegalArgumentException.class,()->service.update("rev",new UpdatePlanRevisionUseCase.Command(NOW,"wrong","edit")));
         assertEquals(0,repository.saves);
-        var accepted=new PlanRevisionUpdateApplicationService(repository,new Plans(),(id,family)->{assertEquals("reason",id);assertEquals("REVISION_REASON",family);});
+        var accepted=new PlanRevisionUpdateApplicationService(repository,new Plans(),(id,family)->{assertEquals("reason",id);assertEquals("REVISION_REASON",family);},mock(PlanningAccessService.class));
         assertEquals("reason",accepted.update("rev",new UpdatePlanRevisionUseCase.Command(NOW,"reason","edit")).changeReasonCodeId());
         assertEquals(1,repository.saves);
     }

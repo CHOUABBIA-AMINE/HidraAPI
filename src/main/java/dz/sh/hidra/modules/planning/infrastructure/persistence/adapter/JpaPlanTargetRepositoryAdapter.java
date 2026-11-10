@@ -54,6 +54,28 @@ public class JpaPlanTargetRepositoryAdapter implements PlanTargetRepositoryPort 
     }
 
     @Override
+    public Optional<String> revisionIdForTarget(String id) {
+        return repository.revisionIdForTarget(id);
+    }
+
+    @Override
+    public Optional<PlanTarget> findByIdForUpdate(String id) {
+        return repository.findByIdForUpdate(id).map(PlanningPersistenceMapper::toDomain);
+    }
+
+    @Override
+    @Transactional
+    public PlanTarget saveDraft(PlanTarget model) {
+        PlanTarget validated;
+        try {
+            validated = validation.validate(Objects.requireNonNull(model), null);
+        } catch (IllegalArgumentException invalidReference) {
+            throw new IllegalArgumentException("Target references or value policy are incompatible.");
+        }
+        return PlanningPersistenceMapper.toDomain(repository.saveAndFlush(PlanningPersistenceMapper.toEntity(validated)));
+    }
+
+    @Override
     public Optional<PlanTarget> findById(String id) {
         return repository.findById(id).map(PlanningPersistenceMapper::toDomain);
     }

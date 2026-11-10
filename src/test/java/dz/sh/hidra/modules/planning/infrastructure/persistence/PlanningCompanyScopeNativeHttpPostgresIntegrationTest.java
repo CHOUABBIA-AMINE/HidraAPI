@@ -261,6 +261,11 @@ class PlanningCompanyScopeNativeHttpPostgresIntegrationTest {
     void publishesRuntimeContractAndCatalogAndReadsPersistedPeriodAfterApplicationRestart() throws Exception {
         var author = actor(company, facility, true);
         String period = period(author, id(), company);
+        String plan = plan(author, period, facility);
+        JsonNode draft = body(createRevision(author, plan, planToken(author, plan)));
+        JsonNode target = body(writeTarget(author, draft.path("id").asText(), null,
+                targetBody(draft.path("updatedAt").asText(), targetType("NUMERIC"), telemetryPoint(facility))));
+        String targetId = target.path("target").path("id").asText();
         assertTrue(catalog.routes().stream().anyMatch(route -> V2.equals(route.route())
                 && route.methods().contains("POST") && route.permission().equals("planning:periods:execute")));
         JsonNode api = JSON.readTree(http.perform(
@@ -289,8 +294,231 @@ class PlanningCompanyScopeNativeHttpPostgresIntegrationTest {
                 var response = client.send(request, HttpResponse.BodyHandlers.ofString());
                 assertEquals(200, response.statusCode());
                 assertEquals(period, JSON.readTree(response.body()).path("id").asText());
+                var targetRequest = HttpRequest.newBuilder(URI.create(
+                        "http://127.0.0.1:" + port + V1 + "/targets/" + targetId))
+                        .header("Authorization", author.bearer()).GET().build();
+                var targetReadback = client.send(targetRequest, HttpResponse.BodyHandlers.ofString());
+                assertEquals(200, targetReadback.statusCode());
+                assertEquals(100, JSON.readTree(targetReadback.body()).path("targetValue").asInt());
+                assertEquals("DRAFT", JSON.readTree(targetReadback.body()).path("status").asText());
             }
         }
+    }
+
+    @Test
+    void authorsDraftTargetsWithAtomicVersionChecksAndScopedReadback() throws Exception {
+        var author = actor(company, facility, true);
+        var foreign = actor(otherCompany, foreignFacility, true);
+        String period = period(author, id(), company);
+        String plan = plan(author, period, facility);
+        JsonNode revision = body(createRevision(author, plan, planToken(author, plan)));
+        String revisionId = revision.path("id").asText();
+        assertEquals(1, revision.path("revisionNumber").asInt());
+        assertEquals("DRAFT", revision.path("status").asText());
+        assertEquals(revisionId, body(get(author, "/operational-plans/" + plan)).path("currentRevisionId").asText());
+        TelemetryFixture point = telemetryPoint(facility);
+        String targetType = targetType("NUMERIC");
+        var draft = targetBody(revision.path("updatedAt").asText(), targetType, point);
+        JsonNode created = body(writeTarget(author, revisionId, null, draft));
+        String target = created.path("target").path("id").asText();
+        get(author, "/targets/" + target).andExpect(status().isOk())
+                .andExpect(jsonPath("$.targetValue").value(100))
+                .andExpect(jsonPath("$.status").value("DRAFT"));
+        get(foreign, "/targets/" + target).andExpect(status().isNotFound());
+
+        writeTarget(author, revisionId, target, draft).andExpect(status().isConflict());
+        draft.put("expectedRevisionUpdatedAt", created.path("revisionUpdatedAt").asText());
+        draft.put("expectedTargetUpdatedAt", created.path("target").path("updatedAt").asText());
+        draft.put("targetValue", 105);
+        JsonNode updated = body(writeTarget(author, revisionId, target, draft));
+        assertEquals(target, updated.path("target").path("id").asText());
+        assertEquals(105, updated.path("target").path("targetValue").asInt());
+        http.perform(patch(V1 + "/revisions/" + revisionId).header("Authorization", author.bearer())
+                .contentType(MediaType.APPLICATION_JSON).content(JSON.writeValueAsString(Map.of(
+                        "expectedUpdatedAt", created.path("revisionUpdatedAt").asText(), "changeReasonText", "stale"))))
+                .andExpect(status().isConflict());
+        http.perform(patch(V1 + "/revisions/" + revisionId).header("Authorization", author.bearer())
+                .contentType(MediaType.APPLICATION_JSON).content(JSON.writeValueAsString(Map.of(
+                        "expectedUpdatedAt", updated.path("revisionUpdatedAt").asText(), "changeReasonText", "Synthetic update"))))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.changeReasonText").value("Synthetic update"));
+        db.update("""
+                UPDATE hidra_identity_user_permission_grant SET status='REVOKED',revoked_at=now()
+                WHERE user_id=? AND permission_id=? AND scope_reference_id=?
+                """, author.id(), permission("planning:scoped-plan:author"), facility);
+        draft.put("expectedRevisionUpdatedAt", body(get(author, "/revisions/" + revisionId)).path("updatedAt").asText());
+        writeTarget(author, revisionId, null, draft).andExpect(status().isNotFound());
+        assertEquals(1L, targetCount(revisionId));
+    }
+
+    @Test
+    void rejectsInvalidTargetEvidenceWithoutAdvancingDraftVersion() throws Exception {
+        var author = actor(company, facility, true);
+        String period = period(author, id(), company);
+        String plan = plan(author, period, facility);
+        JsonNode revision = body(createRevision(author, plan, planToken(author, plan)));
+        String revisionId = revision.path("id").asText();
+        String token = revision.path("updatedAt").asText();
+        TelemetryFixture point = telemetryPoint(facility);
+        TelemetryFixture wrongPoint = telemetryPoint(otherFacility);
+        String targetType = targetType("NUMERIC");
+        var draft = targetBody(token, targetType, point);
+        draft.put("targetValue", new java.math.BigDecimal("100.0000001"));
+        writeTarget(author, revisionId, null, draft).andExpect(status().isBadRequest());
+        draft.put("targetValue", 100);
+        draft.put("unitId", wrongPoint.unit());
+        writeTarget(author, revisionId, null, draft).andExpect(status().isBadRequest());
+        draft.put("unitId", point.unit());
+        draft.put("telemetryPointId", wrongPoint.point());
+        writeTarget(author, revisionId, null, draft).andExpect(status().isBadRequest());
+        draft.put("telemetryPointId", point.point());
+        draft.put("topologyAssetId", otherFacility);
+        writeTarget(author, revisionId, null, draft).andExpect(status().isBadRequest());
+        draft.put("topologyAssetId", facility);
+        draft.put("validTo", "2026-11-12T00:00:00Z");
+        writeTarget(author, revisionId, null, draft).andExpect(status().isBadRequest());
+        draft.put("validTo", "2026-11-11T00:00:00Z");
+        db.update("UPDATE hidra_planning_target_value_policy SET active=false WHERE target_type_id=?", targetType);
+        writeTarget(author, revisionId, null, draft).andExpect(status().isBadRequest());
+        assertEquals(0L, targetCount(revisionId));
+        assertEquals(token, body(get(author, "/revisions/" + revisionId)).path("updatedAt").asText());
+        db.update("UPDATE hidra_planning_target_value_policy SET active=true WHERE target_type_id=?", targetType);
+        JsonNode numeric = body(writeTarget(author, revisionId, null, draft));
+        var text = new java.util.LinkedHashMap<String, Object>(draft);
+        text.put("expectedRevisionUpdatedAt", numeric.path("revisionUpdatedAt").asText());
+        text.put("targetTypeId", targetType("TEXT"));
+        text.remove("targetValue");
+        text.remove("unitId");
+        text.remove("telemetryPointId");
+        text.put("targetTextValue", "Synthetic operating instruction");
+        body(writeTarget(author, revisionId, null, text));
+        assertEquals(2L, targetCount(revisionId));
+    }
+
+    @Test
+    void serializesDraftCreationAndRejectsSubmittedEdits() throws Exception {
+        var author = actor(company, facility, true);
+        String period = period(author, id(), company);
+        String plan = plan(author, period, facility);
+        String token = planToken(author, plan);
+        Callable<Integer> create = () -> createRevision(author, plan, token).andReturn().getResponse().getStatus();
+        try (var pool = Executors.newFixedThreadPool(2)) {
+            var outcomes = pool.invokeAll(List.of(create, create), 30, TimeUnit.SECONDS);
+            var statuses = new java.util.ArrayList<Integer>();
+            for (var outcome : outcomes) {
+                statuses.add(outcome.get());
+            }
+            statuses.sort(Integer::compareTo);
+            assertEquals(List.of(200, 409), statuses);
+        }
+        JsonNode revision = body(get(author, "/revisions?planId=" + plan)).path("content").get(0);
+        String revisionId = revision.path("id").asText();
+        db.update("UPDATE hidra_planning_plan_revision SET status='SUBMITTED' WHERE id=?", revisionId);
+        var target = targetBody(revision.path("updatedAt").asText(), targetType("NUMERIC"), telemetryPoint(facility));
+        writeTarget(author, revisionId, null, target).andExpect(status().isConflict());
+        http.perform(patch(V1 + "/revisions/" + revisionId).header("Authorization", author.bearer())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JSON.writeValueAsString(Map.of("expectedUpdatedAt", revision.path("updatedAt").asText()))))
+                .andExpect(status().isConflict());
+        createRevision(author, plan, planToken(author, plan)).andExpect(status().isConflict());
+        assertEquals(0L, targetCount(revisionId));
+        db.update("UPDATE hidra_planning_plan_revision SET status='WITHDRAWN' WHERE id=?", revisionId);
+        createRevision(author, plan, planToken(author, plan)).andExpect(status().isOk())
+                .andExpect(jsonPath("$.revisionNumber").value(2))
+                .andExpect(jsonPath("$.baseRevisionId").value(revisionId));
+    }
+
+    private ResultActions createRevision(Actor author, String plan, String token) throws Exception {
+        return http.perform(post(V1 + "/operational-plans/" + plan + "/revisions")
+                .header("Authorization", author.bearer()).contentType(MediaType.APPLICATION_JSON)
+                .content(JSON.writeValueAsString(Map.of("expectedPlanUpdatedAt", token))));
+    }
+
+    private String planToken(Actor author, String plan) throws Exception {
+        return body(get(author, "/operational-plans/" + plan)).path("updatedAt").asText();
+    }
+
+    private java.util.LinkedHashMap<String, Object> targetBody(String token, String type, TelemetryFixture point) {
+        var body = new java.util.LinkedHashMap<String, Object>();
+        body.put("expectedRevisionUpdatedAt", token);
+        body.put("targetTypeId", type);
+        body.put("topologyAssetType", "FACILITY");
+        body.put("topologyAssetId", facility);
+        body.put("telemetryPointId", point.point());
+        body.put("unitId", point.unit());
+        body.put("targetValue", 100);
+        body.put("validFrom", "2026-11-10T00:00:00Z");
+        body.put("validTo", "2026-11-11T00:00:00Z");
+        return body;
+    }
+
+    private ResultActions writeTarget(Actor author, String revision, String target, Map<String, Object> body)
+            throws Exception {
+        var request = target == null ? post(V1 + "/revisions/" + revision + "/targets")
+                : put(V1 + "/targets/" + target);
+        return http.perform(request.header("Authorization", author.bearer()).contentType(MediaType.APPLICATION_JSON)
+                .content(JSON.writeValueAsString(body)));
+    }
+
+    private long targetCount(String revision) {
+        return db.queryForObject("SELECT count(*) FROM hidra_planning_plan_target WHERE revision_id=?", Long.class, revision);
+    }
+
+    private String targetType(String representation) {
+        String type = id();
+        addCatalog(db, type, "TARGET_TYPE");
+        db.update("""
+                INSERT INTO hidra_planning_target_value_policy(target_type_id,representation_kind,active)
+                VALUES (?,?,true)
+                """, type, representation);
+        return type;
+    }
+
+    private record TelemetryFixture(String point, String unit) { }
+
+    private TelemetryFixture telemetryPoint(String asset) {
+        String sourceType = telemetryCatalog("SOURCE_TYPE", null);
+        String protocol = telemetryCatalog("PROTOCOL", null);
+        String deviceType = telemetryCatalog("DEVICE_TYPE", null);
+        String pointType = telemetryCatalog("POINT_TYPE", null);
+        String signal = telemetryCatalog("SIGNAL_TYPE", "NUMERIC");
+        String binding = telemetryCatalog("BINDING_ROLE", null);
+        String unit = id(), source = id(), device = id(), point = id();
+        db.update("""
+                INSERT INTO hidra_telemetry_unit(id,code,symbol,dimension,active,system_defined,created_at,updated_at)
+                VALUES (?,?,'bar','PRESSURE',true,false,now(),now())
+                """, unit, unit);
+        db.update("""
+                INSERT INTO hidra_telemetry_source(id,code,name_fr,source_type_id,protocol_id,status,created_at,updated_at)
+                VALUES (?,?,'Synthetic source',?,?,'ACTIVE',now(),now())
+                """, source, source, sourceType, protocol);
+        db.update("""
+                INSERT INTO hidra_telemetry_device(id,source_id,code,name_fr,device_type_id,status,created_at,updated_at)
+                VALUES (?,?,?,'Synthetic device',?,'ACTIVE',now(),now())
+                """, device, source, device, deviceType);
+        db.update("""
+                INSERT INTO hidra_telemetry_point(id,device_id,code,name_fr,point_type_id,signal_type_id,unit_id,status,created_at,updated_at)
+                VALUES (?,?,?,'Synthetic pressure',?,?,?,'ACTIVE',now(),now())
+                """, point, device, point, pointType, signal, unit);
+        db.update("""
+                INSERT INTO hidra_telemetry_point_binding(id,point_id,topology_asset_type_code,topology_asset_id,
+                    topology_asset_code,binding_role_id,active,valid_from,created_at,updated_at)
+                VALUES (?,?,'FACILITY',?,?,?,true,'2026-11-09T00:00:00Z',now(),now())
+                """, id(), point, asset, asset, binding);
+        return new TelemetryFixture(point, unit);
+    }
+
+    private String telemetryCatalog(String family, String shape) {
+        String key = id();
+        db.update("""
+                INSERT INTO hidra_telemetry_type_catalog(id,catalog_name,code,active,value_shape,numeric_unit_exempt,
+                    sort_order,system_defined,created_at,updated_at)
+                VALUES (?,?,?,true,?,false,0,false,now(),now())
+                """, key, family, key, shape);
+        return key;
+    }
+
+    private static JsonNode body(ResultActions result) throws Exception {
+        return JSON.readTree(result.andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
     }
 
     private record Actor(String id, String bearer) { }
@@ -307,7 +535,8 @@ class PlanningCompanyScopeNativeHttpPostgresIntegrationTest {
                 VALUES (?,?,?,'ACTIVE',now(),now())
                 """, id(), user, passwords.encode(PASSWORD));
         for (String route : List.of("periods:read", "create-planning-period:execute", "operational-plans:execute",
-                "operational-plans:read", "revisions:read", "targets:read", "nominations:read")) {
+                "operational-plans:read", "revisions:read", "targets:read", "nominations:read",
+                "revisions:execute", "revisions:update", "targets:update")) {
             grant(user, permission("planning:" + route), "GLOBAL", null, "GRANT");
         }
         if (createRoute) {
@@ -319,6 +548,9 @@ class PlanningCompanyScopeNativeHttpPostgresIntegrationTest {
             grant(user, planPermission, "CUSTOM", "planning-company:" + owner, "GRANT");
             grant(user, planPermission, "FACILITY", asset, "GRANT");
         }
+        String authorPermission = permission("planning:scoped-plan:author");
+        grant(user, authorPermission, "CUSTOM", "planning-company:" + owner, "GRANT");
+        grant(user, authorPermission, "FACILITY", asset, "GRANT");
         String token = authentication.authenticate(new DirectAuthenticationCommand(
                 ProviderType.LOCAL, user, PASSWORD, "synthetic-ip", "synthetic-t01", "synthetic-login")).accessToken();
         SecurityContextHolder.clearContext();

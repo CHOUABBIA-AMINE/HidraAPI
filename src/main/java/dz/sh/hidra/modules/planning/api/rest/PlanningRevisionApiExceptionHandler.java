@@ -20,7 +20,9 @@
 package dz.sh.hidra.modules.planning.api.rest;
 
 import dz.sh.hidra.modules.planning.api.rest.controller.PlanRevisionCommandController;
+import dz.sh.hidra.modules.planning.api.rest.controller.PlanningDraftController;
 import dz.sh.hidra.modules.planning.domain.exception.PlanningRevisionConflictException;
+import dz.sh.hidra.modules.planning.domain.exception.InvalidPlanningValueException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -29,8 +31,16 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
-@RestControllerAdvice(assignableTypes = PlanRevisionCommandController.class)
+@RestControllerAdvice(assignableTypes = {PlanRevisionCommandController.class, PlanningDraftController.class})
 public final class PlanningRevisionApiExceptionHandler {
+
+    @ExceptionHandler(InvalidPlanningValueException.class)
+    public ProblemDetail invalidValue(InvalidPlanningValueException exception) {
+        ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, exception.getMessage());
+        detail.setTitle("INVALID_PLANNING_VALUE");
+        detail.setProperty("code", "INVALID_PLANNING_VALUE");
+        return detail;
+    }
 
     @ExceptionHandler(PlanningRevisionConflictException.class)
     public ProblemDetail conflict(PlanningRevisionConflictException exception) {

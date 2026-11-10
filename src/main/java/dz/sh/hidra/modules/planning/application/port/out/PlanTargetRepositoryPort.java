@@ -31,4 +31,16 @@ public interface PlanTargetRepositoryPort {
     PlanTarget save(PlanTarget model);
 
     Optional<PlanTarget> findById(String id);
+
+    default Optional<String> revisionIdForTarget(String id) {
+        return findById(id).map(PlanTarget::revisionId);
+    }
+
+    default Optional<PlanTarget> findByIdForUpdate(String id) {
+        return findById(id);
+    }
+
+    default PlanTarget saveDraft(PlanTarget model) {
+        return save(model);
+    }
 }

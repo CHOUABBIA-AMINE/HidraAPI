@@ -81,6 +81,11 @@ public class JpaOperationalPlanRepositoryAdapter implements OperationalPlanRepos
     }
 
     @Override
+    public Optional<OperationalPlan> findByIdForUpdate(String id) {
+        return repository.findByIdForUpdate(id).map(PlanningPersistenceMapper::toDomain);
+    }
+
+    @Override
     public Optional<OperationalPlan> findById(String id) {
         return repository.findById(id).map(PlanningPersistenceMapper::toDomain);
     }

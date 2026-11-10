@@ -57,6 +57,16 @@ public class JpaPlanRevisionRepositoryAdapter implements PlanRevisionRepositoryP
     }
 
     @Override
+    public int highestRevisionNumber(String planId) {
+        return repository.highestRevisionNumber(planId);
+    }
+
+    @Override
+    public Optional<String> planIdForRevision(String id) {
+        return repository.planIdForRevision(id);
+    }
+
+    @Override
     public Optional<PlanRevision> findById(String id) {
         return repository.findById(id).map(PlanningPersistenceMapper::toDomain);
     }

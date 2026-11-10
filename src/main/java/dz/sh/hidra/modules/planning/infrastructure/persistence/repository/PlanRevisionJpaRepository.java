@@ -38,6 +38,12 @@ public interface PlanRevisionJpaRepository extends JpaRepository<PlanRevisionJpa
 
     Page<PlanRevisionJpaEntity> findByPlanId(String planId, Pageable pageable);
 
+    @Query("select coalesce(max(revision.revisionNumber), 0) from PlanRevisionJpaEntity revision where revision.planId = :planId")
+    int highestRevisionNumber(@Param("planId") String planId);
+
+    @Query("select revision.planId from PlanRevisionJpaEntity revision where revision.id = :id")
+    Optional<String> planIdForRevision(@Param("id") String id);
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select revision from PlanRevisionJpaEntity revision where revision.id = :id")
     Optional<PlanRevisionJpaEntity> findByIdForUpdate(@Param("id") String id);

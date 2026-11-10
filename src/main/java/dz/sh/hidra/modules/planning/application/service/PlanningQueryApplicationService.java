@@ -20,6 +20,7 @@
 package dz.sh.hidra.modules.planning.application.service;
 
 import dz.sh.hidra.modules.planning.application.port.in.PlanningQueryUseCase;
+import dz.sh.hidra.modules.planning.application.mapper.PlanningApplicationMapper;
 import dz.sh.hidra.modules.planning.application.port.out.PlanningQueryPort;
 import dz.sh.hidra.modules.planning.application.port.out.PlanningQueryPort.Slice;
 import dz.sh.hidra.modules.planning.domain.model.Nomination;
@@ -81,14 +82,14 @@ public class PlanningQueryApplicationService implements PlanningQueryUseCase {
         validatePage(page, size);
         var assets = access.readableAssets();
         queryPort.findOperationalPlanById(assets, normalizedPlanId).orElseThrow(PlanningAccessService::unavailable);
-        return page(queryPort.findRevisionsByPlanId(assets, normalizedPlanId, page, size), page, size, this::toRevisionView);
+        return page(queryPort.findRevisionsByPlanId(assets, normalizedPlanId, page, size), page, size, PlanningApplicationMapper::toRevisionView);
     }
 
     @Override
     public PlanRevisionView revision(String id) {
         String normalizedId = requireId(id, "plan revision");
         return queryPort.findRevisionById(access.readableAssets(), normalizedId)
-                .map(this::toRevisionView)
+                .map(PlanningApplicationMapper::toRevisionView)
                 .orElseThrow(PlanningAccessService::unavailable);
     }
 
@@ -115,14 +116,14 @@ public class PlanningQueryApplicationService implements PlanningQueryUseCase {
         validatePage(page, size);
         var assets = access.readableAssets();
         queryPort.findRevisionById(assets, normalizedRevisionId).orElseThrow(PlanningAccessService::unavailable);
-        return page(queryPort.findTargetsByRevisionId(assets, normalizedRevisionId, page, size), page, size, this::toTargetView);
+        return page(queryPort.findTargetsByRevisionId(assets, normalizedRevisionId, page, size), page, size, PlanningApplicationMapper::toTargetView);
     }
 
     @Override
     public PlanTargetView target(String id) {
         String normalizedId = requireId(id, "plan target");
         return queryPort.findTargetById(access.readableAssets(), normalizedId)
-                .map(this::toTargetView)
+                .map(PlanningApplicationMapper::toTargetView)
                 .orElseThrow(PlanningAccessService::unavailable);
     }
 
@@ -172,15 +173,6 @@ public class PlanningQueryApplicationService implements PlanningQueryUseCase {
         );
     }
 
-    private PlanRevisionView toRevisionView(PlanRevision revision) {
-        return new PlanRevisionView(
-                revision.id(), revision.planId(), revision.revisionNumber(), revision.revisionCode(), name(revision.status()),
-                revision.changeReasonCodeId(), revision.changeReasonText(), revision.baseRevisionId(),
-                revision.submittedByActorId(), revision.submittedAt(), revision.approvedByActorId(), revision.approvedAt(),
-                revision.workflowInstanceId(), revision.createdAt(), revision.updatedAt()
-        );
-    }
-
     private NominationView toNominationView(Nomination nomination) {
         return new NominationView(
                 nomination.id(), nomination.revisionId(), nomination.scenarioId(), nomination.code(), nomination.nominationTypeId(),
@@ -189,16 +181,6 @@ public class PlanningQueryApplicationService implements PlanningQueryUseCase {
                 nomination.destinationAssetId(), nomination.destinationAssetCode(), nomination.shipperPartyId(),
                 nomination.shipperPartyCodeSnapshot(), nomination.counterpartyId(), nomination.contractReferenceId(), nomination.priority(),
                 name(nomination.status()), nomination.periodStart(), nomination.periodEnd(), nomination.createdAt(), nomination.updatedAt()
-        );
-    }
-
-    private PlanTargetView toTargetView(PlanTarget target) {
-        return new PlanTargetView(
-                target.id(), target.revisionId(), target.scenarioId(), target.nominationId(), target.targetTypeId(),
-                target.topologyAssetType(), target.topologyAssetId(), target.topologyAssetCode(), target.topologyAssetNameSnapshot(),
-                target.telemetryPointId(), target.telemetryPointCodeSnapshot(), target.targetValue(), target.targetTextValue(), target.unitId(),
-                target.toleranceLow(), target.toleranceHigh(), target.validFrom(), target.validTo(), target.priority(), name(target.status()),
-                target.createdAt(), target.updatedAt()
         );
     }
 

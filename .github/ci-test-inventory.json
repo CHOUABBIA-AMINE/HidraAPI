@@ -7038,7 +7038,7 @@
       "lane": "unit-architecture",
       "owner": "planning",
       "path": "src/test/java/dz/sh/hidra/modules/planning/application/service/PlanRevisionUpdateApplicationServiceTest.java",
-      "source_sha256": "8fb55efc7535d704edb4145b86e628d4e46bbf300f5456c45e89bfdda58d5cdd",
+      "source_sha256": "f2c3d77d890322d8d5dcf3ebc0a649eef02168f66ab984d9ff2c13e330c94cde",
       "supports": []
     },
     {
@@ -7070,18 +7070,21 @@
     {
       "baseline_seconds": 0.0,
       "cases": [
+        "authorsDraftTargetsWithAtomicVersionChecksAndScopedReadback",
         "concurrentSameCompanyCreatesHaveExactlyOneWinner",
         "enforcesVersionedPeriodContractAndCompanyUniqueness",
         "filtersPlansAndDescendantsBeforeDisclosureAndHonorsCurrentDenies",
-        "publishesRuntimeContractAndCatalogAndReadsPersistedPeriodAfterApplicationRestart"
+        "publishesRuntimeContractAndCatalogAndReadsPersistedPeriodAfterApplicationRestart",
+        "rejectsInvalidTargetEvidenceWithoutAdvancingDraftVersion",
+        "serializesDraftCreationAndRejectsSubmittedEdits"
       ],
       "class": "dz.sh.hidra.modules.planning.infrastructure.persistence.PlanningCompanyScopeNativeHttpPostgresIntegrationTest",
-      "dependency_reason": "T01 signed native Planning HTTP acceptance against a fresh PostgreSQL/Flyway schema.",
+      "dependency_reason": "T01 scope and T02 draft-authoring synthetic native HTTP acceptance against fresh PostgreSQL/Flyway, including concurrency and application restart.",
       "fast": false,
       "lane": "postgres-integration",
       "owner": "planning",
       "path": "src/test/java/dz/sh/hidra/modules/planning/infrastructure/persistence/PlanningCompanyScopeNativeHttpPostgresIntegrationTest.java",
-      "source_sha256": "49cd876ee144f21537d68bbeaa26a2f2859746b7881994c0388d339d72851b68",
+      "source_sha256": "9244891d8446cb47ba80df2f5d48f461f0d94a07faf347770598acc7cdaea4b2",
       "supports": []
     },
     {
@@ -7223,7 +7226,7 @@
       "lane": "unit-architecture",
       "owner": "planning",
       "path": "src/test/java/dz/sh/hidra/modules/planning/semantic/PlanRevisionSemanticRemediationTest.java",
-      "source_sha256": "8bd3edf26baaceef1470af107f7da92e67ada36df777cc28913ff43ff52b9542",
+      "source_sha256": "2864ae1028a5b7a9dbcb279b47c03e930a026bb15b27840c9941548c9f96e4ac",
       "supports": []
     },
     {

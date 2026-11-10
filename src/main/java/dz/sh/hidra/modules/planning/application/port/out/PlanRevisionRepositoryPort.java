@@ -27,7 +27,15 @@ public interface PlanRevisionRepositoryPort {
 
     PlanRevision save(PlanRevision model);
 
+    default int highestRevisionNumber(String planId) {
+        throw new UnsupportedOperationException("Revision sequence query is unavailable.");
+    }
+
     Optional<PlanRevision> findById(String id);
+
+    default Optional<String> planIdForRevision(String id) {
+        return findById(id).map(PlanRevision::planId);
+    }
 
     default Optional<PlanRevision> findByIdForUpdate(String id) {
         return findById(id);

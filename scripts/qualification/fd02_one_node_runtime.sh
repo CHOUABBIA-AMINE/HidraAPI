@@ -30,7 +30,6 @@ head_sha="$(git rev-parse HEAD)"
 
 # Synthesize unique credentials at runtime; no production secrets or database fixtures are stored in Git.
 fd02_random() { python3 -c 'import secrets;print(secrets.token_hex(32))'; }
-migration_password="$(fd02_random)"
 runtime_password="$(fd02_random)"
 admin_password="$(fd02_random)"
 signing_key="$(fd02_random)"
@@ -42,16 +41,18 @@ export PGPASSWORD="$FD02_PG_ADMIN_PASSWORD" PGUSER='postgres' PGDATABASE='postgr
 pg_isready -h "$PGHOST" -p "$PGPORT" -U postgres >/dev/null || { echo 'FD02 PostgreSQL is unavailable' >&2; exit 2; }
 pg_version="$(psql -X -t -A -v ON_ERROR_STOP=1 -c 'SHOW server_version_num')"
 [[ "$pg_version" =~ ^16[0-9]{4}$ ]] || { echo 'FD02 requires PostgreSQL 16' >&2; exit 2; }
-# Only the isolated admin performs initial CREATE ROLE/DB. It is never a runtime identity.
-psql -X -q -v ON_ERROR_STOP=1 -v migrator_password="$migration_password" \
-     -v runtime_password="$runtime_password" <<'SQL'
-CREATE ROLE fd02_migrator LOGIN NOSUPERUSER NOCREATEROLE NOCREATEDB PASSWORD :'migrator_password';
+# Only the isolated PostgreSQL bootstrap administrator provisions this disposable
+# database and runs migration DDL. The Java application never uses these rights.
+# pgcrypto's C-language objects must share the trusted migration owner required
+# by the existing Identity commit-proof catalog invariant.
+psql -X -q -v ON_ERROR_STOP=1 -v runtime_password="$runtime_password" <<'SQL'
 CREATE ROLE fd02_runtime LOGIN NOSUPERUSER NOCREATEROLE NOCREATEDB PASSWORD :'runtime_password';
 SQL
-psql -X -q -v ON_ERROR_STOP=1 -c 'CREATE DATABASE fd02_qualification OWNER fd02_migrator'
+psql -X -q -v ON_ERROR_STOP=1 -c 'CREATE DATABASE fd02_qualification OWNER postgres'
 
-# Migrate with an independent, non-superuser database owner via the very same
-# production artifact's Flyway/PostgreSQL libraries; no SQL replay of migrations.
+# Migrate as the isolated privileged schema owner, not as the ordinary runtime
+# account. Reuse the actual packaged Flyway/PostgreSQL libraries and original
+# immutable migrations; no SQL replay or migration edits.
 echo 'Building the pinned Java 21 artifact for FD02 ...'
 bash ./mvnw -B -ntp -DskipTests package >"$work/build.log" 2>&1 || {
   echo 'FD02 Maven artifact build failed (inspect private runner build log)' >&2; exit 1;
@@ -79,15 +80,15 @@ public final class Fd02Flyway {
 JAVA
 javac -cp "$lib" "$work/Fd02Flyway.java"
 export FD02_JDBC_URL="jdbc:postgresql://${PGHOST}:${PGPORT}/fd02_qualification"
-export FD02_MIGRATOR_USER='fd02_migrator' FD02_MIGRATOR_PASSWORD="$migration_password"
+export FD02_MIGRATOR_USER='postgres' FD02_MIGRATOR_PASSWORD="$FD02_PG_ADMIN_PASSWORD"
 java -cp "$work:$lib" Fd02Flyway "$repo/src/main/resources/db/migration" migrate \
   >"$work/migrate.log" 2>&1 || { echo 'Flyway fresh-schema migration/validation failed' >&2; exit 1; }
 flyway_applied="$(sed -n 's/^FD02_FLYWAY_APPLIED=//p' "$work/migrate.log" | tail -n 1)"
 [[ "$flyway_applied" =~ ^[1-9][0-9]*$ ]] || { echo 'No Flyway migration history proved' >&2; exit 1; }
 
 # A single synthetic LOCAL provider is a reference fixture, not a business state transition.
-PGPASSWORD="$migration_password" psql -X -q -v ON_ERROR_STOP=1 -h "$PGHOST" -p "$PGPORT" \
-  -U fd02_migrator -d fd02_qualification <<'SQL'
+PGPASSWORD="$FD02_PG_ADMIN_PASSWORD" psql -X -q -v ON_ERROR_STOP=1 -h "$PGHOST" -p "$PGPORT" \
+  -U postgres -d fd02_qualification <<'SQL'
 DO $$ BEGIN
   IF (SELECT count(*) FROM public.hidra_identity_provider WHERE provider_type='LOCAL' AND status='ACTIVE') <> 0 THEN
     RAISE EXCEPTION 'Expected a fresh schema without active LOCAL providers';
@@ -104,8 +105,14 @@ GRANT SELECT ON ALL TABLES IN SCHEMA public TO fd02_runtime;
 GRANT USAGE,SELECT ON ALL SEQUENCES IN SCHEMA public TO fd02_runtime;
 SELECT format('GRANT INSERT,UPDATE,DELETE ON TABLE public.%I TO fd02_runtime;',tablename)
  FROM pg_catalog.pg_tables
- WHERE schemaname='public' AND tablename LIKE 'hidra_identity_%'\gexec
--- Explicitly preserve denial of protected engineering internals from the ordinary runtime connection.
+ WHERE schemaname='public' AND tablename LIKE 'hidra_identity_%'
+   AND tablename NOT LIKE 'hidra_identity_org_commit_%'\gexec
+-- Granting broad table reads above must not expose the Identity commit-proof
+-- key/provenance store or protected engineering internals. These are not
+-- application-owned regular tables and their existing owner ACLs stay closed.
+REVOKE ALL ON public.hidra_identity_org_commit_key_event,
+    public.hidra_identity_org_commit_key_head,
+    public.hidra_identity_org_commit_proof_use FROM fd02_runtime;
 REVOKE ALL ON public.hidra_topology_engineering_baseline_revision FROM fd02_runtime;
 REVOKE ALL ON public.hidra_topology_station_configuration_revision FROM fd02_runtime;
 SQL
@@ -121,6 +128,12 @@ if PGPASSWORD="$runtime_password" psql -X -q -v ON_ERROR_STOP=1 -h "$PGHOST" -p 
     -c 'SELECT count(*) FROM public.hidra_topology_engineering_baseline_revision' \
     >"$work/denied-protected.log" 2>&1; then
   echo 'FAIL: ordinary app unexpectedly reads protected engineering source' >&2; exit 1
+fi
+if PGPASSWORD="$runtime_password" psql -X -q -v ON_ERROR_STOP=1 -h "$PGHOST" -p "$PGPORT" \
+    -U fd02_runtime -d fd02_qualification \
+    -c 'SELECT count(*) FROM public.hidra_identity_org_commit_key_head' \
+    >"$work/denied-identity-key.log" 2>&1; then
+  echo 'FAIL: ordinary app unexpectedly reads the Identity commit-proof key' >&2; exit 1
 fi
 
 export HIDRA_ENVIRONMENT='production' SPRING_PROFILES_ACTIVE='production'
@@ -196,7 +209,7 @@ evidence={'task':'HAPI-932/FD-02','qualification':'synthetic-single-node',
           'postgres_server_version_num':os.environ['FD02_PG_VERSION'],
           'flyway_applied_migrations':int(os.environ['FD02_MIGRATIONS']),
           'flyway_validated_pre_and_post_restart':True,
-          'separate_non_superuser_migration_and_runtime_roles':True,
+          'isolated_privileged_schema_migration_and_separate_non_superuser_runtime':True,
           'ordinary_runtime_ddl_and_protected_read_denied':True,
           'bootstrap_disabled_on_second_os_process':True,
           'same_ids_after_new_os_process':True,

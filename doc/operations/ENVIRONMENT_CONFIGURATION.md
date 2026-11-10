@@ -218,10 +218,11 @@ HAPI-932 verifies that a Java 21 JAR can start with the already-defined
 `HIDRA_ENVIRONMENT=production`, `SPRING_PROFILES_ACTIVE=production`, explicit
 native HTTP(S) issuer, a non-superuser runtime database identity and a
 separately migrated PostgreSQL 16 schema. The isolated workflow creates
-random synthetic credentials; no production secret or approved infrastructure
+random synthetic credentials; the migration privilege is never used by
+HidraAPI's ordinary JVM runtime account; no production secret or approved infrastructure
 is selected by this test. The runner explicitly sets `SPRING_FLYWAY_ENABLED=false`
-for the application process **only after** a separate non-superuser Flyway
-migration and validation step; `spring.jpa.hibernate.ddl-auto=validate`
+for the application process **only after** a separate privileged schema-owner Flyway
+migration and validation step in the disposable PostgreSQL service; `spring.jpa.hibernate.ddl-auto=validate`
 remains effective. The native LOCAL bootstrap is enabled only for the initial
 JVM and disabled for the independent second JVM on the same database. See
 [FD-02 qualification](FD02_ONE_NODE_API_QUALIFICATION.md) for reproducible

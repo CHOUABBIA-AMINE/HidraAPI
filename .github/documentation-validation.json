@@ -543,6 +543,12 @@
       ],
       "status": "LEGACY-P1"
     },
+    "doc/operations/FD02_ONE_NODE_API_QUALIFICATION.md": {
+      "metadata_from": [
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
     "doc/operations/HIGH_AVAILABILITY_ARCHITECTURE.md": {
       "metadata_from": [
         "doc/governance/DOCUMENT_REGISTER.md"

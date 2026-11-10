@@ -5010,4 +5010,42 @@ be checked without PostgreSQL; absence of local Maven/PostgreSQL means actual
 runtime acceptance is deferred to the isolated hosted job, not claimed.
 
 
+### Owner-approved HAPI-932 CI failure repair — 2026-11-10
+
+The owner explicitly approved this **same-task, production-first** repair after
+the exact-SHA `9ca89f982e373c2d9eff152ab4bf597b2c916896` failures:
+[Full CI #1163](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42753648015)
+failed the canonical documentation inventory because the new FD-02 runbook
+was omitted from `.github/documentation-validation.json`, while
+[Isolated Qualification #5](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42753647992)
+failed during Flyway with PostgreSQL's `Unsafe Identity proof catalog`
+from the existing Identity cryptographic-owner invariant. All fourteen
+PostgreSQL integration shards and Java unit/architecture lanes passed that
+Full CI run; the separate Documentation Validation #958 passed. These
+historical results are **not** FD-02 acceptance.
+
+**Authorized allowlist expansion for this repair only:** MODIFY
+`.github/documentation-validation.json` to inventory the new runbook
+with its explicit CURRENT status and normal governance metadata inheritance.
+No other validator, inventory exclusions, older historical records, phase
+membership, task count, migration or application source may be changed.
+
+**Approved migration-authority correction:** The current production-first
+paragraph's *non-superuser migrator* requirement is superseded for the
+**disposable CI PostgreSQL service only**. Its dedicated schema-migration
+phase may use the isolated privileged PostgreSQL bootstrap owner required by
+the existing trusted `pgcrypto` object and commit-proof catalog rules. The
+running Java application must **still** use a different, non-superuser,
+non-DDL account with protected engineering and Identity proof-key reads
+denied; no live privilege template or production role elevation is implied.
+Keep the original migrations, native authorization, audit and test gates
+unchanged. Update only the existing FD-02 lifecycle script, this owning
+ledger, its runbook and corresponding environment description, together
+with the one manifest entry.
+
+**Acceptance remains pending:** the repaired pinned SHA must obtain both
+the applicable Full CI success and actual isolated PostgreSQL 16 + JAR +
+HTTP + independent JVM restart success; a successful documentation check
+alone cannot mark HAPI-932 VERIFIED or release-ready.
+
 <!-- task-register:payload:end -->

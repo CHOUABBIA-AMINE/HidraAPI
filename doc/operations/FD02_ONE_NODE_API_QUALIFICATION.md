@@ -1,5 +1,9 @@
 # FD-02 — production-first single-node API smoke (HAPI-932)
 
+## Status
+
+CURRENT — HAPI-932 synthetic runtime qualification guidance; not a production deployment or operational acceptance.
+
 **Scope:** Development-only synthetic qualification of one real Java 21 HidraAPI JAR and a single fresh PostgreSQL 16 database using production-profile configuration. This is neither a production deployment nor complete six-module business acceptance.
 
 ## Goal and decision rule
@@ -10,9 +14,9 @@ Module-level acceptance remains with existing Full CI and native PostgreSQL test
 
 ## Repeatable isolated execution
 
-Run in a disposable GitHub Actions hosted runner via **HidraAPI CI Qualification (isolated)**, `fd02-runtime` job. The job runs on the FD-02 file changes on `main` or by explicit `workflow_dispatch`. The PostgreSQL 16 service uses a throwaway credential derived from the isolated job identity (never a production secret). `scripts/qualification/fd02_one_node_runtime.sh` generates separate random migration, runtime, bootstrap and JWT credentials for that invocation. It creates a fresh `fd02_qualification` database, applies the same packaged Flyway/PostgreSQL libraries to the source migrations, validates them, provisions a single synthetic LOCAL provider, then starts a production-profile JAR with **only** the non-superuser runtime database identity. It disables application Flyway auto-migration because migration/validation is handled by the separate non-superuser schema owner; Hibernate schema validation stays active.
+Run in a disposable GitHub Actions hosted runner via **HidraAPI CI Qualification (isolated)**, `fd02-runtime` job. The job runs on the FD-02 file changes on `main` or by explicit `workflow_dispatch`. The PostgreSQL 16 service uses a throwaway credential derived from the isolated job identity (never a production secret). `scripts/qualification/fd02_one_node_runtime.sh` generates separate random migration, runtime, bootstrap and JWT credentials for that invocation. It creates a fresh `fd02_qualification` database owned by the isolated privileged PostgreSQL bootstrap administrator, applies the same packaged Flyway/PostgreSQL libraries to the unchanged source migrations, validates them, provisions a single synthetic LOCAL provider, then starts a production-profile JAR with **only** the non-superuser runtime database identity. The privileged migration identity is confined to this disposable CI database and never passed to the running application. It disables application Flyway auto-migration because migration/validation is handled by the separate non-superuser schema owner; Hibernate schema validation stays active.
 
-The runtime's temporary privileges are sufficient for the bounded test: schema usage, table reads except explicit protected engineering exclusions, and Identity writes. They are **not** a production privilege specification. DDL and protected engineering reads must fail for the ordinary account. Any required additional production writer is a separate configuration decision; do not broaden the runtime role or omit a denial merely to turn this smoke green.
+The runtime's temporary privileges are sufficient for the bounded test: schema usage, table reads except explicit protected engineering exclusions, and Identity writes. They are **not** a production privilege specification. DDL and protected engineering reads must fail for the ordinary account. Access to the Identity commit-proof key and history relations is explicitly denied; those internal relations are not ordinary runtime data. The existing Identity migration validates trusted `pgcrypto` object ownership and must not be weakened to accommodate a disposable migration principal. Any required additional production writer is a separate configuration decision; do not broaden the runtime role or omit a denial merely to turn this smoke green.
 
 The initial JVM enables the controlled LOCAL administrator bootstrap and uses an explicit native HTTP issuer; the second JVM disables bootstrap, retains the database and signing key, and must return the same administrator and newly registered synthetic user IDs through genuine HTTP. No SQL fixture is used for the business registration; the sole synthetic SQL reference fixture is the active LOCAL provider.
 

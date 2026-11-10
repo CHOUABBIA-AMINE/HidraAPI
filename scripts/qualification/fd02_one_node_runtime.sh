@@ -47,6 +47,9 @@ pg_version="$(psql -X -t -A -v ON_ERROR_STOP=1 -c 'SHOW server_version_num')"
 # by the existing Identity commit-proof catalog invariant.
 psql -X -q -v ON_ERROR_STOP=1 -v runtime_password="$runtime_password" <<'SQL'
 CREATE ROLE fd02_runtime LOGIN NOSUPERUSER NOCREATEROLE NOCREATEDB PASSWORD :'runtime_password';
+-- Permission-only, non-login Audit append role. The JVM still connects as
+-- fd02_runtime, inheriting INSERT on exactly one Audit-owned table.
+CREATE ROLE fd02_audit_append_writer NOLOGIN NOSUPERUSER NOCREATEROLE NOCREATEDB;
 SQL
 psql -X -q -v ON_ERROR_STOP=1 -c 'CREATE DATABASE fd02_qualification OWNER postgres'
 
@@ -86,7 +89,7 @@ java -cp "$work:$lib" Fd02Flyway "$repo/src/main/resources/db/migration" migrate
 flyway_applied="$(sed -n 's/^FD02_FLYWAY_APPLIED=//p' "$work/migrate.log" | tail -n 1)"
 [[ "$flyway_applied" =~ ^[1-9][0-9]*$ ]] || { echo 'No Flyway migration history proved' >&2; exit 1; }
 
-# A single synthetic LOCAL provider is a reference fixture, not a business state transition.
+# Synthetic LOCAL and Audit catalog reference fixtures, never business transitions.
 PGPASSWORD="$FD02_PG_ADMIN_PASSWORD" psql -X -q -v ON_ERROR_STOP=1 -h "$PGHOST" -p "$PGPORT" \
   -U postgres -d fd02_qualification <<'SQL'
 DO $$ BEGIN
@@ -97,6 +100,22 @@ END $$;
 INSERT INTO public.hidra_identity_provider
  (id,code,name,provider_type,sync_enabled,just_in_time_provisioning_enabled,status,created_at,updated_at)
  VALUES ('fd02-local-provider','FD02_LOCAL','Synthetic FD02 LOCAL','LOCAL',false,false,'ACTIVE',now(),now());
+-- The native bootstrap runner currently supplies these strings directly as
+-- Audit eventTypeId and eventCategoryId. Its domain/persistence contracts
+-- require matching active, correctly-familied catalog IDs.
+DO $$ BEGIN
+  IF EXISTS (
+    SELECT 1 FROM public.hidra_audit_catalog_entry
+    WHERE id IN ('IDENTITY_LOCAL_ADMIN_BOOTSTRAP', 'SECURITY_ADMINISTRATION')
+  ) THEN
+    RAISE EXCEPTION 'FD02 synthetic Audit catalog IDs unexpectedly pre-exist';
+  END IF;
+END $$;
+INSERT INTO public.hidra_audit_catalog_entry
+  (id, catalog_name, code, active, sort_order, system_defined, created_at, updated_at)
+VALUES
+  ('IDENTITY_LOCAL_ADMIN_BOOTSTRAP', 'EVENT_TYPE', 'IDENTITY_LOCAL_ADMIN_BOOTSTRAP', true, 900, false, now(), now()),
+  ('SECURITY_ADMINISTRATION', 'EVENT_CATEGORY', 'SECURITY_ADMINISTRATION', true, 901, false, now(), now());
 REVOKE CREATE ON SCHEMA public FROM PUBLIC;
 REVOKE CREATE ON SCHEMA public FROM fd02_runtime;
 GRANT CONNECT ON DATABASE fd02_qualification TO fd02_runtime;
@@ -107,6 +126,42 @@ SELECT format('GRANT INSERT,UPDATE,DELETE ON TABLE public.%I TO fd02_runtime;',t
  FROM pg_catalog.pg_tables
  WHERE schemaname='public' AND tablename LIKE 'hidra_identity_%'
    AND tablename NOT LIKE 'hidra_identity_org_commit_%'\gexec
+-- A separate NOLOGIN Audit capability controls the sole extra write required
+-- by LocalAdministratorBootstrapRunner. No Audit UPDATE/DELETE/TRUNCATE,
+-- no schema DDL, no table ownership, no role SET or membership delegation.
+GRANT INSERT ON TABLE public.hidra_audit_event TO fd02_audit_append_writer;
+GRANT fd02_audit_append_writer TO fd02_runtime
+  WITH ADMIN FALSE, INHERIT TRUE, SET FALSE;
+REVOKE UPDATE,DELETE,TRUNCATE ON TABLE public.hidra_audit_event
+  FROM fd02_runtime, fd02_audit_append_writer;
+-- Verify both authoritative catalog families and role membership/ACL shape.
+DO $$ BEGIN
+  IF (SELECT count(*) FROM public.hidra_audit_catalog_entry
+      WHERE (id='IDENTITY_LOCAL_ADMIN_BOOTSTRAP' AND catalog_name='EVENT_TYPE'
+         OR id='SECURITY_ADMINISTRATION' AND catalog_name='EVENT_CATEGORY')
+        AND active AND NOT system_defined) <> 2 THEN
+    RAISE EXCEPTION 'FD02 approved synthetic Audit taxonomy not effective';
+  END IF;
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_auth_members m
+      JOIN pg_catalog.pg_roles parent ON parent.oid=m.roleid
+      JOIN pg_catalog.pg_roles member ON member.oid=m.member
+    WHERE parent.rolname='fd02_audit_append_writer'
+      AND member.rolname='fd02_runtime'
+      AND m.inherit_option AND NOT m.set_option AND NOT m.admin_option
+  ) OR EXISTS (
+    SELECT 1 FROM pg_catalog.pg_roles
+      WHERE rolname='fd02_audit_append_writer' AND rolcanlogin
+  ) THEN
+    RAISE EXCEPTION 'FD02 Audit append capability has unsafe membership/LOGIN';
+  END IF;
+  IF NOT has_table_privilege('fd02_runtime','public.hidra_audit_event','INSERT')
+     OR has_table_privilege('fd02_runtime','public.hidra_audit_event','UPDATE')
+     OR has_table_privilege('fd02_runtime','public.hidra_audit_event','DELETE')
+     OR has_table_privilege('fd02_runtime','public.hidra_audit_event','TRUNCATE') THEN
+    RAISE EXCEPTION 'FD02 runtime Audit capability exceeds INSERT-only';
+  END IF;
+END $$;
 -- Granting broad table reads above must not expose the Identity commit-proof
 -- key/provenance store or protected engineering internals. These are not
 -- application-owned regular tables and their existing owner ACLs stay closed.
@@ -134,6 +189,24 @@ if PGPASSWORD="$runtime_password" psql -X -q -v ON_ERROR_STOP=1 -h "$PGHOST" -p 
     -c 'SELECT count(*) FROM public.hidra_identity_org_commit_key_head' \
     >"$work/denied-identity-key.log" 2>&1; then
   echo 'FAIL: ordinary app unexpectedly reads the Identity commit-proof key' >&2; exit 1
+fi
+
+# Prove fail-closed: even with the inherited Audit append role, the ordinary
+# runtime cannot switch roles or mutate/delete append-only Audit records.
+if PGPASSWORD="$runtime_password" psql -X -q -v ON_ERROR_STOP=1 -h "$PGHOST" -p "$PGPORT" \
+    -U fd02_runtime -d fd02_qualification -c 'SET ROLE fd02_audit_append_writer' \
+    >"$work/denied-audit-set-role.log" 2>&1; then
+  echo 'FAIL: ordinary runtime can SET ROLE to Audit append capability' >&2; exit 1
+fi
+if PGPASSWORD="$runtime_password" psql -X -q -v ON_ERROR_STOP=1 -h "$PGHOST" -p "$PGPORT" \
+    -U fd02_runtime -d fd02_qualification -c 'UPDATE public.hidra_audit_event SET action_code=action_code WHERE false' \
+    >"$work/denied-audit-update.log" 2>&1; then
+  echo 'FAIL: ordinary runtime can UPDATE immutable Audit evidence' >&2; exit 1
+fi
+if PGPASSWORD="$runtime_password" psql -X -q -v ON_ERROR_STOP=1 -h "$PGHOST" -p "$PGPORT" \
+    -U fd02_runtime -d fd02_qualification -c 'DELETE FROM public.hidra_audit_event WHERE false' \
+    >"$work/denied-audit-delete.log" 2>&1; then
+  echo 'FAIL: ordinary runtime can DELETE immutable Audit evidence' >&2; exit 1
 fi
 
 export HIDRA_ENVIRONMENT='production' SPRING_PROFILES_ACTIVE='production'
@@ -206,7 +279,14 @@ PY
 }
 
 start_jvm() {
-  java -jar "$jar" >"$work/jvm-${1}.log" 2>&1 &
+  # The CI migration owner and privileged PostgreSQL password belong to
+  # fixture setup/validation only. Use a sanitized *child* environment;
+  # the parent retains them for later independent Flyway revalidation.
+  (
+    unset FD02_PG_ADMIN_PASSWORD FD02_MIGRATOR_PASSWORD FD02_MIGRATOR_USER
+    unset PGPASSWORD PGUSER PGDATABASE FD02_ADMIN_PASSWORD
+    exec java -jar "$jar"
+  ) >"$work/jvm-${1}.log" 2>&1 &
   jvm_pid="$!"
   for _ in $(seq 1 150); do
     if ! kill -0 "$jvm_pid" 2>/dev/null; then
@@ -218,6 +298,14 @@ start_jvm() {
     fi
     if curl --silent --fail --max-time 2 "$FD02_BASE_URL/actuator/health/readiness" \
         | grep -q '"status":"UP"'; then
+      # Prove process isolation without ever printing the environment values.
+      [[ -r "/proc/$jvm_pid/environ" ]] || {
+        echo 'FD02 cannot inspect JVM migration-credential isolation' >&2; exit 1;
+      }
+      if tr '\0' '\n' < "/proc/$jvm_pid/environ" | grep -E \
+          '^(FD02_PG_ADMIN_PASSWORD|FD02_MIGRATOR_PASSWORD|FD02_MIGRATOR_USER|PGPASSWORD|PGUSER|PGDATABASE|FD02_ADMIN_PASSWORD)=' >/dev/null; then
+        echo 'FAIL: privileged migration or redundant credential reached the application JVM' >&2; exit 1
+      fi
       return 0
     fi
     sleep 2
@@ -242,6 +330,29 @@ stop_jvm() {
 state="$work/committed-ids.json"
 start_jvm 'initial'
 initial_pid="$jvm_pid"
+# The initial bootstrap must have persisted exactly one Audit event with the
+# catalog references accepted by the real JPA/trigger path, not synthetic SQL.
+bootstrap_audit_count="$(PGPASSWORD="$FD02_PG_ADMIN_PASSWORD" psql -X -q -A -t -v ON_ERROR_STOP=1 \
+  -h "$PGHOST" -p "$PGPORT" -U postgres -d fd02_qualification \
+  -c "SELECT count(*) FROM public.hidra_audit_event
+        WHERE source_component='LocalAdministratorBootstrapRunner'
+          AND action_code='identity.local-admin.bootstrap'
+          AND event_type_id='IDENTITY_LOCAL_ADMIN_BOOTSTRAP'
+          AND event_category_id='SECURITY_ADMINISTRATION'")"
+[[ "$bootstrap_audit_count" == '1' ]] || {
+  echo 'FD02 native bootstrap Audit event not persisted exactly once' >&2; exit 1;
+}
+# The existing HMR-095 trigger must also reject an UPDATE by the disposable
+# schema owner, proving immutability is enforced by the database itself rather
+# than merely by the ordinary runtime's missing UPDATE privilege.
+if PGPASSWORD="$FD02_PG_ADMIN_PASSWORD" psql -X -q -v ON_ERROR_STOP=1 -h "$PGHOST" -p "$PGPORT" \
+    -U postgres -d fd02_qualification \
+    -c "UPDATE public.hidra_audit_event SET action_code=action_code
+          WHERE source_component='LocalAdministratorBootstrapRunner'
+            AND action_code='identity.local-admin.bootstrap'" \
+    >"$work/denied-audit-trigger.log" 2>&1; then
+  echo 'FAIL: immutable Audit event trigger allowed schema-owner UPDATE' >&2; exit 1
+fi
 python3 scripts/qualification/fd02_native_http_checks.py --phase initial --state "$state" \
   --output "$FD02_EVIDENCE_DIR/initial.json"
 stop_jvm
@@ -270,6 +381,12 @@ evidence={'task':'HAPI-932/FD-02','qualification':'synthetic-single-node',
           'flyway_validated_pre_and_post_restart':True,
           'isolated_privileged_schema_migration_and_separate_non_superuser_runtime':True,
           'ordinary_runtime_ddl_and_protected_read_denied':True,
+          'synthetic_audit_catalog_families_verified':True,
+          'separate_nologin_inherited_insert_only_audit_role_verified':True,
+          'runtime_audit_update_delete_and_set_role_denied':True,
+          'native_bootstrap_audit_insert_count':1,
+          'audit_immutable_trigger_denied_schema_owner_update':True,
+          'privileged_migration_credentials_absent_from_jvm_environ':True,
           'bootstrap_disabled_on_second_os_process':True,
           'same_ids_after_new_os_process':True,
           'http_checks_initial':a['case_count'],'http_checks_after_restart':b['case_count'],

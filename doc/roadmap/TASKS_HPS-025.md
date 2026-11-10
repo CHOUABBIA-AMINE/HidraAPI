@@ -5081,4 +5081,46 @@ workflow, status row, phase or other task is modified.
 
 [Full CI #1165](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42768189816) and [Documentation #960](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42768189757) succeeded on `e94398e8832789d83550f4cbe52e1c2cd0a55486`. [Isolated Qualification #7](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42768189897) failed: the first JVM exited before readiness. The previous diagnostic emitted `UNCLASSIFIED`; the exact underlying error is still unknown. This repair records bounded JVM exit status, exception type names, and fixed startup categories without exposing any log message or SQL. No runtime privileges, application code, migrations, security controls, qualification assertions or status rows are changed. The isolated JAR/PostgreSQL/HTTP/restart acceptance remains pending.
 
+### Owner-approved synthetic Audit catalog and append-authority amendment — 2026-11-10
+
+After [Isolated Qualification #8](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42773627107)
+FAILED on exact `7e01577e34243083fd88288f3fecac7c6b4cddc9` in initial
+`LocalAdministratorBootstrapRunner` with `InvalidAuditValueException`,
+the owner explicitly approved a **bounded same-task scope amendment** for
+synthetic Audit catalog entries and separately controlled Audit write authority.
+[Full CI #1166](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42773627082)
+and [Documentation #961](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42773627126)
+passed that old SHA, but do not prove FD-02.
+
+The FD-02 fixture uses the exact two references already hard-coded in the
+existing bootstrap: `IDENTITY_LOCAL_ADMIN_BOOTSTRAP` / `EVENT_TYPE` and
+`SECURITY_ADMINISTRATION` / `EVENT_CATEGORY`; their disposable rows are
+active and explicitly non-system-defined, inserted **after** untouched Flyway
+migration as reference catalogs, not as business events. A distinct PostgreSQL
+16 `NOLOGIN`, non-owning `fd02_audit_append_writer` group has only
+`INSERT` on `public.hidra_audit_event`; the existing non-superuser
+runtime login inherits that permission with `INHERIT TRUE / SET FALSE /
+ADMIN FALSE`, without a second application datasource or separate database
+connection. No other Audit table receives writes. Runtime `SET ROLE`,
+Audit UPDATE/DELETE and DDL/protected relation reads are tested and must fail;
+existing Audit trigger immutability is untouched. The original native
+bootstrap must persist exactly one Audit event under its own transaction;
+the existing HMR-095 trigger must reject a privileged schema-owner UPDATE of
+that event as an independent database-level immutability proof. In addition,
+FD-02 must remove all privileged migrator/password/PostgreSQL defaults from
+the Java child environment and inspect `/proc/<pid>/environ` at readiness
+without printing values; the parent retains migration credentials only for
+controlled Flyway revalidation. The former runner exported migration secrets
+to the Java process even though its datasource used a restricted login; this
+scope-bounded correction closes that privilege-separation leak.
+Additional writer authority is *not* preapproved.
+
+This authorized amendment modifies the existing FD-02 script, focused
+fixtures/tests, runbook, environment guidance and this append-only ledger
+only. No domain/application/REST/JPA source, original Flyway migration,
+security adapter, other task, roadmap/phase status, release or production
+configuration changes. The exact-SHA hosted JAR + PG16 + native HTTP +
+independent process restart is still required and **not yet accepted**;
+HAPI-932 remains NOT_IMPLEMENTED / REGISTERED_PENDING until proof.
+
 <!-- task-register:payload:end -->

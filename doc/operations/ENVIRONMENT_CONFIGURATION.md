@@ -212,6 +212,30 @@ The application-side production configuration contract is documented.
 
 The concrete production platform, secret-injection implementation, TLS/network implementation and deployment automation remain **NOT ESTABLISHED**.
 
+## Owner-approved synthetic Audit append capability — 2026-11-10
+
+The HAPI-932 disposable CI PostgreSQL service provisions two **reference-only**
+Audit catalog IDs consumed by the existing LOCAL bootstrap:
+`IDENTITY_LOCAL_ADMIN_BOOTSTRAP` (`EVENT_TYPE`) and
+`SECURITY_ADMINISTRATION` (`EVENT_CATEGORY`). The privileged migration/
+fixture owner installs these; neither the runtime nor the synthetic client
+may change historical Flyway migrations or directly seed business events.
+
+The existing JVM connects with the ordinary non-superuser `fd02_runtime`.
+PostgreSQL 16 supplies a distinct **NOLOGIN, non-owning** permission role
+`fd02_audit_append_writer`; the runtime inherits exactly its
+`INSERT ON public.hidra_audit_event` via `INHERIT TRUE, SET FALSE,
+ADMIN FALSE`. It has no Audit UPDATE/DELETE/TRUNCATE permission, no
+role switching, no schema DDL and no protected engineering/Identity key reads.
+The real bootstrap inserts its own Audit event in the original transaction;
+SQL verifies one persisted record and tests deny mutations. The shell also
+removes the migration-owner password, migrator identity and inherited
+PostgreSQL defaults from the child JVM's environment and verifies absence
+at readiness without printing secret values. These grants
+are exclusively synthetic acceptance fixtures, **not** operational
+database-privilege guidance, an independent Audit datasource, or a production
+writer service. Any further writer scope requires separate approval.
+
 ## FD-02 disposable production-profile smoke — 2026-11-10
 
 HAPI-932 verifies that a Java 21 JAR can start with the already-defined

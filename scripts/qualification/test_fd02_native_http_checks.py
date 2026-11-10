@@ -18,6 +18,31 @@ class FakeResponse:
     def read(self, _: int) -> bytes: return json.dumps(self.value).encode()
 
 
+class AuditFixtureContractTests(unittest.TestCase):
+    """Static tripwires complement, never replace, hosted PostgreSQL ACL probes."""
+    def test_synthetic_audit_ids_match_bootstrap_contract(self):
+        from pathlib import Path
+        script = Path(__file__).with_name('fd02_one_node_runtime.sh').read_text()
+        self.assertIn("'IDENTITY_LOCAL_ADMIN_BOOTSTRAP', 'EVENT_TYPE'", script)
+        self.assertIn("'SECURITY_ADMINISTRATION', 'EVENT_CATEGORY'", script)
+        self.assertIn('AND active AND NOT system_defined', script)
+        self.assertIn("bootstrap_audit_count", script)
+
+    def test_audit_role_is_insert_only_with_restricted_membership(self):
+        from pathlib import Path
+        script = Path(__file__).with_name('fd02_one_node_runtime.sh').read_text()
+        self.assertIn('CREATE ROLE fd02_audit_append_writer NOLOGIN', script)
+        self.assertIn('GRANT INSERT ON TABLE public.hidra_audit_event', script)
+        self.assertIn('WITH ADMIN FALSE, INHERIT TRUE, SET FALSE', script)
+        self.assertIn('REVOKE UPDATE,DELETE,TRUNCATE', script)
+        self.assertIn("denied-audit-update.log", script)
+        self.assertIn("denied-audit-delete.log", script)
+        self.assertIn("denied-audit-set-role.log", script)
+        self.assertIn("denied-audit-trigger.log", script)
+        self.assertIn("unset FD02_PG_ADMIN_PASSWORD FD02_MIGRATOR_PASSWORD", script)
+        self.assertIn("privileged_migration_credentials_absent_from_jvm_environ", script)
+
+
 class ClientTests(unittest.TestCase):
     def test_rejects_external_urls(self):
         for base in ('https://example.invalid', 'http://localhost:8080', 'http://127.0.0.1.evil:8080'):

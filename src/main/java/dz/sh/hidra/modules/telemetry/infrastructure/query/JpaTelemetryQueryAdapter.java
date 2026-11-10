@@ -20,6 +20,8 @@
 package dz.sh.hidra.modules.telemetry.infrastructure.query;
 
 import dz.sh.hidra.modules.telemetry.application.port.in.TelemetryQueryUseCase;
+import dz.sh.hidra.modules.telemetry.application.port.out.TelemetryReadingIngestionReferencePort;
+import dz.sh.hidra.modules.telemetry.application.port.out.TelemetryReadingScopeAuthorizationPort;
 import dz.sh.hidra.modules.telemetry.domain.value.ReadingState;
 import dz.sh.hidra.modules.telemetry.infrastructure.persistence.entity.TelemetryCatalogEntryJpaEntity;
 import dz.sh.hidra.modules.telemetry.infrastructure.persistence.entity.TelemetryCatalogTranslationJpaEntity;
@@ -42,9 +44,15 @@ public class JpaTelemetryQueryAdapter implements TelemetryQueryUseCase {
     private static final String QUALITY_CODE_CATALOG = "QUALITY_CODE";
 
     private final EntityManager entityManager;
+    private final TelemetryReadingIngestionReferencePort references;
+    private final TelemetryReadingScopeAuthorizationPort authorization;
 
-    public JpaTelemetryQueryAdapter(EntityManager entityManager) {
-        this.entityManager = Objects.requireNonNull(entityManager, "EntityManager must not be null.");
+    public JpaTelemetryQueryAdapter(EntityManager entityManager,
+            TelemetryReadingIngestionReferencePort references,
+            TelemetryReadingScopeAuthorizationPort authorization) {
+        this.entityManager=Objects.requireNonNull(entityManager);
+        this.references=Objects.requireNonNull(references);
+        this.authorization=Objects.requireNonNull(authorization);
     }
 
     @Override
@@ -120,17 +128,21 @@ public class JpaTelemetryQueryAdapter implements TelemetryQueryUseCase {
     }
 
     private String unitId(String pointId) {
-        TelemetryPointJpaEntity point = entityManager.find(TelemetryPointJpaEntity.class, pointId);
-        if (point == null) {
-            throw new IllegalArgumentException("Unknown telemetry point: " + pointId);
-        }
-        return point.unitId();
+        // No existence, count, history or latest-value disclosure before original-transaction native authority.
+        var scope=references.current(pointId,null,Instant.now());
+        authorization.require(scope,TelemetryReadingScopeAuthorizationPort.Operation.READ);
+        return scope.unitId();
     }
 
     private ReadingView readingView(TelemetryReadingJpaEntity entity, String unitId) {
+        // Immutable ingest receipt preserves the accepted unit even if point metadata later changes.
+        var receipts=entityManager.createNativeQuery("""
+                select unit_id from public.hidra_telemetry_reading_ingest_receipt where reading_id=:reading
+                """).setParameter("reading",entity.id()).getResultList();
+        String effectiveUnit=receipts.isEmpty()?unitId:(String)receipts.getFirst();
         return new ReadingView(
                 entity.id(), entity.pointId(), entity.numericValue(), entity.textValue(), entity.booleanValue(),
-                unitId, entity.qualityCodeId(), entity.sourceTimestamp(), entity.receivedAt(),
+                effectiveUnit, entity.qualityCodeId(), entity.sourceTimestamp(), entity.receivedAt(),
                 String.valueOf(entity.state()), entity.correlationId(), entity.rejectionReason()
         );
     }

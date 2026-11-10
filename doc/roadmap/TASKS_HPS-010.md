@@ -10288,9 +10288,9 @@ Legacy proposal handle: FD-03 / R05 from the owner-supplied 2026-11-09 read-only
 
 Priority: P1
 
-Implementation Status: NOT_IMPLEMENTED
+Implementation Status: PARTIAL
 
-Planning Status: REGISTERED_PENDING
+Planning Status: IN_PROGRESS
 
 Owning Module: telemetry (source, device, point, mapping, raw readings, quality and provenance). Identity owns producer authority; Topology owns authoritative asset references. No external Integration transport or automatic trust is selected.
 
@@ -10501,5 +10501,35 @@ and the current HAPI-933 status pointers in \`ULTIMATE_TASKS.md\`
 and \`AGENTS.md\`. Exactly five governance files; no Java, Flyway,
 test, workflow or runtime changes. Message:
 \`docs(roadmap): approve HAPI-933 ingestion policy\`.
+
+### 8. Owner-selected source implementation — 2026-11-10
+
+The separately selected `Next` assembled HAPI-933's bounded synthetic implementation
+under the registered exact message. This is code-level delivery **pending actual CI and
+runtime acceptance**, not an assertion of an accepted operational workflow.
+
+Admitted CREATE scope:
+- Telemetry application command/use case/ports, domain ingestion policy and replay conflict,
+  application coordinator, scoped JPA reference and JDBC PostgreSQL replay adapters,
+  native cross-owner scope adapter, typed REST controller/request/response/mapper;
+- Identity's Telemetry-only public authorization contract, native LOCAL actor and
+  row-locked exact scoped grant adapter/service;
+- Topology's Telemetry-only public current owner contract and reference adapter;
+- fresh forward-only `V20261110_001__telemetry_ingestion_replay_identity.sql`;
+- Telemetry application and PostgreSQL native HTTP/replay qualification tests.
+
+Admitted MODIFY scope:
+- current Telemetry history/latest/trend authorization query adapter;
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java` and strict CI test inventory;
+- this owning task and current governance status pointers, API conventions.
+No prior migration, unrelated Identity/Topology protocol, external OT adapter,
+simulation, release, production deployment or history was rewritten.
+
+**Evidence gate:** no local Maven or PostgreSQL/Container validation was available in the
+execution environment. Actual build, migration, PostgreSQL unique concurrency, signed
+JWT native HTTP, independent OS-JVM readback, generated OpenAPI and database-dictionary
+equality remain UNVERIFIED until the exact-sha CI evidence can be inspected.
+The code is not marked VERIFIED/COMPLETED; `PARTIAL / IN_PROGRESS` retains the
+one indivisible HAPI-933 acceptance gate. No next task is authorized by source staging.
 
 <!-- task-register:payload:end -->

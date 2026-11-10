@@ -1865,4 +1865,4 @@ No endpoint is implemented by this status registration.
 
 | Task ID | Task Name | Deliverable | Priority | Dependencies | Implementation Status | Planning Status |
 |---|---|---|---|---|---|---|
-| [HAPI-933](TASKS_HPS-010.md#hapi-933) | deliver authorized native telemetry reading ingestion | JWT-authenticated synthetic raw ingestion, actual PostgreSQL readback/restart, units/quality/replay; no automatic trust or live OT | P1 | HAPI-923, HAPI-926, HAPI-931, HAPI-932; producer/replay policy | NOT_IMPLEMENTED | REGISTERED_PENDING |
+| [HAPI-933](TASKS_HPS-010.md#hapi-933) | deliver authorized native telemetry reading ingestion | JWT-authenticated synthetic raw ingestion, actual PostgreSQL readback/restart, units/quality/replay; no automatic trust or live OT | P1 | HAPI-923, HAPI-926, HAPI-931, HAPI-932; producer/replay policy | PARTIAL | IN_PROGRESS |

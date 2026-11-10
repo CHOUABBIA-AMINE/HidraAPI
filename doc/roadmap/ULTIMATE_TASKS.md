@@ -3555,3 +3555,13 @@ contract, prospective forward-only constraint, tests and limits.
 POST, trusted evidence, database migration, frontend or production change
 has been made. The next selected work is one whole HAPI-933 implementation,
 not an extra policy stage or FD-04.
+
+## HAPI-933 source implementation checkpoint — 2026-11-10
+
+The selected bounded Telemetry, Identity-public-scope and Topology-public-owner source,
+forward replay relation, native REST and qualifying tests have been prepared together
+for one exact-message publication. **PARTIAL / IN_PROGRESS** until the real PostgreSQL,
+JWT, independent JVM restart, strict OpenAPI/dictionary and exact-SHA CI gates succeed.
+No additional HAPI task, release, P3 throughput integration or operational acceptance
+is selected by this checkpoint. The earlier NOT_IMPLEMENTED policy-decision record is
+historical and remains preserved.

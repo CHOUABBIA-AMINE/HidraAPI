@@ -777,6 +777,33 @@ class ArchitectureGuardrailTest {
                         || target.startsWith(root + "."));
     }
 
+    /** HAPI-933: only the reviewed Telemetry scope adapter may import these exact two owner contracts. */
+    private static boolean isTelemetryNativeOwnerExport(String source, String target) {
+        String consumer="dz.sh.hidra.modules.telemetry.infrastructure.security.TelemetryReadingNativeScopeAdapter";
+        if(!consumer.equals(source))return false;
+        return java.util.Set.of(
+                "dz.sh.hidra.modules.identity.application.contract.telemetry.TelemetryScopedAuthorizationContract",
+                "dz.sh.hidra.modules.topology.application.contract.telemetry.TelemetryTopologyOwnershipContract")
+                .stream().anyMatch(root->target.equals(root)||target.startsWith(root+"$"));
+    }
+
+    @Test
+    void telemetryNativeAuthorizationContractsRemainExactAndOwnerPrivate() {
+        String consumer="dz.sh.hidra.modules.telemetry.infrastructure.security.TelemetryReadingNativeScopeAdapter";
+        String owner="dz.sh.hidra.modules.topology.application.contract.telemetry.TelemetryTopologyOwnershipContract";
+        String rights="dz.sh.hidra.modules.identity.application.contract.telemetry.TelemetryScopedAuthorizationContract";
+        assertFalse(isForbiddenCrossModuleDependency(consumer,owner));
+        assertFalse(isForbiddenCrossModuleDependency(consumer,owner+"$OwnedAsset"));
+        assertFalse(isForbiddenCrossModuleDependency(consumer,rights));
+        assertTrue(isForbiddenCrossModuleDependency(consumer+"Sibling",rights));
+        assertTrue(isForbiddenCrossModuleDependency(consumer,owner+"Sibling"));
+        assertTrue(isForbiddenCrossModuleDependency("dz.sh.hidra.modules.alarm.infrastructure.security.Other",rights));
+        assertTrue(isForbiddenCrossModuleDependency(consumer,
+                "dz.sh.hidra.modules.topology.infrastructure.persistence.entity.FacilityJpaEntity"));
+        assertTrue(isForbiddenCrossModuleDependency(consumer,
+                "dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JpaTelemetryExplicitGrantEvidenceAdapter"));
+    }
+
     private static boolean isForbiddenCrossModuleDependency(
             String sourceClassName, String targetClassName) {
         String sourcePackage = packageName(sourceClassName);
@@ -789,6 +816,7 @@ class ArchitectureGuardrailTest {
         }
         if(isBaselineOwnerExport(sourceClassName,targetClassName))return false;
         if(isAlarmOwnerExport(sourceClassName,targetClassName))return false;
+        if(isTelemetryNativeOwnerExport(sourceClassName,targetClassName))return false;
         // HAPI-605: generic exported-package allowances must not admit unauthorized
         // consumers of the three new source-owner contracts (or nested credentials).
         if(List.of(

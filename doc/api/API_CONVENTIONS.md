@@ -129,3 +129,19 @@ The current snapshot has 258 HTTP-200 and five HTTP-201 response declarations ac
 error schema. [ERROR_MODEL.md](ERROR_MODEL.md) documents available runtime advice
 without promoting it to a universal generated contract. Source-linked tests are
 corroboration, not a newly executed endpoint campaign; applicability follows the index.
+
+
+## HAPI-933 native raw-ingestion source checkpoint (pending exact-SHA validation)
+
+The selected source adds `POST /api/v1/telemetry/points/{pointId}/readings` with a
+source ID, nonblank source sequence, exactly one numeric/text/boolean value,
+declared effective unit, quality reference and UTC source timestamp. The caller
+cannot establish company, actor, received time, trusted state or assessment result.
+The proposed response carries the persisted raw reading ID and server receive time;
+201 denotes a first canonical insert and 200 a freshly authorized exact replay;
+409 denotes conflicting content under the same source/point/sequence key.
+History, latest and trend are subject to current native scoped authorization and
+must not disclose unauthorized point existence or counts. PostgreSQL receipt
+uniqueness and separate trusted-reading publication are distinct concerns.
+This is **source-derived pending evidence only**: the committed canonical OpenAPI
+snapshot remains authoritative until actual runtime generation and acceptance.

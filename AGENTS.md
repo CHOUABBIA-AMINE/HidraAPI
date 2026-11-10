@@ -902,3 +902,16 @@ before one whole HAPI-933 source delivery, refresh exact-SHA CI and
 admit its precise source/migration/test file scope. Keep all earlier
 tasks, HAPI-100/EXT-004, 25 phases, historical migrations and
 release/SITE/OT/P3 deferrals unchanged.
+
+
+## HAPI-933 implementation selection — 2026-11-10
+
+The owner selected the one registered HAPI-933 native synthetic Telemetry stage after
+policy approval. The new Telemetry POST and scoped reads are coupled with current
+native LOCAL Identity company/source-point grants, Topology owner evidence, and an
+immutable PostgreSQL sequence receipt. HAPI-933 remains PARTIAL / IN_PROGRESS pending
+actual full CI, generated runtime OpenAPI/dictionary evidence, PostgreSQL concurrency
+and separate JVM restart proof. HAPI-100/EXT-004 high-throughput ingestion stays
+DEFERRED. No production OT connection, trusted reading promotion, P3 or release is
+selected. The registered implementation message remains
+`feat(telemetry): implement protected native reading ingestion`.

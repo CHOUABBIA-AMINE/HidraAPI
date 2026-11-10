@@ -356,3 +356,22 @@ The following paths are implementation candidates, gated by the API compatibilit
 **Validation.** Preserve existing test cases. Run focused Planning tests and the registered PostgreSQL native HTTP suite with synthetic fixtures. Exercise duplicate-code races, active company evidence, same-company wrong asset, foreign company, descendant reads and page totals, grant revocation and restart readback. Prove that old unproven ownership remains excluded and the database rejects unowned new writes. Full CI must execute the native test with Docker and PostgreSQL, verify inventory coverage, and compare runtime OpenAPI and the migrated physical dictionary. Generate contract and dictionary evidence from actual runtime and PostgreSQL, preserving strict comparison. A skipped PostgreSQL test supplies no database proof.
 
 **Execution gate.** Resolve the period-create compatibility decision before selecting T01 implementation. If the decision requires paths beyond this file envelope, register the exact path change in the roadmap before source edits.
+
+### T01 period-create API decision — 2026-11-10
+
+**Decision.** This entry resolves the period-create compatibility gate above. Add `POST /api/v2/planning/periods` with a dedicated request requiring a nonblank `companyPartyId`. Carry over the supported business fields from period creation. Resolve the actor from the authenticated principal and validate the selected company's eligibility and the actor's current scoped create grant inside the write transaction. Use the existing `planning:periods:execute` route permission in addition to the scoped grant. Catalog the new route under that permission.
+
+**Legacy behavior.** Preserve `POST /api/v1/planning/periods`, `POST /api/v1/planning/create-planning-period`, and the v1 request schema. Both aliases deny otherwise valid authenticated requests with a generic `403` when a verified company context is absent. There is currently no authoritative company context for either alias. Unauthenticated requests follow the existing `401` behavior. A denied request makes no write. Never derive the company from a raw token claim, a sole grant, or the legacy actor field. Document the v1 denial and the v2 replacement in the runtime OpenAPI contract and retain strict compatibility validation.
+
+**Additional T01 implementation paths.** The existing envelope remains in effect with the following additions. Platform changes are scoped to registering, enforcing and cataloging the new Planning route. Existing permission naming already derives `planning:periods:execute` from its path and method.
+
+- Add `src/main/java/dz/sh/hidra/modules/planning/api/rest/controller/PlanningPeriodV2Controller.java`.
+- Add `src/main/java/dz/sh/hidra/modules/planning/api/rest/request/CreateCompanyPlanningPeriodRequest.java`.
+- Update `src/main/java/dz/sh/hidra/platform/configuration/HidraPermissionWebMvcConfiguration.java`.
+- Update `src/main/java/dz/sh/hidra/platform/permissions/HidraRouteAuthorizationInterceptor.java`.
+- Update `src/main/java/dz/sh/hidra/platform/permissions/HidraRoutePermissionCatalogService.java`.
+- Update `src/test/java/dz/sh/hidra/platform/permissions/HidraRouteAuthorizationInterceptorTest.java`.
+
+**Additional acceptance.** In the registered native HTTP PostgreSQL suite, prove v2 create and readback for a permitted company, rejection for missing or blank company, denial without the route permission or without the current company grant, and no writes on either legacy alias without verified company context. Verify that the route catalog lists the v2 operation under the same permission enforced at runtime. Confirm the v1 request schema and both route mappings are preserved and the generated runtime OpenAPI declares the required v2 company field.
+
+**Publication and sequencing.** Register this decision with `docs(roadmap): record T01 API versioning decision`, changing only `doc/roadmap/ROADMAP.md`. T01 remains PLANNED. After documentation acceptance and separate selection, execute the registered T01 implementation under `feat(planning): enforce company and asset scope`.

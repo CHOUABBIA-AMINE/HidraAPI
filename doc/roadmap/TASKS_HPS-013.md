@@ -4084,4 +4084,103 @@ a **CI repair within the existing registration**, not source
 implementation or a new sub-stage. Preserve the already-admitted
 registration message `docs(roadmap): register FD-04 planning workflow journey`.
 
+### 10. Owner decision: company-owned Planning periods and scoped protected queries — 2026-11-10
+
+**Explicit owner approval:** "Approve HAPI-934 company-owned planning
+periods, with current company and exact asset authorization, fail-closed
+reads/counts, and forward-only schema changes where proven necessary."
+
+**Selected tenancy/business ownership (binding for HAPI-934):**
+
+1. Each PlanningPeriod belongs to **exactly one authoritative company**;
+   it is not a globally shared calendar/reference record. Planning owns
+   this immutable company association for the period and its descendant
+   OperationalPlan/PlanRevision/PlanTarget objects. A client may identify
+   the intended company only as a lookup request; no self-asserted company,
+   user claim, or createdByActorId field is authorization evidence. The
+   current authenticated actor and Identity owner must prove an effective,
+   explicit company grant at each protected operation. Default/implicit
+   company assignment, globally shared fallback and cross-company reassignment
+   are forbidden absent a separately authorized transfer lifecycle.
+2. **Exact asset authority** is mandatory whenever a plan, revision,
+   target, nomination, approval or other descendant references a Topology
+   asset. Verify the currently owned Topology type/ID/company binding
+   against the period's company; evaluate the Identity-owned company and
+   specific asset authorization with current DENY/revocation precedence
+   before accessing or changing protected existence/state. Validate any
+   Telemetry point as a current owner-matching binding rather than trusting
+   a matching code or client-provided point/unit. A period-level operation
+   without a selected asset still requires exact *company* authority;
+   it does not grant access to arbitrary assets in that company.
+3. **Protected read and count semantics** apply to existing and new
+   Planning GET/list/detail/approval endpoints, including PlanningPeriod,
+   OperationalPlan, PlanRevision, PlanTarget and dependent reads. An actor
+   with no current company grant must learn no protected object identity,
+   count, history, derived total, approval existence or export. Page
+   totals and pagination must be calculated **after database-level
+   authorization scope restriction**, not by counting global rows and
+   filtering results afterward. Detail endpoints must enforce a
+   non-disclosing denial policy (403/404 as supported) *before* confirming
+   protected existence. Inactive/revoked/foreign/unknown company and
+   asset states, and Identity/Topology authority unavailability, fail
+   closed. Route permission or prior token scope is not a replacement
+   for current owner-backed resource grants.
+4. **Persistent ownership and relational proof:** The inspected current
+   `PlanningPeriod` domain record and
+   `PlanningPeriodJpaEntity` do not contain a company owner, and
+   `PlanningQueryPort` currently provides unscoped
+   `findPeriods(page,size)` and global totals. HAPI-934 must add
+   appropriate owner-backed company identity, schema/JPA/domain mappings
+   and query predicates as part of the **same whole implementation**;
+   do not claim the source has these guarantees today. Review the actual
+   existing Flyway/PostgreSQL constraints first, then adopt a
+   **forward-only additive migration only where proven necessary**, with
+   real fresh-schema PostgreSQL validation and appropriate constraints.
+   Do not rewrite migration history, invent an earlier production
+   dataset, use an unverified default company, or schedule speculative
+   production backfill.
+5. **Required independent acceptance:** Native signed LOCAL requests for
+   two synthetic companies and assets must prove: correct company owner
+   persistence; company A cannot read company B period/plan/revision/target,
+   nor observe its global counts or page totals; asset A grants never
+   confer permission for unrelated asset B even within a company; exact
+   point/asset/company mismatch rejects; all access is denied on revoke,
+   current DENY, inactive company/asset or owner evidence failure;
+   POST/list/detail/approval rights are revalidated at original
+   transaction; concurrent writer and Workflow approval tests remain
+   fail-closed; independently restarted Java/JWT/HTTP process can read
+   previously committed permitted data from one disposable PostgreSQL
+   instance, while the foreign actor still cannot. Tests must be entered
+   into strict CI case/class/SHA inventory and run on the implementation SHA.
+
+**Architecture and responsibility:** Planning owns period/plan/revision/
+target tenancy and query predicates; Identity owns current company and
+exact resource authorization; Topology owns authoritative company/asset
+association; Telemetry owns physical point and unit references;
+Workflow owns independently authorized human decision history. Add
+narrow public contracts only where source inspection proves them
+necessary; Domain/Application must not import foreign JPA or concrete
+adapters. Preserve existing accepted narrow APIs unless an explicit
+secured behavior change is required. This decision does not authorize
+open company enumeration, silent data sharing, live OT, release or SITE.
+
+**Status/selection:** This resolves the explicit *company-owned vs
+globally shared period* business choice. Existing approved
+HAPI-934 lifecycle, reviewer independence, original PostgreSQL
+transaction, CAS and target policy remain binding. Exact new source
+paths, public contract signatures, REST routes/DTO/error cases,
+migration identity (after database inspection), and the complete
+whole-task negative/restart test ledger remain **DISCOVERY_REQUIRED**,
+not fabricated as pre-existing artifacts. HAPI-934 remains
+`PARTIAL / BLOCKED` until the complete indivisible source delivery
+is admissible, selected and validated. This decision itself makes
+**no runtime change** and does not select HAPI-935 / FD-05.
+Previous status/history entries are retained.
+
+**Baseline evidence:** Main
+`8c1c77f92c4dcd92cd52bd795bc18e15cbbf54a5` with
+[Documentation Validation #975](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42825473648)
+**SUCCESS**. The latest Full CI #1175 remains a historical failure
+on the pre-repair registration SHA; it is not mislabeled as passing.
+
 <!-- task-register:payload:end -->

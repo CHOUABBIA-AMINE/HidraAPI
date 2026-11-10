@@ -3649,3 +3649,27 @@ implementation, accepted client workflow or HAPI-935 selection. HAPI-934
 remains **PARTIAL / BLOCKED** pending exact whole-task file/migration/REST/test
 admission and a separate source-changing selection. The current historical
 registration count remains 934 tasks across 25 phases.
+
+## HAPI-934 company-owned period and scoped-query decision — 2026-11-10
+
+The owner explicitly selected **company-owned Planning periods**, with
+current effective Identity company authorization and exact Topology asset
+grants for operational descendants. Planning period/plan/revision/target
+list/detail/approval reads, totals and pagination must be constrained by
+current company and, wherever applicable, exact asset authorization
+**before protected existence or counts are disclosed**. Missing/revoked,
+inactive, foreign or unavailable owner evidence fails closed; no caller-
+asserted owner, global shared period or unscoped total is acceptable.
+A necessary ownership column/constraint must be established by a
+forward-only Flyway migration **only after actual PostgreSQL/JPA/Flyway
+inspection**, verified with synthetic fresh-schema and strict signed
+native HTTP/post-restart/negative evidence. No invented production
+backfill or deployment is authorized.
+
+The binding decision, module authority, source gaps, and required
+independent native acceptance are in the
+[HAPI-934 owner record](TASKS_HPS-013.md#hapi-934). The task remains
+**PARTIAL / BLOCKED** until its entire implementation envelope is
+admitted and executed as one delivery. [Documentation #975](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42825473648)
+passed on the exact previous main SHA. This approval makes no Java,
+migration, REST, or test change; FD-05 remains unselected.

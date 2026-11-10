@@ -151,12 +151,49 @@ export HIDRA_SECURITY_BOOTSTRAP_PASSWORD="$admin_password"
 export HIDRA_SECURITY_BOOTSTRAP_ENABLED='true'
 export HIDRA_OPENAPI_ENABLED='false' HIDRA_SWAGGER_UI_ENABLED='false'
 
+# Emit only a fixed-category diagnostic derived from private startup logs.
+# Never upload/publish the JVM logs, exception messages, SQL literals or secrets.
+fd02_startup_diagnostic() {
+  python3 - "$work/jvm-${1}.log" <<'PY'
+from pathlib import Path
+import re
+import sys
+
+log = Path(sys.argv[1])
+body = log.read_text(errors="replace") if log.exists() else ""
+category = "UNCLASSIFIED"
+resource = ""
+match = re.search(r"permission denied for (table|schema|sequence) ([a-zA-Z0-9_]+)", body, re.I)
+if match:
+    category = "POSTGRES_PERMISSION_DENIED"
+    # Object names are public migration identifiers; emit only a narrow safe token.
+    if re.fullmatch(r"hidra_[a-z0-9_]+", match.group(2)):
+        resource = ":" + match.group(2)
+elif "violates foreign key constraint" in body:
+    category = "POSTGRES_REFERENCE_CONSTRAINT"
+elif "violates check constraint" in body:
+    category = "POSTGRES_CHECK_CONSTRAINT"
+elif "Schema-validation: missing table" in body:
+    category = "HIBERNATE_MISSING_TABLE"
+elif "Schema-validation: wrong column type" in body:
+    category = "HIBERNATE_COLUMN_TYPE"
+elif "Production runtime requires" in body or "HIDRA_JWT_TOKEN_ISSUER must be" in body:
+    category = "PRODUCTION_CONFIGURATION_GUARD"
+elif "APPLICATION FAILED TO START" in body:
+    category = "SPRING_STARTUP_FAILURE"
+elif not body.strip():
+    category = "EMPTY_JVM_LOG"
+print("FD02_STARTUP_DIAGNOSTIC=" + category + resource)
+PY
+}
+
 start_jvm() {
   java -jar "$jar" >"$work/jvm-${1}.log" 2>&1 &
   jvm_pid="$!"
   for _ in $(seq 1 150); do
     if ! kill -0 "$jvm_pid" 2>/dev/null; then
-      echo "FD02 JVM ${1} exited before readiness (inspect private runner log)" >&2; exit 1
+      fd02_startup_diagnostic "$1" >&2
+      echo "FD02 JVM ${1} exited before readiness; private log retained only until cleanup" >&2; exit 1
     fi
     if curl --silent --fail --max-time 2 "$FD02_BASE_URL/actuator/health/readiness" \
         | grep -q '"status":"UP"'; then
@@ -164,7 +201,8 @@ start_jvm() {
     fi
     sleep 2
   done
-  echo "FD02 JVM ${1} did not become ready" >&2; exit 1
+  fd02_startup_diagnostic "$1" >&2
+  echo "FD02 JVM ${1} did not become ready; private log retained only until cleanup" >&2; exit 1
 }
 stop_jvm() {
   [[ -n "$jvm_pid" ]] || return 1

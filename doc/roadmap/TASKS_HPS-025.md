@@ -5048,4 +5048,33 @@ the applicable Full CI success and actual isolated PostgreSQL 16 + JAR +
 HTTP + independent JVM restart success; a successful documentation check
 alone cannot mark HAPI-932 VERIFIED or release-ready.
 
+### HAPI-932 failed JVM readiness diagnosis — 2026-11-10
+
+At exact main `f96f74d6c65588b0ecd67d3c261daf93ca6d2196`, [Full CI
+#1164](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42757527404) and
+[Documentation #959](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42757527409)
+passed; [Isolated Qualification #6](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42757527515)
+FAILED in the `fd02-runtime` job: `FD02 JVM initial exited before readiness`.
+The previous migration/SQL denial probes reached completion. The Java JVM log was
+private and discarded, so the exact exception was not established by hosted CI.
+
+Source shows `LocalAdministratorBootstrapRunner` invokes both Identity bootstrap
+and `RecordAuditEventUseCase`, while the disposable FD-02 ordinary database actor
+currently receives Identity-specific writes only. Audit insert also needs valid
+Audit-owned catalog references. This is a **hypothesis**, not a verified failure
+diagnosis or approval to expand ordinary runtime database privileges. Preserve
+the existing Audit event and native authorization invariants.
+
+This same-task fail repair modifies only the already-registered FD-02 lifecycle
+script to emit a bounded startup failure **classification**, optionally naming
+a safe public `hidra_*` table, from the private JVM log. It never emits raw JVM
+logs, SQL statements, credentials, JWTs or exception payloads. The workflow
+must produce its exact-head diagnosis before a privilege/policy change is
+considered. A distinct Audit writer or any expansion of ordinary runtime ACLs
+requires the registered owner's security decision: the earlier CI migration
+exception does not authorize it. HAPI-932 remains NOT_IMPLEMENTED /
+REGISTERED_PENDING in the frozen roadmap status rows until real JAR/PG16/HTTP/
+restart evidence and applicable gates pass. No application code, migration,
+workflow, status row, phase or other task is modified.
+
 <!-- task-register:payload:end -->

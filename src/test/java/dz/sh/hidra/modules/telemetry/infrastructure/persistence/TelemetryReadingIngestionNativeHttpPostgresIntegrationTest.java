@@ -249,6 +249,148 @@ class TelemetryReadingIngestionNativeHttpPostgresIntegrationTest {
         assertEquals(1L,countReadings());
         assertEquals(1L,db.queryForObject("SELECT count(*) FROM hidra_telemetry_reading_ingest_receipt WHERE point_id=?",Long.class,point));
     }
+    @Test void nativeTextAndBooleanReadingsPreserveTypedValuesWithoutTrustPublication() throws Exception {
+        String stamp=Instant.now().minusSeconds(4)
+                .truncatedTo(java.time.temporal.ChronoUnit.MICROS).toString();
+        db.update("UPDATE hidra_telemetry_type_catalog SET value_shape='TEXT',updated_at=now() WHERE id=(SELECT signal_type_id FROM hidra_telemetry_point WHERE id=?)",point);
+        String textual="{\"sourceId\":\""+source+"\",\"sourceSequenceNumber\":\"seq-text\","
+                +"\"textValue\":\"stable\",\"unitId\":\""+unit+"\",\"qualityCodeId\":\""
+                +quality+"\",\"sourceTimestamp\":\""+stamp+"\"}";
+        JsonNode text=JSON.readTree(http.perform(post(route())
+                .header("Authorization","Bearer "+producer).contentType(MediaType.APPLICATION_JSON)
+                .content(textual)).andExpect(status().isCreated())
+                .andReturn().getResponse().getContentAsString());
+        assertEquals("stable",text.path("textValue").asText());
+        assertEquals("RECEIVED",text.path("state").asText());
+        assertFalse(text.path("replayed").asBoolean());
+
+        db.update("UPDATE hidra_telemetry_type_catalog SET value_shape='BOOLEAN',updated_at=now() WHERE id=(SELECT signal_type_id FROM hidra_telemetry_point WHERE id=?)",point);
+        String booleanBody="{\"sourceId\":\""+source+"\",\"sourceSequenceNumber\":\"seq-bool\","
+                +"\"booleanValue\":true,\"unitId\":\""+unit+"\",\"qualityCodeId\":\""
+                +quality+"\",\"sourceTimestamp\":\""+stamp+"\"}";
+        JsonNode bool=JSON.readTree(http.perform(post(route())
+                .header("Authorization","Bearer "+producer).contentType(MediaType.APPLICATION_JSON)
+                .content(booleanBody)).andExpect(status().isCreated())
+                .andReturn().getResponse().getContentAsString());
+        assertTrue(bool.path("booleanValue").asBoolean());
+        assertEquals("RECEIVED",bool.path("state").asText());
+        assertEquals(2L,countReadings());
+        assertEquals(2L,db.queryForObject(
+                "SELECT count(*) FROM hidra_telemetry_reading_ingest_receipt WHERE point_id=?",
+                Long.class,point));
+        http.perform(get(route()).header("Authorization","Bearer "+producer))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElements").value(2));
+        assertEquals(0L,db.queryForObject(
+                "SELECT count(*) FROM hidra_telemetry_trusted_reading WHERE point_id=?",
+                Long.class,point));
+    }
+
+    @Test void protectedReadsAndInvalidNativeObservationsFailClosedWithoutAppend() throws Exception {
+        String stamp=Instant.now().minusSeconds(5).toString();
+        String valid=payload("negative-baseline","41.25",quality,unit,stamp);
+        http.perform(get(route()).header("Authorization","Bearer "+foreign))
+                .andExpect(status().isForbidden());
+        http.perform(get(route()+"/latest").header("Authorization","Bearer "+foreign))
+                .andExpect(status().isForbidden());
+        http.perform(get("/api/v1/telemetry/points/"+point+"/trend")
+                .header("Authorization","Bearer "+foreign)).andExpect(status().isForbidden());
+        http.perform(get(route())).andExpect(status().isUnauthorized());
+        http.perform(post(route()).header("Authorization","Bearer "+producer)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(valid.substring(0,valid.length()-1)+",\"state\":\"TRUSTED\"}"))
+                .andExpect(status().isBadRequest());
+        http.perform(post(route()).header("Authorization","Bearer "+producer)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(valid.substring(0,valid.length()-1)+",\"textValue\":\"extra\"}"))
+                .andExpect(status().isBadRequest());
+        http.perform(post(route()).header("Authorization","Bearer "+producer)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"sourceId\":\""+source+"\",\"sourceSequenceNumber\":\"empty\","
+                        +"\"qualityCodeId\":\""+quality+"\",\"unitId\":\""+unit
+                        +"\",\"sourceTimestamp\":\""+stamp+"\"}"))
+                .andExpect(status().isBadRequest());
+        http.perform(post(route()).header("Authorization","Bearer "+producer)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload("too-old","5",quality,unit,
+                        Instant.now().minusSeconds(90000).toString())))
+                .andExpect(status().isBadRequest());
+        http.perform(post(route()).header("Authorization","Bearer "+producer)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload("bad-source","5",quality,unit,stamp)
+                        .replace(source,id()))).andExpect(status().isForbidden());
+        http.perform(post(route()).header("Authorization","Bearer "+producer)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload("bad-quality","5",id(),unit,stamp)))
+                .andExpect(status().isForbidden());
+        db.update("UPDATE hidra_telemetry_type_catalog SET active=false WHERE id=?",quality);
+        http.perform(post(route()).header("Authorization","Bearer "+producer)
+                .contentType(MediaType.APPLICATION_JSON).content(valid))
+                .andExpect(status().isForbidden());
+        db.update("UPDATE hidra_telemetry_type_catalog SET active=true WHERE id=?",quality);
+        db.update("UPDATE hidra_telemetry_point SET status='INACTIVE' WHERE id=?",point);
+        http.perform(post(route()).header("Authorization","Bearer "+producer)
+                .contentType(MediaType.APPLICATION_JSON).content(valid))
+                .andExpect(status().isForbidden());
+        db.update("UPDATE hidra_telemetry_point SET status='ACTIVE' WHERE id=?",point);
+        db.update("UPDATE hidra_telemetry_source SET status='INACTIVE' WHERE id=?",source);
+        http.perform(post(route()).header("Authorization","Bearer "+producer)
+                .contentType(MediaType.APPLICATION_JSON).content(valid))
+                .andExpect(status().isForbidden());
+        db.update("UPDATE hidra_telemetry_source SET status='ACTIVE' WHERE id=?",source);
+        db.update("UPDATE hidra_telemetry_point_binding SET active=false WHERE point_id=?",point);
+        http.perform(post(route()).header("Authorization","Bearer "+producer)
+                .contentType(MediaType.APPLICATION_JSON).content(valid))
+                .andExpect(status().isForbidden());
+        db.update("UPDATE hidra_telemetry_point_binding SET active=true WHERE point_id=?",point);
+        db.update("UPDATE hidra_topology_facility SET owner_party_id=? WHERE id=?",otherCompany,facility);
+        http.perform(post(route()).header("Authorization","Bearer "+producer)
+                .contentType(MediaType.APPLICATION_JSON).content(valid))
+                .andExpect(status().isForbidden());
+        db.update("UPDATE hidra_topology_facility SET owner_party_id=? WHERE id=?",company,facility);
+        db.update("INSERT INTO hidra_telemetry_external_tag_mapping("
+                +"id,source_id,device_id,point_id,external_tag_name,mapping_mode,active,"
+                +"valid_from,created_at,updated_at) "
+                +"VALUES (?,?,?,?,'synthetic-alias','ALIASED',true,"
+                +"now()-interval '1 day',now(),now())",id(),source,device,point);
+        http.perform(post(route()).header("Authorization","Bearer "+producer)
+                .contentType(MediaType.APPLICATION_JSON).content(valid))
+                .andExpect(status().isForbidden());
+        assertEquals(0L,countReadings());
+        assertEquals(0L,db.queryForObject(
+                "SELECT count(*) FROM hidra_telemetry_reading_ingest_receipt WHERE point_id=?",
+                Long.class,point));
+        assertEquals(0L,db.queryForObject(
+                "SELECT count(*) FROM hidra_telemetry_trusted_reading WHERE point_id=?",
+                Long.class,point));
+    }
+
+    @Test void concurrentConflictingSequencesCannotCommitTwoDifferentReadings() throws Exception {
+        String stamp=Instant.now().minusSeconds(4).toString();
+        String first=payload("seq-conflicting","51.25",quality,unit,stamp);
+        String second=payload("seq-conflicting","52.75",quality,unit,stamp);
+        try(var pool=Executors.newFixedThreadPool(2)) {
+            Callable<Integer> writeFirst=()->http.perform(post(route())
+                    .header("Authorization","Bearer "+producer)
+                    .contentType(MediaType.APPLICATION_JSON).content(first))
+                    .andReturn().getResponse().getStatus();
+            Callable<Integer> writeSecond=()->http.perform(post(route())
+                    .header("Authorization","Bearer "+producer)
+                    .contentType(MediaType.APPLICATION_JSON).content(second))
+                    .andReturn().getResponse().getStatus();
+            var future1=pool.submit(writeFirst);
+            var future2=pool.submit(writeSecond);
+            int a=future1.get(30,TimeUnit.SECONDS);
+            int b=future2.get(30,TimeUnit.SECONDS);
+            assertTrue((a==201&&b==409)||(a==409&&b==201),
+                    "Concurrent conflicting canonical observations must return 201 and 409.");
+        }
+        assertEquals(1L,countReadings());
+        assertEquals(1L,db.queryForObject(
+                "SELECT count(*) FROM hidra_telemetry_reading_ingest_receipt WHERE point_id=?",
+                Long.class,point));
+    }
+
     // Both real HTTP requests run in separate OS JVMs. The first process commits
     // the observation and stops; the second must independently resolve native
     // authority, persisted history, replay and revocation from the same PostgreSQL.

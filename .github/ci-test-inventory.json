@@ -8293,9 +8293,12 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "concurrentConflictingSequencesCannotCommitTwoDifferentReadings",
         "concurrentDuplicateSequencesCannotAppendTwoRawReadings",
         "localJwtNativeScopedWriteReplayAndProtectedReadbackArePostgresDurable",
-        "protectedReadingAndReplaySurviveSeparateApplicationJvmRestart"
+        "nativeTextAndBooleanReadingsPreserveTypedValuesWithoutTrustPublication",
+        "protectedReadingAndReplaySurviveSeparateApplicationJvmRestart",
+        "protectedReadsAndInvalidNativeObservationsFailClosedWithoutAppend"
       ],
       "class": "dz.sh.hidra.modules.telemetry.infrastructure.persistence.TelemetryReadingIngestionNativeHttpPostgresIntegrationTest",
       "dependency_reason": "HAPI-933 synthetic native Telemetry protected ingestion/replay acceptance; PostgreSQL required for native concurrency.",
@@ -8303,7 +8306,7 @@
       "lane": "postgres-integration",
       "owner": "telemetry",
       "path": "src/test/java/dz/sh/hidra/modules/telemetry/infrastructure/persistence/TelemetryReadingIngestionNativeHttpPostgresIntegrationTest.java",
-      "source_sha256": "af13d30689078719567a331fd3b37ad85271fd61468b93ac78c36c562f94a301",
+      "source_sha256": "1f96dfdda80c56dd7ad48c4909a53ce67b1a3e3015711a13e94099040bb78e18",
       "supports": []
     },
     {

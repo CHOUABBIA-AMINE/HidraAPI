@@ -10696,4 +10696,44 @@ remaining software acceptance. Same-task registered message:
 After expected-head guarded publication, verify applicable CI started, then stop.
 
 
+
+### 13. Next acceptance evidence review after green Full #1173 — 2026-11-10
+
+Exact main `caa0c85e8fbb30625357af654f3b0337b7374ffa`, [Full CI #1173](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42804221486)
+and [Documentation #970](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42804221465)
+both completed **SUCCESS**. All 14 PostgreSQL integration shards, unit and
+architecture validation, generated runtime/base OpenAPI compatibility,
+strict migrated PostgreSQL dictionary equality, signed LOCAL JWT/native REST,
+and the new **two distinct application OS-JVM** readback/replay test were in
+the passing Full CI evidence. This is **synthetic backend software validation**,
+not external OT, SITE acceptance, commissioning, physical calibration or release.
+
+Before final HAPI-933 acceptance, compare mandatory criteria in sections 5
+and 7 with executed cases rather than interpreting general green CI as proof
+of untested conditions. The previous HAPI-933 integration test covered numeric
+ingestion, normal/foreign/revoked native authority, same-key idempotency and
+conflict, one parallel duplicate, bad unit/future timestamp and actual
+separate-JVM persistence; unit cases covered replay and some invalid shapes.
+It did **not yet explicitly execute** text/boolean native ingestion, several
+malformed/forged observation shapes, inactive source/point/quality, stale
+binding/mapping, protected latest/trend denial or **parallel mismatched**
+source-sequence requests.
+
+This same **one HAPI-933 acceptance completion** therefore extends exactly
+the existing native HTTP/PostgreSQL integration class with three independent
+synthetic tests, adds their exact identifiers and new source SHA-256 to the
+mandatory CI inventory, and appends this owner evidence. No production source,
+authentication policy, database migration/constraint, API/OpenAPI, historical
+task, future FD-04/HAPI-934, trust-promotion workflow or release is changed.
+Test assertions deliberately require 201/409 parallel conflict, 401/403/400
+negative native outcomes, PostgreSQL non-append, and no trusted publication;
+none of the existing positive checks is weakened.
+
+The new cases are **prepared, not yet executed** in this environment.
+HAPI-933 remains **PARTIAL / IN_PROGRESS** until their exact-SHA CI evidence
+is independently inspected. Preserve the original one-task registered commit
+message `feat(telemetry): implement protected native reading ingestion`.
+After publication, confirm exact-SHA workflows created/queued/started and stop.
+
+
 <!-- task-register:payload:end -->

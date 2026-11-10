@@ -4803,9 +4803,9 @@ functional assessment; no legacy registered task replaced.
 
 Priority: P0
 
-Implementation Status: NOT_IMPLEMENTED
+Implementation Status: VERIFIED
 
-Planning Status: REGISTERED_PENDING
+Planning Status: COMPLETED
 
 Owning Module: `platform/runtime-qualification` (non-business boundary).
 Identity, Organization, Party, Topology, Configuration, Workflow and database
@@ -5122,5 +5122,53 @@ security adapter, other task, roadmap/phase status, release or production
 configuration changes. The exact-SHA hosted JAR + PG16 + native HTTP +
 independent process restart is still required and **not yet accepted**;
 HAPI-932 remains NOT_IMPLEMENTED / REGISTERED_PENDING until proof.
+
+
+### HAPI-932 exact-SHA bounded software acceptance — 2026-11-10
+
+The owner-selected `Next` follows independently verified same-SHA acceptance
+results for the already registered HAPI-932, without selection of a new ID or
+release. On implementation `a68ed0463ae154fb70dd65510da5f78e6c3797a6`,
+[Isolated Qualification #9](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42776899511),
+[Full CI #1167](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42776899883), and
+[Documentation #962](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42776899535)
+all completed SUCCESS. The isolated hosted `fd02-runtime` job (ID
+`129697406957`) executed Java 21 executable JAR, fresh PostgreSQL 16
+schema migration, restricted database actor/protected-read and DDL denials,
+real LOCAL administrator bootstrap and one Audit event, actual native HTTP,
+stop/new-JVM restart with bootstrap off, same persisted business/user IDs
+and Flyway post-restart validation. The job reported 13 initial and 12
+restart HTTP cases PASS, plus seven Python fixture tests. PostgreSQL denied
+SET ROLE, Audit UPDATE/DELETE, protected engineering and Identity-key reads;
+its append-only trigger denied even the migration owner's Audit UPDATE.
+The runtime script checked privileged migrator secrets absent from the
+application process environment. These assertions derive from the
+completed hosted script/job, not separate live application deployment.
+
+The redacted synthetic evidence artifact
+[`hidra-fd02-a68ed0463ae154fb70dd65510da5f78e6c3797a6`](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42776899511/artifacts/13743824171)
+was successfully uploaded (artifact ID `13743824171`); its contents were
+not downloaded independently. Full CI #1167 separately shows all 14
+PostgreSQL shards, Java unit/architecture, API contract/dictionary,
+static validation and Full Verification Gate SUCCESS; the legacy combined
+`Java 21 Maven verification` job was SKIPPED under the split CI layout,
+not asserted as executed. Exact-source application/migration/security files
+remained unchanged by the FD-02 qualification.
+
+**Disposition: VERIFIED / COMPLETED** for the *bounded synthetic backend
+single-node runtime software smoke only*. This supports reproducible
+REST consumption and process-restart persistence under the disposable
+approved fixture/permission setup. It does not establish production database
+role design, TLS/host/network, deployment readiness, operational/SITE
+acceptance, actual corporate IdP or company onboarding, all six-module
+business workflows, HA/DR, OT connectivity, engineering qualification or
+numerical simulation. Separate owner operational acceptance and release
+approval remain required; nothing is deployed or released by this status.
+
+This is an exact evidence/status-only reconciliation. Modify the HAPI-932
+owner task header/append-only ledger, the HAPI-932 status cells in the two
+canonical status tables, and the index current-status note only; preserve
+every other registered task/phase/legacy mapping and immutable payload.
+The next HAPI identifier is *not* automatically registered or selected.
 
 <!-- task-register:payload:end -->

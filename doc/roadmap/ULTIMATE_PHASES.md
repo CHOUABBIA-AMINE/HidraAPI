@@ -1852,4 +1852,4 @@ The technical scope and no-deployment qualification boundary are in
 
 | Task ID | Task Name | Deliverable | Priority | Dependencies | Implementation Status | Planning Status |
 |---|---|---|---|---|---|---|
-| [HAPI-932](TASKS_HPS-025.md#hapi-932) | qualify one restricted single-node API runtime | Disposable PostgreSQL 16 migration/least-privilege proof plus independent native HTTP, one process restart and durable same-database readback; no release action | P0 | HAPI-923–928, HAPI-931; approved synthetic role/catalog policy | NOT_IMPLEMENTED | REGISTERED_PENDING |
+| [HAPI-932](TASKS_HPS-025.md#hapi-932) | qualify one restricted single-node API runtime | Disposable PostgreSQL 16 migration/least-privilege proof plus independent native HTTP, one process restart and durable same-database readback; no release action | P0 | HAPI-923–928, HAPI-931; approved synthetic role/catalog policy | VERIFIED | COMPLETED |

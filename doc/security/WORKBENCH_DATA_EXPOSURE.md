@@ -80,7 +80,7 @@ The Workbench P0 exposure is not closed until:
 5. focused regression tests pass;
 6. architecture/security guardrails cover the resulting boundary;
 7. full repository verification succeeds;
-8. `doc/roadmap/ULTIMATE_ROADMAP.md` records exact completion evidence.
+8. `doc/roadmap/ROADMAP.md` records exact evidence for active tasks.
 
 
 ## HPR-P0-001 Implementation Decision

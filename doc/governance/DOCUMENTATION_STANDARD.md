@@ -30,7 +30,7 @@ Every canonical document must identify, directly or through its containing index
 6. Unknown values remain explicit `TBD`, `UNVERIFIED`, or `NOT ESTABLISHED`; values are never guessed.
 7. Legacy `docs/` content may feed canonical documents only after reconciliation against current evidence.
 8. Roadmaps may control execution, but permanent architecture/domain decisions must move into the appropriate canonical document.
-9. No canonical document may claim TimescaleDB, PostGIS, HA, DR, MQTT/Sparkplug, solver execution, AI inference, or automatic control without evidence required by the Ultimate Roadmap.
+9. No canonical document may claim TimescaleDB, PostGIS, HA, DR, MQTT/Sparkplug, solver execution, AI inference, or automatic control without evidence required by the applicable technical policy and verified source.
 
 ## Canonical Roots
 
@@ -39,4 +39,4 @@ Every canonical document must identify, directly or through its containing index
 
 ## Roadmap Authority
 
-`doc/roadmap/ULTIMATE_ROADMAP.md` governs platform-finalization sequencing and task codes.
+`doc/roadmap/ROADMAP.md` governs active task selection, sequencing and status.

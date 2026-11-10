@@ -109,7 +109,7 @@ The live repository contains 24 business-module roots. Their intended ownership 
 maturity caveat are documented in the [module catalog](docs/architecture/module-catalog.md).
 
 Architectural presence does **not** mean production maturity. Before extending a module,
-read its roadmap where one exists and inspect its current implementation.
+read the active roadmap and inspect current implementation.
 
 Allowed cross-module modeling uses references/ports/events rather than foreign aggregate
 imports.
@@ -305,7 +305,7 @@ ArchitectureGuardrailTest
 
 The architecture test checks framework/layer boundaries without using Spring Boot test
 slice annotations. Module-specific behavior tests should be rebuilt against each module's
-current contracts under its own roadmap.
+current contracts under the active roadmap.
 
 ---
 
@@ -316,7 +316,7 @@ Contribution rules are documented in [CONTRIBUTING.md](CONTRIBUTING.md).
 Core rules:
 
 ```text
-one roadmap task per branch or PR
+one admitted roadmap task per guarded main commit
 exact roadmap commit message
 preserve module ownership and hexagonal boundaries
 do not introduce shared/common/helper/misc packages
@@ -326,30 +326,11 @@ record exact blockers instead of claiming validation passed
 
 ---
 
-## 11. Roadmaps
+## 11. Roadmap
 
-Current roadmap locations:
-
-- [Kernel roadmap](docs/roadmap/kernel.md)
-- [Platform roadmap](docs/roadmap/platform.md)
-- [Identity roadmap](docs/roadmap/identity.md)
-- [Organization roadmap](docs/roadmap/organization.md)
-- [Topology roadmap](docs/roadmap/topology.md)
-- [Telemetry roadmap](docs/roadmap/telemetry.md)
-- [Workflow roadmap](docs/roadmap/workflow.md)
-- [Stabilization 02](docs/roadmap/fixs/stabilization_02.md)
-
-Historical/correction material currently stored under `docs/roadmap/fixs/`:
-
-- [Correction 01](docs/roadmap/fixs/correction_01.md)
-- [Correction 02](docs/roadmap/fixs/correction_02.md)
-- [Correction 02 final checklist](docs/roadmap/fixs/correction_02_final_checklist.md)
-- [Correction 02 type-enum audit](docs/roadmap/fixs/correction_02_cor2_007_type_enum_audit.md)
-- [Correction 02 name-value-object audit](docs/roadmap/fixs/correction_02_cor2_009_name_value_object_audit.md)
-- [Correction 02 OpenAPI policy](docs/roadmap/fixs/correction_02_cor2_012_openapi_policy.md)
-- [Stabilization 01](docs/roadmap/fixs/stabilization_01.md)
-- [Topology validation checklist](docs/roadmap/fixs/topology_validation_checklist.md)
-- [Workflow validation checklist](docs/roadmap/fixs/workflow_validation_checklist.md)
+[HidraAPI functional delivery roadmap](doc/roadmap/ROADMAP.md) is the sole
+active task source. The [roadmap archive](doc/governance/ROADMAP_ARCHIVE.md)
+retains historical plans and evidence.
 
 ---
 

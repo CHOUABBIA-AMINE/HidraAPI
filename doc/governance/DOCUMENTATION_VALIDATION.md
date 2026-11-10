@@ -14,7 +14,7 @@ and [lifecycle](DOCUMENT_LIFECYCLE.md) govern metadata and preserved evidence.
 | Control | Source / bounded responsibility |
 |---|---|
 | Canonical estate | [validate_docs.py](../../.github/scripts/validate_docs.py): exact reviewed inventory, UTF-8/nonempty/conflicts, local inline/reference links and anchors |
-| Metadata/status | Leading declared statuses; explicit containing-index/register metadata signals; exact historical P1 exceptions and roadmap ACTIVE control |
+| Metadata/status | Leading declared statuses; explicit containing-index/register metadata signals; exact historical P1 exceptions, sole ACTIVE roadmap and archived SHA-256 checks |
 | Navigation/module/register | Declared index targets, actual module roots/documents, duplicate module links and CURRENT registry consistency |
 | Execution control | Primary 13-row P2 registry shape/status/codes, selected next task and prerequisite-safe later closure |
 | Snapshot integrity | [validate_openapi_snapshot.py](../../.github/scripts/validate_openapi_snapshot.py): strict JSON, sorted compact bytes, digest/counts/source/provenance, local pointers and representative security |
@@ -157,3 +157,10 @@ P1 deployed/recovery evidence retains its original scope. No production-data/imp
 approval, business retention/policy values, hydraulic/ML runtime execution or field
 actuation is established. Version remains 0.6.0-SNAPSHOT. No executable, migration,
 contract snapshot, dictionary, ownership metadata or operating artifact is changed.
+
+## Active roadmap and archive
+
+The documentation manifest identifies the sole active task roadmap and pins the
+byte-preserved archive. Validation checks the active task IDs, status and
+dependency graph. The previous register is checked as historical evidence,
+including its compatibility anchors and archived payload integrity.

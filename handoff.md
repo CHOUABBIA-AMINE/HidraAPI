@@ -339,7 +339,7 @@ Recommended order:
 
 ## 8. Backend implementation standards
 
-Read `AGENTS.md` and the relevant module roadmap before changing a module.
+Read `AGENTS.md` and the [active HidraAPI roadmap](doc/roadmap/ROADMAP.md) before changing a module.
 
 Mandatory Java metadata:
 
@@ -499,4 +499,4 @@ Backend remediation is complete only when:
 
 ---
 
-This file is a handoff artifact, not a substitute for `AGENTS.md`, module roadmaps, or `HidraAPI-Frontend-Backend-Gap-Register.md`. When they differ, re-audit the current repository state and follow the authoritative repository instructions.
+This file preserves handoff evidence. Follow `AGENTS.md` and the active HidraAPI roadmap for backend task execution. When they differ, re-audit the current repository state and follow the authoritative repository instructions.

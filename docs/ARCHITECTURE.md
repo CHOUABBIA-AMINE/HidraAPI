@@ -1,5 +1,5 @@
 > **WARNING: SUPERSEDED DOCUMENT**
-> This document is no longer authoritative for execution. The single source of truth for platform finalization and target architecture is now `doc/roadmap/ULTIMATE_ROADMAP.md`.
+> This document is no longer authoritative for execution. Active task execution is governed by [the HidraAPI roadmap](../doc/roadmap/ROADMAP.md).
 
 # HidraAPI Architecture
 

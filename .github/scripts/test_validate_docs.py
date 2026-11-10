@@ -189,6 +189,38 @@ class DocumentationTests(unittest.TestCase):
             self.check()
 
 
+class ActiveRoadmapTests(unittest.TestCase):
+    def test_tasks_require_valid_ids_status_and_acyclic_dependencies(self):
+        first = '| **T01 · First** | Owner | Existing foundation | Deliver | Accept | PLANNED |'
+        second = '| **T02 · Second** | Owner | T01 | Deliver | Accept | COMPLETED |'
+        self.assertEqual(validator.validate_active_tasks(first + '\n' + second), 2)
+        invalid = (
+            (first + '\n' + first, 'duplicate'),
+            (first.replace('T01', 'T02'), 'nonconsecutive'),
+            (first.replace('PLANNED', 'ACTIVE'), 'status'),
+            (first + '\n' + second.replace('| T01 |', '| T99 |'), 'Unknown'),
+            (first.replace('Existing foundation', 'T02') + '\n' + second, 'cyclic'),
+        )
+        for text, error in invalid:
+            with self.subTest(error=error), self.assertRaisesRegex(ValueError, error):
+                validator.validate_active_tasks(text)
+
+    def test_archive_must_cover_all_prior_paths_and_preserve_bytes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            active, old = 'doc/roadmap/ROADMAP.md', 'docs/roadmap/previous.md'
+            for rel in (active, old):
+                (root / rel).parent.mkdir(parents=True)
+                (root / rel).write_text(rel)
+            archive = {old: hashlib.sha256(old.encode()).hexdigest()}
+            validator.validate_roadmap_archive(root, active, archive)
+            with self.assertRaisesRegex(ValueError, 'inventory'):
+                validator.validate_roadmap_archive(root, active, {})
+            (root / old).write_text('changed')
+            with self.assertRaisesRegex(ValueError, 'Archived roadmap changed'):
+                validator.validate_roadmap_archive(root, active, archive)
+
+
 class TaskRegisterTests(unittest.TestCase):
     def setUp(self):
         self.start = '<!-- task-register:payload:start -->\n'

@@ -12,13 +12,13 @@ Canonical root: `doc/`
 
 Legacy/reference/evidence root: `docs/`
 
-Execution authority: `doc/roadmap/ULTIMATE_ROADMAP.md`
+Execution authority: `doc/roadmap/ROADMAP.md`
 
 Last semantic/navigation verification: HPR-P2-009 on 2026-10-09, source parent `44d4fe773d69ed51dd90820140c8d9e7aee6cba2`. HPR-P2-001 established the governance baseline; individual untouched sets retain their own applicability. Post-publication validation belongs to the resulting exact-head documentation run.
 
 ## Ownership
 
-Documentation authority follows the repository governance and the owner/decision authorities already recorded in individual canonical documents and the Ultimate Roadmap. No additional named document owner is established by HPR-P2-001.
+Documentation authority follows the repository governance and the owner/decision authorities already recorded in individual canonical documents and the active roadmap. No additional named document owner is established by HPR-P2-001.
 
 ## Domain Register
 
@@ -27,8 +27,8 @@ Documentation authority follows the repository governance and the owner/decision
 | `doc/README.md` | CURRENT | Repository documentation entry point and precedence/navigation control | Maintain as domains are added |
 | `doc/vision/**` | TARGET | Sonatrach / TRC product-stewardship vision; strategic product intent, not implementation verification or execution authority | The enduring product vision is maintained independently; legacy source preserved in `docs/vision/**` |
 | `doc/governance/**` | CURRENT | Documentation governance, lifecycle, status and register controls | HPR-P2-001 complete |
-| `doc/roadmap/ULTIMATE_ROADMAP.md` | CURRENT | Sole platform-finalization execution authority | Maintain per executed HPR |
-| `doc/roadmap/gaps.md` | CURRENT | Module-by-module functional review findings; not execution authorization | Update after verified reviews |
+| `doc/roadmap/ROADMAP.md` | ACTIVE | Sole HidraAPI task authority | Record selected task status and evidence |
+| [Roadmap archive](ROADMAP_ARCHIVE.md) | HISTORICAL | Prior plans and task records preserved at their original paths | Preserve immutable evidence |
 | `doc/security/**` | CURRENT where individually stated | Canonical P0 security baseline and approved security procedures | No P2 replacement implied by HPR-P2-001 |
 | `doc/architecture/**` | CURRENT where individually stated | Canonical HPR-P2-002 architecture set; `RUNTIME_ARCHITECTURE.md` is historical P1 provenance | HPR-P2-002 complete |
 | `doc/operations/**` | CURRENT where individually stated | P1 operational, HA, DR, deployment, observability and survivability evidence | Preserve; later tasks may cross-link |
@@ -147,7 +147,7 @@ global MVC mappings and five scoped advice overrides. Runtime facts remain disti
 from the unchanged generated contract and its missing common error-envelope coverage.
 No universal page/filter/error-body policy is inferred.
 
-Current execution disposition follows the Ultimate Roadmap: HPR-P2-005 correction
+At this historical checkpoint, execution disposition followed the prior roadmap: HPR-P2-005 correction
 implemented and IN PROGRESS pending its exact-head documentation CI; HPR-P2-006 and
 HPR-P2-013 PENDING. P2 remains OPEN; P3 DEFERRED. Earlier area-complete/closed prose
 retains historical applicability and does not supersede this current disposition.
@@ -194,4 +194,4 @@ contract snapshot, dictionary, ownership metadata or operating artifact is chang
 
 ## Owner-approved foundation supplement — 2026-11-03
 
-[FOUNDATION_PRODUCTION_ROADMAP.md](../roadmap/FOUNDATION_PRODUCTION_ROADMAP.md) is CURRENT for the approved minimum and exact HAPI-922–928 technical registration. Original921-task baseline/archives remain unchanged;25 phases,928 current backend tasks. HidraWEB handoffs are reserved, not a claim of frontend registration/implementation. Exact-P0 CI acceptance remains required before selecting B1; industrial/SITE/deployment acceptance is NOT ESTABLISHED.
+[FOUNDATION_PRODUCTION_ROADMAP.md](../roadmap/FOUNDATION_PRODUCTION_ROADMAP.md) was current at the recorded checkpoint for the approved minimum and exact HAPI-922–928 technical registration. Original921-task baseline/archives remain unchanged;25 phases,928 current backend tasks. HidraWEB handoffs are reserved, not a claim of frontend registration/implementation. Exact-P0 CI acceptance remains required before selecting B1; industrial/SITE/deployment acceptance is NOT ESTABLISHED.

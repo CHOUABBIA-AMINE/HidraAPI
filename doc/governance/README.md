@@ -10,7 +10,7 @@ This directory defines how HidraAPI documentation becomes canonical, how status 
 
 ## Authority Order
 
-1. `doc/roadmap/ULTIMATE_ROADMAP.md` controls platform-finalization sequencing and HPR task selection.
+1. `doc/roadmap/ROADMAP.md` controls HidraAPI task selection, sequencing, status and acceptance.
 2. Current executable repository evidence controls implementation claims.
 3. Canonical `doc/**` documents describe maintained current, target or deferred state according to their recorded status.
 4. Legacy `docs/**` material is evidence/reference only unless reconciled into canonical documentation.
@@ -30,7 +30,7 @@ A canonical document must identify the required metadata directly or inherit it 
 
 ## Legacy Evidence Rule
 
-The `docs/` estate is preserved in place. Canonical indexes may reference it for provenance, audit history, semantic review, ADR history, data-definition history or execution evidence, but legacy status text cannot select roadmap work or override the Ultimate Roadmap.
+The `docs/` estate is preserved in place. Canonical indexes may reference it for provenance, audit history, semantic review, ADR history, data-definition history or execution evidence, but legacy status text cannot select roadmap work or override the active roadmap. See the [roadmap archive](ROADMAP_ARCHIVE.md).
 
 ## Change Discipline
 

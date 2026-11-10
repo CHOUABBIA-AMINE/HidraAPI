@@ -1,4 +1,113 @@
 {
+  "active_task_register": true,
+  "archived_roadmaps": {
+    "doc/roadmap/FOUNDATION_PRODUCTION_ROADMAP.md": "68304dc89deba602fc1a9d5a6866bfabf915d5e1cf0cbf48caf9e0900a2134f7",
+    "doc/roadmap/PLATFORM_ACCEPTANCE.md": "082e518c99abd9a5a048eeb3d1797766fd07bb6ca711a790d3a3b16a3131a0fb",
+    "doc/roadmap/TASKS_HPS-001.md": "d476e900b9f4418138590060c8d34689c0f1b709d6e9ca6b5ae2276e35e38fd6",
+    "doc/roadmap/TASKS_HPS-002.md": "87f49a1dd64c844c6a6984a394acbe16196df748e99540f20c1ebbeb900ceffb",
+    "doc/roadmap/TASKS_HPS-003.md": "b34a68cb1d22792b10315baa770c48d89a8685266eda8c78a778fce7be394493",
+    "doc/roadmap/TASKS_HPS-004.md": "869363b84a3ba7fc2781ca8f40470414e74a7b7a4756e99a5945a537c71f6f87",
+    "doc/roadmap/TASKS_HPS-005.md": "18090d9bca742521127aa384cde87ee834511c8a29ca8a7750fd994851ef5a92",
+    "doc/roadmap/TASKS_HPS-006.md": "2814cad4ded5501be149db9cccb9caa8061f8d72002080f9824a8ca9e20a66da",
+    "doc/roadmap/TASKS_HPS-007.md": "83af7ff90ee5e5d9f6ef38e74b640325f9c695e5151d3848311f6874578354ca",
+    "doc/roadmap/TASKS_HPS-008.md": "17cdb5ad151cb9c1f5e439a8314507c4475423f44d4788f47cd201c44b2db0f8",
+    "doc/roadmap/TASKS_HPS-009.md": "dcd62d1ce5e2f8e4afa17a98b59504fc56b13f5ca2e88aef299f92390851a7c1",
+    "doc/roadmap/TASKS_HPS-010.md": "6ce81c13586b03d5d0889234eb6133bfc6bdf7b8ae83e7f5a315748c379d8f92",
+    "doc/roadmap/TASKS_HPS-011.md": "4e8db575206afa032da0c78813fe7ad8bbe3473ad1cb60a4493d284817923d49",
+    "doc/roadmap/TASKS_HPS-012.md": "d6b11a4ba785de5d1b4ac6b0285f089fae94606cce976028a02a1f5ebbd4ea8e",
+    "doc/roadmap/TASKS_HPS-013.md": "db8f4e3bb60f89be25df85bd801fa09bacd6d8caf903c3518004fa7f66f8fd43",
+    "doc/roadmap/TASKS_HPS-014.md": "bbb6451219a229a662fc75758941dd8f14faf224766bc89c37182a08d9d400e0",
+    "doc/roadmap/TASKS_HPS-015.md": "44094f9cf1ba9aafc57d92675cf9614e2c1599ecc0cad909659904660d32429e",
+    "doc/roadmap/TASKS_HPS-016.md": "67a39c25ecc569c97a0990d09409436310c6e0fc6fc82f124beb1b062366ad99",
+    "doc/roadmap/TASKS_HPS-017.md": "ef09142cdfb939f1c57cc1bf8b52b5aa5d74ae6719af6dac037d275835df18a8",
+    "doc/roadmap/TASKS_HPS-018.md": "c3079d7c9976b2328ec523875380c076b3213b858f488c1c424f80ae6d9982e3",
+    "doc/roadmap/TASKS_HPS-019.md": "0502e235fd05762a352f0e3285ca5bb2ee0fc6ba67d457b5ad13f886f20878bc",
+    "doc/roadmap/TASKS_HPS-020.md": "3193b57cb2c2c383dce990728848c2942935153bc3c5b71f7811ec2031837d77",
+    "doc/roadmap/TASKS_HPS-021.md": "5c567b85fe5ae4b7df083e5b90c03f9578784f43163595a36a7329c0bbf4318b",
+    "doc/roadmap/TASKS_HPS-022.md": "3ec257c1d916b28bd1448d8c445efc7809f9aab8e5e954eb2d1c95b1947e3d08",
+    "doc/roadmap/TASKS_HPS-023.md": "efb294a777df8844930fc6b8bce56babeb4b68bd409046b70b81ea3c383d96c5",
+    "doc/roadmap/TASKS_HPS-024.md": "368d7ebe696967f06f1c7f99fbaff7954224c33292f689a7f4b45ea062c3dbca",
+    "doc/roadmap/TASKS_HPS-025.md": "24adc8c7521219157a1a880c16631c6e8d51cbc82b455bbbada6d315433a0843",
+    "doc/roadmap/ULTIMATE_PHASES.md": "0f84c7212cbb1941f15545361662479bce04e5a3bb40548a4c30daba4c57ec18",
+    "doc/roadmap/ULTIMATE_ROADMAP.md": "95955d64e1d83be575a25bb3703a9f3bf814e20290bf69aff65a283f7a724bfa",
+    "doc/roadmap/ULTIMATE_TASKS.md": "ed72d9dee3312eaf6f548c9455aa81ff5e80ce7435c1fe939809a959651120df",
+    "doc/roadmap/ULTIMATE_TASKS_BASELINE.md": "b41e22af9fcb413cbc2dbe9118f6e7130d99266843dd067ae669414535be51d6",
+    "doc/roadmap/ULTIMATE_TASKS_EVIDENCE.md": "25ec6620876c05ccb3462d55149862164ea5eff82dce839fdbf8e265b23c6cae",
+    "doc/roadmap/gaps.md": "579fa942d39e3376a4d51e905cf43ebd0b669cc49dac590ad36b0d1be27c7944",
+    "doc/roadmap/history/ULTIMATE_ROADMAP_HISTORY.md": "3a4e9920279474886690218f50d4b3ae3114d8da805f88a865f493d6c16c82c0",
+    "docs/roadmap/GAP-ALARM-004-suppression-semantics.md": "182758f21124951036dbe9a8047c00fa1765f69a86493c26082114641399fd71",
+    "docs/roadmap/authentication-corrections.md": "c8d2676e18c49fc4ae718919d0d8eb57a4cf0becc8821866b8728d0d5e20f7ee",
+    "docs/roadmap/authentication.md": "2a78084b725d8a16861898330065b357ff788b4b9290c622b98d3fbfca4db9bd",
+    "docs/roadmap/data-provisioning.md": "91fc3e0722cf237000679ff82ae0bd8f9cb51384ece7317ac993a291bb147250",
+    "docs/roadmap/extended-capabilities.md": "dc478e18a34be04a642b6f839f66d7ab2ea1a015daf563ab0bbcc100cf26d6f3",
+    "docs/roadmap/fixs/correction_01.md": "8cd2e52fa8cd7aadfeb99b9122a15871fb63fa1d72356efd452b5505ceba78b1",
+    "docs/roadmap/fixs/correction_02.md": "a31a7df443d9b0cf74e9ecce81d046cc91375ec4f196db70025bb16901cd36a4",
+    "docs/roadmap/fixs/correction_02_cor2_007_type_enum_audit.md": "c558c2c70196993ea7db49c52c461ac5149719a65b81008759a960b570a0482e",
+    "docs/roadmap/fixs/correction_02_cor2_009_name_value_object_audit.md": "dd91b522ef7b6eac791d99801b3121f3e7a20c128a61a7f75361d4bf56f50636",
+    "docs/roadmap/fixs/correction_02_cor2_012_openapi_policy.md": "824e9f0aebdebf145ec77245aefe02455b9c019647b24660f0c58829bfdb52c3",
+    "docs/roadmap/fixs/correction_02_final_checklist.md": "329e002a9ac069b96179cef225ba8228843cef42192b0ea906510e7df6c76bdd",
+    "docs/roadmap/fixs/frontend_backend_gap_remediation_02.md": "a4c047c5873be1e5da78b5bb05f6da9bf5d7b3139ecc4285f759e8fa7c018c63",
+    "docs/roadmap/fixs/stabilization_01.md": "51b862cb4e0005a4af0b001a1c5f3f9c92de826812fa2dfbcae74c0cf6ae78bb",
+    "docs/roadmap/fixs/stabilization_02.md": "03eea0fa228d30c4394d5cad2ddee3c31fc260b611edfb66f04887a4b4f565d0",
+    "docs/roadmap/fixs/telemetry_corrected_baseline_validated.md": "79419721dbe8e5025f2c786e7e5ed781c54e0d3c2f6637ddbfa22b05dee1c067",
+    "docs/roadmap/fixs/telemetry_topology_boot_baseline.md": "83690bb3eed2de6104124072b414e986e2cec8f558d992ac07de6152f039c323",
+    "docs/roadmap/fixs/topology_validation_checklist.md": "4293d9e4bc5348c6c48ffdb23030ae06999e4ea06b6fd462ea50122513808525",
+    "docs/roadmap/fixs/workflow_validation_checklist.md": "76de0bbffbbf6f183ec0d0ebc25d254fac179cac3e9398daf10b9ca21b52c1c5",
+    "docs/roadmap/identity.md": "57b20e28e08cedb88136ea5214852494241d263c8e3a12c9f1331e207880d013",
+    "docs/roadmap/kernel.md": "a42c1fdaac778d698f9a0174b3a01680cdb40f3a0fdd2bfb8272b57b2e68f6fa",
+    "docs/roadmap/model-field-catalogue.md": "3fd02b2227e784b6c34284603e1fb4902e57a5a21a38f09ba20a151a6249e824",
+    "docs/roadmap/model-semantic-remediation.md": "b84062de3b6c3591ced6cfab2c6bec49687f07b37eaa8aaea6730cfbd82e54b8",
+    "docs/roadmap/model-semantic-review.md": "912c76624db9f779b30fab8330e877ebedfdf3a94caa57301edfbc3022d19b70",
+    "docs/roadmap/organization.md": "69b30b22d3ffaea985f0b927c736ff26b4a617513c78c729c2214179ad232864",
+    "docs/roadmap/planning.md": "67843ed84c33a5f98148da987861932b6b54278abf4008e07e6f0b54c5078826",
+    "docs/roadmap/platform.md": "5b8a6dbe56017706f09c09ef0ee8ea91986a4a9c9f97b211cfc49e34f6369977",
+    "docs/roadmap/repository-remediation.md": "0ce02ffc25563818b3667aa3bdd00c73835e7aff1cd1dec64d78719c2fbbb007",
+    "docs/roadmap/telemetry.md": "1e8357c2079d1e666f0a3f08d97f4ee9721795cbaaeb2d87d144cf1b09befad9",
+    "docs/roadmap/topology.md": "c6f7f30758662fb9b9434f05ddf7cf707c184346dc646f2e63740d3568079eea",
+    "docs/roadmap/workflow.md": "126e967265b84be5a4e68aa8dd3e0f7f956087a288871e01b5c151c1a0411eff"
+  },
+  "archived_task_register": {
+    "archives": {
+      "doc/roadmap/ULTIMATE_TASKS_BASELINE.md": "c26ac08772fb3bd0932381282ac3b457f125dc30ef11d867d8d1e4747047f99f",
+      "doc/roadmap/ULTIMATE_TASKS_EVIDENCE.md": "686da36e049f6eaa19be3649ac63c66a9a897d721f16752aef3918c55e60819a"
+    },
+    "index": "doc/roadmap/ULTIMATE_TASKS.md",
+    "phases": {
+      "HPS-001": "doc/roadmap/TASKS_HPS-001.md",
+      "HPS-002": "doc/roadmap/TASKS_HPS-002.md",
+      "HPS-003": "doc/roadmap/TASKS_HPS-003.md",
+      "HPS-004": "doc/roadmap/TASKS_HPS-004.md",
+      "HPS-005": "doc/roadmap/TASKS_HPS-005.md",
+      "HPS-006": "doc/roadmap/TASKS_HPS-006.md",
+      "HPS-007": "doc/roadmap/TASKS_HPS-007.md",
+      "HPS-008": "doc/roadmap/TASKS_HPS-008.md",
+      "HPS-009": "doc/roadmap/TASKS_HPS-009.md",
+      "HPS-010": "doc/roadmap/TASKS_HPS-010.md",
+      "HPS-011": "doc/roadmap/TASKS_HPS-011.md",
+      "HPS-012": "doc/roadmap/TASKS_HPS-012.md",
+      "HPS-013": "doc/roadmap/TASKS_HPS-013.md",
+      "HPS-014": "doc/roadmap/TASKS_HPS-014.md",
+      "HPS-015": "doc/roadmap/TASKS_HPS-015.md",
+      "HPS-016": "doc/roadmap/TASKS_HPS-016.md",
+      "HPS-017": "doc/roadmap/TASKS_HPS-017.md",
+      "HPS-018": "doc/roadmap/TASKS_HPS-018.md",
+      "HPS-019": "doc/roadmap/TASKS_HPS-019.md",
+      "HPS-020": "doc/roadmap/TASKS_HPS-020.md",
+      "HPS-021": "doc/roadmap/TASKS_HPS-021.md",
+      "HPS-022": "doc/roadmap/TASKS_HPS-022.md",
+      "HPS-023": "doc/roadmap/TASKS_HPS-023.md",
+      "HPS-024": "doc/roadmap/TASKS_HPS-024.md",
+      "HPS-025": "doc/roadmap/TASKS_HPS-025.md"
+    },
+    "source_blob": "06331349b698b8faeb09e5a24a13cfe9a5175adc",
+    "source_sha": "2148b270a863cee5f0b42d458508cd9327567591",
+    "source_sha256": "09f0137b7973fff98f7104d9bf7af05beb3faa669170264d53ca71dadb61b748",
+    "tables": [
+      "doc/roadmap/ULTIMATE_ROADMAP.md",
+      "doc/roadmap/ULTIMATE_PHASES.md"
+    ],
+    "task_count": 934
+  },
   "current_indexes": [
     "doc/README.md",
     "doc/governance/README.md",
@@ -326,6 +435,13 @@
       ],
       "status": "CURRENT"
     },
+    "doc/governance/ROADMAP_ARCHIVE.md": {
+      "metadata_from": [
+        "doc/governance/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "HISTORICAL"
+    },
     "doc/model-remediation/RECONCILIATION.md": {
       "metadata_from": [
         "doc/governance/DOCUMENT_REGISTER.md"
@@ -584,208 +700,215 @@
         "doc/roadmap/FOUNDATION_PRODUCTION_ROADMAP.md",
         "doc/governance/DOCUMENT_REGISTER.md"
       ],
-      "status": "CURRENT"
+      "status": "HISTORICAL"
     },
     "doc/roadmap/PLATFORM_ACCEPTANCE.md": {
       "metadata_from": [
         "doc/governance/DOCUMENT_REGISTER.md"
       ],
-      "status": "CURRENT"
+      "status": "HISTORICAL"
+    },
+    "doc/roadmap/ROADMAP.md": {
+      "metadata_from": [
+        "doc/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "ACTIVE"
     },
     "doc/roadmap/TASKS_HPS-001.md": {
       "metadata_from": [
         "doc/roadmap/ULTIMATE_TASKS.md",
         "doc/governance/DOCUMENT_REGISTER.md"
       ],
-      "status": "CURRENT"
+      "status": "HISTORICAL"
     },
     "doc/roadmap/TASKS_HPS-002.md": {
       "metadata_from": [
         "doc/roadmap/ULTIMATE_TASKS.md",
         "doc/governance/DOCUMENT_REGISTER.md"
       ],
-      "status": "CURRENT"
+      "status": "HISTORICAL"
     },
     "doc/roadmap/TASKS_HPS-003.md": {
       "metadata_from": [
         "doc/roadmap/ULTIMATE_TASKS.md",
         "doc/governance/DOCUMENT_REGISTER.md"
       ],
-      "status": "CURRENT"
+      "status": "HISTORICAL"
     },
     "doc/roadmap/TASKS_HPS-004.md": {
       "metadata_from": [
         "doc/roadmap/ULTIMATE_TASKS.md",
         "doc/governance/DOCUMENT_REGISTER.md"
       ],
-      "status": "CURRENT"
+      "status": "HISTORICAL"
     },
     "doc/roadmap/TASKS_HPS-005.md": {
       "metadata_from": [
         "doc/roadmap/ULTIMATE_TASKS.md",
         "doc/governance/DOCUMENT_REGISTER.md"
       ],
-      "status": "CURRENT"
+      "status": "HISTORICAL"
     },
     "doc/roadmap/TASKS_HPS-006.md": {
       "metadata_from": [
         "doc/roadmap/ULTIMATE_TASKS.md",
         "doc/governance/DOCUMENT_REGISTER.md"
       ],
-      "status": "CURRENT"
+      "status": "HISTORICAL"
     },
     "doc/roadmap/TASKS_HPS-007.md": {
       "metadata_from": [
         "doc/roadmap/ULTIMATE_TASKS.md",
         "doc/governance/DOCUMENT_REGISTER.md"
       ],
-      "status": "CURRENT"
+      "status": "HISTORICAL"
     },
     "doc/roadmap/TASKS_HPS-008.md": {
       "metadata_from": [
         "doc/roadmap/ULTIMATE_TASKS.md",
         "doc/governance/DOCUMENT_REGISTER.md"
       ],
-      "status": "CURRENT"
+      "status": "HISTORICAL"
     },
     "doc/roadmap/TASKS_HPS-009.md": {
       "metadata_from": [
         "doc/roadmap/ULTIMATE_TASKS.md",
         "doc/governance/DOCUMENT_REGISTER.md"
       ],
-      "status": "CURRENT"
+      "status": "HISTORICAL"
     },
     "doc/roadmap/TASKS_HPS-010.md": {
       "metadata_from": [
         "doc/roadmap/ULTIMATE_TASKS.md",
         "doc/governance/DOCUMENT_REGISTER.md"
       ],
-      "status": "CURRENT"
+      "status": "HISTORICAL"
     },
     "doc/roadmap/TASKS_HPS-011.md": {
       "metadata_from": [
         "doc/roadmap/ULTIMATE_TASKS.md",
         "doc/governance/DOCUMENT_REGISTER.md"
       ],
-      "status": "CURRENT"
+      "status": "HISTORICAL"
     },
     "doc/roadmap/TASKS_HPS-012.md": {
       "metadata_from": [
         "doc/roadmap/ULTIMATE_TASKS.md",
         "doc/governance/DOCUMENT_REGISTER.md"
       ],
-      "status": "CURRENT"
+      "status": "HISTORICAL"
     },
     "doc/roadmap/TASKS_HPS-013.md": {
       "metadata_from": [
         "doc/roadmap/ULTIMATE_TASKS.md",
         "doc/governance/DOCUMENT_REGISTER.md"
       ],
-      "status": "CURRENT"
+      "status": "HISTORICAL"
     },
     "doc/roadmap/TASKS_HPS-014.md": {
       "metadata_from": [
         "doc/roadmap/ULTIMATE_TASKS.md",
         "doc/governance/DOCUMENT_REGISTER.md"
       ],
-      "status": "CURRENT"
+      "status": "HISTORICAL"
     },
     "doc/roadmap/TASKS_HPS-015.md": {
       "metadata_from": [
         "doc/roadmap/ULTIMATE_TASKS.md",
         "doc/governance/DOCUMENT_REGISTER.md"
       ],
-      "status": "CURRENT"
+      "status": "HISTORICAL"
     },
     "doc/roadmap/TASKS_HPS-016.md": {
       "metadata_from": [
         "doc/roadmap/ULTIMATE_TASKS.md",
         "doc/governance/DOCUMENT_REGISTER.md"
       ],
-      "status": "CURRENT"
+      "status": "HISTORICAL"
     },
     "doc/roadmap/TASKS_HPS-017.md": {
       "metadata_from": [
         "doc/roadmap/ULTIMATE_TASKS.md",
         "doc/governance/DOCUMENT_REGISTER.md"
       ],
-      "status": "CURRENT"
+      "status": "HISTORICAL"
     },
     "doc/roadmap/TASKS_HPS-018.md": {
       "metadata_from": [
         "doc/roadmap/ULTIMATE_TASKS.md",
         "doc/governance/DOCUMENT_REGISTER.md"
       ],
-      "status": "CURRENT"
+      "status": "HISTORICAL"
     },
     "doc/roadmap/TASKS_HPS-019.md": {
       "metadata_from": [
         "doc/roadmap/ULTIMATE_TASKS.md",
         "doc/governance/DOCUMENT_REGISTER.md"
       ],
-      "status": "CURRENT"
+      "status": "HISTORICAL"
     },
     "doc/roadmap/TASKS_HPS-020.md": {
       "metadata_from": [
         "doc/roadmap/ULTIMATE_TASKS.md",
         "doc/governance/DOCUMENT_REGISTER.md"
       ],
-      "status": "CURRENT"
+      "status": "HISTORICAL"
     },
     "doc/roadmap/TASKS_HPS-021.md": {
       "metadata_from": [
         "doc/roadmap/ULTIMATE_TASKS.md",
         "doc/governance/DOCUMENT_REGISTER.md"
       ],
-      "status": "CURRENT"
+      "status": "HISTORICAL"
     },
     "doc/roadmap/TASKS_HPS-022.md": {
       "metadata_from": [
         "doc/roadmap/ULTIMATE_TASKS.md",
         "doc/governance/DOCUMENT_REGISTER.md"
       ],
-      "status": "CURRENT"
+      "status": "HISTORICAL"
     },
     "doc/roadmap/TASKS_HPS-023.md": {
       "metadata_from": [
         "doc/roadmap/ULTIMATE_TASKS.md",
         "doc/governance/DOCUMENT_REGISTER.md"
       ],
-      "status": "CURRENT"
+      "status": "HISTORICAL"
     },
     "doc/roadmap/TASKS_HPS-024.md": {
       "metadata_from": [
         "doc/roadmap/ULTIMATE_TASKS.md",
         "doc/governance/DOCUMENT_REGISTER.md"
       ],
-      "status": "CURRENT"
+      "status": "HISTORICAL"
     },
     "doc/roadmap/TASKS_HPS-025.md": {
       "metadata_from": [
         "doc/roadmap/ULTIMATE_TASKS.md",
         "doc/governance/DOCUMENT_REGISTER.md"
       ],
-      "status": "CURRENT"
+      "status": "HISTORICAL"
     },
     "doc/roadmap/ULTIMATE_PHASES.md": {
       "metadata_from": [
         "doc/roadmap/ULTIMATE_PHASES.md",
         "doc/governance/DOCUMENT_REGISTER.md"
       ],
-      "status": "CURRENT"
+      "status": "HISTORICAL"
     },
     "doc/roadmap/ULTIMATE_ROADMAP.md": {
       "metadata_from": [
         "doc/governance/DOCUMENT_REGISTER.md"
       ],
-      "status": "ACTIVE"
+      "status": "HISTORICAL"
     },
     "doc/roadmap/ULTIMATE_TASKS.md": {
       "metadata_from": [
         "doc/roadmap/ULTIMATE_TASKS.md",
         "doc/governance/DOCUMENT_REGISTER.md"
       ],
-      "status": "CURRENT"
+      "status": "HISTORICAL"
     },
     "doc/roadmap/ULTIMATE_TASKS_BASELINE.md": {
       "metadata_from": [
@@ -805,7 +928,7 @@
       "metadata_from": [
         "doc/governance/DOCUMENT_REGISTER.md"
       ],
-      "status": "CURRENT"
+      "status": "HISTORICAL"
     },
     "doc/roadmap/history/ULTIMATE_ROADMAP_HISTORY.md": {
       "metadata_from": [
@@ -913,7 +1036,7 @@
       "doc/api/README.md",
       "doc/data/README.md",
       "doc/testing/README.md",
-      "doc/roadmap/ULTIMATE_ROADMAP.md",
+      "doc/roadmap/ROADMAP.md",
       "doc/governance/DOCUMENT_REGISTER.md",
       "doc/model-remediation/RECONCILIATION.md",
       "doc/domain/SEMANTIC_DECISIONS.md",
@@ -967,7 +1090,8 @@
       "doc/governance/DOCUMENTATION_VALIDATION.md",
       "doc/governance/DOCUMENT_LIFECYCLE.md",
       "doc/governance/DOCUMENT_REGISTER.md",
-      "doc/governance/DOCUMENT_STATUS_MODEL.md"
+      "doc/governance/DOCUMENT_STATUS_MODEL.md",
+      "doc/governance/ROADMAP_ARCHIVE.md"
     ],
     "doc/modules/README.md": [
       "doc/modules/alarm.md",
@@ -1115,87 +1239,39 @@
   ],
   "openapi": {
     "counts": {
-      "paths": 347,
       "operations": 387,
+      "paths": 347,
       "schemas": 434
     },
     "path": "doc/api/openapi.yaml",
-    "provenance": {
-      "artifact_id": 13751144615,
-      "artifact_member": "openapi/hidra-api.json",
-      "artifact_name": "hidra-ci-diagnostics-8392651608216dbfde1693690efd56728833a427-42791302963-1-api-contract",
-      "source_sha": "8392651608216dbfde1693690efd56728833a427",
-      "run_id": 42791302963,
-      "run_attempt": 1,
-      "job_id": 129745139725,
-      "generation_step": "Publish deterministic OpenAPI contract",
-      "generation_step_number": 9,
-      "generation_step_conclusion": "success",
-      "conclusion": "success",
-      "conclusion_scope": "Deterministic Java 21 application build and OpenAPI generation only. HAPI-933 full CI #1169 FAILED, generated runtime equality failed; dictionary capture and backward compatibility were skipped.",
-      "job_conclusion": "failure",
-      "workflow_conclusion": "failure",
-      "failed_step": "Enforce canonical OpenAPI snapshot equality",
-      "zip_sha256": "8018d3902c0dac9a9cc46d6b604f81c677fa8a256199b672c0c7627790b3c737",
-      "json_sha256": "b9ed3b60f32fdd7b9e508a8533b1689e49a1ea090ff994bdb5e3af1f2e4dbd24",
-      "compatibility_review": "Authentic CI #1169 runtime output adds one POST operation and two DTO schemas to existing path: 347 paths, 387 operations, 434 schemas. Other components, paths, and schemas preserved. Local source-stamped canonical SHA256 matches exact generated artifact. Same-run compatibility not executed.",
-      "remaining_gates": [
-        "Repair-SHA exact scoped architecture, native PostgreSQL HTTP and complete case inventory",
-        "Same-run generated OpenAPI equality and actual base-runtime backward compatibility",
-        "Fresh migrated physical dictionary owner mapping and strict comparison",
-        "Independent separate-JVM restart/readback qualification before HAPI-933 acceptance"
-      ]
-    },
-    "sha256": "9bb9f3c74884da18c65b8fc1f920c8ec3dcdf3df606e553ec04fbfb0c5e1ffae",
-    "source_sha": "8392651608216dbfde1693690efd56728833a427",
     "prior_reviewed_provenance": {
       "artifact_id": 13618282878,
       "artifact_member": "openapi/hidra-api.json",
       "artifact_name": "hidra-ci-diagnostics-ce0e059b16db85d4b61da06f5a0ad1a1944d1015-42484109851-1-api-contract",
-      "source_sha": "ce0e059b16db85d4b61da06f5a0ad1a1944d1015",
-      "run_id": 42484109851,
-      "run_attempt": 1,
-      "job_id": 128742131409,
-      "generation_step": "Publish deterministic OpenAPI contract",
-      "generation_step_number": 9,
-      "generation_step_conclusion": "success",
+      "compatibility_review": "Two additive POST operations, one request schema and two optional login response properties. Refresh and logout explicitly declare empty bearer security. Offline comparison against the prior reviewed snapshot passed.",
       "conclusion": "success",
       "conclusion_scope": "Application build and deterministic runtime OpenAPI generation only. Full #1144 and the API job failed. Canonical equality failed and strict dictionary comparison and successful-base runtime compatibility were skipped.",
-      "job_conclusion": "failure",
-      "workflow_conclusion": "failure",
       "failed_step": "Enforce canonical OpenAPI snapshot equality",
-      "zip_sha256": "cd8c7b5593aa424b360c39831350c7522a6d3d5400261f32e246c10c0b89213f",
+      "generation_step": "Publish deterministic OpenAPI contract",
+      "generation_step_conclusion": "success",
+      "generation_step_number": 9,
+      "job_conclusion": "failure",
+      "job_id": 128742131409,
       "json_sha256": "d214322b2568aa0f096e49f6ab31d94fa8145c66b3315373964ce038495bc89e",
-      "compatibility_review": "Two additive POST operations, one request schema and two optional login response properties. Refresh and logout explicitly declare empty bearer security. Offline comparison against the prior reviewed snapshot passed.",
-      "remaining_gates": [
-        "Exact repair-SHA Full and Documentation CI",
-        "Same-run runtime OpenAPI equality, successful-base runtime compatibility and strict migrated dictionary equality",
-        "Independent HAPI-929 whole-task acceptance"
-      ],
       "prior_reviewed_provenance": {
         "artifact_id": 13540297857,
         "artifact_member": "openapi/hidra-api.json",
         "artifact_name": "hidra-ci-diagnostics-691fec9858bfa8a93cd81575a7b3ac3f59943b46-42292523200-1-api-contract",
-        "source_sha": "691fec9858bfa8a93cd81575a7b3ac3f59943b46",
-        "run_id": 42292523200,
-        "run_attempt": 1,
-        "job_id": 128149326109,
-        "generation_step": "Publish deterministic OpenAPI contract",
-        "generation_step_number": 9,
-        "generation_step_conclusion": "success",
+        "compatibility_review": "Exactly one additive GET path and TargetHandoff schema. Every prior path, schema, other component and non-source metadata unchanged. Local unchanged comparator and hosted repair-SHA gates remain required.",
         "conclusion": "success",
         "conclusion_scope": "Application build and deterministic runtime OpenAPI generation only; Full1138/API job FAILED at canonical equality. Dictionary and base-runtime compatibility skipped; no HAPI-928 acceptance.",
-        "job_conclusion": "failure",
-        "workflow_conclusion": "failure",
         "failed_step": "Enforce canonical OpenAPI snapshot equality",
-        "zip_sha256": "c0980bf59199de94f9e3aa9be2dc2d422160c2b07e7d8c29e88cfda8e846ee02",
+        "generation_step": "Publish deterministic OpenAPI contract",
+        "generation_step_conclusion": "success",
+        "generation_step_number": 9,
+        "job_conclusion": "failure",
+        "job_id": 128149326109,
         "json_sha256": "de776227b93a6c9a234c1f6eaecf1922e36f6069851cccc5dabe2904c6376181",
-        "compatibility_review": "Exactly one additive GET path and TargetHandoff schema. Every prior path, schema, other component and non-source metadata unchanged. Local unchanged comparator and hosted repair-SHA gates remain required.",
-        "remaining_gates": [
-          "Exact repair-SHA Full/Docs and all native test cases",
-          "Same-run runtime snapshot equality, successful-base compatibility and physical dictionary equality",
-          "Independent HAPI-928 handoff acceptance before W4"
-        ],
         "prior_reviewed_provenance": {
           "artifact_id": 13450993651,
           "artifact_member": "openapi/hidra-api.json",
@@ -1812,9 +1888,57 @@
           "source_sha": "fd384b3b442a0dc7c3dea4a1f4f80b2b55127efb",
           "workflow_conclusion": "failure",
           "zip_sha256": "2a0032bf0c7eed72767e1cfbcb9663c3c5f3a889dab4ab6b5e6aed96954cd189"
-        }
-      }
-    }
+        },
+        "remaining_gates": [
+          "Exact repair-SHA Full/Docs and all native test cases",
+          "Same-run runtime snapshot equality, successful-base compatibility and physical dictionary equality",
+          "Independent HAPI-928 handoff acceptance before W4"
+        ],
+        "run_attempt": 1,
+        "run_id": 42292523200,
+        "source_sha": "691fec9858bfa8a93cd81575a7b3ac3f59943b46",
+        "workflow_conclusion": "failure",
+        "zip_sha256": "c0980bf59199de94f9e3aa9be2dc2d422160c2b07e7d8c29e88cfda8e846ee02"
+      },
+      "remaining_gates": [
+        "Exact repair-SHA Full and Documentation CI",
+        "Same-run runtime OpenAPI equality, successful-base runtime compatibility and strict migrated dictionary equality",
+        "Independent HAPI-929 whole-task acceptance"
+      ],
+      "run_attempt": 1,
+      "run_id": 42484109851,
+      "source_sha": "ce0e059b16db85d4b61da06f5a0ad1a1944d1015",
+      "workflow_conclusion": "failure",
+      "zip_sha256": "cd8c7b5593aa424b360c39831350c7522a6d3d5400261f32e246c10c0b89213f"
+    },
+    "provenance": {
+      "artifact_id": 13751144615,
+      "artifact_member": "openapi/hidra-api.json",
+      "artifact_name": "hidra-ci-diagnostics-8392651608216dbfde1693690efd56728833a427-42791302963-1-api-contract",
+      "compatibility_review": "Authentic CI #1169 runtime output adds one POST operation and two DTO schemas to existing path: 347 paths, 387 operations, 434 schemas. Other components, paths, and schemas preserved. Local source-stamped canonical SHA256 matches exact generated artifact. Same-run compatibility not executed.",
+      "conclusion": "success",
+      "conclusion_scope": "Deterministic Java 21 application build and OpenAPI generation only. HAPI-933 full CI #1169 FAILED, generated runtime equality failed; dictionary capture and backward compatibility were skipped.",
+      "failed_step": "Enforce canonical OpenAPI snapshot equality",
+      "generation_step": "Publish deterministic OpenAPI contract",
+      "generation_step_conclusion": "success",
+      "generation_step_number": 9,
+      "job_conclusion": "failure",
+      "job_id": 129745139725,
+      "json_sha256": "b9ed3b60f32fdd7b9e508a8533b1689e49a1ea090ff994bdb5e3af1f2e4dbd24",
+      "remaining_gates": [
+        "Repair-SHA exact scoped architecture, native PostgreSQL HTTP and complete case inventory",
+        "Same-run generated OpenAPI equality and actual base-runtime backward compatibility",
+        "Fresh migrated physical dictionary owner mapping and strict comparison",
+        "Independent separate-JVM restart/readback qualification before HAPI-933 acceptance"
+      ],
+      "run_attempt": 1,
+      "run_id": 42791302963,
+      "source_sha": "8392651608216dbfde1693690efd56728833a427",
+      "workflow_conclusion": "failure",
+      "zip_sha256": "8018d3902c0dac9a9cc46d6b604f81c677fa8a256199b672c0c7627790b3c737"
+    },
+    "sha256": "9bb9f3c74884da18c65b8fc1f920c8ec3dcdf3df606e553ec04fbfb0c5e1ffae",
+    "source_sha": "8392651608216dbfde1693690efd56728833a427"
   },
   "register": "doc/governance/DOCUMENT_REGISTER.md",
   "register_areas": {
@@ -1825,47 +1949,5 @@
     "doc/testing/**": "CURRENT",
     "doc/vision/**": "TARGET"
   },
-  "roadmap": "doc/roadmap/ULTIMATE_ROADMAP.md",
-  "task_register": {
-    "archives": {
-      "doc/roadmap/ULTIMATE_TASKS_BASELINE.md": "c26ac08772fb3bd0932381282ac3b457f125dc30ef11d867d8d1e4747047f99f",
-      "doc/roadmap/ULTIMATE_TASKS_EVIDENCE.md": "686da36e049f6eaa19be3649ac63c66a9a897d721f16752aef3918c55e60819a"
-    },
-    "index": "doc/roadmap/ULTIMATE_TASKS.md",
-    "phases": {
-      "HPS-001": "doc/roadmap/TASKS_HPS-001.md",
-      "HPS-002": "doc/roadmap/TASKS_HPS-002.md",
-      "HPS-003": "doc/roadmap/TASKS_HPS-003.md",
-      "HPS-004": "doc/roadmap/TASKS_HPS-004.md",
-      "HPS-005": "doc/roadmap/TASKS_HPS-005.md",
-      "HPS-006": "doc/roadmap/TASKS_HPS-006.md",
-      "HPS-007": "doc/roadmap/TASKS_HPS-007.md",
-      "HPS-008": "doc/roadmap/TASKS_HPS-008.md",
-      "HPS-009": "doc/roadmap/TASKS_HPS-009.md",
-      "HPS-010": "doc/roadmap/TASKS_HPS-010.md",
-      "HPS-011": "doc/roadmap/TASKS_HPS-011.md",
-      "HPS-012": "doc/roadmap/TASKS_HPS-012.md",
-      "HPS-013": "doc/roadmap/TASKS_HPS-013.md",
-      "HPS-014": "doc/roadmap/TASKS_HPS-014.md",
-      "HPS-015": "doc/roadmap/TASKS_HPS-015.md",
-      "HPS-016": "doc/roadmap/TASKS_HPS-016.md",
-      "HPS-017": "doc/roadmap/TASKS_HPS-017.md",
-      "HPS-018": "doc/roadmap/TASKS_HPS-018.md",
-      "HPS-019": "doc/roadmap/TASKS_HPS-019.md",
-      "HPS-020": "doc/roadmap/TASKS_HPS-020.md",
-      "HPS-021": "doc/roadmap/TASKS_HPS-021.md",
-      "HPS-022": "doc/roadmap/TASKS_HPS-022.md",
-      "HPS-023": "doc/roadmap/TASKS_HPS-023.md",
-      "HPS-024": "doc/roadmap/TASKS_HPS-024.md",
-      "HPS-025": "doc/roadmap/TASKS_HPS-025.md"
-    },
-    "source_blob": "06331349b698b8faeb09e5a24a13cfe9a5175adc",
-    "source_sha": "2148b270a863cee5f0b42d458508cd9327567591",
-    "source_sha256": "09f0137b7973fff98f7104d9bf7af05beb3faa669170264d53ca71dadb61b748",
-    "tables": [
-      "doc/roadmap/ULTIMATE_ROADMAP.md",
-      "doc/roadmap/ULTIMATE_PHASES.md"
-    ],
-    "task_count": 934
-  }
+  "roadmap": "doc/roadmap/ROADMAP.md"
 }

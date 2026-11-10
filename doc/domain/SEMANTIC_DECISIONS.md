@@ -11,7 +11,7 @@ not an independent production-data certification or physical survivability resul
 ## Authority and provenance
 
 This register and [module documents](../modules/README.md) hold durable semantics.
-[The Ultimate Roadmap](../roadmap/ULTIMATE_ROADMAP.md) controls execution;
+[The HidraAPI functional delivery roadmap](../roadmap/ROADMAP.md) controls task execution;
 [reconciliation](../model-remediation/RECONCILIATION.md) retains completion evidence.
 The [legacy detailed reviews](../../docs/roadmap/model-semantic-review.md) and
 [legacy remediation roadmap](../../docs/roadmap/model-semantic-remediation.md)

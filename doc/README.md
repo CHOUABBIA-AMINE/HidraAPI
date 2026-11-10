@@ -14,7 +14,7 @@ The legacy `docs/` tree is preserved for historical, audit, semantic-review, ADR
 
 [Hidra — Master Product Vision](vision/HIDRA_MASTER_PRODUCT_VISION.md) — enduring product purpose, capabilities, and guiding principles; independent of implementation tracking.
 
-1. `doc/roadmap/ULTIMATE_ROADMAP.md` — single source of truth for platform-finalization sequencing, task codes and phase disposition.
+1. [HidraAPI functional delivery roadmap](roadmap/ROADMAP.md) — sole active task source.
 2. `doc/governance/README.md` — canonical documentation governance entry point.
 3. `doc/governance/DOCUMENT_REGISTER.md` — canonical domain/status register and P2 documentation readiness map.
 4. `doc/governance/DOCUMENTATION_STANDARD.md` — evidence and metadata requirements.
@@ -35,12 +35,14 @@ The legacy `docs/` tree is preserved for historical, audit, semantic-review, ADR
 
 16. [Documentation validation](governance/DOCUMENTATION_VALIDATION.md) — enforced structural checks and generated OpenAPI equality.
 
+The [roadmap archive](governance/ROADMAP_ARCHIVE.md) contains earlier plans and execution history.
+
 ## Canonical Domains
 
 | Domain | Current canonical material | P2 disposition |
 |---|---|---|
 | Governance | `doc/governance/**` | CURRENT — HPR-P2-001 |
-| Roadmap | `doc/roadmap/ULTIMATE_ROADMAP.md` | CURRENT execution authority |
+| Roadmap | `doc/roadmap/ROADMAP.md` | ACTIVE task authority |
 | Architecture | `doc/architecture/README.md` and linked canonical set | CURRENT — HPR-P2-002; historical P1 runtime baseline retained separately |
 | Security | `doc/security/**` | Existing canonical P0 security baseline |
 | Operations | `doc/operations/**` | Existing canonical P1 operations/survivability baseline |

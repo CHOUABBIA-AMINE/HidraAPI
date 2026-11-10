@@ -5,6 +5,7 @@ import collections
 import hashlib
 import re
 import unicodedata
+from graphlib import CycleError, TopologicalSorter
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 from validate_openapi_snapshot import DEFAULT_MANIFEST, load_json
@@ -297,9 +298,54 @@ def validate_task_register(texts, config):
     return {'tasks': len(tasks), 'phases': len(config['phases'])}
 
 
+def validate_active_tasks(text):
+    """Validate task identity, status and dependencies in the active roadmap."""
+    rows = {}
+    for line in without_fences(text).splitlines():
+        if not line.startswith('| **T'):
+            continue
+        cells = [cell.strip() for cell in line.strip('|').split('|')]
+        match = re.fullmatch(r'\*\*(T\d{2,}) · .+\*\*', cells[0])
+        if len(cells) != 6 or not all(cells) or not match or match[1] in rows:
+            raise ValueError('Malformed or duplicate active roadmap task')
+        if cells[-1] not in TASK_STATUSES - {'PENDING'} | {'DEFERRED'}:
+            raise ValueError('Invalid active roadmap task status: ' + match[1])
+        rows[match[1]] = set(re.findall(r'\bT\d{2,}\b', cells[2]))
+    if not rows or set(rows) != {f'T{i:02}' for i in range(1, len(rows) + 1)}:
+        raise ValueError('Missing or nonconsecutive active roadmap task IDs')
+    for task, dependencies in rows.items():
+        if dependencies - rows.keys():
+            raise ValueError('Unknown active roadmap prerequisite: ' + task)
+    try:
+        tuple(TopologicalSorter(rows).static_order())
+    except CycleError as error:
+        raise ValueError('Active roadmap has cyclic prerequisites') from error
+    return len(rows)
+
+
+def validate_roadmap_archive(root, active, archives):
+    """Keep earlier planning files at their historical paths, byte for byte."""
+    planning_paths = {
+        p.relative_to(root).as_posix()
+        for directory in ('doc/roadmap', 'docs/roadmap')
+        for p in (root / directory).rglob('*.md')
+    }
+    if active not in planning_paths or set(archives) != planning_paths - {active}:
+        raise ValueError('Roadmap archive inventory drift')
+    for rel, digest in archives.items():
+        if hashlib.sha256((root / rel).read_bytes()).hexdigest() != digest:
+            raise ValueError('Archived roadmap changed: ' + rel)
+
+
 def validate(root, manifest):
     root = Path(root).resolve()
     inventory = manifest['documents']
+    active = manifest['roadmap']
+    if {rel for rel, entry in inventory.items() if entry['status'] == 'ACTIVE'} != {active}:
+        raise ValueError('Expected exactly one ACTIVE roadmap')
+    archives = manifest.get('archived_roadmaps', {})
+    if 'archived_roadmaps' in manifest:
+        validate_roadmap_archive(root, active, archives)
     actual = {str(p.relative_to(root)) for p in (root / 'doc').rglob('*.md')}
     if not actual or actual != set(inventory):
         raise ValueError(f'Canonical inventory drift: {sorted(actual ^ set(inventory))}')
@@ -322,9 +368,12 @@ def validate(root, manifest):
             blob_digest = hashlib.sha1(b'blob ' + str(len(data)).encode('ascii') + b'\0' + data).hexdigest()
             if blob_digest != manifest.get('historical_roadmap_blob_sha'):
                 raise ValueError('Historical roadmap snapshot differs from its immutable Git blob')
+        elif rel in archives:
+            if entry['status'] != 'HISTORICAL':
+                raise ValueError(f'{rel}: archived roadmap status must be HISTORICAL')
         elif entry['status'] == 'ACTIVE':
-            block = re.search(r'^## 1\. Control Status\n(.*?)(?=^## )', text, re.M | re.S)
-            if rel != manifest['roadmap'] or not block or '| Status | ACTIVE |' not in block[1]:
+            block = re.search(r'^## \d+\. Control Status\n(.*?)(?=^## |\Z)', text, re.M | re.S)
+            if not block or '| Status | ACTIVE |' not in block[1]:
                 raise ValueError('Invalid roadmap control status')
         else:
             line = document_status(text)
@@ -385,8 +434,12 @@ def validate(root, manifest):
     if len(register_rows) != 1 or register_rows[0].split('|')[2].strip() != required:
         raise ValueError('Documentation CI register disagrees with P2 task')
     result = {'documents': len(actual), 'relative_links': link_count, 'modules': len(modules), 'p2_rows': len(rows)}
-    if 'task_register' in manifest:
-        result.update(validate_task_register(texts, manifest['task_register']))
+    if manifest.get('active_task_register'):
+        result['active_tasks'] = validate_active_tasks(texts[active])
+    if 'archived_task_register' in manifest:
+        archived = validate_task_register(texts, manifest['archived_task_register'])
+        result.update({f'archived_{key}': value for key, value in archived.items()})
+        result['archived_roadmaps'] = len(archives)
     return result
 
 

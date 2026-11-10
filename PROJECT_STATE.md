@@ -50,9 +50,9 @@ inferred from release publication or the development-version transition.
 This current record supersedes the dated release/development-state claims in
 section 0 below. Older workstream deliverables remain dated handoff evidence;
 current execution is governed by the
-[Ultimate Roadmap](doc/roadmap/ULTIMATE_ROADMAP.md).
+[HidraAPI functional delivery roadmap](doc/roadmap/ROADMAP.md).
 
-Before resuming, read [AGENTS.md](AGENTS.md), the relevant module/workstream roadmap, [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), [coding policy](docs/policy/Coding-policy.md), and [ADR index](docs/adr/README.md). Recheck current main, PR and CI state rather than assuming this snapshot remains current.
+Before resuming, read [AGENTS.md](AGENTS.md), the [active roadmap](doc/roadmap/ROADMAP.md), [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), [coding policy](docs/policy/Coding-policy.md), and [ADR index](docs/adr/README.md). Recheck current main, PR and CI state rather than assuming this snapshot remains current.
 
 
 ## 0. Historical release state — refreshed 2026-09-29
@@ -97,7 +97,7 @@ The presence of 24 module roots, domain classes, or a migration file **does not 
 
 [HDP-004 issue #125](https://github.com/CHOUABBIA-AMINE/HidraAPI/issues/125) tracks source-semantic review. At capture, legacy-SQL-schema [PR #126](https://github.com/CHOUABBIA-AMINE/HidraAPI/pull/126) was **open/unmerged**. Temporary model-extraction [PR #127](https://github.com/CHOUABBIA-AMINE/HidraAPI/pull/127) was **closed without merge**. Neither PR's changes form part of the verified main baseline.
 
-## 3. Current task and concrete blockers
+## 3. Historical handoff task and blockers
 
 **The immediate unfinished user deliverable is a downloadable Excel catalogue of all current HidraAPI domain models, grouped by module, with individual field names, original Java types and verifiable source paths.** The temporary [model-catalogue Actions run #35713401200](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/35713401200) succeeded and reported 467 module domain-model Java files, 5,735 declared fields and zero extraction exceptions; a compressed manifest was printed to its job log. The **Excel catalogue has not been generated/delivered**. Because the temporary PR is closed and unmerged, do not assume the extractor exists on main. Regenerate from the current main code or decode the verified run output in a trusted local tool, then validate the Excel before delivery. The Java-model inventory is documentation, not a database schema inventory.
 
@@ -111,14 +111,14 @@ Three legacy source workbooks were supplied privately: hyflo-progress 1-11-2026.
 
 ## 4. Conventions and safety
 
-For roadmap implementation, read AGENTS.md and the owning roadmap; execute exactly one roadmap task/commit code at a time, use its specified commit message and file allowlist, update its status, and validate with the requested commands. This explicitly requested **documentation-only handoff change is not an HDP task completion** and does not change roadmap status or production code.
+For roadmap implementation, read AGENTS.md and the active roadmap; execute exactly one roadmap task/commit code at a time, use its specified commit message and file allowlist, update its status, and validate with the requested commands. This explicitly requested **documentation-only handoff change is not an HDP task completion** and does not change roadmap status or production code.
 
 Java package root: dz.sh.hidra; do not create generic shared/sharedkernel/common/core/utils/helper/helpers/misc packages. Preserve the canonical Java header, including @Author Abir MEDJERAB and @CreatedOn 2025-06-26. Domain code remains independent of Spring/JPA/OpenAPI/REST; module ownership applies to persistence writes. Production secrets must be externalized. Never claim tests, merges, source-data approvals, or imports occurred without evidence.
 
-## 5. Immediate next step
+## 5. Historical handoff recommendations
 
-**First:** finish and deliver the outstanding **HidraAPI model/field/type Excel catalogue** from the *current main* Java sources. Include a module index, one row per model field, declared Java type, model kind and source path/commit, and clearly distinguish model fields from PostgreSQL/JPA column types. Verify counts and readability of the file; do **not** merge the closed temporary PR #127 merely to create the workbook.
+At the handoff snapshot, the recommendation was to finish and deliver the outstanding **HidraAPI model/field/type Excel catalogue** from the *current main* Java sources. Include a module index, one row per model field, declared Java type, model kind and source path/commit, and clearly distinguish model fields from PostgreSQL/JPA column types. Verify counts and readability of the file; do **not** merge the closed temporary PR #127 merely to create the workbook.
 
-**Then, as a separate workstream task:** resume controlled HDP-004 mapping of private Reference Data Package 01 against the verified target catalogue. Investigate missing locality-to-district links and approved kind/status mapping; resolve source-code/dictionary discrepancies, confidentiality, version precedence, per-dataset eligibility and G1. Do not begin HDP-005, run legacy SQL as a target migration, or import unapproved operational data.
+A later recommendation was to resume controlled HDP-004 mapping of private Reference Data Package 01 against the verified target catalogue. Investigate missing locality-to-district links and approved kind/status mapping; resolve source-code/dictionary discrepancies, confidentiality, version precedence, per-dataset eligibility and G1. Do not begin HDP-005, run legacy SQL as a target migration, or import unapproved operational data.
 
 **Branch hygiene:** canonical integration branch is main, not an old PR branch. Recheck [current open PRs](https://github.com/CHOUABBIA-AMINE/HidraAPI/pulls), the latest main commit and CI before new work.

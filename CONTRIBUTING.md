@@ -13,35 +13,18 @@ Strict module boundaries
 Catalog-backed user-facing classifications
 Trilingual Arabic/French/English business labels
 OpenAPI documentation at the API boundary
-One roadmap task per branch or PR
+One admitted task per guarded main commit
 ```
 
 Do not optimize for quick shortcuts that weaken boundaries.
 
 ---
 
-## 2. Branch Naming
+## 2. Task Authority and Publication
 
-Use descriptive branch names tied to the roadmap task.
-
-Examples:
-
-```text
-cor2-015-add-contributing-and-execution-rules
-cor2-016-add-correction-02-architecture-guardrails
-identity-004-add-role-aggregate
-organization-012-add-organization-unit-repository
-```
-
-Avoid vague names:
-
-```text
-fix
-changes
-cleanup
-misc
-wip
-```
+Use [the HidraAPI functional delivery roadmap](doc/roadmap/ROADMAP.md) for task
+selection and follow [AGENTS.md](AGENTS.md) for publication directly to existing
+main under the expected-head guard.
 
 ---
 
@@ -85,33 +68,10 @@ big-update
 
 ---
 
-## 4. One Roadmap Task per Branch or PR
+## 4. One Roadmap Task per Delivery
 
-Each roadmap task must be executed independently.
-
-Rules:
-
-```text
-One roadmap task per branch.
-One roadmap task per PR.
-Do not combine unrelated roadmap tasks.
-Do not skip ahead to later tasks.
-Do not mix cleanup, feature work, tests, and documentation unless the task explicitly requires them.
-```
-
-Correct example:
-
-```text
-Branch: cor2-015-add-contributing-and-execution-rules
-Scope: only CONTRIBUTING.md and README link update
-```
-
-Incorrect example:
-
-```text
-Branch: cor2-015-add-contributing-and-execution-rules
-Scope: CONTRIBUTING.md + architecture tests + README rewrite + catalog refactor
-```
+Implement one selected task within its admitted scope. Keep unrelated changes
+and later tasks separate.
 
 ---
 
@@ -423,17 +383,17 @@ Before merging large changes, prefer:
 mvn -q clean verify
 ```
 
-If validation cannot be run, record the exact reason in the PR body.
+If validation cannot be run, record the exact reason in the task report.
 
 ---
 
-## 13. PR Checklist
+## 13. Publication Checklist
 
-Before opening or merging a PR, verify:
+Before publishing the selected task, verify:
 
 ```text
-[ ] The PR executes exactly one roadmap task.
-[ ] The branch name matches the roadmap task.
+[ ] The delivery executes exactly one selected roadmap task.
+[ ] Main still matches the expected parent.
 [ ] The commit message matches the roadmap task.
 [ ] No unrelated cleanup or feature work is included.
 [ ] No shared/common/helper/misc package was introduced.

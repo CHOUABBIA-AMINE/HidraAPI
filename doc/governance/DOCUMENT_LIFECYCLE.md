@@ -22,4 +22,4 @@ CURRENT — canonical governance rule.
 
 `doc/` becomes the maintained canonical estate.
 
-The platform-finalization execution authority is `doc/roadmap/ULTIMATE_ROADMAP.md`.
+The sole active task authority is `doc/roadmap/ROADMAP.md`. Previous plans are retained as [archived evidence](ROADMAP_ARCHIVE.md).

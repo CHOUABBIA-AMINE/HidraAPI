@@ -448,6 +448,15 @@
     ],
     "purpose": "Simulation-owned immutable canonical manufacturer characteristic source with digest, declared engineering applicability and original transaction provenance; no numerical solver or operational certification."
   },
+  "public.hidra_telemetry_reading_ingest_receipt": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261110_001__telemetry_ingestion_replay_identity.sql",
+      "src/main/java/dz/sh/hidra/modules/telemetry/application/port/out/TelemetryReadingReplayPort.java",
+      "src/main/java/dz/sh/hidra/modules/telemetry/infrastructure/persistence/adapter/JdbcTelemetryReadingReplayAdapter.java"
+    ],
+    "owner": "telemetry",
+    "purpose": "Telemetry-owned immutable raw-reading replay receipt; one source-point-sequence reserves one untrusted canonical observation and its digest; no trust or operational approval is inferred."
+  },
   "public.hidra_telemetry_fluid_unit_policy": {
     "evidence": [
       "src/main/resources/db/migration/V20261027_002__telemetry_fluid_unit_policy.sql",

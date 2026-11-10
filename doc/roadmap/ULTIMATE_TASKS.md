@@ -3565,3 +3565,15 @@ JWT, independent JVM restart, strict OpenAPI/dictionary and exact-SHA CI gates s
 No additional HAPI task, release, P3 throughput integration or operational acceptance
 is selected by this checkpoint. The earlier NOT_IMPLEMENTED policy-decision record is
 historical and remains preserved.
+
+## HAPI-933 exact-SHA Fail repair checkpoint — 2026-11-10
+
+Source `8392651608216dbfde1693690efd56728833a427`: Documentation #966
+SUCCESS, Full CI #1169 FAILURE. The bounded repair corrects one forensic exact
+cross-owner contract allowlist, read-only SELECT FOR SHARE transaction semantics,
+new Telemetry non-JPA replay receipt ownership, and reconciles the authentic
+CI #1169 generated OpenAPI snapshot/provenance. Test inventory hash is updated.
+The existing strict actual PostgreSQL dictionary comparison remains mandatory;
+no operator/site, production/OT, trusted reading or separate-JVM restart result
+is claimed. HAPI-933 stays PARTIAL / IN_PROGRESS pending CI and remaining
+acceptance evidence. No HAPI-934 stage is selected.

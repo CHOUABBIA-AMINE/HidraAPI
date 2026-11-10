@@ -1116,11 +1116,39 @@
   "openapi": {
     "counts": {
       "paths": 347,
-      "operations": 386,
-      "schemas": 432
+      "operations": 387,
+      "schemas": 434
     },
     "path": "doc/api/openapi.yaml",
     "provenance": {
+      "artifact_id": 13751144615,
+      "artifact_member": "openapi/hidra-api.json",
+      "artifact_name": "hidra-ci-diagnostics-8392651608216dbfde1693690efd56728833a427-42791302963-1-api-contract",
+      "source_sha": "8392651608216dbfde1693690efd56728833a427",
+      "run_id": 42791302963,
+      "run_attempt": 1,
+      "job_id": 129745139725,
+      "generation_step": "Publish deterministic OpenAPI contract",
+      "generation_step_number": 9,
+      "generation_step_conclusion": "success",
+      "conclusion": "success",
+      "conclusion_scope": "Deterministic Java 21 application build and OpenAPI generation only. HAPI-933 full CI #1169 FAILED, generated runtime equality failed; dictionary capture and backward compatibility were skipped.",
+      "job_conclusion": "failure",
+      "workflow_conclusion": "failure",
+      "failed_step": "Enforce canonical OpenAPI snapshot equality",
+      "zip_sha256": "8018d3902c0dac9a9cc46d6b604f81c677fa8a256199b672c0c7627790b3c737",
+      "json_sha256": "b9ed3b60f32fdd7b9e508a8533b1689e49a1ea090ff994bdb5e3af1f2e4dbd24",
+      "compatibility_review": "Authentic CI #1169 runtime output adds one POST operation and two DTO schemas to existing path: 347 paths, 387 operations, 434 schemas. Other components, paths, and schemas preserved. Local source-stamped canonical SHA256 matches exact generated artifact. Same-run compatibility not executed.",
+      "remaining_gates": [
+        "Repair-SHA exact scoped architecture, native PostgreSQL HTTP and complete case inventory",
+        "Same-run generated OpenAPI equality and actual base-runtime backward compatibility",
+        "Fresh migrated physical dictionary owner mapping and strict comparison",
+        "Independent separate-JVM restart/readback qualification before HAPI-933 acceptance"
+      ]
+    },
+    "sha256": "9bb9f3c74884da18c65b8fc1f920c8ec3dcdf3df606e553ec04fbfb0c5e1ffae",
+    "source_sha": "8392651608216dbfde1693690efd56728833a427",
+    "prior_reviewed_provenance": {
       "artifact_id": 13618282878,
       "artifact_member": "openapi/hidra-api.json",
       "artifact_name": "hidra-ci-diagnostics-ce0e059b16db85d4b61da06f5a0ad1a1944d1015-42484109851-1-api-contract",
@@ -1786,9 +1814,7 @@
           "zip_sha256": "2a0032bf0c7eed72767e1cfbcb9663c3c5f3a889dab4ab6b5e6aed96954cd189"
         }
       }
-    },
-    "sha256": "53c364e0ed13e4ce653b4ce3e612b5b6d89a0b01450e978e2e99f3384950f013",
-    "source_sha": "ce0e059b16db85d4b61da06f5a0ad1a1944d1015"
+    }
   },
   "register": "doc/governance/DOCUMENT_REGISTER.md",
   "register_areas": {

@@ -38,7 +38,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
-@Transactional(readOnly = true)
+@Transactional // Paired native grants/Topology ownership use SELECT FOR SHARE; must not use a read-only DB transaction.
 public class JpaTelemetryQueryAdapter implements TelemetryQueryUseCase {
 
     private static final String QUALITY_CODE_CATALOG = "QUALITY_CODE";

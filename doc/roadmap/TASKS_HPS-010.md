@@ -10532,4 +10532,46 @@ equality remain UNVERIFIED until the exact-sha CI evidence can be inspected.
 The code is not marked VERIFIED/COMPLETED; `PARTIAL / IN_PROGRESS` retains the
 one indivisible HAPI-933 acceptance gate. No next task is authorized by source staging.
 
+### 9. Fail repair — original HAPI-933 implementation CI #1169
+
+The published implementation `8392651608216dbfde1693690efd56728833a427`
+started Full CI #1169 and Documentation #966 at the exact SHA.
+Documentation #966 **SUCCESS**; Full #1169 **FAILURE**. The logs establish:
+
+1. Unit/architecture: ForensicRemediationClosureTest and ArchitectureGuardrailTest
+   rejected two newly added Telemetry cross-owner contract imports because
+   one exact consumer/export exception was missing from the parallel forensic
+   guardrail. Repair adds ONLY that consumer/contract pair and negative sibling
+   checks; no wildcard, owner adapter or unrelated private dependency is exposed.
+2. PostgreSQL shard 5: native GET hit
+   `cannot execute SELECT FOR SHARE in a read-only transaction`.
+   The Telemetry query adapter now runs its original native scope and owner
+   lock in a normal protected transaction, preserving authoritative grants and
+   no preauthorization data access.
+3. PostgreSQL shards 3/8/12: fresh migrated catalog reported
+   `Unresolved physical ownership: public.hidra_telemetry_reading_ingest_receipt`.
+   Register the exact Telemetry-owned non-JPA replay relation in reviewed
+   `.github/database-dictionary-ownership.json`, with existing port/adapter/
+   forward-migration source evidence. Do not weaken the strict catalog checker.
+4. API contract: `Publish deterministic OpenAPI contract` completed SUCCESS
+   at step 9, but equality failed at step 10. Reconcile the exact generated
+   `openapi/hidra-api.json` from #1169 diagnostic artifact `13751144615`
+   (ZIP SHA256 `8018d3902c0dac9a9cc46d6b604f81c677fa8a256199b672c0c7627790b3c737`).
+   Its canonical JSON SHA256
+   `9bb9f3c74884da18c65b8fc1f920c8ec3dcdf3df606e553ec04fbfb0c5e1ffae`
+   adds exactly the documented POST and two schemas; no invented routes.
+
+The failing run did **not** reach physical dictionary generation/comparison,
+successful-base runtime compatibility, or independent OS-JVM restart proof.
+After ownership metadata is repaired, the standard *unchanged* API lane must
+collect the actual disposable PostgreSQL dictionary; its strict checked-in
+comparison can still fail until the actual generated artifact is reviewed.
+No dictionary content is fabricated or strict CI gate weakened.
+
+**Disposition remains PARTIAL / IN_PROGRESS**; this is one bounded CI-first
+Fail repair of HAPI-933, not another task, production-data migration,
+trusted evidence, release, P3 or SITE acceptance. Next evidence gate is
+exact-repair-SHA CI startup followed by explicit feedback on its actual result.
+Stop after verifying new CI was created/queued or started.
+
 <!-- task-register:payload:end -->

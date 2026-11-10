@@ -915,3 +915,20 @@ and separate JVM restart proof. HAPI-100/EXT-004 high-throughput ingestion stays
 DEFERRED. No production OT connection, trusted reading promotion, P3 or release is
 selected. The registered implementation message remains
 `feat(telemetry): implement protected native reading ingestion`.
+
+
+## HAPI-933 software acceptance — 2026-11-10
+
+The current HAPI-933 / FD-03 task is **VERIFIED / COMPLETED for its bounded
+synthetic backend software contract** at implementation `7d4f2a3f0a6e753caa4ad9b008cb17aea769b75c`.
+[Full CI #1174](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42807169083)
+and [Documentation #971](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42807168897)
+both passed on that exact SHA. The native Telemetry write, current Identity/
+Topology scope, real PostgreSQL canonical replay/concurrency, typed validation,
+protected reads, and independently restarted JVM readback passed the executed
+test inventory; runtime OpenAPI and strict physical database dictionary remain
+valid. The current authoritative HAPI-933 status cells in ULTIMATE_ROADMAP.md
+and ULTIMATE_PHASES.md and the HPS-010 task header are updated accordingly.
+Earlier NOT_IMPLEMENTED/PARTIAL policy and development evidence above are
+historical, not current status. This does not authorize a new task ID,
+HAPI-934/FD-04, production release, SITE acceptance, SCADA/OT or P3.

@@ -10288,9 +10288,9 @@ Legacy proposal handle: FD-03 / R05 from the owner-supplied 2026-11-09 read-only
 
 Priority: P1
 
-Implementation Status: PARTIAL
+Implementation Status: VERIFIED
 
-Planning Status: IN_PROGRESS
+Planning Status: COMPLETED
 
 Owning Module: telemetry (source, device, point, mapping, raw readings, quality and provenance). Identity owns producer authority; Topology owns authoritative asset references. No external Integration transport or automatic trust is selected.
 
@@ -10735,5 +10735,58 @@ is independently inspected. Preserve the original one-task registered commit
 message `feat(telemetry): implement protected native reading ingestion`.
 After publication, confirm exact-SHA workflows created/queued/started and stop.
 
+
+
+### 14. HAPI-933 synthetic software acceptance — exact-SHA Full CI #1174 and Documentation #971 — 2026-11-10
+
+This is the **software-only closure** of the original, indivisible
+**HAPI-933 / FD-03 / R05** delivery, not a new roadmap task or a later
+FD-04/FD-05 stage. Implementation source (before the documentation-only
+acceptance pointer update) is exact main
+`7d4f2a3f0a6e753caa4ad9b008cb17aea769b75c`, tree
+`a1804d78ad26dfb8dba323c6a7e23794da34eb54`.
+
+- [HidraAPI Full CI #1174](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42807169083)
+  (**attempt 1**, head SHA above) **SUCCESS**, including 14/14 PostgreSQL
+  integration shards, Java 21 unit/architecture, static checks, the
+  contract/dictionary lane and the final Full Verification Gate. Its signed
+  aggregated development-mode evidence reports **573 classes, 4,379 tests,
+  zero failures, zero errors, zero skips**. Shard 5's source-inventory report
+  independently confirms **119 tests, zero failures/errors/skips**, including
+  the six registered HAPI-933 native HTTP/PostgreSQL test cases.
+- [HidraAPI Documentation Validation #971](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42807168897)
+  (**same SHA**, attempt 1) **SUCCESS**.
+- The API/dictionary job captures a **real PostgreSQL 16.15** fresh schema:
+  **203 Flyway migrations, 470 JPA mappings and 557 physical relations,
+  zero unresolved owners**. Its strict reviewed dictionary comparison is
+  explicitly `reviewed_dictionary_checked=true`; generated runtime OpenAPI
+  passed backward-compatibility against the accepted previous green SHA
+  `caa0c85e8fbb30625357af654f3b0337b7374ffa`.
+- Executed HAPI-933 tests exercise signed synthetic LOCAL JWT scopes for
+  **numeric, text and boolean** raw observations; current owner/grant
+  eligibility and protected GET nondisclosure; unknown/invalid and forged
+  request fields, quality, units, time, inactive point/source, stale mapping,
+  revoked current grants and foreign company; immutable canonical
+  source/point/sequence **replay** and conflicting concurrent submissions;
+  zero orphan/duplicate/raw trusted promotion; authorized history/latest/trend
+  and canonical receipt **across two independently started OS Java JVMs over
+  the same disposable PostgreSQL**, with the first JVM terminated before
+  readback by the second. The raw state remains RECEIVED rather than TRUSTED.
+- Scope limitation: CI runs are development-partitioned, with
+  `same_run_equivalence=false` and `release_eligible=false` in the full
+  evidence; no claim of a release oracle, industrial performance, SCADA/OT
+  communication, engineering calibration, commissioning, SITE, deployment,
+  autonomous operator actuation, or consumer application readiness.
+
+**Reconciled status: VERIFIED / COMPLETED for the registered synthetic backend
+software contract only.** The formerly recorded PARTIAL / IN_PROGRESS,
+BLOCKED and NOT_IMPLEMENTED statements remain historical evidence tied
+to their earlier SHAs. Only the current HAPI-933 status pointers in the two
+canonical status tables and this owning task header are revised. The
+AGENTS.md and compact task index append current disposition without editing
+their historical statements. No HAPI-934 or FD-04 registration, P3 engine,
+external OT integration, release or deployment is admitted by this status
+change. The original task's exact registered message remains
+`feat(telemetry): implement protected native reading ingestion`.
 
 <!-- task-register:payload:end -->

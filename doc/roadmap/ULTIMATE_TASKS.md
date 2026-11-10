@@ -3592,3 +3592,19 @@ physical dictionary is updated from the exact generated blob
 strict CI comparison stays active. HAPI-933 remains PARTIAL / IN_PROGRESS
 pending new CI, same-run runtime compatibility, and separate-JVM readback.
 No other task or release is selected.
+
+
+## HAPI-933 acceptance reconciliation — 2026-11-10
+
+**Current technical disposition: VERIFIED / COMPLETED for synthetic backend
+software only** at implementation `7d4f2a3f0a6e753caa4ad9b008cb17aea769b75c`:
+[Full CI #1174](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42807169083)
+and [Documentation #971](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42807168897)
+both **SUCCESS** on the exact SHA. The owning
+[HPS-010 evidence](TASKS_HPS-010.md#hapi-933) records native signed
+scope checks, raw numeric/text/boolean ingestion, replay and concurrency,
+real PostgreSQL, fresh Flyway/strict physical dictionary, runtime OpenAPI,
+and independent OS-JVM persisted readback. The earlier registration/policy
+and partial statements above are historical. No live OT, production deployment,
+SITE, calibrated engineering qualification, release or HAPI-934 stage is
+implemented or selected.

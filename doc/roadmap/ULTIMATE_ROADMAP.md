@@ -2192,4 +2192,4 @@ HAPI-100/EXT-004 high-velocity work remains separately deferred.
 contract, policy blockers, proposed source ledger, acceptance and message.
 Preserve all 932 prior tasks, 25 phases and prior source acceptance.
 
-| HPS-010 | Telemetry and Monitoring | [HAPI-933](TASKS_HPS-010.md#hapi-933) | FD-03/R05; no existing task replaced | deliver authorized native telemetry reading ingestion | Synthetic protected raw reading POST, authorized source/point/unit/quality/replay, existing history/latest/trend and distinct JVM persisted readback | P1 | HAPI-923, HAPI-926, HAPI-931, HAPI-932; approved producer/replay policy | NOT_IMPLEMENTED | BLOCKED |
+| HPS-010 | Telemetry and Monitoring | [HAPI-933](TASKS_HPS-010.md#hapi-933) | FD-03/R05; no existing task replaced | deliver authorized native telemetry reading ingestion | Synthetic protected raw reading POST, authorized source/point/unit/quality/replay, existing history/latest/trend and distinct JVM persisted readback | P1 | HAPI-923, HAPI-926, HAPI-931, HAPI-932; approved producer/replay policy | NOT_IMPLEMENTED | REGISTERED_PENDING |

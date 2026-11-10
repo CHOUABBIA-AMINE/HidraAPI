@@ -876,11 +876,29 @@ scope remain unchanged. The crosswalk's FD-02 disposition predates
 HAPI-932 software verification and is not current implementation evidence.
 
 Current source has Telemetry source/point POST and history/latest/trend
-GET but no reading POST. The task is NOT_IMPLEMENTED / BLOCKED for
-owner-approved producer/source/point/asset authority and replay/time/unit/
-quality rules. [HAPI-933 owning task](doc/roadmap/TASKS_HPS-010.md#hapi-933)
+GET but no reading POST. At registration the task was
+NOT_IMPLEMENTED / BLOCKED pending producer/source/point/asset authorization
+and replay/time/unit/quality approval. [HAPI-933 owning task](doc/roadmap/TASKS_HPS-010.md#hapi-933)
 records the full-task candidate path ledger, admission policy and acceptance.
 This selection performs registration only. No Java, migration, OpenAPI,
 CI workflow, browser, external SCADA/OT, SITE, simulation or release
 is executed. Implementation requires a later distinct owner selection
 and complete approved source scope.
+
+
+## Owner-approved HAPI-933 ingestion policy — 2026-11-10
+
+The owner approved the producer Identity, company/source/device/point
+scope, durable source/point/sequence replay, and deterministic unit,
+quality and UTC timestamp validation proposed for FD-03. The current
+registered task status is **NOT_IMPLEMENTED / REGISTERED_PENDING**,
+superseding its historical BLOCKED policy-decision state. The
+[HPS-010 approved contract](doc/roadmap/TASKS_HPS-010.md#hapi-933)
+records required original-transaction native grants, retry/current
+authorization, fail-closed Topology association, no automatic trust,
+future minimal Identity contract and conditional forward-only SQL
+uniqueness. Implementation is **not** selected in this decision:
+before one whole HAPI-933 source delivery, refresh exact-SHA CI and
+admit its precise source/migration/test file scope. Keep all earlier
+tasks, HAPI-100/EXT-004, 25 phases, historical migrations and
+release/SITE/OT/P3 deferrals unchanged.

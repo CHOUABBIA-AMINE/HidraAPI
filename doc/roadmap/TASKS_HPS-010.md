@@ -10290,7 +10290,7 @@ Priority: P1
 
 Implementation Status: NOT_IMPLEMENTED
 
-Planning Status: BLOCKED
+Planning Status: REGISTERED_PENDING
 
 Owning Module: telemetry (source, device, point, mapping, raw readings, quality and provenance). Identity owns producer authority; Topology owns authoritative asset references. No external Integration transport or automatic trust is selected.
 
@@ -10370,5 +10370,136 @@ MODIFY exactly six files: AGENTS.md; doc/roadmap/ULTIMATE_ROADMAP.md; doc/roadma
 
 No original HAPI-001–932 status, historical HAPI-100, immutable archive, existing phase definition, source, Flyway migration, tests, OpenAPI, CI workflows, runtime deployment, external Integration or numerical simulation is changed. Verify exact-head parent/tree/blobs and applicable exact-SHA documentation validation created/queued or started, then STOP. Registration is not implementation.
 
+
+
+### 7. Owner-approved HAPI-933 producer/authority/replay/validation policy — 2026-11-10
+
+The owner explicitly approved the three-part policy proposed after the
+registered HAPI-933/FD-03 preflight: signed synthetic LOCAL producer, current
+native scoped Identity and authoritative source/point/company chain; a stable
+source-sequence replay identity with PostgreSQL concurrency proof; active
+quality/unit and configurable timestamp validation without client-forged
+trust. This is a **security/business contract approval**, not an
+implementation selection or passing runtime evidence.
+
+Exact approval evidence baseline:
+- Current source and registration \`60a64046aac32672362afb922bedfe0442f365f1\`;
+  [Full CI #1168](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42780430307)
+  and [Documentation #964](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42780430263)
+  SUCCESS on that SHA; all source/Java/Flyway and existing test blobs remain unchanged by this decision.
+- \`hidra_telemetry_reading\` in
+  \`V20260611_005__create_telemetry_tables.sql\` has a primary ID and
+  non-unique point/metadata indexes, including \`source_sequence_number\`,
+  but no replay tuple uniqueness; \`V20261004_033__hmr_033_telemetry_telemetry_reading.sql\`
+  already enforces quality catalog family and value shape. Do not modify either.
+- Identity \`AlarmScopedAuthorizationQueryService\` provides an example of
+  two explicit current company/asset grants, but is Alarm-specific;
+  \`TopologyScopedAccessContract\` expressly warns it is a non-atomic
+  query and is not a Telemetry grant. No existing source-authenticated
+  Telemetry producer authorization contract was verified. A new narrowly
+  owned Identity public contract is necessary, not a bypass of route
+  permissions or a reuse of another business module's internal adapter.
+
+**Approved invariant A — admission and protected reads.** Accept only a
+valid current synthetic LOCAL signed principal, with server-derived actor
+and exact current grants on both the producer's company and source/point
+resource. Resolve the active source -> device -> point chain from Telemetry
+tables, any effective external tag mapping, and authoritative active
+point-to-Topology asset binding/company ownership from the respective
+owners. Require a single consistent company/asset resolution; deny missing,
+inactive, stale, revoked, contradictory, ambiguous or unsupported links,
+without substituting FACILITY or company claims from HTTP. The Telemetry
+application must coordinate opaque native Identity authorization and
+Topology ownership via public contracts and enforce the authorized
+transaction fence before committing; reauthorize protected history,
+latest, trend and idempotent-replay disclosures. A generic route permission
+alone cannot substitute for exact native company/source/point grants.
+No authenticated user/header, client-side grant, or GLOBAL wildcard silently
+creates access. A protected native-route exception, if needed, is limited
+to an explicitly compiled Telemetry route/method/use-case tuple and must
+prove original-transaction Identity checks. Do not alter existing unrelated
+owner route exemptions.
+
+**Approved invariant B — one canonical replay.** For this new POST,
+a nonblank server-validated producer \`sourceSequenceNumber\` is mandatory.
+Define the logical observation key as exact
+\`(sourceId, pointId, sourceSequenceNumber)\`. Store a canonical immutable
+SHA-256 digest of typed value, source timestamp, effective unit,
+quality code and applicable mapping/source details, with server-attested
+source and point identities. Do not equate HTTP correlation IDs to replay
+identity. An exact retry after *fresh current authority verification*
+returns the original canonical reading ID, original received timestamp and
+payload, without another insert. Same key/different canonical payload is
+a protected conflict with no write. Concurrent retries/conflicts must be
+serialized and database-unique within the original PostgreSQL transaction;
+no orphaned batch, raw reading, trusted event or partial receipt is allowed.
+Avoid relying on a Java in-memory lock or a pre-check without a unique
+database enforcement. Source identity and digest need durable evidence
+because the existing raw-reading schema does not persist a definitive
+producer source ID or enforce a source/point/sequence unique key.
+A forward-only, fresh-schema-compatible Flyway constraint or a narrowly
+owned append-only ingestion receipt relation may be selected after
+review of actual DDL and the transaction/legacy constructor impact.
+A future candidate migration is
+\`src/main/resources/db/migration/V20261110_001__telemetry_ingestion_replay_identity.sql\`;
+it is not created, applied, or guaranteed to be the next version here.
+Do not backfill fabricated industrial observations or rewrite migrations.
+
+**Approved invariant C — validity, time and trust.** Accept exactly one
+typed numeric/text/boolean value using the existing Telemetry value-shape
+policy, with current active source, point, quality catalog and declared
+unit ID matching the canonical point signal/dimension contract; reject
+unsupported unit conversion. Validate UTC source time under explicit
+bounded, positive, configurable future skew and past-age tolerances, and
+use a server-assigned \`receivedAt\`. Synthetic configuration/fixtures are
+allowed; no site measurement, calibration, device clock accuracy or
+industrial validation is assumed. The client cannot set \`TRUSTED\`,
+\`CERTIFIED\`, authority scope, \`receivedAt\`, assessment results or
+audit identity. Raw ingestion is never an automatic
+\`TrustTelemetryReadingUseCase\` or \`TrustedTelemetryReading\` event.
+
+**Admitted future implementation envelopes, not a commit authorization:**
+reuse the earlier HAPI-933 candidate Telemetry Java/controller/DTO/
+repository and tests; add the *necessary* public Identity-to-Telemetry
+authorization contract, its Identity adapter/transaction evidence, and
+read-visibility enforcement in existing Telemetry GET paths. Include
+only such forward-only PostgreSQL identity/unique constraints and associated
+JPA/JDBC mapping needed for the verified replay proof. Before that one
+whole implementation, reconcile exact CREATE/MODIFY path and migration
+filename allowlist, current native security/fence/Topology capability,
+generated OpenAPI and \`.github/ci-test-inventory.json\`. The approved
+policy permits those narrowly related source classes but does not
+pre-authorize an arbitrary Identity, Topology, database or security
+refactor. Preserve existing APIs/quality migration checks, architecture
+rules, other tasks and phase status.
+
+**Mandatory acceptance:** synthetic JWT/native grants with exact owner
+source/point and independent permitted/denied company cases; revoked and
+stale source/mapping/current Identity DENY including same-key retry;
+GET count/detail/history nondisclosure; real PostgreSQL concurrent
+identical/mismatched sequence requests with exactly one immutable
+canonical reading; committed readback via existing query APIs and
+separate JVM restart; invalid time, type, inactive quality, incompatible
+unit, forged trust denial; no trusted-reading side effect. Full Java21
+architecture/tests, strict inventory, fresh Flyway/JPA SQL and generated
+OpenAPI must pass exact-SHA CI before backend software acceptance.
+
+**Current disposition:** NOT_IMPLEMENTED / REGISTERED_PENDING.
+The original policy-decision BLOCKED gate is resolved by explicit owner
+approval, but code is not executed. The next separately selected
+\`Next\` may admit and execute the **one indivisible HAPI-933 implementation**
+once the final exact path ledger and database/Identity capability are
+verified. Its already registered implementation message remains
+\`feat(telemetry): implement protected native reading ingestion\`.
+No HAPI-934, FD-04/FD-05, release, SITE, external OT or numerical solver
+is authorized by this policy approval.
+
+This single same-task evidence/status-only decision changes the
+HAPI-933 owner header plus this append-only decision record,
+HAPI-933 cells in \`ULTIMATE_ROADMAP.md\` and \`ULTIMATE_PHASES.md\`,
+and the current HAPI-933 status pointers in \`ULTIMATE_TASKS.md\`
+and \`AGENTS.md\`. Exactly five governance files; no Java, Flyway,
+test, workflow or runtime changes. Message:
+\`docs(roadmap): approve HAPI-933 ingestion policy\`.
 
 <!-- task-register:payload:end -->

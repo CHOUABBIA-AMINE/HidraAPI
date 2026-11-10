@@ -3533,11 +3533,25 @@ The owner's contextual Next registers HAPI-933 / FD-03 / R05 under existing
 HPS-010 after HAPI-932 single-node software acceptance. The canonical
 register now has 933 tasks in 25 unchanged phases. All earlier task
 statuses, HAPI-100/EXT-004 deferred scope and archive payloads remain
-unchanged. Current implementation is NOT_IMPLEMENTED / BLOCKED:
-producer-to-source security authority, replay identity/concurrency and
-unit/quality/temporal behavior require explicit policy approval. This
+unchanged. At original registration, the implementation was
+NOT_IMPLEMENTED / BLOCKED, pending owner-approved producer-to-source
+authority, replay identity/concurrency and unit/quality/temporal policy. This
 registration adds no REST operation, runtime/OT provider or production
 authority. See the owner task for candidates and acceptance.
 
 <a id="hapi-933"></a>
 [HAPI-933](TASKS_HPS-010.md#hapi-933) — deliver authorized native telemetry reading ingestion
+
+
+## HAPI-933 owner-approved ingestion policy — 2026-11-10
+
+The owner approved signed synthetic LOCAL scoped producer Identity,
+authoritative company/source/device/point binding, current-grant denial,
+durable source/point/sequence replay with concurrency uniqueness, server-side
+unit/quality and configurable UTC timestamp validity. The owning
+[HPS-010 decision](TASKS_HPS-010.md#hapi-933) records required Identity
+contract, prospective forward-only constraint, tests and limits.
+**Current status: NOT_IMPLEMENTED / REGISTERED_PENDING**. No reading
+POST, trusted evidence, database migration, frontend or production change
+has been made. The next selected work is one whole HAPI-933 implementation,
+not an extra policy stage or FD-04.

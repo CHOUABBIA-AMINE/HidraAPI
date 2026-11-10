@@ -3525,3 +3525,19 @@ future implementation scope are in the HPS-025 task definition.
 [HAPI-932](TASKS_HPS-025.md#hapi-932) — qualify one restricted single-node API runtime
 
 **Current technical disposition: VERIFIED / COMPLETED for synthetic backend software only** at implementation `a68ed0463ae154fb70dd65510da5f78e6c3797a6`: Isolated Qualification #9, Full CI #1167 and Documentation #962 all SUCCESS. The owning HPS-025 acceptance record separates native one-node PostgreSQL/JVM/JWT/HTTP/restart software proof from still-unapproved production deployment, operating controls, SITE and full cross-module business workflows. Original registration-only status above remains historical; no HAPI-933 task or release is selected.
+
+
+## Owner-selected FD-03 Telemetry ingestion registration — 2026-11-10
+
+The owner's contextual Next registers HAPI-933 / FD-03 / R05 under existing
+HPS-010 after HAPI-932 single-node software acceptance. The canonical
+register now has 933 tasks in 25 unchanged phases. All earlier task
+statuses, HAPI-100/EXT-004 deferred scope and archive payloads remain
+unchanged. Current implementation is NOT_IMPLEMENTED / BLOCKED:
+producer-to-source security authority, replay identity/concurrency and
+unit/quality/temporal behavior require explicit policy approval. This
+registration adds no REST operation, runtime/OT provider or production
+authority. See the owner task for candidates and acceptance.
+
+<a id="hapi-933"></a>
+[HAPI-933](TASKS_HPS-010.md#hapi-933) — deliver authorized native telemetry reading ingestion

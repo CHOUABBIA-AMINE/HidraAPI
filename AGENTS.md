@@ -862,3 +862,25 @@ changed. The technical owner, exact future message, complete file allowlist,
 synthetic acceptance and limits live only in
 [HPS-025 HAPI-932](doc/roadmap/TASKS_HPS-025.md#hapi-932);
 the 25-phase structure and immutable archives remain unchanged.
+
+
+## Owner-selected FD-03 native Telemetry registration — 2026-11-10
+
+The owner's contextual Next after the 2026-11-09 proposed-task crosswalk
+registers HAPI-933 / FD-03 / R05 in the existing HPS-010 Telemetry and
+Monitoring phase as one future indivisible synthetic API reading-ingest
+delivery. This increases the canonical register to 933 tasks across 25
+unchanged phases. Earlier HAPI-001–932 IDs, immutable evidence, status
+rows and historical HAPI-100/EXT-004 deferred high-velocity ingestion
+scope remain unchanged. The crosswalk's FD-02 disposition predates
+HAPI-932 software verification and is not current implementation evidence.
+
+Current source has Telemetry source/point POST and history/latest/trend
+GET but no reading POST. The task is NOT_IMPLEMENTED / BLOCKED for
+owner-approved producer/source/point/asset authority and replay/time/unit/
+quality rules. [HAPI-933 owning task](doc/roadmap/TASKS_HPS-010.md#hapi-933)
+records the full-task candidate path ledger, admission policy and acceptance.
+This selection performs registration only. No Java, migration, OpenAPI,
+CI workflow, browser, external SCADA/OT, SITE, simulation or release
+is executed. Implementation requires a later distinct owner selection
+and complete approved source scope.

@@ -10278,4 +10278,97 @@ Future discoveries, refined exact file scope, accepted tests, blockers and decis
 docs/roadmap/fixs/telemetry_corrected_baseline_validated.md:47 | TEL-COR-004 | telemetry/topology docs | Current | Corrected baseline is marked validated.
 ~~~~~~~~
 
+
+<a id="hapi-933"></a>
+## HAPI-933 — deliver authorized native telemetry reading ingestion
+
+Phase: HPS-010 — Telemetry and Monitoring
+
+Legacy proposal handle: FD-03 / R05 from the owner-supplied 2026-11-09 read-only API-only proposed-task crosswalk. This does not replace or close HAPI-100 / EXT-004 high-velocity batch ingestion or superseded TEL tasks.
+
+Priority: P1
+
+Implementation Status: NOT_IMPLEMENTED
+
+Planning Status: BLOCKED
+
+Owning Module: telemetry (source, device, point, mapping, raw readings, quality and provenance). Identity owns producer authority; Topology owns authoritative asset references. No external Integration transport or automatic trust is selected.
+
+Dependencies: HAPI-923 Identity security, HAPI-926 Topology foundation, HAPI-931 native bearer issuer and HAPI-932 restricted single-node qualification; owner-approved producer-to-source authority plus deterministic replay, temporal and quality contract.
+
+Cross-Repository Dependencies: None for an API-only synthetic source. No frontend, SCADA, OPC, MQTT, external historian, deployment or SITE work is selected.
+
+### 1. Selection and current evidence
+
+The owner's contextual Next after the attached FD-03 proposed-task trace selects DOCUMENTATION-ONLY REGISTRATION of HAPI-933. The trace's FD-02 state is historical and does not override HAPI-932's accepted software status. Current main at registration preflight: be892bb5f8e6e3805c3863b01d081b8ced69e228; exact-SHA Documentation #963 and Isolated Qualification #10 both SUCCESS. This is not implementation evidence for HAPI-933.
+
+At that exact source:
+- SpringTelemetryController exposes source and point POST endpoints, but no raw reading POST.
+- TelemetryQueryController exposes GET /api/v1/telemetry/points/{pointId}/readings, /latest and /trend, plus reading state and quality metadata GETs.
+- TelemetryReading and TelemetryReadingValueValidator require exactly one numeric, text or boolean value for non-rejected/non-quarantined readings.
+- TelemetryReadingRepositoryPort and JpaTelemetryReadingRepositoryAdapter provide save/findById primitives; their existence does not prove an authenticated ingestion use case, replay control or atomic producer authorization.
+- TelemetryDeviceJpaEntity.sourceId, TelemetryPointJpaEntity.deviceId and external tag mapping references are candidate server-side evidence for a canonical source/point chain, not a client claim.
+- TrustedTelemetryReadingApplicationService performs a separate server-controlled trust transition requiring a PASSED assessment and eligible point/quality. Ingestion must never silently produce trusted evidence.
+- HAPI-100 / EXT-004 remains historical PARTIAL / DEFERRED for wider high-velocity batch ingestion and is not modified by this new REST delivery.
+
+### 2. One indivisible future deliverable
+
+Provide one genuine synthetic REST raw reading write, with identity, source and point eligibility, explicit units and quality, server-controlled receive time and replay semantics. The canonical ID returned by the server must be readable through the existing history/latest/trend GET contracts, including after stopping and starting a distinct OS JVM over the same disposable PostgreSQL 16 database.
+
+Proposed REST path for later approval: POST /api/v1/telemetry/points/{pointId}/readings. Proposed typed body includes exactly one numeric/text/boolean reading value, effective unit/declaration, quality code reference, source timestamp, source reference and source sequence/correlation reference. Precise DTO names/fields, response status and idempotent retry semantics must be resolved before source implementation. Client input must not set trusted/certified state, authoritative actor/company, server timestamp, or audit/assessment outcome.
+
+Aggregate/domain ownership: Telemetry raw reading and its invariants; existing point/source/device and mapping are authoritative referenced aggregates, not coupled to the raw reading object graph. Inbound port: new Telemetry reading ingestion use case. Outbound ports: existing reading repository and a focused current source/point/quality/unit reference/authorization boundary. Application coordinates transaction, stable replay identity and owner authorization; adapter enforces actual database uniqueness/locking and HTTP mapping. No concrete adapter import is admitted into Domain/Application.
+
+### 3. Blocking source-security decisions
+
+The following remain BLOCKERS to executable implementation, not permission to weaken the current system:
+
+1. The owner must approve which authenticated synthetic producer/service principal is authorized for which active source and exact point/asset/company, how current Identity grants are obtained and sampled in the original transaction, and what happens when mappings, producer rights or point status become stale/revoked. Server-side checks must precede protected existence/history/count disclosure. Do not trust client-provided company or grant metadata. The existing generic route permission interceptor may not be bypassed.
+2. Approve a replay key from authoritative source, point, source sequence/timestamp and mapping context, plus same-key/same-content idempotency and same-key/different-content conflict; require a concurrent PostgreSQL uniqueness or locking proof. A new forward Flyway migration requires an exact, independently approved filename and constraints if the current schema cannot guarantee uniqueness. No existing migration may be edited.
+3. Approve bounded temporal clock policy and quality/unit eligibility with configurable synthetic limits. Missing operational measurements are not blockers to testing a configurable contract; forged trust and mismatched dimensions are never accepted as valid actuals. Raw acceptance is distinct from assessment and TrustTelemetryReadingUseCase publication.
+
+### 4. Proposed full implementation path ledger — NOT YET AUTHORIZED TO EDIT
+
+Potential CREATE paths, all within Telemetry:
+- src/main/java/dz/sh/hidra/modules/telemetry/application/command/IngestTelemetryReadingCommand.java
+- src/main/java/dz/sh/hidra/modules/telemetry/application/port/in/IngestTelemetryReadingUseCase.java
+- src/main/java/dz/sh/hidra/modules/telemetry/application/port/out/TelemetryReadingIngestionReferencePort.java
+- src/main/java/dz/sh/hidra/modules/telemetry/application/service/TelemetryReadingIngestionApplicationService.java
+- src/main/java/dz/sh/hidra/modules/telemetry/infrastructure/persistence/adapter/JpaTelemetryReadingIngestionReferenceAdapter.java
+- src/main/java/dz/sh/hidra/modules/telemetry/api/rest/request/IngestTelemetryReadingRequest.java
+- src/main/java/dz/sh/hidra/modules/telemetry/api/rest/response/IngestTelemetryReadingResponse.java
+- src/main/java/dz/sh/hidra/modules/telemetry/api/rest/mapper/TelemetryReadingIngestionRestMapper.java
+- src/main/java/dz/sh/hidra/modules/telemetry/api/rest/controller/TelemetryReadingIngestionController.java
+- src/test/java/dz/sh/hidra/modules/telemetry/application/service/TelemetryReadingIngestionApplicationServiceTest.java
+- src/test/java/dz/sh/hidra/modules/telemetry/infrastructure/persistence/TelemetryReadingIngestionNativeHttpPostgresIntegrationTest.java
+
+Potential MODIFY paths:
+- src/main/java/dz/sh/hidra/modules/telemetry/application/port/out/TelemetryReadingRepositoryPort.java
+- src/main/java/dz/sh/hidra/modules/telemetry/infrastructure/persistence/adapter/JpaTelemetryReadingRepositoryAdapter.java
+- src/main/java/dz/sh/hidra/modules/telemetry/infrastructure/persistence/repository/TelemetryReadingJpaRepository.java
+- .github/ci-test-inventory.json
+- doc/api/openapi.yaml and doc/api/API_CONVENTIONS.md
+- this owning HPS-010 ledger, two canonical status tables and the compact task index (status/evidence only)
+
+These are candidate files and are NOT an executable source allowlist. Any missing Identity/public authorization contract, conditional new Flyway migration, mapping or native test is an explicit BLOCKER requiring an approved exact path/behavior amendment before implementation. No partial A/B/C execution or future source change is admitted by this registration.
+
+### 5. Future whole-task acceptance
+
+- Native HTTP synthetic JWT producer writes eligible numeric/text/boolean observation to an existing active source/point; actual PostgreSQL returns canonical ID and persisted server receive timestamp.
+- Same ID, typed value, declared effective unit, quality reference and original source timestamp appear through current authorized history/latest/trend; new process over same DB returns same ID.
+- Fail closed for anonymous/foreign-source/wrong-company or foreign-point/revoked-rights, inactive source/point/tag, unknown quality or unit, mismatched dimension, multiple/empty value shapes, unsafe timestamp and client-forged trust; verify no append, protected count disclosure or orphan state.
+- Exact replay has one canonical persisted reading; differing payload under same replay key conflicts without writing; parallel duplicate requests cannot create two readings. Prove real DB uniqueness/locking and no weakened transaction/authorization.
+- Trust assessment and trusted reading publication remain distinct. Validate unit, application, native HTTP/JWT and PostgreSQL cases, architecture tests, strict test inventory, generated OpenAPI contract and applicable exact-SHA Full/Docs CI. Synthetic results do not establish external SCADA, actual industrial calibration, performance, production/SITE or operator decisions.
+
+Future whole-implementation commit message AFTER separate source admission and owner selection: feat(telemetry): implement protected native reading ingestion.
+
+### 6. Registration-only commit and preservation
+
+Exact registration message: docs(roadmap): register FD-03 native telemetry ingestion.
+
+MODIFY exactly six files: AGENTS.md; doc/roadmap/ULTIMATE_ROADMAP.md; doc/roadmap/ULTIMATE_PHASES.md; doc/roadmap/ULTIMATE_TASKS.md; doc/roadmap/TASKS_HPS-010.md; .github/documentation-validation.json (task_register.task_count 932 to 933 only).
+
+No original HAPI-001–932 status, historical HAPI-100, immutable archive, existing phase definition, source, Flyway migration, tests, OpenAPI, CI workflows, runtime deployment, external Integration or numerical simulation is changed. Verify exact-head parent/tree/blobs and applicable exact-SHA documentation validation created/queued or started, then STOP. Registration is not implementation.
+
+
 <!-- task-register:payload:end -->

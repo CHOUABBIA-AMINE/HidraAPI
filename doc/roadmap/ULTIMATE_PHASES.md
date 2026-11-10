@@ -1853,3 +1853,16 @@ The technical scope and no-deployment qualification boundary are in
 | Task ID | Task Name | Deliverable | Priority | Dependencies | Implementation Status | Planning Status |
 |---|---|---|---|---|---|---|
 | [HAPI-932](TASKS_HPS-025.md#hapi-932) | qualify one restricted single-node API runtime | Disposable PostgreSQL 16 migration/least-privilege proof plus independent native HTTP, one process restart and durable same-database readback; no release action | P0 | HAPI-923–928, HAPI-931; approved synthetic role/catalog policy | VERIFIED | COMPLETED |
+
+
+## Owner-selected FD-03 / R05 Telemetry task — 2026-11-10
+
+HAPI-933 is the single registered future FD-03 native Telemetry ingestion
+delivery within HPS-010; all HAPI-001–932 statuses, prior 25-phase
+structure and immutable records are preserved. The [HPS-010 task](TASKS_HPS-010.md#hapi-933)
+retains the producer authorization/replay policy BLOCKED gate.
+No endpoint is implemented by this status registration.
+
+| Task ID | Task Name | Deliverable | Priority | Dependencies | Implementation Status | Planning Status |
+|---|---|---|---|---|---|---|
+| [HAPI-933](TASKS_HPS-010.md#hapi-933) | deliver authorized native telemetry reading ingestion | JWT-authenticated synthetic raw ingestion, actual PostgreSQL readback/restart, units/quality/replay; no automatic trust or live OT | P1 | HAPI-923, HAPI-926, HAPI-931, HAPI-932; producer/replay policy | NOT_IMPLEMENTED | BLOCKED |

@@ -3925,4 +3925,130 @@ Current status for the **whole client-authorable journey**:
 registration; native planning creation/approval *fragments* are real but
 do not establish a completed producer-to-approval workflow.
 
+### 8. Owner-approved HAPI-934 conservative Planning/Workflow policy — 2026-11-10
+
+**Decision source:** The owner explicitly answered `approved` to the proposed
+five-point HAPI-934 policy after the registration-only stage. This authorizes
+the following **business/security constraints for the entire registered task**;
+it does not make the historical REST fragments into a completed journey,
+select independent code packages, authorize a release, or imply that these
+rules already exist in executable source.
+
+**Approved A — revision lifecycle and versioning.**
+A client-authored PlanRevision begins `DRAFT`. Planning alone generates its
+revision ID, sequence number, revision code and authoritative CAS/version
+tokens; it validates the chosen OperationalPlan and eligible current/base
+revision under a server-side transaction, never accepting a caller-supplied
+approval or owner identity. All mutations must validate the current plan and
+expected version; stale submissions cannot overwrite newer changes.
+`SUBMITTED` PlanRevisions and their attached targets become immutable
+authoring snapshots. Rejection/correction semantics must preserve the
+submitted evidence; the exact new-revision/withdrawal mechanism is still to be
+reconciled against existing Workflow decisions rather than fabricated here.
+The existing `PLANNING_REVISION_CONFLICT` metadata-CAS behavior stays intact.
+
+**Approved B — target admission and approval effect.**
+Planning owns PlanTarget creation and versioned snapshot provenance. Target
+types, representations, value shape, explicit engineering unit, UTC effective
+interval, Topology asset and any Telemetry point are checked against current
+owner-backed reference/catalog policies **before committing**. Do not presume
+a point/unit/asset association from matching names or a client-provided
+company. Targets begin in `DRAFT` and can become `ACTIVE` only when the
+independently approved Planning revision is committed. Approved revisions and
+targets are not edited in place; later plans retain reproducible prior
+target/value/unit/source association. No automatic trusted telemetry,
+monitoring deviation, calibration or engineering approval is implied.
+
+**Approved C — human authority and independent reviewer.**
+A signed, currently authenticated creator must have exact current
+company/asset/point authorization and eligible organizational responsibility
+for each protected Planning operation. Deny current revoke/DENY, foreign,
+inactive, unknown, mismatched or ambiguous references **before protected
+existence, count, history or target disclosure**. The independent Workflow
+reviewer must be a distinct currently authorized, eligible human, not the
+submitting actor. Reviewer authority must be checked at decision execution,
+not inferred from a previously issued token, HTTP header, prior task grant
+or claim. The Workflow module owns transition, task, decision and immutable
+audit provenance; Planning owns its revision and target state. No unrelated
+Workflow/Identity/Topology protocol is weakened.
+
+**Approved D — atomic Workflow submission and linkage.**
+A submission must resolve an actual active Workflow definition/target/purpose
+binding for **this exact Planning revision**, through a new focused Workflow
+public producer contract (not an internal adapter imported into Planning).
+Start the Workflow instance, create/resolve its initial task as required,
+link the exact instance to the same `SUBMITTED` PlanRevision and persist its
+immutable targets **in one PostgreSQL transaction** with original-transaction
+authority fences. On any owner/binding/constraint/permission failure the
+whole write rolls back: no orphan Workflow instance, plan revision, target or
+partial decision receipt. No second database/distributed transaction is
+assumed. Workflow acknowledgement must never be reported before durable
+transaction commit. The existing Planning approval consumer continues to
+require an exact `targetModule=planning` and `targetId=revisionId` match.
+
+**Approved E — concurrency, idempotency and negative proof.**
+Keep the existing PLN-004 `expectedUpdatedAt` CAS and add explicit
+version/concurrency protections for new revision, target and submission
+transitions. Duplicate revision sequence, concurrent submission, stale
+version, wrong-target Workflow decision and repeated approval/replay must
+fail deterministically without partial persistence or double activation;
+use actual PostgreSQL constraints/locking/conditional writes as applicable,
+not Java-only checks. Require independent negative tests for foreign
+company/asset, revoked reviewer, same-actor approval, unsuitable unit/point,
+conflicting concurrent writers, transactional rollback and exact readback
+after separate OS-process restart. Only a validated real PostgreSQL schema
+can justify a new forward-only Flyway migration; no existing migration or
+historical data may be changed.
+
+**Verified existing source seams at policy approval baseline**
+`137ef75871a682331d534db56074736922a9595e`:
+- `PlanRevisionStatus` provides DRAFT, SUBMITTED, APPROVED, REJECTED,
+  SUPERSEDED and WITHDRAWN; `PlanTargetStatus` provides DRAFT, ACTIVE,
+  SUPERSEDED and CANCELLED. The domain models and mapped JPA entities are
+  existing values, not proof of a new client-authoring transition.
+- `PlanningWorkflowTargetLookup` already advertises `PLAN_REVISION`
+  and `PLANNING_PLAN` lookup target types; eligibility alone does not
+  produce a linked Workflow instance.
+- `PlanningWorkflowContract` exposes `instance`, `currentTask`,
+  `availableActions` and `execute` only. Workflow's
+  `StartWorkflowInstanceUseCase` exists internally, and
+  `WorkflowApplicationService` already resolves an active definition,
+  version, target type and binding. A narrow Workflow-owned Planning
+  producer/public contract and atomic original-transaction linkage still
+  need exact code admission.
+- `WorkflowTransitionApplicationService` already has an independent
+  human guard for its Topology installed-link target; this is **not**
+  proof of the corresponding Planning reviewer rule.
+- `PlanTargetReferenceValidation` already resolves current revision,
+  target policy/catalog, typed Topology asset and optional Telemetry point.
+  It must be reused and strengthened within the approved scope, not
+  bypassed by direct JPA/entity writes.
+
+**Unresolved delivery admission — not extra business-policy consent:**
+The original HAPI-934 Section 3 decisions A–E above are approved at
+principle level. The complete implementation still requires reconciliation
+of precise current source paths, the protected owner-grant and period/
+revision/target state seams, a Workflow producer interface/transaction
+boundary, exact REST DTOs and route names, tested concurrent/rollback
+conditions, and any necessary **specific** additive Flyway path/constraints
+after inspecting current DDL. These are source/design acceptance details,
+not blanket authorization to invent a Workflow definition, unit conversion,
+cross-company ownership or deployment values. Admit one **whole**
+implementation file allowlist, exact source message and registered CI cases;
+never break HAPI-934 into serial source-change stages.
+
+**Status:** HAPI-934 remains `PARTIAL / BLOCKED` until the complete
+security/transaction/source execution envelope can be safely admitted and
+the owner separately selects that one indivisible implementation via
+`Next`. This approval commits **documentation only**, records no claimed
+runtime tests and does not execute HAPI-935, FD-05, frontend, SITE,
+numerical/P3, release or live OT. HAPI-933 remains VERIFIED/COMPLETED.
+
+**Evidence:** [Registration Documentation #973](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42821219841)
+passed on the registration SHA. [Full CI #1175](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42821219992)
+was **IN_PROGRESS when this policy was examined**; no CI conclusion is
+inferred. The approved policy itself is not runtime validation.
+
+**Decision-only message:** `docs(roadmap): approve HAPI-934 planning policy`.
+
 <!-- task-register:payload:end -->

@@ -951,3 +951,18 @@ are reusable but not accepted as the complete journey. Current registration
 creates no Java, migrations, REST contract, tests, workflow instance,
 simulation, live OT, release, deployment or frontend scope. A future
 whole-task implementation requires separate user selection and approvals.
+
+## HAPI-934 conservative Planning policy approval — 2026-11-10
+
+The owner approved the HAPI-934 revision/target immutability and CAS,
+independent current-grant human Workflow reviewer, target activation only
+on independent approval, and exact Planning/Workflow submission in one
+original PostgreSQL transaction with no orphan state. The owning
+[HPS-013 policy](doc/roadmap/TASKS_HPS-013.md#hapi-934)
+records all approved invariants, current verified class seams and pending
+whole-task source/constraint/test admission. This is **policy approval,
+not implementation**: current canonical HAPI-934 status remains
+PARTIAL / BLOCKED, the existing HAPI-001–933 statuses remain unchanged,
+and the five-person/operator/safety and external OT boundaries are
+preserved. A separate complete implementation selection is needed;
+no new sub-stage, HAPI-935/FD-05, deployment or release follows.

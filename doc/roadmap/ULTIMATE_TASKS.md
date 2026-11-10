@@ -3629,3 +3629,20 @@ The canonical register now has **934 tasks in 25 unchanged phases**.
 Prior historical statements that FD-04/HAPI-934 was unregistered remain
 time-bound and do not supersede this current registration. The future
 source-changing task is not authorized by this governance-only selection.
+
+## HAPI-934 owner-approved Planning/Workflow policy — 2026-11-10
+
+The owner approved the conservative HAPI-934 / FD-04 constraints:
+server-numbered DRAFT revisions and optimistic concurrency; immutable
+SUBMITTED revision/target evidence; target activation only after independent
+approval; current scoped Identity/Organization/Topology/Telemetry authority
+and a distinct eligible human reviewer; a single PostgreSQL transaction for
+exact Workflow instance creation, revision linkage and target persistence;
+and deterministic rejection of stale/duplicate/concurrent/wrong-target
+writes without orphans. The definitive, append-only decision and current
+source limits are in [HPS-013](TASKS_HPS-013.md#hapi-934).
+This is business/security policy approval **only**, not a source
+implementation, accepted client workflow or HAPI-935 selection. HAPI-934
+remains **PARTIAL / BLOCKED** pending exact whole-task file/migration/REST/test
+admission and a separate source-changing selection. The current historical
+registration count remains 934 tasks across 25 phases.

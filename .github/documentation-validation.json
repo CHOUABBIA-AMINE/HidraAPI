@@ -1346,7 +1346,7 @@
         "Client-side signed source discovery/readback and owner acceptance"
       ]
     },
-    "sha256": "f53f0ec6600bb43789aaa616f3c85db3703bd981c0b54ca6e5bfbbf1ec9d53c7",
+    "sha256": "1f314637a32f7bbc22222c1e9505c7a321b1c2736017d5c6a251eeaa027c5e22",
     "source_sha": "4893015fa5395144be5dca6e328fa1aca9b1fa2e"
   },
   "register": "doc/governance/DOCUMENT_REGISTER.md",

@@ -1174,7 +1174,8 @@ public class EngineeringRevisionPublicationPostgresIntegrationTest {
                 .andReturn();
             var selection=JSON.readTree(selectionResponse.getResponse().getContentAsString());
             assertThat(selection.path("items").size()).isEqualTo(1);
-            assertThat(selection.path("nextCursor").isNull()).isTrue();
+            // Nullable cursor may be omitted by the configured JSON serializer.
+            assertThat(selection.hasNonNull("nextCursor")).isFalse();
             var selected=selection.path("items").get(0);
             assertThat(selected.path("kind").asText()).isEqualTo("NETWORK_PUBLICATION");
             assertThat(selected.path("ownerId").asText())

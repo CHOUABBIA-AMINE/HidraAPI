@@ -1185,7 +1185,7 @@ public class ProductRevisionPublicationNativeHttpPostgresIntegrationTest {
         assertThat(published.publication()).isNotNull();
         assertThat(published.publication().engineeringQualified()).isFalse();
         SecurityContextHolder.clearContext();
-        var response=http.perform(get("/api/v1/topology/engineering-sources")
+        var response=http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/api/v1/topology/engineering-sources")
             .header("Authorization","Bearer "+actor.token())
             .param("companyPartyId",COMPANY).param("pipelineSystemId",pipeline)
             .param("kind","NETWORK_PUBLICATION").param("businessKey",draft.toString()).param("limit","1"))
@@ -1246,7 +1246,7 @@ public class ProductRevisionPublicationNativeHttpPostgresIntegrationTest {
         assertThat(result.path("authoritative").asBoolean()).isFalse();
         assertThat(result.path("frozen").asBoolean()).isFalse();
         String base="/api/v1/topology/engineering-baselines/"+manifest;
-        var read=JSON.readTree(http.perform(get(base).header("Authorization","Bearer "+actor.token())
+        var read=JSON.readTree(http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(base).header("Authorization","Bearer "+actor.token())
             .param("companyPartyId",COMPANY).param("pipelineSystemId",pipeline))
             .andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
         assertThat(read.path("version").asLong()).isEqualTo(1);

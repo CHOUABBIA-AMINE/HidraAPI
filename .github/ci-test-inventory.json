@@ -46,7 +46,7 @@
       "lane": "unit-architecture",
       "owner": "architecture",
       "path": "src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java",
-      "source_sha256": "2fd0bc4b427d07987a799f11f095087eea6ea550ef3bfbcbdd1f4979af900700",
+      "source_sha256": "1bd9690af204f18d8fe14bcfb6d81adbdad96307646f037d84880d61238afeba",
       "supports": []
     },
     {
@@ -7006,7 +7006,7 @@
       "lane": "unit-architecture",
       "owner": "planning",
       "path": "src/test/java/dz/sh/hidra/modules/planning/application/service/PlanningApprovalApplicationServiceTest.java",
-      "source_sha256": "5314e60e43f8aff05de6f30f92fd7dbcb0a88d87ab278422ac41709345f3c88a",
+      "source_sha256": "54e0f6ae23511aab5324c190b91fad2bbac4339f6f86037d7bcbe4b69dca1a7d",
       "supports": []
     },
     {
@@ -7076,7 +7076,8 @@
         "filtersPlansAndDescendantsBeforeDisclosureAndHonorsCurrentDenies",
         "publishesRuntimeContractAndCatalogAndReadsPersistedPeriodAfterApplicationRestart",
         "rejectsInvalidTargetEvidenceWithoutAdvancingDraftVersion",
-        "serializesDraftCreationAndRejectsSubmittedEdits"
+        "serializesDraftCreationAndRejectsSubmittedEdits",
+        "submitsAndIndependentlyApprovesScopedTargetsWithoutGenericWorkflowBypass"
       ],
       "class": "dz.sh.hidra.modules.planning.infrastructure.persistence.PlanningCompanyScopeNativeHttpPostgresIntegrationTest",
       "dependency_reason": "T01 scope and T02 draft-authoring synthetic native HTTP acceptance against fresh PostgreSQL/Flyway, including concurrency and application restart.",
@@ -7084,7 +7085,7 @@
       "lane": "postgres-integration",
       "owner": "planning",
       "path": "src/test/java/dz/sh/hidra/modules/planning/infrastructure/persistence/PlanningCompanyScopeNativeHttpPostgresIntegrationTest.java",
-      "source_sha256": "9244891d8446cb47ba80df2f5d48f461f0d94a07faf347770598acc7cdaea4b2",
+      "source_sha256": "c75ce98ee6cc0db1cae77bc771ab6dcb045162ba9f87531da5d46fbe77bbfea1",
       "supports": []
     },
     {
@@ -10973,6 +10974,7 @@
       "cases": [
         "completesInstanceWhenTargetStepIsTerminal",
         "executesPermittedTransitionAndCreatesNextTask",
+        "genericWorkflowTransitionCannotBypassPlanningReviewerDecision",
         "publicationApprovalAcceptsOnlyActualMatchingHumanActor",
         "publicationApprovalRejectsNonhumanBeforeMutation",
         "rejectsActorWhoDoesNotOwnTask",
@@ -10988,7 +10990,7 @@
       "lane": "unit-architecture",
       "owner": "workflow",
       "path": "src/test/java/dz/sh/hidra/modules/workflow/application/service/WorkflowTransitionApplicationServiceTest.java",
-      "source_sha256": "282684612f70af977b23083149a7146119b999ca0d547a2f41afdd842e40034c",
+      "source_sha256": "1ef6a1eac0462fd1de0504fad84c4d98318c1a55248667e9fd23a637d75511a8",
       "supports": []
     },
     {

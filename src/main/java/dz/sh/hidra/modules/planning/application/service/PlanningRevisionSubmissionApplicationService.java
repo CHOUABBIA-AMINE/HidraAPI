@@ -35,7 +35,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public final class PlanningRevisionSubmissionApplicationService implements SubmitPlanningRevisionUseCase {
+public class PlanningRevisionSubmissionApplicationService implements SubmitPlanningRevisionUseCase {
     private final OperationalPlanRepositoryPort plans;
     private final PlanRevisionRepositoryPort revisions;
     private final PlanTargetRepositoryPort targets;

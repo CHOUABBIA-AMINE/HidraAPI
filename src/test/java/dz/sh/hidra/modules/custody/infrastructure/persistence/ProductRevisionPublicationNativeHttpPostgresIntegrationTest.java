@@ -78,6 +78,14 @@ import java.util.concurrent.atomic.*;
 
 import javax.crypto.spec.SecretKeySpec;
 import dz.sh.hidra.modules.custody.domain.model.SuppliedFluidPropertyRevision.*;
+import dz.sh.hidra.modules.topology.application.port.in.EngineeringNetworkDraftUseCase;
+import dz.sh.hidra.modules.topology.application.port.in.EngineeringGraphDraftUseCase;
+import dz.sh.hidra.modules.topology.application.port.in.SurveyRouteProfileUseCase;
+import dz.sh.hidra.modules.topology.application.port.in.EngineeringRevisionPublicationUseCase;
+import dz.sh.hidra.modules.topology.domain.model.EngineeringNetworkDraft;
+import dz.sh.hidra.modules.topology.domain.model.EngineeringGraphDraft;
+import dz.sh.hidra.modules.topology.domain.model.SurveyRouteProfile;
+import java.math.BigDecimal;
 
 /**
  * Only directory/source transport is synthetic; native crypto, origin, fences and owner state are
@@ -837,6 +845,8 @@ public class ProductRevisionPublicationNativeHttpPostgresIntegrationTest {
     }}
 
     @Autowired ProductRevisionPublicationUseCase publications;
+    @Autowired EngineeringNetworkDraftUseCase networkDrafts;
+    @Autowired EngineeringRevisionPublicationUseCase networkPublications;
     @Autowired WorkflowApplicationService workflows;
     @Autowired ExecuteWorkflowTransitionUseCase workflowTransitions;
     @Autowired WorkflowTaskRepositoryPort workflowTasks;
@@ -1042,6 +1052,226 @@ public class ProductRevisionPublicationNativeHttpPostgresIntegrationTest {
         assertThat(jdbc.queryForObject("SELECT count(*) FROM public.hidra_topology_engineering_baseline_revision"
             +" WHERE manifest_id=?::uuid",Long.class,manifest)).isEqualTo(1L);
     }
+
+    // T05 software baseline acceptance: unqualified physical inputs remain explicitly unqualified.
+    // Source owners, Workflow and baseline writes are real; only source values are synthetic.
+    private Facts completeSyntheticGz2Gas() {
+        var origin=new Source(Origin.SYNTHETIC,"GZ2-SYNTHETIC","synthetic-gas-evidence");
+        var key=new MethodKey("synthetic-gas-method","v1");
+        var method=new Method(key,Origin.SYNTHETIC,Basis.MOLE_FRACTION,List.of("GAS-A"),
+            List.of(Property.DENSITY),
+            new Range(new Decimal("50"),new Decimal("150"),"fluid-pressure"),
+            new Range(new Decimal("250"),new Decimal("350"),"fluid-temperature"),
+            "synthetic-method-evidence");
+        var composition=new Composition(Basis.MOLE_FRACTION,
+            List.of(new dz.sh.hidra.modules.custody.domain.model.SuppliedFluidPropertyRevision.Component(
+                "GAS-A",new Decimal("1.0000"))),key,origin);
+        var observation=new Observation("density",null,Property.DENSITY,new Decimal("1.200"),
+            "fluid-density",new Condition(new Decimal("100"),"fluid-pressure"),
+            new Condition(new Decimal("300"),"fluid-temperature"),key,origin);
+        var facts=new Facts(composition,List.of(observation),List.of(method),origin,
+            "Synthetic GZ2 gas authoring only; not calibrated or field qualified");
+        assertThat(facts.diagnostics()).isEmpty();
+        return facts;
+    }
+    private UUID completeGz2Product() {
+        var draft=drafts.execute(new dz.sh.hidra.modules.custody.application.port.in.ProductEngineeringDraftUseCase.Command(
+            dz.sh.hidra.modules.custody.application.port.in.ProductEngineeringDraftUseCase.Kind.CREATE,
+            COMPANY,null,id(),PRODUCT,UUID.randomUUID(),null,
+            new dz.sh.hidra.modules.custody.domain.model.ProductEngineeringDraft.Metadata(
+                "Synthetic GZ2 gas",null,"synthetic-product-evidence",
+                dz.sh.hidra.modules.custody.domain.model.ProductEngineeringDraft.Classification.GAS))).draft().id();
+        units();
+        put(draft,UUID.randomUUID(),0,1,completeSyntheticGz2Gas());
+        configureWorkflow();
+        return draft;
+    }
+    private void topologySourceGrants(Fixture actor,String pipeline) {
+        // Match the existing Topology native author's real generation/graph witness permissions.
+        jdbc.execute("REVOKE ALL ON public.hidra_topology_facility_owner_generation"
+            +" FROM c3_source_claim_app,c3_publication_app");
+        jdbc.execute("GRANT SELECT ON public.hidra_topology_facility_owner_generation"
+            +" TO c3_source_claim_app,c3_publication_app");
+        jdbc.execute("REVOKE ALL ON public.hidra_topology_station_graph_head,"
+            +"public.hidra_topology_station_graph_operation_event FROM c3_source_claim_app");
+        jdbc.execute("GRANT SELECT ON public.hidra_topology_station_graph_head,"
+            +"public.hidra_topology_station_graph_operation_event TO c3_source_claim_app");
+        String draftTables="public.hidra_topology_engineering_context,public.hidra_topology_engineering_draft,"
+            +"public.hidra_topology_engineering_draft_version";
+        jdbc.execute("REVOKE ALL ON "+draftTables+" FROM c3_source_claim_app,c3_publication_app");
+        jdbc.execute("GRANT SELECT ON "+draftTables+" TO c3_source_claim_app");
+        jdbc.execute("GRANT SELECT,INSERT,UPDATE ON "+draftTables+" TO c3_publication_app");
+        for(String table:List.of("public.hidra_topology_engineering_graph_snapshot",
+            "public.hidra_topology_engineering_survey_snapshot",
+            "public.hidra_topology_engineering_publication_snapshot",
+            "public.hidra_topology_engineering_publication_event",
+            "public.hidra_topology_engineering_publication_head")) {
+            jdbc.execute("REVOKE ALL ON "+table+" FROM c3_source_claim_app,c3_publication_app");
+            jdbc.execute("GRANT SELECT,INSERT,UPDATE ON "+table+" TO c3_publication_app");
+        }
+        for(String action:List.of("create","read","update","validate"))
+            for(String scope:List.of("topology-company:"+COMPANY,"topology-network:"+pipeline))
+                topologyGrant(actor,"topology:engineering-draft:"+action,"ENGINEERING_NETWORK_DRAFT",action,scope);
+        for(String action:List.of("publish","read"))
+            for(String scope:List.of("topology-company:"+COMPANY,"topology-network:"+pipeline))
+                topologyGrant(actor,"topology:engineering-publication:"+action,
+                    "ENGINEERING_NETWORK_PUBLICATION",action,scope);
+        for(String action:List.of("create","read","validate"))
+            for(String scope:List.of("topology-company:"+COMPANY,"topology-network:"+pipeline))
+                topologyGrant(actor,"topology:engineering-baseline:"+action,
+                    "ENGINEERING_BASELINE_DRAFT",action,scope);
+        String baseline="public.hidra_topology_engineering_baseline_draft,"
+            +"public.hidra_topology_engineering_baseline_revision,"
+            +"public.hidra_topology_engineering_baseline_request";
+        jdbc.execute("REVOKE ALL ON "+baseline+" FROM c3_source_claim_app");
+        jdbc.execute("GRANT SELECT,INSERT,UPDATE ON "+baseline+" TO c3_publication_app");
+        for(String function:List.of("hidra_topology_baseline_lock_storage",
+            "hidra_topology_baseline_lock_sources","hidra_custody_baseline_lock_product_source"))
+            jdbc.execute("GRANT EXECUTE ON FUNCTION public."+function+"() TO c3_publication_app");
+    }
+    private void topologyGrant(Fixture actor,String code,String resource,String action,String scope) {
+        var found=jdbc.queryForList("SELECT id FROM public.hidra_identity_permission WHERE code=?",String.class,code);
+        String permission=found.isEmpty()?id():found.getFirst();
+        if(found.isEmpty())jdbc.update("INSERT INTO public.hidra_identity_permission"
+            +"(id,code,permission_domain,resource_type,action,sensitive,status,created_at,updated_at)"
+            +" VALUES (?,?,'topology',?,?,?,'ACTIVE',now(),now())",
+            permission,code,resource,action,"ENGINEERING_BASELINE_DRAFT".equals(resource));
+        jdbc.update("INSERT INTO public.hidra_identity_user_permission_grant"
+            +"(id,user_id,permission_id,effect,scope_type,scope_reference_id,grant_reason,"
+            +"emergency_access,valid_from,valid_to,status,created_at)"
+            +" VALUES (?,?,?,'GRANT','CUSTOM',?,'synthetic T05 multi-owner baseline',false,"
+            +" now()-interval '1 hour',now()+interval '1 hour','ACTIVE',now())",
+            id(),actor.user(),permission,scope);
+    }
+    private tools.jackson.databind.JsonNode completeGz2NetworkPin(HttpActor actor,String pipeline) throws Exception {
+        // All source authoring goes through the actual protected Topology application services.
+        SecurityContextHolder.getContext().setAuthentication(
+            new org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken(
+                nativeDecoder.decode(actor.token()),List.of()));
+        var created=networkDrafts.execute(new EngineeringNetworkDraftUseCase.Command(
+            EngineeringNetworkDraftUseCase.Kind.CREATE,COMPANY,pipeline,null,UUID.randomUUID(),null,
+            new EngineeringNetworkDraft.Metadata("Synthetic GZ2 gas segment",null,"synthetic-network-evidence")));
+        UUID draft=created.draft().draftId();
+        var graph=new EngineeringGraphDraft(
+            List.of(new EngineeringGraphDraft.Node("start",EngineeringGraphDraft.NodeKind.JUNCTION,null),
+                new EngineeringGraphDraft.Node("end",EngineeringGraphDraft.NodeKind.JUNCTION,null)),
+            List.of(new EngineeringGraphDraft.Port("start-out","start",EngineeringGraphDraft.PortDirection.OUTLET),
+                new EngineeringGraphDraft.Port("end-in","end",EngineeringGraphDraft.PortDirection.INLET)),
+            List.of(new EngineeringGraphDraft.Branch("gas-pipe",EngineeringGraphDraft.BranchKind.PIPE,
+                "start-out","end-in")));
+        assertThat(graph.diagnostics()).containsExactly("PHYSICAL_VALUES_NOT_SUPPLIED");
+        var graphResult=((EngineeringGraphDraftUseCase)networkDrafts).executeGraph(
+            new EngineeringGraphDraftUseCase.Command(EngineeringGraphDraftUseCase.Kind.UPDATE,
+                COMPANY,pipeline,draft,1L,null,graph));
+        assertThat(graphResult.version()).isEqualTo(2);
+        var route=new SurveyRouteProfile("gas-pipe",
+            new SurveyRouteProfile.Crs("SYNTHETIC","GZ2-LOCAL",
+                List.of(new SurveyRouteProfile.Axis("north","metre"),
+                    new SurveyRouteProfile.Axis("east","metre"))),
+            null,"synthetic-origin",SurveyRouteProfile.Direction.FROM_TO,"synthetic-route-evidence",
+            List.of(new SurveyRouteProfile.Point("p0",BigDecimal.ONE,BigDecimal.ONE,BigDecimal.ZERO,
+                    null,BigDecimal.ONE,BigDecimal.ONE,null),
+                new SurveyRouteProfile.Point("p1",BigDecimal.TEN,BigDecimal.TEN,BigDecimal.TEN,
+                    null,BigDecimal.ONE,BigDecimal.ONE,null)),
+            List.of(new SurveyRouteProfile.Section("section-1",BigDecimal.ZERO,BigDecimal.TEN,
+                "synthetic-section-evidence")));
+        var survey=((SurveyRouteProfileUseCase)networkDrafts).executeSurvey(
+            new SurveyRouteProfileUseCase.Command(SurveyRouteProfileUseCase.Kind.UPDATE,
+                COMPANY,pipeline,draft,"gas-pipe",2L,null,route));
+        assertThat(survey.version()).isEqualTo(3);
+        var published=networkPublications.executePublication(new EngineeringRevisionPublicationUseCase.Command(
+            EngineeringRevisionPublicationUseCase.Kind.PUBLISH,COMPANY,pipeline,draft,
+            UUID.randomUUID(),3L,0L,null,null,null,null,null));
+        assertThat(published.publication()).isNotNull();
+        assertThat(published.publication().engineeringQualified()).isFalse();
+        SecurityContextHolder.clearContext();
+        var response=http.perform(get("/api/v1/topology/engineering-sources")
+            .header("Authorization","Bearer "+actor.token())
+            .param("companyPartyId",COMPANY).param("pipelineSystemId",pipeline)
+            .param("kind","NETWORK_PUBLICATION").param("businessKey",draft.toString()).param("limit","1"))
+            .andExpect(status().isOk()).andReturn();
+        var current=JSON.readTree(response.getResponse().getContentAsString());
+        assertThat(current.path("items").size()).isEqualTo(1);
+        var selected=current.path("items").get(0);
+        assertThat(selected.path("currentlyEligible").asBoolean()).isTrue();
+        assertThat(selected.path("engineeringQualified").asBoolean()).isFalse();
+        assertThat(selected.path("baselinePin").path("kind").asText()).isEqualTo("NETWORK_PUBLICATION");
+        return selected;
+    }
+    @Test void nativeCompleteSyntheticGz2GasNetworkAndCustodyProductBaselineRoundTrip() throws Exception {
+        var actor=httpActor("LOCAL");
+        UUID productDraft=completeGz2Product();
+        String candidate=json(send(actor,productDraft,"POST","/candidates",prep(UUID.randomUUID()))
+            .andExpect(status().isCreated())).path("candidateDigest").asText();
+        var approval=humanApproval(actor,candidate);
+        var productResponse=json(send(actor,productDraft,"POST","",
+            publishJson(candidate,approval,UUID.randomUUID(),0,null)).andExpect(status().isCreated()));
+        assertThat(productResponse.path("publication").path("envelope").path("diagnostics").size()).isZero();
+        var productPin=productResponse.path("baselinePin");
+        assertThat(productPin.path("kind").asText()).isEqualTo("PRODUCT_PUBLICATION");
+        assertThat(productPin.path("sha256").asText()).matches("[0-9a-f]{64}");
+
+        String type=id(),pipeline=id();
+        jdbc.update("INSERT INTO public.hidra_topology_pipeline_system_type"
+            +"(id,code,active,created_at,updated_at) VALUES (?,?,true,now(),now())",type,type);
+        jdbc.update("INSERT INTO public.hidra_topology_pipeline_system"
+            +"(id,code,system_type_id,status,created_at,updated_at)"
+            +" VALUES (?,?,?,'DRAFT',now(),now())",pipeline,pipeline,type);
+        topologySourceGrants(actor.fixture(),pipeline);
+        var networkSource=completeGz2NetworkPin(actor,pipeline);
+        var networkPin=networkSource.path("baselinePin");
+
+        var sourceSnapshot=json(send(actor,productDraft,"GET","/current",null)
+            .andExpect(status().isOk()));
+        assertThat(sourceSnapshot.path("baselinePin")).isEqualTo(productPin);
+        Instant baselineFrom=Instant.parse(networkSource.path("effectiveAt").asText());
+        Instant productFrom=Instant.parse(productResponse.path("observedHead").path("effectiveAt").asText());
+        if(productFrom.isAfter(baselineFrom))baselineFrom=productFrom;
+        UUID manifest=UUID.randomUUID();
+        String body="""
+            {"manifestId":"%s","companyPartyId":"%s","pipelineSystemId":"%s",
+             "requestId":"%s","effectiveFrom":"%s","effectiveUntil":null,
+             "pins":[%s,%s]}
+            """.formatted(manifest,COMPANY,pipeline,UUID.randomUUID(),baselineFrom,
+                networkPin.toString(),productPin.toString());
+        SecurityContextHolder.clearContext();
+        var created=http.perform(post("/api/v1/topology/engineering-baselines")
+            .header("Authorization","Bearer "+actor.token())
+            .contentType("application/json").content(body)).andExpect(status().isOk()).andReturn();
+        var result=JSON.readTree(created.getResponse().getContentAsString());
+        assertThat(result.path("capturedCompleteness").path("complete").asBoolean()).isTrue();
+        assertThat(result.path("currentCompleteness").path("complete").asBoolean()).isTrue();
+        assertThat(result.path("pins").size()).isEqualTo(2);
+        assertThat(result.path("engineeringQualified").asBoolean()).isFalse();
+        assertThat(result.path("authoritative").asBoolean()).isFalse();
+        assertThat(result.path("frozen").asBoolean()).isFalse();
+        String base="/api/v1/topology/engineering-baselines/"+manifest;
+        var read=JSON.readTree(http.perform(get(base).header("Authorization","Bearer "+actor.token())
+            .param("companyPartyId",COMPANY).param("pipelineSystemId",pipeline))
+            .andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
+        assertThat(read.path("version").asLong()).isEqualTo(1);
+        assertThat(read.path("canonicalSha256")).isEqualTo(result.path("canonicalSha256"));
+        assertThat(read.path("capturedCompleteness").path("complete").asBoolean()).isTrue();
+        assertThat(JSON.readTree(http.perform(post(base+"/validation")
+            .header("Authorization","Bearer "+actor.token())
+            .param("companyPartyId",COMPANY).param("pipelineSystemId",pipeline))
+            .andExpect(status().isOk()).andReturn().getResponse().getContentAsString())
+            .path("currentCompleteness").path("complete").asBoolean()).isTrue();
+        UUID productPublication=UUID.fromString(productPin.path("revisionId").asText());
+        var withdrawn=json(send(actor,productDraft,"POST","/"+productPublication+"/withdraw",
+            "{\"requestId\":\""+UUID.randomUUID()+"\",\"expectedEpoch\":1,"
+             +"\"expectedPublicationId\":\""+productPublication+"\"}").andExpect(status().isOk()));
+        assertThat(withdrawn.path("baselinePin").isMissingNode()).isTrue();
+        var reevaluated=JSON.readTree(http.perform(post(base+"/validation")
+            .header("Authorization","Bearer "+actor.token())
+            .param("companyPartyId",COMPANY).param("pipelineSystemId",pipeline))
+            .andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
+        assertThat(reevaluated.path("capturedCompleteness").path("complete").asBoolean()).isTrue();
+        assertThat(reevaluated.path("currentCompleteness").path("complete").asBoolean()).isFalse();
+        assertThat(reevaluated.path("currentCompleteness").path("findings").toString())
+            .contains("SOURCE_NOT_CURRENTLY_ELIGIBLE","SOURCE_INTERVAL_NOT_COVERED");
+    }
+
     @Test void configuredReplayWithdrawEffectiveHistoryAndReactivationRetainSnapshot()throws Exception{var a=httpActor("LOCAL");UUID p=preparedProduct(absent()),request=UUID.randomUUID();String digest=json(send(a,p,"POST","/candidates",prep(request)).andExpect(status().isCreated())).get("candidateDigest").asText();send(a,p,"POST","/candidates",prep(request)).andExpect(status().isOk()).andExpect(jsonPath("$.replayed").value(true));var approval=humanApproval(a,digest);UUID publishRequest=UUID.randomUUID();String body=publishJson(digest,approval,publishRequest,0,null);var first=json(send(a,p,"POST","",body).andExpect(status().isCreated()));String id=first.get("publication").get("publicationId").asText();String head="{\"requestId\":\""+UUID.randomUUID()+"\",\"expectedEpoch\":1,\"expectedPublicationId\":\""+id+"\"}";send(a,p,"POST","/"+id+"/withdraw",head).andExpect(status().isOk()).andExpect(jsonPath("$.observedHead.state").value("WITHDRAWN"));send(a,p,"POST","",body).andExpect(status().isOk()).andExpect(jsonPath("$.replayed").value(true)).andExpect(jsonPath("$.observedHead.epoch").value(2));send(a,p,"GET","/requests/"+publishRequest,null).andExpect(status().isOk());String at=jdbc.queryForObject("SELECT clock_timestamp()",Timestamp.class).toInstant().toString();send(a,p,"GET","/effective",null,"asOf",at).andExpect(status().isOk()).andExpect(jsonPath("$.selectedHead.state").value("WITHDRAWN"));send(a,p,"GET","/history",null,"asOf",at,"limit","1").andExpect(status().isOk()).andExpect(jsonPath("$.history.length()").value(1));String reactivate="{\"requestId\":\""+UUID.randomUUID()+"\",\"expectedEpoch\":2,\"expectedPublicationId\":\""+id+"\",\"approval\":"+approvalJson(approval)+"}";send(a,p,"POST","/"+id+"/reactivate",reactivate).andExpect(status().isOk()).andExpect(jsonPath("$.observedHead.epoch").value(3));assertThat(events(p)).isEqualTo(3);}
     /** The Custody owner itself must preserve the interval gap when a publication is reactivated. */
     @Test void nativeProductReactivateSuppliesBaselineAsOfWindow() throws Exception {

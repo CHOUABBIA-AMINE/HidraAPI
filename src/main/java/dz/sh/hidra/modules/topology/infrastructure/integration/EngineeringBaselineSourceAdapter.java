@@ -145,20 +145,31 @@ public final class EngineeringBaselineSourceAdapter implements EngineeringBaseli
             },context,revision,context,scope.companyPartyId(),scope.pipelineSystemId());
         if(rows.size()!=1)throw denied();var snapshot=rows.getFirst();
         var required=new HashSet<Requirement>();var findings=new HashSet<Finding>();
+        // Missing author evidence is software incompleteness; the immutable unqualified
+        // snapshot marker is not. Engineering/physical qualification remains false.
+        if(snapshot.diagnostics().stream().anyMatch(d->
+                d.equals("TITLE_NOT_SUPPLIED") || d.equals("EVIDENCE_NOT_SUPPLIED")))
+            findings.add(Finding.SOURCE_DATA_INCOMPLETE);
         if(snapshot.graph()==null)findings.add(Finding.GRAPH_NOT_AUTHORED);
         else{
             var graph=new EngineeringGraphDraftCodec().decode(Base64.getDecoder().decode(snapshot.graph().base64()));
             for(var node:graph.nodes())if(node.kind()==EngineeringGraphDraft.NodeKind.STATION)
                 required.add(new Requirement(EngineeringBaselineManifest.Kind.STATION_CONFIGURATION,node.facilityId()));
-            if(!graph.diagnostics().isEmpty())findings.add(Finding.GRAPH_INCOMPLETE);
+            // PHYSICAL_VALUES_NOT_SUPPLIED is emitted by every authored graph: it
+            // describes deferred industrial qualification, not an invalid incidence graph.
+            if(graph.diagnostics().stream().anyMatch(d->!d.equals("PHYSICAL_VALUES_NOT_SUPPLIED")))
+                findings.add(Finding.GRAPH_INCOMPLETE);
             if(graph.branches().stream().noneMatch(b->b.kind()==EngineeringGraphDraft.BranchKind.PIPE))findings.add(Finding.SECTIONS_NOT_SUPPLIED);
             for(var survey:snapshot.surveys())if(survey.source()!=null){
                 var profile=new dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.SurveyRouteProfileCodec()
                     .decode(Base64.getDecoder().decode(survey.source().base64()));
-                if(profile.sections().isEmpty())findings.add(Finding.SECTIONS_NOT_SUPPLIED);
+                if(!profile.branchId().equals(survey.branchId()))
+                    findings.add(Finding.ROUTE_PROFILE_NOT_SUPPLIED);
+                if(!sectionsCoverSurvey(profile))findings.add(Finding.SECTIONS_NOT_SUPPLIED);
             }
             if(snapshot.surveys().size()!=graph.branches().stream().filter(b->b.kind()==EngineeringGraphDraft.BranchKind.PIPE).count()
-                ||snapshot.surveys().stream().anyMatch(x->x.source()==null||!x.diagnostics().isEmpty()))
+                ||snapshot.surveys().stream().anyMatch(x->x.source()==null
+                    ||x.diagnostics().stream().anyMatch(d->!EngineeringRevisionPublication.UNQUALIFIED.equals(d))))
                 findings.add(Finding.ROUTE_PROFILE_NOT_SUPPLIED);
         }
         // Select the active activation epoch at this draft's effective start, not the
@@ -180,6 +191,16 @@ public final class EngineeringBaselineSourceAdapter implements EngineeringBaseli
         if(!eligible)findings.add(Finding.SOURCE_NOT_CURRENTLY_ELIGIBLE);
         return new SourceFacts(pin,from.toInstant(),until==null?null:until.toInstant(),required,
             findings.stream().sorted().toList());
+    }
+    /** All authored route chainages must be covered by ordered, contiguous sections. */
+    private static boolean sectionsCoverSurvey(dz.sh.hidra.modules.topology.domain.model.SurveyRouteProfile profile) {
+        if(profile.sections().isEmpty())return false;
+        var next=profile.points().getFirst().chainageMetres();
+        for(var section:profile.sections()){
+            if(section.startChainageMetres().compareTo(next)!=0)return false;
+            next=section.endChainageMetres();
+        }
+        return next.compareTo(profile.points().getLast().chainageMetres())==0;
     }
     private SourceFacts station(Ticket t,Pin pin,Map<String,StationInstalledConfiguration.Position> installations){
         if(!pin.ownerId().equals(pin.sourceId()))throw denied();

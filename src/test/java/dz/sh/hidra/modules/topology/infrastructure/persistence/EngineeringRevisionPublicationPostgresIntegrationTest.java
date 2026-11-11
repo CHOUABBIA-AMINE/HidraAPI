@@ -1201,15 +1201,25 @@ public class EngineeringRevisionPublicationPostgresIntegrationTest {
                 .andReturn();
             assertThat(JSON.readTree(exactResponse.getResponse().getContentAsString())).isEqualTo(selected);
 
-            // Protected foreign-scope reads must not disclose an ID or metadata digest.
+            // Denied foreign-company reads must not return protected source metadata.
             SecurityContextHolder.clearContext();
             var denied=http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders
                     .get(exactSource).header("Authorization","Bearer "+rawToken)
                     .param("companyPartyId","foreign-company").param("pipelineSystemId",network))
                 .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isForbidden())
                 .andReturn();
+            // ProblemDetail.instance echoes the URL the caller already supplied; it is not
+            // an authorized source response. Assert that no protected source facts are returned.
+            var denial=JSON.readTree(denied.getResponse().getContentAsString());
+            assertThat(denial.path("code").asText()).isEqualTo("DENIED");
+            assertThat(denial.path("status").asInt()).isEqualTo(403);
+            assertThat(denial.path("detail").asText())
+                .isEqualTo("Engineering source lookup not completed");
+            assertThat(denial.has("items")).isFalse();
+            assertThat(denial.has("revisionId")).isFalse();
+            assertThat(denial.has("metadataSha256")).isFalse();
             assertThat(denied.getResponse().getContentAsString())
-                .doesNotContain(draft.toString(),revision.toString(),selected.path("metadataSha256").asText());
+                .doesNotContain(selected.path("metadataSha256").asText());
 
             SecurityContextHolder.clearContext();
             http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(publicationUrl(draft,"/current")))

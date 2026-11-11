@@ -1245,77 +1245,6 @@
     },
     "path": "doc/api/openapi.yaml",
     "prior_reviewed_provenance": {
-      "source_sha": "3a840578ecf15eb4656dc0984b7d916aee7d5801",
-      "run_id": 42985876201,
-      "run_attempt": 1,
-      "job_id": 130406794228,
-      "artifact_id": 13839118323,
-      "artifact_name": "hidra-api-openapi-3a840578ecf15eb4656dc0984b7d916aee7d5801-42985876201-1-api-contract",
-      "artifact_member": "hidra-api.json",
-      "json_sha256": "1319efa6ca20b53116e1561939726c0c3d0af33e5fbe87b0f1a0a606ccb0ac7d",
-      "zip_sha256": "039b499ee88b14037c129350bcd5173c66d01e0e0dde62a5c00e64091d534e31",
-      "generation_step": "Publish deterministic OpenAPI contract",
-      "generation_step_number": 9,
-      "generation_step_conclusion": "success",
-      "compatibility_review": "Exact CI #1182 source 3a840578... generated runtime OpenAPI: one additive Planning submission POST and two request/response schemas; subtracting those three additions and restoring the prior source stamp reproduces the reviewed prior snapshot SHA256 exactly. Same-run backward compatibility passed.",
-      "conclusion": "success",
-      "conclusion_scope": "Java 21 application build, deterministic runtime OpenAPI generation and backward compatibility passed in CI #1182. Full CI FAILED due forensic exact consumer registry, legacy Planning visibility test and canonical snapshot mismatch. This records only the successful contract generation, not full acceptance.",
-      "job_conclusion": "failure",
-      "workflow_conclusion": "failure",
-      "failed_step": "Enforce canonical OpenAPI snapshot equality",
-      "database_evidence": {
-        "capture_step": "Capture current migrated database dictionary evidence",
-        "capture_step_conclusion": "success",
-        "strict_equality_step": "Enforce canonical database dictionary equality",
-        "strict_equality_conclusion": "skipped",
-        "artifact_id": 13839372699
-      },
-      "remaining_gates": [
-        "Repair commit exact-SHA strict generated OpenAPI and database dictionary comparisons",
-        "All mandatory source, unit, PostgreSQL and full CI evidence gates",
-        "T03 signed independent approval, rejection, revocation, rollback and restart acceptance remains subject to exact-SHA CI"
-      ],
-      "prior_reviewed_provenance": {
-        "artifact_id": 13810940918,
-        "artifact_member": "hidra-api.json",
-        "artifact_name": "hidra-api-openapi-9899c847e5da4fba92911bf323dc340464c94cd3-42917533782-1-api-contract",
-        "compatibility_review": "Actual runtime generated at the T02 implementation SHA passed unchanged backward-compatibility checking against T01 software-accepted e084bed5553ff3efa6ab23f60edf268e12df2ccc (API job step 13). Three additive Planning paths/operations and five schemas; previously reviewed OpenAPI contract entries retained.",
-        "conclusion": "success",
-        "conclusion_scope": "Exact-T02-source Java 21 build and runtime OpenAPI generation passed; OpenAPI backward-compatibility step 13 passed. Full CI #1179 failed at canonical snapshot equality; physical dictionary equality and full evidence sealing were skipped.",
-        "database_evidence": {
-          "artifact_id": 13809633347,
-          "artifact_member": "DATA_DICTIONARY.md",
-          "artifact_name": "hidra-database-schema-9899c847e5da4fba92911bf323dc340464c94cd3-42917533782-1-api-contract",
-          "catalog_sha256": "6d9f38283d8964fba486cfbac90a1e1d1b8304ecab3a73e4f2bf2bd34cae673f",
-          "dictionary_sha256": "30a13c7d27eef1c1922eac28586633c024ac7ac4dbbf60b98c0b20e45f155300",
-          "jpa_mappings": 470,
-          "migrations": 205,
-          "relations": 557,
-          "server_version": "16.15 (Debian 16.15-1.pgdg13+2)",
-          "source_bundle_sha256": "32ec0efb3f8ba61fc824d4c6a64d57c11e9d22357cb66721bdb60a6ba5000ffc",
-          "unresolved_owners": 0,
-          "zip_sha256": "10fe01cc35ceece31a12293ce5d4e0d3227b7375c33baf2ea881ce35fee4c73a"
-        },
-        "failed_step": "Enforce canonical OpenAPI snapshot equality",
-        "generation_step": "Publish deterministic OpenAPI contract",
-        "generation_step_conclusion": "success",
-        "generation_step_number": 9,
-        "job_conclusion": "failure",
-        "job_id": 130183706944,
-        "json_sha256": "46d2e38fd6a2ac84f744c56c568779ed58eb325f61ef0cfb52aef48bf9b6c1c3",
-        "remaining_gates": [
-          "Repair-SHA full CI: canonical runtime OpenAPI exact equality and reviewed physical dictionary equality",
-          "Repair-SHA all mandatory unit/architecture and PostgreSQL integration cases with complete provenance sealing",
-          "Repair-SHA documentation validation; separate T02 software acceptance before selecting T03"
-        ],
-        "run_attempt": 1,
-        "run_id": 42917533782,
-        "source_sha": "9899c847e5da4fba92911bf323dc340464c94cd3",
-        "workflow_conclusion": "failure",
-        "zip_sha256": "5e54fee013f0224c4e51828ebf6ee5ea2abe5cb28bf899956339a126d56c2641"
-      }
-    },
-    "provenance": {
       "source_sha": "4893015fa5395144be5dca6e328fa1aca9b1fa2e",
       "run_id": 43006244870,
       "run_attempt": 1,
@@ -1346,8 +1275,39 @@
         "Client-side signed source discovery/readback and owner acceptance"
       ]
     },
-    "sha256": "1f314637a32f7bbc22222c1e9505c7a321b1c2736017d5c6a251eeaa027c5e22",
-    "source_sha": "4893015fa5395144be5dca6e328fa1aca9b1fa2e"
+    "provenance": {
+      "source_sha": "a582b3726893c18b522af6088b6c590df7f39b6c",
+      "run_id": 43025660099,
+      "run_attempt": 1,
+      "job_id": 130539602865,
+      "artifact_id": 13857012420,
+      "artifact_name": "hidra-api-openapi-a582b3726893c18b522af6088b6c590df7f39b6c-43025660099-1-api-contract",
+      "artifact_member": "hidra-api.json",
+      "json_sha256": "13d8aeffe3ef618aedf9a6bea56e9e5c86c11d0ef2a628689741844f9597a7c9",
+      "zip_sha256": "9d77de79cf1145a09a5d3c111aa79c75680c6c2fa33cf012a0cbeed070b32916",
+      "generation_step": "Publish deterministic OpenAPI contract",
+      "generation_step_number": 9,
+      "generation_step_conclusion": "success",
+      "compatibility_review": "Exact CI #1193 generated contract adds one optional baselinePin property to existing EngineeringSourceSelection; excluding it and restoring the previous generation stamp reproduces the prior reviewed snapshot. Same-run OpenAPI backward compatibility passed. Paths 354, operations 394 and schemas 444 are unchanged.",
+      "conclusion": "success",
+      "conclusion_scope": "Runtime OpenAPI generation and backward compatibility passed at T05 implementation SHA. Overall CI #1193 FAILED exclusively because the generated OpenAPI was not yet reflected in the canonical snapshot. Java unit/architecture, all fourteen PostgreSQL shards and static validation passed; this records generation evidence, not a successful full verification gate.",
+      "job_conclusion": "failure",
+      "workflow_conclusion": "failure",
+      "failed_step": "Enforce canonical OpenAPI snapshot equality",
+      "database_evidence": {
+        "capture_step": "Capture current migrated database dictionary evidence",
+        "capture_step_conclusion": "success",
+        "strict_equality_step": "Enforce canonical database dictionary equality",
+        "strict_equality_conclusion": "skipped",
+        "artifact_id": 13856303942
+      },
+      "remaining_gates": [
+        "Replacement exact-SHA full CI validates runtime OpenAPI equality, physical dictionary and complete evidence sealing",
+        "T05 complete multi-owner GZ2 baseline fixture remains open; no T06 authorization"
+      ]
+    },
+    "sha256": "311da018f377b51f4b69e3e48439e3c2373d650f80b870252acd6e24d642b831",
+    "source_sha": "a582b3726893c18b522af6088b6c590df7f39b6c"
   },
   "register": "doc/governance/DOCUMENT_REGISTER.md",
   "register_areas": {

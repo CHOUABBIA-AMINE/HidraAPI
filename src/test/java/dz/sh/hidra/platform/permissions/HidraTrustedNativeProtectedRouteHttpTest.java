@@ -215,11 +215,13 @@ class HidraTrustedNativeProtectedRouteHttpTest {
       org.mockito.Mockito.mock(dz.sh.hidra.modules.topology.application.port.in.TopologyFoundationUseCase.class));
     var station=new dz.sh.hidra.modules.topology.api.rest.controller.StationGraphController(
       org.mockito.Mockito.mock(dz.sh.hidra.modules.topology.application.port.in.ProtectedStationGraphOperationUseCase.class));
+    var discovery=new dz.sh.hidra.modules.topology.api.rest.controller.EngineeringSourceDiscoveryController(
+      org.mockito.Mockito.mock(dz.sh.hidra.modules.topology.application.port.in.EngineeringSourceDiscoveryUseCase.class));
     var workflow=new dz.sh.hidra.modules.workflow.api.rest.controller.WorkflowDefinitionDiscoveryController(
       org.mockito.Mockito.mock(dz.sh.hidra.modules.workflow.application.port.in.WorkflowDefinitionDiscoveryUseCase.class));
     var owners=java.util.Map.<Class<?>,Object>of(controller.getClass(),controller,installed.getClass(),installed,
       pipeline.getClass(),pipeline,baseline.getClass(),baseline,foundation.getClass(),foundation,station.getClass(),station,
-      workflow.getClass(),workflow);
+      workflow.getClass(),workflow,discovery.getClass(),discovery);
     var actual=new RequestMappingHandlerMapping();
    for(var entry:routes) {
     Object owner=owners.get(entry.controller());

@@ -82,7 +82,26 @@ public class ProductRevisionPublicationController {
     @ExceptionHandler(Failure.class) public ResponseEntity<ProblemDetail> failure(Failure f){var status=switch(f.reason()){case INVALID_REQUEST->HttpStatus.BAD_REQUEST;case DENIED->HttpStatus.FORBIDDEN;case CONFLICT->HttpStatus.CONFLICT;case UNAVAILABLE,INDETERMINATE->HttpStatus.SERVICE_UNAVAILABLE;};return problem(status,f.reason().name());}
     @ExceptionHandler({IllegalArgumentException.class,java.time.DateTimeException.class,HttpMessageNotReadableException.class,MissingServletRequestParameterException.class}) public ResponseEntity<ProblemDetail> malformed(Exception ignored){return problem(HttpStatus.BAD_REQUEST,"INVALID_REQUEST");}
     private static ResponseEntity<ProblemDetail> problem(HttpStatus s,String code){var p=ProblemDetail.forStatusAndDetail(s,"Product publication "+(s==HttpStatus.FORBIDDEN?"access denied":s==HttpStatus.CONFLICT?"conflict":s==HttpStatus.SERVICE_UNAVAILABLE?"unavailable or completion indeterminate":"invalid request"));p.setProperty("code",code);return ResponseEntity.status(s).contentType(MediaType.APPLICATION_PROBLEM_JSON).body(p);}
-    private static Result result(ProductRevisionPublicationUseCase.Result r){var p=r.publication();var t=r.receipt();return new Result(envelope(r.candidate()),r.candidateDigest(),p==null?null:new Publication(p.publicationId(),envelope(p.envelope()),approval(p.approval()),false),head(r.observedHead()),head(r.selectedHead()),t==null?null:new Receipt(scope(t.scope()),t.actorId(),t.requestId(),t.commandSha256(),t.kind(),t.candidateDigest(),event(t.event()),t.recordedAt()),r.history().stream().map(ProductRevisionPublicationController::event).toList(),r.nextCursor(),r.replayed());}
+    private static Result result(ProductRevisionPublicationUseCase.Result r){
+        var p=r.publication();var t=r.receipt();
+        return new Result(envelope(r.candidate()),r.candidateDigest(),
+                p==null?null:new Publication(p.publicationId(),envelope(p.envelope()),approval(p.approval()),false),
+                head(r.observedHead()),head(r.selectedHead()),
+                t==null?null:new Receipt(scope(t.scope()),t.actorId(),t.requestId(),t.commandSha256(),
+                        t.kind(),t.candidateDigest(),event(t.event()),t.recordedAt()),
+                r.history().stream().map(ProductRevisionPublicationController::event).toList(),
+                r.nextCursor(),r.replayed(),baselinePin(r));
+    }
+    private static BaselinePin baselinePin(ProductRevisionPublicationUseCase.Result r) {
+        var p=r.publication();var head=r.observedHead();var digest=r.canonicalPublicationSha256();
+        if(p==null || head==null
+                || head.state()!=dz.sh.hidra.modules.custody.domain.model.ProductRevisionPublication.State.ACTIVE
+                || !head.publicationId().equals(p.publicationId())
+                || !head.scope().equals(p.envelope().scope()) || digest==null)return null;
+        var s=p.envelope().scope();
+        return new BaselinePin("PRODUCT_PUBLICATION",s.productDraftId().toString(),s.catalogProductId(),
+                p.publicationId().toString(),digest);
+    }
     private static Scope scope(dz.sh.hidra.modules.custody.domain.model.ProductRevisionPublication.Scope s){return new Scope(s.productDraftId(),s.companyPartyId(),s.catalogProductId());}
     private static Component component(dz.sh.hidra.modules.custody.domain.model.ProductRevisionPublication.Component s){return new Component(s.version(),s.format(),s.sha256(),s.base64());}
     private static Envelope envelope(dz.sh.hidra.modules.custody.domain.model.ProductRevisionPublication.Envelope s){if(s==null)return null;var p=s.policy();return new Envelope(scope(s.scope()),component(s.metadata()),component(s.supplied()),s.suppliedMetadataVersion(),s.classification(),s.diagnostics(),s.units().stream().map(u->new Unit(u.unitId(),u.role(),u.code(),u.symbol(),u.dimension(),u.updatedAt())).toList(),new Policy(p.definitionId(),p.definitionVersion(),p.targetTypeId(),p.purposeId()),false);}

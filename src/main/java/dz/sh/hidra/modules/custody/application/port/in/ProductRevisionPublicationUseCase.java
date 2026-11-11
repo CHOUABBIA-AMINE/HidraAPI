@@ -47,8 +47,17 @@ public interface ProductRevisionPublicationUseCase {
         public static Command workflow(String digest){return new Command(Kind.READ_CANDIDATE_FOR_WORKFLOW,null,null,null,0,0,digest,null,0,null,null,null,0,null);}
     }
     record Result(Envelope candidate,String candidateDigest,ProductRevisionPublication publication,Head observedHead,
-            Head selectedHead,Receipt receipt,List<Event> history,String nextCursor,boolean replayed,boolean consumerEligible) {
-        public Result {history=List.copyOf(history);}
+            Head selectedHead,Receipt receipt,List<Event> history,String nextCursor,boolean replayed,boolean consumerEligible,
+            String canonicalPublicationSha256) {
+        public Result {
+            history=List.copyOf(history);
+            if(canonicalPublicationSha256!=null)ProductRevisionPublication.digest(canonicalPublicationSha256);
+        }
+        public Result(Envelope candidate,String candidateDigest,ProductRevisionPublication publication,Head observedHead,
+                Head selectedHead,Receipt receipt,List<Event> history,String nextCursor,boolean replayed,boolean consumerEligible) {
+            this(candidate,candidateDigest,publication,observedHead,selectedHead,receipt,history,nextCursor,replayed,
+                    consumerEligible,null);
+        }
     }
     enum Reason { INVALID_REQUEST,DENIED,CONFLICT,UNAVAILABLE,INDETERMINATE }
     final class Failure extends RuntimeException {

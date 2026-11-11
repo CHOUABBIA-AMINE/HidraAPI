@@ -924,15 +924,19 @@ public class ProductRevisionPublicationNativeHttpPostgresIntegrationTest {
             publishJson(candidate,selection,UUID.randomUUID(),0,null))
             .andExpect(status().isCreated()));
         UUID publication=UUID.fromString(publicationJson.path("publication").path("publicationId").asText());
-        String sourceDigest=jdbc.queryForObject("SELECT sha256 FROM public.hidra_custody_product_publication"
-            +" WHERE company_party_id=? AND product_draft_id=? AND publication_id=?",
-            String.class,COMPANY,productDraft,publication);
-        Timestamp activeFrom=jdbc.queryForObject(
-            "SELECT effective_at FROM public.hidra_custody_product_publication_event"
-            +" WHERE company_party_id=? AND product_draft_id=? AND publication_id=? AND action='PUBLISH'",
-            Timestamp.class,COMPANY,productDraft,publication);
-        assertThat(sourceDigest).hasSize(64);
-        assertThat(activeFrom).isNotNull();
+        // Real REST clients must not query Custody tables to construct a valid pin.
+        var sourcePin=publicationJson.path("baselinePin");
+        assertThat(sourcePin.path("kind").asText()).isEqualTo("PRODUCT_PUBLICATION");
+        assertThat(sourcePin.path("ownerId").asText()).isEqualTo(productDraft.toString());
+        assertThat(sourcePin.path("sourceId").asText()).isEqualTo(PRODUCT);
+        assertThat(sourcePin.path("revisionId").asText()).isEqualTo(publication.toString());
+        String sourceDigest=sourcePin.path("sha256").asText();
+        assertThat(sourceDigest).matches("[0-9a-f]{64}");
+        assertThat(json(send(actor,productDraft,"GET","/"+publication,null)
+            .andExpect(status().isOk())).path("baselinePin")).isEqualTo(sourcePin);
+        assertThat(json(send(actor,productDraft,"GET","/current",null)
+            .andExpect(status().isOk())).path("baselinePin")).isEqualTo(sourcePin);
+        Instant activeFrom=Instant.parse(publicationJson.path("observedHead").path("effectiveAt").asText());
         String type=id(),pipeline=id();
         jdbc.update("INSERT INTO public.hidra_topology_pipeline_system_type(id,code,active,created_at,updated_at)"
             +" VALUES (?,?,true,now(),now())",type,type);
@@ -968,10 +972,8 @@ public class ProductRevisionPublicationNativeHttpPostgresIntegrationTest {
         String body="""
             {"manifestId":"%s","companyPartyId":"%s","pipelineSystemId":"%s",
              "requestId":"%s","effectiveFrom":"%s","effectiveUntil":null,
-             "pins":[{"kind":"PRODUCT_PUBLICATION","ownerId":"%s","sourceId":"%s",
-                      "revisionId":"%s","sha256":"%s"}]}
-            """.formatted(manifest,COMPANY,pipeline,request,activeFrom.toInstant(),
-                productDraft,PRODUCT,publication,sourceDigest);
+             "pins":[%s]}
+            """.formatted(manifest,COMPANY,pipeline,request,activeFrom,sourcePin.toString());
         String base="/api/v1/topology/engineering-baselines";
         SecurityContextHolder.clearContext();
         var response=http.perform(post(base).header("Authorization","Bearer "+actor.token())
@@ -997,9 +999,12 @@ public class ProductRevisionPublicationNativeHttpPostgresIntegrationTest {
         assertThat(coords.get("revision_pid")).isEqualTo(coords.get("receipt_pid"));
         assertThat(coords.get("revision_xid")).isEqualTo(coords.get("receipt_xid"));
         SecurityContextHolder.clearContext();
-        send(actor,productDraft,"POST","/"+publication+"/withdraw",
+        var withdrawn=json(send(actor,productDraft,"POST","/"+publication+"/withdraw",
             "{\"requestId\":\""+UUID.randomUUID()+"\",\"expectedEpoch\":1,"
-             +"\"expectedPublicationId\":\""+publication+"\"}").andExpect(status().isOk());
+             +"\"expectedPublicationId\":\""+publication+"\"}").andExpect(status().isOk()));
+        assertThat(withdrawn.path("baselinePin").isMissingNode()).isTrue();
+        assertThat(json(send(actor,productDraft,"GET","/current",null)
+            .andExpect(status().isOk())).path("baselinePin").isMissingNode()).isTrue();
         SecurityContextHolder.clearContext();
         var validation=http.perform(post(base+"/"+manifest+"/validation")
             .header("Authorization","Bearer "+actor.token())
@@ -1013,23 +1018,19 @@ public class ProductRevisionPublicationNativeHttpPostgresIntegrationTest {
             +" WHERE manifest_id=?::uuid",Long.class,manifest)).isEqualTo(1L);
         // Reactivation starts a new effective source interval. A fresh manifest
         // may select it, but the earlier captured withdrawal gap remains immutable.
-        send(actor,productDraft,"POST","/"+publication+"/reactivate",
+        var reactivated=json(send(actor,productDraft,"POST","/"+publication+"/reactivate",
             "{\"requestId\":\""+UUID.randomUUID()+"\",\"expectedEpoch\":2,"
              +"\"expectedPublicationId\":\""+publication+"\","
-             +"\"approval\":"+approvalJson(selection)+"}").andExpect(status().isOk());
-        Timestamp resumed=jdbc.queryForObject(
-            "SELECT effective_at FROM public.hidra_custody_product_publication_event"
-            +" WHERE company_party_id=? AND product_draft_id=? AND publication_id=? AND action='REACTIVATE'",
-            Timestamp.class,COMPANY,productDraft,publication);
-        assertThat(resumed.toInstant()).isAfter(activeFrom.toInstant());
+             +"\"approval\":"+approvalJson(selection)+"}").andExpect(status().isOk()));
+        assertThat(reactivated.path("baselinePin")).isEqualTo(sourcePin);
+        Instant resumed=Instant.parse(reactivated.path("observedHead").path("effectiveAt").asText());
+        assertThat(resumed).isAfter(activeFrom);
         UUID newManifest=UUID.randomUUID();
         String resumedBody="""
             {"manifestId":"%s","companyPartyId":"%s","pipelineSystemId":"%s",
              "requestId":"%s","effectiveFrom":"%s","effectiveUntil":null,
-             "pins":[{"kind":"PRODUCT_PUBLICATION","ownerId":"%s","sourceId":"%s",
-                      "revisionId":"%s","sha256":"%s"}]}
-            """.formatted(newManifest,COMPANY,pipeline,UUID.randomUUID(),resumed.toInstant(),
-                productDraft,PRODUCT,publication,sourceDigest);
+             "pins":[%s]}
+            """.formatted(newManifest,COMPANY,pipeline,UUID.randomUUID(),resumed,sourcePin.toString());
         SecurityContextHolder.clearContext();
         var renewed=http.perform(post(base).header("Authorization","Bearer "+actor.token())
             .contentType("application/json").content(resumedBody)).andExpect(status().isOk()).andReturn();

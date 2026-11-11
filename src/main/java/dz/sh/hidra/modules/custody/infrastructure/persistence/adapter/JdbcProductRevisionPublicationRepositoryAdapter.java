@@ -370,7 +370,10 @@ public class JdbcProductRevisionPublicationRepositoryAdapter implements ProductR
             // Pin the actual persisted bytes and audit before leaving provisional mode.
         }
         t.applied=true;
-        return new Result(t.envelope,t.digest,t.publication,t.head,t.selected,t.receipt,t.history,t.nextCursor,t.replayed,needsEligibility(t) && t.eligibility);
+        // Same immutable canonical bytes used by the original protected Custody publication owner.
+        String canonicalSha256=t.publication==null?null:ProductRevisionPublication.hash(codec.encode(t.publication));
+        return new Result(t.envelope,t.digest,t.publication,t.head,t.selected,t.receipt,t.history,t.nextCursor,
+                t.replayed,needsEligibility(t) && t.eligibility,canonicalSha256);
     }catch(RuntimeException e){executor.rejectAdmission();throw e;}}
     @Override public void flush(){physical();}
     private static String imageSql(List<ProtectedRelationFence> fences){

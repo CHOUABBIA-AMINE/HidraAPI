@@ -48,6 +48,9 @@ public final class ProductRevisionPublicationResponses {
     public record Event(UUID eventId,Scope scope,long epoch,String action,UUID priorPublicationId,UUID publicationId,String state,UUID requestId,String commandSha256,Instant effectiveAt,Approval approval) {}
     @JsonInclude(JsonInclude.Include.ALWAYS) @Schema(name="ProductPublicationReceiptResponse")
     public record Receipt(Scope scope,String actorId,UUID requestId,String commandSha256,String kind,String candidateDigest,Event event,Instant recordedAt) {}
+    @Schema(name="ProductPublicationBaselinePinResponse",description="Exact active product source reference accepted by the engineering-baseline draft API; not engineering qualification.")
+    public record BaselinePin(String kind,String ownerId,String sourceId,String revisionId,String sha256) {}
     @JsonInclude(JsonInclude.Include.ALWAYS) @Schema(name="ProductPublicationResultResponse",description="Immutable unqualified source bytes and historical head facts. Current HTTP state is not an eligibility certificate.")
-    public record Result(Envelope candidate,String candidateDigest,Publication publication,Head observedHead,Head selectedHead,Receipt receipt,List<Event> history,String nextCursor,boolean replayed) {public Result {history=List.copyOf(history);}}
+    public record Result(Envelope candidate,String candidateDigest,Publication publication,Head observedHead,Head selectedHead,Receipt receipt,List<Event> history,String nextCursor,boolean replayed,
+            @JsonInclude(JsonInclude.Include.NON_NULL) BaselinePin baselinePin) {public Result {history=List.copyOf(history);}}
 }

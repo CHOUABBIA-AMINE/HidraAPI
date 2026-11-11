@@ -1417,7 +1417,7 @@
       "lane": "postgres-integration",
       "owner": "custody",
       "path": "src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/ProductRevisionPublicationNativeHttpPostgresIntegrationTest.java",
-      "source_sha256": "3f1f4c244348844fe396a6010c4e91a93f8d8a1d9e137f85aa16d69c353efda6",
+      "source_sha256": "952a0df0592db9966dc40f9ff95adb1822596d2137ef297f079f2ede8faf4392",
       "supports": []
     },
     {

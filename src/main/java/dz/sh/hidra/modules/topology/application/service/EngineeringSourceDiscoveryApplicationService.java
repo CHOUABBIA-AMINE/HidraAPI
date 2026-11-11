@@ -21,6 +21,8 @@ package dz.sh.hidra.modules.topology.application.service;
 
 import dz.sh.hidra.modules.topology.application.port.in.EngineeringSourceDiscoveryUseCase;
 import dz.sh.hidra.modules.topology.application.port.in.EngineeringRevisionPublicationUseCase;
+import dz.sh.hidra.modules.topology.application.port.out.EngineeringSourcePublicationDigestPort;
+import dz.sh.hidra.modules.topology.domain.model.EngineeringBaselineManifest;
 import dz.sh.hidra.modules.topology.domain.model.EngineeringRevisionPublication;
 import java.util.Objects;
 import java.util.Optional;
@@ -31,9 +33,12 @@ import org.springframework.stereotype.Service;
 @Service
 public final class EngineeringSourceDiscoveryApplicationService implements EngineeringSourceDiscoveryUseCase {
     private final EngineeringRevisionPublicationUseCase publications;
+    private final EngineeringSourcePublicationDigestPort publicationDigests;
 
-    public EngineeringSourceDiscoveryApplicationService(EngineeringRevisionPublicationUseCase publications) {
+    public EngineeringSourceDiscoveryApplicationService(EngineeringRevisionPublicationUseCase publications,
+                                                        EngineeringSourcePublicationDigestPort publicationDigests) {
         this.publications=Objects.requireNonNull(publications);
+        this.publicationDigests=Objects.requireNonNull(publicationDigests);
     }
     @Override
     public Optional<Source> current(Lookup lookup) {
@@ -67,7 +72,7 @@ public final class EngineeringSourceDiscoveryApplicationService implements Engin
                 kind==EngineeringRevisionPublicationUseCase.Kind.READ_EXACT?lookup.revisionId():null,
                 null,null,null);
     }
-    private static Source source(Lookup lookup,EngineeringRevisionPublicationUseCase.Result result) {
+    private Source source(Lookup lookup,EngineeringRevisionPublicationUseCase.Result result) {
         var publication=Objects.requireNonNull(result.publication());
         var snapshot=publication.snapshot();
         var head=result.observedHead();
@@ -80,8 +85,14 @@ public final class EngineeringSourceDiscoveryApplicationService implements Engin
             throw new AccessDeniedException("Engineering source scope mismatch");
         boolean eligible=head!=null && head.state()==EngineeringRevisionPublication.State.ACTIVE
                 && head.revisionId().equals(publication.revisionId());
+        EngineeringBaselineManifest.Pin pin = null;
+        if (eligible) {
+            String contextId = scope.contextId().toString();
+            pin = new EngineeringBaselineManifest.Pin(EngineeringBaselineManifest.Kind.NETWORK_PUBLICATION,
+                    contextId, contextId, publication.revisionId().toString(), publicationDigests.sha256(snapshot));
+        }
         return new Source(lookup.kind(),scope.contextId(),snapshot.draftId(),publication.revisionId(),
                 snapshot.version(),snapshot.metadata().sha256(),eligible?"ACTIVE":"HISTORICAL",
-                head==null?null:head.effectiveAt(),eligible,false);
+                head==null?null:head.effectiveAt(),eligible,false,pin);
     }
 }

@@ -1218,8 +1218,9 @@ public class EngineeringRevisionPublicationPostgresIntegrationTest {
             assertThat(denial.has("items")).isFalse();
             assertThat(denial.has("revisionId")).isFalse();
             assertThat(denial.has("metadataSha256")).isFalse();
+            assertThat(denial.has("baselinePin")).isFalse();
             assertThat(denied.getResponse().getContentAsString())
-                .doesNotContain(selected.path("metadataSha256").asText());
+                .doesNotContain(selected.path("metadataSha256").asText(),selected.path("baselinePin").path("sha256").asText());
 
             SecurityContextHolder.clearContext();
             http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(publicationUrl(draft,"/current")))
@@ -1274,9 +1275,39 @@ public class EngineeringRevisionPublicationPostgresIntegrationTest {
         var published=publish(networkDraft,3,null);
         UUID context=published.publication().snapshot().scope().contextId();
         UUID revision=published.publication().revisionId();
-        String digest=EngineeringRevisionPublication.hash(
-            new dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.EngineeringRevisionPublicationCodec()
-                .encode(published.publication().snapshot()));
+        String digest=jdbc.queryForObject("""
+            SELECT encode(sha256(canonical_payload),'hex')
+              FROM public.hidra_topology_engineering_publication_snapshot
+             WHERE context_id=? AND revision_id=?
+            """,String.class,context,revision);
+        String sources="/api/v1/topology/engineering-sources";
+        SecurityContextHolder.clearContext();
+        var discovered=http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(sources)
+                .header("Authorization","Bearer "+rawToken)
+                .param("companyPartyId",COMPANY).param("pipelineSystemId",network)
+                .param("kind","NETWORK_PUBLICATION").param("businessKey",networkDraft.toString()))
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+            .andReturn();
+        var items=JSON.readTree(discovered.getResponse().getContentAsString()).path("items");
+        assertThat(items.size()).isEqualTo(1);
+        var selected=items.get(0);
+        var pin=selected.path("baselinePin");
+        assertThat(pin).isEqualTo(JSON.readTree("""
+            {"kind":"NETWORK_PUBLICATION","ownerId":"%s","sourceId":"%s",
+             "revisionId":"%s","sha256":"%s"}
+            """.formatted(context,context,revision,digest)));
+        assertThat(selected.path("sourceId").asText()).isEqualTo(networkDraft.toString());
+        assertThat(selected.path("metadataSha256").asText()).isNotEqualTo(digest);
+        String exactSource=sources+"/"+selected.path("kind").asText()+"/"+selected.path("ownerId").asText()
+            +"/"+selected.path("sourceId").asText()+"/revisions/"+selected.path("revisionId").asText();
+        SecurityContextHolder.clearContext();
+        var exactSourceResponse=http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+                .get(exactSource).header("Authorization","Bearer "+rawToken)
+                .param("companyPartyId",COMPANY).param("pipelineSystemId",network))
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+            .andReturn();
+        var exactPin=JSON.readTree(exactSourceResponse.getResponse().getContentAsString()).path("baselinePin");
+        assertThat(exactPin).isEqualTo(pin);
         String baseline="/api/v1/topology/engineering-baselines";
         UUID manifest=UUID.randomUUID(),request=UUID.randomUUID();
         // All grants are fresh fixture rows. A publication-read right does not imply the
@@ -1310,21 +1341,19 @@ public class EngineeringRevisionPublicationPostgresIntegrationTest {
         String body="""
             {"manifestId":"%s","companyPartyId":"%s","pipelineSystemId":"%s",
              "requestId":"%s","effectiveFrom":"%s","effectiveUntil":null,
-             "pins":[{"kind":"NETWORK_PUBLICATION","ownerId":"%s","sourceId":"%s",
-                      "revisionId":"%s","sha256":"%s"}]}
+             "pins":[%s]}
             """.formatted(manifest,COMPANY,network,request,
-                published.observedHead().effectiveAt(),context,context,revision,digest);
+                published.observedHead().effectiveAt(),exactPin);
         // A permitted network source cannot waive a missing independent Custody read grant.
         UUID refused=UUID.randomUUID();
         String bothBody="""
             {"manifestId":"%s","companyPartyId":"%s","pipelineSystemId":"%s",
              "requestId":"%s","effectiveFrom":"%s","effectiveUntil":null,
-             "pins":[{"kind":"NETWORK_PUBLICATION","ownerId":"%s","sourceId":"%s",
-                      "revisionId":"%s","sha256":"%s"},
+             "pins":[%s,
                      {"kind":"PRODUCT_PUBLICATION","ownerId":"%s","sourceId":"missing-product",
                       "revisionId":"%s","sha256":"%s"}]}
             """.formatted(refused,COMPANY,network,UUID.randomUUID(),
-                published.observedHead().effectiveAt(),context,context,revision,digest,
+                published.observedHead().effectiveAt(),exactPin,
                 UUID.randomUUID(),UUID.randomUUID(),"a".repeat(64));
         SecurityContextHolder.clearContext();
         http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(baseline)
@@ -1340,7 +1369,9 @@ public class EngineeringRevisionPublicationPostgresIntegrationTest {
         var first=JSON.readTree(created.getResponse().getContentAsString());
         assertThat(first.path("version").asLong()).isEqualTo(1);
         assertThat(first.path("pins").size()).isEqualTo(1);
-        assertThat(first.path("pins").get(0).path("sha256").asText()).isEqualTo(digest);
+        assertThat(first.path("pins").get(0)).isEqualTo(exactPin);
+        String manifestDigest=first.path("canonicalSha256").asText();
+        assertThat(manifestDigest).matches("[0-9a-f]{64}");
         assertThat(first.path("engineeringQualified").asBoolean()).isFalse();
         assertThat(first.path("authoritative").asBoolean()).isFalse();
         assertThat(first.path("frozen").asBoolean()).isFalse();
@@ -1366,15 +1397,40 @@ public class EngineeringRevisionPublicationPostgresIntegrationTest {
             .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
             .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.replayed").value(true));
         SecurityContextHolder.clearContext();
-        http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(
+        var validated=http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(
                 baseline+"/"+manifest+"/validation").header("Authorization","Bearer "+rawToken)
                 .param("companyPartyId",COMPANY).param("pipelineSystemId",network))
             .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
-            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.version").value(1));
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.version").value(1))
+            .andReturn();
+        var validation=JSON.readTree(validated.getResponse().getContentAsString());
+        assertThat(validation.path("canonicalSha256").asText()).isEqualTo(manifestDigest);
+        assertThat(validation.path("currentCompleteness").path("findings").toString())
+            .contains("PRODUCT_NOT_SELECTED");
+        assertThat(validation.path("currentCompleteness").path("complete").asBoolean(true)).isFalse();
+        SecurityContextHolder.clearContext();
+        var read=http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+                .get(baseline+"/"+manifest).header("Authorization","Bearer "+rawToken)
+                .param("companyPartyId",COMPANY).param("pipelineSystemId",network))
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+            .andReturn();
+        var current=JSON.readTree(read.getResponse().getContentAsString());
+        assertThat(current.path("version").asLong()).isEqualTo(1);
+        assertThat(current.path("pins").get(0)).isEqualTo(exactPin);
+        assertThat(current.path("canonicalSha256").asText()).isEqualTo(manifestDigest);
         // The owner publishes a replacement. The old bytes and captured findings cannot change.
         ambient(rawToken);
         UUID replacement=create(UUID.randomUUID(),"new network publication").draft().draftId();
         publish(replacement,1,published.observedHead());
+        SecurityContextHolder.clearContext();
+        var historicalSource=http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+                .get(exactSource).header("Authorization","Bearer "+rawToken)
+                .param("companyPartyId",COMPANY).param("pipelineSystemId",network))
+            .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+            .andReturn();
+        var oldSource=JSON.readTree(historicalSource.getResponse().getContentAsString());
+        assertThat(oldSource.path("currentlyEligible").asBoolean(true)).isFalse();
+        assertThat(oldSource.has("baselinePin")).isFalse();
         SecurityContextHolder.clearContext();
         var historical=http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(
                 baseline+"/"+manifest+"/revisions/1").header("Authorization","Bearer "+rawToken)

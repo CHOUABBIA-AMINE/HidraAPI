@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.topology.application.port.in;
 
+import dz.sh.hidra.modules.topology.domain.model.EngineeringBaselineManifest.Pin;
 import dz.sh.hidra.modules.topology.domain.model.EngineeringRevisionPublication;
 import java.time.Instant;
 import java.util.Objects;
@@ -43,13 +44,16 @@ public interface EngineeringSourceDiscoveryUseCase {
     /** This is immutable authored-source evidence, not a qualified operational baseline. */
     record Source(Kind kind, UUID ownerId, UUID sourceId, UUID revisionId,
                   long authoredVersion, String metadataSha256, String state,
-                  Instant effectiveAt, boolean currentlyEligible, boolean engineeringQualified) {
+                  Instant effectiveAt, boolean currentlyEligible, boolean engineeringQualified,
+                  Pin baselinePin) {
         public Source {
             Objects.requireNonNull(kind);Objects.requireNonNull(ownerId);
             Objects.requireNonNull(sourceId);Objects.requireNonNull(revisionId);
             Objects.requireNonNull(metadataSha256);Objects.requireNonNull(state);
             if (authoredVersion<1 || !metadataSha256.matches("[0-9a-f]{64}") || engineeringQualified)
                 throw new IllegalArgumentException("Source facts invalid or unqualified status hidden");
+            if (currentlyEligible != (baselinePin != null))
+                throw new IllegalArgumentException("Only eligible sources must carry a baseline pin");
         }
     }
 

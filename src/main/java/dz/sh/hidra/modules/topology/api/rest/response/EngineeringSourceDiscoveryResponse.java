@@ -19,7 +19,9 @@
  */
 package dz.sh.hidra.modules.topology.api.rest.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import dz.sh.hidra.modules.topology.application.port.in.EngineeringSourceDiscoveryUseCase;
+import dz.sh.hidra.modules.topology.api.rest.response.EngineeringBaselineDraftResponses.SourcePin;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.Instant;
 import java.util.List;
@@ -30,11 +32,17 @@ public final class EngineeringSourceDiscoveryResponse {
     @Schema(name="EngineeringSourceSelection")
     public record Item(String kind,UUID ownerId,UUID sourceId,UUID revisionId,long authoredVersion,
                        String metadataSha256,String state,Instant effectiveAt,
-                       boolean currentlyEligible,boolean engineeringQualified) {
+                       boolean currentlyEligible,boolean engineeringQualified,
+                       @JsonInclude(JsonInclude.Include.NON_NULL)
+                       @Schema(description="Present for eligible sources. Submit directly as a baseline draft pin.")
+                       SourcePin baselinePin) {
         public static Item from(EngineeringSourceDiscoveryUseCase.Source source) {
+            var pin = source.baselinePin();
+            SourcePin baselinePin = pin == null ? null
+                    : new SourcePin(pin.kind().name(),pin.ownerId(),pin.sourceId(),pin.revisionId(),pin.sha256());
             return new Item(source.kind().name(),source.ownerId(),source.sourceId(),source.revisionId(),
                     source.authoredVersion(),source.metadataSha256(),source.state(),source.effectiveAt(),
-                    source.currentlyEligible(),source.engineeringQualified());
+                    source.currentlyEligible(),source.engineeringQualified(),baselinePin);
         }
     }
     @Schema(name="EngineeringSourceDiscoveryPage")

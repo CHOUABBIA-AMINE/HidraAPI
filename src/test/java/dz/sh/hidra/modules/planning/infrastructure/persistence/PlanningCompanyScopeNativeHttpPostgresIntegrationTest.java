@@ -7,7 +7,7 @@
  *
  * @Name        : PlanningCompanyScopeNativeHttpPostgresIntegrationTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-10
+ * @UpdatedOn   : 2026-11-11
  *
  * @Type        : Class
  * @Layer       : Test
@@ -526,6 +526,13 @@ class PlanningCompanyScopeNativeHttpPostgresIntegrationTest {
                 .content(executionPayload)).andExpect(status().is4xxClientError());
         get(author, "/targets/" + targetId).andExpect(jsonPath("$.status").value("DRAFT"));
 
+        // Refresh reviewer authentication after the synthetic native review grants/revocation.
+        // Independently retest the real, current Identity and Workflow admission.
+        reviewer = new Actor(reviewer.id(), "Bearer " + authentication.authenticate(
+                new DirectAuthenticationCommand(ProviderType.LOCAL, reviewer.id(), PASSWORD,
+                        "synthetic-ip", "synthetic-t03", "synthetic-independent-review")).accessToken());
+        SecurityContextHolder.clearContext();
+
         var decision = body(http.perform(post(V1 + "/revisions/" + revisionId
                         + "/approval/actions/" + approveTransition + "/execute")
                 .header("Authorization", reviewer.bearer()).contentType(MediaType.APPLICATION_JSON)
@@ -648,7 +655,13 @@ class PlanningCompanyScopeNativeHttpPostgresIntegrationTest {
     }
 
     private static JsonNode body(ResultActions result) throws Exception {
-        return JSON.readTree(result.andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
+        var mvc = result.andReturn();
+        var response = mvc.getResponse();
+        assertEquals(200, response.getStatus(), () ->
+                "Synthetic HTTP response: " + response.getContentAsString()
+                        + "; resolved exception: " + (mvc.getResolvedException() == null
+                                ? "none" : mvc.getResolvedException().getClass().getName()));
+        return JSON.readTree(response.getContentAsString());
     }
 
     private record Actor(String id, String bearer) { }

@@ -657,11 +657,12 @@ class PlanningCompanyScopeNativeHttpPostgresIntegrationTest {
     private static JsonNode body(ResultActions result) throws Exception {
         var mvc = result.andReturn();
         var response = mvc.getResponse();
+        String responseBody = response.getContentAsString();
         assertEquals(200, response.getStatus(), () ->
-                "Synthetic HTTP response: " + response.getContentAsString()
+                "Synthetic HTTP response: " + responseBody
                         + "; resolved exception: " + (mvc.getResolvedException() == null
                                 ? "none" : mvc.getResolvedException().getClass().getName()));
-        return JSON.readTree(response.getContentAsString());
+        return JSON.readTree(responseBody);
     }
 
     private record Actor(String id, String bearer) { }

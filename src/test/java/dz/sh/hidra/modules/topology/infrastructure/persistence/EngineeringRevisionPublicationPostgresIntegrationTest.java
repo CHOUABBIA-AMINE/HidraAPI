@@ -1161,6 +1161,55 @@ public class EngineeringRevisionPublicationPostgresIntegrationTest {
             http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(publicationUrl(draft,"/revisions/"+revision))
                     .header("Authorization","Bearer "+rawToken))
                 .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk());
+            // Signed HTTP client journey across all four genuine identity providers. Discover
+            // by a known draft UUID, then follow returned IDs to the retained exact version.
+            SecurityContextHolder.clearContext();
+            var selectionResponse=http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+                    .get("/api/v1/topology/engineering-sources")
+                    .header("Authorization","Bearer "+rawToken)
+                    .param("companyPartyId",COMPANY).param("pipelineSystemId",network)
+                    .param("kind","NETWORK_PUBLICATION").param("businessKey",draft.toString())
+                    .param("limit","1"))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+                .andReturn();
+            var selection=JSON.readTree(selectionResponse.getResponse().getContentAsString());
+            assertThat(selection.path("items").size()).isEqualTo(1);
+            assertThat(selection.path("nextCursor").isNull()).isTrue();
+            var selected=selection.path("items").get(0);
+            assertThat(selected.path("kind").asText()).isEqualTo("NETWORK_PUBLICATION");
+            assertThat(selected.path("ownerId").asText())
+                .isEqualTo(retained.publication().snapshot().scope().contextId().toString());
+            assertThat(selected.path("sourceId").asText()).isEqualTo(draft.toString());
+            assertThat(selected.path("revisionId").asText()).isEqualTo(revision.toString());
+            assertThat(selected.path("authoredVersion").asLong())
+                .isEqualTo(retained.publication().snapshot().version());
+            assertThat(selected.path("metadataSha256").asText())
+                .isEqualTo(retained.publication().snapshot().metadata().sha256());
+            assertThat(selected.path("currentlyEligible").asBoolean()).isTrue();
+            assertThat(selected.path("engineeringQualified").asBoolean()).isFalse();
+
+            String exactSource="/api/v1/topology/engineering-sources/"
+                +selected.path("kind").asText()+"/"+selected.path("ownerId").asText()
+                +"/"+selected.path("sourceId").asText()+"/revisions/"
+                +selected.path("revisionId").asText();
+            SecurityContextHolder.clearContext();
+            var exactResponse=http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+                    .get(exactSource).header("Authorization","Bearer "+rawToken)
+                    .param("companyPartyId",COMPANY).param("pipelineSystemId",network))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isOk())
+                .andReturn();
+            assertThat(JSON.readTree(exactResponse.getResponse().getContentAsString())).isEqualTo(selected);
+
+            // Protected foreign-scope reads must not disclose an ID or metadata digest.
+            SecurityContextHolder.clearContext();
+            var denied=http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+                    .get(exactSource).header("Authorization","Bearer "+rawToken)
+                    .param("companyPartyId","foreign-company").param("pipelineSystemId",network))
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isForbidden())
+                .andReturn();
+            assertThat(denied.getResponse().getContentAsString())
+                .doesNotContain(draft.toString(),revision.toString(),selected.path("metadataSha256").asText());
+
             SecurityContextHolder.clearContext();
             http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(publicationUrl(draft,"/current")))
                 .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.status().isUnauthorized());

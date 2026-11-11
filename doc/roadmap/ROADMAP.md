@@ -64,8 +64,8 @@ A task includes its required authorization, REST contract, persistence, failure 
 | Task | Owner | Depends on | Deliverable | Pass condition | Status |
 |---|---|---|---|---|---|
 | **T01 · Make periods and plans company-scoped** | Planning with Identity, Organization and Topology | Existing foundation | Complete company-owned period and exact-asset plan creation, list, detail and count. Derive actor server-side. Enforce period-code uniqueness per company with forward-only ownership constraints. Close existing descendant read paths that could bypass period or plan scope. | Two companies and two assets in the same company prove that entitled actors see only authorized records and counts. Revocation and wrong ownership fail before disclosure. Authorized data survives restart. **FG-03 / A03.** | COMPLETED |
-| **T02 · Author versioned plan revisions and targets** | Planning with Topology and Telemetry | T01 | Expose draft creation, target create/update and scoped revision/target readback. Generate identifiers and revision versions server-side. Validate point, asset, unit and effective window. | A client authors and retrieves a draft with returned IDs. Stale writes, mismatched points and incompatible units fail atomically. Existing metadata CAS remains compatible. **FG-03 / A03.** | IN PROGRESS |
-| **T03 · Submit and independently decide a revision** | Planning with Workflow and Identity | T02 | Bind submission to the exact revision and active Workflow definition in one transaction. Freeze submitted targets. Publish the decision and activate targets only on committed approval. | Distinct signed reviewer approves or rejects. Self-review, revocation, wrong target and concurrent/repeated actions are handled as specified. Forced failure leaves no orphan Workflow instance. A restarted client retrieves the exact target and decision. **FG-03/18 / A03/A18.** | PLANNED |
+| **T02 · Author versioned plan revisions and targets** | Planning with Topology and Telemetry | T01 | Expose draft creation, target create/update and scoped revision/target readback. Generate identifiers and revision versions server-side. Validate point, asset, unit and effective window. | A client authors and retrieves a draft with returned IDs. Stale writes, mismatched points and incompatible units fail atomically. Existing metadata CAS remains compatible. **FG-03 / A03.** | COMPLETED |
+| **T03 · Submit and independently decide a revision** | Planning with Workflow and Identity | T02 | Bind submission to the exact revision and active Workflow definition in one transaction. Freeze submitted targets. Publish the decision and activate targets only on committed approval. | Distinct signed reviewer approves or rejects. Self-review, revocation, wrong target and concurrent/repeated actions are handled as specified. Forced failure leaves no orphan Workflow instance. A restarted client retrieves the exact target and decision. **FG-03/18 / A03/A18.** | IN PROGRESS |
 
 ### Increment 2 — Approved engineering configuration
 
@@ -458,3 +458,63 @@ The owner selected T01 with a limit of one implementation and one documentation 
 **Reviewed authentic PostgreSQL artifact.** CI artifact `13809633347` (ZIP SHA-256 `10fe01cc35ceece31a12293ce5d4e0d3227b7375c33baf2ea881ce35fee4c73a`) generated `DATA_DICTIONARY.md` SHA-256 `30a13c7d27eef1c1922eac28586633c024ac7ac4dbbf60b98c0b20e45f155300` using 205 migrations, 470 mappings and 557 catalog relations. This documentation refresh preserves the existing Flyway migration and records its additional author-permission migration reference. The source linked dictionary is reproduced exactly from that generated member.
 
 **Repair envelope.** One documentation commit `docs(planning): refresh T02 generated API and database evidence` updates only `doc/api/openapi.yaml`, `doc/database/DATA_DICTIONARY.md`, `.github/documentation-validation.json` and this canonical roadmap entry. No Java source, SQL migration, business authority or CI gate is relaxed. T02 remains **IN PROGRESS**, subject to the new exact-SHA Full CI, strict runtime OpenAPI and migrated dictionary equality, complete test-evidence sealing, documentation CI and recorded software acceptance. T03 is not selected.
+
+
+### T02 software acceptance and T03 execution registration — 2026-11-11
+
+**Exact-head acceptance.** Main \`42f0bf891891faac27e522e41292ba05c14b57c5\`, parent \`9899c847e5da4fba92911bf323dc340464c94cd3\`, passed [HidraAPI CI #1180](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42978593501) and [Documentation Validation #984](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/42978593598). The native Java unit/architecture lane, all fourteen PostgreSQL integration shards, static validation, API contract and physical dictionary lane, and full evidence gate succeeded. Java Maven verification in the alternate lane was skipped by the workflow; successful mandatory partitions and evidence gate, not that skipped alternative, support T02 software acceptance. T02 is COMPLETED for its bounded REST draft-authoring objective. No industrial/site qualification or deployment is inferred.
+
+**Selected task and commit budget.** The owner selected the next registered T03 stage. This admission is the single optional roadmap/approval registration commit for T03, using exact message `docs(roadmap): register T03 approval and execution scope`; it is not a source implementation or operational acceptance. Implementation remains to be executed under one commit message exactly \`feat(planning): submit and independently decide scoped revisions\` and then one generated-documentation commit \`docs(planning): refresh T03 generated API and database evidence\` if runtime artifacts change. No additional task approval or documentation registration commit is planned. Follow the required post-publication CI startup/stop rule for each separate publication, without auto-advancing to T04.
+
+**Bounded semantics and owner policy.** Planning owns the plan, revision and target lifecycle; Workflow owns the definition, instance, task, transition, action and immutable decision evidence; Identity owns current actor/grant authority; Party/Topology preserve current company and exact asset ownership. Submit only the current DRAFT revision whose parent plan and period are eligible. Verify a current scoped author grant, exact target/plan association, optimistic revision/plan tokens and an active, version-matched Workflow definition bound to exactly \`planning\` and the registered \`PLAN_REVISION\` target/purpose. Require actual independent eligible reviewer assignment; never create an implicit reviewer, permissive wildcard, synthetic production definition or default approval. A workflow ID alone is not approval. Discover/validate actual Workflow definition, first step, assignment and decision policy through Workflow-owned contracts. Retain DRAFT target values and records as historical evidence while freezing edits on submission.
+
+**Decision guard.** The execute and any generic Workflow bypass must enforce current authenticated human reviewer eligibility, up-to-date company and exact asset grant, correct submitted-current revision, reviewer distinct from submitter, current unrevoked Workflow permission and assignment, exact instance/target/definition binding and nonterminal task with CAS token. A valid terminal APPROVE atomically updates revision/plan approval pointers and activates only that revision's targets; previously active targets are superseded where applicable. A terminal REJECT records rejection without activation. Intermediate nonterminal Workflow steps retain SUBMITTED Planning state. Repeated/stale, self-review, withdrawn, superseded and unauthorized actions fail without writes. A failed Planning update rolls back Workflow action/task/history/instance changes as one database transaction, including forced failures. Do not rely on caller-supplied role names or stale permission snapshots, and do not expose protected target existence through Workflow query/action paths.
+
+**API admission.** Add \`POST /api/v1/planning/revisions/{revisionId}/submit\` with a validated explicit request for the current revision token, active definition/version and verified independent reviewer assignment; return the persisted revision, instance/task references and current concurrency evidence. Preserve existing \`GET /api/v1/planning/revisions/{revisionId}/approval\` and \`POST /api/v1/planning/revisions/{revisionId}/approval/actions/{transitionId}/execute\` wire shapes, changing internal validation only. Keep canonical ProblemDetail, server-derived actor identity, no direct JPA from REST, and non-disclosing foreign/missing references. Current scoped \`planning:scoped-plan:author\` remains the submission business gate; the distinct decision gate is \`planning:scoped-plan:review\` with current company/exact asset checks and Workflow's required transition permission. Register the review permission without seeding business grants. Do not broaden legacy REST response data or weaken backward compatibility.
+
+**Implementation path allowlist — add.**
+
+- \`src/main/java/dz/sh/hidra/modules/planning/application/port/in/SubmitPlanningRevisionUseCase.java\`
+- \`src/main/java/dz/sh/hidra/modules/planning/application/service/PlanningRevisionSubmissionApplicationService.java\`
+- \`src/main/java/dz/sh/hidra/modules/planning/api/rest/controller/PlanningRevisionSubmissionController.java\`
+- \`src/main/java/dz/sh/hidra/modules/planning/api/rest/request/SubmitPlanningRevisionRequest.java\`
+- \`src/main/java/dz/sh/hidra/modules/planning/api/rest/response/SubmitPlanningRevisionResponse.java\`
+- \`src/main/java/dz/sh/hidra/modules/planning/application/contract/workflow/PlanningRevisionWorkflowAuthorityContract.java\`
+- \`src/main/resources/db/migration/V20261111_001__planning_revision_review_permission.sql\`
+
+**Implementation path allowlist — modify.**
+
+- \`src/main/java/dz/sh/hidra/modules/identity/application/contract/planning/PlanningScopedAuthorizationContract.java\`
+- \`src/main/java/dz/sh/hidra/modules/identity/application/service/PlanningScopedAuthorizationQueryService.java\`
+- \`src/main/java/dz/sh/hidra/modules/planning/application/service/PlanningAccessService.java\`
+- \`src/main/java/dz/sh/hidra/modules/planning/application/port/in/PlanningApprovalUseCase.java\`
+- \`src/main/java/dz/sh/hidra/modules/planning/application/service/PlanningApprovalApplicationService.java\`
+- \`src/main/java/dz/sh/hidra/modules/planning/api/rest/controller/PlanningApprovalController.java\`
+- \`src/main/java/dz/sh/hidra/modules/planning/api/rest/PlanningRevisionApiExceptionHandler.java\`
+- \`src/main/java/dz/sh/hidra/modules/planning/application/service/PlanningWorkflowTargetLookup.java\`
+- \`src/main/java/dz/sh/hidra/modules/planning/application/port/out/OperationalPlanRepositoryPort.java\`
+- \`src/main/java/dz/sh/hidra/modules/planning/application/port/out/PlanRevisionRepositoryPort.java\`
+- \`src/main/java/dz/sh/hidra/modules/planning/application/port/out/PlanTargetRepositoryPort.java\`
+- \`src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/adapter/JpaOperationalPlanRepositoryAdapter.java\`
+- \`src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/adapter/JpaPlanRevisionRepositoryAdapter.java\`
+- \`src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/adapter/JpaPlanTargetRepositoryAdapter.java\`
+- \`src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/repository/OperationalPlanJpaRepository.java\`
+- \`src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/repository/PlanRevisionJpaRepository.java\`
+- \`src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/repository/PlanTargetJpaRepository.java\`
+- \`src/main/java/dz/sh/hidra/modules/planning/domain/model/OperationalPlan.java\`
+- \`src/main/java/dz/sh/hidra/modules/planning/domain/model/PlanRevision.java\`
+- \`src/main/java/dz/sh/hidra/modules/planning/domain/model/PlanTarget.java\`
+- \`src/main/java/dz/sh/hidra/modules/workflow/application/contract/planning/PlanningWorkflowContract.java\`
+- \`src/main/java/dz/sh/hidra/modules/workflow/application/service/PlanningWorkflowContractAdapter.java\`
+- \`src/main/java/dz/sh/hidra/modules/workflow/application/service/WorkflowTransitionApplicationService.java\`
+- \`src/main/java/dz/sh/hidra/modules/workflow/application/service/WorkflowExecutionOwnership.java\`
+- \`src/test/java/dz/sh/hidra/modules/planning/application/service/PlanningApprovalApplicationServiceTest.java\`
+- \`src/test/java/dz/sh/hidra/modules/planning/infrastructure/persistence/PlanningCompanyScopeNativeHttpPostgresIntegrationTest.java\`
+- \`src/test/java/dz/sh/hidra/modules/workflow/application/service/WorkflowTransitionApplicationServiceTest.java\`
+- \`src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java\`
+- \`.github/ci-test-inventory.json\`
+- \`doc/roadmap/ROADMAP.md\`
+
+**Boundary/execution gate.** Before any implementation edit, refresh main, exact-SHA evidence and actual migration chain. Confirm the precise version of Workflow's active definition/target-type/purpose/admission and the public-contract export to avoid forbidden private imports; the new Planning-to-Workflow authority contract must be explicitly permitted by the architecture guardrail, not a broad module wildcard. If an active Workflow definition cannot be represented without changing unrelated Workflow catalog semantics, register the specific prerequisite rather than seeding guessed policy values or weakening Workflow security. No existing migration rewrite.
+
+**Test/acceptance envelope.** Keep existing T02 REST readback and metadata-CAS tests green. Extend native signed HTTP with two companies, two assets, separate author/reviewer, one active synthetic Workflow definition and deterministic target; assert draft→submit→review APPROVE/REJECT, post-submission target immutability, only approved target ACTIVE, previous active supersession, restart readback, missing/foreign protected IDs, current grant revocation, assignment and decision permission denial, self-review, stale tokens, competing/repeated decisions, forced rollback without orphan Workflow records, and no direct generic Workflow bypass. Verify durable Workflow action/history with Planning state in the same PostgreSQL transaction. Run focused Java/architecture/mapper checks, native PostgreSQL tests and the repository's existing strict full CI gates. The initial T03 registration itself proves no implementation; T03 stays IN PROGRESS until exact-SHA implementation and generated artifacts pass all required checks. T04 is not selected.

@@ -7,7 +7,7 @@
  *
  * @Name        : PlanningRevisionApiExceptionHandlerTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-12
+ * @UpdatedOn   : 2026-11-11
  *
  * @Type        : Class
  * @Layer       : Test
@@ -20,6 +20,7 @@
 package dz.sh.hidra.modules.planning.api.rest;
 
 import dz.sh.hidra.modules.planning.domain.exception.PlanningRevisionConflictException;
+import dz.sh.hidra.modules.workflow.application.contract.planning.PlanningWorkflowContract;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -38,5 +39,19 @@ class PlanningRevisionApiExceptionHandlerTest {
         assertEquals(HttpStatus.CONFLICT.value(), detail.getStatus());
         assertEquals("PLANNING_REVISION_CONFLICT", detail.getTitle());
         assertEquals("PLANNING_REVISION_CONFLICT", detail.getProperties().get("code"));
+    }
+
+    @Test
+    void mapsWorkflowTaskConflictToStable409WithoutPrivateDetails() {
+        var handler = new PlanningRevisionApiExceptionHandler();
+        ProblemDetail detail = handler.workflowTaskConflict(
+                new PlanningWorkflowContract.TransitionConflict(
+                        new IllegalStateException("Internal Workflow details must remain private")));
+
+        assertEquals(HttpStatus.CONFLICT.value(), detail.getStatus());
+        assertEquals("PLANNING_REVISION_CONFLICT", detail.getTitle());
+        assertEquals("PLANNING_REVISION_CONFLICT", detail.getProperties().get("code"));
+        assertEquals("Planning approval task changed. Refresh the current task before retrying.",
+                detail.getDetail());
     }
 }

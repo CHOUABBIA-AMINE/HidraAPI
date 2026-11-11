@@ -7,7 +7,7 @@
  *
  * @Name        : PlanningWorkflowContractAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-11-11
  *
  * @Type        : Class
  * @Layer       : Application
@@ -20,6 +20,7 @@
 package dz.sh.hidra.modules.workflow.application.service;
 
 import dz.sh.hidra.modules.workflow.application.contract.planning.PlanningWorkflowContract;
+import dz.sh.hidra.modules.workflow.domain.exception.WorkflowTransitionConflictException;
 import dz.sh.hidra.modules.workflow.application.port.in.CreateWorkflowTaskUseCase;
 import dz.sh.hidra.modules.workflow.application.port.in.StartWorkflowInstanceUseCase;
 import dz.sh.hidra.modules.workflow.application.port.in.WorkflowDefinitionDiscoveryUseCase;
@@ -93,23 +94,28 @@ public class PlanningWorkflowContractAdapter implements PlanningWorkflowContract
     @Override
     public TransitionResult execute(TransitionCommand command) {
         Objects.requireNonNull(command, "Planning workflow transition command must not be null.");
-        var source = workflowTransition.executeForPlanning(
-                new ExecuteWorkflowTransitionCommand(
-                        command.taskId(), command.transitionId(), command.expectedTaskUpdatedAt(),
-                        command.reasonId(), command.decisionNote(), command.commentText(), command.correlationId(),
-                        command.actorId(), command.actorUsername(), command.actorDisplayName(),
-                        command.effectivePermissions()
-                )
-        );
-        return new TransitionResult(
-                source.instanceId(),
-                source.instanceStatus(),
-                source.transitionId(),
-                source.decision(),
-                source.nextTaskId(),
-                source.executedAt()
-        );
+        try {
+            var source = workflowTransition.executeForPlanning(
+                    new ExecuteWorkflowTransitionCommand(
+                            command.taskId(), command.transitionId(), command.expectedTaskUpdatedAt(),
+                            command.reasonId(), command.decisionNote(), command.commentText(), command.correlationId(),
+                            command.actorId(), command.actorUsername(), command.actorDisplayName(),
+                            command.effectivePermissions()
+                    )
+            );
+            return new TransitionResult(
+                    source.instanceId(),
+                    source.instanceStatus(),
+                    source.transitionId(),
+                    source.decision(),
+                    source.nextTaskId(),
+                    source.executedAt()
+            );
+        } catch (WorkflowTransitionConflictException stale) {
+            throw new PlanningWorkflowContract.TransitionConflict(stale);
+        }
     }
+
     @Override
     public RevisionStartResult startRevisionApproval(RevisionStartCommand command) {
         Objects.requireNonNull(command, "Planning revision workflow start is required.");

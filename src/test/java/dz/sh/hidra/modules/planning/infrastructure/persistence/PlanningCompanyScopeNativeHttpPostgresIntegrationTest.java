@@ -519,6 +519,11 @@ class PlanningCompanyScopeNativeHttpPostgresIntegrationTest {
                 .andExpect(jsonPath("$.status").value("DRAFT"));
 
         String taskVersion = submitted.path("workflowTaskUpdatedAt").asText();
+        // Fresh transaction: the public CAS token must equal the durable PostgreSQL version.
+        assertEquals(java.time.Instant.parse(taskVersion),
+                db.queryForObject("SELECT updated_at FROM hidra_workflow_task WHERE id=?",
+                        java.sql.Timestamp.class, taskId).toInstant(),
+                "Submission returned a task version different from its committed database value.");
         String executionPayload = JSON.writeValueAsString(Map.of("expectedTaskUpdatedAt", taskVersion));
         http.perform(post("/api/v1/workflow/tasks/" + taskId + "/transitions/"
                         + approveTransition + "/execute")
@@ -532,6 +537,19 @@ class PlanningCompanyScopeNativeHttpPostgresIntegrationTest {
                 new DirectAuthenticationCommand(ProviderType.LOCAL, reviewer.id(), PASSWORD,
                         "synthetic-ip", "synthetic-t03", "synthetic-independent-review")).accessToken());
         SecurityContextHolder.clearContext();
+
+        // A stale request must be a typed conflict and must not record a Workflow decision.
+        String stalePayload = JSON.writeValueAsString(Map.of("expectedTaskUpdatedAt",
+                java.time.Instant.parse(taskVersion).minusNanos(1_000L).toString()));
+        http.perform(post(V1 + "/revisions/" + revisionId
+                        + "/approval/actions/" + approveTransition + "/execute")
+                .header("Authorization", reviewer.bearer()).contentType(MediaType.APPLICATION_JSON)
+                .content(stalePayload))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.code").value("PLANNING_REVISION_CONFLICT"));
+        assertEquals(0L, db.queryForObject(
+                "SELECT count(*) FROM hidra_workflow_action WHERE instance_id=?",
+                Long.class, instanceId));
 
         var decision = body(http.perform(post(V1 + "/revisions/" + revisionId
                         + "/approval/actions/" + approveTransition + "/execute")

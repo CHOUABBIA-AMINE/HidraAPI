@@ -6967,7 +6967,8 @@
     {
       "baseline_seconds": 0.004,
       "cases": [
-        "mapsRevisionConflictToStable409ProblemCode"
+        "mapsRevisionConflictToStable409ProblemCode",
+        "mapsWorkflowTaskConflictToStable409WithoutPrivateDetails"
       ],
       "class": "dz.sh.hidra.modules.planning.api.rest.PlanningRevisionApiExceptionHandlerTest",
       "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
@@ -6975,7 +6976,7 @@
       "lane": "unit-architecture",
       "owner": "planning",
       "path": "src/test/java/dz/sh/hidra/modules/planning/api/rest/PlanningRevisionApiExceptionHandlerTest.java",
-      "source_sha256": "bdd3573de4e55c3bce6ce9924329326366b6d43c501cadbf8e2bde7d2413731b",
+      "source_sha256": "7f7542a2229b50d347b971685e0c43bb06cff51ae676ca77b89f184d0c175e75",
       "supports": []
     },
     {
@@ -7085,7 +7086,7 @@
       "lane": "postgres-integration",
       "owner": "planning",
       "path": "src/test/java/dz/sh/hidra/modules/planning/infrastructure/persistence/PlanningCompanyScopeNativeHttpPostgresIntegrationTest.java",
-      "source_sha256": "f3e04b44a0bceabcd3362939bf51f903c3a6a3be01dbf7f914b96ef5f252dd5a",
+      "source_sha256": "719b0e84e8a725090aa927b11b2212701bdcf83c89213d63f2218091d1a22249",
       "supports": []
     },
     {

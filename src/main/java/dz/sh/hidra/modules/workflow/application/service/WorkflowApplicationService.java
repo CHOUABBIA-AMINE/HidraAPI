@@ -7,7 +7,7 @@
  *
  * @Name        : WorkflowApplicationService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-06
+ * @UpdatedOn   : 2026-11-11
  *
  * @Type        : Class
  * @Layer       : Application
@@ -43,6 +43,7 @@ import dz.sh.hidra.modules.workflow.domain.value.WorkflowSlaStatus;
 import dz.sh.hidra.modules.workflow.domain.value.WorkflowTaskStatus;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import org.springframework.transaction.annotation.Transactional;
 import dz.sh.hidra.modules.workflow.application.port.out.WorkflowDefinitionRepositoryPort;
 import dz.sh.hidra.modules.workflow.application.port.out.WorkflowStepRepositoryPort;
@@ -136,7 +137,9 @@ public class WorkflowApplicationService implements StartWorkflowInstanceUseCase,
     @Transactional
     public WorkflowTaskSummaryDto createWorkflowTask(CreateWorkflowTaskCommand command) {
         Objects.requireNonNull(command, "Create workflow task command must not be null.");
-        Instant now = Instant.now();
+        // PostgreSQL timestamps persist microseconds: mint the task CAS token at the
+        // durable precision, before it can be observed inside the creation transaction.
+        Instant now = Instant.now().truncatedTo(ChronoUnit.MICROS);
         var creator=ownership.requireCurrentActor();
         var instance=instanceRepositoryPort.findByIdForUpdate(command.instanceId()).orElseThrow(()->new InvalidWorkflowValueException("Unknown Workflow instance."));
         var step=steps.findById(command.stepId()).orElseThrow(()->new InvalidWorkflowValueException("Unknown Workflow step."));

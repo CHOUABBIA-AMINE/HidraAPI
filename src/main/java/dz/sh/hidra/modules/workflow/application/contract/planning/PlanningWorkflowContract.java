@@ -7,7 +7,7 @@
  *
  * @Name        : PlanningWorkflowContract
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-28
+ * @UpdatedOn   : 2026-11-11
  *
  * @Type        : Interface
  * @Layer       : Application Contract
@@ -42,6 +42,15 @@ public interface PlanningWorkflowContract {
 
     default RevisionStartResult startRevisionApproval(RevisionStartCommand command) {
         throw new UnsupportedOperationException("Planning revision approval start requires configured Workflow.");
+    }
+
+    /** Internal Workflow CAS failures cross the module boundary as this exported contract type. */
+    final class TransitionConflict extends RuntimeException {
+        private static final long serialVersionUID = 1L;
+
+        public TransitionConflict(RuntimeException cause) {
+            super("Planning approval task version is no longer current.", cause);
+        }
     }
 
     record RevisionStartCommand(String revisionId, String definitionId, int definitionVersion,

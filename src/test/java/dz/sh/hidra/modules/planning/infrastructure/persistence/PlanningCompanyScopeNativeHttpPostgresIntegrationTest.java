@@ -427,6 +427,136 @@ class PlanningCompanyScopeNativeHttpPostgresIntegrationTest {
                 .andExpect(jsonPath("$.baseRevisionId").value(revisionId));
     }
 
+    @Test
+    void submitsAndIndependentlyApprovesScopedTargetsWithoutGenericWorkflowBypass() throws Exception {
+        var author = actor(company, facility, true);
+        var reviewer = actor(company, facility, true);
+        String reviewPermission = permission("planning:scoped-plan:review");
+        grant(reviewer.id(), reviewPermission, "CUSTOM", "planning-company:" + company, "GRANT");
+        grant(reviewer.id(), reviewPermission, "FACILITY", facility, "GRANT");
+        // The independent reviewer has review authority, not draft-author authority.
+        db.update("""
+                UPDATE hidra_identity_user_permission_grant SET status='REVOKED',revoked_at=now()
+                WHERE user_id=? AND permission_id=?
+                """, reviewer.id(), permission("planning:scoped-plan:author"));
+
+        String type = workflowCatalog("WORKFLOW_TARGET_TYPE", "PLAN_REVISION");
+        String purpose = workflowCatalog("WORKFLOW_PURPOSE", "PLAN_REVISION_APPROVAL");
+        String mode = workflowCatalog("WORKFLOW_ASSIGNMENT_MODE", "DIRECT");
+        String definition = id(), reviewStep = id(), approvedStep = id(), rejectedStep = id();
+        String approveTransition = id(), rejectTransition = id();
+        db.update("""
+                INSERT INTO hidra_workflow_definition
+                    (id,code,name_fr,type_id,status,version,created_at,updated_at)
+                VALUES (?,?,'Synthetic revision approval',?,'ACTIVE',1,now(),now())
+                """, definition, definition, type);
+        for (String[] step : List.of(new String[] {reviewStep, "0"},
+                new String[] {approvedStep, "1"}, new String[] {rejectedStep, "2"})) {
+            db.update("""
+                    INSERT INTO hidra_workflow_step
+                        (id,definition_id,code,name_fr,step_order,mandatory,allow_claim,
+                            allow_delegation,allow_escalation,created_at,updated_at)
+                    VALUES (?,?,?,'Synthetic review',?,true,false,false,false,now(),now())
+                    """, step[0], definition, step[0], Integer.parseInt(step[1]));
+        }
+        db.update("""
+                INSERT INTO hidra_workflow_step_assignment_rule
+                    (id,definition_id,step_id,assignment_mode_id,actor_id,active,created_at,updated_at)
+                VALUES (?,?,?,?,?,true,now(),now())
+                """, id(), definition, reviewStep, mode, reviewer.id());
+        db.update("""
+                INSERT INTO hidra_workflow_definition_target_binding
+                    (id,definition_id,target_module,target_type_id,workflow_purpose_id,active,created_at,updated_at)
+                VALUES (?,?,'planning',?,?,true,now(),now())
+                """, id(), definition, type, purpose);
+        for (String[] transition : List.of(new String[]{approveTransition, approvedStep, "APPROVE"},
+                new String[]{rejectTransition, rejectedStep, "REJECT"})) {
+            db.update("""
+                    INSERT INTO hidra_workflow_transition
+                        (id,definition_id,from_step_id,to_step_id,decision,reason_required,
+                            comment_required,created_at,updated_at)
+                    VALUES (?,?,?,?,?,false,false,now(),now())
+                    """, transition[0], definition, reviewStep, transition[1], transition[2]);
+        }
+
+        for (var route : catalog.routes()) {
+            if (route.route().contains("/planning/revisions/") && route.methods().contains("POST")
+                    && route.route().endsWith("/submit")) {
+                grant(author.id(), permission(route.permission()), "GLOBAL", null, "GRANT");
+            }
+            if (route.route().contains("/planning/revisions/") && route.methods().contains("POST")
+                    && route.route().contains("/approval/actions/")) {
+                grant(reviewer.id(), permission(route.permission()), "GLOBAL", null, "GRANT");
+            }
+        }
+
+        String period = period(author, id(), company);
+        String plan = plan(author, period, facility);
+        JsonNode revision = body(createRevision(author, plan, planToken(author, plan)));
+        String revisionId = revision.path("id").asText();
+        JsonNode target = body(writeTarget(author, revisionId, null, targetBody(
+                revision.path("updatedAt").asText(), targetType("NUMERIC"), telemetryPoint(facility))));
+        String targetId = target.path("target").path("id").asText();
+        String submitPayload = JSON.writeValueAsString(Map.of(
+                "expectedPlanUpdatedAt", planToken(author, plan),
+                "expectedRevisionUpdatedAt", target.path("revisionUpdatedAt").asText(),
+                "definitionId", definition, "definitionVersion", 1,
+                "targetTypeId", type, "workflowPurposeId", purpose, "reviewerActorId", reviewer.id()));
+        var submitRoute = V1 + "/revisions/" + revisionId + "/submit";
+        JsonNode submitted = body(http.perform(post(submitRoute).header("Authorization", author.bearer())
+                .contentType(MediaType.APPLICATION_JSON).content(submitPayload)));
+        assertEquals("SUBMITTED", submitted.path("revisionStatus").asText());
+        String instanceId = submitted.path("workflowInstanceId").asText();
+        String taskId = submitted.path("workflowTaskId").asText();
+        assertFalse(instanceId.isBlank());
+        assertFalse(taskId.isBlank());
+        http.perform(post(submitRoute).header("Authorization", author.bearer())
+                .contentType(MediaType.APPLICATION_JSON).content(submitPayload))
+                .andExpect(status().isConflict());
+        writeTarget(author, revisionId, null, targetBody(submitted.path("revisionUpdatedAt").asText(),
+                targetType("NUMERIC"), telemetryPoint(facility))).andExpect(status().isConflict());
+        get(author, "/targets/" + targetId).andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("DRAFT"));
+
+        String taskVersion = submitted.path("workflowTaskUpdatedAt").asText();
+        String executionPayload = JSON.writeValueAsString(Map.of("expectedTaskUpdatedAt", taskVersion));
+        http.perform(post("/api/v1/workflow/tasks/" + taskId + "/transitions/"
+                        + approveTransition + "/execute")
+                .header("Authorization", reviewer.bearer()).contentType(MediaType.APPLICATION_JSON)
+                .content(executionPayload)).andExpect(status().is4xxClientError());
+        get(author, "/targets/" + targetId).andExpect(jsonPath("$.status").value("DRAFT"));
+
+        var decision = body(http.perform(post(V1 + "/revisions/" + revisionId
+                        + "/approval/actions/" + approveTransition + "/execute")
+                .header("Authorization", reviewer.bearer()).contentType(MediaType.APPLICATION_JSON)
+                .content(executionPayload)));
+        assertEquals("APPROVED", decision.path("revisionStatus").asText());
+        assertEquals("COMPLETED", decision.path("workflowInstanceStatus").asText());
+        get(author, "/targets/" + targetId).andExpect(jsonPath("$.status").value("ACTIVE"));
+        get(author, "/operational-plans/" + plan)
+                .andExpect(jsonPath("$.approvedRevisionId").value(revisionId));
+        get(author, "/revisions/" + revisionId)
+                .andExpect(jsonPath("$.status").value("APPROVED"));
+        assertEquals(1L, db.queryForObject("""
+                SELECT count(*) FROM hidra_workflow_action
+                WHERE instance_id=? AND actor_id=?
+                """, Long.class, instanceId, reviewer.id()));
+        http.perform(post(V1 + "/revisions/" + revisionId
+                        + "/approval/actions/" + approveTransition + "/execute")
+                .header("Authorization", reviewer.bearer()).contentType(MediaType.APPLICATION_JSON)
+                .content(executionPayload)).andExpect(status().isConflict());
+    }
+
+    private String workflowCatalog(String family, String code) {
+        String key = id();
+        db.update("""
+                INSERT INTO hidra_workflow_type_catalog
+                    (id,catalog_name,code,active,sort_order,system_defined,created_at,updated_at)
+                VALUES (?,?,?,true,0,false,now(),now())
+                """, key, family, code);
+        return key;
+    }
+
     private ResultActions createRevision(Actor author, String plan, String token) throws Exception {
         return http.perform(post(V1 + "/operational-plans/" + plan + "/revisions")
                 .header("Authorization", author.bearer()).contentType(MediaType.APPLICATION_JSON)

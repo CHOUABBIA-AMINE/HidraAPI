@@ -58,7 +58,7 @@ public class PlanningScopedAuthorizationQueryService implements PlanningScopedAu
     @Override
     @Transactional(propagation = Propagation.MANDATORY)
     public Access current(Operation operation) {
-        if (operation == Operation.PERIOD_CREATE || operation == Operation.PLAN_CREATE || operation == Operation.PLAN_AUTHOR) {
+        if (operation == Operation.PERIOD_CREATE || operation == Operation.PLAN_CREATE || operation == Operation.PLAN_AUTHOR || operation == Operation.PLAN_REVIEW) {
             direct.fenceCurrentAuthorization();
         }
         String actor = actors.authenticatedActor();
@@ -68,6 +68,7 @@ public class PlanningScopedAuthorizationQueryService implements PlanningScopedAu
             case PLAN_READ -> "planning:scoped-plan:read";
             case PLAN_CREATE -> "planning:scoped-plan:create";
             case PLAN_AUTHOR -> "planning:scoped-plan:author";
+            case PLAN_REVIEW -> "planning:scoped-plan:review";
         };
         Instant at = Instant.now();
         VerifiedAuthorizationAssertion assertion = assertions.currentFor(actor);

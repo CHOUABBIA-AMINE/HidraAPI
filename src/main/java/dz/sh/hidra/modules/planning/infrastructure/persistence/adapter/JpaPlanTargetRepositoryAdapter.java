@@ -54,6 +54,12 @@ public class JpaPlanTargetRepositoryAdapter implements PlanTargetRepositoryPort 
     }
 
     @Override
+    public java.util.List<PlanTarget> findByRevisionIdForUpdate(String revisionId) {
+        return repository.findByRevisionIdForUpdate(revisionId).stream()
+                .map(PlanningPersistenceMapper::toDomain).toList();
+    }
+
+    @Override
     public Optional<String> revisionIdForTarget(String id) {
         return repository.revisionIdForTarget(id);
     }

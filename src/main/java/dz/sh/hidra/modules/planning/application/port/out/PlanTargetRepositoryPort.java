@@ -40,6 +40,10 @@ public interface PlanTargetRepositoryPort {
         return findById(id);
     }
 
+    default java.util.List<PlanTarget> findByRevisionIdForUpdate(String revisionId) {
+        throw new UnsupportedOperationException("Locked revision target enumeration is required.");
+    }
+
     default PlanTarget saveDraft(PlanTarget model) {
         return save(model);
     }

@@ -143,6 +143,18 @@ import java.time.Instant;
                     responsibleOrganizationUnitId, status, revisionId, approvedRevisionId, createdByActorId, createdAt, at);
         }
 
+        public OperationalPlan withLifecycle(OperationalPlanStatus nextStatus,
+                String nextApprovedRevisionId, Instant at) {
+            if (nextStatus == null || at == null || at.isBefore(updatedAt))
+                throw new InvalidPlanningValueException("Valid, monotonic plan lifecycle required.");
+            if (nextApprovedRevisionId != null && currentRevisionId == null)
+                throw new InvalidPlanningValueException("Approved revision must belong to plan history.");
+            return new OperationalPlan(id, periodId, code, nameAr, nameFr, nameEn, planTypeId,
+                    productTypeId, topologyScopeType, topologyScopeId, topologyScopeCode,
+                    topologyScopeNameSnapshot, responsibleOrganizationUnitId, nextStatus, currentRevisionId,
+                    nextApprovedRevisionId, createdByActorId, createdAt, at);
+        }
+
         private static String normalize(String value) {
             if (value == null || value.isBlank()) {
                 return null;

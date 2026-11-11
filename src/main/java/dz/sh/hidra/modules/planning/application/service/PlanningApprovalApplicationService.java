@@ -22,6 +22,13 @@ package dz.sh.hidra.modules.planning.application.service;
 import dz.sh.hidra.modules.planning.application.port.in.PlanningApprovalUseCase;
 import dz.sh.hidra.modules.planning.application.port.in.PlanningQueryUseCase;
 import dz.sh.hidra.modules.planning.application.port.out.PlanRevisionRepositoryPort;
+import dz.sh.hidra.modules.planning.application.port.out.OperationalPlanRepositoryPort;
+import dz.sh.hidra.modules.planning.application.port.out.PlanTargetRepositoryPort;
+import dz.sh.hidra.modules.planning.domain.exception.PlanningRevisionConflictException;
+import dz.sh.hidra.modules.planning.domain.model.OperationalPlan;
+import dz.sh.hidra.modules.planning.domain.value.OperationalPlanStatus;
+import dz.sh.hidra.modules.planning.domain.value.PlanTargetStatus;
+import java.time.temporal.ChronoUnit;
 import dz.sh.hidra.modules.planning.domain.model.PlanRevision;
 import dz.sh.hidra.modules.planning.domain.value.PlanRevisionStatus;
 import dz.sh.hidra.modules.workflow.application.contract.planning.PlanningWorkflowContract;
@@ -42,15 +49,24 @@ public class PlanningApprovalApplicationService implements PlanningApprovalUseCa
     private static final Set<String> TERMINAL_WORKFLOW_STATES = Set.of("COMPLETED", "CANCELLED");
 
     private final PlanRevisionRepositoryPort revisionRepository;
+    private final OperationalPlanRepositoryPort plans;
+    private final PlanTargetRepositoryPort targets;
+    private final PlanningAccessService access;
     private final PlanningWorkflowContract workflow;
     private final PlanningQueryUseCase queries;
 
     public PlanningApprovalApplicationService(
             PlanRevisionRepositoryPort revisionRepository,
+            OperationalPlanRepositoryPort plans,
+            PlanTargetRepositoryPort targets,
+            PlanningAccessService access,
             PlanningWorkflowContract workflow,
             PlanningQueryUseCase queries
     ) {
         this.revisionRepository = Objects.requireNonNull(revisionRepository, "PlanRevisionRepositoryPort must not be null.");
+        this.plans = Objects.requireNonNull(plans);
+        this.targets = Objects.requireNonNull(targets);
+        this.access = Objects.requireNonNull(access);
         this.workflow = Objects.requireNonNull(workflow, "PlanningWorkflowContract must not be null.");
         this.queries = Objects.requireNonNull(queries);
     }
@@ -83,36 +99,86 @@ public class PlanningApprovalApplicationService implements PlanningApprovalUseCa
     @Transactional
     public ExecutionView execute(String revisionId, String transitionId, ExecutionCommand command) {
         Objects.requireNonNull(command, "Planning approval execution command must not be null.");
-        PlanRevision revision = revision(revisionId);
+        if (revisionId == null || revisionId.isBlank() || !revisionId.equals(revisionId.strip()))
+            throw new IllegalArgumentException("Valid Planning revision identity required.");
+        String planId = revisionRepository.planIdForRevision(revisionId)
+                .orElseThrow(PlanningAccessService::unavailable);
+        OperationalPlan plan = plans.findByIdForUpdate(planId).orElseThrow(PlanningAccessService::unavailable);
+        String actor = access.planReviewer(plan);
+        if (!Objects.equals(actor, command.actorId()))
+            throw PlanningAccessService.unavailable();
+        PlanRevision revision = revisionRepository.findByIdForUpdate(revisionId)
+                .filter(r -> r.planId().equals(plan.id())).orElseThrow(PlanningAccessService::unavailable);
+        if (revision.status() != PlanRevisionStatus.SUBMITTED
+                || plan.status() != OperationalPlanStatus.SUBMITTED
+                || !revision.id().equals(plan.currentRevisionId())
+                || revision.workflowInstanceId() == null
+                || revision.submittedByActorId() == null
+                || revision.submittedByActorId().equals(actor))
+            throw conflict("Only the current submitted revision permits independent review.");
         PlanningWorkflowContract.InstanceView instance = validatedInstance(revision);
-        if (TERMINAL_WORKFLOW_STATES.contains(normalizeState(instance.status()))) {
-            throw new IllegalStateException("Planning revision workflow is already terminal: " + instance.id());
-        }
+        if (TERMINAL_WORKFLOW_STATES.contains(normalizeState(instance.status())))
+            throw conflict("The approval instance is already terminal.");
         PlanningWorkflowContract.TaskView task = workflow.currentTask(instance.id());
         PlanningWorkflowContract.TransitionResult result = workflow.execute(
                 new PlanningWorkflowContract.TransitionCommand(
                         task.id(), transitionId, command.expectedTaskUpdatedAt(), command.reasonId(),
-                        command.decisionNote(), command.commentText(), command.correlationId(), command.actorId(),
+                        command.decisionNote(), command.commentText(), command.correlationId(), actor,
                         command.actorUsername(), command.actorDisplayName(), command.effectivePermissions()
                 )
         );
-        if (!Objects.equals(result.instanceId(), instance.id())) {
-            throw new IllegalStateException("Workflow transition result does not belong to the planning revision workflow instance.");
+        if (!Objects.equals(result.instanceId(), instance.id()))
+            throw conflict("Workflow transition did not preserve the exact Planning revision binding.");
+        boolean completed = "COMPLETED".equals(normalizeState(result.instanceStatus()));
+        String decision = normalizeState(result.decision());
+        if (!completed && !Set.of("APPROVE", "REJECT", "CORRECT", "DELEGATE", "ESCALATE",
+                "REQUEST_CORRECTION", "RETURN").contains(decision))
+            throw conflict("Unsupported nonterminal Planning workflow decision.");
+        if (completed && !Set.of("APPROVE", "REJECT").contains(decision))
+            throw conflict("Only configured terminal approve or reject can decide a revision.");
+        Instant executedAt = Objects.requireNonNull(result.executedAt(), "Workflow time required.");
+        Instant at = nextVersion(executedAt, plan.updatedAt(), revision.updatedAt());
+        PlanRevision updated = revision;
+        if (completed) {
+            var currentTargets = targets.findByRevisionIdForUpdate(revision.id());
+            if (currentTargets.isEmpty() || currentTargets.stream()
+                    .anyMatch(t -> t.status() != PlanTargetStatus.DRAFT))
+                throw conflict("Submitted targets must be nonempty and immutable before decision.");
+            if ("APPROVE".equals(decision)) {
+                if (plan.approvedRevisionId() != null && !plan.approvedRevisionId().equals(revision.id())) {
+                    for (var prior : targets.findByRevisionIdForUpdate(plan.approvedRevisionId())) {
+                        if (prior.status() == PlanTargetStatus.ACTIVE)
+                            targets.save(prior.withStatus(PlanTargetStatus.SUPERSEDED,
+                                    nextVersion(at, prior.updatedAt())));
+                    }
+                }
+                for (var target : currentTargets)
+                    targets.save(target.withStatus(PlanTargetStatus.ACTIVE,
+                            nextVersion(at, target.updatedAt())));
+            }
+            updated = revisionRepository.save(revision.withDecision(
+                    "APPROVE".equals(decision) ? PlanRevisionStatus.APPROVED : PlanRevisionStatus.REJECTED,
+                    actor, at));
+            plans.save(plan.withLifecycle("APPROVE".equals(decision) ? OperationalPlanStatus.ACTIVE
+                    : OperationalPlanStatus.DRAFT,
+                    "APPROVE".equals(decision) ? revision.id() : plan.approvedRevisionId(), at));
         }
-        PlanRevisionStatus nextStatus = planningStatus(result.decision());
-        Instant executedAt = Objects.requireNonNull(result.executedAt(), "Workflow transition execution timestamp must not be null.");
-        PlanRevision updated = revisionRepository.save(new PlanRevision(
-                revision.id(), revision.planId(), revision.revisionNumber(), revision.revisionCode(), nextStatus,
-                revision.changeReasonCodeId(), revision.changeReasonText(), revision.baseRevisionId(),
-                revision.submittedByActorId(), revision.submittedAt(),
-                nextStatus == PlanRevisionStatus.APPROVED ? command.actorId() : revision.approvedByActorId(),
-                nextStatus == PlanRevisionStatus.APPROVED ? executedAt : revision.approvedAt(),
-                revision.workflowInstanceId(), revision.createdAt(), executedAt
-        ));
         return new ExecutionView(
-                updated.id(), String.valueOf(updated.status()), result.instanceId(), result.instanceStatus(),
-                result.transitionId(), result.decision(), result.nextTaskId(), executedAt
-        );
+                updated.id(), updated.status().name(), result.instanceId(), result.instanceStatus(),
+                result.transitionId(), result.decision(), result.nextTaskId(), executedAt);
+    }
+
+    private static Instant nextVersion(Instant... times) {
+        Instant at = Instant.now().truncatedTo(ChronoUnit.MICROS);
+        for (Instant time : times) {
+            if (time != null && !at.isAfter(time))
+                at = time.plusNanos(1000).truncatedTo(ChronoUnit.MICROS);
+        }
+        return at;
+    }
+
+    private static PlanningRevisionConflictException conflict(String message) {
+        return new PlanningRevisionConflictException(message);
     }
 
     private PlanRevision revision(String revisionId) {
@@ -133,17 +199,6 @@ public class PlanningApprovalApplicationService implements PlanningApprovalUseCa
             throw new IllegalStateException("Workflow instance does not target this planning revision: " + instance.id());
         }
         return instance;
-    }
-
-    private static PlanRevisionStatus planningStatus(String decision) {
-        String normalized = normalizeState(decision);
-        return switch (normalized) {
-            case "APPROVE" -> PlanRevisionStatus.APPROVED;
-            case "REJECT", "REQUEST_CORRECTION", "RETURN" -> PlanRevisionStatus.REJECTED;
-            case "CANCEL" -> PlanRevisionStatus.WITHDRAWN;
-            case "CORRECT", "DELEGATE", "ESCALATE" -> PlanRevisionStatus.SUBMITTED;
-            default -> throw new IllegalStateException("Workflow decision has no planning revision lifecycle effect: " + decision);
-        };
     }
 
     private static String normalizeState(String value) {

@@ -40,6 +40,16 @@ public interface PlanningWorkflowContract {
 
     TransitionResult execute(TransitionCommand command);
 
+    default RevisionStartResult startRevisionApproval(RevisionStartCommand command) {
+        throw new UnsupportedOperationException("Planning revision approval start requires configured Workflow.");
+    }
+
+    record RevisionStartCommand(String revisionId, String definitionId, int definitionVersion,
+            String targetTypeId, String workflowPurposeId, String reviewerActorId,
+            String starterActorId, String correlationId) { }
+
+    record RevisionStartResult(String instanceId, String taskId, Instant taskUpdatedAt) { }
+
     record InstanceView(
             String id,
             String targetModule,

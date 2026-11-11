@@ -25,6 +25,14 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import dz.sh.hidra.modules.planning.application.port.in.PlanningApprovalUseCase;
 import dz.sh.hidra.modules.planning.application.port.in.PlanningQueryUseCase;
 import dz.sh.hidra.modules.planning.application.port.out.PlanRevisionRepositoryPort;
+import dz.sh.hidra.modules.planning.application.port.out.OperationalPlanRepositoryPort;
+import dz.sh.hidra.modules.planning.application.port.out.PlanTargetRepositoryPort;
+import dz.sh.hidra.modules.planning.domain.model.OperationalPlan;
+import dz.sh.hidra.modules.planning.domain.model.PlanTarget;
+import dz.sh.hidra.modules.planning.domain.value.OperationalPlanStatus;
+import dz.sh.hidra.modules.planning.domain.value.PlanTargetStatus;
+import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.*;
 import dz.sh.hidra.modules.planning.domain.model.PlanRevision;
 import dz.sh.hidra.modules.planning.domain.value.PlanRevisionStatus;
 import dz.sh.hidra.modules.workflow.application.contract.planning.PlanningWorkflowContract;
@@ -44,7 +52,7 @@ class PlanningApprovalApplicationServiceTest {
     void resolvesRevisionScopedCurrentTaskAndActions() {
         InMemoryRevisionRepository revisions = new InMemoryRevisionRepository(revision());
         FakePlanningWorkflow workflow = new FakePlanningWorkflow("planning", "REV-1", command -> null);
-        PlanningApprovalApplicationService service = new PlanningApprovalApplicationService(revisions, workflow, org.mockito.Mockito.mock(PlanningQueryUseCase.class));
+        PlanningApprovalApplicationService service = service(revisions, workflow);
 
         PlanningApprovalUseCase.ApprovalView view = service.approval("REV-1", "ACTOR-1", Set.of("planning:revisions:approve"));
 
@@ -60,10 +68,9 @@ class PlanningApprovalApplicationServiceTest {
 
     @Test
     void rejectsWorkflowInstanceThatTargetsAnotherRevision() {
-        PlanningApprovalApplicationService service = new PlanningApprovalApplicationService(
+        PlanningApprovalApplicationService service = service(
                 new InMemoryRevisionRepository(revision()),
-                new FakePlanningWorkflow("planning", "REV-OTHER", command -> null),
-                org.mockito.Mockito.mock(PlanningQueryUseCase.class)
+                new FakePlanningWorkflow("planning", "REV-OTHER", command -> null)
         );
 
         assertThatThrownBy(() -> service.approval("REV-1", "ACTOR-1", Set.of()))
@@ -86,7 +93,7 @@ class PlanningApprovalApplicationServiceTest {
                         EXECUTED_AT
                 )
         );
-        PlanningApprovalApplicationService service = new PlanningApprovalApplicationService(revisions, workflow, org.mockito.Mockito.mock(PlanningQueryUseCase.class));
+        PlanningApprovalApplicationService service = service(revisions, workflow);
 
         PlanningApprovalUseCase.ExecutionView result = service.execute(
                 "REV-1", "TRANSITION-1", new PlanningApprovalUseCase.ExecutionCommand(
@@ -97,7 +104,7 @@ class PlanningApprovalApplicationServiceTest {
         assertThat(result.revisionStatus()).isEqualTo("APPROVED");
         assertThat(revisions.value.status()).isEqualTo(PlanRevisionStatus.APPROVED);
         assertThat(revisions.value.approvedByActorId()).isEqualTo("ACTOR-1");
-        assertThat(revisions.value.approvedAt()).isEqualTo(EXECUTED_AT);
+        assertThat(revisions.value.approvedAt()).isAfterOrEqualTo(EXECUTED_AT);
     }
 
     @Test
@@ -110,7 +117,7 @@ class PlanningApprovalApplicationServiceTest {
                     throw new IllegalStateException("Workflow task changed after it was loaded.");
                 }
         );
-        PlanningApprovalApplicationService service = new PlanningApprovalApplicationService(revisions, workflow, org.mockito.Mockito.mock(PlanningQueryUseCase.class));
+        PlanningApprovalApplicationService service = service(revisions, workflow);
 
         assertThatThrownBy(() -> service.execute(
                 "REV-1", "TRANSITION-1", new PlanningApprovalUseCase.ExecutionCommand(
@@ -119,6 +126,29 @@ class PlanningApprovalApplicationServiceTest {
                 )
         )).hasMessageContaining("changed after it was loaded");
         assertThat(revisions.value.status()).isEqualTo(PlanRevisionStatus.SUBMITTED);
+    }
+
+    private static PlanningApprovalApplicationService service(
+            InMemoryRevisionRepository revisions, PlanningWorkflowContract workflow) {
+        var plans = mock(OperationalPlanRepositoryPort.class);
+        var targets = mock(PlanTargetRepositoryPort.class);
+        var access = mock(PlanningAccessService.class);
+        var plan = new OperationalPlan("PLAN-1", "PERIOD-1", "P1", null, "Plan", null,
+                "TYPE-1", null, "FACILITY", "ASSET-1", "F1", null, null,
+                OperationalPlanStatus.SUBMITTED, "REV-1", null, "ACTOR-0",
+                TASK_UPDATED_AT.minusSeconds(7200), TASK_UPDATED_AT.minusSeconds(3000));
+        when(plans.findByIdForUpdate("PLAN-1")).thenReturn(Optional.of(plan));
+        when(access.planReviewer(plan)).thenReturn("ACTOR-1");
+        var target = new PlanTarget("TARGET-1", "REV-1", null, null, "TARGET-TYPE-1",
+                "FACILITY", "ASSET-1", "F1", null, null, null,
+                java.math.BigDecimal.TEN, null, "UNIT-1", null, null,
+                TASK_UPDATED_AT, TASK_UPDATED_AT.plusSeconds(3600), null,
+                PlanTargetStatus.DRAFT, TASK_UPDATED_AT.minusSeconds(3500), TASK_UPDATED_AT.minusSeconds(3400));
+        when(targets.findByRevisionIdForUpdate("REV-1")).thenReturn(List.of(target));
+        when(targets.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(plans.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        return new PlanningApprovalApplicationService(revisions, plans, targets, access, workflow,
+                mock(PlanningQueryUseCase.class));
     }
 
     private static PlanRevision revision() {

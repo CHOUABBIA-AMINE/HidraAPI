@@ -20,10 +20,12 @@
 package dz.sh.hidra.modules.workflow.application.service;
 
 import dz.sh.hidra.modules.workflow.application.command.ExecuteWorkflowTransitionCommand;
+import dz.sh.hidra.modules.planning.application.contract.workflow.PlanningRevisionWorkflowAuthorityContract;
 import dz.sh.hidra.modules.workflow.application.dto.WorkflowTransitionExecutionDto;
 import dz.sh.hidra.modules.workflow.application.port.in.ExecuteWorkflowTransitionUseCase;
 import dz.sh.hidra.modules.workflow.application.port.out.WorkflowActionRepositoryPort;
 import dz.sh.hidra.modules.workflow.application.port.out.WorkflowInstanceRepositoryPort;
+import dz.sh.hidra.modules.workflow.application.port.out.WorkflowDefinitionRepositoryPort;
 import dz.sh.hidra.modules.workflow.application.port.out.WorkflowStateHistoryRepositoryPort;
 import dz.sh.hidra.modules.workflow.application.port.out.WorkflowStepAssignmentRuleRepositoryPort;
 import dz.sh.hidra.modules.workflow.application.port.out.WorkflowStepRepositoryPort;
@@ -67,6 +69,18 @@ public class WorkflowTransitionApplicationService implements ExecuteWorkflowTran
     private final WorkflowStepRepositoryPort stepRepository;
     private final WorkflowStepAssignmentRuleRepositoryPort assignmentRuleRepository;
     private final WorkflowDecisionGuard decisionGuard = new WorkflowDecisionGuard();
+    private PlanningRevisionWorkflowAuthorityContract planningAuthority;
+    private WorkflowDefinitionRepositoryPort currentDefinitions;
+
+    @org.springframework.beans.factory.annotation.Autowired
+    public void currentPlanningDefinitions(WorkflowDefinitionRepositoryPort definitions) {
+        this.currentDefinitions = Objects.requireNonNull(definitions);
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired
+    public void planningApprovalAuthority(PlanningRevisionWorkflowAuthorityContract authority) {
+        this.planningAuthority = Objects.requireNonNull(authority);
+    }
     private dz.sh.hidra.modules.identity.application.contract.workflow.WorkflowHumanActorContract publicationHumans;
     @org.springframework.beans.factory.annotation.Autowired
     public void publicationHumanActors(dz.sh.hidra.modules.identity.application.contract.workflow.WorkflowHumanActorContract owner) {
@@ -114,6 +128,20 @@ public class WorkflowTransitionApplicationService implements ExecuteWorkflowTran
     @Override
     @Transactional
     public WorkflowTransitionExecutionDto execute(ExecuteWorkflowTransitionCommand command) {
+        return executeGuarded(command, false);
+    }
+
+    /**
+     * This entrypoint is exclusively called by the Planning-owned approval use case.
+     * Generic Workflow transitions cannot independently decide Planning revisions.
+     */
+    @Transactional(propagation = org.springframework.transaction.annotation.Propagation.MANDATORY)
+    public WorkflowTransitionExecutionDto executeForPlanning(ExecuteWorkflowTransitionCommand command) {
+        return executeGuarded(command, true);
+    }
+
+    private WorkflowTransitionExecutionDto executeGuarded(
+            ExecuteWorkflowTransitionCommand command, boolean planningEntry) {
         Objects.requireNonNull(command, "ExecuteWorkflowTransitionCommand must not be null.");
 
         WorkflowTask task = taskRepository.findByIdForUpdate(command.taskId())
@@ -134,6 +162,25 @@ public class WorkflowTransitionApplicationService implements ExecuteWorkflowTran
         WorkflowInstance instance = instanceRepository.findByIdForUpdate(task.instanceId())
                 .orElseThrow(() -> new NoSuchElementException("Unknown workflow instance: " + task.instanceId()));
         ownership.requireProtectedCurrentTarget(instance,configuration);
+        if ("planning".equals(instance.targetModule())) {
+            if (!planningEntry || planningAuthority == null) {
+                throw new WorkflowTransitionDeniedException(
+                        "Planning decisions must be executed by Planning's authoritative approval endpoint.");
+            }
+            var planningType = configuration.requireActiveCatalog(instance.targetTypeId(), "WORKFLOW_TARGET_TYPE");
+            var planningPurpose = configuration.requireActiveCatalog(instance.workflowPurposeId(), "WORKFLOW_PURPOSE");
+            if (currentDefinitions == null || currentDefinitions.findById(instance.definitionId())
+                    .filter(d -> d.canStartInstance() && d.version() == instance.definitionVersion()).isEmpty()
+                    || !"PLAN_REVISION".equals(planningType.code())
+                    || !"PLAN_REVISION_APPROVAL".equals(planningPurpose.code())
+                    || !configuration.activeBinding(instance.definitionId(), instance.targetModule(),
+                            instance.targetTypeId(), instance.workflowPurposeId())
+                    || !eligibleIndependentHumanReviewer(actor.id(), instance.startedByActorId())) {
+                throw new WorkflowTransitionDeniedException("An independent, configured Planning reviewer is required.");
+            }
+            planningAuthority.requireReview(instance.targetId(), instance.id(),
+                    instance.startedByActorId(), actor.id());
+        }
         if (!instance.nonTerminal()) {
             throw new WorkflowTransitionConflictException("Workflow instance is already terminal: " + instance.id());
         }

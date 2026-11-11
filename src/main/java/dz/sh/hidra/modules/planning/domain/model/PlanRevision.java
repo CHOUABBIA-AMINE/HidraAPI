@@ -113,6 +113,30 @@ import java.time.Instant;
                     approvedAt, workflowInstanceId, createdAt, at);
         }
 
+        public PlanRevision withSubmission(String actor, Instant at, String workflowId) {
+            requireEditableDraft();
+            if (workflowInstanceId != null || submittedAt != null || actor == null || actor.isBlank()
+                    || workflowId == null || workflowId.isBlank())
+                throw new dz.sh.hidra.modules.planning.domain.exception.PlanningRevisionConflictException(
+                        "Revision submission must bind one new approval instance.");
+            return new PlanRevision(id, planId, revisionNumber, revisionCode, PlanRevisionStatus.SUBMITTED,
+                    changeReasonCodeId, changeReasonText, baseRevisionId, actor, at, null, null,
+                    workflowId, createdAt, at);
+        }
+
+        public PlanRevision withDecision(PlanRevisionStatus decision, String reviewer, Instant at) {
+            if (status != PlanRevisionStatus.SUBMITTED
+                    || (decision != PlanRevisionStatus.APPROVED && decision != PlanRevisionStatus.REJECTED)
+                    || submittedByActorId == null || submittedByActorId.equals(reviewer))
+                throw new dz.sh.hidra.modules.planning.domain.exception.PlanningRevisionConflictException(
+                        "An independent decision requires the submitted current revision.");
+            return new PlanRevision(id, planId, revisionNumber, revisionCode, decision,
+                    changeReasonCodeId, changeReasonText, baseRevisionId, submittedByActorId, submittedAt,
+                    decision == PlanRevisionStatus.APPROVED ? reviewer : null,
+                    decision == PlanRevisionStatus.APPROVED ? at : null,
+                    workflowInstanceId, createdAt, at);
+        }
+
         private static String normalize(String value) {
             if (value == null || value.isBlank()) {
                 return null;

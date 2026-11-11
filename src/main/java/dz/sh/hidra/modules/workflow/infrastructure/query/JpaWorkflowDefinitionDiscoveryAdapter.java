@@ -41,6 +41,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class JpaWorkflowDefinitionDiscoveryAdapter implements WorkflowDefinitionDiscoveryUseCase {
     private static final String TYPE = "INSTALLED_CHARACTERISTIC_LINK_REVISION";
     private static final String PURPOSE = "INSTALLED_CHARACTERISTIC_LINK_APPROVAL";
+    private static final String PLANNING_TYPE = "PLAN_REVISION";
+    private static final String PLANNING_PURPOSE = "PLAN_REVISION_APPROVAL";
     private static final Set<String> DECISIONS = Set.of("APPROVE", "REJECT");
     private final EntityManager entities;
     private final CurrentSecurityContext security;
@@ -93,6 +95,7 @@ public class JpaWorkflowDefinitionDiscoveryAdapter implements WorkflowDefinition
     }
 
     @Override
+    @Transactional
     public List<AvailableDefinition> discover(String module, String targetTypeId,
             String workflowPurposeId, String targetId, String locator) {
         var principal = security.currentPrincipal().filter(p -> p.authenticated()).orElse(null);
@@ -100,24 +103,33 @@ public class JpaWorkflowDefinitionDiscoveryAdapter implements WorkflowDefinition
         String starter = principal.actorId().value();
         if (actors.eligibleActor(starter, Instant.now()).filter(a -> starter.equals(a.id())).isEmpty())
             return List.of();
-        if (!"topology".equals(module) || targetId == null || !targetId.matches("[0-9a-f]{64}")
-                || locator == null || locator.isBlank() || targetTypeId == null || workflowPurposeId == null)
+        boolean topology = "topology".equals(module);
+        boolean planning = "planning".equals(module);
+        if ((!topology && !planning) || targetId == null || targetId.isBlank()
+                || targetTypeId == null || workflowPurposeId == null
+                || topology && (!targetId.matches("[0-9a-f]{64}") || locator == null || locator.isBlank()))
             return List.of();
 
+        String expectedType = topology ? TYPE : PLANNING_TYPE;
+        String expectedPurpose = topology ? PURPOSE : PLANNING_PURPOSE;
         var type = entities.find(WorkflowCatalogEntryJpaEntity.class, targetTypeId);
         var purpose = entities.find(WorkflowCatalogEntryJpaEntity.class, workflowPurposeId);
         if (type == null || !type.active() || !"WORKFLOW_TARGET_TYPE".equals(type.catalogName())
-                || !TYPE.equals(type.code()) || purpose == null || !purpose.active()
-                || !"WORKFLOW_PURPOSE".equals(purpose.catalogName()) || !PURPOSE.equals(purpose.code()))
+                || !expectedType.equals(type.code()) || purpose == null || !purpose.active()
+                || !"WORKFLOW_PURPOSE".equals(purpose.catalogName())
+                || !expectedPurpose.equals(purpose.code()))
             return List.of();
 
         var matching = owners.stream().filter(o -> module.equals(o.module())
-                && o.targetTypeCodes().contains(TYPE)).toList();
+                && o.targetTypeCodes().contains(expectedType)).toList();
         if (matching.size() != 1) return List.of();
         try {
-            if (!matching.getFirst().protectedReadAllowed(
-                    TYPE, targetId, locator, WorkflowOwnedTargetLookup.ProtectedRead.REVISION))
-                return List.of();
+            boolean allowed = topology
+                    ? matching.getFirst().protectedReadAllowed(
+                            expectedType, targetId, locator, WorkflowOwnedTargetLookup.ProtectedRead.REVISION)
+                    : matching.getFirst().protectedReadAllowed(
+                            expectedType, targetId, WorkflowOwnedTargetLookup.ProtectedRead.REVISION);
+            if (!allowed) return List.of();
         } catch (RuntimeException denied) {
             return List.of();
         }

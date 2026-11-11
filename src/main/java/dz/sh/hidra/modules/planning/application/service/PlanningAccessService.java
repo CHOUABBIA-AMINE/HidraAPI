@@ -20,6 +20,11 @@
 package dz.sh.hidra.modules.planning.application.service;
 
 import dz.sh.hidra.modules.identity.application.contract.planning.PlanningScopedAuthorizationContract;
+import dz.sh.hidra.modules.planning.application.contract.workflow.PlanningRevisionWorkflowAuthorityContract;
+import dz.sh.hidra.modules.planning.application.port.out.OperationalPlanRepositoryPort;
+import dz.sh.hidra.modules.planning.application.port.out.PlanRevisionRepositoryPort;
+import dz.sh.hidra.modules.planning.domain.value.PlanRevisionStatus;
+import dz.sh.hidra.modules.planning.domain.value.OperationalPlanStatus;
 import dz.sh.hidra.modules.identity.application.contract.planning.PlanningScopedAuthorizationContract.Access;
 import dz.sh.hidra.modules.identity.application.contract.planning.PlanningScopedAuthorizationContract.Asset;
 import dz.sh.hidra.modules.identity.application.contract.planning.PlanningScopedAuthorizationContract.Operation;
@@ -37,12 +42,14 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PlanningAccessService {
+public class PlanningAccessService implements PlanningRevisionWorkflowAuthorityContract {
 
     private final PlanningScopedAuthorizationContract identity;
     private final PlanningCompanyEligibilityContract party;
     private final PlanningAssetOwnershipContract topology;
     private final PlanningPeriodRepositoryPort periods;
+    private OperationalPlanRepositoryPort plans;
+    private PlanRevisionRepositoryPort revisions;
 
     public PlanningAccessService(PlanningScopedAuthorizationContract identity,
             PlanningCompanyEligibilityContract party, PlanningAssetOwnershipContract topology,
@@ -74,6 +81,35 @@ public class PlanningAccessService {
     public String planAuthor(OperationalPlan plan) {
         Access access = identity.current(Operation.PLAN_AUTHOR);
         return requirePlanScope(access, plan.periodId(), plan.topologyScopeType(), plan.topologyScopeId());
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired
+    public void bindReviewRepositories(OperationalPlanRepositoryPort plans, PlanRevisionRepositoryPort revisions) {
+        this.plans = Objects.requireNonNull(plans);
+        this.revisions = Objects.requireNonNull(revisions);
+    }
+
+    public String planReviewer(OperationalPlan plan) {
+        Access access = identity.current(Operation.PLAN_REVIEW);
+        return requirePlanScope(access, plan.periodId(), plan.topologyScopeType(), plan.topologyScopeId());
+    }
+
+    @Override
+    public void requireReview(String revisionId, String workflowInstanceId,
+            String starterActorId, String reviewerActorId) {
+        var revision = revisions.findById(revisionId).orElseThrow(PlanningAccessService::unavailable);
+        var plan = plans.findById(revision.planId()).orElseThrow(PlanningAccessService::unavailable);
+        if (revision.status() != PlanRevisionStatus.SUBMITTED
+                || plan.status() != OperationalPlanStatus.SUBMITTED
+                || !revision.id().equals(plan.currentRevisionId())
+                || !Objects.equals(revision.workflowInstanceId(), workflowInstanceId)
+                || !Objects.equals(revision.submittedByActorId(), starterActorId)
+                || reviewerActorId == null || reviewerActorId.equals(starterActorId)) {
+            throw unavailable();
+        }
+        if (!reviewerActorId.equals(planReviewer(plan))) {
+            throw denied();
+        }
     }
 
     private String requirePlanScope(Access access, String periodId, String type, String assetId) {

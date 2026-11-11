@@ -143,6 +143,21 @@ class WorkflowTransitionApplicationServiceTest {
     }
 
     @Test
+    void genericWorkflowTransitionCannotBypassPlanningReviewerDecision() {
+        when(taskRepository.findByIdForUpdate("task-1")).thenReturn(Optional.of(task()));
+        WorkflowInstance planning = new WorkflowInstance(
+                "instance-1", "def-1", 1, "purpose-1", "planning", "type-1", "revision-1",
+                "R1", "Planning revision", WorkflowInstanceStatus.STARTED, "step-1",
+                "starter-1", "starter", "Starter", "AUTHOR", TASK_UPDATED_AT.minusSeconds(120),
+                null, null, "corr-1", TASK_UPDATED_AT.minusSeconds(120), TASK_UPDATED_AT);
+        when(instanceRepository.findByIdForUpdate("instance-1")).thenReturn(Optional.of(planning));
+        assertThrows(WorkflowTransitionDeniedException.class,
+                () -> service.execute(command("actor-1", "alice", Set.of("workflow:approve:execute"))));
+        verify(actionRepository, never()).save(any());
+        verify(stateHistoryRepository, never()).save(any());
+    }
+
+    @Test
     void rejectsStaleTaskVersionBeforeMutation() {
         WorkflowTask task = task();
         when(taskRepository.findByIdForUpdate("task-1")).thenReturn(Optional.of(task));

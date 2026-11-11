@@ -131,6 +131,17 @@ import java.math.BigDecimal;
         unitId = normalize(unitId);
         }
 
+        public PlanTarget withStatus(PlanTargetStatus next, Instant at) {
+            if (next == null || at == null || at.isBefore(updatedAt)
+                    || !(status == PlanTargetStatus.DRAFT && next == PlanTargetStatus.ACTIVE
+                    || status == PlanTargetStatus.ACTIVE && next == PlanTargetStatus.SUPERSEDED))
+                throw new InvalidPlanningValueException("Invalid target activation transition.");
+            return new PlanTarget(id, revisionId, scenarioId, nominationId, targetTypeId, topologyAssetType,
+                    topologyAssetId, topologyAssetCode, topologyAssetNameSnapshot, telemetryPointId,
+                    telemetryPointCodeSnapshot, targetValue, targetTextValue, unitId, toleranceLow,
+                    toleranceHigh, validFrom, validTo, priority, next, createdAt, at);
+        }
+
         private static String normalize(String value) {
             if (value == null || value.isBlank()) {
                 return null;

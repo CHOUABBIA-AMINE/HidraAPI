@@ -42,6 +42,10 @@ public interface PlanTargetJpaRepository extends JpaRepository<PlanTargetJpaEnti
     Optional<String> revisionIdForTarget(@Param("id") String id);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select target from PlanTargetJpaEntity target where target.revisionId = :revisionId order by target.id")
+    java.util.List<PlanTargetJpaEntity> findByRevisionIdForUpdate(@Param("revisionId") String revisionId);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select reference from PlanTargetJpaEntity reference where reference.id = :id")
     Optional<PlanTargetJpaEntity> findByIdForUpdate(@Param("id") String id);
 }

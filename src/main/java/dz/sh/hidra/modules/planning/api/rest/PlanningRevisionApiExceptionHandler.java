@@ -21,6 +21,8 @@ package dz.sh.hidra.modules.planning.api.rest;
 
 import dz.sh.hidra.modules.planning.api.rest.controller.PlanRevisionCommandController;
 import dz.sh.hidra.modules.planning.api.rest.controller.PlanningDraftController;
+import dz.sh.hidra.modules.planning.api.rest.controller.PlanningRevisionSubmissionController;
+import dz.sh.hidra.modules.planning.api.rest.controller.PlanningApprovalController;
 import dz.sh.hidra.modules.planning.domain.exception.PlanningRevisionConflictException;
 import dz.sh.hidra.modules.planning.domain.exception.InvalidPlanningValueException;
 import org.springframework.core.Ordered;
@@ -31,7 +33,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
-@RestControllerAdvice(assignableTypes = {PlanRevisionCommandController.class, PlanningDraftController.class})
+@RestControllerAdvice(assignableTypes = {PlanRevisionCommandController.class, PlanningDraftController.class, PlanningRevisionSubmissionController.class, PlanningApprovalController.class})
 public final class PlanningRevisionApiExceptionHandler {
 
     @ExceptionHandler(InvalidPlanningValueException.class)

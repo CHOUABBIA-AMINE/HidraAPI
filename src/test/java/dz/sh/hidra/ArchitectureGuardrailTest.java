@@ -107,6 +107,7 @@ class ArchitectureGuardrailTest {
                     "dz.sh.hidra.modules.telemetry.application.contract.simulation",
                     "dz.sh.hidra.modules.telemetry.application.contract.planning",
                     "dz.sh.hidra.modules.planning.application.contract.monitoring",
+                    "dz.sh.hidra.modules.planning.application.contract.workflow",
                     "dz.sh.hidra.modules.topology.application.contract.assets",
                     "dz.sh.hidra.modules.organization.application.contract.assets",
                     "dz.sh.hidra.modules.party.application.contract.assets",
@@ -481,6 +482,18 @@ class ArchitectureGuardrailTest {
                         "dz.sh.hidra.modules.planning.application.service.PlanningApprovalApplicationService",
                         "dz.sh.hidra.modules.workflow.application.contract.planning.PlanningWorkflowContract"),
                 "The deliberate Workflow contract exported to Planning must remain allowed.");
+
+        assertFalse(
+                isForbiddenCrossModuleDependency(
+                        "dz.sh.hidra.modules.workflow.application.service.WorkflowTransitionApplicationService",
+                        "dz.sh.hidra.modules.planning.application.contract.workflow.PlanningRevisionWorkflowAuthorityContract"),
+                "Only the explicit Planning reviewer authority contract may cross into Workflow.");
+
+        assertTrue(
+                isForbiddenCrossModuleDependency(
+                        "dz.sh.hidra.modules.workflow.application.service.WorkflowTransitionApplicationService",
+                        "dz.sh.hidra.modules.planning.infrastructure.persistence.repository.PlanRevisionJpaRepository"),
+                "Workflow must not access Planning persistence or private application objects.");
 
         assertTrue(
                 isForbiddenCrossModuleDependency(

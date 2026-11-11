@@ -108,6 +108,7 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase, Manufactur
     }
 
     @Override
+    @Transactional
     public Page<TaskView> tasks(String actorReference, String view, int page, int size) {
         String normalizedView = view == null ? "assigned" : view.trim().toLowerCase(Locale.ROOT);
         List<TaskView> all = entityManager
@@ -122,6 +123,7 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase, Manufactur
     }
 
     @Override
+    @Transactional
     public TaskView task(String id) {
         WorkflowTaskJpaEntity entity = entityManager.find(WorkflowTaskJpaEntity.class, id);
         if (entity == null) {
@@ -132,6 +134,7 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase, Manufactur
     }
 
     @Override
+    @Transactional
     public TaskView currentTask(String instanceId) {
         WorkflowInstanceJpaEntity instance = entityManager.find(WorkflowInstanceJpaEntity.class, instanceId);
         if (instance == null) {
@@ -156,6 +159,7 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase, Manufactur
     }
 
     @Override
+    @Transactional
     public InstanceView instance(String id) {
         WorkflowInstanceJpaEntity entity = entityManager.find(WorkflowInstanceJpaEntity.class, id);
         if (entity == null) {
@@ -166,6 +170,7 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase, Manufactur
     }
 
     @Override
+    @Transactional
     public List<TimelineEntry> timeline(String instanceId) {
         WorkflowInstanceJpaEntity instance = entityManager.find(WorkflowInstanceJpaEntity.class, instanceId);
         if (instance == null) {
@@ -184,6 +189,7 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase, Manufactur
     }
 
     @Override
+    @Transactional
     public List<AvailableActionView> availableActions(String taskId, String actorReference, Set<String> effectivePermissions) {
         WorkflowTaskJpaEntity task = entityManager.find(WorkflowTaskJpaEntity.class, taskId);
         if (task == null) {
@@ -217,6 +223,7 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase, Manufactur
      * retained for existing cross-module contracts; no REST controller calls them.
      */
     @Override
+    @Transactional
     public Page<TaskView> authorizedTasks(String actorReference, String view, int page, int size) {
         ownership.requireCurrentActor(actorReference);
         String normalizedView = view == null ? "assigned" : view.trim().toLowerCase(Locale.ROOT);
@@ -232,6 +239,7 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase, Manufactur
     }
 
     @Override
+    @Transactional
     public TaskView authorizedTask(String id) {
         WorkflowTaskJpaEntity task = entityManager.find(WorkflowTaskJpaEntity.class, id);
         requireAuthorizedTask(task, WorkflowOwnedTargetLookup.ProtectedRead.REVISION);
@@ -239,12 +247,14 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase, Manufactur
     }
 
     @Override
+    @Transactional
     public TaskView authorizedCurrentTask(String instanceId) {
         authorizedInstance(instanceId);
         return currentTask(instanceId);
     }
 
     @Override
+    @Transactional
     public InstanceView authorizedInstance(String id) {
         WorkflowInstanceJpaEntity instance = entityManager.find(WorkflowInstanceJpaEntity.class, id);
         requireAuthorizedInstance(instance, WorkflowOwnedTargetLookup.ProtectedRead.REVISION);
@@ -252,6 +262,7 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase, Manufactur
     }
 
     @Override
+    @Transactional
     public List<TimelineEntry> authorizedTimeline(String instanceId) {
         WorkflowInstanceJpaEntity instance = entityManager.find(WorkflowInstanceJpaEntity.class, instanceId);
         requireAuthorizedInstance(instance, WorkflowOwnedTargetLookup.ProtectedRead.HISTORY);
@@ -259,6 +270,7 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase, Manufactur
     }
 
     @Override
+    @Transactional
     public List<AvailableActionView> authorizedAvailableActions(String taskId, String actorReference,
             Set<String> effectivePermissions) {
         ownership.requireCurrentActor(actorReference);
@@ -316,7 +328,9 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase, Manufactur
                 && (("topology".equals(instance.targetModule())
                         && "INSTALLED_CHARACTERISTIC_LINK_REVISION".equals(catalog.code()))
                     || ("simulation".equals(instance.targetModule())
-                        && "MANUFACTURER_CHARACTERISTIC_REVISION".equals(catalog.code())));
+                        && "MANUFACTURER_CHARACTERISTIC_REVISION".equals(catalog.code()))
+                    || ("planning".equals(instance.targetModule())
+                        && "PLAN_REVISION".equals(catalog.code())));
         var scope = new WorkflowFoundationReadAuthorizationPort.Scope(instance.id(),
                 instance.startedByActorId(), instance.targetModule(), instance.targetTypeId(),
                 instance.targetId(), instance.targetCodeSnapshot(), ownerReadAdmitted);
@@ -346,22 +360,28 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase, Manufactur
     private void requireProtectedRead(WorkflowInstanceJpaEntity instance, WorkflowOwnedTargetLookup.ProtectedRead access) {
         boolean topology="topology".equals(instance.targetModule());
         boolean simulation="simulation".equals(instance.targetModule());
-        if (!topology && !simulation) return;
+        boolean planning="planning".equals(instance.targetModule());
+        if (!topology && !simulation && !planning) return;
         WorkflowCatalogEntryJpaEntity type = entityManager.find(WorkflowCatalogEntryJpaEntity.class, instance.targetTypeId());
         if (type == null || !"WORKFLOW_TARGET_TYPE".equals(type.catalogName()) || !type.active())
             throw new NoSuchElementException("Workflow target unavailable.");
-        String expected=topology?"INSTALLED_CHARACTERISTIC_LINK_REVISION":"MANUFACTURER_CHARACTERISTIC_REVISION";
-        if (!expected.equals(type.code())) return;
-        if (instance.targetId() == null || !instance.targetId().matches("[0-9a-f]{64}"))
+        String expected=topology ? "INSTALLED_CHARACTERISTIC_LINK_REVISION"
+                : simulation ? "MANUFACTURER_CHARACTERISTIC_REVISION" : "PLAN_REVISION";
+        if (!expected.equals(type.code()))
+            throw new NoSuchElementException("Workflow target unavailable.");
+        if (instance.targetId() == null || instance.targetId().isBlank()
+                || !planning && !instance.targetId().matches("[0-9a-f]{64}"))
             throw new NoSuchElementException("Workflow target unavailable.");
         var owners = targetOwners.stream()
                 .filter(o -> instance.targetModule().equals(o.module())
                         && o.targetTypeCodes().contains(expected)).toList();
         if (owners.size() != 1) throw new NoSuchElementException("Workflow target unavailable.");
         try {
-            if (!owners.getFirst().protectedReadAllowed(
-                    expected, instance.targetId(), instance.targetCodeSnapshot(), access))
-                throw new NoSuchElementException("Workflow target unavailable.");
+            boolean permitted = planning
+                    ? owners.getFirst().protectedReadAllowed(expected, instance.targetId(), access)
+                    : owners.getFirst().protectedReadAllowed(
+                            expected, instance.targetId(), instance.targetCodeSnapshot(), access);
+            if (!permitted) throw new NoSuchElementException("Workflow target unavailable.");
         } catch (RuntimeException unavailable) {
             // A native denial, unavailable PostgreSQL principal or revoked grant is non-disclosing.
             throw new NoSuchElementException("Workflow target unavailable.");

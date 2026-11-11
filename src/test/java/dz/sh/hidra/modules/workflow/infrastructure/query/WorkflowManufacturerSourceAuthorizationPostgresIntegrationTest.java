@@ -7,7 +7,7 @@
  *
  * @Name        : WorkflowManufacturerSourceAuthorizationPostgresIntegrationTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-30
+ * @UpdatedOn   : 2026-11-11
  *
  * @Type        : Class
  * @Layer       : Test
@@ -85,9 +85,16 @@ class WorkflowManufacturerSourceAuthorizationPostgresIntegrationTest {
         assertThrows(java.util.NoSuchElementException.class,()->queries.currentTask(m.instance()));
     }
     @Test void workflowNonManufacturerInstanceRetainsExistingVisibility(){
-        var m=fixture("planning","PLAN_REVISION","VALIDATION");
+        var m=fixture("incident","INCIDENT","VALIDATION");
         assertEquals(m.instance(),queries.instance(m.instance()).id());
         assertEquals(m.task(),queries.task(m.task()).id());
         assertTrue(queries.timeline(m.instance()).isEmpty());
+    }
+    @Test void planningRevisionDoesNotExposeUnownedTargets(){
+        var m=fixture("planning","PLAN_REVISION","PLAN_REVISION_APPROVAL");
+        assertThrows(java.util.NoSuchElementException.class,()->queries.instance(m.instance()));
+        assertThrows(java.util.NoSuchElementException.class,()->queries.task(m.task()));
+        assertThrows(java.util.NoSuchElementException.class,()->queries.timeline(m.instance()));
+        assertThrows(java.util.NoSuchElementException.class,()->queries.currentTask(m.instance()));
     }
 }

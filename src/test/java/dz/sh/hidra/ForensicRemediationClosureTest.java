@@ -7,7 +7,7 @@
  *
  * @Name        : ForensicRemediationClosureTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-29
+ * @UpdatedOn   : 2026-11-11
  *
  * @Type        : Test
  * @Layer       : Architecture Test
@@ -118,6 +118,11 @@ class ForensicRemediationClosureTest {
             "dz.sh.hidra.modules.assets.application.contract.hse"
     );
 
+    private static boolean isPlanningReviewerExport(String consumer, String imported) {
+        return consumer.equals("dz.sh.hidra.modules.workflow.application.service.WorkflowTransitionApplicationService")
+                && imported.equals("dz.sh.hidra.modules.planning.application.contract.workflow.PlanningRevisionWorkflowAuthorityContract");
+    }
+
     private static final Set<String> EXPECTED_WIRE_BLOCKER = Set.of();
 
     @Test
@@ -143,6 +148,13 @@ class ForensicRemediationClosureTest {
 
     @Test
     void crossModulePrivateImportsRemainClosed() throws IOException {
+        String reviewConsumer = "dz.sh.hidra.modules.workflow.application.service.WorkflowTransitionApplicationService";
+        String reviewContract = "dz.sh.hidra.modules.planning.application.contract.workflow.PlanningRevisionWorkflowAuthorityContract";
+        assertTrue(isPlanningReviewerExport(reviewConsumer, reviewContract));
+        assertFalse(isPlanningReviewerExport(reviewConsumer + "Sibling", reviewContract));
+        assertFalse(isPlanningReviewerExport(reviewConsumer, reviewContract + "Sibling"));
+        assertFalse(isPlanningReviewerExport(reviewConsumer,
+                "dz.sh.hidra.modules.planning.infrastructure.persistence.adapter.JpaPlanRevisionRepositoryAdapter"));
         String alarmConsumer = "dz.sh.hidra.modules.alarm.infrastructure.security.AlarmResourceAuthorizationAdapter";
         String alarmIdentity = "dz.sh.hidra.modules.identity.application.contract.alarm.AlarmScopedAuthorizationContract";
         String alarmTopology = "dz.sh.hidra.modules.topology.application.contract.alarm.AlarmTopologyOwnershipContract";
@@ -263,6 +275,7 @@ class ForensicRemediationClosureTest {
                 if (baselineOwnerExport(source.fqcn(), imported)) continue;
                 if (isAlarmOwnerExport(source.fqcn(), imported)) continue;
                 if (isTelemetryNativeOwnerExport(source.fqcn(), imported)) continue;
+                if (isPlanningReviewerExport(source.fqcn(), imported)) continue;
                 violations.add(source.fqcn() + " -> " + imported);
             }
         }

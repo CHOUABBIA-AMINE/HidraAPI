@@ -97,7 +97,7 @@
       "lane": "unit-architecture",
       "owner": "architecture",
       "path": "src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java",
-      "source_sha256": "69f35ec5c4aed37378b2906b86db5383b775aea0850867950fb58528a1cfd7d6",
+      "source_sha256": "4b2ea56b5e8c9b276543b49c562664f6d1e9730f8253d1dd83cd4fb5fdea559b",
       "supports": []
     },
     {
@@ -7068,7 +7068,7 @@
       "supports": []
     },
     {
-      "baseline_seconds": 0.0,
+      "baseline_seconds": 0,
       "cases": [
         "authorsDraftTargetsWithAtomicVersionChecksAndScopedReadback",
         "concurrentSameCompanyCreatesHaveExactlyOneWinner",
@@ -11095,6 +11095,7 @@
       "baseline_seconds": 0,
       "cases": [
         "manufacturerInstanceAndTimelineAreNonDisclosingWithoutNativeSourceAuthorization",
+        "planningRevisionDoesNotExposeUnownedTargets",
         "workflowNonManufacturerInstanceRetainsExistingVisibility"
       ],
       "class": "dz.sh.hidra.modules.workflow.infrastructure.query.WorkflowManufacturerSourceAuthorizationPostgresIntegrationTest",
@@ -11103,7 +11104,7 @@
       "lane": "postgres-integration",
       "owner": "workflow",
       "path": "src/test/java/dz/sh/hidra/modules/workflow/infrastructure/query/WorkflowManufacturerSourceAuthorizationPostgresIntegrationTest.java",
-      "source_sha256": "e03c9063bfe41aef75f8bfb356d820a5aea63ea2c8c405b43d096a2f554304a6",
+      "source_sha256": "69ed422fe4b36b7bfb54e7ecf8d82da11887208ce6c426537cffc9f56926cac5",
       "supports": []
     },
     {

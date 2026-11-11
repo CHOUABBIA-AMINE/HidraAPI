@@ -7,7 +7,7 @@
  *
  * @Name        : HidraTrustedNativeProtectedRouteHttpTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-04
+ * @UpdatedOn   : 2026-11-11
  *
  * @Type        : Class
  * @Layer       : Test
@@ -156,7 +156,7 @@ class HidraTrustedNativeProtectedRouteHttpTest {
    var resolver = org.mockito.Mockito.mock(HidraEffectivePermissionResolver.class);
    authenticated();
    var registry = new HidraTrustedNativeProtectedRouteRegistry();
-   assertEquals(29,registry.candidates().size());
+   assertEquals(31,registry.candidates().size());
    var mvc = mvc(owner, new UntrustedController(), resolver,registry);
    assertThrows(Exception.class, () ->
       mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(TRUSTED)));
@@ -165,8 +165,10 @@ class HidraTrustedNativeProtectedRouteHttpTest {
  @Test void realManufacturerTupleRegistryRejectsWrongVerbAndSiblingPattern() throws Exception {
    var registry=new HidraTrustedNativeProtectedRouteRegistry();
    var routes=registry.candidates();
-   assertEquals(29,routes.size());
+   assertEquals(31,routes.size());
    var expected=java.util.Set.of(
+    "GET /api/v1/topology/engineering-sources",
+    "GET /api/v1/topology/engineering-sources/{kind}/{ownerId}/{sourceId}/revisions/{revisionId}",
     "GET /api/v1/workflow/definitions/installed-characteristic-link-target",
     "PUT /api/v1/simulation/manufacturer-characteristics/{sourceId}/revisions/{revisionId}",
     "GET /api/v1/simulation/manufacturer-characteristics/{sourceId}/revisions/{revisionId}",

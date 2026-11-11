@@ -7,7 +7,7 @@
  *
  * @Name        : HidraTrustedNativeProtectedRouteRegistry
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-04
+ * @UpdatedOn   : 2026-11-11
  *
  * @Type        : Class
  * @Layer       : Platform
@@ -68,6 +68,9 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
             Class<?> installed=Class.forName(topology+"controller.InstalledCharacteristicLinkController");
             Class<?> approval=Class.forName(topology+"request.InstalledCharacteristicLinkRequests$CharacteristicLinkApprovalCommand");
             final String linkBase="/api/v1/topology/installed-units/{unitId}/characteristic-links/{linkId}";
+            Class<?> discovery=Class.forName(topology+"controller.EngineeringSourceDiscoveryController");
+            Class<?> discoveryKind=Class.forName("dz.sh.hidra.modules.topology.application.port.in.EngineeringSourceDiscoveryUseCase$Kind");
+            final String sourceBase="/api/v1/topology/engineering-sources";
             Class<?> baseline=Class.forName(topology+"controller.EngineeringBaselineDraftController");
             Class<?> baselineCreate=Class.forName(topology+"request.EngineeringBaselineDraftRequests$Create");
             Class<?> baselineUpdate=Class.forName(topology+"request.EngineeringBaselineDraftRequests$Update");
@@ -88,6 +91,8 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
             String stationBase="/api/v1/topology/facilities/{facilityId}/station-graph";
             Class<?> workflow=Class.forName("dz.sh.hidra.modules.workflow.api.rest.controller.WorkflowDefinitionDiscoveryController");
             return List.of(
+                new Route(discovery,discovery.getDeclaredMethod("discover",String.class,String.class,discoveryKind,String.class,int.class,String.class),"GET",sourceBase),
+                new Route(discovery,discovery.getDeclaredMethod("exact",discoveryKind,String.class,String.class,String.class,String.class,String.class),"GET",sourceBase+"/{kind}/{ownerId}/{sourceId}/revisions/{revisionId}"),
                 new Route(workflow,workflow.getDeclaredMethod("installedCharacteristicLinkTarget",String.class,String.class,String.class,long.class),"GET","/api/v1/workflow/definitions/installed-characteristic-link-target"),
                 new Route(foundation,foundation.getDeclaredMethod("choices",foundationCatalog,String.class,String.class,int.class),"GET",foundationBase+"/choices/{catalog}"),
                 new Route(foundation,foundation.getDeclaredMethod("system",foundationSystem),"POST",foundationBase+"/pipeline-systems"),

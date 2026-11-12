@@ -447,8 +447,11 @@ public class ProductRevisionPublicationNativeHttpPostgresIntegrationTest {
                 handle);
     }
 
-    private Fixture fixture(String type) {
-        jdbc.update("UPDATE " + P + " SET status='INACTIVE' WHERE status='ACTIVE'");
+    private Fixture fixture(String type) { return fixture(type, true); }
+
+    private Fixture fixture(String type, boolean resetPreviousActors) {
+        if (resetPreviousActors)
+            jdbc.update("UPDATE " + P + " SET status='INACTIVE' WHERE status='ACTIVE'");
         String user = UUID.randomUUID().toString(),
                 provider = UUID.randomUUID().toString(),
                 link = type.equals("LOCAL") ? null : UUID.randomUUID().toString(),
@@ -763,8 +766,12 @@ public class ProductRevisionPublicationNativeHttpPostgresIntegrationTest {
         return org.springframework.test.util.AopTestUtils.getUltimateTargetObject(productCoordinator);
     }
     private static final String D="public.hidra_custody_product_engineering_draft", V="public.hidra_custody_product_engineering_draft_version", POLICY="public.hidra_custody_engineering_product_policy";
-    private Fixture actor(String type) {
-        cleanEvidence();var f=fixture(type);for(String action:OPS)both(f,action);
+    private Fixture actor(String type) { return actor(type, true); }
+
+    private Fixture actor(String type, boolean resetPreviousActors) {
+        if (resetPreviousActors) cleanEvidence();
+        var f=fixture(type, resetPreviousActors);
+        for(String action:OPS)both(f,action);
         if(type.equals("LDAP") || type.equals("ACTIVE_DIRECTORY"))c3DirectoryPrepared(f,"memberOf");
         else ambient(authenticate(f).accessToken());
         return f;
@@ -828,7 +835,8 @@ public class ProductRevisionPublicationNativeHttpPostgresIntegrationTest {
 
 
     private static final String FV="public.hidra_custody_supplied_fluid_property_version",FR="public.hidra_custody_supplied_fluid_property_draft";
-    private Fixture fluidActor(String type){var f=actor(type);for(String action:List.of("read","write")){fluidGrant(f,action,"GRANT","CUSTOM","custody-company:"+COMPANY);fluidGrant(f,action,"GRANT","CUSTOM","custody-product:"+PRODUCT);}return f;}
+    private Fixture fluidActor(String type){return fluidActor(type, true);}
+    private Fixture fluidActor(String type, boolean resetPreviousActors){var f=actor(type, resetPreviousActors);for(String action:List.of("read","write")){fluidGrant(f,action,"GRANT","CUSTOM","custody-company:"+COMPANY);fluidGrant(f,action,"GRANT","CUSTOM","custody-product:"+PRODUCT);}return f;}
     private UUID product(){return drafts.execute(new dz.sh.hidra.modules.custody.application.port.in.ProductEngineeringDraftUseCase.Command(
         dz.sh.hidra.modules.custody.application.port.in.ProductEngineeringDraftUseCase.Kind.CREATE,COMPANY,null,id(),PRODUCT,UUID.randomUUID(),null,
         new dz.sh.hidra.modules.custody.domain.model.ProductEngineeringDraft.Metadata("Synthetic",null,null,dz.sh.hidra.modules.custody.domain.model.ProductEngineeringDraft.Classification.GAS))).draft().id();}
@@ -862,7 +870,8 @@ public class ProductRevisionPublicationNativeHttpPostgresIntegrationTest {
         String policy="public.hidra_workflow_custody_publication_policy";jdbc.execute("REVOKE ALL ON "+policy+" FROM c3_source_claim_app,c3_publication_app");
         jdbc.execute("GRANT SELECT ON "+policy+" TO c3_source_claim_app");jdbc.execute("GRANT SELECT,UPDATE ON "+policy+" TO c3_publication_app");
     }
-    private Fixture publicationActor(String type){var f=fluidActor(type);currentActor=f;
+    private Fixture publicationActor(String type){return publicationActor(type, true);}
+    private Fixture publicationActor(String type, boolean resetPreviousActors){var f=fluidActor(type, resetPreviousActors);currentActor=f;
         var raw=((org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken)
                 SecurityContextHolder.getContext().getAuthentication()).getToken().getTokenValue();
         var verified=nativeDecoder.decode(raw);assertThat(verified.getSubject()).isEqualTo(f.user());
@@ -906,7 +915,8 @@ public class ProductRevisionPublicationNativeHttpPostgresIntegrationTest {
     private org.springframework.test.web.servlet.MockMvc http;
     @Autowired dz.sh.hidra.modules.custody.application.contract.publication.ProductPublicationSourceContract sources;
     private record HttpActor(Fixture fixture,String token) {}
-    private HttpActor httpActor(String type){var f=publicationActor(type);var a=(org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken)SecurityContextHolder.getContext().getAuthentication();return new HttpActor(f,a.getToken().getTokenValue());}
+    private HttpActor httpActor(String type){return httpActor(type, true);}
+    private HttpActor httpActor(String type, boolean resetPreviousActors){var f=publicationActor(type, resetPreviousActors);var a=(org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken)SecurityContextHolder.getContext().getAuthentication();return new HttpActor(f,a.getToken().getTokenValue());}
     private String url(UUID p){return "/api/v1/custody/engineering-products/"+p+"/publications";}
     private String prep(UUID request){return "{\"requestId\":\""+request+"\",\"metadataVersion\":1,\"suppliedVersion\":1}";}
     private org.springframework.test.web.servlet.ResultActions send(HttpActor a,UUID p,String method,String suffix,String body,String... query)throws Exception{SecurityContextHolder.clearContext();var b=org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request(org.springframework.http.HttpMethod.valueOf(method),url(p)+suffix).param("companyPartyId",COMPANY);if(a!=null)b.header("Authorization","Bearer "+a.token());for(int i=0;i<query.length;i+=2)b.param(query[i],query[i+1]);if(body!=null)b.contentType(org.springframework.http.MediaType.APPLICATION_JSON).content(body);return http.perform(b).andDo(result->{
@@ -1287,7 +1297,15 @@ public class ProductRevisionPublicationNativeHttpPostgresIntegrationTest {
         for (String table : List.of("action", "definition", "definition_target_binding", "instance",
                 "state_history", "step", "task", "transition", "type_catalog"))
             jdbc.execute("GRANT SELECT,UPDATE ON public.hidra_workflow_" + table + " TO c3_publication_app");
-        var reviewer = httpActor("LOCAL");
+        // A second reviewer must not revoke the author's identity provider or delete their grants.
+        var reviewer = httpActor("LOCAL", false);
+        assertThat(reviewer.fixture().user()).isNotEqualTo(author.fixture().user());
+        assertThat(jdbc.queryForObject("SELECT status FROM " + P + " WHERE id=?", String.class,
+                author.fixture().provider())).isEqualTo("ACTIVE");
+        assertThat(jdbc.queryForObject("SELECT status FROM " + P + " WHERE id=?", String.class,
+                reviewer.fixture().provider())).isEqualTo("ACTIVE");
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM " + T + "user_permission_grant WHERE user_id=?",
+                Long.class, author.fixture().user())).isPositive();
         topologySourceGrants(reviewer.fixture(), pipeline);
         for (String scope : List.of("topology-company:" + COMPANY, "topology-network:" + pipeline)) {
             for (String action : List.of("submit", "publish"))
@@ -1299,28 +1317,8 @@ public class ProductRevisionPublicationNativeHttpPostgresIntegrationTest {
         String submitPath = base + "/submissions";
         String submitBody = baselineSubmission(pipeline, UUID.randomUUID(), digest);
         baselineRequest(author, submitPath, baselineSubmission(pipeline, UUID.randomUUID(), "0".repeat(64)))
-                .andExpect(status().isForbidden());
-        // T06 diagnostic is synthetic-test-only; it cannot relax the required 200 response.
-        long beforeReader = org.mockito.Mockito.mockingDetails(reader).getInvocations().stream()
-                .filter(call -> call.getMethod().getName().equals("loadEngineeringBaseline")).count();
-        long beforeNative = org.mockito.Mockito.mockingDetails(participant).getInvocations().size();
-        var validSubmit = baselineRequest(author, submitPath, submitBody).andDo(result -> {
-            if (result.getResponse().getStatus() != 200) {
-                var resolved = result.getResolvedException();
-                long afterReader = org.mockito.Mockito.mockingDetails(reader).getInvocations().stream()
-                        .filter(call -> call.getMethod().getName().equals("loadEngineeringBaseline")).count();
-                var nativeCalls = org.mockito.Mockito.mockingDetails(participant).getInvocations().stream()
-                        .skip(beforeNative).map(call -> call.getMethod().getName()).toList();
-                System.err.println("T06 synthetic valid submission denied: status="
-                        + result.getResponse().getStatus()
-                        + ", resolved=" + (resolved == null ? "NONE" : resolved.getClass().getName())
-                        + ", description=" + (resolved == null ? "NONE" : resolved.getMessage())
-                        + ", identityReaderCalls=" + (afterReader - beforeReader)
-                        + ", nativeIdentityCalls=" + nativeCalls);
-                if (resolved != null) resolved.printStackTrace(System.err);
-            }
-        });
-        var submitted = json(validSubmit.andExpect(status().isOk()));
+                .andExpect(status().isConflict());
+        var submitted = json(baselineRequest(author, submitPath, submitBody).andExpect(status().isOk()));
         assertThat(json(baselineRequest(author, submitPath, submitBody).andExpect(status().isOk()))).isEqualTo(submitted);
         assertThat(submitted.path("canonicalSha256").asText()).isEqualTo(digest);
         assertThat(submitted.path("version").asLong()).isEqualTo(1);

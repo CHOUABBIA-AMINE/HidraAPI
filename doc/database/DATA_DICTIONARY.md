@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `49462bfcb098ef390d73b7ad5db5cb4a4f1111f1`
+Captured source SHA: `945904c4f14e2d1a6c70f3b7dc93514dab879520`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `916902aee933b3c2a2ea7387956227ee19abd5f1fddbad86fd4734c9b6619bcb`.
-Migrations: 208; JPA mappings: 470; catalog relations: 559; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `b41dc1664ebf32152929909ec06f784c96d1b4accbc85948e06339ed3dd9be7a`.
+Migrations: 209; JPA mappings: 470; catalog relations: 559; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -10359,6 +10359,7 @@ Persisted PermissionJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261111_001__planning_revision_review_permission.sql](../../src/main/resources/db/migration/V20261111_001__planning_revision_review_permission.sql)
 - Migration mention (not inferred introduction): [V20261111_002__topology_engineering_baseline_publication.sql](../../src/main/resources/db/migration/V20261111_002__topology_engineering_baseline_publication.sql)
 - Migration mention (not inferred introduction): [V20261112_001__t08_telemetry_commissioning_permission.sql](../../src/main/resources/db/migration/V20261112_001__t08_telemetry_commissioning_permission.sql)
+- Migration mention (not inferred introduction): [V20261112_002__t09_telemetry_trust_publication.sql](../../src/main/resources/db/migration/V20261112_002__t09_telemetry_trust_publication.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -26365,6 +26366,7 @@ Persisted TelemetryPointBindingJpaEntity state; semantic authority remains with 
 - Migration mention (not inferred introduction): [V20260611_005__create_telemetry_tables.sql](../../src/main/resources/db/migration/V20260611_005__create_telemetry_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261006_008__hmr_053_trusted_telemetry_gate.sql](../../src/main/resources/db/migration/V20261006_008__hmr_053_trusted_telemetry_gate.sql)
+- Migration mention (not inferred introduction): [V20261112_002__t09_telemetry_trust_publication.sql](../../src/main/resources/db/migration/V20261112_002__t09_telemetry_trust_publication.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -26475,6 +26477,7 @@ Persisted TelemetryQualityAssessmentJpaEntity state; semantic authority remains 
 - Migration mention (not inferred introduction): [V20260611_005__create_telemetry_tables.sql](../../src/main/resources/db/migration/V20260611_005__create_telemetry_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261006_008__hmr_053_trusted_telemetry_gate.sql](../../src/main/resources/db/migration/V20261006_008__hmr_053_trusted_telemetry_gate.sql)
+- Migration mention (not inferred introduction): [V20261112_002__t09_telemetry_trust_publication.sql](../../src/main/resources/db/migration/V20261112_002__t09_telemetry_trust_publication.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -26506,6 +26509,8 @@ Persisted TelemetryQualityAssessmentJpaEntity state; semantic authority remains 
   - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
 - `uk_hmr053_assessment_evidence`: UNIQUE (id, reading_id, point_id, resolved_quality_code_id, trust_level)
   - Catalog attributes: {"columns": ["id", "reading_id", "point_id", "resolved_quality_code_id", "trust_level"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `uq_t09_one_assessment_per_raw`: UNIQUE (reading_id)
+  - Catalog attributes: {"columns": ["reading_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
 
 #### Indexes
 
@@ -26527,10 +26532,14 @@ Persisted TelemetryQualityAssessmentJpaEntity state; semantic authority remains 
   - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
 - `uk_hmr053_assessment_evidence`: CREATE UNIQUE INDEX uk_hmr053_assessment_evidence ON public.hidra_telemetry_quality_assessment USING btree (id, reading_id, point_id, resolved_quality_code_id, trust_level)
   - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `uq_t09_one_assessment_per_raw`: CREATE UNIQUE INDEX uq_t09_one_assessment_per_raw ON public.hidra_telemetry_quality_assessment USING btree (reading_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
 
 #### Triggers
 
-None captured in this catalog category.
+- `trg_t09_assessment_immutable`: CREATE TRIGGER trg_t09_assessment_immutable BEFORE DELETE OR UPDATE ON hidra_telemetry_quality_assessment FOR EACH ROW EXECUTE FUNCTION hidra_t09_deny_evidence_mutation()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t09_deny_evidence_mutation()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t09_deny_evidence_mutation()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'public'<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'T09 immutable assessment/publication evidence' USING ERRCODE='23514';<br>END<br>$function$<br>
 
 ### public.hidra_telemetry_quarantine_record
 
@@ -26863,6 +26872,7 @@ Persisted TrustedTelemetryReadingJpaEntity state; semantic authority remains wit
 - Migration mention (not inferred introduction): [V20260611_005__create_telemetry_tables.sql](../../src/main/resources/db/migration/V20260611_005__create_telemetry_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261006_008__hmr_053_trusted_telemetry_gate.sql](../../src/main/resources/db/migration/V20261006_008__hmr_053_trusted_telemetry_gate.sql)
+- Migration mention (not inferred introduction): [V20261112_002__t09_telemetry_trust_publication.sql](../../src/main/resources/db/migration/V20261112_002__t09_telemetry_trust_publication.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -26883,6 +26893,7 @@ Persisted TrustedTelemetryReadingJpaEntity state; semantic authority remains wit
 | topology_asset_code | character varying(80) | True | None; identity=; generated= | topologyAssetCode: String; {"length": "80", "nullable": "true"}; columnDefinition=None | — |
 | topology_snapshot_id | character varying(80) | True | None; identity=; generated= | topologySnapshotId: String; {"length": "80", "nullable": "true"}; columnDefinition=None | — |
 | ingestion_batch_id | character varying(80) | True | None; identity=; generated= | ingestionBatchId: String; {"length": "80", "nullable": "true"}; columnDefinition=None | — |
+| binding_id | character varying(80) | True | None; identity=; generated= | bindingId: String; {"length": "80", "nullable": "true"}; columnDefinition=None | — |
 
 #### Constraints
 
@@ -26902,8 +26913,12 @@ Persisted TrustedTelemetryReadingJpaEntity state; semantic authority remains wit
   - Catalog attributes: {"columns": ["quality_code_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_telemetry_type_catalog"}, "type": "f", "validated": true}
 - `fk_hra111_telemetry_026`: FOREIGN KEY (reading_id) REFERENCES hidra_telemetry_reading(id) ON DELETE RESTRICT
   - Catalog attributes: {"columns": ["reading_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_telemetry_reading"}, "type": "f", "validated": true}
+- `fk_t09_trusted_binding`: FOREIGN KEY (binding_id) REFERENCES hidra_telemetry_point_binding(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["binding_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_telemetry_point_binding"}, "type": "f", "validated": true}
 - `hidra_telemetry_trusted_reading_pkey`: PRIMARY KEY (id)
   - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `uq_t09_one_trusted_per_raw`: UNIQUE (reading_id)
+  - Catalog attributes: {"columns": ["reading_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
 
 #### Indexes
 
@@ -26925,12 +26940,20 @@ Persisted TrustedTelemetryReadingJpaEntity state; semantic authority remains wit
   - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
 - `ix_hidra_telemetry_trusted_reading_unit_id`: CREATE INDEX ix_hidra_telemetry_trusted_reading_unit_id ON public.hidra_telemetry_trusted_reading USING btree (unit_id)
   - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+- `uq_t09_one_trusted_per_raw`: CREATE UNIQUE INDEX uq_t09_one_trusted_per_raw ON public.hidra_telemetry_trusted_reading USING btree (reading_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
 
 #### Triggers
 
 - `trg_hmr053_trusted_creation`: CREATE TRIGGER trg_hmr053_trusted_creation BEFORE INSERT OR UPDATE ON hidra_telemetry_trusted_reading FOR EACH ROW EXECUTE FUNCTION hmr053_guard_trusted_creation()
   - Catalog attributes: {"enabled": "O", "function_identity": "public.hmr053_guard_trusted_creation()"}
   - Function evidence: CREATE OR REPLACE FUNCTION public.hmr053_guard_trusted_creation()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>DECLARE<br>    v_raw hidra_telemetry_reading%ROWTYPE;<br>    v_point hidra_telemetry_point%ROWTYPE;<br>    v_assessment hidra_telemetry_quality_assessment%ROWTYPE;<br>    v_has_binding boolean;<br>BEGIN<br>    IF TG_OP = 'UPDATE' THEN<br>        IF NEW IS DISTINCT FROM OLD THEN<br>            RAISE EXCEPTION 'HMR-053 trusted evidence and binding snapshots cannot be rewritten' USING ERRCODE = '23514';<br>        END IF;<br>        RETURN NEW; -- No-op saves do not re-evaluate historical eligibility against today's state.<br>    END IF;<br>    SELECT * INTO v_raw FROM hidra_telemetry_reading WHERE id = NEW.reading_id FOR SHARE;<br>    IF NOT FOUND THEN RAISE EXCEPTION 'HMR-053 missing raw reading' USING ERRCODE = '23514'; END IF;<br>    SELECT * INTO v_point FROM hidra_telemetry_point WHERE id = NEW.point_id FOR SHARE;<br>    IF NOT FOUND THEN RAISE EXCEPTION 'HMR-053 missing point' USING ERRCODE = '23514'; END IF;<br>    SELECT * INTO v_assessment FROM hidra_telemetry_quality_assessment WHERE id = NEW.quality_assessment_id FOR SHARE;<br>    IF NOT FOUND THEN RAISE EXCEPTION 'HMR-053 missing assessment' USING ERRCODE = '23514'; END IF;<br>    IF v_point.status &lt;&gt; 'ACTIVE' OR v_assessment.assessment_status &lt;&gt; 'PASSED'<br>       OR v_assessment.trust_level NOT IN ('MEDIUM', 'HIGH', 'CERTIFIED')<br>       OR NEW.point_id IS DISTINCT FROM v_raw.point_id<br>       OR (NEW.reading_id, NEW.point_id, NEW.quality_code_id, NEW.trust_level) IS DISTINCT FROM<br>          (v_assessment.reading_id, v_assessment.point_id, v_assessment.resolved_quality_code_id, v_assessment.trust_level) THEN<br>        RAISE EXCEPTION 'HMR-053 requires consistent PASSED assessment, acceptable trust and ACTIVE point'<br>            USING ERRCODE = '23514';<br>    END IF;<br>    PERFORM 1 FROM hidra_telemetry_type_catalog c<br>        WHERE c.id = NEW.quality_code_id AND c.catalog_name = 'QUALITY_CODE' AND c.active FOR SHARE;<br>    IF NOT FOUND THEN RAISE EXCEPTION 'HMR-053 quality code must be an active QUALITY_CODE' USING ERRCODE = '23514'; END IF;<br>    IF NEW.unit_id IS DISTINCT FROM v_point.unit_id OR NEW.ingestion_batch_id IS DISTINCT FROM v_raw.ingestion_batch_id<br>       OR (NEW.numeric_value, NEW.text_value, NEW.boolean_value, NEW.source_timestamp) IS DISTINCT FROM<br>          (v_raw.numeric_value, v_raw.text_value, v_raw.boolean_value, v_raw.source_timestamp) THEN<br>        RAISE EXCEPTION 'HMR-053 trusted values and provenance must derive from source evidence' USING ERRCODE = '23514';<br>    END IF;<br>    SELECT EXISTS (SELECT 1 FROM hidra_telemetry_point_binding b<br>                   WHERE b.point_id = NEW.point_id AND b.active AND b.valid_from &lt;= NEW.trusted_at<br>                     AND (b.valid_to IS NULL OR NEW.trusted_at &lt; b.valid_to)) INTO v_has_binding;<br>    IF v_has_binding THEN<br>        IF NOT EXISTS (SELECT 1 FROM hidra_telemetry_point_binding b<br>                       WHERE b.point_id = NEW.point_id AND b.active AND b.valid_from &lt;= NEW.trusted_at<br>                         AND (b.valid_to IS NULL OR NEW.trusted_at &lt; b.valid_to)<br>                         AND (b.topology_asset_type_code, b.topology_asset_id, b.topology_asset_code, b.topology_snapshot_id)<br>                             IS NOT DISTINCT FROM<br>                             (NEW.topology_asset_type_code, NEW.topology_asset_id, NEW.topology_asset_code, NEW.topology_snapshot_id)) THEN<br>            RAISE EXCEPTION 'HMR-053 topology snapshot must match an applicable active binding' USING ERRCODE = '23514';<br>        END IF;<br>    ELSIF NEW.topology_asset_type_code IS NOT NULL OR NEW.topology_asset_id IS NOT NULL<br>          OR NEW.topology_asset_code IS NOT NULL OR NEW.topology_snapshot_id IS NOT NULL THEN<br>        RAISE EXCEPTION 'HMR-053 no active binding supports the supplied topology snapshot' USING ERRCODE = '23514';<br>    END IF;<br>    RETURN NEW;<br>END $function$<br>
+- `trg_t09_trusted_delete_immutable`: CREATE TRIGGER trg_t09_trusted_delete_immutable BEFORE DELETE ON hidra_telemetry_trusted_reading FOR EACH ROW EXECUTE FUNCTION hidra_t09_deny_evidence_mutation()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t09_deny_evidence_mutation()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t09_deny_evidence_mutation()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'public'<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'T09 immutable assessment/publication evidence' USING ERRCODE='23514';<br>END<br>$function$<br>
+- `trg_t09_validate_binding`: CREATE TRIGGER trg_t09_validate_binding BEFORE INSERT ON hidra_telemetry_trusted_reading FOR EACH ROW EXECUTE FUNCTION hidra_t09_validate_binding()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t09_validate_binding()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t09_validate_binding()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'public'<br>AS $function$<br>DECLARE v_binding public.hidra_telemetry_point_binding%ROWTYPE;<br>BEGIN<br>    IF NEW.binding_id IS NULL THEN RETURN NEW; END IF; -- Historical private records remain valid.<br>    SELECT * INTO v_binding FROM public.hidra_telemetry_point_binding<br>        WHERE id=NEW.binding_id FOR SHARE;<br>    IF NOT FOUND OR v_binding.point_id IS DISTINCT FROM NEW.point_id<br>        OR NOT v_binding.active<br>        OR v_binding.valid_from &gt; NEW.trusted_at<br>        OR (v_binding.valid_to IS NOT NULL AND NEW.trusted_at &gt;= v_binding.valid_to)<br>        OR (v_binding.topology_asset_type_code,v_binding.topology_asset_id,<br>            v_binding.topology_asset_code,v_binding.topology_snapshot_id)<br>            IS DISTINCT FROM<br>           (NEW.topology_asset_type_code,NEW.topology_asset_id,<br>            NEW.topology_asset_code,NEW.topology_snapshot_id) THEN<br>        RAISE EXCEPTION 'T09 trusted binding provenance mismatch' USING ERRCODE='23514';<br>    END IF;<br>    RETURN NEW;<br>END<br>$function$<br>
 
 ### public.hidra_telemetry_type_catalog
 

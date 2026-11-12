@@ -8325,7 +8325,8 @@
         "nativeCommissioningCreatesScopedSourcePointMappingAndEffectiveBinding",
         "nativeTextAndBooleanReadingsPreserveTypedValuesWithoutTrustPublication",
         "protectedReadingAndReplaySurviveSeparateApplicationJvmRestart",
-        "protectedReadsAndInvalidNativeObservationsFailClosedWithoutAppend"
+        "protectedReadsAndInvalidNativeObservationsFailClosedWithoutAppend",
+        "t09NativeQualityTrustAndReadbackUseVerifiedPolicyAndCurrentScopedGrants"
       ],
       "class": "dz.sh.hidra.modules.telemetry.infrastructure.persistence.TelemetryReadingIngestionNativeHttpPostgresIntegrationTest",
       "dependency_reason": "HAPI-933 synthetic native Telemetry protected ingestion/replay acceptance; PostgreSQL required for native concurrency.",
@@ -8333,7 +8334,7 @@
       "lane": "postgres-integration",
       "owner": "telemetry",
       "path": "src/test/java/dz/sh/hidra/modules/telemetry/infrastructure/persistence/TelemetryReadingIngestionNativeHttpPostgresIntegrationTest.java",
-      "source_sha256": "29a5700b25f035c0329154790227997da750b5858404b41222ac72b9c91a0654",
+      "source_sha256": "70c9d87ca3dd91adf13e213e977627f6b895d5ca25d763cdbe24d7a9c7cc517f",
       "supports": []
     },
     {

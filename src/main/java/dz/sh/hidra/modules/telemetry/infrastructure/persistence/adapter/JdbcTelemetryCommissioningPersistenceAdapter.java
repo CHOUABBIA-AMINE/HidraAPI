@@ -42,7 +42,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
-public final class JdbcTelemetryCommissioningPersistenceAdapter implements TelemetryCommissioningPersistencePort {
+public class JdbcTelemetryCommissioningPersistenceAdapter implements TelemetryCommissioningPersistencePort {
     private final JdbcTemplate jdbc;
     private static final String VIEW = """
         SELECT s.id AS source_id,s.code AS source_code,

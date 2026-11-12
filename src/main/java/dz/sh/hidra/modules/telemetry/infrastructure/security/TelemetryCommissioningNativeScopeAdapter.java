@@ -20,40 +20,28 @@
 package dz.sh.hidra.modules.telemetry.infrastructure.security;
 
 import dz.sh.hidra.modules.telemetry.application.port.out.TelemetryCommissioningAuthorizationPort;
-import dz.sh.hidra.modules.identity.application.contract.telemetry.TelemetryScopedAuthorizationContract;
-import dz.sh.hidra.modules.topology.application.contract.telemetry.TelemetryTopologyOwnershipContract;
 import java.util.Objects;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
 
 @Component
 public final class TelemetryCommissioningNativeScopeAdapter implements TelemetryCommissioningAuthorizationPort {
-    private final TelemetryScopedAuthorizationContract identity;
-    private final TelemetryTopologyOwnershipContract topology;
-    public TelemetryCommissioningNativeScopeAdapter(TelemetryScopedAuthorizationContract identity,
-                                                     TelemetryTopologyOwnershipContract topology) {
-        this.identity=Objects.requireNonNull(identity);
-        this.topology=Objects.requireNonNull(topology);
+    private final TelemetryReadingNativeScopeAdapter nativeScope;
+    public TelemetryCommissioningNativeScopeAdapter(TelemetryReadingNativeScopeAdapter nativeScope) {
+        this.nativeScope=Objects.requireNonNull(nativeScope);
     }
     @Override public void requireCompanyManage(String company) {
-        identity.require(TelemetryScopedAuthorizationContract.Operation.COMMISSION,company,null,null);
+        nativeScope.requireCompanyManage(company);
     }
     @Override public void requireCompanyRead(String company) {
-        identity.require(TelemetryScopedAuthorizationContract.Operation.READ,company,null,null);
+        nativeScope.requireCompanyRead(company);
     }
     @Override public void requireScopedManage(String company,String source,String point) {
-        identity.require(TelemetryScopedAuthorizationContract.Operation.COMMISSION,company,source,point);
+        nativeScope.requireScopedManage(company,source,point);
     }
     @Override public void requireScopedRead(String company,String source,String point) {
-        identity.require(TelemetryScopedAuthorizationContract.Operation.READ,company,source,point);
+        nativeScope.requireScopedRead(company,source,point);
     }
     @Override public void requireAsset(String company,String type,String asset) {
-        var owned=topology.currentOwner(type,asset).orElseThrow(TelemetryCommissioningNativeScopeAdapter::denied);
-        if(!owned.companyPartyId().equals(company)
-                || !owned.typeCode().equals(type) || !owned.assetId().equals(asset))
-            throw denied();
-    }
-    private static AccessDeniedException denied() {
-        return new AccessDeniedException("Protected telemetry resource unavailable.");
+        nativeScope.requireAsset(company,type,asset);
     }
 }

@@ -31,7 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public final class TelemetryCommissioningApplicationService implements TelemetryCommissioningUseCase {
+public class TelemetryCommissioningApplicationService implements TelemetryCommissioningUseCase {
     private final TelemetryCommissioningPersistencePort store;
     private final TelemetryCommissioningAuthorizationPort authority;
     public TelemetryCommissioningApplicationService(TelemetryCommissioningPersistencePort store,

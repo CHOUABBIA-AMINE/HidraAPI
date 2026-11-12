@@ -1287,8 +1287,19 @@ public class ProductRevisionPublicationNativeHttpPostgresIntegrationTest {
         assertThat(reevaluated.path("currentCompleteness").path("complete").asBoolean()).isFalse();
         assertThat(reevaluated.path("currentCompleteness").path("findings").toString())
             .contains("SOURCE_NOT_CURRENTLY_ELIGIBLE","SOURCE_INTERVAL_NOT_COVERED");
-        // Withdrawn Custody evidence is protected: do not leak eligibility through a 409.
-        baselineRequest(actor, baseline.path(), baseline.body()).andExpect(status().isForbidden());
+        // The signed author remains authorized to read these selected sources, but the
+        // withdrawn Custody publication invalidates the pinned interval. This is a
+        // non-disclosing business conflict, not an authorization failure.
+        var rejected = baselineRequest(actor, baseline.path(), baseline.body())
+                .andExpect(status().isConflict()).andReturn();
+        var problem = JSON.readTree(rejected.getResponse().getContentAsString());
+        assertThat(problem.path("code").asText()).isEqualTo("CONFLICT");
+        assertThat(problem.path("detail").asText())
+                .isEqualTo("Baseline publication operation not completed");
+        assertThat(rejected.getResponse().getContentAsString()).doesNotContain(
+                "SOURCE_NOT_CURRENTLY_ELIGIBLE", "SOURCE_INTERVAL_NOT_COVERED",
+                productPublication.toString(), PRODUCT);
+        // A failed source recheck must not append a publication or advance the head.
         assertThat(jdbc.queryForObject("SELECT count(*) FROM public.hidra_topology_baseline_publication"
                 + " WHERE company_party_id=? AND pipeline_system_id=?", Long.class, COMPANY, pipeline)).isEqualTo(1L);
     }

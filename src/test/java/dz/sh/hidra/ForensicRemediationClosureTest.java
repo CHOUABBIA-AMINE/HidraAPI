@@ -310,11 +310,13 @@ class ForensicRemediationClosureTest {
 
     private static boolean baselineOwnerExport(String source,String imported) {
         String coordinator="dz.sh.hidra.modules.topology.application.service.ProtectedEngineeringBaselineAdmissionCoordinator";
+        String publicationCoordinator="dz.sh.hidra.modules.topology.application.service.ProtectedEngineeringBaselinePublicationCoordinator";
         String reader="dz.sh.hidra.modules.topology.infrastructure.integration.EngineeringBaselineSourceAdapter";
         String identity="dz.sh.hidra.modules.identity.application.contract.topology.TopologyEngineeringBaselineAuthorizationContract";
         String custody="dz.sh.hidra.modules.custody.application.contract.topology.TopologyBaselineProductSourceContract";
         String manufacturer="dz.sh.hidra.modules.simulation.application.contract.topology.TopologyManufacturerCharacteristicReferenceContract";
-        return (source.equals(coordinator) && (imported.equals(identity)||imported.startsWith(identity+".")))
+        return ((source.equals(coordinator)||source.equals(publicationCoordinator))
+                && (imported.equals(identity)||imported.startsWith(identity+".")))
             || (source.equals(reader) && List.of(custody,manufacturer).stream()
                 .anyMatch(root -> imported.equals(root)||imported.startsWith(root+".")));
     }

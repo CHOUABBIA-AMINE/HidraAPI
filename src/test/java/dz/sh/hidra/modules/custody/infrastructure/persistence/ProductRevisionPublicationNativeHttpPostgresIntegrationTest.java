@@ -1271,7 +1271,8 @@ public class ProductRevisionPublicationNativeHttpPostgresIntegrationTest {
         assertThat(reevaluated.path("currentCompleteness").path("complete").asBoolean()).isFalse();
         assertThat(reevaluated.path("currentCompleteness").path("findings").toString())
             .contains("SOURCE_NOT_CURRENTLY_ELIGIBLE","SOURCE_INTERVAL_NOT_COVERED");
-        baselineRequest(actor, baseline.path(), baseline.body()).andExpect(status().isConflict());
+        // Withdrawn Custody evidence is protected: do not leak eligibility through a 409.
+        baselineRequest(actor, baseline.path(), baseline.body()).andExpect(status().isForbidden());
         assertThat(jdbc.queryForObject("SELECT count(*) FROM public.hidra_topology_baseline_publication"
                 + " WHERE company_party_id=? AND pipeline_system_id=?", Long.class, COMPANY, pipeline)).isEqualTo(1L);
     }

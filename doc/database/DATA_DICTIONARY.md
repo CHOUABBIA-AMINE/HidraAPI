@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `07c22ae4b8359678998213730da952b9f48f6480`
+Captured source SHA: `dd9c888dc9bc8146dcdd49039deec7f753270725`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `d6984e547a79c6616b9f8d0cf7e985f7832ca50cf167e478a9292a9148210b94`.
-Migrations: 206; JPA mappings: 470; catalog relations: 557; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `03f961198111beaa2906ff3dae758eb358334db2b59d0f3626ac91d6098e1516`.
+Migrations: 207; JPA mappings: 470; catalog relations: 559; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -10357,6 +10357,7 @@ Persisted PermissionJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261110_002__planning_company_scope.sql](../../src/main/resources/db/migration/V20261110_002__planning_company_scope.sql)
 - Migration mention (not inferred introduction): [V20261110_003__planning_draft_author_permission.sql](../../src/main/resources/db/migration/V20261110_003__planning_draft_author_permission.sql)
 - Migration mention (not inferred introduction): [V20261111_001__planning_revision_review_permission.sql](../../src/main/resources/db/migration/V20261111_001__planning_revision_review_permission.sql)
+- Migration mention (not inferred introduction): [V20261111_002__topology_engineering_baseline_publication.sql](../../src/main/resources/db/migration/V20261111_002__topology_engineering_baseline_publication.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -27135,6 +27136,110 @@ Persisted TelemetryValidationRuleJpaEntity state; semantic authority remains wit
 
 None captured in this catalog category.
 
+### public.hidra_topology_baseline_publication
+
+Owner: **topology**; relation kind: `r`.
+
+Append-only approved baseline publications and request receipts. The greatest company/pipeline epoch is the published head.
+
+- Evidence: [JdbcEngineeringBaselinePublicationRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringBaselinePublicationRepositoryAdapter.java)
+- Evidence: [V20261111_002__topology_engineering_baseline_publication.sql](../../src/main/resources/db/migration/V20261111_002__topology_engineering_baseline_publication.sql)
+- Migration mention (not inferred introduction): [V20261111_002__topology_engineering_baseline_publication.sql](../../src/main/resources/db/migration/V20261111_002__topology_engineering_baseline_publication.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| pipeline_system_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| receipt_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| submission_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| epoch | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| definition_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| definition_version | integer | False | None; identity=; generated= | No current mapped Java column | — |
+| target_type_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| purpose_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| instance_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| task_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| action_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| reviewer_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| reviewed_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| published_by | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| published_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_topology_baseline_publi_company_party_id_pipeline_sy_fkey`: FOREIGN KEY (company_party_id, pipeline_system_id, submission_id) REFERENCES hidra_topology_baseline_submission(company_party_id, pipeline_system_id, submission_id)
+  - Catalog attributes: {"columns": ["company_party_id", "pipeline_system_id", "submission_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["company_party_id", "pipeline_system_id", "submission_id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_baseline_submission"}, "type": "f", "validated": true}
+- `hidra_topology_baseline_publi_company_party_id_pipeline_sy_key1`: UNIQUE (company_party_id, pipeline_system_id, submission_id)
+  - Catalog attributes: {"columns": ["company_party_id", "pipeline_system_id", "submission_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_topology_baseline_publi_company_party_id_pipeline_sys_key`: UNIQUE (company_party_id, pipeline_system_id, receipt_id)
+  - Catalog attributes: {"columns": ["company_party_id", "pipeline_system_id", "receipt_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_topology_baseline_publication_action_id_key`: UNIQUE (action_id)
+  - Catalog attributes: {"columns": ["action_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_topology_baseline_publication_check`: CHECK (published_at &gt;= reviewed_at)
+  - Catalog attributes: {"columns": ["published_at", "reviewed_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_baseline_publication_definition_version_check`: CHECK (definition_version &gt; 0)
+  - Catalog attributes: {"columns": ["definition_version"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_baseline_publication_epoch_check`: CHECK (epoch &gt; 0)
+  - Catalog attributes: {"columns": ["epoch"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_baseline_publication_pkey`: PRIMARY KEY (company_party_id, pipeline_system_id, epoch)
+  - Catalog attributes: {"columns": ["company_party_id", "pipeline_system_id", "epoch"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+
+#### Indexes
+
+- `hidra_topology_baseline_publi_company_party_id_pipeline_sy_key1`: CREATE UNIQUE INDEX hidra_topology_baseline_publi_company_party_id_pipeline_sy_key1 ON public.hidra_topology_baseline_publication USING btree (company_party_id, pipeline_system_id, submission_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_topology_baseline_publi_company_party_id_pipeline_sys_key`: CREATE UNIQUE INDEX hidra_topology_baseline_publi_company_party_id_pipeline_sys_key ON public.hidra_topology_baseline_publication USING btree (company_party_id, pipeline_system_id, receipt_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_topology_baseline_publication_action_id_key`: CREATE UNIQUE INDEX hidra_topology_baseline_publication_action_id_key ON public.hidra_topology_baseline_publication USING btree (action_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_topology_baseline_publication_pkey`: CREATE UNIQUE INDEX hidra_topology_baseline_publication_pkey ON public.hidra_topology_baseline_publication USING btree (company_party_id, pipeline_system_id, epoch)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `baseline_publication_immutable`: CREATE TRIGGER baseline_publication_immutable BEFORE DELETE OR UPDATE OR TRUNCATE ON hidra_topology_baseline_publication FOR EACH STATEMENT EXECUTE FUNCTION hidra_topology_baseline_immutable_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_baseline_immutable_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_baseline_immutable_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Engineering baseline draft history is immutable' USING ERRCODE='23514';<br>END;<br>$function$<br>
+
+### public.hidra_topology_baseline_submission
+
+Owner: **topology**; relation kind: `r`.
+
+Exact baseline submission tied to one immutable company/pipeline manifest revision and canonical digest.
+
+- Evidence: [JdbcEngineeringBaselinePublicationRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringBaselinePublicationRepositoryAdapter.java)
+- Evidence: [V20261111_002__topology_engineering_baseline_publication.sql](../../src/main/resources/db/migration/V20261111_002__topology_engineering_baseline_publication.sql)
+- Migration mention (not inferred introduction): [V20261111_002__topology_engineering_baseline_publication.sql](../../src/main/resources/db/migration/V20261111_002__topology_engineering_baseline_publication.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| pipeline_system_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| submission_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| manifest_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| version | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| canonical_sha256 | character varying(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| submitted_by | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| submitted_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_topology_baseline_submi_company_party_id_pipeline_sy_fkey`: FOREIGN KEY (company_party_id, pipeline_system_id, manifest_id, version, canonical_sha256) REFERENCES hidra_topology_engineering_baseline_revision(company_party_id, pipeline_system_id, manifest_id, version, canonical_sha256)
+  - Catalog attributes: {"columns": ["company_party_id", "pipeline_system_id", "manifest_id", "version", "canonical_sha256"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["company_party_id", "pipeline_system_id", "manifest_id", "version", "canonical_sha256"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_engineering_baseline_revision"}, "type": "f", "validated": true}
+- `hidra_topology_baseline_submission_pkey`: PRIMARY KEY (company_party_id, pipeline_system_id, submission_id)
+  - Catalog attributes: {"columns": ["company_party_id", "pipeline_system_id", "submission_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+
+#### Indexes
+
+- `hidra_topology_baseline_submission_pkey`: CREATE UNIQUE INDEX hidra_topology_baseline_submission_pkey ON public.hidra_topology_baseline_submission USING btree (company_party_id, pipeline_system_id, submission_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `baseline_submission_immutable`: CREATE TRIGGER baseline_submission_immutable BEFORE DELETE OR UPDATE OR TRUNCATE ON hidra_topology_baseline_submission FOR EACH STATEMENT EXECUTE FUNCTION hidra_topology_baseline_immutable_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_baseline_immutable_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_baseline_immutable_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Engineering baseline draft history is immutable' USING ERRCODE='23514';<br>END;<br>$function$<br>
+
 ### public.hidra_topology_connection
 
 Owner: **topology**; relation kind: `r`.
@@ -27367,6 +27472,7 @@ Topology-owned immutable exact manifest revision, canonical bytes, findings and 
 - Evidence: [JdbcEngineeringBaselineDraftRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringBaselineDraftRepositoryAdapter.java)
 - Evidence: [V20261103_001__topology_engineering_baseline_drafts.sql](../../src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql)
 - Migration mention (not inferred introduction): [V20261103_001__topology_engineering_baseline_drafts.sql](../../src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql)
+- Migration mention (not inferred introduction): [V20261111_002__topology_engineering_baseline_publication.sql](../../src/main/resources/db/migration/V20261111_002__topology_engineering_baseline_publication.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -27395,6 +27501,8 @@ Topology-owned immutable exact manifest revision, canonical bytes, findings and 
 
 - `hidra_topology_engineering_ba_company_party_id_pipeline_sy_fkey`: FOREIGN KEY (company_party_id, pipeline_system_id, manifest_id) REFERENCES hidra_topology_engineering_baseline_draft(company_party_id, pipeline_system_id, manifest_id) ON DELETE RESTRICT DEFERRABLE INITIALLY DEFERRED
   - Catalog attributes: {"columns": ["company_party_id", "pipeline_system_id", "manifest_id"], "deferrable": true, "initially_deferred": true, "reference": {"columns": ["company_party_id", "pipeline_system_id", "manifest_id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_topology_engineering_baseline_draft"}, "type": "f", "validated": true}
+- `hidra_topology_engineering_ba_company_party_id_pipeline_sys_key`: UNIQUE (company_party_id, pipeline_system_id, manifest_id, version, canonical_sha256)
+  - Catalog attributes: {"columns": ["company_party_id", "pipeline_system_id", "manifest_id", "version", "canonical_sha256"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
 - `hidra_topology_engineering_baseline_engineering_qualified_check`: CHECK (NOT engineering_qualified)
   - Catalog attributes: {"columns": ["engineering_qualified"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
 - `hidra_topology_engineering_baseline_rev_canonical_payload_check`: CHECK (octet_length(canonical_payload) &gt;= 64 AND octet_length(canonical_payload) &lt;= 4194304)
@@ -27422,6 +27530,8 @@ Topology-owned immutable exact manifest revision, canonical bytes, findings and 
 
 #### Indexes
 
+- `hidra_topology_engineering_ba_company_party_id_pipeline_sys_key`: CREATE UNIQUE INDEX hidra_topology_engineering_ba_company_party_id_pipeline_sys_key ON public.hidra_topology_engineering_baseline_revision USING btree (company_party_id, pipeline_system_id, manifest_id, version, canonical_sha256)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
 - `hidra_topology_engineering_baseline_revision_pkey`: CREATE UNIQUE INDEX hidra_topology_engineering_baseline_revision_pkey ON public.hidra_topology_engineering_baseline_revision USING btree (company_party_id, pipeline_system_id, manifest_id, version)
   - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
 
@@ -31341,6 +31451,7 @@ Persisted WorkflowCatalogEntryJpaEntity state; semantic authority remains with w
 - Migration mention (not inferred introduction): [V20261006_018__hmr_099_workflow_state_history.sql](../../src/main/resources/db/migration/V20261006_018__hmr_099_workflow_state_history.sql)
 - Migration mention (not inferred introduction): [V20261027_005__workflow_custody_publication_policy.sql](../../src/main/resources/db/migration/V20261027_005__workflow_custody_publication_policy.sql)
 - Migration mention (not inferred introduction): [V20261101_002__workflow_topology_characteristic_approval_catalog.sql](../../src/main/resources/db/migration/V20261101_002__workflow_topology_characteristic_approval_catalog.sql)
+- Migration mention (not inferred introduction): [V20261111_002__topology_engineering_baseline_publication.sql](../../src/main/resources/db/migration/V20261111_002__topology_engineering_baseline_publication.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|

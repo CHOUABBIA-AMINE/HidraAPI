@@ -1239,9 +1239,9 @@
   ],
   "openapi": {
     "counts": {
-      "operations": 394,
-      "paths": 354,
-      "schemas": 445
+      "operations": 397,
+      "paths": 357,
+      "schemas": 450
     },
     "path": "doc/api/openapi.yaml",
     "prior_reviewed_provenance": {
@@ -1276,38 +1276,37 @@
       ]
     },
     "provenance": {
-      "source_sha": "011c4b07a809ccc5a8fef07aa3e0b005e6b7f23c",
-      "run_id": 43039843411,
+      "source_sha": "dd9c888dc9bc8146dcdd49039deec7f753270725",
+      "run_id": 43175501980,
       "run_attempt": 1,
-      "job_id": 130588383072,
-      "artifact_id": 13864154201,
-      "artifact_name": "hidra-api-openapi-011c4b07a809ccc5a8fef07aa3e0b005e6b7f23c-43039843411-1-api-contract",
+      "job_id": 131038670711,
+      "artifact_id": 13923997257,
+      "artifact_name": "hidra-api-openapi-dd9c888dc9bc8146dcdd49039deec7f753270725-43175501980-1-api-contract",
       "artifact_member": "hidra-api.json",
-      "json_sha256": "08b334a41773b862749536f6fe9f7777236d7a591f40b3f01cd3948e78d1f3e7",
-      "zip_sha256": "97a856b885cbf2b776dd5f52d103089b22f81ef0d2e5995fd4309db5616d7daf",
+      "json_sha256": "4254d05b9d726b9ea73964597e037507fb65b6ad30b9de7e6b45219bf32ce367",
+      "zip_sha256": "c6db848ed7c55d1e74244082a5761819372ad6ef13a5a7006ef144b6812121fd",
       "generation_step": "Publish deterministic OpenAPI contract",
       "generation_step_number": 9,
       "generation_step_conclusion": "success",
-      "compatibility_review": "Exact CI #1195 generated runtime contract adds only ProductPublicationBaselinePinResponse and an optional ProductPublicationResultResponse.baselinePin. Removing both and restoring the previous source stamp reproduces reviewed canonical SHA-256 311da018f377b51f4b69e3e48439e3c2373d650f80b870252acd6e24d642b831. Same-run backward compatibility passed; paths 354, operations 394, schemas 445.",
+      "compatibility_review": "CI #1199 generated artifact passed backward compatibility: 357 paths, 397 operations, 450 schemas; exact runtime content is refreshed without synthesized API declarations.",
       "conclusion": "success",
-      "conclusion_scope": "Runtime build, OpenAPI generation and compatibility passed, as did all fourteen PostgreSQL shards and unit/architecture tests; overall CI #1195 failed at canonical snapshot equality, causing the full evidence gate to fail. This is generation evidence, not green CI.",
+      "conclusion_scope": "Runtime OpenAPI generation and compatibility only. Full CI #1199 failed its architecture test, PostgreSQL shard 5 and canonical OpenAPI snapshot comparison.",
       "job_conclusion": "failure",
       "workflow_conclusion": "failure",
       "failed_step": "Enforce canonical OpenAPI snapshot equality",
       "database_evidence": {
-        "capture_step": "Capture current migrated database dictionary evidence",
-        "capture_step_conclusion": "success",
-        "strict_equality_step": "Enforce canonical database dictionary equality",
-        "strict_equality_conclusion": "skipped",
-        "artifact_id": 13865081503
+        "artifact_id": 13923927462,
+        "artifact_member": "DATA_DICTIONARY.md",
+        "source_sha": "dd9c888dc9bc8146dcdd49039deec7f753270725",
+        "dictionary_sha256": "51356f4a5a813b025acbca4a858f3f8edd5606538338af4ac77a8e6e4bcda07a",
+        "artifact_zip_sha256": "91bf846f1090190f31f037ff3b8a32cea94f7e0d09466b80b7229247030ca4b0"
       },
       "remaining_gates": [
-        "Replacement exact-SHA full CI for OpenAPI, physical dictionary, and final evidence",
-        "Complete multi-owner synthetic GZ2 baseline fixture pending; T06 not selected"
+        "Replacement exact-SHA full CI, including source test inventory, architecture, all PostgreSQL shards, OpenAPI, physical dictionary and Full Verification Gate"
       ]
     },
-    "sha256": "06126b85a7498a6a3ba05ecb91953160040050710a472a91077567ec06dbae0b",
-    "source_sha": "011c4b07a809ccc5a8fef07aa3e0b005e6b7f23c"
+    "sha256": "265ff67261be1c99bd1f1f4c64e8e63f3a1bc5569c257226e07ea59eef3a04d8",
+    "source_sha": "dd9c888dc9bc8146dcdd49039deec7f753270725"
   },
   "register": "doc/governance/DOCUMENT_REGISTER.md",
   "register_areas": {

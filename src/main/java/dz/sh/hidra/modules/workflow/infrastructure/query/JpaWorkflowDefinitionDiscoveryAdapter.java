@@ -110,10 +110,11 @@ public class JpaWorkflowDefinitionDiscoveryAdapter implements WorkflowDefinition
                 || topology && (!targetId.matches("[0-9a-f]{64}") || locator == null || locator.isBlank()))
             return List.of();
 
-        String expectedType = topology ? TYPE : PLANNING_TYPE;
-        String expectedPurpose = topology ? PURPOSE : PLANNING_PURPOSE;
         var type = entities.find(WorkflowCatalogEntryJpaEntity.class, targetTypeId);
         var purpose = entities.find(WorkflowCatalogEntryJpaEntity.class, workflowPurposeId);
+        boolean baseline = topology && type != null && WorkflowOwnedTargetLookup.BASELINE_TARGET.equals(type.code());
+        String expectedType = topology ? (baseline ? WorkflowOwnedTargetLookup.BASELINE_TARGET : TYPE) : PLANNING_TYPE;
+        String expectedPurpose = topology ? (baseline ? WorkflowOwnedTargetLookup.BASELINE_PURPOSE : PURPOSE) : PLANNING_PURPOSE;
         if (type == null || !type.active() || !"WORKFLOW_TARGET_TYPE".equals(type.catalogName())
                 || !expectedType.equals(type.code()) || purpose == null || !purpose.active()
                 || !"WORKFLOW_PURPOSE".equals(purpose.catalogName())

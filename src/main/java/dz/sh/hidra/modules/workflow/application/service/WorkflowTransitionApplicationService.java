@@ -208,9 +208,15 @@ public class WorkflowTransitionApplicationService implements ExecuteWorkflowTran
                         || transition.decision() == WorkflowDecision.REJECT)) {
             var reviewedType = configuration.requireActiveCatalog(instance.targetTypeId(), "WORKFLOW_TARGET_TYPE");
             var reviewedPurpose = configuration.requireActiveCatalog(instance.workflowPurposeId(), "WORKFLOW_PURPOSE");
+            boolean baseline = dz.sh.hidra.modules.workflow.application.contract.target.WorkflowOwnedTargetLookup
+                    .BASELINE_TARGET.equals(reviewedType.code());
+            boolean allowedFamily = baseline
+                    ? dz.sh.hidra.modules.workflow.application.contract.target.WorkflowOwnedTargetLookup
+                        .BASELINE_PURPOSE.equals(reviewedPurpose.code()) && ownership.baselineReviewerAllowed(instance)
+                    : "INSTALLED_CHARACTERISTIC_LINK_REVISION".equals(reviewedType.code())
+                        && "INSTALLED_CHARACTERISTIC_LINK_APPROVAL".equals(reviewedPurpose.code());
             if (actor.id().equals(instance.startedByActorId())
-                    || !"INSTALLED_CHARACTERISTIC_LINK_REVISION".equals(reviewedType.code())
-                    || !"INSTALLED_CHARACTERISTIC_LINK_APPROVAL".equals(reviewedPurpose.code())
+                    || !allowedFamily
                     || publicationHumans == null
                     || publicationHumans.eligibleHuman(actor.id(), now)
                         .filter(h -> actor.id().equals(h.id())

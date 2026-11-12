@@ -74,6 +74,9 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
             Class<?> baseline=Class.forName(topology+"controller.EngineeringBaselineDraftController");
             Class<?> baselineCreate=Class.forName(topology+"request.EngineeringBaselineDraftRequests$Create");
             Class<?> baselineUpdate=Class.forName(topology+"request.EngineeringBaselineDraftRequests$Update");
+            Class<?> baselinePublication=Class.forName(topology+"controller.EngineeringBaselinePublicationController");
+            Class<?> submitBaseline=Class.forName(topology+"request.EngineeringBaselinePublicationRequests$Submit");
+            Class<?> publishBaseline=Class.forName(topology+"request.EngineeringBaselinePublicationRequests$Publish");
             final String baselineBase="/api/v1/topology/engineering-baselines";
             Class<?> pipeline=Class.forName(topology+"controller.PipelineAuthoringController");
             Class<?> pipelineWrite=Class.forName(topology+"request.PipelineAuthoringRequests$Write");
@@ -109,6 +112,9 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
                 new Route(pipeline,pipeline.getDeclaredMethod("write",String.class,String.class,String.class,pipelineWrite),"PUT",pipelineBase+"/authored-topology"),
                 new Route(pipeline,pipeline.getDeclaredMethod("view",String.class,String.class,String.class,Long.class),"GET",pipelineBase+"/authored-topology"),
                 new Route(pipeline,pipeline.getDeclaredMethod("choices",String.class,String.class,String.class,int.class,int.class,String.class),"GET",pipelineBase+"/authoring-choices"),
+                new Route(baselinePublication,baselinePublication.getDeclaredMethod("submit",java.util.UUID.class,submitBaseline),"POST",baselineBase+"/{manifestId}/submissions"),
+                new Route(baselinePublication,baselinePublication.getDeclaredMethod("publish",java.util.UUID.class,publishBaseline),"POST",baselineBase+"/submissions/{submissionId}/publications"),
+                new Route(baselinePublication,baselinePublication.getDeclaredMethod("receipt",java.util.UUID.class,String.class,String.class),"GET",baselineBase+"/publication-receipts/{receiptId}"),
                 new Route(baseline,baseline.getDeclaredMethod("create",baselineCreate),"POST",baselineBase),
                 new Route(baseline,baseline.getDeclaredMethod("update",java.util.UUID.class,baselineUpdate),"PUT",baselineBase+"/{manifestId}"),
                 new Route(baseline,baseline.getDeclaredMethod("current",java.util.UUID.class,String.class,String.class),"GET",baselineBase+"/{manifestId}"),

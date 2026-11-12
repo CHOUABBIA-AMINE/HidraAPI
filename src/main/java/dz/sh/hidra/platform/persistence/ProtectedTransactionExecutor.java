@@ -39,6 +39,10 @@ public final class ProtectedTransactionExecutor {
     private static final Set<String> MANUFACTURER_DML_HASHES=Set.of(
         "2af4bb321a4c0aa685d79e9703541cba7e4ad1d6500c312beaef72c582a3e7c0",
         "6d7338e5d51dcd102be55156fdd703e99bfa2623325178839a67d475cb42af6a");
+    private static final String BASELINE_PUBLICATION_SERVICE = "dz.sh.hidra.modules.topology.application.service.EngineeringBaselinePublicationApplicationService";
+    private static final String BASELINE_PUBLICATION_COORDINATOR = "dz.sh.hidra.modules.topology.application.service.ProtectedEngineeringBaselinePublicationCoordinator";
+    private static final String BASELINE_PUBLICATION_REPOSITORY = "dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.JdbcEngineeringBaselinePublicationRepositoryAdapter";
+    private static final Set<String> BASELINE_PUBLICATION_DML_HASHES = Set.of("eaba8bfd88768b5642d144ad064333fcc8ade259a12a254fc82dd3b650689982", "9248ac13d2a17794cff67821287fa45a8f87a1afeac74ada5942c9acbb91fc31");
     private static final String BASELINE_SERVICE="dz.sh.hidra.modules.topology.application.service.EngineeringBaselineDraftApplicationService";
     private static final String BASELINE_COORDINATOR="dz.sh.hidra.modules.topology.application.service.ProtectedEngineeringBaselineAdmissionCoordinator";
     private static final String BASELINE_REPOSITORY="dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.JdbcEngineeringBaselineDraftRepositoryAdapter";
@@ -141,7 +145,7 @@ public final class ProtectedTransactionExecutor {
     /** Select the private credential before any physical transaction; no business permission implied. */
     public <T> T executePublication(Supplier<T> work,Runnable flush,Runnable guard) {
         String caller=StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).getCallerClass().getName();
-        if(!caller.equals(BASELINE_SERVICE) && !caller.equals(MANUFACTURER_SERVICE) && !caller.equals(STATION_CONFIG_SERVICE) && !caller.equals(LINK_SERVICE) && !caller.equals(INSTALLED_SERVICE) && !caller.equals(PRODUCT_PUBLICATION_SERVICE) && !caller.equals(FLUID_SERVICE) && !caller.equals(PRODUCT_SERVICE) && !caller.equals(DRAFT_SERVICE) && !caller.equals(PUBLICATION_SERVICE) && !caller.equals(APPOINTMENT_SERVICE) && !caller.equals(
+        if(!caller.equals(BASELINE_SERVICE) && !caller.equals(BASELINE_PUBLICATION_SERVICE) && !caller.equals(MANUFACTURER_SERVICE) && !caller.equals(STATION_CONFIG_SERVICE) && !caller.equals(LINK_SERVICE) && !caller.equals(INSTALLED_SERVICE) && !caller.equals(PRODUCT_PUBLICATION_SERVICE) && !caller.equals(FLUID_SERVICE) && !caller.equals(PRODUCT_SERVICE) && !caller.equals(DRAFT_SERVICE) && !caller.equals(PUBLICATION_SERVICE) && !caller.equals(APPOINTMENT_SERVICE) && !caller.equals(
             "dz.sh.hidra.modules.topology.application.service.ProtectedStationGraphOperationService"))
             throw new IllegalStateException("Unreviewed credential route caller");
         long budgetNanos=publicationWorkBudgetNanos(caller);
@@ -159,7 +163,7 @@ public final class ProtectedTransactionExecutor {
     private long publicationWorkBudgetNanos(String caller) {
         if(caller.equals(MANUFACTURER_SERVICE))return budgets.manufacturerWorkBudgetNanos();
         if(caller.equals(APPOINTMENT_SERVICE))return budgets.appointmentWorkBudgetNanos();
-        if(caller.equals(BASELINE_SERVICE) || caller.equals(INSTALLED_SERVICE) || caller.equals(STATION_CONFIG_SERVICE) || caller.equals(LINK_SERVICE))return budgets.installedUnitWorkBudgetNanos();
+        if(caller.equals(BASELINE_SERVICE) || caller.equals(BASELINE_PUBLICATION_SERVICE) || caller.equals(INSTALLED_SERVICE) || caller.equals(STATION_CONFIG_SERVICE) || caller.equals(LINK_SERVICE))return budgets.installedUnitWorkBudgetNanos();
         if(caller.equals(PRODUCT_SERVICE) || caller.equals(FLUID_SERVICE) || caller.equals(PRODUCT_PUBLICATION_SERVICE))
             return budgets.custodyWorkBudgetNanos();
         // Owner-authorized development headroom for the remaining admitted topology/setup families.
@@ -307,7 +311,7 @@ public final class ProtectedTransactionExecutor {
         // Only the genuine compiled owner K coordinator can receive an opaque mutation permit.
         // Other callers can still seal read-only diagnostic admission (legacy contract).
         String caller=StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).getCallerClass().getName();
-        if(!caller.equals(BASELINE_COORDINATOR) && !caller.equals(STATION_CONFIG_COORDINATOR) && !caller.equals(LINK_COORDINATOR) && !caller.equals(INSTALLED_COORDINATOR) && !caller.equals(PRODUCT_PUBLICATION_COORDINATOR) && !caller.equals(FLUID_COORDINATOR) && !caller.equals(PRODUCT_COORDINATOR) && !caller.equals(DRAFT_COORDINATOR) && !caller.equals(PUBLICATION_COORDINATOR) && !caller.equals(
+        if(!caller.equals(BASELINE_COORDINATOR) && !caller.equals(BASELINE_PUBLICATION_COORDINATOR) && !caller.equals(STATION_CONFIG_COORDINATOR) && !caller.equals(LINK_COORDINATOR) && !caller.equals(INSTALLED_COORDINATOR) && !caller.equals(PRODUCT_PUBLICATION_COORDINATOR) && !caller.equals(FLUID_COORDINATOR) && !caller.equals(PRODUCT_COORDINATOR) && !caller.equals(DRAFT_COORDINATOR) && !caller.equals(PUBLICATION_COORDINATOR) && !caller.equals(
                     "dz.sh.hidra.modules.topology.application.service.ProtectedStationAdmissionCoordinator") && !caller.equals(APPOINTMENT_COORDINATOR) && !caller.equals(MANUFACTURER_COORDINATOR))
             return null;
         var result=new ProvisionalPermit(this,s,caller);
@@ -321,7 +325,7 @@ public final class ProtectedTransactionExecutor {
     public void beginProvisional(ProvisionalPermit permit,Set<String> exactStatements) {
         var s=admissionScope();
         String caller=StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).getCallerClass().getName();
-        if((!caller.equals(BASELINE_COORDINATOR) && !caller.equals(STATION_CONFIG_COORDINATOR) && !caller.equals(LINK_COORDINATOR) && !caller.equals(INSTALLED_COORDINATOR) && !caller.equals(PRODUCT_PUBLICATION_COORDINATOR) && !caller.equals(FLUID_COORDINATOR) && !caller.equals(PRODUCT_COORDINATOR) && !caller.equals(DRAFT_COORDINATOR) && !caller.equals(PUBLICATION_COORDINATOR) && !caller.equals(
+        if((!caller.equals(BASELINE_COORDINATOR) && !caller.equals(BASELINE_PUBLICATION_COORDINATOR) && !caller.equals(STATION_CONFIG_COORDINATOR) && !caller.equals(LINK_COORDINATOR) && !caller.equals(INSTALLED_COORDINATOR) && !caller.equals(PRODUCT_PUBLICATION_COORDINATOR) && !caller.equals(FLUID_COORDINATOR) && !caller.equals(PRODUCT_COORDINATOR) && !caller.equals(DRAFT_COORDINATOR) && !caller.equals(PUBLICATION_COORDINATOR) && !caller.equals(
                     "dz.sh.hidra.modules.topology.application.service.ProtectedStationAdmissionCoordinator") && !caller.equals(APPOINTMENT_COORDINATOR) && !caller.equals(MANUFACTURER_COORDINATOR))
           || permit==null || !caller.equals(permit.owner) || permit.issuer!=this || permit.scope!=s
           || s.provisionalPermit!=permit || permit.opened || permit.consumed
@@ -332,7 +336,9 @@ public final class ProtectedTransactionExecutor {
         Set<String> allowed=Set.copyOf(exactStatements);
         for(String sql:allowed) {
             if(sql==null || sql.contains(";") || sql.contains("--") || sql.contains("/*")
-               || !(caller.equals(BASELINE_COORDINATOR)
+               || !(caller.equals(BASELINE_PUBLICATION_COORDINATOR)
+                    ? BASELINE_PUBLICATION_DML_HASHES.contains(statementDigest(sql))
+                    : caller.equals(BASELINE_COORDINATOR)
                     ? BASELINE_DML_HASHES.contains(statementDigest(sql))
                     : caller.equals(INSTALLED_COORDINATOR)
                     ? INSTALLED_DML_HASHES.contains(statementDigest(sql))
@@ -371,7 +377,7 @@ public final class ProtectedTransactionExecutor {
     public void endProvisional(ProvisionalPermit permit) {
         var s=admissionScope();
         String caller=StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).getCallerClass().getName();
-        if((!caller.equals(BASELINE_COORDINATOR) && !caller.equals(STATION_CONFIG_COORDINATOR) && !caller.equals(LINK_COORDINATOR) && !caller.equals(INSTALLED_COORDINATOR) && !caller.equals(PRODUCT_PUBLICATION_COORDINATOR) && !caller.equals(FLUID_COORDINATOR) && !caller.equals(PRODUCT_COORDINATOR) && !caller.equals(DRAFT_COORDINATOR) && !caller.equals(PUBLICATION_COORDINATOR) && !caller.equals(
+        if((!caller.equals(BASELINE_COORDINATOR) && !caller.equals(BASELINE_PUBLICATION_COORDINATOR) && !caller.equals(STATION_CONFIG_COORDINATOR) && !caller.equals(LINK_COORDINATOR) && !caller.equals(INSTALLED_COORDINATOR) && !caller.equals(PRODUCT_PUBLICATION_COORDINATOR) && !caller.equals(FLUID_COORDINATOR) && !caller.equals(PRODUCT_COORDINATOR) && !caller.equals(DRAFT_COORDINATOR) && !caller.equals(PUBLICATION_COORDINATOR) && !caller.equals(
                     "dz.sh.hidra.modules.topology.application.service.ProtectedStationAdmissionCoordinator") && !caller.equals(APPOINTMENT_COORDINATOR) && !caller.equals(MANUFACTURER_COORDINATOR))
           || permit==null || !caller.equals(permit.owner) || permit.issuer!=this || permit.scope!=s || s.provisionalPermit!=permit
           || !permit.opened || permit.consumed || s.phase!=ProtectedOperationDataSource.Phase.PROVISIONAL) {
@@ -436,6 +442,12 @@ public final class ProtectedTransactionExecutor {
         if(!caller.equals(INSTALLED_COORDINATOR) || !s.admission || s.phase!=ProtectedOperationDataSource.Phase.FLUSHING) {
             s.reject("unreviewed final preparation");s.healthy();
         }
+    }
+    public void requireEngineeringBaselinePublicationStorageLock() {
+        requireBaselineCaller(BASELINE_PUBLICATION_REPOSITORY, ProtectedOperationDataSource.Phase.ADMITTING);
+    }
+    public void requireEngineeringBaselinePublicationFinalPreparation() {
+        requireBaselineCaller(BASELINE_PUBLICATION_COORDINATOR, ProtectedOperationDataSource.Phase.FLUSHING);
     }
     public void requireEngineeringBaselineStorageLock(){
         requireBaselineCaller(BASELINE_REPOSITORY,ProtectedOperationDataSource.Phase.ADMITTING);

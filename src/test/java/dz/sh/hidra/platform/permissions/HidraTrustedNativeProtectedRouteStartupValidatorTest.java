@@ -60,7 +60,7 @@ class HidraTrustedNativeProtectedRouteStartupValidatorTest {
 
     @Test void productionNativeExactRoutesFailWithoutCompiledMappings() {
         var registry = new HidraTrustedNativeProtectedRouteRegistry();
-        assertTrue(registry.candidates().size()==31);
+        assertTrue(registry.candidates().size()==34);
         assertThrows(IllegalStateException.class, ()->
                 new HidraTrustedNativeProtectedRouteStartupValidator(
                     new RequestMappingHandlerMapping(), registry).validate());

@@ -1257,6 +1257,7 @@ public class ProductRevisionPublicationNativeHttpPostgresIntegrationTest {
             .param("companyPartyId",COMPANY).param("pipelineSystemId",pipeline))
             .andExpect(status().isOk()).andReturn().getResponse().getContentAsString())
             .path("currentCompleteness").path("complete").asBoolean()).isTrue();
+        var baseline = verifyBaselinePublication(actor, pipeline, base, result.path("canonicalSha256").asText());
         UUID productPublication=UUID.fromString(productPin.path("revisionId").asText());
         var withdrawn=json(send(actor,productDraft,"POST","/"+productPublication+"/withdraw",
             "{\"requestId\":\""+UUID.randomUUID()+"\",\"expectedEpoch\":1,"
@@ -1270,6 +1271,133 @@ public class ProductRevisionPublicationNativeHttpPostgresIntegrationTest {
         assertThat(reevaluated.path("currentCompleteness").path("complete").asBoolean()).isFalse();
         assertThat(reevaluated.path("currentCompleteness").path("findings").toString())
             .contains("SOURCE_NOT_CURRENTLY_ELIGIBLE","SOURCE_INTERVAL_NOT_COVERED");
+        baselineRequest(actor, baseline.path(), baseline.body()).andExpect(status().isConflict());
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM public.hidra_topology_baseline_publication"
+                + " WHERE company_party_id=? AND pipeline_system_id=?", Long.class, COMPANY, pipeline)).isEqualTo(1L);
+    }
+
+    private record PendingPublication(String path, String body) {}
+
+    private PendingPublication verifyBaselinePublication(HttpActor author, String pipeline, String base, String digest)
+            throws Exception {
+        jdbc.execute("GRANT SELECT,INSERT ON public.hidra_topology_baseline_submission,"
+                + "public.hidra_topology_baseline_publication TO c3_publication_app");
+        jdbc.execute("GRANT EXECUTE ON FUNCTION public.hidra_topology_baseline_lock_publication() TO c3_publication_app");
+        for (String table : List.of("action", "definition", "definition_target_binding", "instance",
+                "state_history", "step", "task", "transition", "type_catalog"))
+            jdbc.execute("GRANT SELECT,UPDATE ON public.hidra_workflow_" + table + " TO c3_publication_app");
+        var reviewer = httpActor("LOCAL");
+        topologySourceGrants(reviewer.fixture(), pipeline);
+        for (String scope : List.of("topology-company:" + COMPANY, "topology-network:" + pipeline)) {
+            for (String action : List.of("submit", "publish"))
+                topologyGrant(author.fixture(), "topology:engineering-baseline:" + action,
+                        "ENGINEERING_BASELINE_DRAFT", action, scope);
+            topologyGrant(reviewer.fixture(), "topology:engineering-baseline:review",
+                    "ENGINEERING_BASELINE_DRAFT", "review", scope);
+        }
+        String submitPath = base + "/submissions";
+        String submitBody = baselineSubmission(pipeline, UUID.randomUUID(), digest);
+        baselineRequest(author, submitPath, baselineSubmission(pipeline, UUID.randomUUID(), "0".repeat(64)))
+                .andExpect(status().isConflict());
+        var submitted = json(baselineRequest(author, submitPath, submitBody).andExpect(status().isOk()));
+        assertThat(json(baselineRequest(author, submitPath, submitBody).andExpect(status().isOk()))).isEqualTo(submitted);
+        assertThat(submitted.path("canonicalSha256").asText()).isEqualTo(digest);
+        assertThat(submitted.path("version").asLong()).isEqualTo(1);
+        String submissionId = submitted.path("submissionId").asText();
+
+        String definitionId = id();
+        String type = "t06-baseline-target", purpose = "t06-baseline-purpose";
+        jdbc.update("INSERT INTO hidra_workflow_definition(id,code,name_fr,type_id,status,version,created_at,updated_at)"
+                + " VALUES (?,?,'Synthetic baseline review',?,'ACTIVE',1,now(),now())", definitionId, definitionId, type);
+        for (int n = 1; n <= 2; n++)
+            jdbc.update("INSERT INTO hidra_workflow_step(id,definition_id,code,name_fr,step_order,mandatory,"
+                    + "allow_claim,allow_delegation,allow_escalation,created_at,updated_at)"
+                    + " VALUES (?,?,?,'Synthetic baseline review',?,true,false,false,false,now(),now())",
+                    definitionId + n, definitionId, "STEP" + n, n);
+        jdbc.update("INSERT INTO hidra_workflow_definition_target_binding(id,definition_id,target_module,target_type_id,"
+                + "workflow_purpose_id,active,created_at,updated_at) VALUES (?,?,'topology',?,?,true,now(),now())",
+                id(), definitionId, type, purpose);
+        String transition = definitionId + "approve";
+        jdbc.update("INSERT INTO hidra_workflow_transition(id,definition_id,from_step_id,to_step_id,decision,"
+                + "reason_required,comment_required,created_at,updated_at) VALUES (?,?,?,?,'APPROVE',false,false,now(),now())",
+                transition, definitionId, definitionId + 1, definitionId + 2);
+        baselinePrincipal(author);
+        var instance = workflows.startWorkflowInstance(new StartWorkflowInstanceCommand(definitionId, 1,
+                purpose, "topology", type, digest, submitted.path("workflowLocator").asText(), null,
+                definitionId + 1, author.fixture().user(), null, null, null, submissionId));
+        var task = workflows.createWorkflowTask(new CreateWorkflowTaskCommand(instance.id(), definitionId + 1,
+                reviewer.fixture().user(), null, null, null, null, null, null, null, null, "Synthetic baseline review"));
+        var actual = workflowTasks.findById(task.id()).orElseThrow();
+        assertThatThrownBy(() -> workflowTransitions.execute(new ExecuteWorkflowTransitionCommand(task.id(),
+                transition, actual.updatedAt(), null, null, null, submissionId,
+                author.fixture().user(), null, null, Set.of()))).isInstanceOf(RuntimeException.class);
+        baselinePrincipal(reviewer);
+        var decision = workflowTransitions.execute(new ExecuteWorkflowTransitionCommand(task.id(), transition,
+                actual.updatedAt(), null, null, null, submissionId, reviewer.fixture().user(), null, null, Set.of()));
+        UUID request = UUID.randomUUID();
+        String path = "/api/v1/topology/engineering-baselines/submissions/" + submissionId + "/publications";
+        String body = """
+                {"companyPartyId":"%s","pipelineSystemId":"%s","requestId":"%s","expectedEpoch":0,
+                 "decision":{"definitionId":"%s","definitionVersion":1,"targetTypeId":"%s","purposeId":"%s",
+                             "instanceId":"%s","taskId":"%s","actionId":"%s"}}
+                """.formatted(COMPANY, pipeline, request, definitionId, type, purpose, instance.id(), task.id(),
+                decision.actionId());
+        baselineRequest(author, path, body.replace(decision.actionId(), UUID.randomUUID().toString()))
+                .andExpect(status().isForbidden());
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM public.hidra_topology_baseline_publication"
+                + " WHERE company_party_id=? AND pipeline_system_id=?", Long.class, COMPANY, pipeline)).isZero();
+        String reviewerGrant = "UPDATE public.hidra_identity_user_permission_grant SET valid_to="
+                + " clock_timestamp() + make_interval(secs => ?) WHERE user_id=? AND scope_reference_id=?"
+                + " AND permission_id=(SELECT id FROM public.hidra_identity_permission"
+                + " WHERE code='topology:engineering-baseline:review')";
+        jdbc.update(reviewerGrant, -1, reviewer.fixture().user(), "topology-network:" + pipeline);
+        baselineRequest(author, path, body).andExpect(status().isForbidden());
+        jdbc.update(reviewerGrant, 3600, reviewer.fixture().user(), "topology-network:" + pipeline);
+        var published = json(baselineRequest(author, path, body).andExpect(status().isOk()));
+        assertThat(published.path("epoch").asLong()).isEqualTo(1);
+        assertThat(published.path("reviewerId").asText()).isEqualTo(reviewer.fixture().user());
+        assertThat(published.path("engineeringQualified").asBoolean(true)).isFalse();
+        assertThat(published.path("pins").size()).isEqualTo(2);
+        assertThat(json(baselineRequest(author, path, body).andExpect(status().isOk()))).isEqualTo(published);
+        baselineRequest(author, path, body.replace("\"expectedEpoch\":0", "\"expectedEpoch\":1"))
+                .andExpect(status().isConflict());
+        baselineRequest(author, path, body.replace(request.toString(), UUID.randomUUID().toString()))
+                .andExpect(status().isConflict());
+        String receipt = "/api/v1/topology/engineering-baselines/publication-receipts/" + request;
+        SecurityContextHolder.clearContext();
+        assertThat(json(http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(receipt)
+                .header("Authorization", "Bearer " + reviewer.token())
+                .param("companyPartyId", COMPANY).param("pipelineSystemId", pipeline))
+                .andExpect(status().isOk()))).isEqualTo(published);
+        SecurityContextHolder.clearContext();
+        http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(receipt)
+                .header("Authorization", "Bearer " + reviewer.token())
+                .param("companyPartyId", "other-company").param("pipelineSystemId", pipeline))
+                .andExpect(status().isForbidden());
+        var pending = json(baselineRequest(author, submitPath, baselineSubmission(pipeline, UUID.randomUUID(), digest))
+                .andExpect(status().isOk()));
+        String pendingPath = path.replace(submissionId, pending.path("submissionId").asText());
+        return new PendingPublication(pendingPath, body.replace(request.toString(), UUID.randomUUID().toString())
+                .replace("\"expectedEpoch\":0", "\"expectedEpoch\":1"));
+    }
+
+    private String baselineSubmission(String pipeline, UUID id, String digest) {
+        return """
+                {"companyPartyId":"%s","pipelineSystemId":"%s","requestId":"%s","version":1,"canonicalSha256":"%s"}
+                """.formatted(COMPANY, pipeline, id, digest);
+    }
+
+    private org.springframework.test.web.servlet.ResultActions baselineRequest(HttpActor actor, String path, String body)
+            throws Exception {
+        SecurityContextHolder.clearContext();
+        return http.perform(post(path).header("Authorization", "Bearer " + actor.token())
+                .contentType("application/json").content(body));
+    }
+
+    private void baselinePrincipal(HttpActor actor) {
+        SecurityContextHolder.getContext().setAuthentication(
+                new org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken(
+                        nativeDecoder.decode(actor.token()), List.of()));
     }
 
     @Test void configuredReplayWithdrawEffectiveHistoryAndReactivationRetainSnapshot()throws Exception{var a=httpActor("LOCAL");UUID p=preparedProduct(absent()),request=UUID.randomUUID();String digest=json(send(a,p,"POST","/candidates",prep(request)).andExpect(status().isCreated())).get("candidateDigest").asText();send(a,p,"POST","/candidates",prep(request)).andExpect(status().isOk()).andExpect(jsonPath("$.replayed").value(true));var approval=humanApproval(a,digest);UUID publishRequest=UUID.randomUUID();String body=publishJson(digest,approval,publishRequest,0,null);var first=json(send(a,p,"POST","",body).andExpect(status().isCreated()));String id=first.get("publication").get("publicationId").asText();String head="{\"requestId\":\""+UUID.randomUUID()+"\",\"expectedEpoch\":1,\"expectedPublicationId\":\""+id+"\"}";send(a,p,"POST","/"+id+"/withdraw",head).andExpect(status().isOk()).andExpect(jsonPath("$.observedHead.state").value("WITHDRAWN"));send(a,p,"POST","",body).andExpect(status().isOk()).andExpect(jsonPath("$.replayed").value(true)).andExpect(jsonPath("$.observedHead.epoch").value(2));send(a,p,"GET","/requests/"+publishRequest,null).andExpect(status().isOk());String at=jdbc.queryForObject("SELECT clock_timestamp()",Timestamp.class).toInstant().toString();send(a,p,"GET","/effective",null,"asOf",at).andExpect(status().isOk()).andExpect(jsonPath("$.selectedHead.state").value("WITHDRAWN"));send(a,p,"GET","/history",null,"asOf",at,"limit","1").andExpect(status().isOk()).andExpect(jsonPath("$.history.length()").value(1));String reactivate="{\"requestId\":\""+UUID.randomUUID()+"\",\"expectedEpoch\":2,\"expectedPublicationId\":\""+id+"\",\"approval\":"+approvalJson(approval)+"}";send(a,p,"POST","/"+id+"/reactivate",reactivate).andExpect(status().isOk()).andExpect(jsonPath("$.observedHead.epoch").value(3));assertThat(events(p)).isEqualTo(3);}

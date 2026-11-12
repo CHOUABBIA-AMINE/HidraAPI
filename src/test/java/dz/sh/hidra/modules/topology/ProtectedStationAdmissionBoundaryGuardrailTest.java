@@ -56,6 +56,8 @@ class ProtectedStationAdmissionBoundaryGuardrailTest {
                 withCharacteristic.add("JdbcInstalledCharacteristicLinkRepositoryAdapter.java");
             // HAPI-605: the reviewed baseline coordinator is one genuine technical caller.
             withCharacteristic.add("ProtectedEngineeringBaselineAdmissionCoordinator.java");
+            if (Set.of("beginAdmission", "sealAdmission").contains(method))
+                withCharacteristic.add("ProtectedEngineeringBaselinePublicationCoordinator.java");
             // HAPI-926: only the concrete Pipeline view adapter is an additional reviewed observer.
             // Do not generalize the protected-admission caller set.
             if (method.equals("requireAdmission")) {
@@ -103,6 +105,9 @@ class ProtectedStationAdmissionBoundaryGuardrailTest {
         String baselineRepository="\"dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.JdbcEngineeringBaselineDraftRepositoryAdapter\"";
         String baselineSource="\"dz.sh.hidra.modules.topology.infrastructure.integration.EngineeringBaselineSourceAdapter\"";
         String baselineProduct="\"dz.sh.hidra.modules.custody.infrastructure.integration.TopologyBaselineProductSourceAdapter\"";
+        String baselinePublicationService="\"dz.sh.hidra.modules.topology.application.service.EngineeringBaselinePublicationApplicationService\"";
+        String baselinePublicationCoordinator="\"dz.sh.hidra.modules.topology.application.service.ProtectedEngineeringBaselinePublicationCoordinator\"";
+        String baselinePublicationRepository="\"dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.JdbcEngineeringBaselinePublicationRepositoryAdapter\"";
         for(String name:List.of("ProtectedTransactionExecutor","ProtectedOperationDataSource")) {
             String s=source("platform/persistence/"+name+".java");
             String productService="\"dz.sh.hidra.modules.custody.application.service.ProductEngineeringDraftApplicationService\"";
@@ -132,7 +137,8 @@ class ProtectedStationAdmissionBoundaryGuardrailTest {
             for(var reviewed:List.of(linkService,linkCoordinator,linkRepository))
                 assertEquals(name.equals("ProtectedTransactionExecutor")?1:0,
                     s.split(java.util.regex.Pattern.quote(reviewed),-1).length-1);
-            for(var reviewed:List.of(baselineService,baselineCoordinator,baselineRepository,baselineSource,baselineProduct))
+            for(var reviewed:List.of(baselineService,baselineCoordinator,baselineRepository,baselineSource,baselineProduct,
+                    baselinePublicationService,baselinePublicationCoordinator,baselinePublicationRepository))
                 assertEquals(name.equals("ProtectedTransactionExecutor")?1:0,
                     s.split(java.util.regex.Pattern.quote(reviewed),-1).length-1);
             assertFalse(s.replace(baselineService,"\"reviewed-baseline-service\"")
@@ -140,6 +146,9 @@ class ProtectedStationAdmissionBoundaryGuardrailTest {
                 .replace(baselineRepository,"\"reviewed-baseline-repository\"")
                 .replace(baselineSource,"\"reviewed-baseline-source\"")
                 .replace(baselineProduct,"\"reviewed-baseline-product\"")
+                .replace(baselinePublicationService,"\"reviewed-publication-service\"")
+                .replace(baselinePublicationCoordinator,"\"reviewed-publication-coordinator\"")
+                .replace(baselinePublicationRepository,"\"reviewed-publication-repository\"")
                 .replace(linkService,"\"reviewed-link-service\"")
                 .replace(linkCoordinator,"\"reviewed-link-coordinator\"")
                 .replace(linkRepository,"\"reviewed-link-repository\"")

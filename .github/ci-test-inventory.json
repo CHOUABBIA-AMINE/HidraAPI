@@ -46,7 +46,7 @@
       "lane": "unit-architecture",
       "owner": "architecture",
       "path": "src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java",
-      "source_sha256": "1bd9690af204f18d8fe14bcfb6d81adbdad96307646f037d84880d61238afeba",
+      "source_sha256": "b37d6835aa989403c167a3366fa2035d8e912bd5f62e0099f9e705421c8f9584",
       "supports": []
     },
     {
@@ -1418,7 +1418,7 @@
       "lane": "postgres-integration",
       "owner": "custody",
       "path": "src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/ProductRevisionPublicationNativeHttpPostgresIntegrationTest.java",
-      "source_sha256": "24609c79d855ec4b11493bb3a31bfbfc9686e3dfa9937d846de9174114669155",
+      "source_sha256": "a591e3aab9c6a0bb445bd23ffb2cd4cd50b532f533f00ba892af323d89b5d1bd",
       "supports": []
     },
     {
@@ -10536,7 +10536,7 @@
       "lane": "unit-architecture",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/ProtectedStationAdmissionBoundaryGuardrailTest.java",
-      "source_sha256": "d7ab004f7c24083f624a3f15fc9c6a00b2bbe5149da2f988e6af107218642aba",
+      "source_sha256": "ab5a9a6bd9ea58ed85b40311ba5127113fd2cda258d3cc8486e50ff4ad0f8b13",
       "supports": []
     },
     {
@@ -11657,7 +11657,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java",
-      "source_sha256": "25bfeb019561b1cbe0e94e4bd1c95439f41faba99c76ce3d75bcc5639127c690",
+      "source_sha256": "80e14472f661dd075319d7b84442689875248c5f97e77c65d4e1549ef67ac2f3",
       "supports": []
     },
     {
@@ -11680,7 +11680,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistryTest.java",
-      "source_sha256": "5d7b61cfc073f9e8d16fd88db2563955035694a350b71fecd03f05500bf512ef",
+      "source_sha256": "dfa7981959a838b8f8215ec132d5ed0480de2f4506577353a2fbd907c0264f36",
       "supports": []
     },
     {
@@ -11700,7 +11700,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteStartupValidatorTest.java",
-      "source_sha256": "c289102371bb09803409946a2ca1beaf1967e5ff6af36f4242fa7497dcf112d3",
+      "source_sha256": "8670af373a19ccfc6c652e0b8b27ffb04bfb3147105c37df9e664b254401cf7e",
       "supports": []
     },
     {

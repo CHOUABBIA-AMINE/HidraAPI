@@ -95,6 +95,10 @@ public class WorkflowApplicationService implements StartWorkflowInstanceUseCase,
                 && "INSTALLED_CHARACTERISTIC_LINK_REVISION".equals(type.code())
                 && !"INSTALLED_CHARACTERISTIC_LINK_APPROVAL".equals(purpose.code()))
             throw new InvalidWorkflowValueException("Exact Topology characteristic approval family required.");
+        if ("topology".equals(command.targetModule())
+                && dz.sh.hidra.modules.workflow.application.contract.target.WorkflowOwnedTargetLookup.BASELINE_TARGET.equals(type.code())
+                && !dz.sh.hidra.modules.workflow.application.contract.target.WorkflowOwnedTargetLookup.BASELINE_PURPOSE.equals(purpose.code()))
+            throw new InvalidWorkflowValueException("Exact Topology baseline approval family required.");
         if(!configuration.activeBinding(command.definitionId(),command.targetModule(),command.targetTypeId(),command.workflowPurposeId()))
             throw new InvalidWorkflowValueException("Exact active Workflow target/purpose binding required.");
         if(command.currentStepId()!=null && !command.currentStepId().isBlank()) {
@@ -151,8 +155,9 @@ public class WorkflowApplicationService implements StartWorkflowInstanceUseCase,
         // For the native installed-characteristic approval target, the reviewer must be
         // independent of the instance starter. Generic assignment never grants owner rights.
         if ("topology".equals(instance.targetModule())
-                && "INSTALLED_CHARACTERISTIC_LINK_REVISION".equals(
-                        configuration.requireActiveCatalog(instance.targetTypeId(), "WORKFLOW_TARGET_TYPE").code())
+                && java.util.Set.of("INSTALLED_CHARACTERISTIC_LINK_REVISION",
+                        dz.sh.hidra.modules.workflow.application.contract.target.WorkflowOwnedTargetLookup.BASELINE_TARGET)
+                        .contains(configuration.requireActiveCatalog(instance.targetTypeId(), "WORKFLOW_TARGET_TYPE").code())
                 && (assigned == null || creator.id().equals(assigned.id())))
             throw new InvalidWorkflowValueException("An independently assigned reviewer is required.");
         var unit=command.assignedOrganizationUnitId()==null?null:ownership.requireUnit(command.assignedOrganizationUnitId());

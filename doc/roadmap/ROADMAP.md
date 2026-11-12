@@ -9,7 +9,7 @@
 | Status | ACTIVE |
 | Authority | Sole task register and execution source for HidraAPI |
 | Owner adoption | 2026-11-10 |
-| Active task selection | T06 — owner `Next` following T05 CI #1198 PASS; single registration/scope commit selected, T06 implementation awaits this registration's CI. |
+| Active task selection | T06 — exact baseline publication implementation; hosted acceptance and generated API/database documentation pending. T05 remains COMPLETED. |
 
 The task register controls scope, dependencies, status and acceptance. Existing technical policy and verified implementation evidence retain their applicability. Task status advances only with recorded evidence. The initial status for each task is PLANNED. The first candidate is T01.
 
@@ -766,3 +766,20 @@ Local Java 21 Maven test compilation, the CI inventory check and documentation v
 **T06 acceptance and bounded failure handling.** Synthetic Java 21 signed HTTP over disposable PostgreSQL/Flyway proves author submit of exact T05 fully complete manifest; distinct eligible Workflow reviewer approval bound to that exact revision/digest; current source eligibility at commit; one durable accepted publication and an authorized second-client receipt read. At least one protected foreign/revoked or wrong-reviewer denial, wrong digest/decision, current source withdrawal, stale expected-head conflict and identical-versus-conflicting request replay must not advance the head. Assert transaction rollback on invalid approval/source; verify immutable manifest and approval lineage, required forward-only physical constraints and concurrent winner/loser CAS as applicable to actual new DDL. Real generated OpenAPI and canonical schema/dictionary equality, architecture checks, unmodified existing 14 PostgreSQL CI shards and Full Verification Gate remain mandatory. No uncontrolled direct Workflow mutation, new numerical solver, real plant data or deployment. If implementation discovers that an existing protected source/Workflow contract cannot meet this without a materially broader owner policy or unregistered path, record the **exact** conflict and stop rather than adding a second generic approval campaign or unsafe shortcut.
 
 **Current gate.** T06 is **IN PROGRESS — selected and registered, implementation not yet started**. This registration publishes no runtime API; the next T06 implementation awaits exact-head documentation CI acceptance, fresh source verification and the scoped implementation commit. T07 stays PLANNED.
+
+### T06 implementation and acceptance evidence — 2026-11-12
+
+T05 remains **COMPLETED** at its recorded acceptance SHA. The owner authorized the required Workflow integration and database documentation scope in the existing T06 stage. This is the one implementation commit `feat(topology): approve and publish exact engineering baselines`. It includes the narrow Workflow owner target, configured definition discovery and review/read paths, exact Platform route and transaction registrations, and the corresponding guardrail and signed fixture changes. No further approval commit is part of T06.
+
+| T06 gate | Implementation and evidence |
+| --- | --- |
+| Exact submission | The signed author submits an existing manifest version and digest. Topology rechecks complete eligible source pins and returns the Workflow target, locator and correlation ID. The native fixture checks the digest mismatch and identical submission replay. |
+| Independent review | Workflow resolves the exact submitted target using native Topology authority. Publication checks the configured terminal decision, submitter, locator and correlation. It rechecks current persisted company/network reviewer grants under the Identity fence. The fixture exercises wrong reviewer, substituted decision and expired review grant. |
+| Atomic publication | Two append-only tables store submission and publication receipt. The highest epoch is the published head. The protected transaction serializes and checks the expected epoch before inserting, and source/approval fences survive to the final guard. The fixture checks withdrawal, stale head, identical replay, conflicting replay and preserved receipt count. |
+| Receipt | An authorized second client can read the exact receipt, including pins and Workflow decision lineage. The fixture checks foreign-company denial. T07 retains the wider historical and current-read scope. |
+
+The migration adds only durable publication storage and the permission/Workflow catalog entries. Configure an actual Workflow definition and exact binding through the existing Workflow setup. The DBA configures the existing protected publisher credential for SELECT/INSERT on the two new tables, EXECUTE on `hidra_topology_baseline_lock_publication()`, and the existing Workflow evidence fence access. The owner-authorized documentation commit `docs(topology): refresh T06 baseline publication API evidence` may include actual hosted OpenAPI and the migrated database dictionary, with validation metadata. This implementation adds the ownership entries and leaves catalog generation for that same documentation commit.
+
+Local Java 21 test compilation and 62 focused architecture/route tests passed. Exact CI inventory, documentation, offline OpenAPI and diff checks passed. Docker was unavailable, so the signed PostgreSQL fixture was compiled but skipped locally.
+
+T06 stays **IN PROGRESS** pending exact-SHA hosted Java, PostgreSQL, OpenAPI, physical dictionary and Full Verification Gate evidence. T07 remains **PLANNED**.

@@ -326,7 +326,7 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase, Manufactur
         boolean ownerReadAdmitted = catalog != null && catalog.active()
                 && "WORKFLOW_TARGET_TYPE".equals(catalog.catalogName())
                 && (("topology".equals(instance.targetModule())
-                        && "INSTALLED_CHARACTERISTIC_LINK_REVISION".equals(catalog.code()))
+                        && Set.of("INSTALLED_CHARACTERISTIC_LINK_REVISION", WorkflowOwnedTargetLookup.BASELINE_TARGET).contains(catalog.code()))
                     || ("simulation".equals(instance.targetModule())
                         && "MANUFACTURER_CHARACTERISTIC_REVISION".equals(catalog.code()))
                     || ("planning".equals(instance.targetModule())
@@ -365,7 +365,8 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase, Manufactur
         WorkflowCatalogEntryJpaEntity type = entityManager.find(WorkflowCatalogEntryJpaEntity.class, instance.targetTypeId());
         if (type == null || !"WORKFLOW_TARGET_TYPE".equals(type.catalogName()) || !type.active())
             throw new NoSuchElementException("Workflow target unavailable.");
-        String expected=topology ? "INSTALLED_CHARACTERISTIC_LINK_REVISION"
+        String expected=topology ? (WorkflowOwnedTargetLookup.BASELINE_TARGET.equals(type.code())
+                ? WorkflowOwnedTargetLookup.BASELINE_TARGET : "INSTALLED_CHARACTERISTIC_LINK_REVISION")
                 : simulation ? "MANUFACTURER_CHARACTERISTIC_REVISION" : "PLAN_REVISION";
         if (!expected.equals(type.code()))
             throw new NoSuchElementException("Workflow target unavailable.");

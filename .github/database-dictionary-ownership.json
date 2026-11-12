@@ -482,6 +482,22 @@
     "owner": "telemetry",
     "purpose": "Telemetry-owned quantity/rate unit-role eligibility with approval provenance; no business role assignments are approved here."
   },
+  "public.hidra_topology_baseline_submission": {
+    "owner": "topology",
+    "purpose": "Exact baseline submission tied to one immutable company/pipeline manifest revision and canonical digest.",
+    "evidence": [
+      "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringBaselinePublicationRepositoryAdapter.java",
+      "src/main/resources/db/migration/V20261111_002__topology_engineering_baseline_publication.sql"
+    ]
+  },
+  "public.hidra_topology_baseline_publication": {
+    "owner": "topology",
+    "purpose": "Append-only approved baseline publications and request receipts. The greatest company/pipeline epoch is the published head.",
+    "evidence": [
+      "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringBaselinePublicationRepositoryAdapter.java",
+      "src/main/resources/db/migration/V20261111_002__topology_engineering_baseline_publication.sql"
+    ]
+  },
   "public.hidra_topology_engineering_baseline_draft": {
     "owner": "topology",
     "purpose": "Topology-owned mutable head pointer for a company/network/manifest draft; monotone version reference only, not frozen, authoritative or engineering-qualified.",

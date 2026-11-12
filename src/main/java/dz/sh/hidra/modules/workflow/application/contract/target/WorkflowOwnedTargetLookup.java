@@ -22,6 +22,13 @@ package dz.sh.hidra.modules.workflow.application.contract.target;
 import java.util.Optional;
 import java.util.Set;
 public interface WorkflowOwnedTargetLookup {
+    String BASELINE_TARGET = "ENGINEERING_BASELINE_REVISION";
+    String BASELINE_PURPOSE = "ENGINEERING_BASELINE_APPROVAL";
+
+    default boolean protectedReviewAllowed(String type, String digest, String locator) {
+        return false;
+    }
+
     record Target(String id, String code, String label) {}
     /** Exact owner addressing only; neither identifiers nor the result grant authority. */
     record InstalledCharacteristicLinkAddress(String companyPartyId, String installedUnitId,

@@ -100,13 +100,21 @@ public class WorkflowExecutionOwnership {
             dz.sh.hidra.modules.workflow.application.port.out.WorkflowConfigurationPort configuration) {
         if (!"topology".equals(instance.targetModule())) return;
         var type=configuration.requireActiveCatalog(instance.targetTypeId(),"WORKFLOW_TARGET_TYPE");
-        if (!"INSTALLED_CHARACTERISTIC_LINK_REVISION".equals(type.code())) return;
+        boolean baseline = WorkflowOwnedTargetLookup.BASELINE_TARGET.equals(type.code());
+        if (!baseline && !"INSTALLED_CHARACTERISTIC_LINK_REVISION".equals(type.code())) return;
         var purpose=configuration.requireActiveCatalog(instance.workflowPurposeId(),"WORKFLOW_PURPOSE");
-        if (!"INSTALLED_CHARACTERISTIC_LINK_APPROVAL".equals(purpose.code())
+        if (!(baseline ? WorkflowOwnedTargetLookup.BASELINE_PURPOSE : "INSTALLED_CHARACTERISTIC_LINK_APPROVAL").equals(purpose.code())
                 || !configuration.activeBinding(instance.definitionId(),instance.targetModule(),
                         instance.targetTypeId(),instance.workflowPurposeId()))
             throw denied("Topology Workflow target unavailable.");
         requireTarget(instance.targetModule(),type.code(),instance.targetId(),instance.targetCodeSnapshot());
     }
+    public boolean baselineReviewerAllowed(dz.sh.hidra.modules.workflow.domain.model.WorkflowInstance instance) {
+        var owners = targets.stream().filter(t -> "topology".equals(t.module())
+                && t.targetTypeCodes().contains(WorkflowOwnedTargetLookup.BASELINE_TARGET)).toList();
+        return owners.size() == 1 && owners.getFirst().protectedReviewAllowed(WorkflowOwnedTargetLookup.BASELINE_TARGET,
+                instance.targetId(), instance.targetCodeSnapshot());
+    }
+
     private static WorkflowTransitionDeniedException denied(String message){return new WorkflowTransitionDeniedException(message);}
 }

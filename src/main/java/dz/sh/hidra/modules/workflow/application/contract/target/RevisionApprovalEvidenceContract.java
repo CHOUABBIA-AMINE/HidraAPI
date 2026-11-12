@@ -29,5 +29,7 @@ public interface RevisionApprovalEvidenceContract {
     record Evidence(String instanceId, String taskId, String actionId, String definitionId,
             int definitionVersion, String targetTypeId, String purposeId, String actorId,
             String actorDisplayName, Instant actedAt) {}
+    record BaselineBinding(String locator, String submitterId, String correlationId, Instant submittedAt) {}
     Optional<Evidence> resolve(Request request);
+    default Optional<Evidence> resolveBaseline(Request request, BaselineBinding binding) { return Optional.empty(); }
 }

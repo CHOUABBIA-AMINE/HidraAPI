@@ -20,6 +20,7 @@
 package dz.sh.hidra.modules.identity.infrastructure.security;
 
 import dz.sh.hidra.modules.identity.application.contract.topology.TopologyEngineeringBaselineAuthorizationContract;
+import dz.sh.hidra.modules.identity.application.port.out.AuthorizationEvidencePort;
 import dz.sh.hidra.modules.identity.domain.policy.AuthorizationEvaluationRequest;
 import dz.sh.hidra.modules.identity.domain.policy.AuthorizationEvidence;
 import dz.sh.hidra.modules.identity.domain.service.AuthorizationPolicyEvaluator;
@@ -55,13 +56,15 @@ public class ProtectedEngineeringBaselineAuthorizationParticipant implements Top
     private final ProtectedOperationIdentityParticipant nativeIdentity;
     private final JdbcProtectedAuthorizationEvidenceReader reader;
     private final JdbcTemplate jdbc;
+    private final AuthorizationEvidencePort currentGrants;
     private final DataSource datasource;
     private final int maxSourceResources;
     private final AuthorizationPolicyEvaluator evaluator = new AuthorizationPolicyEvaluator();
     public ProtectedEngineeringBaselineAuthorizationParticipant(ProtectedOperationIdentityParticipant nativeIdentity,
-            JdbcProtectedAuthorizationEvidenceReader reader, JdbcTemplate jdbc,
+            JdbcProtectedAuthorizationEvidenceReader reader, JdbcTemplate jdbc, AuthorizationEvidencePort currentGrants,
             @Value("${hidra.topology.engineering-baseline.max-source-resources:512}") int maxSourceResources) {
         this.nativeIdentity=Objects.requireNonNull(nativeIdentity); this.reader=Objects.requireNonNull(reader);
+        this.currentGrants=Objects.requireNonNull(currentGrants);
         this.jdbc=Objects.requireNonNull(jdbc); this.datasource=Objects.requireNonNull(jdbc.getDataSource());
         if(maxSourceResources<1 || maxSourceResources>4096)throw new IllegalArgumentException("Invalid baseline source work bound");
         this.maxSourceResources=maxSourceResources;
@@ -130,6 +133,24 @@ public class ProtectedEngineeringBaselineAuthorizationParticipant implements Top
                 if(!sameGraph(entry.getValue(),evaluate(t,entry.getKey())))throw denied();
             checkPhysical(t);
         } catch(RuntimeException failure) { poison(admission); throw denied(); }
+    }
+    @Override public void requireCurrentReviewer(Admission admission, String reviewerId) {
+        try {
+            var t = ticket(admission);
+            if (t.request.action() != Action.PUBLISH || !t.contributed.get()) throw denied();
+            Instant at = jdbc.queryForObject("SELECT pg_catalog.clock_timestamp()", Timestamp.class).toInstant();
+            for (String scope : List.of("topology-company:" + t.request.companyPartyId(),
+                    "topology-network:" + t.request.pipelineSystemId())) {
+                var request = new AuthorizationEvaluationRequest(reviewerId, TopologyEngineeringBaselineAuthorizationContract.permission(Action.REVIEW),
+                        RESOURCE_TYPE, t.request.pipelineSystemId(), new AuthorizationScope(ScopeType.CUSTOM, scope, null));
+                // The publisher's token cannot attest the reviewer. Use only the reviewer's durable Identity grants.
+                var evidence = currentGrants.load(request, at, null);
+                if (!"HUMAN".equals(evidence.attributes().get("subject.type"))
+                        || evaluator.evaluate(request, evidence, at).decision() != AuthorizationDecisionValue.PERMIT)
+                    throw denied();
+            }
+            checkPhysical(t);
+        } catch (RuntimeException failure) { poison(admission); throw denied(); }
     }
     @Override public List<ProtectedRelationFence> finalFences(Admission admission) {
         requireCurrent(admission); return JdbcIdentityAuthorityFence.requiredRelationFences();

@@ -41,6 +41,12 @@ public class RevisionApprovalEvidenceQueryService implements RevisionApprovalEvi
     private final WorkflowActionRepositoryPort actions;
     private final WorkflowConfigurationPort configuration;
     private final ManufacturerWorkflowFencePort manufacturerFence;
+    private WorkflowTransitionApplicationService transitions;
+    @org.springframework.beans.factory.annotation.Autowired
+    public void baselineReviewers(WorkflowTransitionApplicationService owner) {
+        transitions = owner;
+    }
+
     /** Workflow owns this exact protected evidence locking contract. */
     public interface ManufacturerWorkflowFencePort {
         void lockCurrentManufacturerApprovalEvidence();
@@ -66,6 +72,17 @@ public class RevisionApprovalEvidenceQueryService implements RevisionApprovalEvi
     @Override
     @Transactional(readOnly = true)
     public Optional<Evidence> resolve(Request r) {
+        return resolve(r, null);
+    }
+
+    @Override
+    @Transactional(propagation = org.springframework.transaction.annotation.Propagation.MANDATORY)
+    public Optional<Evidence> resolveBaseline(Request r, BaselineBinding binding) {
+        return binding == null || r == null || !"topology".equals(r.targetModule())
+                ? Optional.empty() : resolve(r, binding);
+    }
+
+    private Optional<Evidence> resolve(Request r, BaselineBinding baseline) {
         if (r == null || r.evaluationAt() == null || r.targetDigest() == null
                 || !r.targetDigest().matches("[0-9a-f]{64}") || r.definitionVersion() < 1
                 || blank(r.definitionId()) || blank(r.targetTypeId()) || blank(r.purposeId())
@@ -92,8 +109,10 @@ public class RevisionApprovalEvidenceQueryService implements RevisionApprovalEvi
                 manufacturerFence.lockCurrentManufacturerApprovalEvidence();
             }
         } else if ("topology".equals(r.targetModule())) {
-            type = "INSTALLED_CHARACTERISTIC_LINK_REVISION";
-            purpose = "INSTALLED_CHARACTERISTIC_LINK_APPROVAL";
+            type = baseline == null ? "INSTALLED_CHARACTERISTIC_LINK_REVISION"
+                    : dz.sh.hidra.modules.workflow.application.contract.target.WorkflowOwnedTargetLookup.BASELINE_TARGET;
+            purpose = baseline == null ? "INSTALLED_CHARACTERISTIC_LINK_APPROVAL"
+                    : dz.sh.hidra.modules.workflow.application.contract.target.WorkflowOwnedTargetLookup.BASELINE_PURPOSE;
             // The original protected Topology approval publication must hold a current,
             // non-read-only original transaction and lock Workflow's real evidence graph.
             if (manufacturerFence == null) return Optional.empty();
@@ -122,6 +141,13 @@ public class RevisionApprovalEvidenceQueryService implements RevisionApprovalEvi
                 || !a.actedAt().equals(t.completedAt()) || !a.actedAt().equals(i.completedAt())
                 || a.actedAt().isAfter(r.evaluationAt())
                 || a.actionSequence() != actions.nextSequence(i.id()) - 1) return Optional.empty();
+        if (baseline != null && (!Objects.equals(baseline.submitterId(), i.startedByActorId())
+                || !Objects.equals(baseline.locator(), i.targetCodeSnapshot())
+                || !Objects.equals(baseline.correlationId(), i.correlationId())
+                || a.actorId().equals(baseline.submitterId())
+                || baseline.submittedAt() == null || a.actedAt().isBefore(baseline.submittedAt())
+                || transitions == null || !transitions.eligibleIndependentHumanReviewer(a.actorId(), baseline.submitterId())))
+            return Optional.empty();
         return Optional.of(new Evidence(i.id(), t.id(), a.id(), i.definitionId(), i.definitionVersion(),
                 i.targetTypeId(), i.workflowPurposeId(), a.actorId(), a.actorDisplayNameSnapshot(), a.actedAt()));
     }

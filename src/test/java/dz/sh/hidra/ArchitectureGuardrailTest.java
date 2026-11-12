@@ -754,15 +754,18 @@ class ArchitectureGuardrailTest {
 
     private static boolean isBaselineOwnerExport(String source,String target){
         String coordinator="dz.sh.hidra.modules.topology.application.service.ProtectedEngineeringBaselineAdmissionCoordinator";
+        String publication="dz.sh.hidra.modules.topology.application.service.ProtectedEngineeringBaselinePublicationCoordinator";
         String reader="dz.sh.hidra.modules.topology.infrastructure.integration.EngineeringBaselineSourceAdapter";
         String identity="dz.sh.hidra.modules.identity.application.contract.topology.TopologyEngineeringBaselineAuthorizationContract";
         String product="dz.sh.hidra.modules.custody.application.contract.topology.TopologyBaselineProductSourceContract";
         String manufacturer="dz.sh.hidra.modules.simulation.application.contract.topology.TopologyManufacturerCharacteristicReferenceContract";
-        return ((source.equals(coordinator)||source.startsWith(coordinator+"$"))&&(target.equals(identity)||target.startsWith(identity+"$")))
+        return ((source.equals(coordinator)||source.startsWith(coordinator+"$")
+                ||source.equals(publication)||source.startsWith(publication+"$"))&&(target.equals(identity)||target.startsWith(identity+"$")))
             || ((source.equals(reader)||source.startsWith(reader+"$"))&&(target.equals(product)||target.startsWith(product+"$")||target.equals(manufacturer)||target.startsWith(manufacturer+"$")));
     }
     @Test void baselineOwnerExportsRemainExactAndOpaque(){
         String coordinator="dz.sh.hidra.modules.topology.application.service.ProtectedEngineeringBaselineAdmissionCoordinator";
+        String publication="dz.sh.hidra.modules.topology.application.service.ProtectedEngineeringBaselinePublicationCoordinator";
         String reader="dz.sh.hidra.modules.topology.infrastructure.integration.EngineeringBaselineSourceAdapter";
         for(String root:List.of("dz.sh.hidra.modules.identity.application.contract.topology.TopologyEngineeringBaselineAuthorizationContract",
                 "dz.sh.hidra.modules.custody.application.contract.topology.TopologyBaselineProductSourceContract")){
@@ -773,6 +776,8 @@ class ArchitectureGuardrailTest {
             assertTrue(isForbiddenCrossModuleDependency(owner,root+"Sibling"));
             assertTrue(isForbiddenCrossModuleDependency("dz.sh.hidra.modules.planning.application.service.Other",root));
         }
+        assertFalse(isForbiddenCrossModuleDependency(publication, "dz.sh.hidra.modules.identity.application.contract.topology.TopologyEngineeringBaselineAuthorizationContract"));
+        assertTrue(isForbiddenCrossModuleDependency(publication+"Sibling", "dz.sh.hidra.modules.identity.application.contract.topology.TopologyEngineeringBaselineAuthorizationContract"));
         assertTrue(isForbiddenCrossModuleDependency(coordinator,"dz.sh.hidra.modules.identity.infrastructure.security.ProtectedEngineeringBaselineAuthorizationParticipant"));
         assertTrue(isForbiddenCrossModuleDependency(reader,"dz.sh.hidra.modules.custody.infrastructure.integration.TopologyBaselineProductSourceAdapter"));
     }

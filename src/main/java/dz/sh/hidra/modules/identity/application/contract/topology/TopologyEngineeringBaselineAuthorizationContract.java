@@ -32,7 +32,7 @@ import java.util.Objects;
 /** Scalar descriptors request authority; only issuer-private opaque admissions establish it. */
 public interface TopologyEngineeringBaselineAuthorizationContract {
     String RESOURCE_TYPE = "ENGINEERING_BASELINE_DRAFT";
-    enum Action { CREATE, READ, UPDATE, VALIDATE }
+    enum Action { CREATE, READ, UPDATE, VALIDATE, SUBMIT, REVIEW, PUBLISH }
     enum SourceKind { NETWORK_PUBLICATION, STATION_CONFIGURATION, INSTALLED_UNIT,
         CHARACTERISTIC_LINK, MANUFACTURER_CHARACTERISTIC, PRODUCT_PUBLICATION }
     record Request(Action action, String companyPartyId, String pipelineSystemId) {
@@ -76,6 +76,7 @@ public interface TopologyEngineeringBaselineAuthorizationContract {
     Origin contribute(Admission admission);
     void requireSourceRead(Admission admission, Source source);
     void requireCurrent(Admission admission);
+    void requireCurrentReviewer(Admission admission, String reviewerId);
     List<ProtectedRelationFence> finalFences(Admission admission);
     /** SQL-free marker; the Topology owner must call this only after its actual last-statement guard. */
     void markFinal(Admission admission);

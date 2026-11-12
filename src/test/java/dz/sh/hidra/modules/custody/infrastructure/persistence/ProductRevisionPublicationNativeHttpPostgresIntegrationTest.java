@@ -1300,7 +1300,27 @@ public class ProductRevisionPublicationNativeHttpPostgresIntegrationTest {
         String submitBody = baselineSubmission(pipeline, UUID.randomUUID(), digest);
         baselineRequest(author, submitPath, baselineSubmission(pipeline, UUID.randomUUID(), "0".repeat(64)))
                 .andExpect(status().isForbidden());
-        var submitted = json(baselineRequest(author, submitPath, submitBody).andExpect(status().isOk()));
+        // T06 diagnostic is synthetic-test-only; it cannot relax the required 200 response.
+        long beforeReader = org.mockito.Mockito.mockingDetails(reader).getInvocations().stream()
+                .filter(call -> call.getMethod().getName().equals("loadEngineeringBaseline")).count();
+        long beforeNative = org.mockito.Mockito.mockingDetails(participant).getInvocations().size();
+        var validSubmit = baselineRequest(author, submitPath, submitBody).andDo(result -> {
+            if (result.getResponse().getStatus() != 200) {
+                var resolved = result.getResolvedException();
+                long afterReader = org.mockito.Mockito.mockingDetails(reader).getInvocations().stream()
+                        .filter(call -> call.getMethod().getName().equals("loadEngineeringBaseline")).count();
+                var nativeCalls = org.mockito.Mockito.mockingDetails(participant).getInvocations().stream()
+                        .skip(beforeNative).map(call -> call.getMethod().getName()).toList();
+                System.err.println("T06 synthetic valid submission denied: status="
+                        + result.getResponse().getStatus()
+                        + ", resolved=" + (resolved == null ? "NONE" : resolved.getClass().getName())
+                        + ", description=" + (resolved == null ? "NONE" : resolved.getMessage())
+                        + ", identityReaderCalls=" + (afterReader - beforeReader)
+                        + ", nativeIdentityCalls=" + nativeCalls);
+                if (resolved != null) resolved.printStackTrace(System.err);
+            }
+        });
+        var submitted = json(validSubmit.andExpect(status().isOk()));
         assertThat(json(baselineRequest(author, submitPath, submitBody).andExpect(status().isOk()))).isEqualTo(submitted);
         assertThat(submitted.path("canonicalSha256").asText()).isEqualTo(digest);
         assertThat(submitted.path("version").asLong()).isEqualTo(1);

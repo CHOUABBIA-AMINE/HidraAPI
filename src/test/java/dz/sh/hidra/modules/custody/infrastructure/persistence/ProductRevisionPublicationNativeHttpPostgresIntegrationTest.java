@@ -452,8 +452,14 @@ public class ProductRevisionPublicationNativeHttpPostgresIntegrationTest {
     private Fixture fixture(String type, boolean resetPreviousActors) {
         if (resetPreviousActors)
             jdbc.update("UPDATE " + P + " SET status='INACTIVE' WHERE status='ACTIVE'");
+        // LOCAL is a singleton active provider, shared by independent human principals.
+        // Preserve the first actor's provider, grants and bound authentication.
+        boolean reuseLocalProvider = !resetPreviousActors && type.equals("LOCAL");
         String user = UUID.randomUUID().toString(),
-                provider = UUID.randomUUID().toString(),
+                provider = reuseLocalProvider
+                        ? jdbc.queryForObject("SELECT id FROM " + P
+                                + " WHERE provider_type='LOCAL' AND status='ACTIVE'", String.class)
+                        : UUID.randomUUID().toString(),
                 link = type.equals("LOCAL") ? null : UUID.randomUUID().toString(),
                 credential = type.equals("LOCAL") ? UUID.randomUUID().toString() : null,
                 subject = link == null ? null : "  exact-synthetic-é-" + link + "  ";
@@ -467,7 +473,7 @@ public class ProductRevisionPublicationNativeHttpPostgresIntegrationTest {
                 user,
                 now,
                 now);
-        jdbc.update(
+        if (!reuseLocalProvider) jdbc.update(
                 "INSERT INTO "
                         + P
                         + "(id,code,name,provider_type,issuer_uri,directory_base_dn,user_search_base,status,sync_enabled,just_in_time_provisioning_enabled,created_at,updated_at)"
@@ -1300,6 +1306,8 @@ public class ProductRevisionPublicationNativeHttpPostgresIntegrationTest {
         // A second reviewer must not revoke the author's identity provider or delete their grants.
         var reviewer = httpActor("LOCAL", false);
         assertThat(reviewer.fixture().user()).isNotEqualTo(author.fixture().user());
+        assertThat(reviewer.fixture().credential()).isNotEqualTo(author.fixture().credential());
+        assertThat(reviewer.fixture().provider()).isEqualTo(author.fixture().provider());
         assertThat(jdbc.queryForObject("SELECT status FROM " + P + " WHERE id=?", String.class,
                 author.fixture().provider())).isEqualTo("ACTIVE");
         assertThat(jdbc.queryForObject("SELECT status FROM " + P + " WHERE id=?", String.class,

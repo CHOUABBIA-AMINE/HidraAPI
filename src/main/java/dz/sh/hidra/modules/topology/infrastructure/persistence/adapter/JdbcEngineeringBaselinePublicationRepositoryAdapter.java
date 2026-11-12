@@ -27,7 +27,10 @@ import dz.sh.hidra.modules.topology.application.port.out.EngineeringBaselineSour
 import dz.sh.hidra.modules.topology.application.port.out.EngineeringBaselineSourcePort.Read;
 import dz.sh.hidra.modules.topology.application.port.out.EngineeringBaselineSourcePort;
 import dz.sh.hidra.modules.topology.domain.model.EngineeringBaselineManifest;
-import dz.sh.hidra.modules.identity.application.contract.topology.TopologyEngineeringBaselineAuthorizationContract;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.HexFormat;
 import dz.sh.hidra.modules.topology.domain.model.EngineeringBaselinePublication.*;
 import dz.sh.hidra.platform.persistence.ProtectedRelationFence;
 import dz.sh.hidra.platform.persistence.ProtectedTransactionExecutor;
@@ -206,7 +209,7 @@ public class JdbcEngineeringBaselinePublicationRepositoryAdapter implements Engi
                             manifest.companyPartyId(), pin.ownerId(), pin.sourceId(), Long.parseLong(pin.revisionId()));
                     if (source.size() != 1) throw failure(Kind.UNAVAILABLE);
                     reads.add(new Read(EngineeringBaselineSourcePort.Kind.MANUFACTURER_CHARACTERISTIC,
-                            TopologyEngineeringBaselineAuthorizationContract.manufacturerScope(
+                            manufacturerScope(
                                     manifest.companyPartyId(), source.getFirst()[0], source.getFirst()[1])));
                 }
             }
@@ -277,6 +280,19 @@ public class JdbcEngineeringBaselinePublicationRepositoryAdapter implements Engi
         return Boolean.TRUE.equals(jdbc.queryForObject(sql.toString(), Boolean.class, arguments.toArray()));
     }
 
+
+    /** Exact native manufacturer source identity, shared with Topology's source capture format.
+     *  This adapter must not depend on the private Identity authorization contract. */
+    private static String manufacturerScope(String company, String source, String revision) {
+        String value = "HIDRA_MANUFACTURER_NATIVE_SCOPE_V1|" + company.length() + ":" + company
+                + "|" + source.length() + ":" + source + "|" + revision.length() + ":" + revision;
+        try {
+            return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256")
+                    .digest(value.getBytes(StandardCharsets.UTF_8)));
+        } catch (NoSuchAlgorithmException impossible) {
+            throw new IllegalStateException(impossible);
+        }
+    }
     private static EngineeringBaselineDraftFailure failure(Kind kind) {
         return new EngineeringBaselineDraftFailure(kind);
     }

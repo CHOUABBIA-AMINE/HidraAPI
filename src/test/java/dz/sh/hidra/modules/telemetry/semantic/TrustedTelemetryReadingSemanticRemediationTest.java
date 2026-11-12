@@ -96,6 +96,33 @@ class TrustedTelemetryReadingSemanticRemediationTest {
         assertThatThrownBy(() -> service.trust("reading","assessment","missing")).isInstanceOf(InvalidTelemetryValueException.class);
         assertThat(service.trust("reading","assessment","other").topologyAssetId()).isEqualTo("node");
     }
+    @Test
+    void configuredRawQualityPolicyNeverUpgradesMismatchedOrStaleEvidence() {
+        var raw = facts("reading","point",AssessmentStatus.PASSED,TrustLevel.HIGH,
+                TelemetryLifecycleStatus.ACTIVE,true,true,true,List.of()).reading();
+        var approved = new dz.sh.hidra.modules.telemetry.domain.policy.TelemetryQualityAssessmentPolicy.Rule(
+                "raw-quality",TrustLevel.MEDIUM,3600,120);
+        var valid = dz.sh.hidra.modules.telemetry.domain.policy.TelemetryQualityAssessmentPolicy
+                .decide(raw,approved,NOW);
+        assertThat(valid.status()).isEqualTo(AssessmentStatus.PASSED);
+        assertThat(valid.trustLevel()).isEqualTo(TrustLevel.MEDIUM);
+        var mismatch = new dz.sh.hidra.modules.telemetry.domain.policy.TelemetryQualityAssessmentPolicy.Rule(
+                "other-quality",TrustLevel.MEDIUM,3600,120);
+        var rejected = dz.sh.hidra.modules.telemetry.domain.policy.TelemetryQualityAssessmentPolicy
+                .decide(raw,mismatch,NOW);
+        assertThat(rejected.status()).isEqualTo(AssessmentStatus.FAILED);
+        assertThat(rejected.trustLevel()).isEqualTo(TrustLevel.UNTRUSTED);
+        assertThat(rejected.reasonCode()).isEqualTo("QUALITY_NOT_ELIGIBLE");
+        var expired = dz.sh.hidra.modules.telemetry.domain.policy.TelemetryQualityAssessmentPolicy
+                .decide(raw,approved,NOW.plusSeconds(3601));
+        assertThat(expired.status()).isEqualTo(AssessmentStatus.FAILED);
+        assertThat(expired.reasonCode()).isEqualTo("ASSESSMENT_TIME_NOT_ELIGIBLE");
+        assertThatThrownBy(() ->
+            new dz.sh.hidra.modules.telemetry.domain.policy.TelemetryQualityAssessmentPolicy.Rule(
+                    "raw-quality",TrustLevel.LOW,3600,120))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
     private void stub(TelemetryTrustEvidencePort.Evidence facts) {
         when(evidence.load(eq("reading"),eq("assessment"),any(Instant.class))).thenReturn(facts);
     }

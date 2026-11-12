@@ -64,6 +64,8 @@ public class TelemetryScopedAuthorizationQueryService implements TelemetryScoped
             case INGEST -> "telemetry:raw-reading:ingest";
             case READ -> "telemetry:raw-reading:read";
             case COMMISSION -> "telemetry:commission:manage";
+            case QUALIFY -> "telemetry:trusted-reading:qualify";
+            case TRUSTED_READ -> "telemetry:trusted-reading:read";
         };
         String actor = actors.currentLocalActor();
         Instant at = Instant.now();
@@ -82,6 +84,10 @@ public class TelemetryScopedAuthorizationQueryService implements TelemetryScoped
                     || !permitted(actor,permission,pointScope,assertion,at))
                 throw new AccessDeniedException("Protected telemetry resource unavailable.");
         }
+    }
+    @Override
+    public String currentActor() {
+        return actors.currentLocalActor();
     }
     private boolean permitted(String actor,String permission,AuthorizationScope scope,
             VerifiedAuthorizationAssertion assertion,Instant at) {

@@ -62,7 +62,8 @@ import java.math.BigDecimal;
         String topologyAssetId,
         String topologyAssetCode,
         String topologySnapshotId,
-        String ingestionBatchId
+        String ingestionBatchId,
+        String bindingId
     ) {
 
         public TrustedTelemetryReading {
@@ -111,6 +112,17 @@ import java.math.BigDecimal;
         topologyAssetCode = normalize(topologyAssetCode);
         topologySnapshotId = normalize(topologySnapshotId);
         ingestionBatchId = normalize(ingestionBatchId);
+        bindingId = normalize(bindingId);
+        }
+        // Existing private pre-T09 callers retain their historical unbound record signature.
+        public TrustedTelemetryReading(String id,String readingId,String pointId,
+                BigDecimal numericValue,String textValue,Boolean booleanValue,String unitId,
+                String qualityCodeId,TrustLevel trustLevel,Instant sourceTimestamp,Instant trustedAt,
+                String qualityAssessmentId,String topologyAssetTypeCode,String topologyAssetId,
+                String topologyAssetCode,String topologySnapshotId,String ingestionBatchId) {
+            this(id,readingId,pointId,numericValue,textValue,booleanValue,unitId,qualityCodeId,
+                    trustLevel,sourceTimestamp,trustedAt,qualityAssessmentId,topologyAssetTypeCode,
+                    topologyAssetId,topologyAssetCode,topologySnapshotId,ingestionBatchId,null);
         }
         public boolean hasExactlyOneValue() {
             int count = 0;

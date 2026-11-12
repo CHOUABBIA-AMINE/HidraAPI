@@ -8318,7 +8318,10 @@
       "cases": [
         "concurrentConflictingSequencesCannotCommitTwoDifferentReadings",
         "concurrentDuplicateSequencesCannotAppendTwoRawReadings",
+        "concurrentQualifyingPublicationLocksOneRawAndOneTrustedRow",
+        "governedTrustAssessmentPublishReadReplayAndRevocation",
         "localJwtNativeScopedWriteReplayAndProtectedReadbackArePostgresDurable",
+        "missingPolicyAndNonpassingQualityNeverPublishTrustedEvidence",
         "nativeCommissioningCreatesScopedSourcePointMappingAndEffectiveBinding",
         "nativeTextAndBooleanReadingsPreserveTypedValuesWithoutTrustPublication",
         "protectedReadingAndReplaySurviveSeparateApplicationJvmRestart",
@@ -8330,7 +8333,21 @@
       "lane": "postgres-integration",
       "owner": "telemetry",
       "path": "src/test/java/dz/sh/hidra/modules/telemetry/infrastructure/persistence/TelemetryReadingIngestionNativeHttpPostgresIntegrationTest.java",
-      "source_sha256": "b8d102d4917ba04def9168038ecb810d82994a6d2ea8f1868868b24826f410f8",
+      "source_sha256": "29a5700b25f035c0329154790227997da750b5858404b41222ac72b9c91a0654",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "freshSchemaInstallsTrustedUniquenessBindingIntegrityAndNoImplicitGrants"
+      ],
+      "class": "dz.sh.hidra.modules.telemetry.infrastructure.persistence.TelemetryTrustedReadingNativeHttpPostgresIntegrationTest",
+      "dependency_reason": "T09 isolated fresh PostgreSQL 16 Flyway guards, immutability and no implicit grants.",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "telemetry",
+      "path": "src/test/java/dz/sh/hidra/modules/telemetry/infrastructure/persistence/TelemetryTrustedReadingNativeHttpPostgresIntegrationTest.java",
+      "source_sha256": "d23f3b58e290f9c00c36e29179835a7e3db84957d8d879e707407277aa0ce480",
       "supports": []
     },
     {
@@ -8431,6 +8448,7 @@
     {
       "baseline_seconds": 0.057,
       "cases": [
+        "configuredRawQualityPolicyNeverUpgradesMismatchedOrStaleEvidence",
         "derivesValuesAndBindingFromEvidenceWithoutTrustUpgrade",
         "rejectsEveryNonPassingAssessmentAndUnacceptableLevelBeforeSave",
         "rejectsPointLifecycleIdentityAndCatalogProvenanceMismatches",
@@ -8442,7 +8460,7 @@
       "lane": "unit-architecture",
       "owner": "telemetry",
       "path": "src/test/java/dz/sh/hidra/modules/telemetry/semantic/TrustedTelemetryReadingSemanticRemediationTest.java",
-      "source_sha256": "d0f0626cb7831109541835b6e55b5bf73902a20decf25169986589c6cb189312",
+      "source_sha256": "d5f4a259e2b4a85f6f511e7452a94ecd9fc22f81fac30a1abf7d6a7c11f952ca",
       "supports": []
     },
     {
@@ -11658,7 +11676,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java",
-      "source_sha256": "52e88b76a09d827126b082b708d4c8450a1dd251f13cb968f1d4cae65deb3443",
+      "source_sha256": "f0abde6e7016cb9d4a97492bee8394d29cc02743d38d8aed7164f49e438ed6fd",
       "supports": []
     },
     {
@@ -11682,7 +11700,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistryTest.java",
-      "source_sha256": "31b956c6ce53029549ceeabaacae02cd3d46d6e383c811632517b974cafe8185",
+      "source_sha256": "8554f5650e97613eeecb32d2a0cf090819dd1a12f0c8afd23754d897993bb84d",
       "supports": []
     },
     {
@@ -11702,7 +11720,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteStartupValidatorTest.java",
-      "source_sha256": "9ea91a34afb14f83eeed80d2f81c32ed4ba176db9784a4cb0c7ce274bd8b7bbc",
+      "source_sha256": "b8af62d2495c53f604e54055201c1b7f349a44f7c6ece0451f54eb969cbb6e94",
       "supports": []
     },
     {

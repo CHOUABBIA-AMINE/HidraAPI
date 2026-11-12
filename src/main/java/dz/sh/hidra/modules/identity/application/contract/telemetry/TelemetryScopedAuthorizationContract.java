@@ -21,6 +21,7 @@ package dz.sh.hidra.modules.identity.application.contract.telemetry;
 
 
 public interface TelemetryScopedAuthorizationContract {
-    enum Operation { INGEST, READ, COMMISSION }
+    enum Operation { INGEST, READ, COMMISSION, QUALIFY, TRUSTED_READ }
     void require(Operation operation, String companyPartyId, String sourceId, String pointId);
+    String currentActor();
 }

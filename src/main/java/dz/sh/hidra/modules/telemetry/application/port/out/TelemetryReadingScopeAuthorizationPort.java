@@ -23,6 +23,7 @@ package dz.sh.hidra.modules.telemetry.application.port.out;
 import dz.sh.hidra.modules.telemetry.application.port.out.TelemetryReadingIngestionReferencePort.Scope;
 
 public interface TelemetryReadingScopeAuthorizationPort {
-    enum Operation { INGEST, READ }
+    enum Operation { INGEST, READ, QUALIFY, TRUSTED_READ }
     void require(Scope scope, Operation operation);
+    String requireActor(Scope scope, Operation operation, String companyPartyId);
 }

@@ -78,6 +78,7 @@ public class TrustedTelemetryReadingApplicationService implements TrustTelemetry
                 raw.numericValue(), raw.textValue(), raw.booleanValue(), facts.effectiveUnitId(), facts.qualityCodeId(),
                 facts.trustLevel(), raw.sourceTimestamp(), trustedAt, facts.assessmentId(),
                 binding == null ? null : binding.assetType(), binding == null ? null : binding.assetId(),
-                binding == null ? null : binding.assetCode(), binding == null ? null : binding.snapshotId(), raw.ingestionBatchId()));
+                binding == null ? null : binding.assetCode(), binding == null ? null : binding.snapshotId(),
+                raw.ingestionBatchId(), binding == null ? null : binding.id()));
     }
 }

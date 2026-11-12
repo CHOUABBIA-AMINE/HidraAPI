@@ -61,7 +61,7 @@ public class JpaTelemetryTrustEvidenceAdapter implements TelemetryTrustEvidenceP
         List<TelemetryPointBindingJpaEntity> bindings = entities.createNativeQuery("""
                 SELECT * FROM hidra_telemetry_point_binding
                 WHERE point_id = :point AND active AND valid_from <= :at
-                  AND (valid_to IS NULL OR :at < valid_to) ORDER BY id
+                  AND (valid_to IS NULL OR :at < valid_to) ORDER BY id FOR SHARE
                 """, TelemetryPointBindingJpaEntity.class)
                 .setParameter("point", raw.pointId()).setParameter("at", trustedAt).getResultList();
         return new Evidence(raw, (String)row[0], (String)row[1], (String)row[2],

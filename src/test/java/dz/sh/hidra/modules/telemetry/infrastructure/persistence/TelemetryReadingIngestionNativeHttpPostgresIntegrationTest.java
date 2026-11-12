@@ -188,6 +188,178 @@ class TelemetryReadingIngestionNativeHttpPostgresIntegrationTest {
                 +"\"unitId\":\""+u+"\",\"sourceTimestamp\":\""+time+"\"}";
     }
 
+
+    // T09: only a configured synthetic rule may assess; publication is a separate grant.
+    private void t09Grants() {
+        for(String code:List.of("telemetry:trusted-reading:qualify","telemetry:trusted-reading:read")) {
+            String action=code.endsWith("qualify")?"qualify":"read";
+            String perm=permission(code,action);
+            grant(producerUser,perm,"CUSTOM","telemetry-company:"+company);
+            grant(producerUser,perm,"CUSTOM","telemetry-source-point:"+source+":"+point);
+        }
+    }
+    private void t09Mapping() {
+        db.update("""
+                INSERT INTO hidra_telemetry_external_tag_mapping
+                  (id,source_id,device_id,point_id,external_tag_name,mapping_mode,active,
+                   valid_from,created_at,updated_at)
+                VALUES (?,?,?,?,'GZ2.QUALIFIED','DIRECT',true,
+                        now()-interval '1 hour',now(),now())
+                """,id(),source,device,point);
+    }
+    private void t09Rule(long maxPastSeconds,String acceptedQuality) {
+        String type=catalog("VALIDATION_RULE_TYPE",null);
+        String config="{\"qualityCodeId\":\""+acceptedQuality+"\",\"trustLevel\":\"MEDIUM\","
+                +"\"maxPastAgeSeconds\":"+maxPastSeconds+",\"maxFutureSkewSeconds\":120}";
+        db.update("""
+                INSERT INTO hidra_telemetry_validation_rule
+                  (id,code,name,scope_type,scope_reference_id,rule_type_id,severity,
+                   action_on_failure,configuration_json,active,valid_from,created_at,updated_at)
+                VALUES (?,'T09_RAW_QUALITY','Explicit synthetic quality contract','POINT',?,
+                        ?,'ERROR','REJECT',CAST(? AS jsonb),true,
+                        now()-interval '1 hour',now(),now())
+                """,id(),point,type,config);
+    }
+    private String t09Raw(String sequence,long secondsAgo,String qualityCode) throws Exception {
+        String payload=payload(sequence,"51.25",qualityCode,unit,
+                Instant.now().minusSeconds(secondsAgo).toString());
+        var result=http.perform(post(route()).header("Authorization","Bearer "+producer)
+                .contentType(MediaType.APPLICATION_JSON).content(payload))
+                .andExpect(status().isCreated()).andReturn();
+        return JSON.readTree(result.getResponse().getContentAsString()).path("id").asText();
+    }
+    private String t09Prefix(String reading) {
+        return "/api/v1/telemetry/points/"+point+"/readings/"+reading;
+    }
+    private String t09Command() {
+        return "{\"companyPartyId\":\""+company+"\"}";
+    }
+    @Test void governedTrustAssessmentPublishReadReplayAndRevocation() throws Exception {
+        t09Grants();t09Mapping();t09Rule(3600,quality);
+        String reading=t09Raw("t09-seq-a",3,quality);
+        String base=t09Prefix(reading);
+        var assessed=http.perform(post(base+"/assessment")
+                .header("Authorization","Bearer "+producer)
+                .contentType(MediaType.APPLICATION_JSON).content(t09Command()))
+                .andExpect(status().isCreated()).andExpect(jsonPath("$.status").value("PASSED"))
+                .andExpect(jsonPath("$.trustLevel").value("MEDIUM"))
+                .andExpect(jsonPath("$.assessedByActorId").value(producerUser))
+                .andReturn();
+        String assessment=JSON.readTree(assessed.getResponse().getContentAsString()).path("id").asText();
+        http.perform(post(base+"/assessment").header("Authorization","Bearer "+producer)
+                .contentType(MediaType.APPLICATION_JSON).content(t09Command()))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.id").value(assessment))
+                .andExpect(jsonPath("$.replayed").value(true));
+        var first=http.perform(post(base+"/trust").header("Authorization","Bearer "+producer)
+                .contentType(MediaType.APPLICATION_JSON).content(t09Command()))
+                .andExpect(status().isCreated()).andExpect(jsonPath("$.assessmentId").value(assessment))
+                .andExpect(jsonPath("$.unitId").value(unit))
+                .andExpect(jsonPath("$.pointId").value(point))
+                .andExpect(jsonPath("$.rawReadingId").value(reading))
+                .andExpect(jsonPath("$.reasonCode").value("QUALITY_POLICY_PASSED"))
+                .andReturn();
+        JsonNode trusted=JSON.readTree(first.getResponse().getContentAsString());
+        String trustedId=trusted.path("id").asText(),bindingId=trusted.path("bindingId").asText();
+        assertFalse(bindingId.isBlank());
+        assertEquals(facility,trusted.path("assetId").asText());
+        assertFalse(trusted.path("receivedAt").asText().isBlank());
+        assertFalse(trusted.path("assessedAt").asText().isBlank());
+        http.perform(post(base+"/trust").header("Authorization","Bearer "+producer)
+                .contentType(MediaType.APPLICATION_JSON).content(t09Command()))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.id").value(trustedId))
+                .andExpect(jsonPath("$.replayed").value(true));
+        assertEquals(1L,db.queryForObject(
+                "SELECT count(*) FROM hidra_telemetry_trusted_reading WHERE reading_id=?",
+                Long.class,reading));
+        assertEquals(bindingId,db.queryForObject(
+                "SELECT binding_id FROM hidra_telemetry_trusted_reading WHERE reading_id=?",
+                String.class,reading));
+        String read="/api/v1/telemetry/points/"+point+"/trusted-readings";
+        http.perform(get(base+"/assessment").header("Authorization","Bearer "+producer)
+                .param("companyPartyId",company)).andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(assessment));
+        http.perform(get(read+"/"+trustedId).header("Authorization","Bearer "+producer)
+                .param("companyPartyId",company)).andExpect(status().isOk())
+                .andExpect(jsonPath("$.bindingId").value(bindingId));
+        http.perform(get(read).header("Authorization","Bearer "+producer)
+                .param("companyPartyId",company)).andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(trustedId));
+        http.perform(get(read+"/"+trustedId).header("Authorization","Bearer "+foreign)
+                .param("companyPartyId",otherCompany)).andExpect(status().isForbidden());
+        String readPerm=permission("telemetry:trusted-reading:read","read");
+        db.update("""
+                UPDATE hidra_identity_user_permission_grant SET status='REVOKED',revoked_at=now()
+                WHERE user_id=? AND permission_id=? AND scope_reference_id=?
+                """,producerUser,readPerm,"telemetry-source-point:"+source+":"+point);
+        http.perform(get(read+"/"+trustedId).header("Authorization","Bearer "+producer)
+                .param("companyPartyId",company)).andExpect(status().isForbidden());
+        http.perform(get(read).header("Authorization","Bearer "+producer)
+                .param("companyPartyId",company)).andExpect(status().isForbidden());
+    }
+
+    @Test void missingPolicyAndNonpassingQualityNeverPublishTrustedEvidence() throws Exception {
+        t09Grants();t09Mapping();
+        String unconfigured=t09Raw("t09-no-rule",3,quality);
+        http.perform(post(t09Prefix(unconfigured)+"/assessment")
+                .header("Authorization","Bearer "+producer)
+                .contentType(MediaType.APPLICATION_JSON).content(t09Command()))
+                .andExpect(status().isConflict());
+        assertEquals(0L,db.queryForObject(
+                "SELECT count(*) FROM hidra_telemetry_quality_assessment WHERE reading_id=?",
+                Long.class,unconfigured));
+        t09Rule(30,quality);
+        String stale=t09Raw("t09-stale",90,quality);
+        http.perform(post(t09Prefix(stale)+"/assessment")
+                .header("Authorization","Bearer "+producer)
+                .contentType(MediaType.APPLICATION_JSON).content(t09Command()))
+                .andExpect(status().isCreated()).andExpect(jsonPath("$.status").value("FAILED"))
+                .andExpect(jsonPath("$.reasonCode").value("SOURCE_TIME_NOT_ELIGIBLE"));
+        http.perform(post(t09Prefix(stale)+"/trust")
+                .header("Authorization","Bearer "+producer)
+                .contentType(MediaType.APPLICATION_JSON).content(t09Command()))
+                .andExpect(status().isBadRequest());
+        String other=catalog("QUALITY_CODE",null);
+        String bad=t09Raw("t09-bad-quality",2,other);
+        http.perform(post(t09Prefix(bad)+"/assessment")
+                .header("Authorization","Bearer "+producer)
+                .contentType(MediaType.APPLICATION_JSON).content(t09Command()))
+                .andExpect(status().isCreated()).andExpect(jsonPath("$.status").value("FAILED"))
+                .andExpect(jsonPath("$.reasonCode").value("QUALITY_NOT_ELIGIBLE"));
+        http.perform(post(t09Prefix(bad)+"/trust").header("Authorization","Bearer "+producer)
+                .contentType(MediaType.APPLICATION_JSON).content(t09Command()))
+                .andExpect(status().isBadRequest());
+        assertEquals(0L,db.queryForObject(
+                "SELECT count(*) FROM hidra_telemetry_trusted_reading WHERE reading_id IN (?,?)",
+                Long.class,stale,bad));
+    }
+
+    @Test void concurrentQualifyingPublicationLocksOneRawAndOneTrustedRow() throws Exception {
+        t09Grants();t09Mapping();t09Rule(300,quality);
+        String reading=t09Raw("t09-concurrent",3,quality);
+        String base=t09Prefix(reading);
+        http.perform(post(base+"/assessment").header("Authorization","Bearer "+producer)
+                .contentType(MediaType.APPLICATION_JSON).content(t09Command()))
+                .andExpect(status().isCreated());
+        try(var pool=Executors.newFixedThreadPool(2)) {
+            List<Callable<Integer>> tasks=List.of(
+                    ()->http.perform(post(base+"/trust").header("Authorization","Bearer "+producer)
+                            .contentType(MediaType.APPLICATION_JSON).content(t09Command()))
+                            .andReturn().getResponse().getStatus(),
+                    ()->http.perform(post(base+"/trust").header("Authorization","Bearer "+producer)
+                            .contentType(MediaType.APPLICATION_JSON).content(t09Command()))
+                            .andReturn().getResponse().getStatus());
+            var results=pool.invokeAll(tasks);
+            for(var future:results)
+                assertTrue(List.of(200,201).contains(future.get(60,TimeUnit.SECONDS)));
+        }
+        assertEquals(1L,db.queryForObject(
+                "SELECT count(*) FROM hidra_telemetry_trusted_reading WHERE reading_id=?",
+                Long.class,reading));
+        assertEquals(1L,db.queryForObject(
+                "SELECT count(*) FROM hidra_telemetry_quality_assessment WHERE reading_id=?",
+                Long.class,reading));
+    }
+
     @Test void nativeCommissioningCreatesScopedSourcePointMappingAndEffectiveBinding() throws Exception {
         // A source cannot become ingested by merely posting a DRAFT source or PLANNED point.
         // T08 commissions all ACTIVE prerequisites together under Topology and native Identity.

@@ -99,7 +99,25 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
             Class<?> telemetryCommissioning=Class.forName(telemetryPkg+"controller.TelemetryCommissioningController");
             Class<?> telemetryEnroll=Class.forName(telemetryPkg+"request.TelemetryCommissioningRequests$Enroll");
             Class<?> telemetryRebind=Class.forName(telemetryPkg+"request.TelemetryCommissioningRequests$Rebind");
+            Class<?> telemetryQuality=Class.forName(telemetryPkg+"controller.TelemetryQualityController");
+            Class<?> qualityCommand=Class.forName(telemetryPkg+"request.TelemetryQualityRequests$Command");
+            String telemetryPointBase="/api/v1/telemetry/points/{pointId}";
             return List.of(
+                new Route(telemetryQuality,telemetryQuality.getDeclaredMethod("assess",
+                    String.class,String.class,qualityCommand),
+                    "POST",telemetryPointBase+"/readings/{readingId}/assessment"),
+                new Route(telemetryQuality,telemetryQuality.getDeclaredMethod("assessment",
+                    String.class,String.class,String.class),
+                    "GET",telemetryPointBase+"/readings/{readingId}/assessment"),
+                new Route(telemetryQuality,telemetryQuality.getDeclaredMethod("publish",
+                    String.class,String.class,qualityCommand),
+                    "POST",telemetryPointBase+"/readings/{readingId}/trust"),
+                new Route(telemetryQuality,telemetryQuality.getDeclaredMethod("exact",
+                    String.class,String.class,String.class),
+                    "GET",telemetryPointBase+"/trusted-readings/{trustedId}"),
+                new Route(telemetryQuality,telemetryQuality.getDeclaredMethod("history",
+                    String.class,String.class,int.class),
+                    "GET",telemetryPointBase+"/trusted-readings"),
                 new Route(telemetryCommissioning,telemetryCommissioning.getDeclaredMethod("enroll",telemetryEnroll),
                     "POST",telemetryBase),
                 new Route(telemetryCommissioning,telemetryCommissioning.getDeclaredMethod("rebind",String.class,telemetryRebind),

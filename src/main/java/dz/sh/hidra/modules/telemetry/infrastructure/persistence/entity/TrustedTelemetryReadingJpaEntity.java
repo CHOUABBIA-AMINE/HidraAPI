@@ -89,6 +89,9 @@ import java.time.Instant;
     @Column(name = "ingestion_batch_id", nullable = true, length = 80)
     private String ingestionBatchId;
 
+    @Column(name = "binding_id", nullable = true, length = 80)
+    private String bindingId;
+
         protected TrustedTelemetryReadingJpaEntity() {
             // Required by JPA.
         }
@@ -110,7 +113,8 @@ import java.time.Instant;
             String topologyAssetId,
             String topologyAssetCode,
             String topologySnapshotId,
-            String ingestionBatchId
+            String ingestionBatchId,
+            String bindingId
         ) {
             this.id = id;
         this.readingId = readingId;
@@ -129,8 +133,21 @@ import java.time.Instant;
         this.topologyAssetCode = topologyAssetCode;
         this.topologySnapshotId = topologySnapshotId;
         this.ingestionBatchId = ingestionBatchId;
+        this.bindingId = bindingId;
         }
 
+
+    public TrustedTelemetryReadingJpaEntity(String id,String readingId,String pointId,
+            BigDecimal numericValue,String textValue,Boolean booleanValue,String unitId,
+            String qualityCodeId,TrustLevel trustLevel,Instant sourceTimestamp,Instant trustedAt,
+            String qualityAssessmentId,String topologyAssetTypeCode,String topologyAssetId,
+            String topologyAssetCode,String topologySnapshotId,String ingestionBatchId) {
+        this(id,readingId,pointId,numericValue,textValue,booleanValue,unitId,qualityCodeId,
+                trustLevel,sourceTimestamp,trustedAt,qualityAssessmentId,topologyAssetTypeCode,
+                topologyAssetId,topologyAssetCode,topologySnapshotId,ingestionBatchId,null);
+    }
+
+    public String bindingId() { return bindingId; }
 
     public String id() {
         return id;

@@ -169,7 +169,8 @@ public final class TelemetryPersistenceMapper {
                         model.topologyAssetId(),
                         model.topologyAssetCode(),
                         model.topologySnapshotId(),
-                        model.ingestionBatchId()
+                        model.ingestionBatchId(),
+                        model.bindingId()
             );
         }
 
@@ -191,7 +192,8 @@ public final class TelemetryPersistenceMapper {
                         entity.topologyAssetId(),
                         entity.topologyAssetCode(),
                         entity.topologySnapshotId(),
-                        entity.ingestionBatchId()
+                        entity.ingestionBatchId(),
+                        entity.bindingId()
             );
         }
 }

@@ -37,16 +37,29 @@ public final class TelemetryReadingNativeScopeAdapter implements TelemetryReadin
         this.topology=Objects.requireNonNull(topology);this.identity=Objects.requireNonNull(identity);
     }
     @Override public void require(Scope scope,Operation operation) {
+        authorize(scope,operation,null,false);
+    }
+    @Override public String requireActor(Scope scope,Operation operation,String companyPartyId) {
+        if(companyPartyId==null||companyPartyId.isBlank())
+            throw new AccessDeniedException("Protected telemetry resource unavailable.");
+        return authorize(scope,operation,companyPartyId,true);
+    }
+    private String authorize(Scope scope,Operation operation,String claimedCompany,boolean captureActor) {
         if(scope==null||operation==null)
             throw new AccessDeniedException("Protected telemetry resource unavailable.");
         var owner=topology.currentOwner(scope.assetType(),scope.assetId())
                 .orElseThrow(()->new AccessDeniedException("Protected telemetry resource unavailable."));
-        if(!owner.typeCode().equals(scope.assetType()) || !owner.assetId().equals(scope.assetId()))
+        if(!owner.typeCode().equals(scope.assetType()) || !owner.assetId().equals(scope.assetId())
+                || (claimedCompany!=null&&!claimedCompany.equals(owner.companyPartyId())))
             throw new AccessDeniedException("Protected telemetry resource unavailable.");
-        identity.require(operation==Operation.INGEST
-                    ? TelemetryScopedAuthorizationContract.Operation.INGEST
-                    : TelemetryScopedAuthorizationContract.Operation.READ,
-                owner.companyPartyId(),scope.sourceId(),scope.pointId());
+        var nativeOperation=switch(operation) {
+            case INGEST -> TelemetryScopedAuthorizationContract.Operation.INGEST;
+            case READ -> TelemetryScopedAuthorizationContract.Operation.READ;
+            case QUALIFY -> TelemetryScopedAuthorizationContract.Operation.QUALIFY;
+            case TRUSTED_READ -> TelemetryScopedAuthorizationContract.Operation.TRUSTED_READ;
+        };
+        identity.require(nativeOperation,owner.companyPartyId(),scope.sourceId(),scope.pointId());
+        return captureActor ? identity.currentActor() : null;
     }
     // Native commissioning reuses the sole reviewed direct Identity/Topology owner bridge.
     void requireCompanyManage(String company) {

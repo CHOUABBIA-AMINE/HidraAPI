@@ -1355,12 +1355,27 @@ public class ProductRevisionPublicationNativeHttpPostgresIntegrationTest {
         var task = workflows.createWorkflowTask(new CreateWorkflowTaskCommand(instance.id(), definitionId + 1,
                 reviewer.fixture().user(), null, null, null, null, null, null, null, null, "Synthetic baseline review"));
         var actual = workflowTasks.findById(task.id()).orElseThrow();
+        assertThat(actual.assignedActorId()).isEqualTo(reviewer.fixture().user());
+        // The Workflow command requires a nonblank display name for both the denied author
+        // and the real reviewer. Read the fixture's persisted actor values, not caller claims.
+        String authorDisplay = jdbc.queryForObject("SELECT display_name FROM " + U + " WHERE id=?",
+                String.class, author.fixture().user());
+        String reviewerDisplay = jdbc.queryForObject("SELECT display_name FROM " + U + " WHERE id=?",
+                String.class, reviewer.fixture().user());
+        assertThat(authorDisplay).isEqualTo("Synthetic Publication Reviewer");
+        assertThat(reviewerDisplay).isEqualTo("Synthetic Publication Reviewer");
+        // This must prove the actual Workflow actor/assignment check, not constructor rejection.
         assertThatThrownBy(() -> workflowTransitions.execute(new ExecuteWorkflowTransitionCommand(task.id(),
                 transition, actual.updatedAt(), null, null, null, submissionId,
-                author.fixture().user(), null, null, Set.of()))).isInstanceOf(RuntimeException.class);
+                author.fixture().user(), author.fixture().user(), authorDisplay, Set.of())))
+                .isInstanceOf(dz.sh.hidra.modules.workflow.domain.exception.WorkflowTransitionDeniedException.class);
         baselinePrincipal(reviewer);
         var decision = workflowTransitions.execute(new ExecuteWorkflowTransitionCommand(task.id(), transition,
-                actual.updatedAt(), null, null, null, submissionId, reviewer.fixture().user(), null, null, Set.of()));
+                actual.updatedAt(), null, null, null, submissionId,
+                reviewer.fixture().user(), reviewer.fixture().user(), reviewerDisplay, Set.of()));
+        assertThat(decision.decision()).isEqualTo("APPROVE");
+        assertThat(decision.taskStatus()).isEqualTo("APPROVED");
+        assertThat(decision.instanceStatus()).isEqualTo("COMPLETED");
         UUID request = UUID.randomUUID();
         String path = "/api/v1/topology/engineering-baselines/submissions/" + submissionId + "/publications";
         String body = """

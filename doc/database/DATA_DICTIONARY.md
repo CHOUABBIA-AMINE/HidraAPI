@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `dd9c888dc9bc8146dcdd49039deec7f753270725`
+Captured source SHA: `49462bfcb098ef390d73b7ad5db5cb4a4f1111f1`
 PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `03f961198111beaa2906ff3dae758eb358334db2b59d0f3626ac91d6098e1516`.
-Migrations: 207; JPA mappings: 470; catalog relations: 559; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `916902aee933b3c2a2ea7387956227ee19abd5f1fddbad86fd4734c9b6619bcb`.
+Migrations: 208; JPA mappings: 470; catalog relations: 559; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -10358,6 +10358,7 @@ Persisted PermissionJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261110_003__planning_draft_author_permission.sql](../../src/main/resources/db/migration/V20261110_003__planning_draft_author_permission.sql)
 - Migration mention (not inferred introduction): [V20261111_001__planning_revision_review_permission.sql](../../src/main/resources/db/migration/V20261111_001__planning_revision_review_permission.sql)
 - Migration mention (not inferred introduction): [V20261111_002__topology_engineering_baseline_publication.sql](../../src/main/resources/db/migration/V20261111_002__topology_engineering_baseline_publication.sql)
+- Migration mention (not inferred introduction): [V20261112_001__t08_telemetry_commissioning_permission.sql](../../src/main/resources/db/migration/V20261112_001__t08_telemetry_commissioning_permission.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|

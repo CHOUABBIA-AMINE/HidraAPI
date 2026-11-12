@@ -94,7 +94,20 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
             Class<?> stationPublish=Class.forName(topology+"request.StationGraphRequests$Publish");
             String stationBase="/api/v1/topology/facilities/{facilityId}/station-graph";
             Class<?> workflow=Class.forName("dz.sh.hidra.modules.workflow.api.rest.controller.WorkflowDefinitionDiscoveryController");
+            final String telemetryBase="/api/v1/telemetry/commissioning";
+            final String telemetryPkg="dz.sh.hidra.modules.telemetry.api.rest.";
+            Class<?> telemetryCommissioning=Class.forName(telemetryPkg+"controller.TelemetryCommissioningController");
+            Class<?> telemetryEnroll=Class.forName(telemetryPkg+"request.TelemetryCommissioningRequests$Enroll");
+            Class<?> telemetryRebind=Class.forName(telemetryPkg+"request.TelemetryCommissioningRequests$Rebind");
             return List.of(
+                new Route(telemetryCommissioning,telemetryCommissioning.getDeclaredMethod("enroll",telemetryEnroll),
+                    "POST",telemetryBase),
+                new Route(telemetryCommissioning,telemetryCommissioning.getDeclaredMethod("rebind",String.class,telemetryRebind),
+                    "POST",telemetryBase+"/points/{pointId}/bindings"),
+                new Route(telemetryCommissioning,telemetryCommissioning.getDeclaredMethod("effective",String.class,String.class,java.time.Instant.class),
+                    "GET",telemetryBase+"/points/{pointId}/effective"),
+                new Route(telemetryCommissioning,telemetryCommissioning.getDeclaredMethod("history",String.class,String.class,int.class),
+                    "GET",telemetryBase+"/points/{pointId}/history"),
                 new Route(discovery,discovery.getDeclaredMethod("discover",String.class,String.class,discoveryKind,String.class,int.class,String.class),"GET",sourceBase),
                 new Route(discovery,discovery.getDeclaredMethod("exact",discoveryKind,String.class,String.class,String.class,String.class,String.class),"GET",sourceBase+"/{kind}/{ownerId}/{sourceId}/revisions/{revisionId}"),
                 new Route(workflow,workflow.getDeclaredMethod("installedCharacteristicLinkTarget",String.class,String.class,String.class,long.class),"GET","/api/v1/workflow/definitions/installed-characteristic-link-target"),

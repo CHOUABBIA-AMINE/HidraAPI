@@ -1400,7 +1400,7 @@
       "cases": [
         "allFourNativeProducersPrepareApprovePublishAndReadConfiguredHttp",
         "nativeApprovedProductFeedsProtectedBaselineWithRetainedWorkflowEvidence",
-      "nativeCompleteSyntheticGz2GasNetworkAndCustodyProductBaselineRoundTrip",
+        "nativeCompleteSyntheticGz2GasNetworkAndCustodyProductBaselineRoundTrip",
         "configuredReplayWithdrawEffectiveHistoryAndReactivationRetainSnapshot",
         "nativeProductReactivateSuppliesBaselineAsOfWindow",
         "missingMalformedAndRevokedBearerCannotDiscloseOrMutate",
@@ -8319,6 +8319,7 @@
         "concurrentConflictingSequencesCannotCommitTwoDifferentReadings",
         "concurrentDuplicateSequencesCannotAppendTwoRawReadings",
         "localJwtNativeScopedWriteReplayAndProtectedReadbackArePostgresDurable",
+        "nativeCommissioningCreatesScopedSourcePointMappingAndEffectiveBinding",
         "nativeTextAndBooleanReadingsPreserveTypedValuesWithoutTrustPublication",
         "protectedReadingAndReplaySurviveSeparateApplicationJvmRestart",
         "protectedReadsAndInvalidNativeObservationsFailClosedWithoutAppend"
@@ -8329,7 +8330,7 @@
       "lane": "postgres-integration",
       "owner": "telemetry",
       "path": "src/test/java/dz/sh/hidra/modules/telemetry/infrastructure/persistence/TelemetryReadingIngestionNativeHttpPostgresIntegrationTest.java",
-      "source_sha256": "1f96dfdda80c56dd7ad48c4909a53ce67b1a3e3015711a13e94099040bb78e18",
+      "source_sha256": "b8d102d4917ba04def9168038ecb810d82994a6d2ea8f1868868b24826f410f8",
       "supports": []
     },
     {
@@ -11657,7 +11658,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java",
-      "source_sha256": "b23b76cf811fa5ab34b730063c1b7f9ec3cd65871ec99a60148ac682cd282341",
+      "source_sha256": "52e88b76a09d827126b082b708d4c8450a1dd251f13cb968f1d4cae65deb3443",
       "supports": []
     },
     {
@@ -11681,7 +11682,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistryTest.java",
-      "source_sha256": "6729f1f7e2e2b26880ac27aa2274756d87c5528a483841d8146ee5e0e0d294ba",
+      "source_sha256": "31b956c6ce53029549ceeabaacae02cd3d46d6e383c811632517b974cafe8185",
       "supports": []
     },
     {
@@ -11701,7 +11702,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteStartupValidatorTest.java",
-      "source_sha256": "08efdc079b6c5ca4943512820becf21e905bea28fe1f8c1772a9352822720585",
+      "source_sha256": "9ea91a34afb14f83eeed80d2f81c32ed4ba176db9784a4cb0c7ce274bd8b7bbc",
       "supports": []
     },
     {

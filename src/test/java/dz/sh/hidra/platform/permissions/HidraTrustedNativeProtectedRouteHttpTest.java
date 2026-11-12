@@ -156,7 +156,7 @@ class HidraTrustedNativeProtectedRouteHttpTest {
    var resolver = org.mockito.Mockito.mock(HidraEffectivePermissionResolver.class);
    authenticated();
    var registry = new HidraTrustedNativeProtectedRouteRegistry();
-   assertEquals(39,registry.candidates().size());
+   assertEquals(43,registry.candidates().size());
    var mvc = mvc(owner, new UntrustedController(), resolver,registry);
    assertThrows(Exception.class, () ->
       mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(TRUSTED)));
@@ -165,8 +165,12 @@ class HidraTrustedNativeProtectedRouteHttpTest {
  @Test void realManufacturerTupleRegistryRejectsWrongVerbAndSiblingPattern() throws Exception {
    var registry=new HidraTrustedNativeProtectedRouteRegistry();
    var routes=registry.candidates();
-   assertEquals(39,routes.size());
+   assertEquals(43,routes.size());
    var expected=java.util.Set.of(
+    "POST /api/v1/telemetry/commissioning",
+    "POST /api/v1/telemetry/commissioning/points/{pointId}/bindings",
+    "GET /api/v1/telemetry/commissioning/points/{pointId}/effective",
+    "GET /api/v1/telemetry/commissioning/points/{pointId}/history",
     "GET /api/v1/topology/engineering-sources",
     "GET /api/v1/topology/engineering-sources/{kind}/{ownerId}/{sourceId}/revisions/{revisionId}",
     "GET /api/v1/workflow/definitions/installed-characteristic-link-target",
@@ -229,12 +233,15 @@ class HidraTrustedNativeProtectedRouteHttpTest {
       org.mockito.Mockito.mock(dz.sh.hidra.modules.topology.application.port.in.ProtectedStationGraphOperationUseCase.class));
     var discovery=new dz.sh.hidra.modules.topology.api.rest.controller.EngineeringSourceDiscoveryController(
       org.mockito.Mockito.mock(dz.sh.hidra.modules.topology.application.port.in.EngineeringSourceDiscoveryUseCase.class));
+    var telemetryCommission=new dz.sh.hidra.modules.telemetry.api.rest.controller.TelemetryCommissioningController(
+      org.mockito.Mockito.mock(dz.sh.hidra.modules.telemetry.application.port.in.TelemetryCommissioningUseCase.class));
     var workflow=new dz.sh.hidra.modules.workflow.api.rest.controller.WorkflowDefinitionDiscoveryController(
       org.mockito.Mockito.mock(dz.sh.hidra.modules.workflow.application.port.in.WorkflowDefinitionDiscoveryUseCase.class));
-    var owners=java.util.Map.<Class<?>,Object>of(controller.getClass(),controller,installed.getClass(),installed,
+    var owners=new java.util.HashMap<Class<?>,Object>(java.util.Map.<Class<?>,Object>of(controller.getClass(),controller,installed.getClass(),installed,
       pipeline.getClass(),pipeline,baseline.getClass(),baseline,foundation.getClass(),foundation,station.getClass(),station,
       workflow.getClass(),workflow,discovery.getClass(),discovery,
-       baselinePublication.getClass(),baselinePublication,baselineRead.getClass(),baselineRead);
+       baselinePublication.getClass(),baselinePublication,baselineRead.getClass(),baselineRead));
+    owners.put(telemetryCommission.getClass(),telemetryCommission);
     var actual=new RequestMappingHandlerMapping();
    for(var entry:routes) {
     Object owner=owners.get(entry.controller());

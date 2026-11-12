@@ -54,22 +54,34 @@ public class TelemetryScopedAuthorizationQueryService implements TelemetryScoped
     @Override
     @Transactional(propagation=Propagation.MANDATORY)
     public void require(Operation operation,String company,String source,String point) {
-        if(operation==null || !valid(company) || !valid(source) || !valid(point))
+        // Company admission precedes protected source-point lookup. Creation has no point yet;
+        // subsequent edits/reads must also carry exact native source-point grants.
+        if(operation==null || !valid(company) || (source==null)!=(point==null)
+                || (source!=null && (!valid(source)||!valid(point)))
+                || (operation==Operation.INGEST && source==null))
             throw new AccessDeniedException("Protected telemetry resource unavailable.");
-        String permission = operation==Operation.INGEST
-                ? "telemetry:raw-reading:ingest" : "telemetry:raw-reading:read";
+        String permission = switch(operation) {
+            case INGEST -> "telemetry:raw-reading:ingest";
+            case READ -> "telemetry:raw-reading:read";
+            case COMMISSION -> "telemetry:commission:manage";
+        };
         String actor = actors.currentLocalActor();
         Instant at = Instant.now();
         var companyScope = new AuthorizationScope(ScopeType.CUSTOM,"telemetry-company:"+company,null);
-        var pointScope = new AuthorizationScope(ScopeType.CUSTOM,"telemetry-source-point:"+source+":"+point,null);
-        if (companyScope.scopeReferenceId().length()>120 || pointScope.scopeReferenceId().length()>120
-                || !direct.currentDirectPermit(actor,permission,ScopeType.CUSTOM,companyScope.scopeReferenceId(),at)
-                || !direct.currentDirectPermit(actor,permission,ScopeType.CUSTOM,pointScope.scopeReferenceId(),at))
+        if(companyScope.scopeReferenceId().length()>120
+                || !direct.currentDirectPermit(actor,permission,ScopeType.CUSTOM,companyScope.scopeReferenceId(),at))
             throw new AccessDeniedException("Protected telemetry resource unavailable.");
         VerifiedAuthorizationAssertion assertion = assertions.currentFor(actor);
-        if (!permitted(actor,permission,companyScope,assertion,at)
-                || !permitted(actor,permission,pointScope,assertion,at))
+        if(!permitted(actor,permission,companyScope,assertion,at))
             throw new AccessDeniedException("Protected telemetry resource unavailable.");
+        if(source!=null) {
+            var pointScope = new AuthorizationScope(ScopeType.CUSTOM,
+                    "telemetry-source-point:"+source+":"+point,null);
+            if(pointScope.scopeReferenceId().length()>120
+                    || !direct.currentDirectPermit(actor,permission,ScopeType.CUSTOM,pointScope.scopeReferenceId(),at)
+                    || !permitted(actor,permission,pointScope,assertion,at))
+                throw new AccessDeniedException("Protected telemetry resource unavailable.");
+        }
     }
     private boolean permitted(String actor,String permission,AuthorizationScope scope,
             VerifiedAuthorizationAssertion assertion,Instant at) {

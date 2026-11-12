@@ -101,7 +101,7 @@ class TelemetryReadingIngestionNativeHttpPostgresIntegrationTest {
     @Autowired PasswordEncoder passwords;
     private JdbcTemplate db;
     private MockMvc http;
-    private String company,otherCompany,facility,source,device,point,unit,quality,producer,foreign;
+    private String company,otherCompany,facility,source,device,point,unit,quality,producer,foreign,producerUser;
     private static String id() { return UUID.randomUUID().toString(); }
     private String route() { return "/api/v1/telemetry/points/"+point+"/readings"; }
     @BeforeEach void fixture() {
@@ -164,6 +164,7 @@ class TelemetryReadingIngestionNativeHttpPostgresIntegrationTest {
     }
     private String actor(String party,boolean properAsset) {
         String user=id();
+        if(properAsset)producerUser=user;
         db.update("INSERT INTO hidra_identity_user(id,username,display_name,user_type,status,failed_login_count,created_at,updated_at,activated_at) VALUES (?,?,'Synthetic telemetry producer','HUMAN','ACTIVE',0,now(),now(),now())",
                 user,user);
         db.update("INSERT INTO hidra_identity_local_credential(id,user_id,password_hash,credential_status,created_at,updated_at) VALUES (?,?,?,'ACTIVE',now(),now())",
@@ -186,6 +187,122 @@ class TelemetryReadingIngestionNativeHttpPostgresIntegrationTest {
                 +"\"numericValue\":"+number+",\"qualityCodeId\":\""+q+"\","
                 +"\"unitId\":\""+u+"\",\"sourceTimestamp\":\""+time+"\"}";
     }
+
+    @Test void nativeCommissioningCreatesScopedSourcePointMappingAndEffectiveBinding() throws Exception {
+        // A source cannot become ingested by merely posting a DRAFT source or PLANNED point.
+        // T08 commissions all ACTIVE prerequisites together under Topology and native Identity.
+        String management=permission("telemetry:commission:manage","manage");
+        grant(producerUser,management,"CUSTOM","telemetry-company:"+company);
+        String sourceType=catalog("SOURCE_TYPE",null),protocol=catalog("PROTOCOL",null);
+        String deviceType=catalog("DEVICE_TYPE",null),pointType=catalog("POINT_TYPE",null);
+        String signalType=catalog("SIGNAL_TYPE","NUMERIC"),role=catalog("BINDING_ROLE",null);
+        Instant from=Instant.now().minusSeconds(8)
+                .truncatedTo(java.time.temporal.ChronoUnit.MICROS);
+        UUID request=UUID.randomUUID();
+        String enroll="""
+                {"requestId":"%s","companyPartyId":"%s","assetType":"FACILITY","assetId":"%s",
+                 "sourceCode":"T08-S-%s","sourceNameFr":"Source GZ2",
+                 "sourceTypeId":"%s","protocolId":"%s",
+                 "deviceCode":"T08-D-%s","deviceNameFr":"Appareil GZ2","deviceTypeId":"%s",
+                 "pointCode":"T08-P-%s","pointNameFr":"Pression GZ2",
+                 "pointTypeId":"%s","signalTypeId":"%s","unitId":"%s",
+                 "bindingRoleId":"%s","externalTagName":"GZ2.PRESSURE",
+                 "validFrom":"%s"}
+                """.formatted(request,company,facility,request,sourceType,protocol,request,
+                deviceType,request,pointType,signalType,unit,role,from);
+        String base="/api/v1/telemetry/commissioning";
+        var created=http.perform(post(base).header("Authorization","Bearer "+producer)
+                .contentType(MediaType.APPLICATION_JSON).content(enroll))
+                .andExpect(status().isOk()).andReturn();
+        var initial=JSON.readTree(created.getResponse().getContentAsString());
+        String newSource=initial.path("sourceId").asText(),newPoint=initial.path("pointId").asText();
+        assertFalse(initial.path("bindingId").asText().isBlank());
+        assertFalse(initial.path("mappingId").asText().isBlank());
+        assertEquals(facility,initial.path("assetId").asText());
+        http.perform(post(base).header("Authorization","Bearer "+producer)
+                .contentType(MediaType.APPLICATION_JSON).content(enroll))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.pointId").value(newPoint));
+        assertEquals(1L,db.queryForObject("SELECT count(*) FROM hidra_telemetry_point WHERE id=?",
+                Long.class,newPoint));
+        for(String action:List.of("read","ingest")) {
+            String p=permission("telemetry:raw-reading:"+action,action);
+            grant(producerUser,p,"CUSTOM","telemetry-source-point:"+newSource+":"+newPoint);
+        }
+        grant(producerUser,management,"CUSTOM","telemetry-source-point:"+newSource+":"+newPoint);
+        http.perform(get(base+"/points/"+newPoint+"/effective")
+                .header("Authorization","Bearer "+producer)
+                .param("companyPartyId",company).param("asOf",from.toString()))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.sourceId").value(newSource));
+        http.perform(get(base+"/points/"+newPoint+"/effective")
+                .header("Authorization","Bearer "+foreign)
+                .param("companyPartyId",company).param("asOf",from.toString()))
+                .andExpect(status().isForbidden());
+        String raw="""
+                {"sourceId":"%s","sourceSequenceNumber":"t08-seq-a",
+                 "numericValue":51.25,"qualityCodeId":"%s","unitId":"%s",
+                 "sourceTimestamp":"%s"}
+                """.formatted(newSource,quality,unit,Instant.now().minusSeconds(2));
+        String route="/api/v1/telemetry/points/"+newPoint+"/readings";
+        http.perform(post(route).header("Authorization","Bearer "+producer)
+                .contentType(MediaType.APPLICATION_JSON).content(raw)).andExpect(status().isCreated());
+        http.perform(post(route).header("Authorization","Bearer "+producer)
+                .contentType(MediaType.APPLICATION_JSON).content(raw))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.replayed").value(true));
+        http.perform(post(route).header("Authorization","Bearer "+producer)
+                .contentType(MediaType.APPLICATION_JSON).content(raw.replace(
+                        "\"unitId\":\""+unit+"\"","\"unitId\":\""+id()+"\"")))
+                .andExpect(status().isForbidden());
+        http.perform(post(route).header("Authorization","Bearer "+foreign)
+                .contentType(MediaType.APPLICATION_JSON).content(raw))
+                .andExpect(status().isForbidden());
+        assertEquals(0L,db.queryForObject(
+                "SELECT count(*) FROM hidra_telemetry_trusted_reading WHERE point_id=?",
+                Long.class,newPoint));
+        Instant switchAt=Instant.now().plusSeconds(25)
+                .truncatedTo(java.time.temporal.ChronoUnit.MICROS);
+        String newRequestId=UUID.randomUUID().toString();
+        String rebinding="""
+                {"requestId":"%s","companyPartyId":"%s","assetType":"FACILITY",
+                 "assetId":"%s","bindingRoleId":"%s",
+                 "externalTagName":"GZ2.PRESSURE.REVISED","validFrom":"%s"}
+                """.formatted(newRequestId,company,facility,role,switchAt);
+        http.perform(post(base+"/points/"+newPoint+"/bindings")
+                .header("Authorization","Bearer "+producer)
+                .contentType(MediaType.APPLICATION_JSON).content(rebinding))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.externalTagName")
+                        .value("GZ2.PRESSURE.REVISED"));
+        // A second overlapping publication cannot create two effective bindings.
+        http.perform(post(base+"/points/"+newPoint+"/bindings")
+                .header("Authorization","Bearer "+producer)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(rebinding.replace(newRequestId,UUID.randomUUID().toString())))
+                .andExpect(status().isConflict());
+        assertEquals(2L,db.queryForObject(
+                "SELECT count(*) FROM hidra_telemetry_point_binding WHERE point_id=?",
+                Long.class,newPoint));
+        http.perform(get(base+"/points/"+newPoint+"/effective")
+                .header("Authorization","Bearer "+producer)
+                .param("companyPartyId",company).param("asOf",from.toString()))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.externalTagName")
+                        .value("GZ2.PRESSURE"));
+        http.perform(get(base+"/points/"+newPoint+"/effective")
+                .header("Authorization","Bearer "+producer)
+                .param("companyPartyId",company).param("asOf",switchAt.toString()))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.externalTagName")
+                        .value("GZ2.PRESSURE.REVISED"));
+        http.perform(get(base+"/points/"+newPoint+"/history")
+                .header("Authorization","Bearer "+producer)
+                .param("companyPartyId",company).param("limit","10"))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.items.length()").value(2));
+        // No historic or aggregate count disclosure after current scoped READ revocation.
+        db.update("UPDATE hidra_identity_user_permission_grant SET status='REVOKED',"
+                +"revoked_at=now() WHERE user_id=? AND scope_reference_id=?",
+                producerUser,"telemetry-source-point:"+newSource+":"+newPoint);
+        http.perform(get(base+"/points/"+newPoint+"/history")
+                .header("Authorization","Bearer "+producer)
+                .param("companyPartyId",company)).andExpect(status().isForbidden());
+    }
+
     @Test void localJwtNativeScopedWriteReplayAndProtectedReadbackArePostgresDurable() throws Exception {
         var stamp=Instant.now().minusSeconds(4).toString();
         String json=payload("seq-a","51.25",quality,unit,stamp);

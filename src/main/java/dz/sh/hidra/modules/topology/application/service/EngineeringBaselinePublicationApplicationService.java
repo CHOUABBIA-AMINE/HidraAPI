@@ -21,13 +21,14 @@ package dz.sh.hidra.modules.topology.application.service;
 
 import dz.sh.hidra.modules.topology.application.model.EngineeringBaselineDraftFailure;
 import dz.sh.hidra.modules.topology.application.port.in.EngineeringBaselinePublicationUseCase;
+import dz.sh.hidra.modules.topology.application.port.in.EngineeringBaselineReadUseCase;
 import dz.sh.hidra.platform.persistence.ProtectedTransactionExecutor;
 import java.util.concurrent.atomic.AtomicReference;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 @Service
-public final class EngineeringBaselinePublicationApplicationService implements EngineeringBaselinePublicationUseCase {
+public final class EngineeringBaselinePublicationApplicationService implements EngineeringBaselinePublicationUseCase, EngineeringBaselineReadUseCase {
     private final ProtectedEngineeringBaselinePublicationCoordinator coordinator;
     private final ProtectedTransactionExecutor executor;
 
@@ -38,7 +39,7 @@ public final class EngineeringBaselinePublicationApplicationService implements E
     }
 
     @Override
-    public Result execute(Command command) {
+    public EngineeringBaselinePublicationUseCase.Result execute(Command command) {
         var prepared = coordinator.prepare();
         var admission = new AtomicReference<ProtectedEngineeringBaselinePublicationCoordinator.Admission>();
         try {
@@ -55,4 +56,25 @@ public final class EngineeringBaselinePublicationApplicationService implements E
             throw failure;
         }
     }
+    @Override
+    public EngineeringBaselineReadUseCase.Result read(EngineeringBaselineReadUseCase.Query query) {
+        var prepared = coordinator.prepare();
+        var admission = new AtomicReference<ProtectedEngineeringBaselinePublicationCoordinator.ReadAdmission>();
+        try {
+            return executor.executePublication(() -> {
+                var ticket = coordinator.acquireRead(query, prepared);
+                admission.set(ticket);
+                return ticket.result();
+            }, () -> coordinator.prepareReadFinal(admission.get()),
+               () -> coordinator.guardRead(admission.get()));
+        } catch (ProtectedTransactionExecutor.ExecutionFailure failure) {
+            if (failure.outcome() == ProtectedTransactionExecutor.Outcome.REJECTED_BEFORE_COMMIT) {
+                if (failure.getCause() instanceof AccessDeniedException denied) throw denied;
+                if (failure.getCause() instanceof EngineeringBaselineDraftFailure business) throw business;
+                if (failure.getCause() instanceof IllegalArgumentException invalid) throw invalid;
+            }
+            throw failure;
+        }
+    }
+
 }

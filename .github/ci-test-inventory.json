@@ -1418,7 +1418,7 @@
       "lane": "postgres-integration",
       "owner": "custody",
       "path": "src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/ProductRevisionPublicationNativeHttpPostgresIntegrationTest.java",
-      "source_sha256": "f3622c1d825c9d137de7968fc979f48fca2cde64ad6007f634caa6bc87f88bb7",
+      "source_sha256": "bfdd7a75622f9087693f1e35a1c9072cb7ce389bc0f7238d666c5385d7f4032a",
       "supports": []
     },
     {
@@ -11657,7 +11657,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java",
-      "source_sha256": "80e14472f661dd075319d7b84442689875248c5f97e77c65d4e1549ef67ac2f3",
+      "source_sha256": "b23b76cf811fa5ab34b730063c1b7f9ec3cd65871ec99a60148ac682cd282341",
       "supports": []
     },
     {
@@ -11670,6 +11670,7 @@
         "matchingRequiresBothVerifiedTupleAndMethodMarker",
         "pipelineRoutesDeclareThreeExactCompiledMarkedSignaturesAndNoSelfActivation",
         "productionRegistryDeclaresFiveManufacturerAndThreeTopologyApprovalTuples",
+        "protectedHistoricalBaselineReadRoutesAreExact",
         "trustedDeclarationsAreImmutableAndCannotBeSilentlyReplaced",
         "unvalidatedTrustedEntryNeverDelegates",
         "verifiedEntryMatchesExactCompiledSignatureVerbAndRoute"
@@ -11680,7 +11681,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistryTest.java",
-      "source_sha256": "dfa7981959a838b8f8215ec132d5ed0480de2f4506577353a2fbd907c0264f36",
+      "source_sha256": "6729f1f7e2e2b26880ac27aa2274756d87c5528a483841d8146ee5e0e0d294ba",
       "supports": []
     },
     {
@@ -11700,7 +11701,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteStartupValidatorTest.java",
-      "source_sha256": "8670af373a19ccfc6c652e0b8b27ffb04bfb3147105c37df9e664b254401cf7e",
+      "source_sha256": "08efdc079b6c5ca4943512820becf21e905bea28fe1f8c1772a9352822720585",
       "supports": []
     },
     {

@@ -80,7 +80,7 @@ class HidraTrustedNativeProtectedRouteRegistryTest {
 
     @Test void baselineRoutesDeclareOnlyFiveExactCompiledTuples(){
         var registry=new HidraTrustedNativeProtectedRouteRegistry();
-        assertEquals(34,registry.candidates().size());
+        assertEquals(39,registry.candidates().size());
         var rows=registry.candidates().stream().filter(r->r.controller().getSimpleName().equals("EngineeringBaselineDraftController")).toList();
         assertEquals(5,rows.size());
         assertEquals(java.util.Set.of("POST /api/v1/topology/engineering-baselines","PUT /api/v1/topology/engineering-baselines/{manifestId}",
@@ -88,6 +88,20 @@ class HidraTrustedNativeProtectedRouteRegistryTest {
             "POST /api/v1/topology/engineering-baselines/{manifestId}/validation"),
             rows.stream().map(r->r.verb()+" "+r.pattern()).collect(java.util.stream.Collectors.toSet()));
         assertTrue(rows.stream().allMatch(r->r.method().isAnnotationPresent(NativeProtectedOperation.class)));
+    }
+
+    @Test void protectedHistoricalBaselineReadRoutesAreExact() {
+        var rows = new HidraTrustedNativeProtectedRouteRegistry().candidates().stream()
+                .filter(r -> r.controller().getSimpleName().equals("EngineeringBaselineReadController")).toList();
+        assertEquals(5, rows.size());
+        assertEquals(java.util.Set.of(
+                "GET /api/v1/topology/engineering-baselines/publications/{receiptId}",
+                "GET /api/v1/topology/engineering-baselines/publications/current",
+                "GET /api/v1/topology/engineering-baselines/publications/effective",
+                "GET /api/v1/topology/engineering-baselines/publications/history",
+                "GET /api/v1/topology/engineering-baselines/publications/compare"),
+                rows.stream().map(r -> r.verb() + " " + r.pattern()).collect(java.util.stream.Collectors.toSet()));
+        assertTrue(rows.stream().allMatch(r -> r.method().isAnnotationPresent(NativeProtectedOperation.class)));
     }
 
     @Test void markedMethodCannotSelfRegister() throws Exception {

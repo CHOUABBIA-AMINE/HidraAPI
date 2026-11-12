@@ -24,12 +24,18 @@ import dz.sh.hidra.modules.topology.application.model.EngineeringBaselineDraftFa
 import dz.sh.hidra.modules.topology.application.port.in.EngineeringBaselinePublicationUseCase.Command;
 import dz.sh.hidra.modules.topology.application.port.out.EngineeringBaselinePublicationRepositoryPort;
 import dz.sh.hidra.modules.topology.application.port.out.EngineeringBaselineSourcePort.Original;
+import dz.sh.hidra.modules.topology.application.port.out.EngineeringBaselineSourcePort.Read;
+import dz.sh.hidra.modules.topology.application.port.out.EngineeringBaselineSourcePort;
+import dz.sh.hidra.modules.topology.domain.model.EngineeringBaselineManifest;
+import dz.sh.hidra.modules.identity.application.contract.topology.TopologyEngineeringBaselineAuthorizationContract;
 import dz.sh.hidra.modules.topology.domain.model.EngineeringBaselinePublication.*;
 import dz.sh.hidra.platform.persistence.ProtectedRelationFence;
 import dz.sh.hidra.platform.persistence.ProtectedTransactionExecutor;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -132,6 +138,80 @@ public class JdbcEngineeringBaselinePublicationRepositoryAdapter implements Engi
                             row.getTimestamp("published_at").toInstant());
                 }, company, pipeline, id);
         return values.isEmpty() ? null : values.getFirst();
+    }
+
+
+    /**
+     * Read only published records. Historical selection never invokes today's source eligibility:
+     * the immutable manifest and digest are decoded and checked by receipt().
+     */
+    @Override
+    public Receipt current(String company, String pipeline) {
+        var ids = jdbc.query("SELECT receipt_id FROM " + PUBLICATION
+                + " WHERE company_party_id=? AND pipeline_system_id=? ORDER BY epoch DESC LIMIT 1",
+                (rs, index) -> rs.getObject(1, UUID.class), company, pipeline);
+        return ids.isEmpty() ? null : receipt(company, pipeline, ids.getFirst());
+    }
+
+    @Override
+    public Receipt effective(String company, String pipeline, Instant asOf) {
+        long before = Long.MAX_VALUE;
+        while (true) {
+            var slice = jdbc.query("SELECT epoch,receipt_id FROM " + PUBLICATION
+                    + " WHERE company_party_id=? AND pipeline_system_id=? AND published_at<=?"
+                    + " AND epoch<? ORDER BY epoch DESC LIMIT 64",
+                    (rs, index) -> new AbstractMap.SimpleImmutableEntry<>(
+                            rs.getLong(1), rs.getObject(2, UUID.class)),
+                    company, pipeline, Timestamp.from(asOf), before);
+            if (slice.isEmpty()) return null;
+            for (var entry : slice) {
+                var candidate = receipt(company, pipeline, entry.getValue());
+                var manifest = candidate.submission().manifest();
+                if (!asOf.isBefore(manifest.effectiveFrom())
+                        && (manifest.effectiveUntil() == null || asOf.isBefore(manifest.effectiveUntil())))
+                    return candidate;
+            }
+            before = slice.getLast().getKey();
+        }
+    }
+
+    @Override
+    public List<Receipt> history(String company, String pipeline, Instant asOf,
+                                  long highWater, long beforeEpoch, int take) {
+        if (take < 1 || take > 51) throw new IllegalArgumentException("Invalid history window");
+        var ids = jdbc.query("SELECT receipt_id FROM " + PUBLICATION
+                + " WHERE company_party_id=? AND pipeline_system_id=? AND published_at<=?"
+                + " AND epoch<=? AND epoch<? ORDER BY epoch DESC LIMIT ?",
+                (rs, index) -> rs.getObject(1, UUID.class),
+                company, pipeline, Timestamp.from(asOf), highWater, beforeEpoch, take);
+        return ids.stream().map(id -> receipt(company, pipeline, id)).toList();
+    }
+
+    /** Identity must re-evaluate live source READ grants; historical eligibility is not retested. */
+    @Override
+    public List<Read> historicalSourceReads(EngineeringBaselineManifest manifest) {
+        var reads = new ArrayList<Read>();
+        for (var pin : manifest.pins()) {
+            switch (pin.kind()) {
+                case NETWORK_PUBLICATION -> reads.add(new Read(EngineeringBaselineSourcePort.Kind.NETWORK_PUBLICATION, manifest.pipelineSystemId()));
+                case STATION_CONFIGURATION -> reads.add(new Read(EngineeringBaselineSourcePort.Kind.STATION_CONFIGURATION, pin.ownerId()));
+                case PRODUCT_PUBLICATION -> reads.add(new Read(EngineeringBaselineSourcePort.Kind.PRODUCT_PUBLICATION, pin.sourceId()));
+                case CHARACTERISTIC_LINK -> {
+                    reads.add(new Read(EngineeringBaselineSourcePort.Kind.CHARACTERISTIC_LINK, pin.sourceId(), List.of(pin.ownerId())));
+                    var source = jdbc.query("SELECT source_id,source_revision_id FROM "
+                                    + "public.hidra_topology_installed_characteristic_revision"
+                                    + " WHERE company_party_id=? AND installed_unit_id=?"
+                                    + " AND link_id=? AND link_revision=?",
+                            (rs, index) -> new String[]{rs.getString(1), rs.getString(2)},
+                            manifest.companyPartyId(), pin.ownerId(), pin.sourceId(), Long.parseLong(pin.revisionId()));
+                    if (source.size() != 1) throw failure(Kind.UNAVAILABLE);
+                    reads.add(new Read(EngineeringBaselineSourcePort.Kind.MANUFACTURER_CHARACTERISTIC,
+                            TopologyEngineeringBaselineAuthorizationContract.manufacturerScope(
+                                    manifest.companyPartyId(), source.getFirst()[0], source.getFirst()[1])));
+                }
+            }
+        }
+        return reads.stream().distinct().toList();
     }
 
     @Override

@@ -21,6 +21,9 @@ package dz.sh.hidra.modules.topology.application.port.out;
 
 import dz.sh.hidra.modules.topology.application.port.in.EngineeringBaselinePublicationUseCase.Command;
 import dz.sh.hidra.modules.topology.application.port.out.EngineeringBaselineSourcePort.Original;
+import dz.sh.hidra.modules.topology.application.port.out.EngineeringBaselineSourcePort.Read;
+import dz.sh.hidra.modules.topology.domain.model.EngineeringBaselineManifest;
+import java.time.Instant;
 import dz.sh.hidra.modules.topology.domain.model.EngineeringBaselinePublication.*;
 import dz.sh.hidra.platform.persistence.ProtectedRelationFence;
 import java.util.List;
@@ -34,6 +37,10 @@ public interface EngineeringBaselinePublicationRepositoryPort {
     Submission submission(String company, String pipeline, UUID id);
     Receipt receipt(String company, String pipeline, UUID id);
     long head(String company, String pipeline);
+    Receipt current(String company, String pipeline);
+    Receipt effective(String company, String pipeline, Instant asOf);
+    List<Receipt> history(String company, String pipeline, Instant asOf, long highWater, long beforeEpoch, int take);
+    List<Read> historicalSourceReads(EngineeringBaselineManifest manifest);
     boolean published(String company, String pipeline, UUID submission);
     Set<String> mutationSql();
     void insert(Submission submission);

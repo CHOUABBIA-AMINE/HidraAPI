@@ -22,9 +22,15 @@ package dz.sh.hidra.modules.topology.api.rest.mapper;
 import dz.sh.hidra.modules.topology.api.rest.request.EngineeringBaselinePublicationRequests.*;
 import dz.sh.hidra.modules.topology.api.rest.response.EngineeringBaselineDraftResponses.SourcePin;
 import dz.sh.hidra.modules.topology.api.rest.response.EngineeringBaselinePublicationResponses.*;
+import dz.sh.hidra.modules.topology.api.rest.response.EngineeringBaselineReadResponses.*;
+import dz.sh.hidra.modules.topology.application.port.in.EngineeringBaselineReadUseCase;
 import dz.sh.hidra.modules.topology.application.port.in.EngineeringBaselinePublicationUseCase.*;
 import dz.sh.hidra.modules.topology.domain.model.EngineeringBaselinePublication.*;
 import java.util.UUID;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.Objects;
 
 public final class EngineeringBaselinePublicationRestMapper {
     private EngineeringBaselinePublicationRestMapper() {}
@@ -60,4 +66,40 @@ public final class EngineeringBaselinePublicationRestMapper {
                 m.effectiveUntil(), r.approval().reviewerId(), decision.instanceId(), decision.taskId(),
                 decision.actionId(), r.approval().reviewedAt(), r.publishedBy(), r.publishedAt(), false);
     }
+    public static History history(EngineeringBaselineReadUseCase.Result result) {
+        return new History(result.history().stream().map(EngineeringBaselinePublicationRestMapper::published).toList(),
+                result.nextCursor(), result.nextCursor() != null);
+    }
+
+    public static Comparison comparison(EngineeringBaselineReadUseCase.Result result) {
+        var left = published(result.primary());
+        var right = published(result.secondary());
+        Map<String, SourcePin> leftPins = pinIndex(left.pins());
+        Map<String, SourcePin> rightPins = pinIndex(right.pins());
+        var keys = new java.util.TreeSet<String>(leftPins.keySet());
+        keys.addAll(rightPins.keySet());
+        var changes = new java.util.ArrayList<ChangedPin>();
+        for (String key : keys) {
+            SourcePin a = leftPins.get(key), b = rightPins.get(key);
+            if (a == null || b == null || !Objects.equals(a.revisionId(), b.revisionId())
+                    || !Objects.equals(a.sha256(), b.sha256())) {
+                SourcePin selected = a != null ? a : b;
+                changes.add(new ChangedPin(selected.kind(), selected.ownerId(), selected.sourceId(),
+                        a == null ? null : a.revisionId(), a == null ? null : a.sha256(),
+                        b == null ? null : b.revisionId(), b == null ? null : b.sha256()));
+            }
+        }
+        return new Comparison(left, right,
+                left.submission().canonicalSha256().equals(right.submission().canonicalSha256()), changes);
+    }
+
+    private static Map<String, SourcePin> pinIndex(List<SourcePin> pins) {
+        Map<String, SourcePin> result = new TreeMap<>();
+        for (var pin : pins) {
+            String key = pin.kind() + ":" + pin.ownerId().length() + ":" + pin.ownerId() + ":" + pin.sourceId().length() + ":" + pin.sourceId();
+            if (result.put(key, pin) != null) throw new IllegalArgumentException("Duplicate immutable source key");
+        }
+        return result;
+    }
+
 }

@@ -75,6 +75,7 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
             Class<?> baselineCreate=Class.forName(topology+"request.EngineeringBaselineDraftRequests$Create");
             Class<?> baselineUpdate=Class.forName(topology+"request.EngineeringBaselineDraftRequests$Update");
             Class<?> baselinePublication=Class.forName(topology+"controller.EngineeringBaselinePublicationController");
+            Class<?> baselineReads=Class.forName(topology+"controller.EngineeringBaselineReadController");
             Class<?> submitBaseline=Class.forName(topology+"request.EngineeringBaselinePublicationRequests$Submit");
             Class<?> publishBaseline=Class.forName(topology+"request.EngineeringBaselinePublicationRequests$Publish");
             final String baselineBase="/api/v1/topology/engineering-baselines";
@@ -115,6 +116,11 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
                 new Route(baselinePublication,baselinePublication.getDeclaredMethod("submit",java.util.UUID.class,submitBaseline),"POST",baselineBase+"/{manifestId}/submissions"),
                 new Route(baselinePublication,baselinePublication.getDeclaredMethod("publish",java.util.UUID.class,publishBaseline),"POST",baselineBase+"/submissions/{submissionId}/publications"),
                 new Route(baselinePublication,baselinePublication.getDeclaredMethod("receipt",java.util.UUID.class,String.class,String.class),"GET",baselineBase+"/publication-receipts/{receiptId}"),
+                new Route(baselineReads,baselineReads.getDeclaredMethod("exact",java.util.UUID.class,String.class,String.class),"GET",baselineBase+"/publications/{receiptId}"),
+                new Route(baselineReads,baselineReads.getDeclaredMethod("current",String.class,String.class),"GET",baselineBase+"/publications/current"),
+                new Route(baselineReads,baselineReads.getDeclaredMethod("effective",String.class,String.class,java.time.Instant.class),"GET",baselineBase+"/publications/effective"),
+                new Route(baselineReads,baselineReads.getDeclaredMethod("history",String.class,String.class,java.time.Instant.class,int.class,String.class),"GET",baselineBase+"/publications/history"),
+                new Route(baselineReads,baselineReads.getDeclaredMethod("compare",String.class,String.class,java.util.UUID.class,java.util.UUID.class),"GET",baselineBase+"/publications/compare"),
                 new Route(baseline,baseline.getDeclaredMethod("create",baselineCreate),"POST",baselineBase),
                 new Route(baseline,baseline.getDeclaredMethod("update",java.util.UUID.class,baselineUpdate),"PUT",baselineBase+"/{manifestId}"),
                 new Route(baseline,baseline.getDeclaredMethod("current",java.util.UUID.class,String.class,String.class),"GET",baselineBase+"/{manifestId}"),

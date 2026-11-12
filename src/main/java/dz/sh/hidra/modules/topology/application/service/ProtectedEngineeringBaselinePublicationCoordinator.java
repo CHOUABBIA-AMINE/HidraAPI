@@ -23,6 +23,7 @@ import dz.sh.hidra.modules.identity.application.contract.topology.TopologyEngine
 import dz.sh.hidra.modules.topology.application.model.EngineeringBaselineDraftFailure;
 import dz.sh.hidra.modules.topology.application.model.EngineeringBaselineDraftFailure.Kind;
 import dz.sh.hidra.modules.topology.application.port.in.EngineeringBaselinePublicationUseCase.*;
+import dz.sh.hidra.modules.topology.application.port.in.EngineeringBaselineReadUseCase;
 import dz.sh.hidra.modules.topology.application.port.out.EngineeringBaselineApprovalPort;
 import dz.sh.hidra.modules.topology.application.port.out.EngineeringBaselinePublicationRepositoryPort;
 import dz.sh.hidra.modules.topology.application.port.out.EngineeringBaselineSourcePort;
@@ -31,6 +32,7 @@ import dz.sh.hidra.modules.topology.domain.model.EngineeringBaselinePublication.
 import dz.sh.hidra.modules.topology.domain.service.EngineeringBaselineCompletenessPolicy;
 import dz.sh.hidra.platform.persistence.ProtectedRelationFence;
 import dz.sh.hidra.platform.persistence.ProtectedTransactionExecutor;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 import org.springframework.security.access.AccessDeniedException;
@@ -123,6 +125,117 @@ public final class ProtectedEngineeringBaselinePublicationCoordinator {
         }
         return new Admission(c, auth, origin, source, List.copyOf(fences.values()), executor.sealAdmission(),
                 new Result(submission, receipt, replay));
+    }
+
+
+    /** T07 historical reads deliberately avoid T06's live-source completeness capture. */
+    record ReadAdmission(TopologyEngineeringBaselineAuthorizationContract.Admission identity,
+                         Original origin, List<ProtectedRelationFence> fences,
+                         ProtectedTransactionExecutor.ProvisionalPermit permit,
+                         EngineeringBaselineReadUseCase.Result result) {}
+
+    ReadAdmission acquireRead(EngineeringBaselineReadUseCase.Query query,
+                              TopologyEngineeringBaselineAuthorizationContract.Prepared prepared) {
+        executor.beginAdmission();
+        storage.lock();
+        var auth = identity.acquire(prepared, new TopologyEngineeringBaselineAuthorizationContract.Request(
+                TopologyEngineeringBaselineAuthorizationContract.Action.READ, query.company(), query.pipeline()));
+        var proof = identity.contribute(auth);
+        if (!storage.scopeAvailable(query.company(), query.pipeline())) throw denied();
+        var origin = new Original(proof.bindingId(), proof.sessionId(), proof.userId(), proof.backendPid(),
+                proof.transactionId(), proof.databaseRole(), proof.sampledAt(), proof.validUntil());
+
+        Receipt left = null;
+        Receipt right = null;
+        List<Receipt> page = List.of();
+        String nextCursor = null;
+        switch (query.action()) {
+            case EXACT -> left = storage.receipt(query.company(), query.pipeline(), query.receiptId());
+            case CURRENT -> left = storage.current(query.company(), query.pipeline());
+            case EFFECTIVE -> left = storage.effective(query.company(), query.pipeline(), query.asOf());
+            case COMPARE -> {
+                left = storage.receipt(query.company(), query.pipeline(), query.receiptId());
+                right = storage.receipt(query.company(), query.pipeline(), query.otherReceiptId());
+            }
+            case HISTORY -> {
+                // A future publication must not leak through an earlier as-of history cursor.
+                var latestEligible = storage.history(query.company(), query.pipeline(), query.asOf(),
+                        Long.MAX_VALUE, Long.MAX_VALUE, 1);
+                long water = latestEligible.isEmpty() ? 0 : latestEligible.getFirst().epoch();
+                long before = Long.MAX_VALUE;
+                if (query.cursor() != null) {
+                    String[] values = query.cursor().split(":", -1);
+                    try {
+                        long requestedWater = Long.parseLong(values[0]);
+                        before = Long.parseLong(values[1]);
+                        if (requestedWater < 1 || before < 1 || before > requestedWater
+                                || requestedWater > water) throw new IllegalArgumentException("Invalid history cursor");
+                        water = requestedWater;
+                    } catch (NumberFormatException invalid) {
+                        throw new IllegalArgumentException("Invalid history cursor", invalid);
+                    }
+                }
+                var slice = water == 0 ? List.<Receipt>of()
+                        : storage.history(query.company(), query.pipeline(), query.asOf(), water, before, query.limit() + 1);
+                if (slice.size() > query.limit()) {
+                    page = List.copyOf(slice.subList(0, query.limit()));
+                    nextCursor = water + ":" + page.getLast().epoch();
+                } else page = slice;
+                // The extra record also influences the has-more indicator and therefore needs authority.
+                for (var item : slice) authorizeHistoricalPins(auth, item);
+            }
+        }
+        if (query.action() != EngineeringBaselineReadUseCase.Action.HISTORY) {
+            if (left == null || query.action() == EngineeringBaselineReadUseCase.Action.COMPARE && right == null)
+                throw new EngineeringBaselineDraftFailure(Kind.NOT_FOUND);
+            authorizeHistoricalPins(auth, left);
+            if (right != null) authorizeHistoricalPins(auth, right);
+        }
+        var merged = new TreeMap<String, ProtectedRelationFence>();
+        for (var group : List.of(identity.finalFences(auth), storage.fences())) {
+            for (var fence : group) merged.merge(fence.relation(), fence,
+                    (a,b) -> strength(a.mode()) >= strength(b.mode()) ? a : b);
+        }
+        var result = new EngineeringBaselineReadUseCase.Result(left, right, page, nextCursor);
+        return new ReadAdmission(auth, origin, List.copyOf(merged.values()), executor.sealAdmission(), result);
+    }
+
+    private void authorizeHistoricalPins(TopologyEngineeringBaselineAuthorizationContract.Admission auth, Receipt receipt) {
+        // Current grants over each immutable selected source, without requiring that the source
+        // still be active or its original approval/current-head state be retained.
+        var manifest = receipt.submission().manifest();
+        try {
+            // First authorize each manifest pin before looking up historical link metadata.
+            for (var pin : manifest.pins()) {
+                var kind = TopologyEngineeringBaselineAuthorizationContract.SourceKind.valueOf(pin.kind().name());
+                String id = switch (pin.kind()) {
+                    case NETWORK_PUBLICATION -> manifest.pipelineSystemId();
+                    case STATION_CONFIGURATION -> pin.ownerId();
+                    case CHARACTERISTIC_LINK, PRODUCT_PUBLICATION -> pin.sourceId();
+                };
+                identity.requireSourceRead(auth, new TopologyEngineeringBaselineAuthorizationContract.Source(
+                        kind, id, pin.kind() == dz.sh.hidra.modules.topology.domain.model.EngineeringBaselineManifest.Kind.CHARACTERISTIC_LINK
+                                ? List.of(pin.ownerId()) : List.of()));
+            }
+            // Immutable Topology link metadata supplies the actual manufacturer source scope.
+            for (var source : storage.historicalSourceReads(manifest))
+                identity.requireSourceRead(auth, new TopologyEngineeringBaselineAuthorizationContract.Source(
+                        TopologyEngineeringBaselineAuthorizationContract.SourceKind.valueOf(source.kind().name()),
+                        source.referenceId(), source.units()));
+        } catch (AccessDeniedException sourceDenied) {
+            // An unknown receipt and a receipt whose pin rights are absent are both nondisclosing.
+            throw new EngineeringBaselineDraftFailure(Kind.NOT_FOUND);
+        }
+    }
+
+    void prepareReadFinal(ReadAdmission admission) {
+        executor.requireEngineeringBaselinePublicationFinalPreparation();
+        identity.requireCurrent(admission.identity());
+    }
+
+    void guardRead(ReadAdmission admission) {
+        if (!storage.guard(admission.origin(), admission.fences())) throw denied();
+        identity.markFinal(admission.identity());
     }
 
     Result perform(Admission a) {

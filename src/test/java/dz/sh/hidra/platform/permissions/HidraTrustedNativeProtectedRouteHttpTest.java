@@ -156,7 +156,7 @@ class HidraTrustedNativeProtectedRouteHttpTest {
    var resolver = org.mockito.Mockito.mock(HidraEffectivePermissionResolver.class);
    authenticated();
    var registry = new HidraTrustedNativeProtectedRouteRegistry();
-   assertEquals(34,registry.candidates().size());
+   assertEquals(39,registry.candidates().size());
    var mvc = mvc(owner, new UntrustedController(), resolver,registry);
    assertThrows(Exception.class, () ->
       mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(TRUSTED)));
@@ -165,7 +165,7 @@ class HidraTrustedNativeProtectedRouteHttpTest {
  @Test void realManufacturerTupleRegistryRejectsWrongVerbAndSiblingPattern() throws Exception {
    var registry=new HidraTrustedNativeProtectedRouteRegistry();
    var routes=registry.candidates();
-   assertEquals(34,routes.size());
+   assertEquals(39,routes.size());
    var expected=java.util.Set.of(
     "GET /api/v1/topology/engineering-sources",
     "GET /api/v1/topology/engineering-sources/{kind}/{ownerId}/{sourceId}/revisions/{revisionId}",
@@ -186,6 +186,11 @@ class HidraTrustedNativeProtectedRouteHttpTest {
     "POST /api/v1/topology/engineering-baselines/{manifestId}/submissions",
     "POST /api/v1/topology/engineering-baselines/submissions/{submissionId}/publications",
     "GET /api/v1/topology/engineering-baselines/publication-receipts/{receiptId}",
+    "GET /api/v1/topology/engineering-baselines/publications/{receiptId}",
+    "GET /api/v1/topology/engineering-baselines/publications/current",
+    "GET /api/v1/topology/engineering-baselines/publications/effective",
+    "GET /api/v1/topology/engineering-baselines/publications/history",
+    "GET /api/v1/topology/engineering-baselines/publications/compare",
     "PUT /api/v1/topology/engineering-networks/{draftId}/authored-topology",
     "GET /api/v1/topology/engineering-networks/{draftId}/authored-topology",
     "GET /api/v1/topology/engineering-networks/{draftId}/authoring-choices",
@@ -211,6 +216,8 @@ class HidraTrustedNativeProtectedRouteHttpTest {
     org.mockito.Mockito.mock(dz.sh.hidra.modules.topology.application.port.in.InstalledCharacteristicLinkUseCase.class));
    var baselinePublication=new dz.sh.hidra.modules.topology.api.rest.controller.EngineeringBaselinePublicationController(
       org.mockito.Mockito.mock(dz.sh.hidra.modules.topology.application.port.in.EngineeringBaselinePublicationUseCase.class));
+    var baselineRead=new dz.sh.hidra.modules.topology.api.rest.controller.EngineeringBaselineReadController(
+        org.mockito.Mockito.mock(dz.sh.hidra.modules.topology.application.port.in.EngineeringBaselineReadUseCase.class));
    var baseline=new dz.sh.hidra.modules.topology.api.rest.controller.EngineeringBaselineDraftController(
       org.mockito.Mockito.mock(dz.sh.hidra.modules.topology.application.port.in.EngineeringBaselineDraftUseCase.class));
     var pipeline=new dz.sh.hidra.modules.topology.api.rest.controller.PipelineAuthoringController(
@@ -226,7 +233,8 @@ class HidraTrustedNativeProtectedRouteHttpTest {
       org.mockito.Mockito.mock(dz.sh.hidra.modules.workflow.application.port.in.WorkflowDefinitionDiscoveryUseCase.class));
     var owners=java.util.Map.<Class<?>,Object>of(controller.getClass(),controller,installed.getClass(),installed,
       pipeline.getClass(),pipeline,baseline.getClass(),baseline,foundation.getClass(),foundation,station.getClass(),station,
-      workflow.getClass(),workflow,discovery.getClass(),discovery,baselinePublication.getClass(),baselinePublication);
+      workflow.getClass(),workflow,discovery.getClass(),discovery,
+       baselinePublication.getClass(),baselinePublication,baselineRead.getClass(),baselineRead);
     var actual=new RequestMappingHandlerMapping();
    for(var entry:routes) {
     Object owner=owners.get(entry.controller());

@@ -1299,12 +1299,84 @@ public class ProductRevisionPublicationNativeHttpPostgresIntegrationTest {
         assertThat(rejected.getResponse().getContentAsString()).doesNotContain(
                 "SOURCE_NOT_CURRENTLY_ELIGIBLE", "SOURCE_INTERVAL_NOT_COVERED",
                 productPublication.toString(), PRODUCT);
+        // T07 must reconstruct the original immutable receipt after newer publication and
+        // withdrawal, using a second signed reader's independently current grants.
+        String reads = "/api/v1/topology/engineering-baselines/publications";
+        String originalReceipt = baseline.receipt().toString();
+        String successorReceipt = baseline.successor().toString();
+        var historical = baselineRead(baseline.reviewer(), reads + "/" + originalReceipt, COMPANY, pipeline)
+                .andExpect(status().isOk());
+        var originalJson = json(historical);
+        assertThat(originalJson.path("receiptId").asText()).isEqualTo(originalReceipt);
+        assertThat(originalJson.path("submission").path("canonicalSha256").asText())
+                .isEqualTo(result.path("canonicalSha256").asText());
+        assertThat(originalJson.path("pins").size()).isEqualTo(2);
+        assertThat(originalJson.path("reviewerId").asText()).isEqualTo(baseline.reviewer().fixture().user());
+        assertThat(originalJson.path("engineeringQualified").asBoolean(true)).isFalse();
+        var successorJson = json(baselineRead(actor, reads + "/" + successorReceipt, COMPANY, pipeline)
+                .andExpect(status().isOk()));
+        assertThat(successorJson.path("epoch").asLong()).isEqualTo(2);
+        assertThat(successorJson.path("pins")).isEqualTo(originalJson.path("pins"));
+        assertThat(json(baselineRead(actor, reads + "/current", COMPANY, pipeline)
+                .andExpect(status().isOk()))).isEqualTo(successorJson);
+        Instant firstPublishedAt = Instant.parse(originalJson.path("publishedAt").asText());
+        Instant nextPublishedAt = Instant.parse(successorJson.path("publishedAt").asText());
+        assertThat(nextPublishedAt).isAfter(firstPublishedAt);
+        assertThat(json(baselineRead(baseline.reviewer(), reads + "/effective", COMPANY, pipeline,
+                "asOf", firstPublishedAt.toString()).andExpect(status().isOk()))
+                .path("receiptId").asText()).isEqualTo(originalReceipt);
+        assertThat(json(baselineRead(actor, reads + "/effective", COMPANY, pipeline,
+                "asOf", nextPublishedAt.toString()).andExpect(status().isOk()))
+                .path("receiptId").asText()).isEqualTo(successorReceipt);
+        baselineRead(actor, reads + "/effective", COMPANY, pipeline, "asOf",
+                firstPublishedAt.minusSeconds(1).toString()).andExpect(status().isNotFound());
+        var pageOne = json(baselineRead(baseline.reviewer(), reads + "/history", COMPANY, pipeline,
+                "asOf", nextPublishedAt.plusSeconds(1).toString(), "limit", "1").andExpect(status().isOk()));
+        assertThat(pageOne.path("items").size()).isEqualTo(1);
+        assertThat(pageOne.path("items").get(0)).isEqualTo(successorJson);
+        assertThat(pageOne.path("nextCursor").asText()).isNotBlank();
+        assertThat(pageOne.has("total")).isFalse();
+        var pageTwo = json(baselineRead(baseline.reviewer(), reads + "/history", COMPANY, pipeline,
+                "asOf", nextPublishedAt.plusSeconds(1).toString(), "limit", "1", "cursor",
+                pageOne.path("nextCursor").asText()).andExpect(status().isOk()));
+        assertThat(pageTwo.path("items").size()).isEqualTo(1);
+        assertThat(pageTwo.path("items").get(0)).isEqualTo(originalJson);
+        assertThat(pageTwo.path("hasMore").asBoolean()).isFalse();
+        var comparison = json(baselineRead(actor, reads + "/compare", COMPANY, pipeline,
+                "leftReceiptId", originalReceipt, "rightReceiptId", successorReceipt)
+                .andExpect(status().isOk()));
+        assertThat(comparison.path("sameCanonicalSha256").asBoolean()).isTrue();
+        assertThat(comparison.path("left")).isEqualTo(originalJson);
+        assertThat(comparison.path("right")).isEqualTo(successorJson);
+        assertThat(comparison.path("changedPins").size()).isZero();
+        baselineRead(actor, reads + "/" + UUID.randomUUID(), COMPANY, pipeline)
+                .andExpect(status().isNotFound());
+        baselineRead(actor, reads + "/" + originalReceipt, "other-company", pipeline)
+                .andExpect(status().isForbidden());
+        baselineRead(actor, reads + "/history", COMPANY, pipeline, "asOf",
+                nextPublishedAt.toString(), "limit", "51").andExpect(status().isBadRequest());
+        baselineRead(actor, reads + "/history", COMPANY, pipeline, "asOf",
+                nextPublishedAt.toString(), "limit", "1", "cursor", "forged")
+                .andExpect(status().isBadRequest());
+        SecurityContextHolder.clearContext();
+        http.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(
+                reads + "/" + originalReceipt).param("companyPartyId", COMPANY)
+                .param("pipelineSystemId", pipeline)).andExpect(status().isUnauthorized());
+
+        // A currently DENIED original Custody source READ cannot disclose old published pins.
+        publicationGrant(baseline.reviewer().fixture(), "read", "DENY", "custody-product:" + PRODUCT);
+        baselineRead(baseline.reviewer(), reads + "/" + originalReceipt, COMPANY, pipeline)
+                .andExpect(status().isNotFound());
+        baselineRead(baseline.reviewer(), reads + "/history", COMPANY, pipeline,
+                "asOf", nextPublishedAt.toString(), "limit", "1").andExpect(status().isNotFound());
+        baselineRead(actor, reads + "/" + originalReceipt, COMPANY, pipeline).andExpect(status().isOk());
+
         // A failed source recheck must not append a publication or advance the head.
         assertThat(jdbc.queryForObject("SELECT count(*) FROM public.hidra_topology_baseline_publication"
-                + " WHERE company_party_id=? AND pipeline_system_id=?", Long.class, COMPANY, pipeline)).isEqualTo(1L);
+                + " WHERE company_party_id=? AND pipeline_system_id=?", Long.class, COMPANY, pipeline)).isEqualTo(2L);
     }
 
-    private record PendingPublication(String path, String body) {}
+    private record PendingPublication(String path, String body, UUID receipt, UUID successor, HttpActor reviewer) {}
 
     private PendingPublication verifyBaselinePublication(HttpActor author, String pipeline, String base, String digest)
             throws Exception {
@@ -1427,11 +1499,55 @@ public class ProductRevisionPublicationNativeHttpPostgresIntegrationTest {
                 .header("Authorization", "Bearer " + reviewer.token())
                 .param("companyPartyId", "other-company").param("pipelineSystemId", pipeline))
                 .andExpect(status().isForbidden());
-        var pending = json(baselineRequest(author, submitPath, baselineSubmission(pipeline, UUID.randomUUID(), digest))
-                .andExpect(status().isOk()));
+        // Publish a genuinely newer epoch through a distinct signed submission, independent
+        // Workflow task and fresh approval action. Do not synthesize publication SQL rows.
+        var successorSubmission = json(baselineRequest(author, submitPath,
+                baselineSubmission(pipeline, UUID.randomUUID(), digest)).andExpect(status().isOk()));
+        String successorId = successorSubmission.path("submissionId").asText();
+        baselinePrincipal(author);
+        var successorInstance = workflows.startWorkflowInstance(new StartWorkflowInstanceCommand(
+                definitionId, 1, purpose, "topology", type, digest,
+                successorSubmission.path("workflowLocator").asText(), null,
+                definitionId + 1, author.fixture().user(), null, null, null, successorId));
+        var successorTask = workflows.createWorkflowTask(new CreateWorkflowTaskCommand(
+                successorInstance.id(), definitionId + 1, reviewer.fixture().user(),
+                null, null, null, null, null, null, null, null, "Synthetic baseline successor review"));
+        var nextTask = workflowTasks.findById(successorTask.id()).orElseThrow();
+        baselinePrincipal(reviewer);
+        var successorDecision = workflowTransitions.execute(new ExecuteWorkflowTransitionCommand(
+                nextTask.id(), transition, nextTask.updatedAt(), null, null, null, successorId,
+                reviewer.fixture().user(), reviewer.fixture().user(), reviewerDisplay, Set.of()));
+        assertThat(successorDecision.decision()).isEqualTo("APPROVE");
+        assertThat(successorDecision.taskStatus()).isEqualTo("APPROVED");
+        assertThat(successorDecision.instanceStatus()).isEqualTo("COMPLETED");
+        UUID nextReceipt = UUID.randomUUID();
+        String successorPath = "/api/v1/topology/engineering-baselines/submissions/" + successorId + "/publications";
+        String successorBody = """
+                {"companyPartyId":"%s","pipelineSystemId":"%s","requestId":"%s","expectedEpoch":1,
+                 "decision":{"definitionId":"%s","definitionVersion":1,"targetTypeId":"%s","purposeId":"%s",
+                             "instanceId":"%s","taskId":"%s","actionId":"%s"}}
+                """.formatted(COMPANY, pipeline, nextReceipt, definitionId, type, purpose,
+                successorInstance.id(), nextTask.id(), successorDecision.actionId());
+        var successorPublished = json(baselineRequest(author, successorPath, successorBody).andExpect(status().isOk()));
+        assertThat(successorPublished.path("epoch").asLong()).isEqualTo(2);
+        assertThat(successorPublished.path("receiptId").asText()).isEqualTo(nextReceipt.toString());
+        assertThat(successorPublished.path("submission").path("canonicalSha256").asText()).isEqualTo(digest);
+        assertThat(successorPublished.path("reviewerId").asText()).isEqualTo(reviewer.fixture().user());
+        var pending = json(baselineRequest(author, submitPath,
+                baselineSubmission(pipeline, UUID.randomUUID(), digest)).andExpect(status().isOk()));
         String pendingPath = path.replace(submissionId, pending.path("submissionId").asText());
         return new PendingPublication(pendingPath, body.replace(request.toString(), UUID.randomUUID().toString())
-                .replace("\"expectedEpoch\":0", "\"expectedEpoch\":1"));
+                .replace("\"expectedEpoch\":0", "\"expectedEpoch\":2"), request, nextReceipt, reviewer);
+    }
+
+    private org.springframework.test.web.servlet.ResultActions baselineRead(HttpActor actor, String path,
+            String company, String pipeline, String... query) throws Exception {
+        SecurityContextHolder.clearContext();
+        var request = org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(path)
+                .header("Authorization", "Bearer " + actor.token())
+                .param("companyPartyId", company).param("pipelineSystemId", pipeline);
+        for (int i = 0; i < query.length; i += 2) request.param(query[i], query[i + 1]);
+        return http.perform(request);
     }
 
     private String baselineSubmission(String pipeline, UUID id, String digest) {

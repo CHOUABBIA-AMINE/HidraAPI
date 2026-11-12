@@ -21,6 +21,7 @@ package dz.sh.hidra.modules.topology.api.rest;
 
 
 import dz.sh.hidra.modules.topology.api.rest.controller.EngineeringBaselinePublicationController;
+import dz.sh.hidra.modules.topology.api.rest.controller.EngineeringBaselineReadController;
 import dz.sh.hidra.modules.topology.application.model.EngineeringBaselineDraftFailure;
 import dz.sh.hidra.platform.persistence.ProtectedTransactionExecutor;
 import org.springframework.http.*;
@@ -31,7 +32,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @org.springframework.core.annotation.Order(org.springframework.core.Ordered.HIGHEST_PRECEDENCE)
-@RestControllerAdvice(assignableTypes=EngineeringBaselinePublicationController.class)
+@RestControllerAdvice(assignableTypes={EngineeringBaselinePublicationController.class, EngineeringBaselineReadController.class})
 public final class EngineeringBaselinePublicationApiExceptionHandler {
     private static ResponseEntity<ProblemDetail> error(int status,String code){
         var p=ProblemDetail.forStatusAndDetail(HttpStatus.valueOf(status),status==503

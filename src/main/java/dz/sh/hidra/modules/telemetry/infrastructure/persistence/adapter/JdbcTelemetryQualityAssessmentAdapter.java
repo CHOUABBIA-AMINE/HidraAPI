@@ -51,10 +51,12 @@ public final class JdbcTelemetryQualityAssessmentAdapter
     private final ObjectMapper json;
 
     public JdbcTelemetryQualityAssessmentAdapter(EntityManager entities,
-            TelemetryReadingIngestionReferencePort references, ObjectMapper json) {
+            TelemetryReadingIngestionReferencePort references) {
         this.entities = Objects.requireNonNull(entities);
         this.references = Objects.requireNonNull(references);
-        this.json = Objects.requireNonNull(json);
+        // The narrow, immutable policy JSON parser does not depend on an optional
+        // Boot-managed Jackson 2 ObjectMapper bean during non-database API startup.
+        this.json = new ObjectMapper();
     }
 
     private static AccessDeniedException unavailable() {

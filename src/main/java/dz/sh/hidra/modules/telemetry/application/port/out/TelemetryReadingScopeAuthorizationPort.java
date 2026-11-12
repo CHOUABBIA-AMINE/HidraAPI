@@ -25,5 +25,13 @@ import dz.sh.hidra.modules.telemetry.application.port.out.TelemetryReadingIngest
 public interface TelemetryReadingScopeAuthorizationPort {
     enum Operation { INGEST, READ, QUALIFY, TRUSTED_READ }
     void require(Scope scope, Operation operation);
-    String requireActor(Scope scope, Operation operation, String companyPartyId);
+    /**
+     * Non-native implementations must not implicitly authorize sensitive qualification.
+     * The reviewed Telemetry native adapter overrides this method with a live
+     * company/source-point/Topology check and returns the authenticated LOCAL actor.
+     */
+    default String requireActor(Scope scope, Operation operation, String companyPartyId) {
+        throw new org.springframework.security.access.AccessDeniedException(
+                "Protected telemetry resource unavailable.");
+    }
 }

@@ -832,4 +832,108 @@ class TelemetryReadingIngestionNativeHttpPostgresIntegrationTest {
     private long countReadings() {
         return db.queryForObject("SELECT count(*) FROM hidra_telemetry_reading WHERE point_id=?",Long.class,point);
     }
+
+    @Test void t09NativeQualityTrustAndReadbackUseVerifiedPolicyAndCurrentScopedGrants() throws Exception {
+        // This real HTTP/PostgreSQL fixture closes the T09 gap left by its migration-only test.
+        String qualifier=permission("telemetry:trusted-reading:qualify","qualify");
+        String reader=permission("telemetry:trusted-reading:read","read");
+        for(String permission:List.of(qualifier,reader)) {
+            grant(producerUser,permission,"CUSTOM","telemetry-company:"+company);
+            grant(producerUser,permission,"CUSTOM","telemetry-source-point:"+source+":"+point);
+        }
+        String mapping=id();
+        db.update("""
+            INSERT INTO hidra_telemetry_external_tag_mapping
+            (id,source_id,device_id,point_id,external_tag_name,mapping_mode,active,
+             valid_from,created_at,updated_at)
+            VALUES (?,?,?,?,'GZ2.SYNTHETIC.PRESSURE','DIRECT',true,now()-interval '1 day',now(),now())
+            """,mapping,source,device,point);
+        String rawJson=payload("t09-seq-one","51.25",quality,unit,
+                Instant.now().minusSeconds(3).toString());
+        var receipt=http.perform(post(route()).header("Authorization","Bearer "+producer)
+                .contentType(MediaType.APPLICATION_JSON).content(rawJson))
+                .andExpect(status().isCreated()).andReturn();
+        String readingId=JSON.readTree(receipt.getResponse().getContentAsString()).path("id").asText();
+        assertFalse(readingId.isBlank());
+        String base=route()+"/"+readingId;
+        String body="{\"companyPartyId\":\""+company+"\"}";
+        // A configured/approved quality policy is mandatory; no implicit trust promotion.
+        http.perform(post(base+"/assessment").header("Authorization","Bearer "+producer)
+                .contentType(MediaType.APPLICATION_JSON).content(body))
+                .andExpect(status().isConflict());
+        String ruleType=catalog("VALIDATION_RULE_TYPE",null),rule=id();
+        String configuration="{\"qualityCodeId\":\""+quality
+                +"\",\"trustLevel\":\"HIGH\",\"maxPastAgeSeconds\":86400,\"maxFutureSkewSeconds\":120}";
+        db.update("""
+            INSERT INTO hidra_telemetry_validation_rule
+            (id,code,name,scope_type,scope_reference_id,rule_type_id,severity,
+             action_on_failure,configuration_json,active,valid_from,created_at,updated_at)
+            VALUES (?,'T09_RAW_QUALITY','Synthetic GZ2 policy','POINT',?,?,'ERROR',
+                    'REJECT',CAST(? AS jsonb),true,now()-interval '1 day',now(),now())
+            """,rule,point,ruleType,configuration);
+        var qualified=http.perform(post(base+"/assessment").header("Authorization","Bearer "+producer)
+                .contentType(MediaType.APPLICATION_JSON).content(body))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.status").value("PASSED"))
+                .andExpect(jsonPath("$.trustLevel").value("HIGH"))
+                .andReturn();
+        String assessedId=JSON.readTree(qualified.getResponse().getContentAsString()).path("id").asText();
+        assertFalse(assessedId.isBlank());
+        http.perform(post(base+"/assessment").header("Authorization","Bearer "+producer)
+                .contentType(MediaType.APPLICATION_JSON).content(body))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.id").value(assessedId))
+                .andExpect(jsonPath("$.replayed").value(true));
+        var published=http.perform(post(base+"/trust").header("Authorization","Bearer "+producer)
+                .contentType(MediaType.APPLICATION_JSON).content(body))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.rawReadingId").value(readingId))
+                .andExpect(jsonPath("$.assessmentId").value(assessedId))
+                .andExpect(jsonPath("$.bindingId").isNotEmpty())
+                .andExpect(jsonPath("$.unitId").value(unit))
+                .andReturn();
+        String trusted=JSON.readTree(published.getResponse().getContentAsString()).path("id").asText();
+        http.perform(post(base+"/trust").header("Authorization","Bearer "+producer)
+                .contentType(MediaType.APPLICATION_JSON).content(body))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.id").value(trusted))
+                .andExpect(jsonPath("$.replayed").value(true));
+        assertEquals(1L,db.queryForObject(
+                "SELECT count(*) FROM hidra_telemetry_trusted_reading WHERE reading_id=?",
+                Long.class,readingId));
+        String trustedPath="/api/v1/telemetry/points/"+point+"/trusted-readings";
+        http.perform(get(trustedPath+"/"+trusted).header("Authorization","Bearer "+producer)
+                .param("companyPartyId",company))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.rawReadingId").value(readingId));
+        http.perform(get(trustedPath).header("Authorization","Bearer "+producer)
+                .param("companyPartyId",company).param("limit","10"))
+                .andExpect(status().isOk()).andExpect(jsonPath("$[0].id").value(trusted));
+        // An authorized but bad-quality raw receipt must never produce trusted evidence.
+        String otherQuality=catalog("QUALITY_CODE",null);
+        var bad=http.perform(post(route()).header("Authorization","Bearer "+producer)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload("t09-seq-bad","50.00",otherQuality,unit,
+                        Instant.now().minusSeconds(2).toString())))
+                .andExpect(status().isCreated()).andReturn();
+        String badId=JSON.readTree(bad.getResponse().getContentAsString()).path("id").asText();
+        http.perform(post(route()+"/"+badId+"/assessment").header("Authorization","Bearer "+producer)
+                .contentType(MediaType.APPLICATION_JSON).content(body))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.status").value("FAILED"));
+        http.perform(post(route()+"/"+badId+"/trust").header("Authorization","Bearer "+producer)
+                .contentType(MediaType.APPLICATION_JSON).content(body))
+                .andExpect(status().isBadRequest());
+        assertEquals(0L,db.queryForObject(
+                "SELECT count(*) FROM hidra_telemetry_trusted_reading WHERE reading_id=?",
+                Long.class,badId));
+        http.perform(get(trustedPath+"/"+trusted).header("Authorization","Bearer "+foreign)
+                .param("companyPartyId",company)).andExpect(status().isForbidden());
+        // No protected existence, history or values after exact source-point read revocation.
+        db.update("""
+            UPDATE hidra_identity_user_permission_grant SET status='REVOKED',revoked_at=now()
+            WHERE user_id=? AND permission_id=? AND scope_reference_id=?
+            """,producerUser,reader,"telemetry-source-point:"+source+":"+point);
+        http.perform(get(trustedPath+"/"+trusted).header("Authorization","Bearer "+producer)
+                .param("companyPartyId",company)).andExpect(status().isForbidden());
+        http.perform(get(trustedPath).header("Authorization","Bearer "+producer)
+                .param("companyPartyId",company)).andExpect(status().isForbidden());
+    }
 }

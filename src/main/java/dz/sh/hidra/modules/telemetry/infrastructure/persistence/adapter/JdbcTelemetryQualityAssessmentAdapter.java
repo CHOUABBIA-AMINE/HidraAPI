@@ -44,7 +44,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
-public final class JdbcTelemetryQualityAssessmentAdapter
+public class JdbcTelemetryQualityAssessmentAdapter
         implements TelemetryQualityAssessmentPort, TelemetryTrustedReadPort {
     private final EntityManager entities;
     private final TelemetryReadingIngestionReferencePort references;

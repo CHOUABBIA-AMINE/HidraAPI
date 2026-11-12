@@ -30,7 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public final class TelemetryQualityAssessmentApplicationService implements QualifyTelemetryReadingUseCase {
+public class TelemetryQualityAssessmentApplicationService implements QualifyTelemetryReadingUseCase {
     private final TelemetryQualityAssessmentPort store;
     private final TelemetryReadingScopeAuthorizationPort security;
     public TelemetryQualityAssessmentApplicationService(TelemetryQualityAssessmentPort store,

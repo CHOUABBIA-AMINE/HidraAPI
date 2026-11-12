@@ -34,7 +34,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public final class TrustedTelemetryReadingQueryApplicationService implements TrustedTelemetryReadingQueryUseCase {
+public class TrustedTelemetryReadingQueryApplicationService implements TrustedTelemetryReadingQueryUseCase {
     private final TelemetryQualityAssessmentPort assessment;
     private final TelemetryReadingScopeAuthorizationPort security;
     private final TelemetryTrustedReadPort published;

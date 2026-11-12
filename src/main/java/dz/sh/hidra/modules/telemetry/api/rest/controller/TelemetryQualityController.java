@@ -51,9 +51,10 @@ public final class TelemetryQualityController {
     @Operation(operationId = "assessTelemetryRawQuality")
     public ResponseEntity<TelemetryQualityResponses.Assessment> assess(@PathVariable String pointId,
             @PathVariable String readingId, @Valid @RequestBody TelemetryQualityRequests.Command body) {
-        var result = quality.qualify(body.companyPartyId(), pointId, readingId);
-        return ResponseEntity.status(result.replayed() ? HttpStatus.OK : HttpStatus.CREATED)
-                .body(TelemetryQualityRestMapper.assessment(result));
+        var response = TelemetryQualityRestMapper.assessment(
+                quality.qualify(body.companyPartyId(), pointId, readingId));
+        return ResponseEntity.status(response.replayed() ? HttpStatus.OK : HttpStatus.CREATED)
+                .body(response);
     }
 
     @GetMapping("/readings/{readingId}/assessment")
@@ -69,9 +70,10 @@ public final class TelemetryQualityController {
     @Operation(operationId = "publishTrustedTelemetryReading")
     public ResponseEntity<TelemetryQualityResponses.Trusted> publish(@PathVariable String pointId,
             @PathVariable String readingId, @Valid @RequestBody TelemetryQualityRequests.Command body) {
-        var result = trusted.publish(body.companyPartyId(), pointId, readingId);
-        return ResponseEntity.status(result.replayed() ? HttpStatus.OK : HttpStatus.CREATED)
-                .body(TelemetryQualityRestMapper.trusted(result));
+        var response = TelemetryQualityRestMapper.trusted(
+                trusted.publish(body.companyPartyId(), pointId, readingId));
+        return ResponseEntity.status(response.replayed() ? HttpStatus.OK : HttpStatus.CREATED)
+                .body(response);
     }
 
     @GetMapping("/trusted-readings/{trustedId}")

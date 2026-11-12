@@ -167,6 +167,11 @@ class HidraTrustedNativeProtectedRouteHttpTest {
    var routes=registry.candidates();
    assertEquals(48,routes.size());
    var expected=java.util.Set.of(
+    "POST /api/v1/telemetry/points/{pointId}/readings/{readingId}/assessment",
+    "GET /api/v1/telemetry/points/{pointId}/readings/{readingId}/assessment",
+    "POST /api/v1/telemetry/points/{pointId}/readings/{readingId}/trust",
+    "GET /api/v1/telemetry/points/{pointId}/trusted-readings/{trustedId}",
+    "GET /api/v1/telemetry/points/{pointId}/trusted-readings",
     "POST /api/v1/telemetry/commissioning",
     "POST /api/v1/telemetry/commissioning/points/{pointId}/bindings",
     "GET /api/v1/telemetry/commissioning/points/{pointId}/effective",
@@ -242,6 +247,10 @@ class HidraTrustedNativeProtectedRouteHttpTest {
       workflow.getClass(),workflow,discovery.getClass(),discovery,
        baselinePublication.getClass(),baselinePublication,baselineRead.getClass(),baselineRead));
     owners.put(telemetryCommission.getClass(),telemetryCommission);
+    var telemetryQuality=new dz.sh.hidra.modules.telemetry.api.rest.controller.TelemetryQualityController(
+       org.mockito.Mockito.mock(dz.sh.hidra.modules.telemetry.application.port.in.QualifyTelemetryReadingUseCase.class),
+       org.mockito.Mockito.mock(dz.sh.hidra.modules.telemetry.application.port.in.TrustedTelemetryReadingQueryUseCase.class));
+    owners.put(telemetryQuality.getClass(),telemetryQuality);
     var actual=new RequestMappingHandlerMapping();
    for(var entry:routes) {
     Object owner=owners.get(entry.controller());

@@ -19,12 +19,14 @@
  */
 package dz.sh.hidra.modules.telemetry.api.rest.request;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.UUID;
 public final class TelemetryCommissioningRequests {
     private TelemetryCommissioningRequests() { }
+    @Schema(name="TelemetryCommissioningEnrollRequest")
     public record Enroll(@NotNull UUID requestId,@NotBlank String companyPartyId,
            @NotBlank String assetType,@NotBlank String assetId,
            String assetCode,@NotBlank String sourceCode,@NotBlank String sourceNameFr,
@@ -34,6 +36,7 @@ public final class TelemetryCommissioningRequests {
            @NotBlank String pointTypeId,@NotBlank String signalTypeId,
            String unitId,@NotBlank String bindingRoleId,@NotBlank String externalTagName,
            @NotNull Instant validFrom,Instant validUntil) { }
+    @Schema(name="TelemetryCommissioningRebindRequest")
     public record Rebind(@NotNull UUID requestId,@NotBlank String companyPartyId,
            @NotBlank String assetType,@NotBlank String assetId,String assetCode,
            @NotBlank String bindingRoleId,@NotBlank String externalTagName,

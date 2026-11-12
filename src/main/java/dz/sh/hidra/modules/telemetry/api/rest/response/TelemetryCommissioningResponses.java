@@ -19,14 +19,17 @@
  */
 package dz.sh.hidra.modules.telemetry.api.rest.response;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.Instant;
 import java.util.List;
 public final class TelemetryCommissioningResponses {
     private TelemetryCommissioningResponses() { }
+    @Schema(name="TelemetryCommissioningSnapshotResponse")
     public record Snapshot(String sourceId,String sourceCode,String deviceId,String deviceCode,
          String pointId,String pointCode,String pointTypeId,String signalTypeId,
          String unitId,String assetType,String assetId,String assetCode,
          String bindingId,String bindingRoleId,String mappingId,String externalTagName,
          Instant validFrom,Instant validUntil,boolean effective) { }
+    @Schema(name="TelemetryCommissioningHistoryResponse")
     public record History(List<Snapshot> items,boolean hasMore) { }
 }

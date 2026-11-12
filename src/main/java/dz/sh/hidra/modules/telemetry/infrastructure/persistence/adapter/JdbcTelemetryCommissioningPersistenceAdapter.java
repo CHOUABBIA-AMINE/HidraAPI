@@ -220,7 +220,7 @@ public final class JdbcTelemetryCommissioningPersistenceAdapter implements Telem
     public Snapshot rebind(Rebind c) {
         // Pessimistic point lock serializes concurrent replacements of the same canonical point.
         boolean found=jdbc.query("SELECT id FROM public.hidra_telemetry_point WHERE id=? FOR UPDATE",
-                rs->rs.next(),c.pointId());
+                rs -> { return rs.next(); },c.pointId());
         if(!found)throw denied();
         requiredCatalog(c.bindingRoleId(),"BINDING_ROLE");
         String binding=derive(c.requestId(),"binding"),mapping=derive(c.requestId(),"mapping");

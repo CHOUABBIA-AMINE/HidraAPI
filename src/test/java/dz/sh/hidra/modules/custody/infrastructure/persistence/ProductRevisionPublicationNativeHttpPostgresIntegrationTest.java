@@ -1299,7 +1299,7 @@ public class ProductRevisionPublicationNativeHttpPostgresIntegrationTest {
         String submitPath = base + "/submissions";
         String submitBody = baselineSubmission(pipeline, UUID.randomUUID(), digest);
         baselineRequest(author, submitPath, baselineSubmission(pipeline, UUID.randomUUID(), "0".repeat(64)))
-                .andExpect(status().isConflict());
+                .andExpect(status().isForbidden());
         var submitted = json(baselineRequest(author, submitPath, submitBody).andExpect(status().isOk()));
         assertThat(json(baselineRequest(author, submitPath, submitBody).andExpect(status().isOk()))).isEqualTo(submitted);
         assertThat(submitted.path("canonicalSha256").asText()).isEqualTo(digest);

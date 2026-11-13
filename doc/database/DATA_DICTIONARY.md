@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `945904c4f14e2d1a6c70f3b7dc93514dab879520`
-PostgreSQL server: `16.15 (Debian 16.15-1.pgdg13+2)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `b41dc1664ebf32152929909ec06f784c96d1b4accbc85948e06339ed3dd9be7a`.
-Migrations: 209; JPA mappings: 470; catalog relations: 559; unresolved owners: 0.
+Captured source SHA: `034b94ec263114042a3826db4550b05d8094841c`
+PostgreSQL server: `16.16 (Debian 16.16-1.pgdg13+1)`; disposable database: `hidra_test`.
+Generator format: 1; source bundle SHA-256: `adfa6342c85c1d0d57ae822dbf16d1ddcd74d361c5ecf0e5f369d7f8fb968ad2`.
+Migrations: 210; JPA mappings: 470; catalog relations: 563; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -10360,6 +10360,7 @@ Persisted PermissionJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261111_002__topology_engineering_baseline_publication.sql](../../src/main/resources/db/migration/V20261111_002__topology_engineering_baseline_publication.sql)
 - Migration mention (not inferred introduction): [V20261112_001__t08_telemetry_commissioning_permission.sql](../../src/main/resources/db/migration/V20261112_001__t08_telemetry_commissioning_permission.sql)
 - Migration mention (not inferred introduction): [V20261112_002__t09_telemetry_trust_publication.sql](../../src/main/resources/db/migration/V20261112_002__t09_telemetry_trust_publication.sql)
+- Migration mention (not inferred introduction): [V20261112_003__t10_monitoring_rule_versions.sql](../../src/main/resources/db/migration/V20261112_003__t10_monitoring_rule_versions.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -15974,6 +15975,7 @@ Persisted MonitoringRuleJpaEntity state; semantic authority remains with monitor
 - Evidence: [MonitoringRuleJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/monitoring/infrastructure/persistence/entity/MonitoringRuleJpaEntity.java)
 - Migration mention (not inferred introduction): [V20260611_007__create_monitoring_tables.sql](../../src/main/resources/db/migration/V20260611_007__create_monitoring_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
+- Migration mention (not inferred introduction): [V20261112_003__t10_monitoring_rule_versions.sql](../../src/main/resources/db/migration/V20261112_003__t10_monitoring_rule_versions.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -16021,6 +16023,185 @@ Persisted MonitoringRuleJpaEntity state; semantic authority remains with monitor
 - `ix_hidra_monitoring_rule_topology_asset_id`: CREATE INDEX ix_hidra_monitoring_rule_topology_asset_id ON public.hidra_monitoring_rule USING btree (topology_asset_id)
   - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
 - `ix_hidra_monitoring_rule_updated_at`: CREATE INDEX ix_hidra_monitoring_rule_updated_at ON public.hidra_monitoring_rule USING btree (updated_at)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+
+#### Triggers
+
+None captured in this catalog category.
+
+### public.hidra_monitoring_rule_activation
+
+Owner: **monitoring**; relation kind: `r`.
+
+Monitoring-owned immutable activation receipts with exact revision, actor and non-overlapping effective interval; does not authorize automatic actuation.
+
+- Evidence: [V20261112_003__t10_monitoring_rule_versions.sql](../../src/main/resources/db/migration/V20261112_003__t10_monitoring_rule_versions.sql)
+- Evidence: [JdbcMonitoringRuleRevisionAdapter.java](../../src/main/java/dz/sh/hidra/modules/monitoring/infrastructure/persistence/adapter/JdbcMonitoringRuleRevisionAdapter.java)
+- Evidence: [MonitoringRuleRevision.java](../../src/main/java/dz/sh/hidra/modules/monitoring/domain/model/MonitoringRuleRevision.java)
+- Migration mention (not inferred introduction): [V20261112_003__t10_monitoring_rule_versions.sql](../../src/main/resources/db/migration/V20261112_003__t10_monitoring_rule_versions.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| rule_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| revision | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| effective_from | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| effective_until | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| activated_by_actor_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| activated_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_monitoring_rule_activation_check`: CHECK (effective_from &lt; effective_until)
+  - Catalog attributes: {"columns": ["effective_from", "effective_until"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_monitoring_rule_activation_pkey`: PRIMARY KEY (rule_id, revision)
+  - Catalog attributes: {"columns": ["rule_id", "revision"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_monitoring_rule_activation_rule_id_effective_from_key`: UNIQUE (rule_id, effective_from)
+  - Catalog attributes: {"columns": ["rule_id", "effective_from"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_monitoring_rule_activation_rule_id_revision_fkey`: FOREIGN KEY (rule_id, revision) REFERENCES hidra_monitoring_rule_revision(rule_id, revision) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["rule_id", "revision"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["rule_id", "revision"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_monitoring_rule_revision"}, "type": "f", "validated": true}
+
+#### Indexes
+
+- `hidra_monitoring_rule_activation_pkey`: CREATE UNIQUE INDEX hidra_monitoring_rule_activation_pkey ON public.hidra_monitoring_rule_activation USING btree (rule_id, revision)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `hidra_monitoring_rule_activation_rule_id_effective_from_key`: CREATE UNIQUE INDEX hidra_monitoring_rule_activation_rule_id_effective_from_key ON public.hidra_monitoring_rule_activation USING btree (rule_id, effective_from)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `ix_t10_rule_effective`: CREATE INDEX ix_t10_rule_effective ON public.hidra_monitoring_rule_activation USING btree (rule_id, effective_from DESC)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+
+#### Triggers
+
+- `trg_t10_activation_immutable`: CREATE TRIGGER trg_t10_activation_immutable BEFORE DELETE OR UPDATE ON hidra_monitoring_rule_activation FOR EACH ROW EXECUTE FUNCTION hidra_t10_deny_version_mutation()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t10_deny_version_mutation()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t10_deny_version_mutation()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'public'<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'T10 revision/activation evidence is immutable' USING ERRCODE='23514';<br>END<br>$function$<br>
+- `trg_t10_activation_no_overlap`: CREATE TRIGGER trg_t10_activation_no_overlap BEFORE INSERT ON hidra_monitoring_rule_activation FOR EACH ROW EXECUTE FUNCTION hidra_t10_guard_activation_overlap()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t10_guard_activation_overlap()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t10_guard_activation_overlap()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'public'<br>AS $function$<br>BEGIN<br>    PERFORM 1 FROM public.hidra_monitoring_rule_head WHERE rule_id=NEW.rule_id FOR UPDATE;<br>    IF EXISTS (<br>        SELECT 1 FROM public.hidra_monitoring_rule_activation a<br>        WHERE a.rule_id=NEW.rule_id<br>        AND tstzrange(a.effective_from,a.effective_until,'[)')<br>            &amp;&amp; tstzrange(NEW.effective_from,NEW.effective_until,'[)')<br>    ) THEN<br>        RAISE EXCEPTION 'T10 overlapping rule activation intervals' USING ERRCODE='23514';<br>    END IF;<br>    RETURN NEW;<br>END<br>$function$<br>
+
+### public.hidra_monitoring_rule_head
+
+Owner: **monitoring**; relation kind: `r`.
+
+Monitoring-owned mutable serialized revision and activation head with expected-head concurrency and effective-window state; not immutable historical evidence.
+
+- Evidence: [V20261112_003__t10_monitoring_rule_versions.sql](../../src/main/resources/db/migration/V20261112_003__t10_monitoring_rule_versions.sql)
+- Evidence: [JdbcMonitoringRuleRevisionAdapter.java](../../src/main/java/dz/sh/hidra/modules/monitoring/infrastructure/persistence/adapter/JdbcMonitoringRuleRevisionAdapter.java)
+- Migration mention (not inferred introduction): [V20261112_003__t10_monitoring_rule_versions.sql](../../src/main/resources/db/migration/V20261112_003__t10_monitoring_rule_versions.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| rule_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| last_revision | bigint | False | 0; identity=; generated= | No current mapped Java column | — |
+| active_revision | bigint | False | 0; identity=; generated= | No current mapped Java column | — |
+| effective_from | timestamp with time zone | True | None; identity=; generated= | No current mapped Java column | — |
+| effective_until | timestamp with time zone | True | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_monitoring_rule_head_check`: CHECK (active_revision &gt;= 0 AND active_revision &lt;= last_revision)
+  - Catalog attributes: {"columns": ["active_revision", "last_revision"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_monitoring_rule_head_check1`: CHECK (active_revision = 0 AND effective_from IS NULL AND effective_until IS NULL OR active_revision &gt; 0 AND effective_from &lt; effective_until)
+  - Catalog attributes: {"columns": ["active_revision", "effective_from", "effective_until"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_monitoring_rule_head_last_revision_check`: CHECK (last_revision &gt;= 0)
+  - Catalog attributes: {"columns": ["last_revision"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_monitoring_rule_head_pkey`: PRIMARY KEY (rule_id)
+  - Catalog attributes: {"columns": ["rule_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_monitoring_rule_head_rule_id_fkey`: FOREIGN KEY (rule_id) REFERENCES hidra_monitoring_rule_scope(rule_id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["rule_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["rule_id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_monitoring_rule_scope"}, "type": "f", "validated": true}
+
+#### Indexes
+
+- `hidra_monitoring_rule_head_pkey`: CREATE UNIQUE INDEX hidra_monitoring_rule_head_pkey ON public.hidra_monitoring_rule_head USING btree (rule_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+None captured in this catalog category.
+
+### public.hidra_monitoring_rule_revision
+
+Owner: **monitoring**; relation kind: `r`.
+
+Monitoring-owned immutable numbered rule specification with company/asset, point, unit, evidence policy, validity and author provenance; registration does not execute a numerical rule.
+
+- Evidence: [V20261112_003__t10_monitoring_rule_versions.sql](../../src/main/resources/db/migration/V20261112_003__t10_monitoring_rule_versions.sql)
+- Evidence: [JdbcMonitoringRuleRevisionAdapter.java](../../src/main/java/dz/sh/hidra/modules/monitoring/infrastructure/persistence/adapter/JdbcMonitoringRuleRevisionAdapter.java)
+- Evidence: [MonitoringRuleRevision.java](../../src/main/java/dz/sh/hidra/modules/monitoring/domain/model/MonitoringRuleRevision.java)
+- Migration mention (not inferred introduction): [V20261112_003__t10_monitoring_rule_versions.sql](../../src/main/resources/db/migration/V20261112_003__t10_monitoring_rule_versions.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| rule_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| revision | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| asset_type | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| asset_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| telemetry_point_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| rule_type | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| unit_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| evidence_policy_code | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| valid_from | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| valid_to | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| created_by_actor_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| created_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_monitoring_rule_revision_check`: CHECK (valid_from &lt; valid_to)
+  - Catalog attributes: {"columns": ["valid_from", "valid_to"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_monitoring_rule_revision_pkey`: PRIMARY KEY (rule_id, revision)
+  - Catalog attributes: {"columns": ["rule_id", "revision"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_monitoring_rule_revision_revision_check`: CHECK (revision &gt; 0)
+  - Catalog attributes: {"columns": ["revision"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_monitoring_rule_revision_rule_id_fkey`: FOREIGN KEY (rule_id) REFERENCES hidra_monitoring_rule_scope(rule_id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["rule_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["rule_id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_monitoring_rule_scope"}, "type": "f", "validated": true}
+- `hidra_monitoring_rule_revision_rule_type_check`: CHECK (rule_type::text = 'PLAN_COMPARISON'::text)
+  - Catalog attributes: {"columns": ["rule_type"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_monitoring_rule_revision_pkey`: CREATE UNIQUE INDEX hidra_monitoring_rule_revision_pkey ON public.hidra_monitoring_rule_revision USING btree (rule_id, revision)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `trg_t10_revision_immutable`: CREATE TRIGGER trg_t10_revision_immutable BEFORE DELETE OR UPDATE ON hidra_monitoring_rule_revision FOR EACH ROW EXECUTE FUNCTION hidra_t10_deny_version_mutation()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t10_deny_version_mutation()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t10_deny_version_mutation()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'public'<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'T10 revision/activation evidence is immutable' USING ERRCODE='23514';<br>END<br>$function$<br>
+
+### public.hidra_monitoring_rule_scope
+
+Owner: **monitoring**; relation kind: `r`.
+
+Monitoring-owned immutable rule-to-company/asset registration and server-derived creation actor provenance; used for scoped authorization, not a Telemetry physical foreign key.
+
+- Evidence: [V20261112_003__t10_monitoring_rule_versions.sql](../../src/main/resources/db/migration/V20261112_003__t10_monitoring_rule_versions.sql)
+- Evidence: [JdbcMonitoringRuleRevisionAdapter.java](../../src/main/java/dz/sh/hidra/modules/monitoring/infrastructure/persistence/adapter/JdbcMonitoringRuleRevisionAdapter.java)
+- Migration mention (not inferred introduction): [V20261112_003__t10_monitoring_rule_versions.sql](../../src/main/resources/db/migration/V20261112_003__t10_monitoring_rule_versions.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| rule_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| asset_type | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| asset_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| created_by_actor_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| created_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_monitoring_rule_scope_asset_type_check`: CHECK (asset_type::text = ANY (ARRAY['FACILITY'::character varying, 'EQUIPMENT'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["asset_type"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_monitoring_rule_scope_pkey`: PRIMARY KEY (rule_id)
+  - Catalog attributes: {"columns": ["rule_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_monitoring_rule_scope_rule_id_fkey`: FOREIGN KEY (rule_id) REFERENCES hidra_monitoring_rule(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["rule_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_monitoring_rule"}, "type": "f", "validated": true}
+
+#### Indexes
+
+- `hidra_monitoring_rule_scope_pkey`: CREATE UNIQUE INDEX hidra_monitoring_rule_scope_pkey ON public.hidra_monitoring_rule_scope USING btree (rule_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `ix_t10_rule_company_asset`: CREATE INDEX ix_t10_rule_company_asset ON public.hidra_monitoring_rule_scope USING btree (company_party_id, asset_type, asset_id)
   - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
 
 #### Triggers

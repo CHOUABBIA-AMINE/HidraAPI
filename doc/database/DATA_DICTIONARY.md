@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `034b94ec263114042a3826db4550b05d8094841c`
+Captured source SHA: `01425c2ff66f7e0e7acedda90de07f32eb3e79f9`
 PostgreSQL server: `16.16 (Debian 16.16-1.pgdg13+1)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `adfa6342c85c1d0d57ae822dbf16d1ddcd74d361c5ecf0e5f369d7f8fb968ad2`.
-Migrations: 210; JPA mappings: 470; catalog relations: 563; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `92319d67ba58e695b585bd916fb9355a7c94e54ae46668044a51182f6dbe7f68`.
+Migrations: 211; JPA mappings: 470; catalog relations: 565; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -10361,6 +10361,7 @@ Persisted PermissionJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261112_001__t08_telemetry_commissioning_permission.sql](../../src/main/resources/db/migration/V20261112_001__t08_telemetry_commissioning_permission.sql)
 - Migration mention (not inferred introduction): [V20261112_002__t09_telemetry_trust_publication.sql](../../src/main/resources/db/migration/V20261112_002__t09_telemetry_trust_publication.sql)
 - Migration mention (not inferred introduction): [V20261112_003__t10_monitoring_rule_versions.sql](../../src/main/resources/db/migration/V20261112_003__t10_monitoring_rule_versions.sql)
+- Migration mention (not inferred introduction): [V20261112_004__t11_authoritative_deviation.sql](../../src/main/resources/db/migration/V20261112_004__t11_authoritative_deviation.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -15599,6 +15600,88 @@ Persisted MonitoringAlertCandidateJpaEntity state; semantic authority remains wi
 
 None captured in this catalog category.
 
+### public.hidra_monitoring_authoritative_evaluation
+
+Owner: **monitoring**; relation kind: `r`.
+
+Immutable Monitoring comparison receipts with exact evidence identifiers, deterministic replay identity and nullable numeric outcome.
+
+- Evidence: [V20261112_004__t11_authoritative_deviation.sql](../../src/main/resources/db/migration/V20261112_004__t11_authoritative_deviation.sql)
+- Evidence: [JdbcAuthoritativeDeviationRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/monitoring/infrastructure/persistence/adapter/JdbcAuthoritativeDeviationRepositoryAdapter.java)
+- Migration mention (not inferred introduction): [V20261112_004__t11_authoritative_deviation.sql](../../src/main/resources/db/migration/V20261112_004__t11_authoritative_deviation.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| rule_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| rule_revision | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| requested_target_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| requested_reading_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| evaluated_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| recorded_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| unit_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| outcome | character varying(40) | False | None; identity=; generated= | No current mapped Java column | — |
+| target_id | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+| target_revision_id | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+| approval_id | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+| approved_at | timestamp with time zone | True | None; identity=; generated= | No current mapped Java column | — |
+| expected_value | numeric | True | None; identity=; generated= | No current mapped Java column | — |
+| trusted_reading_id | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+| raw_reading_id | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+| assessment_id | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+| binding_id | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+| quality_code_id | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+| trust_level | character varying(40) | True | None; identity=; generated= | No current mapped Java column | — |
+| observed_at | timestamp with time zone | True | None; identity=; generated= | No current mapped Java column | — |
+| trusted_at | timestamp with time zone | True | None; identity=; generated= | No current mapped Java column | — |
+| actual_value | numeric | True | None; identity=; generated= | No current mapped Java column | — |
+| difference_value | numeric | True | (actual_value - expected_value); identity=; generated=s | No current mapped Java column | — |
+| policy_revision | bigint | True | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_monitoring_authoritativ_rule_id_requested_target_id_r_key`: UNIQUE (rule_id, requested_target_id, requested_reading_id, evaluated_at)
+  - Catalog attributes: {"columns": ["rule_id", "requested_target_id", "requested_reading_id", "evaluated_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_monitoring_authoritative_eva_rule_id_policy_revision_fkey`: FOREIGN KEY (rule_id, policy_revision) REFERENCES hidra_monitoring_evaluation_freshness_policy(rule_id, rule_revision)
+  - Catalog attributes: {"columns": ["rule_id", "policy_revision"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["rule_id", "rule_revision"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_monitoring_evaluation_freshness_policy"}, "type": "f", "validated": true}
+- `hidra_monitoring_authoritative_evalu_rule_id_rule_revision_fkey`: FOREIGN KEY (rule_id, rule_revision) REFERENCES hidra_monitoring_rule_activation(rule_id, revision)
+  - Catalog attributes: {"columns": ["rule_id", "rule_revision"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["rule_id", "revision"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_monitoring_rule_activation"}, "type": "f", "validated": true}
+- `hidra_monitoring_authoritative_evaluation_check`: CHECK (isfinite(recorded_at) AND recorded_at &gt;= evaluated_at)
+  - Catalog attributes: {"columns": ["recorded_at", "evaluated_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_monitoring_authoritative_evaluation_check1`: CHECK (target_id IS NULL OR target_id::text = requested_target_id::text AND target_revision_id IS NOT NULL AND approval_id IS NOT NULL AND approved_at IS NOT NULL)
+  - Catalog attributes: {"columns": ["target_id", "requested_target_id", "target_revision_id", "approval_id", "approved_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_monitoring_authoritative_evaluation_check2`: CHECK (trusted_reading_id IS NULL OR trusted_reading_id::text = requested_reading_id::text AND raw_reading_id IS NOT NULL AND observed_at IS NOT NULL AND trusted_at IS NOT NULL)
+  - Catalog attributes: {"columns": ["trusted_reading_id", "requested_reading_id", "raw_reading_id", "observed_at", "trusted_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_monitoring_authoritative_evaluation_check3`: CHECK (outcome::text = 'POLICY_UNAVAILABLE'::text AND policy_revision IS NULL OR outcome::text &lt;&gt; 'POLICY_UNAVAILABLE'::text AND policy_revision IS NOT NULL AND policy_revision = rule_revision)
+  - Catalog attributes: {"columns": ["outcome", "policy_revision", "rule_revision"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_monitoring_authoritative_evaluation_check4`: CHECK (outcome::text = 'COMPUTED'::text AND expected_value IS NOT NULL AND actual_value IS NOT NULL AND target_id IS NOT NULL AND trusted_reading_id IS NOT NULL AND assessment_id IS NOT NULL AND binding_id IS NOT NULL OR outcome::text &lt;&gt; 'COMPUTED'::text AND expected_value IS NULL AND actual_value IS NULL)
+  - Catalog attributes: {"columns": ["outcome", "expected_value", "actual_value", "target_id", "trusted_reading_id", "assessment_id", "binding_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_monitoring_authoritative_evaluation_evaluated_at_check`: CHECK (isfinite(evaluated_at))
+  - Catalog attributes: {"columns": ["evaluated_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_monitoring_authoritative_evaluation_outcome_check`: CHECK (outcome::text = ANY (ARRAY['COMPUTED'::character varying, 'MISSING_EVIDENCE'::character varying, 'STALE'::character varying, 'UNCERTAIN'::character varying, 'INCOMPATIBLE'::character varying, 'POLICY_UNAVAILABLE'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["outcome"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_monitoring_authoritative_evaluation_pkey`: PRIMARY KEY (id)
+  - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+
+#### Indexes
+
+- `hidra_monitoring_authoritativ_rule_id_requested_target_id_r_key`: CREATE UNIQUE INDEX hidra_monitoring_authoritativ_rule_id_requested_target_id_r_key ON public.hidra_monitoring_authoritative_evaluation USING btree (rule_id, requested_target_id, requested_reading_id, evaluated_at)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_monitoring_authoritative_evaluation_pkey`: CREATE UNIQUE INDEX hidra_monitoring_authoritative_evaluation_pkey ON public.hidra_monitoring_authoritative_evaluation USING btree (id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `ix_t11_evaluation_history`: CREATE INDEX ix_t11_evaluation_history ON public.hidra_monitoring_authoritative_evaluation USING btree (rule_id, evaluated_at DESC, id DESC)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+
+#### Triggers
+
+- `trg_t11_evaluation_immutable`: CREATE TRIGGER trg_t11_evaluation_immutable BEFORE DELETE OR UPDATE ON hidra_monitoring_authoritative_evaluation FOR EACH ROW EXECUTE FUNCTION hidra_t11_deny_evidence_mutation()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t11_deny_evidence_mutation()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t11_deny_evidence_mutation()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'public'<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'T11 evaluation evidence is immutable' USING ERRCODE='23514';<br>END<br>$function$<br>
+- `trg_t11_evaluation_no_truncate`: CREATE TRIGGER trg_t11_evaluation_no_truncate BEFORE TRUNCATE ON hidra_monitoring_authoritative_evaluation FOR EACH STATEMENT EXECUTE FUNCTION hidra_t11_deny_evidence_mutation()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t11_deny_evidence_mutation()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t11_deny_evidence_mutation()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'public'<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'T11 evaluation evidence is immutable' USING ERRCODE='23514';<br>END<br>$function$<br>
+
 ### public.hidra_monitoring_catalog_entry
 
 Owner: **monitoring**; relation kind: `r`.
@@ -15747,6 +15830,45 @@ Persisted MonitoringEvaluationJpaEntity state; semantic authority remains with m
 - `tr_hmr103_evaluation_truncate`: CREATE TRIGGER tr_hmr103_evaluation_truncate BEFORE TRUNCATE ON hidra_monitoring_evaluation FOR EACH STATEMENT EXECUTE FUNCTION hmr103_evaluation_truncate_guard()
   - Catalog attributes: {"enabled": "O", "function_identity": "public.hmr103_evaluation_truncate_guard()"}
   - Function evidence: CREATE OR REPLACE FUNCTION public.hmr103_evaluation_truncate_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    IF EXISTS(SELECT 1 FROM hidra_monitoring_plan_actual_deviation WHERE evaluation_id IS NOT NULL) THEN<br>        RAISE EXCEPTION 'HMR-103: referenced evaluation cannot be truncated';<br>    END IF;<br>    RETURN NULL;<br>END $function$<br>
+
+### public.hidra_monitoring_evaluation_freshness_policy
+
+Owner: **monitoring**; relation kind: `r`.
+
+Immutable per-rule-revision freshness input provisioned explicitly before numeric comparison.
+
+- Evidence: [V20261112_004__t11_authoritative_deviation.sql](../../src/main/resources/db/migration/V20261112_004__t11_authoritative_deviation.sql)
+- Evidence: [JdbcAuthoritativeDeviationRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/monitoring/infrastructure/persistence/adapter/JdbcAuthoritativeDeviationRepositoryAdapter.java)
+- Migration mention (not inferred introduction): [V20261112_004__t11_authoritative_deviation.sql](../../src/main/resources/db/migration/V20261112_004__t11_authoritative_deviation.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| rule_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| rule_revision | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| maximum_age_seconds | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_monitoring_evaluation_freshnes_rule_id_rule_revision_fkey`: FOREIGN KEY (rule_id, rule_revision) REFERENCES hidra_monitoring_rule_revision(rule_id, revision)
+  - Catalog attributes: {"columns": ["rule_id", "rule_revision"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["rule_id", "revision"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_monitoring_rule_revision"}, "type": "f", "validated": true}
+- `hidra_monitoring_evaluation_freshness_maximum_age_seconds_check`: CHECK (maximum_age_seconds &gt; 0)
+  - Catalog attributes: {"columns": ["maximum_age_seconds"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_monitoring_evaluation_freshness_policy_pkey`: PRIMARY KEY (rule_id, rule_revision)
+  - Catalog attributes: {"columns": ["rule_id", "rule_revision"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+
+#### Indexes
+
+- `hidra_monitoring_evaluation_freshness_policy_pkey`: CREATE UNIQUE INDEX hidra_monitoring_evaluation_freshness_policy_pkey ON public.hidra_monitoring_evaluation_freshness_policy USING btree (rule_id, rule_revision)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `trg_t11_freshness_policy_immutable`: CREATE TRIGGER trg_t11_freshness_policy_immutable BEFORE DELETE OR UPDATE ON hidra_monitoring_evaluation_freshness_policy FOR EACH ROW EXECUTE FUNCTION hidra_t11_deny_evidence_mutation()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t11_deny_evidence_mutation()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t11_deny_evidence_mutation()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'public'<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'T11 evaluation evidence is immutable' USING ERRCODE='23514';<br>END<br>$function$<br>
+- `trg_t11_freshness_policy_no_truncate`: CREATE TRIGGER trg_t11_freshness_policy_no_truncate BEFORE TRUNCATE ON hidra_monitoring_evaluation_freshness_policy FOR EACH STATEMENT EXECUTE FUNCTION hidra_t11_deny_evidence_mutation()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t11_deny_evidence_mutation()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t11_deny_evidence_mutation()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'public'<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'T11 evaluation evidence is immutable' USING ERRCODE='23514';<br>END<br>$function$<br>
 
 ### public.hidra_monitoring_operational_state
 
@@ -16039,6 +16161,7 @@ Monitoring-owned immutable activation receipts with exact revision, actor and no
 - Evidence: [JdbcMonitoringRuleRevisionAdapter.java](../../src/main/java/dz/sh/hidra/modules/monitoring/infrastructure/persistence/adapter/JdbcMonitoringRuleRevisionAdapter.java)
 - Evidence: [MonitoringRuleRevision.java](../../src/main/java/dz/sh/hidra/modules/monitoring/domain/model/MonitoringRuleRevision.java)
 - Migration mention (not inferred introduction): [V20261112_003__t10_monitoring_rule_versions.sql](../../src/main/resources/db/migration/V20261112_003__t10_monitoring_rule_versions.sql)
+- Migration mention (not inferred introduction): [V20261112_004__t11_authoritative_deviation.sql](../../src/main/resources/db/migration/V20261112_004__t11_authoritative_deviation.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -16128,6 +16251,7 @@ Monitoring-owned immutable numbered rule specification with company/asset, point
 - Evidence: [JdbcMonitoringRuleRevisionAdapter.java](../../src/main/java/dz/sh/hidra/modules/monitoring/infrastructure/persistence/adapter/JdbcMonitoringRuleRevisionAdapter.java)
 - Evidence: [MonitoringRuleRevision.java](../../src/main/java/dz/sh/hidra/modules/monitoring/domain/model/MonitoringRuleRevision.java)
 - Migration mention (not inferred introduction): [V20261112_003__t10_monitoring_rule_versions.sql](../../src/main/resources/db/migration/V20261112_003__t10_monitoring_rule_versions.sql)
+- Migration mention (not inferred introduction): [V20261112_004__t11_authoritative_deviation.sql](../../src/main/resources/db/migration/V20261112_004__t11_authoritative_deviation.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|

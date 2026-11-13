@@ -207,7 +207,7 @@ class AuthoritativeDeviationNativeHttpPostgresIntegrationTest {
                 insert into hidra_telemetry_validation_rule
                     (id,code,name,scope_type,scope_reference_id,rule_type_id,severity,action_on_failure,
                      configuration_json,active,valid_from,created_at,updated_at)
-                values (?,'T11_QUALITY','Synthetic quality','POINT',?,?,'ERROR','REJECT',cast(? as jsonb),
+                values (?,'T09_RAW_QUALITY','Synthetic quality','POINT',?,?,'ERROR','REJECT',cast(? as jsonb),
                     true,now()-interval '1 hour',now(),now())
                 """, id(), fixture.point(), catalog("VALIDATION_RULE_TYPE", null),
                 """

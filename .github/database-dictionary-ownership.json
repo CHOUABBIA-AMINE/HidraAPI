@@ -230,6 +230,22 @@
     "owner": "identity",
     "purpose": "Identity provider with database-owned monotonic security generation and ordinary-writer mutation guards; generation is not token, session or permission authority."
   },
+  "public.hidra_identity_refresh_family": {
+    "owner": "identity",
+    "purpose": "Fixed-expiry LOCAL refresh family and source generation snapshots; revocation never confers Identity permissions.",
+    "evidence": [
+      "src/main/resources/db/migration/V20261108_001__identity_refresh_token_rotation.sql",
+      "src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcRefreshTokenRepositoryAdapter.java"
+    ]
+  },
+  "public.hidra_identity_refresh_token": {
+    "owner": "identity",
+    "purpose": "Keyed digest only, monotone generation and immutable native-bound token history; server-side single-use consumes and replay.",
+    "evidence": [
+      "src/main/resources/db/migration/V20261108_001__identity_refresh_token_rotation.sql",
+      "src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcRefreshTokenRepositoryAdapter.java"
+    ]
+  },
   "public.hidra_incident": {
     "evidence": [
       "src/main/java/dz/sh/hidra/modules/incident/infrastructure/persistence/entity/IncidentJpaEntity.java"
@@ -271,6 +287,40 @@
     ],
     "owner": "leakdetection",
     "purpose": "Leakdetection-owned case state; physical prefix is hidra_leak_detection."
+  },
+  "public.hidra_monitoring_rule_activation": {
+    "owner": "monitoring",
+    "purpose": "Monitoring-owned immutable activation receipts with exact revision, actor and non-overlapping effective interval; does not authorize automatic actuation.",
+    "evidence": [
+      "src/main/resources/db/migration/V20261112_003__t10_monitoring_rule_versions.sql",
+      "src/main/java/dz/sh/hidra/modules/monitoring/infrastructure/persistence/adapter/JdbcMonitoringRuleRevisionAdapter.java",
+      "src/main/java/dz/sh/hidra/modules/monitoring/domain/model/MonitoringRuleRevision.java"
+    ]
+  },
+  "public.hidra_monitoring_rule_head": {
+    "owner": "monitoring",
+    "purpose": "Monitoring-owned mutable serialized revision and activation head with expected-head concurrency and effective-window state; not immutable historical evidence.",
+    "evidence": [
+      "src/main/resources/db/migration/V20261112_003__t10_monitoring_rule_versions.sql",
+      "src/main/java/dz/sh/hidra/modules/monitoring/infrastructure/persistence/adapter/JdbcMonitoringRuleRevisionAdapter.java"
+    ]
+  },
+  "public.hidra_monitoring_rule_revision": {
+    "owner": "monitoring",
+    "purpose": "Monitoring-owned immutable numbered rule specification with company/asset, point, unit, evidence policy, validity and author provenance; registration does not execute a numerical rule.",
+    "evidence": [
+      "src/main/resources/db/migration/V20261112_003__t10_monitoring_rule_versions.sql",
+      "src/main/java/dz/sh/hidra/modules/monitoring/infrastructure/persistence/adapter/JdbcMonitoringRuleRevisionAdapter.java",
+      "src/main/java/dz/sh/hidra/modules/monitoring/domain/model/MonitoringRuleRevision.java"
+    ]
+  },
+  "public.hidra_monitoring_rule_scope": {
+    "owner": "monitoring",
+    "purpose": "Monitoring-owned immutable rule-to-company/asset registration and server-derived creation actor provenance; used for scoped authorization, not a Telemetry physical foreign key.",
+    "evidence": [
+      "src/main/resources/db/migration/V20261112_003__t10_monitoring_rule_versions.sql",
+      "src/main/java/dz/sh/hidra/modules/monitoring/infrastructure/persistence/adapter/JdbcMonitoringRuleRevisionAdapter.java"
+    ]
   },
   "public.hidra_org_appointment_binding_head": {
     "evidence": [
@@ -448,15 +498,6 @@
     ],
     "purpose": "Simulation-owned immutable canonical manufacturer characteristic source with digest, declared engineering applicability and original transaction provenance; no numerical solver or operational certification."
   },
-  "public.hidra_telemetry_reading_ingest_receipt": {
-    "evidence": [
-      "src/main/resources/db/migration/V20261110_001__telemetry_ingestion_replay_identity.sql",
-      "src/main/java/dz/sh/hidra/modules/telemetry/application/port/out/TelemetryReadingReplayPort.java",
-      "src/main/java/dz/sh/hidra/modules/telemetry/infrastructure/persistence/adapter/JdbcTelemetryReadingReplayAdapter.java"
-    ],
-    "owner": "telemetry",
-    "purpose": "Telemetry-owned immutable raw-reading replay receipt; one source-point-sequence reserves one untrusted canonical observation and its digest; no trust or operational approval is inferred."
-  },
   "public.hidra_telemetry_fluid_unit_policy": {
     "evidence": [
       "src/main/resources/db/migration/V20261027_002__telemetry_fluid_unit_policy.sql",
@@ -482,17 +523,26 @@
     "owner": "telemetry",
     "purpose": "Telemetry-owned quantity/rate unit-role eligibility with approval provenance; no business role assignments are approved here."
   },
-  "public.hidra_topology_baseline_submission": {
+  "public.hidra_telemetry_reading_ingest_receipt": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261110_001__telemetry_ingestion_replay_identity.sql",
+      "src/main/java/dz/sh/hidra/modules/telemetry/application/port/out/TelemetryReadingReplayPort.java",
+      "src/main/java/dz/sh/hidra/modules/telemetry/infrastructure/persistence/adapter/JdbcTelemetryReadingReplayAdapter.java"
+    ],
+    "owner": "telemetry",
+    "purpose": "Telemetry-owned immutable raw-reading replay receipt; one source-point-sequence reserves one untrusted canonical observation and its digest; no trust or operational approval is inferred."
+  },
+  "public.hidra_topology_baseline_publication": {
     "owner": "topology",
-    "purpose": "Exact baseline submission tied to one immutable company/pipeline manifest revision and canonical digest.",
+    "purpose": "Append-only approved baseline publications and request receipts. The greatest company/pipeline epoch is the published head.",
     "evidence": [
       "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringBaselinePublicationRepositoryAdapter.java",
       "src/main/resources/db/migration/V20261111_002__topology_engineering_baseline_publication.sql"
     ]
   },
-  "public.hidra_topology_baseline_publication": {
+  "public.hidra_topology_baseline_submission": {
     "owner": "topology",
-    "purpose": "Append-only approved baseline publications and request receipts. The greatest company/pipeline epoch is the published head.",
+    "purpose": "Exact baseline submission tied to one immutable company/pipeline manifest revision and canonical digest.",
     "evidence": [
       "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringBaselinePublicationRepositoryAdapter.java",
       "src/main/resources/db/migration/V20261111_002__topology_engineering_baseline_publication.sql"
@@ -615,6 +665,22 @@
     ],
     "owner": "topology",
     "purpose": "Owner-issued monotone live/tombstone witness for protected Facility ownership; not a publication epoch or permission."
+  },
+  "public.hidra_topology_foundation_request": {
+    "owner": "topology",
+    "purpose": "Immutable native-authorized setup receipts with replay digest, reason, actor and transaction provenance.",
+    "evidence": [
+      "src/main/resources/db/migration/V20261105_001__topology_foundation_setup.sql",
+      "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcTopologyFoundationAdapter.java"
+    ]
+  },
+  "public.hidra_topology_foundation_system_owner": {
+    "owner": "topology",
+    "purpose": "Explicit immutable company ownership for newly registered foundation systems; no inferred legacy company assignment.",
+    "evidence": [
+      "src/main/resources/db/migration/V20261105_001__topology_foundation_setup.sql",
+      "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcTopologyFoundationAdapter.java"
+    ]
   },
   "public.hidra_topology_installed_characteristic_approval": {
     "evidence": [
@@ -796,37 +862,5 @@
     ],
     "owner": "workflow",
     "purpose": "Workflow-owned empty explicit per-company publication definition/version/target/purpose policy; scalar company reference, no cross-owner FK, assignments, decisions, grants or qualification."
-  },
-  "public.hidra_topology_foundation_system_owner": {
-    "owner": "topology",
-    "purpose": "Explicit immutable company ownership for newly registered foundation systems; no inferred legacy company assignment.",
-    "evidence": [
-      "src/main/resources/db/migration/V20261105_001__topology_foundation_setup.sql",
-      "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcTopologyFoundationAdapter.java"
-    ]
-  },
-  "public.hidra_topology_foundation_request": {
-    "owner": "topology",
-    "purpose": "Immutable native-authorized setup receipts with replay digest, reason, actor and transaction provenance.",
-    "evidence": [
-      "src/main/resources/db/migration/V20261105_001__topology_foundation_setup.sql",
-      "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcTopologyFoundationAdapter.java"
-    ]
-  },
-  "public.hidra_identity_refresh_family": {
-    "owner": "identity",
-    "purpose": "Fixed-expiry LOCAL refresh family and source generation snapshots; revocation never confers Identity permissions.",
-    "evidence": [
-      "src/main/resources/db/migration/V20261108_001__identity_refresh_token_rotation.sql",
-      "src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcRefreshTokenRepositoryAdapter.java"
-    ]
-  },
-  "public.hidra_identity_refresh_token": {
-    "owner": "identity",
-    "purpose": "Keyed digest only, monotone generation and immutable native-bound token history; server-side single-use consumes and replay.",
-    "evidence": [
-      "src/main/resources/db/migration/V20261108_001__identity_refresh_token_rotation.sql",
-      "src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcRefreshTokenRepositoryAdapter.java"
-    ]
   }
 }

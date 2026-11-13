@@ -335,6 +335,28 @@ required tests, weaken workflows or waive green-CI requirements for release/depl
 
 ---
 
+### 11.2 One task verification step — 2026-11-13
+
+Use one focused verification step per task. For a new or changed client workflow,
+default to one synthetic client scenario that exercises the real entry point,
+commits and retrieves the result, and checks the security or data-integrity
+failures that materially affect that workflow. Reuse existing coverage. Add a
+separate test only where the scenario cannot establish a required guarantee.
+
+Run the applicable checks together through the existing exact-SHA CI workflow.
+Use its overall result as the task's CI gate. Internal jobs remain diagnostic
+detail. Keep required security, architecture, persistence and compatibility
+checks applicable to the change. CI failures that block the client journey or
+violate a required guarantee are defects to fix.
+
+For T10 and future delivery tasks, verify restart across workflows once in the
+registered integrated journey, unless restart behavior is itself part of the
+feature or needed to establish a task-specific durability guarantee. Record
+which evidence is pending and keep development software acceptance distinct
+from engineering and operational qualification.
+
+---
+
 ## 12. Roadmap Update Rules
 
 Update task status and acceptance evidence only in `doc/roadmap/ROADMAP.md`.

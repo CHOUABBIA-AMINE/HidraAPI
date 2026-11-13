@@ -820,6 +820,7 @@ class ArchitectureGuardrailTest {
     @Test void t10TransactionalOwnerServicesStayProxyable() throws ClassNotFoundException {
         for(String component: java.util.List.of(
                 "dz.sh.hidra.modules.identity.application.service.MonitoringRuleScopedAuthorizationQueryService",
+                "dz.sh.hidra.modules.monitoring.application.service.MonitoringRuleApplicationService",
                 "dz.sh.hidra.modules.monitoring.application.service.MonitoringRuleLifecycleApplicationService",
                 "dz.sh.hidra.modules.monitoring.infrastructure.persistence.adapter.JdbcMonitoringRuleRevisionAdapter",
                 "dz.sh.hidra.modules.telemetry.infrastructure.persistence.adapter.JpaMonitoringRulePointEligibilityAdapter")) {

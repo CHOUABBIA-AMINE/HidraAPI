@@ -45,7 +45,7 @@ import java.util.Objects;
  * Application service for monitoring rules.
  */
 @Service
-public final class MonitoringRuleApplicationService implements CreateMonitoringRuleUseCase {
+public class MonitoringRuleApplicationService implements CreateMonitoringRuleUseCase {
 
     private final MonitoringRuleRepositoryPort repositoryPort;
     private final MonitoringTelemetryPointReferenceContract telemetryPointReferenceContract;

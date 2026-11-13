@@ -86,7 +86,8 @@ class MonitoringRuleNativeHttpPostgresIntegrationTest {
                     now.plusSeconds(3600),"actor");
             assertEquals(1,replay.revision());
             assertNotNull(replay.activatedAt());
-            assertEquals(now.plusSeconds(1),replay.effectiveFrom());
+            assertEquals(now.plusSeconds(1).truncatedTo(java.time.temporal.ChronoUnit.MICROS),
+                    replay.effectiveFrom());
             assertThrows(IllegalStateException.class,()->repository.activate(
                     "t10-rule",2,0,now.plusSeconds(3600),now.plusSeconds(7200),"actor"));
             repository.activate("t10-rule",2,1,now.plusSeconds(3600),

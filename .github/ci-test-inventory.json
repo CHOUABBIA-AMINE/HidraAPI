@@ -36,6 +36,7 @@
         "simulationTelemetryEvidenceExportKeepsOwnerInternalsPrivate",
         "stationConfigurationNativeAuthorityStaysPrivateUntilReviewedTopologyIntegration",
         "suppliedFluidExportsStayExactToTheirCoordinator",
+        "t10TransactionalOwnerServicesStayProxyable",
         "telemetryNativeAuthorizationContractsRemainExactAndOwnerPrivate",
         "transactionalOrganizationResponsibilityServicesMustRemainProxyable",
         "transitionalCrossModuleAllowlistMustRemainExactAndInUse",
@@ -47,7 +48,7 @@
       "lane": "unit-architecture",
       "owner": "architecture",
       "path": "src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java",
-      "source_sha256": "8971afd7866b1eb74411e351a3b4783e6d880763bb1560181a962285e13e7baf",
+      "source_sha256": "02360f6f3fae1c5d81b108d35ad506c4a1d104d2da389496a7e75582fffbd8f3",
       "supports": []
     },
     {
@@ -4723,7 +4724,7 @@
       "lane": "postgres-integration",
       "owner": "monitoring",
       "path": "src/test/java/dz/sh/hidra/modules/monitoring/infrastructure/persistence/MonitoringRuleNativeHttpPostgresIntegrationTest.java",
-      "source_sha256": "ccafff75e7e15a836270080ea9abdb70c0f5037996181a6349ff3b7b12f9d929",
+      "source_sha256": "37feaeae17429d8b79e3c815b19e79f7f25ac9001b7a81764b09cf35585a4e2e",
       "supports": []
     },
     {
@@ -11693,7 +11694,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java",
-      "source_sha256": "f91821d0eeb11766d7a02db148702b4bb3edb6aa51c314ff1b88eb5b06447c72",
+      "source_sha256": "372494c61cad78054900c5627ccb633d9f6ba59d7f022fc1e5ea0b27b81a7bb8",
       "supports": []
     },
     {

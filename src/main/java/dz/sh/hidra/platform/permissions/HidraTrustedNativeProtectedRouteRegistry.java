@@ -112,7 +112,7 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
             return List.of(
                 new Route(monitoringWrite,monitoringWrite.getDeclaredMethod("createMonitoringRule",monitoringCreate),
                     "POST",monitoringBase),
-                new Route(monitoringWrite,monitoringWrite.getDeclaredMethod("createMonitoringRule",monitoringCreate),
+                new Route(monitoringWrite,monitoringWrite.getDeclaredMethod("createLegacyMonitoringRule",monitoringCreate),
                     "POST","/api/v1/monitoring/create-monitoring-rule"),
                 new Route(monitoringRead,monitoringRead.getDeclaredMethod("rules",
                     String.class,String.class,String.class,String.class,int.class,int.class),

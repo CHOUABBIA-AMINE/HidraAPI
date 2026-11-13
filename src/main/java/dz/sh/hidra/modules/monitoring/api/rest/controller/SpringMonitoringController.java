@@ -95,11 +95,18 @@ public class SpringMonitoringController implements MonitoringController {
     }
 
     @Override
-    @PostMapping({"/create-monitoring-rule", "/rules"})
+    @PostMapping("/rules")
     @NativeProtectedOperation
     public MonitoringRuleResponse createMonitoringRule(@Valid @RequestBody CreateMonitoringRuleRequest request) {
         Objects.requireNonNull(request, "CreateMonitoringRuleRequest must not be null.");
         return MonitoringRestMapper.toResponse(createMonitoringRuleUseCase.createMonitoringRule(MonitoringRestMapper.toCommand(request)));
+    }
+
+    /** Separate exact MVC mapping retains the registered legacy alias without weakening route verification. */
+    @PostMapping("/create-monitoring-rule")
+    @NativeProtectedOperation
+    public MonitoringRuleResponse createLegacyMonitoringRule(@Valid @RequestBody CreateMonitoringRuleRequest request) {
+        return createMonitoringRule(request);
     }
 
     @Override

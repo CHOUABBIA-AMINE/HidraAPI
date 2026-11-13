@@ -26,6 +26,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.Objects;
@@ -36,7 +37,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
-public final class JdbcMonitoringRuleRevisionAdapter implements MonitoringRuleRevisionPort {
+public class JdbcMonitoringRuleRevisionAdapter implements MonitoringRuleRevisionPort {
     private static final String VIEW = """
         select v.rule_id,v.revision,v.company_party_id,v.asset_type,v.asset_id,v.telemetry_point_id,
         v.rule_type,v.unit_id,v.evidence_policy_code,v.valid_from,v.valid_to,v.created_by_actor_id,
@@ -119,6 +120,11 @@ public final class JdbcMonitoringRuleRevisionAdapter implements MonitoringRuleRe
     @Override @Transactional(propagation=Propagation.MANDATORY)
     public MonitoringRuleRevision activate(String ruleId,long revision,long expectedHead,
             Instant from,Instant until,String actor){
+        // PostgreSQL timestamptz has microsecond precision. Canonicalize before write and replay.
+        if(from==null||until==null)throw new IllegalArgumentException("Activation interval required.");
+        from=from.truncatedTo(ChronoUnit.MICROS);
+        until=until.truncatedTo(ChronoUnit.MICROS);
+        if(!from.isBefore(until))throw new IllegalArgumentException("Invalid activation interval.");
         lock(ruleId);
         var head=jdbc.query("""
             select active_revision,effective_from,effective_until

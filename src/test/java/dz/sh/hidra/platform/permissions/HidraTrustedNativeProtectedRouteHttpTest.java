@@ -268,6 +268,13 @@ class HidraTrustedNativeProtectedRouteHttpTest {
         org.mockito.Mockito.mock(dz.sh.hidra.modules.monitoring.application.port.in.MonitoringQueryUseCase.class));
     owners.put(monitoringWrite.getClass(),monitoringWrite);
     owners.put(monitoringRead.getClass(),monitoringRead);
+
+    // The same logical operation has two distinct native-protected MVC methods, never one multi-pattern mapping.
+    var ruleCreate=routes.stream().filter(r->r.pattern().equals("/api/v1/monitoring/rules")
+        &&r.verb().equals("POST")).findFirst().orElseThrow();
+    var aliasCreate=routes.stream().filter(r->r.pattern().equals("/api/v1/monitoring/create-monitoring-rule")
+        &&r.verb().equals("POST")).findFirst().orElseThrow();
+    assertTrue(!ruleCreate.method().equals(aliasCreate.method()));
     var actual=new RequestMappingHandlerMapping();
    for(var entry:routes) {
     Object owner=owners.get(entry.controller());

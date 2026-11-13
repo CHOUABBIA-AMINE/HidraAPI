@@ -34,7 +34,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public final class MonitoringRuleLifecycleApplicationService implements ActivateMonitoringRuleRevisionUseCase {
+public class MonitoringRuleLifecycleApplicationService implements ActivateMonitoringRuleRevisionUseCase {
     private final MonitoringRuleRevisionPort revisions;
     private final MonitoringRuleAuthorizationPort authorization;
     public MonitoringRuleLifecycleApplicationService(MonitoringRuleRevisionPort revisions,

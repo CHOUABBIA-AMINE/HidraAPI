@@ -38,7 +38,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public final class MonitoringRuleScopedAuthorizationQueryService
+public class MonitoringRuleScopedAuthorizationQueryService
         implements MonitoringRuleScopedAuthorizationContract {
     private final TelemetryNativeLocalActorPort actors;
     private final AlarmExplicitGrantEvidencePort grants;

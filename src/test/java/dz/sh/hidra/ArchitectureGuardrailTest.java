@@ -419,6 +419,7 @@ class ArchitectureGuardrailTest {
                 if (isCharacteristicManufacturerPartyExport(source.getName(),target.getName())) continue;
                 if (isAlarmOwnerExport(source.getName(),target.getName())) continue;
                 if (isTelemetryNativeOwnerExport(source.getName(),target.getName())) continue;
+                if (isMonitoringRuleOwnerExport(source.getName(),target.getName())) continue;
 
                 violations.add(source.getName() + " -> " + target.getName());
             }
@@ -814,6 +815,18 @@ class ArchitectureGuardrailTest {
                 "dz.sh.hidra.modules.identity.application.contract.monitoring.MonitoringRuleScopedAuthorizationContract",
                 "dz.sh.hidra.modules.topology.application.contract.monitoring.MonitoringRuleAssetOwnershipContract")
                 .stream().anyMatch(exported->target.equals(exported)||target.startsWith(exported+"$"));
+    }
+
+    @Test void t10TransactionalOwnerServicesStayProxyable() throws ClassNotFoundException {
+        for(String component: java.util.List.of(
+                "dz.sh.hidra.modules.identity.application.service.MonitoringRuleScopedAuthorizationQueryService",
+                "dz.sh.hidra.modules.monitoring.application.service.MonitoringRuleLifecycleApplicationService",
+                "dz.sh.hidra.modules.monitoring.infrastructure.persistence.adapter.JdbcMonitoringRuleRevisionAdapter",
+                "dz.sh.hidra.modules.telemetry.infrastructure.persistence.adapter.JpaMonitoringRulePointEligibilityAdapter")) {
+            var type=Class.forName(component);
+            assertFalse(java.lang.reflect.Modifier.isFinal(type.getModifiers()),
+                    ()->"T10 transactional component cannot be proxied: "+component);
+        }
     }
 
     @Test void monitoringRuleOwnerExportsStayExactAndPrivate() {

@@ -32,7 +32,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
-public final class JpaMonitoringRulePointEligibilityAdapter implements MonitoringRulePointEligibilityContract {
+public class JpaMonitoringRulePointEligibilityAdapter implements MonitoringRulePointEligibilityContract {
     private final EntityManager em;
     public JpaMonitoringRulePointEligibilityAdapter(EntityManager em){this.em=Objects.requireNonNull(em);}
     @Override

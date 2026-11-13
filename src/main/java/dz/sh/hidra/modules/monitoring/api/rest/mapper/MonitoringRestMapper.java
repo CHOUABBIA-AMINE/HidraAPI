@@ -22,6 +22,8 @@ import dz.sh.hidra.modules.monitoring.api.rest.request.CreateMonitoringRuleReque
 import dz.sh.hidra.modules.monitoring.api.rest.request.RecordDeviationRequest;
 import dz.sh.hidra.modules.monitoring.api.rest.response.DeviationResponse;
 import dz.sh.hidra.modules.monitoring.api.rest.response.MonitoringRuleResponse;
+import dz.sh.hidra.modules.monitoring.api.rest.response.MonitoringRuleRevisionResponses;
+import dz.sh.hidra.modules.monitoring.domain.model.MonitoringRuleRevision;
 import dz.sh.hidra.modules.monitoring.application.command.CreateMonitoringRuleCommand;
 import dz.sh.hidra.modules.monitoring.application.command.RecordDeviationCommand;
 import dz.sh.hidra.modules.monitoring.application.dto.DeviationSummaryDto;
@@ -53,5 +55,15 @@ public final class MonitoringRestMapper {
 
     public static DeviationResponse toResponse(DeviationSummaryDto dto) {
         return GENERATED.toResponse(Objects.requireNonNull(dto, "DeviationSummaryDto must not be null."));
+    }
+
+    /** REST projection is mapped in the API mapper, never inside a wire DTO. */
+    public static MonitoringRuleRevisionResponses.View toRevisionResponse(MonitoringRuleRevision r) {
+        Objects.requireNonNull(r, "Monitoring revision must not be null.");
+        return new MonitoringRuleRevisionResponses.View(
+                r.ruleId(), r.revision(), r.companyPartyId(), r.assetType(), r.assetId(),
+                r.telemetryPointId(), r.ruleType().name(), r.unitId(), r.evidencePolicyCode(),
+                r.validFrom(), r.validTo(), r.createdByActorId(), r.createdAt(),
+                r.effectiveFrom(), r.effectiveUntil(), r.activatedAt(), r.activatedByActorId());
     }
 }

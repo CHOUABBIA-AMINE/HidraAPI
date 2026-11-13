@@ -156,7 +156,7 @@ class HidraTrustedNativeProtectedRouteHttpTest {
    var resolver = org.mockito.Mockito.mock(HidraEffectivePermissionResolver.class);
    authenticated();
    var registry = new HidraTrustedNativeProtectedRouteRegistry();
-   assertEquals(48,registry.candidates().size());
+   assertEquals(57,registry.candidates().size());
    var mvc = mvc(owner, new UntrustedController(), resolver,registry);
    assertThrows(Exception.class, () ->
       mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(TRUSTED)));
@@ -165,8 +165,17 @@ class HidraTrustedNativeProtectedRouteHttpTest {
  @Test void realManufacturerTupleRegistryRejectsWrongVerbAndSiblingPattern() throws Exception {
    var registry=new HidraTrustedNativeProtectedRouteRegistry();
    var routes=registry.candidates();
-   assertEquals(48,routes.size());
+   assertEquals(57,routes.size());
    var expected=java.util.Set.of(
+    "POST /api/v1/monitoring/rules",
+    "POST /api/v1/monitoring/create-monitoring-rule",
+    "GET /api/v1/monitoring/rules",
+    "GET /api/v1/monitoring/rules/{id}",
+    "POST /api/v1/monitoring/rules/{id}/revisions",
+    "POST /api/v1/monitoring/rules/{id}/revisions/{revision}/activate",
+    "GET /api/v1/monitoring/rules/{id}/revisions/{revision}",
+    "GET /api/v1/monitoring/rules/{id}/effective",
+    "GET /api/v1/monitoring/rules/{id}/history",
     "POST /api/v1/telemetry/points/{pointId}/readings/{readingId}/assessment",
     "GET /api/v1/telemetry/points/{pointId}/readings/{readingId}/assessment",
     "POST /api/v1/telemetry/points/{pointId}/readings/{readingId}/trust",
@@ -251,6 +260,14 @@ class HidraTrustedNativeProtectedRouteHttpTest {
        org.mockito.Mockito.mock(dz.sh.hidra.modules.telemetry.application.port.in.QualifyTelemetryReadingUseCase.class),
        org.mockito.Mockito.mock(dz.sh.hidra.modules.telemetry.application.port.in.TrustedTelemetryReadingQueryUseCase.class));
     owners.put(telemetryQuality.getClass(),telemetryQuality);
+    var monitoringWrite=new dz.sh.hidra.modules.monitoring.api.rest.controller.SpringMonitoringController(
+        org.mockito.Mockito.mock(dz.sh.hidra.modules.monitoring.application.port.in.CreateMonitoringRuleUseCase.class),
+        org.mockito.Mockito.mock(dz.sh.hidra.modules.monitoring.application.port.in.RecordDeviationUseCase.class),
+        org.mockito.Mockito.mock(dz.sh.hidra.modules.monitoring.application.port.in.ActivateMonitoringRuleRevisionUseCase.class));
+    var monitoringRead=new dz.sh.hidra.modules.monitoring.api.rest.controller.MonitoringQueryController(
+        org.mockito.Mockito.mock(dz.sh.hidra.modules.monitoring.application.port.in.MonitoringQueryUseCase.class));
+    owners.put(monitoringWrite.getClass(),monitoringWrite);
+    owners.put(monitoringRead.getClass(),monitoringRead);
     var actual=new RequestMappingHandlerMapping();
    for(var entry:routes) {
     Object owner=owners.get(entry.controller());

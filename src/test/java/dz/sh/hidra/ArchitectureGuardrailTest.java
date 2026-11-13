@@ -806,6 +806,30 @@ class ArchitectureGuardrailTest {
                 .stream().anyMatch(root->target.equals(root)||target.startsWith(root+"$"));
     }
 
+    /** T10: admit only the reviewed Monitoring adapter's two exact owner contract roots. */
+    private static boolean isMonitoringRuleOwnerExport(String source,String target) {
+        String consumer="dz.sh.hidra.modules.monitoring.infrastructure.security.MonitoringRuleNativeScopeAdapter";
+        if(!consumer.equals(source))return false;
+        return java.util.Set.of(
+                "dz.sh.hidra.modules.identity.application.contract.monitoring.MonitoringRuleScopedAuthorizationContract",
+                "dz.sh.hidra.modules.topology.application.contract.monitoring.MonitoringRuleAssetOwnershipContract")
+                .stream().anyMatch(exported->target.equals(exported)||target.startsWith(exported+"$"));
+    }
+
+    @Test void monitoringRuleOwnerExportsStayExactAndPrivate() {
+        String source="dz.sh.hidra.modules.monitoring.infrastructure.security.MonitoringRuleNativeScopeAdapter";
+        String identity="dz.sh.hidra.modules.identity.application.contract.monitoring.MonitoringRuleScopedAuthorizationContract";
+        String topology="dz.sh.hidra.modules.topology.application.contract.monitoring.MonitoringRuleAssetOwnershipContract";
+        assertFalse(isForbiddenCrossModuleDependency(source,identity));
+        assertFalse(isForbiddenCrossModuleDependency(source,identity+"$Operation"));
+        assertFalse(isForbiddenCrossModuleDependency(source,topology));
+        assertFalse(isForbiddenCrossModuleDependency(source,topology+"$OwnedAsset"));
+        assertTrue(isForbiddenCrossModuleDependency(source+"Sibling",identity));
+        assertTrue(isForbiddenCrossModuleDependency(source,topology+"Sibling"));
+        assertTrue(isForbiddenCrossModuleDependency(source,
+                "dz.sh.hidra.modules.topology.infrastructure.persistence.entity.FacilityJpaEntity"));
+    }
+
     @Test
     void telemetryNativeAuthorizationContractsRemainExactAndOwnerPrivate() {
         String consumer="dz.sh.hidra.modules.telemetry.infrastructure.security.TelemetryReadingNativeScopeAdapter";
@@ -836,6 +860,7 @@ class ArchitectureGuardrailTest {
         if(isBaselineOwnerExport(sourceClassName,targetClassName))return false;
         if(isAlarmOwnerExport(sourceClassName,targetClassName))return false;
         if(isTelemetryNativeOwnerExport(sourceClassName,targetClassName))return false;
+        if(isMonitoringRuleOwnerExport(sourceClassName,targetClassName))return false;
         // HAPI-605: generic exported-package allowances must not admit unauthorized
         // consumers of the three new source-owner contracts (or nested credentials).
         if(List.of(

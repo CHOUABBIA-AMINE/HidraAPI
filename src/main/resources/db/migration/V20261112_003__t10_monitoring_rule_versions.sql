@@ -65,7 +65,7 @@ CREATE INDEX ix_t10_rule_effective
 
 -- Lock the same head for direct SQL writers and deny overlapping half-open intervals.
 CREATE FUNCTION public.hidra_t10_guard_activation_overlap() RETURNS trigger
-LANGUAGE plpgsql SECURITY INVOKER SET search_path=pg_catalog,public AS $
+LANGUAGE plpgsql SECURITY INVOKER SET search_path=pg_catalog,public AS $$
 BEGIN
     PERFORM 1 FROM public.hidra_monitoring_rule_head WHERE rule_id=NEW.rule_id FOR UPDATE;
     IF EXISTS (
@@ -78,7 +78,7 @@ BEGIN
     END IF;
     RETURN NEW;
 END
-$;
+$$;
 CREATE TRIGGER trg_t10_activation_no_overlap
     BEFORE INSERT ON public.hidra_monitoring_rule_activation
     FOR EACH ROW EXECUTE FUNCTION public.hidra_t10_guard_activation_overlap();

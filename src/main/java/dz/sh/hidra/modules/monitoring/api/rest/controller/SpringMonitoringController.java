@@ -116,14 +116,14 @@ public class SpringMonitoringController implements MonitoringController {
         var draft=new ActivateMonitoringRuleRevisionUseCase.Draft(
                 body.unitId(),body.evidencePolicyCode(),body.validFrom(),body.validTo());
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(MonitoringRuleRevisionResponses.View.of(lifecycle.revise(id,draft)));
+                .body(MonitoringRestMapper.toRevisionResponse(lifecycle.revise(id,draft)));
     }
 
     @PostMapping("/rules/{id}/revisions/{revision}/activate")
     @NativeProtectedOperation
     public MonitoringRuleRevisionResponses.View activateRevision(@PathVariable String id,
             @PathVariable long revision,@RequestBody MonitoringRuleRevisionRequests.Activate body){
-        return MonitoringRuleRevisionResponses.View.of(lifecycle.activate(id,revision,
+        return MonitoringRestMapper.toRevisionResponse(lifecycle.activate(id,revision,
                 new ActivateMonitoringRuleRevisionUseCase.Activation(body.expectedHeadRevision(),
                         body.effectiveFrom(),body.effectiveUntil())));
     }
@@ -132,14 +132,14 @@ public class SpringMonitoringController implements MonitoringController {
     @NativeProtectedOperation
     public MonitoringRuleRevisionResponses.View exactRevision(@PathVariable String id,
             @PathVariable long revision){
-        return MonitoringRuleRevisionResponses.View.of(lifecycle.exact(id,revision));
+        return MonitoringRestMapper.toRevisionResponse(lifecycle.exact(id,revision));
     }
 
     @GetMapping("/rules/{id}/effective")
     @NativeProtectedOperation
     public MonitoringRuleRevisionResponses.View effectiveRevision(@PathVariable String id,
             @RequestParam Instant at){
-        return MonitoringRuleRevisionResponses.View.of(lifecycle.effective(id,at));
+        return MonitoringRestMapper.toRevisionResponse(lifecycle.effective(id,at));
     }
 
     @GetMapping("/rules/{id}/history")
@@ -147,7 +147,7 @@ public class SpringMonitoringController implements MonitoringController {
     public List<MonitoringRuleRevisionResponses.View> ruleHistory(@PathVariable String id,
             @RequestParam(defaultValue="20") int limit){
         return lifecycle.history(id,limit).stream()
-                .map(MonitoringRuleRevisionResponses.View::of).toList();
+                .map(MonitoringRestMapper::toRevisionResponse).toList();
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

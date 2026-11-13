@@ -176,6 +176,16 @@ class ForensicRemediationClosureTest {
         assertFalse(isTelemetryNativeOwnerExport(telemetryConsumer,telemetryTopology+"Sibling"));
         assertFalse(isTelemetryNativeOwnerExport(telemetryConsumer,
                 "dz.sh.hidra.modules.topology.infrastructure.persistence.entity.FacilityJpaEntity"));
+        String monitoringConsumer="dz.sh.hidra.modules.monitoring.infrastructure.security.MonitoringRuleNativeScopeAdapter";
+        String monitoringIdentity="dz.sh.hidra.modules.identity.application.contract.monitoring.MonitoringRuleScopedAuthorizationContract";
+        String monitoringTopology="dz.sh.hidra.modules.topology.application.contract.monitoring.MonitoringRuleAssetOwnershipContract";
+        assertTrue(isMonitoringRuleOwnerExport(monitoringConsumer,monitoringIdentity));
+        assertTrue(isMonitoringRuleOwnerExport(monitoringConsumer,monitoringIdentity+".Operation"));
+        assertTrue(isMonitoringRuleOwnerExport(monitoringConsumer,monitoringTopology+".OwnedAsset"));
+        assertFalse(isMonitoringRuleOwnerExport(monitoringConsumer+"Sibling",monitoringIdentity));
+        assertFalse(isMonitoringRuleOwnerExport(monitoringConsumer,monitoringIdentity+"Sibling"));
+        assertFalse(isMonitoringRuleOwnerExport(monitoringConsumer,
+                "dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JpaTelemetryExplicitGrantEvidenceAdapter"));
         String productConsumer="dz.sh.hidra.modules.custody.application.service.ProtectedProductDraftAdmissionCoordinator";
         String productRoot="dz.sh.hidra.modules.party.application.contract.custody.CustodyProtectedPartyEligibilityContract";
         assertTrue(custodyProductOwnerExport(productConsumer,productRoot));
@@ -275,6 +285,7 @@ class ForensicRemediationClosureTest {
                 if (baselineOwnerExport(source.fqcn(), imported)) continue;
                 if (isAlarmOwnerExport(source.fqcn(), imported)) continue;
                 if (isTelemetryNativeOwnerExport(source.fqcn(), imported)) continue;
+                if (isMonitoringRuleOwnerExport(source.fqcn(), imported)) continue;
                 if (isPlanningReviewerExport(source.fqcn(), imported)) continue;
                 violations.add(source.fqcn() + " -> " + imported);
             }
@@ -306,6 +317,15 @@ class ForensicRemediationClosureTest {
                 "dz.sh.hidra.modules.identity.application.contract.telemetry.TelemetryScopedAuthorizationContract",
                 "dz.sh.hidra.modules.topology.application.contract.telemetry.TelemetryTopologyOwnershipContract")
                 .stream().anyMatch(root -> imported.equals(root) || imported.startsWith(root + "."));
+    }
+
+    /** T10: no package-wide exposure for Monitoring's exact Identity/Topology imports. */
+    private static boolean isMonitoringRuleOwnerExport(String source,String imported) {
+        if(!"dz.sh.hidra.modules.monitoring.infrastructure.security.MonitoringRuleNativeScopeAdapter".equals(source))return false;
+        return Set.of(
+                "dz.sh.hidra.modules.identity.application.contract.monitoring.MonitoringRuleScopedAuthorizationContract",
+                "dz.sh.hidra.modules.topology.application.contract.monitoring.MonitoringRuleAssetOwnershipContract").stream().anyMatch(root->
+                imported.equals(root)||imported.startsWith(root+"."));
     }
 
     private static boolean baselineOwnerExport(String source,String imported) {

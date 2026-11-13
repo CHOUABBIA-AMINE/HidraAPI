@@ -33,6 +33,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import java.time.Instant;
 import dz.sh.hidra.modules.monitoring.application.port.in.RecordDeviationUseCase;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Map;
@@ -95,6 +97,7 @@ public class SpringMonitoringController implements MonitoringController {
     }
 
     @Override
+    @Operation(operationId = "createMonitoringRule_1")
     @PostMapping("/rules")
     @NativeProtectedOperation
     public MonitoringRuleResponse createMonitoringRule(@Valid @RequestBody CreateMonitoringRuleRequest request) {
@@ -103,6 +106,7 @@ public class SpringMonitoringController implements MonitoringController {
     }
 
     /** Separate exact MVC mapping retains the registered legacy alias without weakening route verification. */
+    @Operation(operationId = "createMonitoringRule")
     @PostMapping("/create-monitoring-rule")
     @NativeProtectedOperation
     public MonitoringRuleResponse createLegacyMonitoringRule(@Valid @RequestBody CreateMonitoringRuleRequest request) {
@@ -116,6 +120,9 @@ public class SpringMonitoringController implements MonitoringController {
         return MonitoringRestMapper.toResponse(recordDeviationUseCase.recordDeviation(MonitoringRestMapper.toCommand(request)));
     }
 
+    @Operation(operationId = "createMonitoringRuleRevision")
+    @ApiResponse(responseCode = "201", description = "Monitoring rule revision created",
+            useReturnTypeSchema = true)
     @PostMapping("/rules/{id}/revisions")
     @NativeProtectedOperation
     public ResponseEntity<MonitoringRuleRevisionResponses.View> createRevision(

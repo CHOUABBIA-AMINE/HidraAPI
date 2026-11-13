@@ -19,10 +19,13 @@
  */
 package dz.sh.hidra.modules.monitoring.api.rest.request;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.Instant;
 
 public final class MonitoringRuleRevisionRequests {
     private MonitoringRuleRevisionRequests(){ }
+    @Schema(name = "MonitoringRuleRevisionDraftRequest")
     public record Draft(String unitId,String evidencePolicyCode,Instant validFrom,Instant validTo){ }
+    @Schema(name = "MonitoringRuleRevisionActivationRequest")
     public record Activate(long expectedHeadRevision,Instant effectiveFrom,Instant effectiveUntil){ }
 }

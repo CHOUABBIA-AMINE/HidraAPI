@@ -19,10 +19,12 @@
  */
 package dz.sh.hidra.modules.monitoring.api.rest.response;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.Instant;
 
 public final class MonitoringRuleRevisionResponses {
     private MonitoringRuleRevisionResponses(){ }
+    @Schema(name = "MonitoringRuleRevisionResponse")
     public record View(String ruleId,long revision,String companyPartyId,String assetType,String assetId,
             String telemetryPointId,String ruleType,String unitId,String evidencePolicyCode,
             Instant validFrom,Instant validTo,String createdByActorId,Instant createdAt,

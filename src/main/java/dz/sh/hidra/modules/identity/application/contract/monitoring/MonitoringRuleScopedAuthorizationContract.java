@@ -20,6 +20,6 @@
 package dz.sh.hidra.modules.identity.application.contract.monitoring;
 
 public interface MonitoringRuleScopedAuthorizationContract {
-    enum Operation { CREATE, REVISE, ACTIVATE, READ }
+    enum Operation { CREATE, REVISE, ACTIVATE, READ, EVALUATE }
     String require(Operation operation,String company,String assetType,String assetId);
 }

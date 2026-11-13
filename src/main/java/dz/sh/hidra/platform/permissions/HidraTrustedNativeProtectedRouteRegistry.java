@@ -108,8 +108,16 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
             Class<?> monitoringCreate=Class.forName(monitoring+"request.CreateMonitoringRuleRequest");
             Class<?> monitoringDraft=Class.forName(monitoring+"request.MonitoringRuleRevisionRequests$Draft");
             Class<?> monitoringActivate=Class.forName(monitoring+"request.MonitoringRuleRevisionRequests$Activate");
+            Class<?> monitoringEvaluation=Class.forName(monitoring+"controller.AuthoritativeDeviationController");
+            Class<?> monitoringEvaluationRequest=Class.forName(monitoring+"request.AuthoritativeDeviationRequest");
             String monitoringBase="/api/v1/monitoring/rules";
             return List.of(
+                new Route(monitoringEvaluation,monitoringEvaluation.getDeclaredMethod("evaluate",
+                    String.class,monitoringEvaluationRequest),"POST",monitoringBase+"/{id}/evaluations"),
+                new Route(monitoringEvaluation,monitoringEvaluation.getDeclaredMethod("exact",
+                    String.class,String.class),"GET",monitoringBase+"/{id}/evaluations/{evaluationId}"),
+                new Route(monitoringEvaluation,monitoringEvaluation.getDeclaredMethod("history",
+                    String.class,int.class),"GET",monitoringBase+"/{id}/evaluations"),
                 new Route(monitoringWrite,monitoringWrite.getDeclaredMethod("createMonitoringRule",monitoringCreate),
                     "POST",monitoringBase),
                 new Route(monitoringWrite,monitoringWrite.getDeclaredMethod("createLegacyMonitoringRule",monitoringCreate),

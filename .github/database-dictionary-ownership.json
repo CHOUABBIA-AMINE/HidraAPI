@@ -288,6 +288,22 @@
     "owner": "leakdetection",
     "purpose": "Leakdetection-owned case state; physical prefix is hidra_leak_detection."
   },
+  "public.hidra_monitoring_authoritative_evaluation": {
+    "owner": "monitoring",
+    "purpose": "Immutable Monitoring comparison receipts with exact evidence identifiers, deterministic replay identity and nullable numeric outcome.",
+    "evidence": [
+      "src/main/resources/db/migration/V20261112_004__t11_authoritative_deviation.sql",
+      "src/main/java/dz/sh/hidra/modules/monitoring/infrastructure/persistence/adapter/JdbcAuthoritativeDeviationRepositoryAdapter.java"
+    ]
+  },
+  "public.hidra_monitoring_evaluation_freshness_policy": {
+    "owner": "monitoring",
+    "purpose": "Immutable per-rule-revision freshness input provisioned explicitly before numeric comparison.",
+    "evidence": [
+      "src/main/resources/db/migration/V20261112_004__t11_authoritative_deviation.sql",
+      "src/main/java/dz/sh/hidra/modules/monitoring/infrastructure/persistence/adapter/JdbcAuthoritativeDeviationRepositoryAdapter.java"
+    ]
+  },
   "public.hidra_monitoring_rule_activation": {
     "owner": "monitoring",
     "purpose": "Monitoring-owned immutable activation receipts with exact revision, actor and non-overlapping effective interval; does not authorize automatic actuation.",

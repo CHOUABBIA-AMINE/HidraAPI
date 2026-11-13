@@ -64,6 +64,7 @@ public class MonitoringRuleScopedAuthorizationQueryService
             case CREATE -> "monitoring:rule:create";
             case REVISE -> "monitoring:rule:revise";
             case ACTIVATE -> "monitoring:rule:activate";
+            case EVALUATE -> "monitoring:rule:evaluate";
             case READ -> "monitoring:rule:read";
         };
         Instant at=Instant.now();

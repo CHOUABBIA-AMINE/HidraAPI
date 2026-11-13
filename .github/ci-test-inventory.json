@@ -4713,6 +4713,20 @@
       "supports": []
     },
     {
+      "baseline_seconds": 0,
+      "cases": [
+        "signedEvaluationComputesAndRetainsAuthorizedEvidence"
+      ],
+      "class": "dz.sh.hidra.modules.monitoring.infrastructure.persistence.AuthoritativeDeviationNativeHttpPostgresIntegrationTest",
+      "dependency_reason": "One signed native HTTP evaluation journey requires migrated PostgreSQL and the running application.",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "monitoring",
+      "path": "src/test/java/dz/sh/hidra/modules/monitoring/infrastructure/persistence/AuthoritativeDeviationNativeHttpPostgresIntegrationTest.java",
+      "source_sha256": "550eda91c418786a22dd54769bc566f91193670ac120104fe3f2f9526578f1ec",
+      "supports": []
+    },
+    {
       "baseline_seconds": 0.5,
       "cases": [
         "signedRuleLifecyclePreservesEffectiveHistoryAndEnforcesCurrentScope"
@@ -11693,7 +11707,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java",
-      "source_sha256": "372494c61cad78054900c5627ccb633d9f6ba59d7f022fc1e5ea0b27b81a7bb8",
+      "source_sha256": "8d7b6ba6ee876245e9abdf0d912777d0760b725426b0a787cd78b9c6c78511e6",
       "supports": []
     },
     {
@@ -11717,7 +11731,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistryTest.java",
-      "source_sha256": "1724dbeefe44683bd9dc1643753f1d583c99528343ad21753eb5704540389787",
+      "source_sha256": "f483520225e33af01d233c441acd5dae0eb74d4ed3cfd597c9483c4dbae5771f",
       "supports": []
     },
     {
@@ -11737,7 +11751,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteStartupValidatorTest.java",
-      "source_sha256": "503dd2e91e4f324832ce15ede5d5e1a130eb827b4a6c8a3bbd3c98b98b8f23e5",
+      "source_sha256": "8f2226b0a8091a6c2b30e0d2b0843d34d806c48d21cd0e082ac29de4a5c26fa7",
       "supports": []
     },
     {

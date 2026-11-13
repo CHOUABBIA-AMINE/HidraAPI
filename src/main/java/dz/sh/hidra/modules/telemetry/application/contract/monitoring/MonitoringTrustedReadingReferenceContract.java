@@ -19,9 +19,19 @@
  */
 package dz.sh.hidra.modules.telemetry.application.contract.monitoring;
 
+import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.Optional;
 
 public interface MonitoringTrustedReadingReferenceContract {
     Optional<Reading> resolve(String id);
+    default Optional<EvaluationReading> forEvaluation(String id, String point, String assetType, String assetId) {
+        return Optional.empty();
+    }
+
+    record EvaluationReading(String id, String rawId, String assessmentId, String bindingId, String unitId,
+                             String qualityCodeId, String trustLevel, Instant observedAt, Instant trustedAt,
+                             BigDecimal value, boolean qualified) { }
+
     record Reading(String id, String pointId, String trustLevel) { }
 }

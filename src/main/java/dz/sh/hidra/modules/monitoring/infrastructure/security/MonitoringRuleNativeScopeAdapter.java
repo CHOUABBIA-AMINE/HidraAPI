@@ -49,6 +49,7 @@ public final class MonitoringRuleNativeScopeAdapter implements MonitoringRuleAut
             case CREATE -> MonitoringRuleScopedAuthorizationContract.Operation.CREATE;
             case REVISE -> MonitoringRuleScopedAuthorizationContract.Operation.REVISE;
             case ACTIVATE -> MonitoringRuleScopedAuthorizationContract.Operation.ACTIVATE;
+            case EVALUATE -> MonitoringRuleScopedAuthorizationContract.Operation.EVALUATE;
             case READ -> MonitoringRuleScopedAuthorizationContract.Operation.READ;
         };
         return new Scope(owner.companyPartyId(),

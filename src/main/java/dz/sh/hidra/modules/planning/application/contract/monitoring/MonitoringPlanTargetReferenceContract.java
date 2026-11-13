@@ -25,6 +25,14 @@ import java.util.Optional;
 
 public interface MonitoringPlanTargetReferenceContract {
     Optional<Target> resolve(String id);
+    default Optional<EvaluationTarget> forEvaluation(String id, String company, String assetType,
+            String assetId, Instant at) {
+        return Optional.empty();
+    }
+
+    record EvaluationTarget(String id, String revisionId, String approvalId, Instant approvedAt,
+                            String pointId, String unitId, BigDecimal value) { }
+
     record Target(String id, String revisionId, String topologyAssetType, String topologyAssetId,
                   String telemetryPointId, String status, BigDecimal targetValue, String targetTextValue,
                   String unitId, Instant validFrom, Instant validTo) { }

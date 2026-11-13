@@ -22,7 +22,7 @@ package dz.sh.hidra.modules.monitoring.application.port.out;
 import java.time.Instant;
 
 public interface MonitoringRuleAuthorizationPort {
-    enum Operation { CREATE, REVISE, ACTIVATE, READ }
+    enum Operation { CREATE, REVISE, ACTIVATE, READ, EVALUATE }
     record Scope(String company,String actor){ }
     Scope require(Operation operation,String assetType,String assetId,String expectedCompany);
     void requirePoint(String pointId,String assetType,String assetId,String unitId,Instant at);

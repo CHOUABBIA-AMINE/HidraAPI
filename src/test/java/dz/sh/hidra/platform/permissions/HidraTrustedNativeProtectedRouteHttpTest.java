@@ -156,7 +156,7 @@ class HidraTrustedNativeProtectedRouteHttpTest {
    var resolver = org.mockito.Mockito.mock(HidraEffectivePermissionResolver.class);
    authenticated();
    var registry = new HidraTrustedNativeProtectedRouteRegistry();
-   assertEquals(57,registry.candidates().size());
+   assertEquals(60,registry.candidates().size());
    var mvc = mvc(owner, new UntrustedController(), resolver,registry);
    assertThrows(Exception.class, () ->
       mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(TRUSTED)));
@@ -165,7 +165,7 @@ class HidraTrustedNativeProtectedRouteHttpTest {
  @Test void realManufacturerTupleRegistryRejectsWrongVerbAndSiblingPattern() throws Exception {
    var registry=new HidraTrustedNativeProtectedRouteRegistry();
    var routes=registry.candidates();
-   assertEquals(57,routes.size());
+   assertEquals(60,routes.size());
    var expected=java.util.Set.of(
     "POST /api/v1/monitoring/rules",
     "POST /api/v1/monitoring/create-monitoring-rule",
@@ -176,6 +176,9 @@ class HidraTrustedNativeProtectedRouteHttpTest {
     "GET /api/v1/monitoring/rules/{id}/revisions/{revision}",
     "GET /api/v1/monitoring/rules/{id}/effective",
     "GET /api/v1/monitoring/rules/{id}/history",
+    "POST /api/v1/monitoring/rules/{id}/evaluations",
+    "GET /api/v1/monitoring/rules/{id}/evaluations",
+    "GET /api/v1/monitoring/rules/{id}/evaluations/{evaluationId}",
     "POST /api/v1/telemetry/points/{pointId}/readings/{readingId}/assessment",
     "GET /api/v1/telemetry/points/{pointId}/readings/{readingId}/assessment",
     "POST /api/v1/telemetry/points/{pointId}/readings/{readingId}/trust",
@@ -268,6 +271,9 @@ class HidraTrustedNativeProtectedRouteHttpTest {
         org.mockito.Mockito.mock(dz.sh.hidra.modules.monitoring.application.port.in.MonitoringQueryUseCase.class));
     owners.put(monitoringWrite.getClass(),monitoringWrite);
     owners.put(monitoringRead.getClass(),monitoringRead);
+    var evaluations=new dz.sh.hidra.modules.monitoring.api.rest.controller.AuthoritativeDeviationController(
+        org.mockito.Mockito.mock(dz.sh.hidra.modules.monitoring.application.port.in.AuthoritativeDeviationUseCase.class));
+    owners.put(evaluations.getClass(),evaluations);
 
     // The same logical operation has two distinct native-protected MVC methods, never one multi-pattern mapping.
     var ruleCreate=routes.stream().filter(r->r.pattern().equals("/api/v1/monitoring/rules")

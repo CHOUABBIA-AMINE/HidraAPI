@@ -7,7 +7,7 @@
  *
  * @Name        : JpaMonitoringRuleRepositoryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-06-11
+ * @UpdatedOn   : 2026-11-13
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -42,7 +42,9 @@ public class JpaMonitoringRuleRepositoryAdapter implements MonitoringRuleReposit
 
     @Override
     public MonitoringRule save(MonitoringRule model) {
-        return MonitoringPersistenceMapper.toDomain(repository.save(MonitoringPersistenceMapper.toEntity(model)));
+        // The same transaction inserts the rule's foreign-key-dependent scope through JDBC.
+        return MonitoringPersistenceMapper.toDomain(
+                repository.saveAndFlush(MonitoringPersistenceMapper.toEntity(model)));
     }
 
     @Override

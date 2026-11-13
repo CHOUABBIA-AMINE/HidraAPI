@@ -4716,7 +4716,8 @@
       "baseline_seconds": 0.5,
       "cases": [
         "compiledNativeRuleRoutesAreIndependentlyRegistered",
-        "freshPostgresActivationRetainsImmutableHistoryAndRejectsStaleHead"
+        "freshPostgresActivationRetainsImmutableHistoryAndRejectsStaleHead",
+        "signedRuleLifecyclePreservesEffectiveHistoryAndEnforcesCurrentScope"
       ],
       "class": "dz.sh.hidra.modules.monitoring.infrastructure.persistence.MonitoringRuleNativeHttpPostgresIntegrationTest",
       "dependency_reason": "T10 fresh Flyway PostgreSQL version/activation concurrency invariants; native protected route tuple.",
@@ -4724,7 +4725,7 @@
       "lane": "postgres-integration",
       "owner": "monitoring",
       "path": "src/test/java/dz/sh/hidra/modules/monitoring/infrastructure/persistence/MonitoringRuleNativeHttpPostgresIntegrationTest.java",
-      "source_sha256": "37feaeae17429d8b79e3c815b19e79f7f25ac9001b7a81764b09cf35585a4e2e",
+      "source_sha256": "ec4d67aa03c1cd78b3c7adb2a0a50212c7a7fb2ec45f180a1e2b3413e0271bf3",
       "supports": []
     },
     {

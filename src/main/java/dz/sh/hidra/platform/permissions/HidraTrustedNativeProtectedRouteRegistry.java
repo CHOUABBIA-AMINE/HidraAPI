@@ -102,7 +102,38 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
             Class<?> telemetryQuality=Class.forName(telemetryPkg+"controller.TelemetryQualityController");
             Class<?> qualityCommand=Class.forName(telemetryPkg+"request.TelemetryQualityRequests$Command");
             String telemetryPointBase="/api/v1/telemetry/points/{pointId}";
+            final String monitoring="dz.sh.hidra.modules.monitoring.api.rest.";
+            Class<?> monitoringWrite=Class.forName(monitoring+"controller.SpringMonitoringController");
+            Class<?> monitoringRead=Class.forName(monitoring+"controller.MonitoringQueryController");
+            Class<?> monitoringCreate=Class.forName(monitoring+"request.CreateMonitoringRuleRequest");
+            Class<?> monitoringDraft=Class.forName(monitoring+"request.MonitoringRuleRevisionRequests$Draft");
+            Class<?> monitoringActivate=Class.forName(monitoring+"request.MonitoringRuleRevisionRequests$Activate");
+            String monitoringBase="/api/v1/monitoring/rules";
             return List.of(
+                new Route(monitoringWrite,monitoringWrite.getDeclaredMethod("createMonitoringRule",monitoringCreate),
+                    "POST",monitoringBase),
+                new Route(monitoringWrite,monitoringWrite.getDeclaredMethod("createMonitoringRule",monitoringCreate),
+                    "POST","/api/v1/monitoring/create-monitoring-rule"),
+                new Route(monitoringRead,monitoringRead.getDeclaredMethod("rules",
+                    String.class,String.class,String.class,String.class,int.class,int.class),
+                    "GET",monitoringBase),
+                new Route(monitoringRead,monitoringRead.getDeclaredMethod("rule",String.class),
+                    "GET",monitoringBase+"/{id}"),
+                new Route(monitoringWrite,monitoringWrite.getDeclaredMethod("createRevision",
+                    String.class,monitoringDraft),
+                    "POST",monitoringBase+"/{id}/revisions"),
+                new Route(monitoringWrite,monitoringWrite.getDeclaredMethod("activateRevision",
+                    String.class,long.class,monitoringActivate),
+                    "POST",monitoringBase+"/{id}/revisions/{revision}/activate"),
+                new Route(monitoringWrite,monitoringWrite.getDeclaredMethod("exactRevision",
+                    String.class,long.class),
+                    "GET",monitoringBase+"/{id}/revisions/{revision}"),
+                new Route(monitoringWrite,monitoringWrite.getDeclaredMethod("effectiveRevision",
+                    String.class,java.time.Instant.class),
+                    "GET",monitoringBase+"/{id}/effective"),
+                new Route(monitoringWrite,monitoringWrite.getDeclaredMethod("ruleHistory",
+                    String.class,int.class),
+                    "GET",monitoringBase+"/{id}/history"),
                 new Route(telemetryQuality,telemetryQuality.getDeclaredMethod("assess",
                     String.class,String.class,qualityCommand),
                     "POST",telemetryPointBase+"/readings/{readingId}/assessment"),

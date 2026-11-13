@@ -20,6 +20,7 @@
 package dz.sh.hidra.modules.monitoring.api.rest.controller;
 
 import dz.sh.hidra.modules.monitoring.application.port.in.MonitoringQueryUseCase;
+import dz.sh.hidra.platform.permissions.NativeProtectedOperation;
 import dz.sh.hidra.modules.monitoring.application.port.in.MonitoringQueryUseCase.DeviationView;
 import dz.sh.hidra.modules.monitoring.application.port.in.MonitoringQueryUseCase.MonitoringRuleView;
 import dz.sh.hidra.modules.monitoring.application.port.in.MonitoringQueryUseCase.Page;
@@ -43,17 +44,20 @@ public class MonitoringQueryController {
     }
 
     @GetMapping("/rules")
+    @NativeProtectedOperation
     public Page<MonitoringRuleView> rules(
+            @RequestParam(required = false) String topologyAssetType,
             @RequestParam(required = false) String status,
             @RequestParam(required = false) String topologyAssetId,
             @RequestParam(required = false) String telemetryPointId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "50") int size
     ) {
-        return useCase.rules(status, topologyAssetId, telemetryPointId, page, size);
+        return useCase.rules(topologyAssetType, status, topologyAssetId, telemetryPointId, page, size);
     }
 
     @GetMapping("/rules/{id}")
+    @NativeProtectedOperation
     public MonitoringRuleView rule(@PathVariable String id) {
         return useCase.rule(id);
     }

@@ -25,7 +25,7 @@ import java.util.List;
 
 public interface MonitoringQueryUseCase {
 
-    Page<MonitoringRuleView> rules(String status, String topologyAssetId, String telemetryPointId, int page, int size);
+    Page<MonitoringRuleView> rules(String topologyAssetType, String status, String topologyAssetId, String telemetryPointId, int page, int size);
 
     MonitoringRuleView rule(String id);
 

@@ -28,6 +28,10 @@ import dz.sh.hidra.modules.monitoring.application.dto.MonitoringRuleSummaryDto;
 import dz.sh.hidra.modules.monitoring.application.mapper.MonitoringApplicationMapper;
 import dz.sh.hidra.modules.monitoring.application.port.in.CreateMonitoringRuleUseCase;
 import dz.sh.hidra.modules.monitoring.application.port.out.MonitoringRuleRepositoryPort;
+import dz.sh.hidra.modules.monitoring.application.port.out.MonitoringRuleAuthorizationPort;
+import dz.sh.hidra.modules.monitoring.application.port.out.MonitoringRuleRevisionPort;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.access.AccessDeniedException;
 import dz.sh.hidra.modules.monitoring.domain.exception.InvalidMonitoringValueException;
 import dz.sh.hidra.modules.monitoring.domain.model.MonitoringRule;
 import dz.sh.hidra.modules.monitoring.domain.value.MonitoringId;
@@ -45,20 +49,25 @@ public final class MonitoringRuleApplicationService implements CreateMonitoringR
 
     private final MonitoringRuleRepositoryPort repositoryPort;
     private final MonitoringTelemetryPointReferenceContract telemetryPointReferenceContract;
+    private final MonitoringRuleAuthorizationPort authorization;
+    private final MonitoringRuleRevisionPort revisions;
 
     @Autowired
-    public MonitoringRuleApplicationService(
-            MonitoringRuleRepositoryPort repositoryPort,
-            MonitoringTelemetryPointReferenceContract telemetryPointReferenceContract
-    ) {
-        this.repositoryPort = Objects.requireNonNull(
-                repositoryPort,
-                "Monitoring rule repository port must not be null."
-        );
-        this.telemetryPointReferenceContract = Objects.requireNonNull(
-                telemetryPointReferenceContract,
-                "Monitoring TelemetryPoint reference contract must not be null."
-        );
+    public MonitoringRuleApplicationService(MonitoringRuleRepositoryPort repositoryPort,
+            MonitoringTelemetryPointReferenceContract telemetryPointReferenceContract,
+            MonitoringRuleAuthorizationPort authorization,MonitoringRuleRevisionPort revisions) {
+        this.repositoryPort=Objects.requireNonNull(repositoryPort);
+        this.telemetryPointReferenceContract=Objects.requireNonNull(telemetryPointReferenceContract);
+        this.authorization=Objects.requireNonNull(authorization);
+        this.revisions=Objects.requireNonNull(revisions);
+    }
+    // Tests using legacy JVM constructors have no native permission and remain fail-closed.
+    public MonitoringRuleApplicationService(MonitoringRuleRepositoryPort repositoryPort,
+            MonitoringTelemetryPointReferenceContract telemetryPointReferenceContract) {
+        this.repositoryPort=Objects.requireNonNull(repositoryPort);
+        this.telemetryPointReferenceContract=Objects.requireNonNull(telemetryPointReferenceContract);
+        this.authorization=null;
+        this.revisions=null;
     }
 
     public MonitoringRuleApplicationService(MonitoringRuleRepositoryPort repositoryPort) {
@@ -66,15 +75,24 @@ public final class MonitoringRuleApplicationService implements CreateMonitoringR
     }
 
     @Override
+    @Transactional
     public MonitoringRuleSummaryDto createMonitoringRule(CreateMonitoringRuleCommand command) {
         Objects.requireNonNull(command, "Create monitoring rule command must not be null.");
-        if (command.telemetryPointId() != null
+        // Only the direct legacy test constructor evaluates an unknown point before native authority.
+        if (authorization == null && command.telemetryPointId() != null
                 && !command.telemetryPointId().isBlank()
                 && !telemetryPointReferenceContract.exists(command.telemetryPointId())) {
             throw new InvalidMonitoringValueException(
                     "MonitoringRule telemetry point must reference an existing TelemetryPoint."
             );
         }
+        if (authorization == null || revisions == null)
+            throw new AccessDeniedException("Protected Monitoring rule unavailable.");
+        var scope=authorization.require(MonitoringRuleAuthorizationPort.Operation.CREATE,
+                command.topologyAssetType(),command.topologyAssetId(),null);
+        if (command.telemetryPointId() != null && !command.telemetryPointId().isBlank()
+                && !telemetryPointReferenceContract.exists(command.telemetryPointId()))
+            throw new InvalidMonitoringValueException("MonitoringRule telemetry point must reference an existing TelemetryPoint.");
         Instant now = Instant.now();
         MonitoringRule rule = new MonitoringRule(
                 MonitoringId.newId().value(),
@@ -91,10 +109,12 @@ public final class MonitoringRuleApplicationService implements CreateMonitoringR
                 command.planningTargetTypeId(),
                 command.expression(),
                 MonitoringLifecycleStatus.DRAFT,
-                command.createdByActorId(),
+                scope.actor(),
                 now,
                 now
         );
-        return MonitoringApplicationMapper.toSummary(repositoryPort.save(rule));
+        var saved=repositoryPort.save(rule);
+        revisions.register(saved.id(),scope.company(),saved.topologyAssetType(),saved.topologyAssetId(),scope.actor());
+        return MonitoringApplicationMapper.toSummary(saved);
     }
 }

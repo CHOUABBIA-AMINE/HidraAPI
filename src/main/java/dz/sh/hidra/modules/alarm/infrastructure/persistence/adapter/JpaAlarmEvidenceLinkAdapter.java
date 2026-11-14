@@ -29,7 +29,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public final class JpaAlarmEvidenceLinkAdapter implements AlarmEvidenceLinkPort {
+public class JpaAlarmEvidenceLinkAdapter implements AlarmEvidenceLinkPort {
     private final AlarmEvidenceLinkJpaRepository links;
     private final EntityManager entityManager;
 

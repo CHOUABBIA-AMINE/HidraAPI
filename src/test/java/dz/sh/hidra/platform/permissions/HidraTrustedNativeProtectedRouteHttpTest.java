@@ -276,6 +276,9 @@ class HidraTrustedNativeProtectedRouteHttpTest {
     var evaluations=new dz.sh.hidra.modules.monitoring.api.rest.controller.AuthoritativeDeviationController(
         org.mockito.Mockito.mock(dz.sh.hidra.modules.monitoring.application.port.in.AuthoritativeDeviationUseCase.class));
     owners.put(evaluations.getClass(),evaluations);
+    var alarmEvidenceController = new dz.sh.hidra.modules.alarm.api.rest.controller.EvidenceLinkedAlarmController(
+        org.mockito.Mockito.mock(dz.sh.hidra.modules.alarm.application.port.in.EvidenceLinkedAlarmUseCase.class));
+    owners.put(alarmEvidenceController.getClass(), alarmEvidenceController);
 
     // The same logical operation has two distinct native-protected MVC methods, never one multi-pattern mapping.
     var ruleCreate=routes.stream().filter(r->r.pattern().equals("/api/v1/monitoring/rules")

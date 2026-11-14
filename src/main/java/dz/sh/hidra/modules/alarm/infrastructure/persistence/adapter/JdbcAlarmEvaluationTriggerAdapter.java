@@ -29,7 +29,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public final class JdbcAlarmEvaluationTriggerAdapter implements AlarmEvaluationTriggerPort {
+public class JdbcAlarmEvaluationTriggerAdapter implements AlarmEvaluationTriggerPort {
     private static final String TABLE = "public.hidra_alarm_evaluation_trigger";
     private final JdbcTemplate jdbc;
 

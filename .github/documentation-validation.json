@@ -1239,9 +1239,9 @@
   ],
   "openapi": {
     "counts": {
-      "paths": 381,
-      "operations": 423,
-      "schemas": 469
+      "paths": 384,
+      "operations": 426,
+      "schemas": 471
     },
     "path": "doc/api/openapi.yaml",
     "prior_reviewed_provenance": {
@@ -1352,42 +1352,42 @@
       "zip_sha256": "2d04f3beec9c29019c97a4fc5abc0aa37c776779e8707a409c6ee48ccc96183a"
     },
     "provenance": {
-      "artifact_id": 14110608676,
+      "artifact_id": 14130640770,
       "artifact_member": "hidra-api.json",
-      "artifact_name": "hidra-api-openapi-0827c7d575d2296139cf38ea14b8ab23b5835332-43586670253-1-api-contract",
-      "source_sha": "0827c7d575d2296139cf38ea14b8ab23b5835332",
-      "run_id": 43586670253,
+      "artifact_name": "hidra-api-openapi-ec75f24bf027c40acc54262b11d53569cd09eeea-43637206431-1-api-contract",
+      "source_sha": "ec75f24bf027c40acc54262b11d53569cd09eeea",
+      "run_id": 43637206431,
       "run_attempt": 1,
-      "job_id": 132422562667,
+      "job_id": 132576511413,
       "generation_step": "Publish deterministic OpenAPI contract",
       "generation_step_number": 9,
       "generation_step_conclusion": "success",
-      "compatibility_review": "CI #1238 generated 381 paths, 423 operations, and 469 component schemas. The backward-compatibility step passed against the full-CI-success comparison base f2d37fb63a9f22a7bfc6e715db769e05995e09da. Review independently matched the exact generated Git blob, with two T13 protected endpoints, two request/response schemas, and canonical/legacy create operationId corrections.",
+      "compatibility_review": "CI #1242 generated 384 paths, 426 operations and 471 component schemas. Runtime backward compatibility passed. The exact generated artifact supplies the three new T14 Incident escalation/receipt/timeline operations, two T14 DTO schemas and the widened legacy Incident request source enum; protected legacy response values remain unchanged.",
       "conclusion": "success",
-      "conclusion_scope": "Runtime generation and backward-compatibility only. API contract job #132422562667 and full CI #1238 failed canonical OpenAPI snapshot equality, while PostgreSQL shard 7 failed the T13 test's COMPUTED numeric assertion. No full-CI acceptance is implied.",
+      "conclusion_scope": "Runtime OpenAPI generation and backward compatibility only; #1242 API job failed strict canonical snapshot equality, PostgreSQL shard 7 failed signed Incident list/count, and Full Verification Gate failed upstream dependencies. This is not full-CI or T14 acceptance.",
       "job_conclusion": "failure",
       "workflow_conclusion": "failure",
       "failed_step": "Enforce canonical OpenAPI snapshot equality",
-      "zip_sha256": "6a1aeb2d750744720918be643fac36a6589ba77aa6c65512047637de40c0719a",
-      "json_sha256": "0cb5eaf064ddf3bc506b73b0c72fb13e62b2fdee1ec4f5e13ac2ddef6504d177",
+      "zip_sha256": "db6e78796f51cafe87714f8fa31599476acdf0a8d1e4f7f4182ea2d2067",
+      "json_sha256": "6cd3dedbe3108a73534729ba025d3acae588565d8990e4f2a8d008280c894be3",
       "database_evidence": {
-        "artifact_id": 14110693568,
+        "artifact_id": 14129604811,
         "artifact_member": "DATA_DICTIONARY.md",
-        "artifact_zip_sha256": "791a49c95d47af0b3e0d02099d995efe5628d6ff69e9794ca3633ec07eca9901",
-        "catalog_sha256": "49f527a48ab9f3865e449f035fb7aef4eb025ea49e5fb2ad5370cc4f22a77bcd",
-        "dictionary_sha256": "d76fd4f0771e4023ea600efcb3897be375567d45127c8f61998cf8bea0f73286",
-        "source_bundle_sha256": "91776bee8d5a06bbe68e617a0e10e1ecd95da27a86293866427278586847d5eb",
-        "source_sha": "0827c7d575d2296139cf38ea14b8ab23b5835332",
-        "migrations": 213,
-        "relations": 567,
+        "artifact_zip_sha256": "0f759c815765198d05c644a51543b087a6583eb0e01df8155aba400d7f62df0f",
+        "catalog_sha256": "f4bf8cf215dbf0109ba6f4ff7ce3d3f73c4e19eeb3303ab1ad08d10734401d14",
+        "dictionary_sha256": "27b03d10b9cfdaa3ad9a61e3e97b04d02576c0bffb049eec835a0aa9da34a79c",
+        "source_bundle_sha256": "da2136b0fc21245da0987fa801bb81828df5d8dc8a5983147e17a1dd70446faa",
+        "source_sha": "ec75f24bf027c40acc54262b11d53569cd09eeea",
+        "migrations": 214,
+        "relations": 569,
         "unresolved_owners": 0
       },
       "remaining_gates": [
-        "Exact next-SHA test, architecture, all PostgreSQL shards, regenerated OpenAPI equality, migrated physical dictionary equality and Full Verification Gate; no industrial qualification"
+        "Exact new source-SHA PostgreSQL signed Incident scenario, every full CI job, generated runtime OpenAPI strict equality, physical dictionary strict equality, Full Verification Gate; no industrial acceptance"
       ]
     },
-    "sha256": "ee6cf5ddfcb3451790f7566bbf4be872cc2b032578587d7c5f1618af4e811697",
-    "source_sha": "0827c7d575d2296139cf38ea14b8ab23b5835332",
+    "sha256": "c2d1cf41a4fc872c89203e8e8dfe05fb2d1988976de6da707c845f7008ae2145",
+    "source_sha": "ec75f24bf027c40acc54262b11d53569cd09eeea",
     "prior_reviewed_provenance_t11": {
       "artifact_id": 14071799646,
       "artifact_member": "hidra-api.json",
@@ -1449,6 +1449,41 @@
       "source_sha": "669ca723602615b9f9df50354bff31236dba74ea",
       "workflow_conclusion": "failure",
       "zip_sha256": "75a8fbba5750acf4b00297c0e89be335cf4a292b49167e9a537792c5a808ac42"
+    },
+    "prior_reviewed_provenance_t13": {
+      "artifact_id": 14110608676,
+      "artifact_member": "hidra-api.json",
+      "artifact_name": "hidra-api-openapi-0827c7d575d2296139cf38ea14b8ab23b5835332-43586670253-1-api-contract",
+      "source_sha": "0827c7d575d2296139cf38ea14b8ab23b5835332",
+      "run_id": 43586670253,
+      "run_attempt": 1,
+      "job_id": 132422562667,
+      "generation_step": "Publish deterministic OpenAPI contract",
+      "generation_step_number": 9,
+      "generation_step_conclusion": "success",
+      "compatibility_review": "CI #1238 generated 381 paths, 423 operations, and 469 component schemas. The backward-compatibility step passed against the full-CI-success comparison base f2d37fb63a9f22a7bfc6e715db769e05995e09da. Review independently matched the exact generated Git blob, with two T13 protected endpoints, two request/response schemas, and canonical/legacy create operationId corrections.",
+      "conclusion": "success",
+      "conclusion_scope": "Runtime generation and backward-compatibility only. API contract job #132422562667 and full CI #1238 failed canonical OpenAPI snapshot equality, while PostgreSQL shard 7 failed the T13 test's COMPUTED numeric assertion. No full-CI acceptance is implied.",
+      "job_conclusion": "failure",
+      "workflow_conclusion": "failure",
+      "failed_step": "Enforce canonical OpenAPI snapshot equality",
+      "zip_sha256": "6a1aeb2d750744720918be643fac36a6589ba77aa6c65512047637de40c0719a",
+      "json_sha256": "0cb5eaf064ddf3bc506b73b0c72fb13e62b2fdee1ec4f5e13ac2ddef6504d177",
+      "database_evidence": {
+        "artifact_id": 14110693568,
+        "artifact_member": "DATA_DICTIONARY.md",
+        "artifact_zip_sha256": "791a49c95d47af0b3e0d02099d995efe5628d6ff69e9794ca3633ec07eca9901",
+        "catalog_sha256": "49f527a48ab9f3865e449f035fb7aef4eb025ea49e5fb2ad5370cc4f22a77bcd",
+        "dictionary_sha256": "d76fd4f0771e4023ea600efcb3897be375567d45127c8f61998cf8bea0f73286",
+        "source_bundle_sha256": "91776bee8d5a06bbe68e617a0e10e1ecd95da27a86293866427278586847d5eb",
+        "source_sha": "0827c7d575d2296139cf38ea14b8ab23b5835332",
+        "migrations": 213,
+        "relations": 567,
+        "unresolved_owners": 0
+      },
+      "remaining_gates": [
+        "Exact next-SHA test, architecture, all PostgreSQL shards, regenerated OpenAPI equality, migrated physical dictionary equality and Full Verification Gate; no industrial qualification"
+      ]
     }
   },
   "register": "doc/governance/DOCUMENT_REGISTER.md",

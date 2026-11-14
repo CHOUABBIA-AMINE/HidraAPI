@@ -82,11 +82,9 @@ public class IncidentQueryApplicationService implements IncidentQueryUseCase {
     private List<String> deniedOrigins(List<IncidentEscalationAuthorizationPort.AssetRef> assets) {
         var denied=new java.util.ArrayList<String>();
         for(var correlation:links.correlationsForAssets(assets)) {
-            try {
-                requireSourceRead(correlation);
-            } catch (org.springframework.security.access.AccessDeniedException |
-                     java.util.NoSuchElementException | IllegalArgumentException unavailable) {
-                // Mask this case in SQL before paging and counting.
+            // The source owner may mark its transaction rollback-only on denial.
+            // Run each source check in an independent transaction; mask in SQL.
+            if (!sources.readableCorrelation(correlation)) {
                 denied.add(correlation.incidentId());
             }
         }

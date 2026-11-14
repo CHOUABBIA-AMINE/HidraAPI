@@ -21,4 +21,6 @@ public interface IncidentEscalationSourcePort {
     record Snapshot(IncidentEscalationSourceType sourceType, String sourceId, String evaluationId,
              String companyId, String assetType, String assetId, Instant evaluatedAt, String sourceStatus) {}
     Snapshot authorized(IncidentEscalationSourceType type, String sourceId);
+    /** Isolate source-owned authorization failures from the caller's list/count transaction. */
+    boolean readableCorrelation(IncidentEscalationStorePort.Correlation correlation);
 }

@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `0827c7d575d2296139cf38ea14b8ab23b5835332`
+Captured source SHA: `ec75f24bf027c40acc54262b11d53569cd09eeea`
 PostgreSQL server: `16.16 (Debian 16.16-1.pgdg13+1)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `91776bee8d5a06bbe68e617a0e10e1ecd95da27a86293866427278586847d5eb`.
-Migrations: 213; JPA mappings: 470; catalog relations: 567; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `da2136b0fc21245da0987fa801bb81828df5d8dc8a5983147e17a1dd70446faa`.
+Migrations: 214; JPA mappings: 470; catalog relations: 569; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -11286,6 +11286,7 @@ Incident-owned incident state; standalone table name is an explicit prefix excep
 - Migration mention (not inferred introduction): [V20261008_008__hmr_091_incident_relationship_integrity.sql](../../src/main/resources/db/migration/V20261008_008__hmr_091_incident_relationship_integrity.sql)
 - Migration mention (not inferred introduction): [V20261008_009__hmr_092_incident_response_action_integrity.sql](../../src/main/resources/db/migration/V20261008_009__hmr_092_incident_response_action_integrity.sql)
 - Migration mention (not inferred introduction): [V20261008_010__hmr_090_incident_closure_governance.sql](../../src/main/resources/db/migration/V20261008_010__hmr_090_incident_closure_governance.sql)
+- Migration mention (not inferred introduction): [V20261112_007__t14_incident_evaluation_escalation.sql](../../src/main/resources/db/migration/V20261112_007__t14_incident_evaluation_escalation.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -11499,6 +11500,7 @@ Persisted IncidentCatalogEntryJpaEntity state; semantic authority remains with i
 - Migration mention (not inferred introduction): [V20261008_008__hmr_091_incident_relationship_integrity.sql](../../src/main/resources/db/migration/V20261008_008__hmr_091_incident_relationship_integrity.sql)
 - Migration mention (not inferred introduction): [V20261008_009__hmr_092_incident_response_action_integrity.sql](../../src/main/resources/db/migration/V20261008_009__hmr_092_incident_response_action_integrity.sql)
 - Migration mention (not inferred introduction): [V20261008_010__hmr_090_incident_closure_governance.sql](../../src/main/resources/db/migration/V20261008_010__hmr_090_incident_closure_governance.sql)
+- Migration mention (not inferred introduction): [V20261112_007__t14_incident_evaluation_escalation.sql](../../src/main/resources/db/migration/V20261112_007__t14_incident_evaluation_escalation.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -11688,6 +11690,66 @@ Incident-owned classification/severity closure requirements and optional follow-
   - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_incident_closure_policy_immutable()"}
   - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_incident_closure_policy_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> IF EXISTS(SELECT 1 FROM hidra_incident_closure c JOIN hidra_incident i ON i.id=c.incident_id WHERE i.classification_id=OLD.classification_id AND i.severity_id=OLD.severity_id)<br> THEN RAISE EXCEPTION 'Closure policy bound to historical evidence is immutable'; END IF;<br> IF TG_OP='DELETE' THEN RETURN OLD; END IF;<br> RETURN NEW;<br>END $function$<br>
 
+### public.hidra_incident_escalated_source
+
+Owner: **incident**; relation kind: `r`.
+
+T14 immutable human source attachments and decision timeline; two independently qualified source types share at most one case per evaluation.
+
+- Evidence: [V20261112_007__t14_incident_evaluation_escalation.sql](../../src/main/resources/db/migration/V20261112_007__t14_incident_evaluation_escalation.sql)
+- Evidence: [JdbcIncidentSourceEscalationAdapter.java](../../src/main/java/dz/sh/hidra/modules/incident/infrastructure/persistence/adapter/JdbcIncidentSourceEscalationAdapter.java)
+- Evidence: [IncidentCorrelatedEscalationNativeHttpPostgresIntegrationTest.java](../../src/test/java/dz/sh/hidra/modules/incident/qualification/IncidentCorrelatedEscalationNativeHttpPostgresIntegrationTest.java)
+- Migration mention (not inferred introduction): [V20261112_007__t14_incident_evaluation_escalation.sql](../../src/main/resources/db/migration/V20261112_007__t14_incident_evaluation_escalation.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| source_type | character varying(40) | False | None; identity=; generated= | No current mapped Java column | — |
+| source_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| evaluation_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| incident_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| reason | character varying(500) | False | None; identity=; generated= | No current mapped Java column | — |
+| escalated_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_incident_escalated_source_actor_id_check`: CHECK (btrim(actor_id::text) &lt;&gt; ''::text)
+  - Catalog attributes: {"columns": ["actor_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_incident_escalated_source_escalated_at_check`: CHECK (isfinite(escalated_at))
+  - Catalog attributes: {"columns": ["escalated_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_incident_escalated_source_evaluation_id_incident_id_fkey`: FOREIGN KEY (evaluation_id, incident_id) REFERENCES hidra_incident_evaluation_case(evaluation_id, incident_id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["evaluation_id", "incident_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["evaluation_id", "incident_id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_incident_evaluation_case"}, "type": "f", "validated": true}
+- `hidra_incident_escalated_source_evaluation_id_source_type_key`: UNIQUE (evaluation_id, source_type)
+  - Catalog attributes: {"columns": ["evaluation_id", "source_type"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_incident_escalated_source_incident_id_fkey`: FOREIGN KEY (incident_id) REFERENCES hidra_incident(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["incident_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_incident"}, "type": "f", "validated": true}
+- `hidra_incident_escalated_source_pkey`: PRIMARY KEY (source_type, source_id)
+  - Catalog attributes: {"columns": ["source_type", "source_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_incident_escalated_source_reason_check`: CHECK (btrim(reason::text) &lt;&gt; ''::text)
+  - Catalog attributes: {"columns": ["reason"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_incident_escalated_source_source_id_check`: CHECK (btrim(source_id::text) &lt;&gt; ''::text)
+  - Catalog attributes: {"columns": ["source_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_incident_escalated_source_source_type_check`: CHECK (source_type::text = ANY (ARRAY['ALARM'::character varying, 'LEAK_CANDIDATE'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["source_type"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_incident_escalated_source_evaluation_id_source_type_key`: CREATE UNIQUE INDEX hidra_incident_escalated_source_evaluation_id_source_type_key ON public.hidra_incident_escalated_source USING btree (evaluation_id, source_type)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_incident_escalated_source_pkey`: CREATE UNIQUE INDEX hidra_incident_escalated_source_pkey ON public.hidra_incident_escalated_source USING btree (source_type, source_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `ix_t14_escalation_timeline`: CREATE INDEX ix_t14_escalation_timeline ON public.hidra_incident_escalated_source USING btree (incident_id, escalated_at)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+
+#### Triggers
+
+- `trg_t14_source_no_change`: CREATE TRIGGER trg_t14_source_no_change BEFORE DELETE OR UPDATE ON hidra_incident_escalated_source FOR EACH ROW EXECUTE FUNCTION t14_incident_escalation_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t14_incident_escalation_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t14_incident_escalation_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>  RAISE EXCEPTION 'T14: immutable human Incident escalation evidence';<br>END $function$<br>
+- `trg_t14_source_no_truncate`: CREATE TRIGGER trg_t14_source_no_truncate BEFORE TRUNCATE ON hidra_incident_escalated_source FOR EACH STATEMENT EXECUTE FUNCTION t14_incident_escalation_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t14_incident_escalation_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t14_incident_escalation_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>  RAISE EXCEPTION 'T14: immutable human Incident escalation evidence';<br>END $function$<br>
+
 ### public.hidra_incident_escalation
 
 Owner: **incident**; relation kind: `r`.
@@ -11740,6 +11802,85 @@ Persisted IncidentEscalationJpaEntity state; semantic authority remains with inc
 
 None captured in this catalog category.
 
+### public.hidra_incident_evaluation_case
+
+Owner: **incident**; relation kind: `r`.
+
+T14 Incident-owned one-per-qualified-evaluation immutable human escalation case, bounded current company/asset and distinct from the Alarm/Leak source owners.
+
+- Evidence: [V20261112_007__t14_incident_evaluation_escalation.sql](../../src/main/resources/db/migration/V20261112_007__t14_incident_evaluation_escalation.sql)
+- Evidence: [JdbcIncidentSourceEscalationAdapter.java](../../src/main/java/dz/sh/hidra/modules/incident/infrastructure/persistence/adapter/JdbcIncidentSourceEscalationAdapter.java)
+- Evidence: [IncidentCorrelatedEscalationNativeHttpPostgresIntegrationTest.java](../../src/test/java/dz/sh/hidra/modules/incident/qualification/IncidentCorrelatedEscalationNativeHttpPostgresIntegrationTest.java)
+- Migration mention (not inferred introduction): [V20261112_007__t14_incident_evaluation_escalation.sql](../../src/main/resources/db/migration/V20261112_007__t14_incident_evaluation_escalation.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| evaluation_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| incident_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| company_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| asset_type | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| asset_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| classification_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| severity_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| title_fr | character varying(255) | False | None; identity=; generated= | No current mapped Java column | — |
+| reason | character varying(500) | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| created_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_incident_evaluation_case_actor_id_check`: CHECK (btrim(actor_id::text) &lt;&gt; ''::text)
+  - Catalog attributes: {"columns": ["actor_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_incident_evaluation_case_asset_id_check`: CHECK (btrim(asset_id::text) &lt;&gt; ''::text)
+  - Catalog attributes: {"columns": ["asset_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_incident_evaluation_case_asset_type_check`: CHECK (asset_type::text = ANY (ARRAY['FACILITY'::character varying, 'EQUIPMENT'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["asset_type"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_incident_evaluation_case_classification_id_fkey`: FOREIGN KEY (classification_id) REFERENCES hidra_incident_catalog_entry(id)
+  - Catalog attributes: {"columns": ["classification_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_incident_catalog_entry"}, "type": "f", "validated": true}
+- `hidra_incident_evaluation_case_company_id_check`: CHECK (btrim(company_id::text) &lt;&gt; ''::text)
+  - Catalog attributes: {"columns": ["company_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_incident_evaluation_case_created_at_check`: CHECK (isfinite(created_at))
+  - Catalog attributes: {"columns": ["created_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_incident_evaluation_case_evaluation_id_check`: CHECK (btrim(evaluation_id::text) &lt;&gt; ''::text)
+  - Catalog attributes: {"columns": ["evaluation_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_incident_evaluation_case_evaluation_id_incident_id_key`: UNIQUE (evaluation_id, incident_id)
+  - Catalog attributes: {"columns": ["evaluation_id", "incident_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_incident_evaluation_case_incident_id_fkey`: FOREIGN KEY (incident_id) REFERENCES hidra_incident(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["incident_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_incident"}, "type": "f", "validated": true}
+- `hidra_incident_evaluation_case_incident_id_key`: UNIQUE (incident_id)
+  - Catalog attributes: {"columns": ["incident_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_incident_evaluation_case_pkey`: PRIMARY KEY (evaluation_id)
+  - Catalog attributes: {"columns": ["evaluation_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_incident_evaluation_case_reason_check`: CHECK (btrim(reason::text) &lt;&gt; ''::text)
+  - Catalog attributes: {"columns": ["reason"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_incident_evaluation_case_severity_id_fkey`: FOREIGN KEY (severity_id) REFERENCES hidra_incident_catalog_entry(id)
+  - Catalog attributes: {"columns": ["severity_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_incident_catalog_entry"}, "type": "f", "validated": true}
+- `hidra_incident_evaluation_case_title_fr_check`: CHECK (btrim(title_fr::text) &lt;&gt; ''::text)
+  - Catalog attributes: {"columns": ["title_fr"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_incident_evaluation_case_evaluation_id_incident_id_key`: CREATE UNIQUE INDEX hidra_incident_evaluation_case_evaluation_id_incident_id_key ON public.hidra_incident_evaluation_case USING btree (evaluation_id, incident_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_incident_evaluation_case_incident_id_key`: CREATE UNIQUE INDEX hidra_incident_evaluation_case_incident_id_key ON public.hidra_incident_evaluation_case USING btree (incident_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_incident_evaluation_case_pkey`: CREATE UNIQUE INDEX hidra_incident_evaluation_case_pkey ON public.hidra_incident_evaluation_case USING btree (evaluation_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `ix_t14_incident_company_asset`: CREATE INDEX ix_t14_incident_company_asset ON public.hidra_incident_evaluation_case USING btree (company_id, asset_type, asset_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+
+#### Triggers
+
+- `trg_t14_case_insert_guard`: CREATE TRIGGER trg_t14_case_insert_guard BEFORE INSERT ON hidra_incident_evaluation_case FOR EACH ROW EXECUTE FUNCTION t14_incident_case_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t14_incident_case_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t14_incident_case_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>  IF NOT EXISTS (SELECT 1 FROM public.hidra_incident i WHERE i.id=NEW.incident_id<br>        AND i.status='OPEN' AND i.topology_asset_type_code=NEW.asset_type<br>        AND i.topology_asset_id=NEW.asset_id AND i.classification_id=NEW.classification_id<br>        AND i.severity_id=NEW.severity_id AND i.title=NEW.title_fr) THEN<br>    RAISE EXCEPTION 'T14: Incident case/evaluation correlation mismatch';<br>  END IF;<br>  RETURN NEW;<br>END $function$<br>
+- `trg_t14_case_no_change`: CREATE TRIGGER trg_t14_case_no_change BEFORE DELETE OR UPDATE ON hidra_incident_evaluation_case FOR EACH ROW EXECUTE FUNCTION t14_incident_escalation_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t14_incident_escalation_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t14_incident_escalation_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>  RAISE EXCEPTION 'T14: immutable human Incident escalation evidence';<br>END $function$<br>
+- `trg_t14_case_no_truncate`: CREATE TRIGGER trg_t14_case_no_truncate BEFORE TRUNCATE ON hidra_incident_evaluation_case FOR EACH STATEMENT EXECUTE FUNCTION t14_incident_escalation_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t14_incident_escalation_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t14_incident_escalation_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>  RAISE EXCEPTION 'T14: immutable human Incident escalation evidence';<br>END $function$<br>
+
 ### public.hidra_incident_evidence_link
 
 Owner: **incident**; relation kind: `r`.
@@ -11750,6 +11891,7 @@ Persisted IncidentEvidenceLinkJpaEntity state; semantic authority remains with i
 - Migration mention (not inferred introduction): [V20260611_010__create_incident_tables.sql](../../src/main/resources/db/migration/V20260611_010__create_incident_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261008_010__hmr_090_incident_closure_governance.sql](../../src/main/resources/db/migration/V20261008_010__hmr_090_incident_closure_governance.sql)
+- Migration mention (not inferred introduction): [V20261112_007__t14_incident_evaluation_escalation.sql](../../src/main/resources/db/migration/V20261112_007__t14_incident_evaluation_escalation.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -11790,6 +11932,9 @@ Persisted IncidentEvidenceLinkJpaEntity state; semantic authority remains with i
 - `tr_hmr090_no_truncate`: CREATE TRIGGER tr_hmr090_no_truncate BEFORE TRUNCATE ON hidra_incident_evidence_link FOR EACH STATEMENT EXECUTE FUNCTION hidra_incident_evidence_no_truncate()
   - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_incident_evidence_no_truncate()"}
   - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_incident_evidence_no_truncate()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN RAISE EXCEPTION 'Incident governed evidence cannot be truncated'; END $function$<br>
+- `trg_t14_existing_evidence_guard`: CREATE TRIGGER trg_t14_existing_evidence_guard BEFORE DELETE OR UPDATE ON hidra_incident_evidence_link FOR EACH ROW EXECUTE FUNCTION t14_incident_evidence_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t14_incident_evidence_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t14_incident_evidence_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>  IF EXISTS (SELECT 1 FROM public.hidra_incident_escalated_source s WHERE<br>         s.incident_id=OLD.incident_id AND s.source_id=OLD.evidence_reference_id<br>         AND s.source_type=OLD.evidence_type) THEN<br>     RAISE EXCEPTION 'T14: linked Incident source evidence is immutable';<br>  END IF;<br>  IF TG_OP='DELETE' THEN RETURN OLD; END IF;<br>  RETURN NEW;<br>END $function$<br>
 
 ### public.hidra_incident_impact_assessment
 

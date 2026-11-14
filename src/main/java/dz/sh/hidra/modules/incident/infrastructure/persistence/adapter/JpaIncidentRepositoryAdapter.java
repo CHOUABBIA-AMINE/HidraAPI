@@ -25,6 +25,9 @@ import dz.sh.hidra.modules.incident.infrastructure.persistence.mapper.IncidentPe
 import dz.sh.hidra.modules.incident.infrastructure.persistence.repository.IncidentJpaRepository;
 import java.util.List;
 import java.util.Objects;
+import dz.sh.hidra.modules.incident.application.port.out.IncidentEscalationAuthorizationPort;
+import org.springframework.data.jpa.domain.Specification;
+import jakarta.persistence.criteria.Predicate;
 import java.util.Optional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -78,6 +81,28 @@ public class JpaIncidentRepositoryAdapter implements IncidentRepositoryPort {
                 .stream()
                 .map(IncidentPersistenceMapper::toDomain)
                 .toList();
+    }
+
+    @Override
+    public void flush() { repository.flush(); }
+
+    @Override
+    public AuthorizedPage findAuthorized(List<IncidentEscalationAuthorizationPort.AssetRef> assets,
+            List<String> sourceDeniedIncidentIds,int page,int size) {
+        if(assets==null || assets.isEmpty())return new AuthorizedPage(List.of(),0);
+        Specification<dz.sh.hidra.modules.incident.infrastructure.persistence.entity.IncidentJpaEntity> spec=
+          (root,query,cb)-> {
+              Predicate authorizedAsset=cb.or(assets.stream()
+                  .map(a->cb.and(cb.equal(root.get("topologyAssetTypeCode"),a.type()),
+                                 cb.equal(root.get("topologyAssetId"),a.id())))
+                  .toArray(Predicate[]::new));
+              Predicate notDenied=sourceDeniedIncidentIds==null||sourceDeniedIncidentIds.isEmpty()
+                   ?cb.conjunction():cb.not(root.get("id").in(sourceDeniedIncidentIds));
+              return cb.and(authorizedAsset,notDenied);
+          };
+        var result=repository.findAll(spec,PageRequest.of(page,size,Sort.by(Sort.Direction.DESC,"updatedAt")));
+        return new AuthorizedPage(result.getContent().stream()
+            .map(IncidentPersistenceMapper::toDomain).toList(),result.getTotalElements());
     }
 
     @Override

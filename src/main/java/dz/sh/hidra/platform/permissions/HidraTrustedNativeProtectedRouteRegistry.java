@@ -122,7 +122,23 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
             Class<?> leakLegacyRequest=Class.forName(leakRest+"request.CreateLeakCandidateRequest");
             Class<?> leakRead=Class.forName(leakRest+"controller.LeakDetectionQueryController");
             String leakBase="/api/v1/leakdetection/candidates";
+            final String incidentRest="dz.sh.hidra.modules.incident.api.rest.";
+            Class<?> incidentEvidence=Class.forName(incidentRest+"controller.EvidenceLinkedIncidentEscalationController");
+            Class<?> incidentRequest=Class.forName(incidentRest+"request.EscalateEvidenceToIncidentRequest");
+            Class<?> incidentRead=Class.forName(incidentRest+"controller.IncidentQueryController");
+            String incidentBase="/api/v1/incident/incidents";
+
             return List.of(
+                new Route(incidentEvidence,incidentEvidence.getDeclaredMethod("escalate",incidentRequest),
+                    "POST",incidentBase+"/from-evidence"),
+                new Route(incidentEvidence,incidentEvidence.getDeclaredMethod("escalation",String.class),
+                    "GET",incidentBase+"/{id}/escalation"),
+                new Route(incidentEvidence,incidentEvidence.getDeclaredMethod("timeline",String.class),
+                    "GET",incidentBase+"/{id}/timeline"),
+                new Route(incidentRead,incidentRead.getDeclaredMethod("incidents",int.class,int.class),
+                    "GET",incidentBase),
+                new Route(incidentRead,incidentRead.getDeclaredMethod("incident",String.class),
+                    "GET",incidentBase+"/{id}"),
                 new Route(leakEvidence,leakEvidence.getDeclaredMethod("create",leakRequest),
                     "POST",leakBase+"/from-evaluation"),
                 new Route(leakEvidence,leakEvidence.getDeclaredMethod("evidence",String.class),

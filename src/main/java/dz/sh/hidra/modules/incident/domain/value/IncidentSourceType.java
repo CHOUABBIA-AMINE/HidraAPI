@@ -23,5 +23,5 @@ package dz.sh.hidra.modules.incident.domain.value;
  * Defines IncidentSourceType values.
  */
 public enum IncidentSourceType {
-    MANUAL, MONITORING_ALERT, ALARM, LEAK_CASE, HSE_EVENT, INTEGRATION, OTHER
+    MANUAL, MONITORING_ALERT, ALARM, LEAK_CANDIDATE, LEAK_CASE, HSE_EVENT, INTEGRATION, OTHER
 }

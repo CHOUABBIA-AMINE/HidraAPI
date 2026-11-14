@@ -255,6 +255,10 @@ class ForensicRemediationClosureTest {
                 if (!isPrivate(importedPackage)) {
                     continue;
                 }
+                if (isT14ProtectedOwnerType(imported) && !isT14OwnerExport(source.fqcn(),imported)) {
+                    violations.add(source.fqcn()+" -> "+imported);
+                    continue;
+                }
                 if (EXPORTED_PACKAGES.stream().anyMatch(imported::startsWith)) {
                     continue;
                 }
@@ -292,6 +296,7 @@ class ForensicRemediationClosureTest {
                 if (isAlarmOwnerExport(source.fqcn(), imported)) continue;
                 if (isAlarmMonitoringEvidenceExport(source.fqcn(), imported)) continue;
                 if (isLeakT13OwnerExport(source.fqcn(), imported)) continue;
+                if (isT14OwnerExport(source.fqcn(), imported)) continue;
                 if (isTelemetryNativeOwnerExport(source.fqcn(), imported)) continue;
                 if (isMonitoringRuleOwnerExport(source.fqcn(), imported)) continue;
                 if (isPlanningReviewerExport(source.fqcn(), imported)) continue;
@@ -307,6 +312,43 @@ class ForensicRemediationClosureTest {
      * two owner-exported Alarm contracts and their nested scalar projection types.
      * No other consumer, sibling type or owner infrastructure is made public.
      */
+
+    /** Only the exact T14 adapter may consume the named scalar owner projection. */
+    @Test void t14IncidentExportsExcludeSiblings() {
+        String consumer="dz.sh.hidra.modules.incident.infrastructure.integration.IncidentEscalationSourceAdapter";
+        String owner="dz.sh.hidra.modules.leakdetection.application.contract.incident.IncidentLeakCandidateEvidenceContract";
+        assertTrue(isT14OwnerExport(consumer,owner));
+        assertTrue(isT14OwnerExport(consumer,owner+"$Evidence"));
+        assertFalse(isT14OwnerExport(consumer+"Sibling",owner));
+        assertFalse(isT14OwnerExport(consumer,owner+"Sibling"));
+    }
+
+    private static boolean isT14OwnerExport(String source,String target) {
+        String[][] allowed={
+          {"dz.sh.hidra.modules.incident.infrastructure.integration.IncidentEscalationSourceAdapter",
+           "dz.sh.hidra.modules.alarm.application.contract.incident.IncidentAlarmEvidenceContract"},
+          {"dz.sh.hidra.modules.incident.infrastructure.integration.IncidentEscalationSourceAdapter",
+           "dz.sh.hidra.modules.leakdetection.application.contract.incident.IncidentLeakCandidateEvidenceContract"},
+          {"dz.sh.hidra.modules.incident.infrastructure.security.IncidentEscalationAuthorizationAdapter",
+           "dz.sh.hidra.modules.identity.application.contract.incident.IncidentScopedAuthorizationContract"},
+          {"dz.sh.hidra.modules.incident.infrastructure.security.IncidentEscalationAuthorizationAdapter",
+           "dz.sh.hidra.modules.topology.application.contract.incident.IncidentTopologyOwnershipContract"},
+          {"dz.sh.hidra.modules.alarm.application.service.IncidentAlarmEvidenceQueryService",
+           "dz.sh.hidra.modules.topology.application.contract.alarm.AlarmTopologyOwnershipContract"}};
+        for(String[] pair:allowed)if(source.equals(pair[0])
+            &&(target.equals(pair[1])||target.startsWith(pair[1]+"$")))return true;
+        return false;
+    }
+    private static boolean isT14ProtectedOwnerType(String target) {
+        return target.equals("dz.sh.hidra.modules.alarm.application.contract.incident.IncidentAlarmEvidenceContract")
+            ||target.startsWith("dz.sh.hidra.modules.alarm.application.contract.incident.IncidentAlarmEvidenceContract$")
+            ||target.equals("dz.sh.hidra.modules.leakdetection.application.contract.incident.IncidentLeakCandidateEvidenceContract")
+            ||target.startsWith("dz.sh.hidra.modules.leakdetection.application.contract.incident.IncidentLeakCandidateEvidenceContract$")
+            ||target.equals("dz.sh.hidra.modules.identity.application.contract.incident.IncidentScopedAuthorizationContract")
+            ||target.startsWith("dz.sh.hidra.modules.identity.application.contract.incident.IncidentScopedAuthorizationContract$")
+            ||target.equals("dz.sh.hidra.modules.topology.application.contract.incident.IncidentTopologyOwnershipContract")
+            ||target.startsWith("dz.sh.hidra.modules.topology.application.contract.incident.IncidentTopologyOwnershipContract$");
+    }
 
     private static boolean isLeakT13OwnerExport(String source,String target) {
         String monitoring="dz.sh.hidra.modules.monitoring.application.contract.leakdetection.LeakDetectionMonitoringEvaluationContract";

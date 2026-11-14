@@ -5,6 +5,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 import dz.sh.hidra.modules.incident.application.port.out.IncidentRepositoryPort;
+import dz.sh.hidra.modules.incident.application.port.out.IncidentEscalationAuthorizationPort;
+import dz.sh.hidra.modules.incident.application.port.out.IncidentEscalationStorePort;
+import dz.sh.hidra.modules.incident.application.port.out.IncidentEscalationSourcePort;
 import dz.sh.hidra.modules.incident.domain.model.Incident;
 import dz.sh.hidra.modules.incident.domain.value.IncidentSourceType;
 import dz.sh.hidra.modules.incident.domain.value.IncidentStatus;
@@ -21,14 +24,22 @@ class IncidentQueryApplicationServiceTest {
 
     @Mock
     private IncidentRepositoryPort repository;
+    @Mock
+    private IncidentEscalationAuthorizationPort scope;
+    @Mock private IncidentEscalationStorePort links;
+    @Mock private IncidentEscalationSourcePort sources;
 
     @Test
     void returnsPagedIncidentViews() {
         Incident incident = incident("inc-1");
-        when(repository.findAll(0, 50)).thenReturn(List.of(incident));
-        when(repository.count()).thenReturn(1L);
+        when(scope.permittedAssets("incident:incidents:read"))
+            .thenReturn(List.of(new IncidentEscalationAuthorizationPort.AssetRef("PIPELINE","pipe-1")));
+        when(repository.findAuthorized(org.mockito.ArgumentMatchers.anyList(),
+                org.mockito.ArgumentMatchers.eq(List.of()),
+                org.mockito.ArgumentMatchers.eq(0),org.mockito.ArgumentMatchers.eq(50)))
+            .thenReturn(new IncidentRepositoryPort.AuthorizedPage(List.of(incident),1));
 
-        var result = new IncidentQueryApplicationService(repository).incidents(0, 50);
+        var result = new IncidentQueryApplicationService(repository,scope,sources,links).incidents(0, 50);
 
         assertThat(result.content()).hasSize(1);
         assertThat(result.content().getFirst().id()).isEqualTo("inc-1");

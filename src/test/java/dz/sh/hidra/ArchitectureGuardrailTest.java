@@ -420,6 +420,7 @@ class ArchitectureGuardrailTest {
                 if (isAlarmOwnerExport(source.getName(),target.getName())) continue;
                 if (isAlarmMonitoringEvidenceExport(source.getName(),target.getName())) continue;
                 if (isLeakT13OwnerExport(source.getName(),target.getName())) continue;
+                if (isT14OwnerExport(source.getName(),target.getName())) continue;
                 if (isTelemetryNativeOwnerExport(source.getName(),target.getName())) continue;
                 if (isMonitoringRuleOwnerExport(source.getName(),target.getName())) continue;
 
@@ -807,6 +808,47 @@ class ArchitectureGuardrailTest {
      * No other consumer, sibling type or owner infrastructure is made public.
      */
 
+    /** Only the exact T14 adapter may consume the named scalar owner projection. */
+    @Test void t14OwnerExportsAreExactAndExcludeSiblings() {
+        String reader="dz.sh.hidra.modules.incident.infrastructure.integration.IncidentEscalationSourceAdapter";
+        String owner="dz.sh.hidra.modules.alarm.application.contract.incident.IncidentAlarmEvidenceContract";
+        assertFalse(isForbiddenCrossModuleDependency(reader,owner));
+        assertFalse(isForbiddenCrossModuleDependency(reader,owner+"$Evidence"));
+        assertTrue(isForbiddenCrossModuleDependency(reader+"Sibling",owner));
+        assertTrue(isForbiddenCrossModuleDependency(reader,owner+"Sibling"));
+        String auth="dz.sh.hidra.modules.incident.infrastructure.security.IncidentEscalationAuthorizationAdapter";
+        String identity="dz.sh.hidra.modules.identity.application.contract.incident.IncidentScopedAuthorizationContract";
+        assertFalse(isForbiddenCrossModuleDependency(auth,identity));
+        assertTrue(isForbiddenCrossModuleDependency(auth+"Sibling",identity));
+    }
+
+    private static boolean isT14OwnerExport(String source,String target) {
+        String[][] allowed={
+          {"dz.sh.hidra.modules.incident.infrastructure.integration.IncidentEscalationSourceAdapter",
+           "dz.sh.hidra.modules.alarm.application.contract.incident.IncidentAlarmEvidenceContract"},
+          {"dz.sh.hidra.modules.incident.infrastructure.integration.IncidentEscalationSourceAdapter",
+           "dz.sh.hidra.modules.leakdetection.application.contract.incident.IncidentLeakCandidateEvidenceContract"},
+          {"dz.sh.hidra.modules.incident.infrastructure.security.IncidentEscalationAuthorizationAdapter",
+           "dz.sh.hidra.modules.identity.application.contract.incident.IncidentScopedAuthorizationContract"},
+          {"dz.sh.hidra.modules.incident.infrastructure.security.IncidentEscalationAuthorizationAdapter",
+           "dz.sh.hidra.modules.topology.application.contract.incident.IncidentTopologyOwnershipContract"},
+          {"dz.sh.hidra.modules.alarm.application.service.IncidentAlarmEvidenceQueryService",
+           "dz.sh.hidra.modules.topology.application.contract.alarm.AlarmTopologyOwnershipContract"}};
+        for(String[] pair:allowed)if(source.equals(pair[0])
+            &&(target.equals(pair[1])||target.startsWith(pair[1]+"$")))return true;
+        return false;
+    }
+    private static boolean isT14ProtectedOwnerType(String target) {
+        return target.equals("dz.sh.hidra.modules.alarm.application.contract.incident.IncidentAlarmEvidenceContract")
+            ||target.startsWith("dz.sh.hidra.modules.alarm.application.contract.incident.IncidentAlarmEvidenceContract$")
+            ||target.equals("dz.sh.hidra.modules.leakdetection.application.contract.incident.IncidentLeakCandidateEvidenceContract")
+            ||target.startsWith("dz.sh.hidra.modules.leakdetection.application.contract.incident.IncidentLeakCandidateEvidenceContract$")
+            ||target.equals("dz.sh.hidra.modules.identity.application.contract.incident.IncidentScopedAuthorizationContract")
+            ||target.startsWith("dz.sh.hidra.modules.identity.application.contract.incident.IncidentScopedAuthorizationContract$")
+            ||target.equals("dz.sh.hidra.modules.topology.application.contract.incident.IncidentTopologyOwnershipContract")
+            ||target.startsWith("dz.sh.hidra.modules.topology.application.contract.incident.IncidentTopologyOwnershipContract$");
+    }
+
     private static boolean isLeakT13OwnerExport(String source,String target) {
         String monitoring="dz.sh.hidra.modules.monitoring.application.contract.leakdetection.LeakDetectionMonitoringEvaluationContract";
         String identity="dz.sh.hidra.modules.identity.application.contract.leakdetection.LeakDetectionScopedAuthorizationContract";
@@ -912,6 +954,8 @@ class ArchitectureGuardrailTest {
         if(isAlarmOwnerExport(sourceClassName,targetClassName))return false;
         if(isAlarmMonitoringEvidenceExport(sourceClassName,targetClassName))return false;
         if(isLeakT13OwnerExport(sourceClassName,targetClassName))return false;
+        if(isT14ProtectedOwnerType(targetClassName))return !isT14OwnerExport(sourceClassName,targetClassName);
+        if(isT14OwnerExport(sourceClassName,targetClassName))return false;
         if(isTelemetryNativeOwnerExport(sourceClassName,targetClassName))return false;
         if(isMonitoringRuleOwnerExport(sourceClassName,targetClassName))return false;
         // HAPI-605: generic exported-package allowances must not admit unauthorized

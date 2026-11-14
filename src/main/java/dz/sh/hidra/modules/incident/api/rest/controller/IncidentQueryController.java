@@ -23,6 +23,7 @@ import dz.sh.hidra.modules.incident.application.port.in.IncidentQueryUseCase;
 import dz.sh.hidra.modules.incident.application.port.in.IncidentQueryUseCase.IncidentView;
 import dz.sh.hidra.modules.incident.application.port.in.IncidentQueryUseCase.Page;
 import java.util.Objects;
+import dz.sh.hidra.platform.permissions.NativeProtectedOperation;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,6 +40,7 @@ public class IncidentQueryController {
         this.queryUseCase = Objects.requireNonNull(queryUseCase, "IncidentQueryUseCase must not be null.");
     }
 
+    @NativeProtectedOperation
     @GetMapping
     public Page<IncidentView> incidents(
             @RequestParam(defaultValue = "0") int page,
@@ -47,8 +49,14 @@ public class IncidentQueryController {
         return queryUseCase.incidents(page, size);
     }
 
+    @NativeProtectedOperation
     @GetMapping("/{id}")
     public IncidentView incident(@PathVariable String id) {
         return queryUseCase.incident(id);
+    }
+    @org.springframework.web.bind.annotation.ExceptionHandler(java.util.NoSuchElementException.class)
+    org.springframework.http.ProblemDetail hidden(java.util.NoSuchElementException ignored) {
+        return org.springframework.http.ProblemDetail.forStatusAndDetail(
+                org.springframework.http.HttpStatus.NOT_FOUND,"Protected Incident unavailable.");
     }
 }

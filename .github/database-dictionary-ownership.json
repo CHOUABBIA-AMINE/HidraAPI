@@ -268,6 +268,24 @@
     "owner": "incident",
     "purpose": "Incident-owned classification/severity closure requirements and optional follow-up action types; actual approval and policy rows are not asserted."
   },
+  "public.hidra_incident_escalated_source": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261112_007__t14_incident_evaluation_escalation.sql",
+      "src/main/java/dz/sh/hidra/modules/incident/infrastructure/persistence/adapter/JdbcIncidentSourceEscalationAdapter.java",
+      "src/test/java/dz/sh/hidra/modules/incident/qualification/IncidentCorrelatedEscalationNativeHttpPostgresIntegrationTest.java"
+    ],
+    "owner": "incident",
+    "purpose": "T14 immutable human source attachments and decision timeline; two independently qualified source types share at most one case per evaluation."
+  },
+  "public.hidra_incident_evaluation_case": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261112_007__t14_incident_evaluation_escalation.sql",
+      "src/main/java/dz/sh/hidra/modules/incident/infrastructure/persistence/adapter/JdbcIncidentSourceEscalationAdapter.java",
+      "src/test/java/dz/sh/hidra/modules/incident/qualification/IncidentCorrelatedEscalationNativeHttpPostgresIntegrationTest.java"
+    ],
+    "owner": "incident",
+    "purpose": "T14 Incident-owned one-per-qualified-evaluation immutable human escalation case, bounded current company/asset and distinct from the Alarm/Leak source owners."
+  },
   "public.hidra_incident_relationship_policy": {
     "evidence": [
       "src/main/resources/db/migration/V20261008_008__hmr_091_incident_relationship_integrity.sql"

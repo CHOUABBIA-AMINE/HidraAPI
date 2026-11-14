@@ -20,6 +20,9 @@
 package dz.sh.hidra.modules.incident.application.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import dz.sh.hidra.modules.incident.application.port.out.IncidentEscalationAuthorizationPort;
 
 import dz.sh.hidra.modules.incident.application.command.CloseIncidentCommand;
 import dz.sh.hidra.modules.incident.application.command.OpenIncidentCommand;
@@ -52,16 +55,28 @@ public class IncidentApplicationService implements OpenIncidentUseCase, RecordIn
     private final IncidentRepositoryPort incidentRepositoryPort;
     private final IncidentResponseActionRepositoryPort responseActionRepositoryPort;
     private final IncidentClosureRepositoryPort closureRepositoryPort;
+    private final IncidentEscalationAuthorizationPort currentScopes;
 
     private final dz.sh.hidra.modules.incident.application.port.out.IncidentReferencePolicyPort references;
 
+    @Deprecated
+    public IncidentApplicationService(IncidentRepositoryPort incidentRepositoryPort,
+            IncidentResponseActionRepositoryPort responseActionRepositoryPort,
+            IncidentClosureRepositoryPort closureRepositoryPort,
+            dz.sh.hidra.modules.incident.application.port.out.IncidentReferencePolicyPort references) {
+        this(incidentRepositoryPort,responseActionRepositoryPort,closureRepositoryPort,references,null);
+    }
+
+    @Autowired
     public IncidentApplicationService(
             IncidentRepositoryPort incidentRepositoryPort,
             IncidentResponseActionRepositoryPort responseActionRepositoryPort,
             IncidentClosureRepositoryPort closureRepositoryPort,
-            dz.sh.hidra.modules.incident.application.port.out.IncidentReferencePolicyPort references
+            dz.sh.hidra.modules.incident.application.port.out.IncidentReferencePolicyPort references,
+            IncidentEscalationAuthorizationPort currentScopes
     ) {
         this.references=Objects.requireNonNull(references);
+        this.currentScopes=currentScopes;
         this.incidentRepositoryPort = Objects.requireNonNull(incidentRepositoryPort, "Incident repository port must not be null.");
         this.responseActionRepositoryPort = Objects.requireNonNull(responseActionRepositoryPort, "Incident response action repository port must not be null.");
         this.closureRepositoryPort = Objects.requireNonNull(closureRepositoryPort, "Incident closure repository port must not be null.");
@@ -71,6 +86,17 @@ public class IncidentApplicationService implements OpenIncidentUseCase, RecordIn
     @org.springframework.transaction.annotation.Transactional
     public IncidentSummaryDto openIncident(OpenIncidentCommand command) {
         Objects.requireNonNull(command, "Open incident command must not be null.");
+        // Legacy commands cannot manufacture T12/T13 evidence-qualified origins.
+        if(command.sourceType()==IncidentSourceType.ALARM
+                ||command.sourceType()==IncidentSourceType.LEAK_CANDIDATE)
+            throw new AccessDeniedException("Use the source-authorized Incident escalation command.");
+        if(currentScopes!=null) {
+            if(command.topologyAssetId()==null || command.topologyAssetTypeCode()==null
+                    || currentScopes.permittedAssets("incident:incidents:execute").stream()
+                      .noneMatch(a->a.type().equals(command.topologyAssetTypeCode())
+                                 && a.id().equals(command.topologyAssetId())))
+                throw new AccessDeniedException("Current scoped Incident execution required.");
+        }
         Instant now = Instant.now();
         var actor=references.currentActor(now);
         var unit=command.responsibleOrganizationUnitId()==null ? null : references.organizationUnit(command.responsibleOrganizationUnitId());
@@ -122,6 +148,9 @@ public class IncidentApplicationService implements OpenIncidentUseCase, RecordIn
     @org.springframework.transaction.annotation.Transactional
     public String recordResponseAction(RecordIncidentResponseActionCommand command) {
         Objects.requireNonNull(command, "Record incident response action command must not be null.");
+        // Recheck current resource scope before the parent row, state or history is disclosed.
+        if(currentScopes!=null)
+            currentScopes.requireIncident("incident:incidents:execute",command.incidentId());
         var parent=incidentRepositoryPort.findByIdForUpdate(command.incidentId()).orElseThrow(() -> new IllegalArgumentException("Unknown Incident."));
         new dz.sh.hidra.modules.incident.domain.service.IncidentLifecycleGuard().ensureResponseActionAllowed(parent);
         Instant now = Instant.now();
@@ -153,6 +182,9 @@ public class IncidentApplicationService implements OpenIncidentUseCase, RecordIn
     @org.springframework.transaction.annotation.Transactional
     public String closeIncident(CloseIncidentCommand command) {
         Objects.requireNonNull(command, "Close incident command must not be null.");
+        // Recheck current resource scope before the parent row, state or history is disclosed.
+        if(currentScopes!=null)
+            currentScopes.requireIncident("incident:incidents:execute",command.incidentId());
         var parent=incidentRepositoryPort.findByIdForUpdate(command.incidentId()).orElseThrow(() -> new IllegalArgumentException("Unknown Incident."));
         if(parent.status()!=IncidentStatus.RESOLVED) throw new IllegalArgumentException("Only RESOLVED incidents may close.");
         var actor=references.currentActor(Instant.now());

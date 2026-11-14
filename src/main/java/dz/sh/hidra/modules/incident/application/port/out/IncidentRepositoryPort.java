@@ -37,4 +37,9 @@ public interface IncidentRepositoryPort {
     List<Incident> findAll(int page, int size);
 
     long count();
+
+    record AuthorizedPage(List<Incident> content, long total) {}
+    AuthorizedPage findAuthorized(List<IncidentEscalationAuthorizationPort.AssetRef> assets,
+            List<String> sourceDeniedIncidentIds, int page, int size);
+    default void flush() { throw new UnsupportedOperationException("Incident flush required."); }
 }

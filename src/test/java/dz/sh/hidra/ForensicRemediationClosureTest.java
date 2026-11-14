@@ -155,6 +155,12 @@ class ForensicRemediationClosureTest {
         assertFalse(isPlanningReviewerExport(reviewConsumer, reviewContract + "Sibling"));
         assertFalse(isPlanningReviewerExport(reviewConsumer,
                 "dz.sh.hidra.modules.planning.infrastructure.persistence.adapter.JpaPlanRevisionRepositoryAdapter"));
+        String t12Consumer = "dz.sh.hidra.modules.alarm.infrastructure.integration.MonitoringEvaluationEvidenceAdapter";
+        String t12Root = "dz.sh.hidra.modules.monitoring.application.contract.alarm.AlarmMonitoringEvaluationContract";
+        assertTrue(isAlarmMonitoringEvidenceExport(t12Consumer, t12Root));
+        assertTrue(isAlarmMonitoringEvidenceExport(t12Consumer, t12Root + "$Evaluation"));
+        assertFalse(isAlarmMonitoringEvidenceExport(t12Consumer + "Sibling", t12Root));
+        assertFalse(isAlarmMonitoringEvidenceExport(t12Consumer, t12Root + "Sibling"));
         String alarmConsumer = "dz.sh.hidra.modules.alarm.infrastructure.security.AlarmResourceAuthorizationAdapter";
         String alarmIdentity = "dz.sh.hidra.modules.identity.application.contract.alarm.AlarmScopedAuthorizationContract";
         String alarmTopology = "dz.sh.hidra.modules.topology.application.contract.alarm.AlarmTopologyOwnershipContract";
@@ -284,6 +290,7 @@ class ForensicRemediationClosureTest {
                 if (custodyProductOwnerExport(source.fqcn(), imported)) continue;
                 if (baselineOwnerExport(source.fqcn(), imported)) continue;
                 if (isAlarmOwnerExport(source.fqcn(), imported)) continue;
+                if (isAlarmMonitoringEvidenceExport(source.fqcn(), imported)) continue;
                 if (isTelemetryNativeOwnerExport(source.fqcn(), imported)) continue;
                 if (isMonitoringRuleOwnerExport(source.fqcn(), imported)) continue;
                 if (isPlanningReviewerExport(source.fqcn(), imported)) continue;
@@ -299,6 +306,12 @@ class ForensicRemediationClosureTest {
      * two owner-exported Alarm contracts and their nested scalar projection types.
      * No other consumer, sibling type or owner infrastructure is made public.
      */
+    private static boolean isAlarmMonitoringEvidenceExport(String source, String target) {
+        String consumer = "dz.sh.hidra.modules.alarm.infrastructure.integration.MonitoringEvaluationEvidenceAdapter";
+        String owner = "dz.sh.hidra.modules.monitoring.application.contract.alarm.AlarmMonitoringEvaluationContract";
+        return consumer.equals(source) && (target.equals(owner) || target.startsWith(owner + "$"));
+    }
+
     private static boolean isAlarmOwnerExport(String source, String target) {
         String consumer = "dz.sh.hidra.modules.alarm.infrastructure.security.AlarmResourceAuthorizationAdapter";
         if (!consumer.equals(source)) return false;

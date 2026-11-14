@@ -14,6 +14,14 @@
     "owner": "alarm",
     "purpose": "Alarm-owned alarm state; standalone table name is an explicit prefix exception."
   },
+  "public.hidra_alarm_evaluation_trigger": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261112_005__t12_alarm_evaluation_trigger.sql",
+      "src/main/java/dz/sh/hidra/modules/alarm/infrastructure/persistence/adapter/JdbcAlarmEvaluationTriggerAdapter.java"
+    ],
+    "owner": "alarm",
+    "purpose": "Immutable Alarm-owned operator-trigger identity, source provenance, unique evaluation replay and same-owner Alarm reference; no Monitoring foreign key."
+  },
   "public.hidra_asset_maintainable_asset": {
     "evidence": [
       "src/main/java/dz/sh/hidra/modules/assets/infrastructure/persistence/entity/MaintainableAssetJpaEntity.java"

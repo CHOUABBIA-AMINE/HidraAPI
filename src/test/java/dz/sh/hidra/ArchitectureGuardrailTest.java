@@ -418,6 +418,7 @@ class ArchitectureGuardrailTest {
                 if (isManufacturerOwnerExport(source.getName(), target.getName())) continue;
                 if (isCharacteristicManufacturerPartyExport(source.getName(),target.getName())) continue;
                 if (isAlarmOwnerExport(source.getName(),target.getName())) continue;
+                if (isAlarmMonitoringEvidenceExport(source.getName(),target.getName())) continue;
                 if (isTelemetryNativeOwnerExport(source.getName(),target.getName())) continue;
                 if (isMonitoringRuleOwnerExport(source.getName(),target.getName())) continue;
 
@@ -527,6 +528,12 @@ class ArchitectureGuardrailTest {
                         "dz.sh.hidra.modules.alarm.application.service.AlarmSuppressionExpiryOrchestrator",
                         "dz.sh.hidra.modules.audit.application.contract.alarm.AlarmSuppressionAuditContract"),
                 "The deliberate Audit suppression contract exported to Alarm must remain allowed.");
+        String t12Consumer = "dz.sh.hidra.modules.alarm.infrastructure.integration.MonitoringEvaluationEvidenceAdapter";
+        String t12Export = "dz.sh.hidra.modules.monitoring.application.contract.alarm.AlarmMonitoringEvaluationContract";
+        assertFalse(isForbiddenCrossModuleDependency(t12Consumer,t12Export));
+        assertFalse(isForbiddenCrossModuleDependency(t12Consumer,t12Export + "$Evaluation"));
+        assertTrue(isForbiddenCrossModuleDependency(t12Consumer + "Sibling",t12Export));
+        assertTrue(isForbiddenCrossModuleDependency(t12Consumer,t12Export + "Sibling"));
         // HAPI-930 exact root and nested type, with negative sibling/private/foreign cases.
         String alarmConsumer = "dz.sh.hidra.modules.alarm.infrastructure.security.AlarmResourceAuthorizationAdapter";
         String ownerRoot = "dz.sh.hidra.modules.topology.application.contract.alarm.AlarmTopologyOwnershipContract";
@@ -787,6 +794,12 @@ class ArchitectureGuardrailTest {
      * two owner-exported Alarm contracts and their nested scalar projection types.
      * No other consumer, sibling type or owner infrastructure is made public.
      */
+    private static boolean isAlarmMonitoringEvidenceExport(String source, String target) {
+        String consumer = "dz.sh.hidra.modules.alarm.infrastructure.integration.MonitoringEvaluationEvidenceAdapter";
+        String owner = "dz.sh.hidra.modules.monitoring.application.contract.alarm.AlarmMonitoringEvaluationContract";
+        return consumer.equals(source) && (owner.equals(target) || target.startsWith(owner + "$"));
+    }
+
     private static boolean isAlarmOwnerExport(String source, String target) {
         String consumer = "dz.sh.hidra.modules.alarm.infrastructure.security.AlarmResourceAuthorizationAdapter";
         if (!consumer.equals(source)) return false;
@@ -873,6 +886,7 @@ class ArchitectureGuardrailTest {
         }
         if(isBaselineOwnerExport(sourceClassName,targetClassName))return false;
         if(isAlarmOwnerExport(sourceClassName,targetClassName))return false;
+        if(isAlarmMonitoringEvidenceExport(sourceClassName,targetClassName))return false;
         if(isTelemetryNativeOwnerExport(sourceClassName,targetClassName))return false;
         if(isMonitoringRuleOwnerExport(sourceClassName,targetClassName))return false;
         // HAPI-605: generic exported-package allowances must not admit unauthorized

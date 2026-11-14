@@ -12,12 +12,22 @@
 package dz.sh.hidra.modules.alarm.api.rest;
 
 import dz.sh.hidra.modules.alarm.domain.exception.AlarmResourceNotFoundException;
+import dz.sh.hidra.modules.alarm.domain.exception.AlarmEvaluationTriggerConflictException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public final class AlarmResourceExceptionHandler {
+    @ExceptionHandler(AlarmEvaluationTriggerConflictException.class)
+    public ProblemDetail conflict(AlarmEvaluationTriggerConflictException ignored) {
+        ProblemDetail result=ProblemDetail.forStatus(HttpStatus.CONFLICT);
+        result.setTitle("ALARM_EVALUATION_TRIGGER_CONFLICT");
+        result.setDetail("An incompatible Alarm already exists for this evaluation.");
+        result.setProperty("code","ALARM_EVALUATION_TRIGGER_CONFLICT");
+        return result;
+    }
+
     @ExceptionHandler(AlarmResourceNotFoundException.class)
     public ProblemDetail notFound(AlarmResourceNotFoundException ignored) {
         ProblemDetail result=ProblemDetail.forStatus(HttpStatus.NOT_FOUND);

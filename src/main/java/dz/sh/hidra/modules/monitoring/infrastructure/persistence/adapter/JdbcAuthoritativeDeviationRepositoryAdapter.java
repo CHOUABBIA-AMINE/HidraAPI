@@ -87,6 +87,12 @@ public class JdbcAuthoritativeDeviationRepositoryAdapter implements Authoritativ
     }
 
     @Override
+    public Optional<String> ruleIdByEvaluationId(String id) {
+        return jdbc.query("select rule_id from " + TABLE + " where id=?",
+                (row, number) -> row.getString(1), id).stream().findFirst();
+    }
+
+    @Override
     public Optional<AuthoritativeDeviationEvaluation> find(String ruleId, String id) {
         return jdbc.query("select * from " + TABLE + " where rule_id=? and id=?",
                 JdbcAuthoritativeDeviationRepositoryAdapter::read, ruleId, id).stream().findFirst();

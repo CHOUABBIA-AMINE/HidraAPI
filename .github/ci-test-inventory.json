@@ -48,7 +48,7 @@
       "lane": "unit-architecture",
       "owner": "architecture",
       "path": "src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java",
-      "source_sha256": "afc4b8ee7ddd134528df477b21c33cdecce63fa9faefadb62cdcc96de58a465f",
+      "source_sha256": "5e0f201edd3e8c89d0f82be98255d56d9bd8dee7979940e80bc448db79f78905",
       "supports": []
     },
     {
@@ -99,7 +99,7 @@
       "lane": "unit-architecture",
       "owner": "architecture",
       "path": "src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java",
-      "source_sha256": "f31759becf67e62e4efeef0f35ab817b496488232fa04d9f19afd08eb9fbaf86",
+      "source_sha256": "1cb9d5ada508b9ab76d592d17a161f4c232e60604bab5fa7355d0ac5d17807ad",
       "supports": []
     },
     {
@@ -438,6 +438,20 @@
       "owner": "alarm",
       "path": "src/test/java/dz/sh/hidra/modules/alarm/infrastructure/service/AlarmSuppressionApplicationAdapterTest.java",
       "source_sha256": "965af82c07d5e56c03082b95a9f8951dc0608082f64fe7cd7950495a089974b3",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "signedEvaluationRaisesOneDurableAcknowledgedAlarm"
+      ],
+      "class": "dz.sh.hidra.modules.alarm.qualification.AlarmEvidenceLinkedNativeHttpPostgresIntegrationTest",
+      "dependency_reason": "T12 one genuine signed Monitoring-to-Alarm HTTP creation, replay, scoped evidence and acknowledgement journey in migrated PostgreSQL.",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "alarm",
+      "path": "src/test/java/dz/sh/hidra/modules/alarm/qualification/AlarmEvidenceLinkedNativeHttpPostgresIntegrationTest.java",
+      "source_sha256": "8eac4a5f1c33b864b728562e0c58c5cbe98351a1879961c4b07773cd10ca6d73",
       "supports": []
     },
     {
@@ -11707,7 +11721,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java",
-      "source_sha256": "8d7b6ba6ee876245e9abdf0d912777d0760b725426b0a787cd78b9c6c78511e6",
+      "source_sha256": "3af181f337eef86c87807543be1a5deed0eac9f960ed234ec03a4dcda4e5c8fb",
       "supports": []
     },
     {
@@ -11731,7 +11745,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistryTest.java",
-      "source_sha256": "f483520225e33af01d233c441acd5dae0eb74d4ed3cfd597c9483c4dbae5771f",
+      "source_sha256": "525c6724d83da1017116928e8bd65057fe8f131cf93a48a6ee3c624fcf0deb04",
       "supports": []
     },
     {
@@ -11751,7 +11765,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteStartupValidatorTest.java",
-      "source_sha256": "8f2226b0a8091a6c2b30e0d2b0843d34d806c48d21cd0e082ac29de4a5c26fa7",
+      "source_sha256": "f197afb93c695963628324dad3d775a25d9f5274e4a5b41f020176fc7b863a25",
       "supports": []
     },
     {

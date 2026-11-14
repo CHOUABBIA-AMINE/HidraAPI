@@ -31,6 +31,8 @@ public interface AuthoritativeDeviationRepositoryPort {
     OptionalLong maximumAgeSeconds(String ruleId, long revision);
     Optional<AuthoritativeDeviationEvaluation> byRequest(Key key);
     AuthoritativeDeviationEvaluation save(Key key, AuthoritativeDeviationEvaluation evaluation);
+    /** Internal owner lookup only; callers must subsequently authorize through the Monitoring use case. */
+    Optional<String> ruleIdByEvaluationId(String id);
     Optional<AuthoritativeDeviationEvaluation> find(String ruleId, String id);
     List<AuthoritativeDeviationEvaluation> history(String ruleId, int limit);
 }

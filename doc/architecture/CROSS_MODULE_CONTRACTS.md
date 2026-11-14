@@ -122,3 +122,17 @@ HAPI-930's approved resource-authorization boundary introduces **two exact, prov
 - `dz.sh.hidra.modules.topology.application.contract.alarm.AlarmTopologyOwnershipContract` and its nested `OwnedAsset` projection: current Topology asset and owner identity, not a permission decision.
 
 These are **exact consumer/type exceptions**, not new package-wide exceptions in the existing historical 63-package exported set. The two independently enforced guardrails, `ArchitectureGuardrailTest` and `ForensicRemediationClosureTest`, permit only these named types for the named Alarm adapter, with positive and negative tests; unrelated consumers, sibling types and private owners remain forbidden. HAPI-930 is PARTIAL / IN_PROGRESS; successful source compilation, exact-SHA CI and native permission proof are independent acceptance gates. The earlier October 2026 70-file/63-package inventory remains historical and is not retroactively rewritten.
+
+## T12 narrow Monitoring evidence export — 2026-11-14
+
+The T12 manual, evidence-linked Alarm command consumes only one **Monitoring-owned exported application contract**:
+
+- Provider: `dz.sh.hidra.modules.monitoring.application.contract.alarm.AlarmMonitoringEvaluationContract`, implemented by `AlarmMonitoringEvaluationQueryService`.
+- Authorized consumer: `dz.sh.hidra.modules.alarm.infrastructure.integration.MonitoringEvaluationEvidenceAdapter` exclusively.
+- Authorized payload: immutable scalar evaluation identity, exact approved rule revision, company/asset/point/unit context, outcome, numeric difference, target/approval and trusted observation identifiers, and evaluation timestamps. No foreign domain model or JPA record.
+- Owner access: Monitoring resolves the rule for the evaluation ID internally, then re-enters its existing `AuthoritativeDeviationUseCase.find(ruleId, evaluationId)`, which verifies current Monitoring READ before returning protected evidence. Alarm separately requires its current Alarm EXECUTE/READ resource grant.
+- Architecture enforcement: `ArchitectureGuardrailTest` and `ForensicRemediationClosureTest` admit this exact consumer/type pair, including the nested immutable projection, and reject sibling contracts, unrelated consumers and private module imports.
+
+The independent Monitoring lookup needed for the evaluation-ID-only T12 request adds a narrow owner-port method `AuthoritativeDeviationRepositoryPort.ruleIdByEvaluationId` and its implementation in `JdbcAuthoritativeDeviationRepositoryAdapter`. It never discloses source data itself; protected detail remains behind the original Monitoring read use case. This is the minimal additional Monitoring owner source required by the existing T11 interface. It does not add a general exported package, write to another module or authorize industrial alarms.
+
+T12 operator-created alarms use `AlarmSourceType.MANUAL`, with the evaluation identity in the Alarm-owned mapping and `MONITORING_EVALUATION` evidence link. Legacy Alarm list/detail do not expose Monitoring source identifiers or numeric evidence; the new typed evidence route enforces both current owner grants. No SCADA writes, automated threshold classification, background alarm generation or deployment is implied.

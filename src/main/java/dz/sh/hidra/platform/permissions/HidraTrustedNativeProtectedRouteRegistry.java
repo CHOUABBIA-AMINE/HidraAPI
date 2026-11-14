@@ -111,7 +111,15 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
             Class<?> monitoringEvaluation=Class.forName(monitoring+"controller.AuthoritativeDeviationController");
             Class<?> monitoringEvaluationRequest=Class.forName(monitoring+"request.AuthoritativeDeviationRequest");
             String monitoringBase="/api/v1/monitoring/rules";
+            final String alarmRest="dz.sh.hidra.modules.alarm.api.rest.";
+            Class<?> alarmEvaluation=Class.forName(alarmRest+"controller.EvidenceLinkedAlarmController");
+            Class<?> alarmEvaluationRequest=Class.forName(alarmRest+"request.EvidenceLinkedAlarmRequest");
+            String alarmBase="/api/v1/alarm/alarms";
             return List.of(
+                new Route(alarmEvaluation,alarmEvaluation.getDeclaredMethod("create",alarmEvaluationRequest),
+                    "POST",alarmBase+"/from-evaluation"),
+                new Route(alarmEvaluation,alarmEvaluation.getDeclaredMethod("evidence",String.class),
+                    "GET",alarmBase+"/{id}/evidence"),
                 new Route(monitoringEvaluation,monitoringEvaluation.getDeclaredMethod("evaluate",
                     String.class,monitoringEvaluationRequest),"POST",monitoringBase+"/{id}/evaluations"),
                 new Route(monitoringEvaluation,monitoringEvaluation.getDeclaredMethod("exact",

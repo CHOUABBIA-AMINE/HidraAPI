@@ -303,6 +303,12 @@ class HidraTrustedNativeProtectedRouteHttpTest {
     var aliasCreate=routes.stream().filter(r->r.pattern().equals("/api/v1/monitoring/create-monitoring-rule")
         &&r.verb().equals("POST")).findFirst().orElseThrow();
     assertTrue(!ruleCreate.method().equals(aliasCreate.method()));
+    // T13 uses the same strict one-MVC-method-per-native-pattern rule.
+    var leakCanonical=routes.stream().filter(v->v.pattern().equals("/api/v1/leakdetection/candidates")
+        &&v.verb().equals("POST")).findFirst().orElseThrow();
+    var leakLegacy=routes.stream().filter(v->v.pattern().equals("/api/v1/leakdetection/create-leak-candidate")
+        &&v.verb().equals("POST")).findFirst().orElseThrow();
+    assertTrue(!leakCanonical.method().equals(leakLegacy.method()));
     var actual=new RequestMappingHandlerMapping();
    for(var entry:routes) {
     Object owner=owners.get(entry.controller());

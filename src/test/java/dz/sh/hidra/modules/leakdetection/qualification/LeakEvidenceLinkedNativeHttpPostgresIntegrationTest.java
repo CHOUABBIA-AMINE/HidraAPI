@@ -185,6 +185,10 @@ class LeakEvidenceLinkedNativeHttpPostgresIntegrationTest {
             requireStatus(send(client,"GET",base+"/"+candidateId+"/evidence",leakOnlyToken,null),403);
             requireStatus(send(client,"POST",commandPath,leakOnlyToken,command),403);
             requireStatus(send(client,"POST",commandPath,foreignToken,command),403);
+            // Both historical candidate-create URLs must be fail-closed before body parsing.
+            requireStatus(send(client,"POST",base,foreignToken,Map.of()),403);
+            requireStatus(send(client,"POST","/api/v1/leakdetection/create-leak-candidate",
+                    foreignToken,Map.of()),403);
             requireStatus(send(client,"POST",commandPath,token,Map.of("evaluationId",evaluationId,
                     "profileId",profileId,"declaredConfidence",0.61,"reason","Changed declaration")),409);
             assertEquals(1L,database.queryForObject(

@@ -419,6 +419,7 @@ class ArchitectureGuardrailTest {
                 if (isCharacteristicManufacturerPartyExport(source.getName(),target.getName())) continue;
                 if (isAlarmOwnerExport(source.getName(),target.getName())) continue;
                 if (isAlarmMonitoringEvidenceExport(source.getName(),target.getName())) continue;
+                if (isLeakT13OwnerExport(source.getName(),target.getName())) continue;
                 if (isTelemetryNativeOwnerExport(source.getName(),target.getName())) continue;
                 if (isMonitoringRuleOwnerExport(source.getName(),target.getName())) continue;
 
@@ -534,6 +535,17 @@ class ArchitectureGuardrailTest {
         assertFalse(isForbiddenCrossModuleDependency(t12Consumer,t12Export + "$Evaluation"));
         assertTrue(isForbiddenCrossModuleDependency(t12Consumer + "Sibling",t12Export));
         assertTrue(isForbiddenCrossModuleDependency(t12Consumer,t12Export + "Sibling"));
+        // T13: exact consumer and nested owner projection, never any sibling or private adapter.
+        String t13Consumer="dz.sh.hidra.modules.leakdetection.infrastructure.integration.LeakMonitoringEvidenceAdapter";
+        String t13Monitoring="dz.sh.hidra.modules.monitoring.application.contract.leakdetection.LeakDetectionMonitoringEvaluationContract";
+        String t13Authorization="dz.sh.hidra.modules.leakdetection.infrastructure.security.LeakCandidateResourceAuthorizationAdapter";
+        String t13Identity="dz.sh.hidra.modules.identity.application.contract.leakdetection.LeakDetectionScopedAuthorizationContract";
+        assertFalse(isForbiddenCrossModuleDependency(t13Consumer,t13Monitoring));
+        assertFalse(isForbiddenCrossModuleDependency(t13Consumer,t13Monitoring+"$Evaluation"));
+        assertFalse(isForbiddenCrossModuleDependency(t13Authorization,t13Identity));
+        assertTrue(isForbiddenCrossModuleDependency(t13Consumer+"Sibling",t13Monitoring));
+        assertTrue(isForbiddenCrossModuleDependency(t13Consumer,t13Monitoring+"Sibling"));
+        assertTrue(isForbiddenCrossModuleDependency(t13Authorization+"Sibling",t13Identity));
         // HAPI-930 exact root and nested type, with negative sibling/private/foreign cases.
         String alarmConsumer = "dz.sh.hidra.modules.alarm.infrastructure.security.AlarmResourceAuthorizationAdapter";
         String ownerRoot = "dz.sh.hidra.modules.topology.application.contract.alarm.AlarmTopologyOwnershipContract";

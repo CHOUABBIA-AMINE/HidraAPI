@@ -129,7 +129,7 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
                     "GET",leakBase+"/{id}/evidence"),
                 new Route(leakWrite,leakWrite.getDeclaredMethod("createLeakCandidate",leakLegacyRequest),
                     "POST",leakBase),
-                new Route(leakWrite,leakWrite.getDeclaredMethod("createLeakCandidate",leakLegacyRequest),
+                new Route(leakWrite,leakWrite.getDeclaredMethod("createLegacyLeakCandidate",leakLegacyRequest),
                     "POST","/api/v1/leakdetection/create-leak-candidate"),
                 new Route(leakRead,leakRead.getDeclaredMethod("candidates",int.class,int.class),
                     "GET",leakBase),

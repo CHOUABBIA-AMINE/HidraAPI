@@ -86,10 +86,22 @@ public class SpringLeakdetectionController implements LeakdetectionController {
 
     @Override
     @NativeProtectedOperation
-    @PostMapping({"/create-leak-candidate", "/candidates"})
+    @PostMapping("/candidates")
     public LeakCandidateResponse createLeakCandidate(@Valid @RequestBody CreateLeakCandidateRequest request) {
         Objects.requireNonNull(request, "CreateLeakCandidateRequest must not be null.");
         return LeakdetectionRestMapper.toResponse(createLeakCandidateUseCase.createLeakCandidate(LeakdetectionRestMapper.toCommand(request)));
+    }
+
+
+    /**
+     * Backward-compatible alias as an independent exact native handler.
+     * Both operations delegate to the same guarded candidate use case.
+     */
+    @NativeProtectedOperation
+    @PostMapping("/create-leak-candidate")
+    public LeakCandidateResponse createLegacyLeakCandidate(
+            @Valid @RequestBody CreateLeakCandidateRequest request) {
+        return createLeakCandidate(request);
     }
 
     @Override

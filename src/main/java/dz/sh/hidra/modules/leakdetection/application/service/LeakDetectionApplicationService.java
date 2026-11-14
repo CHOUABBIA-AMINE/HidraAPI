@@ -49,6 +49,7 @@ import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 
 /**
  * Application service for leak detection candidate/case workflows.
@@ -110,7 +111,18 @@ public class LeakDetectionApplicationService
     public LeakCandidateSummaryDto createLeakCandidate(CreateLeakCandidateCommand command) {
         Objects.requireNonNull(command, "Create leak candidate command must not be null.");
 
+        // Fail closed before interpreting caller topology or other protected resource facts.
+        // The exact company/asset grant is checked again below for the selected asset.
+        if (candidateScope != null && candidateScope.permittedAssets(
+                "leakdetection:candidates:execute").isEmpty()) {
+            throw new AccessDeniedException("Leak candidate create authority is unavailable.");
+        }
+
         String topologyAssetType = requireTopologyAssetType(command.topologyAssetType());
+        if (candidateScope != null) {
+            candidateScope.requireAsset("leakdetection:candidates:execute",
+                    topologyAssetType, command.topologyAssetId());
+        }
         var resolution = topologyAssetContract.resolve(topologyAssetType, command.topologyAssetId());
         if (!resolution.supported()) {
             throw new InvalidLeakDetectionValueException(
@@ -131,9 +143,6 @@ public class LeakDetectionApplicationService
             );
         }
 
-        // Native HTTP wiring always includes current paired company/asset grants.
-        if(candidateScope!=null)candidateScope.requireAsset(
-                "leakdetection:candidates:execute",topologyAssetType,resolution.id());
         Instant now = Instant.now();
         LeakSeverityLevel severity = confidenceClassifier.classify(command.confidenceScore());
         LeakCandidate candidate = new LeakCandidate(

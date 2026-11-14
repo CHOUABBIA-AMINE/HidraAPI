@@ -32,7 +32,6 @@ import dz.sh.hidra.platform.permissions.NativeProtectedOperation;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,7 +42,6 @@ import org.springframework.web.bind.annotation.RestController;
  * Spring MVC adapter exposing leakdetection REST endpoints.
  */
 @RestController
-@Validated
 @RequestMapping("/api/v1/leakdetection")
 public class SpringLeakdetectionController implements LeakdetectionController {
 

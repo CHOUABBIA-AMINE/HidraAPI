@@ -109,7 +109,9 @@ public class EvidenceLinkedAlarmApplicationService implements EvidenceLinkedAlar
     }
 
     @Override
-    @Transactional(readOnly = true)
+    // Alarm READ authorization uses a PostgreSQL SELECT FOR SHARE identity fence;
+    // the outer transaction must allow that lock even though this use case only returns data.
+    @Transactional
     public Result evidence(String alarmId) {
         // The Alarm owner authorizes before even revealing whether it has an evidence mapping.
         scopes.requireAlarm("alarm:alarms:read", alarmId);

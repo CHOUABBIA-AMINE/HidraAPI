@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `01425c2ff66f7e0e7acedda90de07f32eb3e79f9`
+Captured source SHA: `669ca723602615b9f9df50354bff31236dba74ea`
 PostgreSQL server: `16.16 (Debian 16.16-1.pgdg13+1)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `92319d67ba58e695b585bd916fb9355a7c94e54ae46668044a51182f6dbe7f68`.
-Migrations: 211; JPA mappings: 470; catalog relations: 565; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `deb0b244a132a530c05a6921fba8868bc917e823366ab257c34172cb78da7cd6`.
+Migrations: 212; JPA mappings: 470; catalog relations: 566; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -66,6 +66,7 @@ Alarm-owned alarm state; standalone table name is an explicit prefix exception.
 - Migration mention (not inferred introduction): [V20261008_022__hmr_100_alarm_lifecycle_integrity.sql](../../src/main/resources/db/migration/V20261008_022__hmr_100_alarm_lifecycle_integrity.sql)
 - Migration mention (not inferred introduction): [V20261008_023__hmr_105_alarm_closure_integrity.sql](../../src/main/resources/db/migration/V20261008_023__hmr_105_alarm_closure_integrity.sql)
 - Migration mention (not inferred introduction): [V20261008_024__hmr_106_alarm_shelving_integrity.sql](../../src/main/resources/db/migration/V20261008_024__hmr_106_alarm_shelving_integrity.sql)
+- Migration mention (not inferred introduction): [V20261112_005__t12_alarm_evaluation_trigger.sql](../../src/main/resources/db/migration/V20261112_005__t12_alarm_evaluation_trigger.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -162,6 +163,9 @@ Alarm-owned alarm state; standalone table name is an explicit prefix exception.
 - `tr_hmr100_alarm_catalog`: CREATE TRIGGER tr_hmr100_alarm_catalog BEFORE INSERT OR UPDATE ON hidra_alarm FOR EACH ROW EXECUTE FUNCTION hmr100_alarm_catalog_guard()
   - Catalog attributes: {"enabled": "O", "function_identity": "public.hmr100_alarm_catalog_guard()"}
   - Function evidence: CREATE OR REPLACE FUNCTION public.hmr100_alarm_catalog_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    PERFORM hmr100_require_family(NEW.alarm_type_id,'ALARM_TYPE');<br>    PERFORM hmr100_require_family(NEW.severity_id,'ALARM_SEVERITY');<br>    IF NEW.priority_id IS NOT NULL THEN PERFORM hmr100_require_family(NEW.priority_id,'ALARM_PRIORITY'); END IF;<br>    RETURN NEW;<br>END $function$<br>
+- `trg_t12_alarm_origin_guard`: CREATE TRIGGER trg_t12_alarm_origin_guard BEFORE UPDATE ON hidra_alarm FOR EACH ROW EXECUTE FUNCTION t12_alarm_origin_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t12_alarm_origin_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t12_alarm_origin_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    IF EXISTS (SELECT 1 FROM public.hidra_alarm_evaluation_trigger t WHERE t.alarm_id = OLD.id)<br>        AND (NEW.monitoring_evaluation_id IS DISTINCT FROM OLD.monitoring_evaluation_id<br>          OR NEW.source_type IS DISTINCT FROM OLD.source_type<br>          OR NEW.source_reference_id IS DISTINCT FROM OLD.source_reference_id<br>          OR NEW.topology_asset_type_code IS DISTINCT FROM OLD.topology_asset_type_code<br>          OR NEW.topology_asset_id IS DISTINCT FROM OLD.topology_asset_id<br>          OR NEW.alarm_type_id IS DISTINCT FROM OLD.alarm_type_id<br>          OR NEW.severity_id IS DISTINCT FROM OLD.severity_id<br>          OR NEW.title_fr IS DISTINCT FROM OLD.title_fr<br>          OR NEW.first_detected_at IS DISTINCT FROM OLD.first_detected_at) THEN<br>        RAISE EXCEPTION 'T12: linked Alarm origin is immutable';<br>    END IF;<br>    RETURN NEW;<br>END $function$<br>
 
 ### public.hidra_alarm_acknowledgement
 
@@ -471,6 +475,76 @@ Persisted AlarmEscalationJpaEntity state; semantic authority remains with alarm.
 
 None captured in this catalog category.
 
+### public.hidra_alarm_evaluation_trigger
+
+Owner: **alarm**; relation kind: `r`.
+
+Immutable Alarm-owned operator-trigger identity, source provenance, unique evaluation replay and same-owner Alarm reference; no Monitoring foreign key.
+
+- Evidence: [V20261112_005__t12_alarm_evaluation_trigger.sql](../../src/main/resources/db/migration/V20261112_005__t12_alarm_evaluation_trigger.sql)
+- Evidence: [JdbcAlarmEvaluationTriggerAdapter.java](../../src/main/java/dz/sh/hidra/modules/alarm/infrastructure/persistence/adapter/JdbcAlarmEvaluationTriggerAdapter.java)
+- Migration mention (not inferred introduction): [V20261112_005__t12_alarm_evaluation_trigger.sql](../../src/main/resources/db/migration/V20261112_005__t12_alarm_evaluation_trigger.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| evaluation_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| alarm_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| rule_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| rule_revision | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| asset_type | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| asset_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| unit_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| target_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| approval_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| trusted_reading_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| evaluated_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| alarm_type_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| severity_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| title_fr | character varying(255) | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| created_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_alarm_evaluation_trigger_alarm_id_fkey`: FOREIGN KEY (alarm_id) REFERENCES hidra_alarm(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["alarm_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_alarm"}, "type": "f", "validated": true}
+- `hidra_alarm_evaluation_trigger_alarm_id_key`: UNIQUE (alarm_id)
+  - Catalog attributes: {"columns": ["alarm_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_alarm_evaluation_trigger_check`: CHECK (btrim(evaluation_id::text) &lt;&gt; ''::text AND btrim(rule_id::text) &lt;&gt; ''::text AND btrim(company_party_id::text) &lt;&gt; ''::text AND btrim(asset_type::text) &lt;&gt; ''::text AND btrim(asset_id::text) &lt;&gt; ''::text AND btrim(unit_id::text) &lt;&gt; ''::text AND btrim(target_id::text) &lt;&gt; ''::text AND btrim(approval_id::text) &lt;&gt; ''::text AND btrim(trusted_reading_id::text) &lt;&gt; ''::text AND btrim(actor_id::text) &lt;&gt; ''::text)
+  - Catalog attributes: {"columns": ["evaluation_id", "rule_id", "company_party_id", "asset_type", "asset_id", "unit_id", "target_id", "approval_id", "trusted_reading_id", "actor_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_alarm_evaluation_trigger_created_at_check`: CHECK (isfinite(created_at))
+  - Catalog attributes: {"columns": ["created_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_alarm_evaluation_trigger_evaluated_at_check`: CHECK (isfinite(evaluated_at))
+  - Catalog attributes: {"columns": ["evaluated_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_alarm_evaluation_trigger_pkey`: PRIMARY KEY (evaluation_id)
+  - Catalog attributes: {"columns": ["evaluation_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_alarm_evaluation_trigger_rule_revision_check`: CHECK (rule_revision &gt; 0)
+  - Catalog attributes: {"columns": ["rule_revision"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_alarm_evaluation_trigger_title_fr_check`: CHECK (btrim(title_fr::text) &lt;&gt; ''::text)
+  - Catalog attributes: {"columns": ["title_fr"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_alarm_evaluation_trigger_alarm_id_key`: CREATE UNIQUE INDEX hidra_alarm_evaluation_trigger_alarm_id_key ON public.hidra_alarm_evaluation_trigger USING btree (alarm_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_alarm_evaluation_trigger_pkey`: CREATE UNIQUE INDEX hidra_alarm_evaluation_trigger_pkey ON public.hidra_alarm_evaluation_trigger USING btree (evaluation_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `ix_t12_trigger_rule`: CREATE INDEX ix_t12_trigger_rule ON public.hidra_alarm_evaluation_trigger USING btree (rule_id, rule_revision)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+
+#### Triggers
+
+- `trg_t12_trigger_insert_guard`: CREATE TRIGGER trg_t12_trigger_insert_guard BEFORE INSERT ON hidra_alarm_evaluation_trigger FOR EACH ROW EXECUTE FUNCTION t12_trigger_insert_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t12_trigger_insert_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t12_trigger_insert_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    IF NOT EXISTS (<br>        SELECT 1 FROM public.hidra_alarm a WHERE a.id = NEW.alarm_id<br>            AND a.source_type = 'MANUAL'<br>            AND a.monitoring_evaluation_id = NEW.evaluation_id<br>            AND a.source_reference_id IS NULL<br>            AND a.topology_asset_type_code = NEW.asset_type<br>            AND a.topology_asset_id = NEW.asset_id<br>            AND a.alarm_type_id = NEW.alarm_type_id<br>            AND a.severity_id = NEW.severity_id<br>            AND a.title_fr = NEW.title_fr<br>    ) THEN<br>        RAISE EXCEPTION 'T12: Alarm trigger and original Alarm identity disagree';<br>    END IF;<br>    RETURN NEW;<br>END $function$<br>
+- `trg_t12_trigger_no_change`: CREATE TRIGGER trg_t12_trigger_no_change BEFORE DELETE OR UPDATE ON hidra_alarm_evaluation_trigger FOR EACH ROW EXECUTE FUNCTION t12_trigger_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t12_trigger_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t12_trigger_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'T12: immutable evaluation-trigger evidence';<br>END $function$<br>
+- `trg_t12_trigger_no_truncate`: CREATE TRIGGER trg_t12_trigger_no_truncate BEFORE TRUNCATE ON hidra_alarm_evaluation_trigger FOR EACH STATEMENT EXECUTE FUNCTION t12_trigger_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t12_trigger_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t12_trigger_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'T12: immutable evaluation-trigger evidence';<br>END $function$<br>
+
 ### public.hidra_alarm_evidence_link
 
 Owner: **alarm**; relation kind: `r`.
@@ -480,6 +554,7 @@ Persisted AlarmEvidenceLinkJpaEntity state; semantic authority remains with alar
 - Evidence: [AlarmEvidenceLinkJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/alarm/infrastructure/persistence/entity/AlarmEvidenceLinkJpaEntity.java)
 - Migration mention (not inferred introduction): [V20260611_008__create_alarm_tables.sql](../../src/main/resources/db/migration/V20260611_008__create_alarm_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
+- Migration mention (not inferred introduction): [V20261112_005__t12_alarm_evaluation_trigger.sql](../../src/main/resources/db/migration/V20261112_005__t12_alarm_evaluation_trigger.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -509,10 +584,17 @@ Persisted AlarmEvidenceLinkJpaEntity state; semantic authority remains with alar
   - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
 - `ix_hidra_alarm_evidence_link_evidence_reference_id`: CREATE INDEX ix_hidra_alarm_evidence_link_evidence_reference_id ON public.hidra_alarm_evidence_link USING btree (evidence_reference_id)
   - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+- `uq_t12_alarm_evaluation_link`: CREATE UNIQUE INDEX uq_t12_alarm_evaluation_link ON public.hidra_alarm_evidence_link USING btree (alarm_id, evidence_reference_id) WHERE ((evidence_type)::text = 'MONITORING_EVALUATION'::text)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
 
 #### Triggers
 
-None captured in this catalog category.
+- `trg_t12_evidence_guard`: CREATE TRIGGER trg_t12_evidence_guard BEFORE INSERT OR DELETE OR UPDATE ON hidra_alarm_evidence_link FOR EACH ROW EXECUTE FUNCTION t12_alarm_evidence_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t12_alarm_evidence_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t12_alarm_evidence_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    IF TG_OP = 'INSERT' THEN<br>        IF NEW.evidence_type = 'MONITORING_EVALUATION'<br>            AND EXISTS (SELECT 1 FROM public.hidra_alarm_evaluation_trigger t WHERE t.alarm_id = NEW.alarm_id)<br>            AND NOT EXISTS (SELECT 1 FROM public.hidra_alarm_evaluation_trigger t<br>                WHERE t.alarm_id = NEW.alarm_id AND t.evaluation_id = NEW.evidence_reference_id) THEN<br>            RAISE EXCEPTION 'T12: evidence link must use original evaluation identity';<br>        END IF;<br>        RETURN NEW;<br>    END IF;<br>    IF OLD.evidence_type = 'MONITORING_EVALUATION'<br>        AND EXISTS (SELECT 1 FROM public.hidra_alarm_evaluation_trigger t WHERE t.alarm_id = OLD.alarm_id) THEN<br>        RAISE EXCEPTION 'T12: source evidence link is immutable';<br>    END IF;<br>    IF TG_OP = 'UPDATE' THEN<br>        RETURN NEW;<br>    END IF;<br>    RETURN OLD;<br>END $function$<br>
+- `trg_t12_evidence_no_truncate`: CREATE TRIGGER trg_t12_evidence_no_truncate BEFORE TRUNCATE ON hidra_alarm_evidence_link FOR EACH STATEMENT EXECUTE FUNCTION t12_alarm_evidence_no_truncate()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t12_alarm_evidence_no_truncate()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t12_alarm_evidence_no_truncate()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    IF EXISTS (SELECT 1 FROM public.hidra_alarm_evidence_link l<br>        JOIN public.hidra_alarm_evaluation_trigger t ON t.alarm_id = l.alarm_id<br>        WHERE l.evidence_type = 'MONITORING_EVALUATION') THEN<br>        RAISE EXCEPTION 'T12: protected evidence cannot be truncated';<br>    END IF;<br>    RETURN NULL;<br>END $function$<br>
 
 ### public.hidra_alarm_lifecycle_event
 

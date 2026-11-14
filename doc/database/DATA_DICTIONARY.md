@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `669ca723602615b9f9df50354bff31236dba74ea`
+Captured source SHA: `0827c7d575d2296139cf38ea14b8ab23b5835332`
 PostgreSQL server: `16.16 (Debian 16.16-1.pgdg13+1)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `deb0b244a132a530c05a6921fba8868bc917e823366ab257c34172cb78da7cd6`.
-Migrations: 212; JPA mappings: 470; catalog relations: 566; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `91776bee8d5a06bbe68e617a0e10e1ecd95da27a86293866427278586847d5eb`.
+Migrations: 213; JPA mappings: 470; catalog relations: 567; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -14852,6 +14852,7 @@ Persisted LeakCandidateJpaEntity state; semantic authority remains with leakdete
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261004_015__hmr_015_leakdetection_leak_candidate.sql](../../src/main/resources/db/migration/V20261004_015__hmr_015_leakdetection_leak_candidate.sql)
 - Migration mention (not inferred introduction): [V20261006_001__hmr_059_leak_escalation_candidate_integrity.sql](../../src/main/resources/db/migration/V20261006_001__hmr_059_leak_escalation_candidate_integrity.sql)
+- Migration mention (not inferred introduction): [V20261112_006__t13_leak_evaluation_trigger.sql](../../src/main/resources/db/migration/V20261112_006__t13_leak_evaluation_trigger.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -14910,6 +14911,9 @@ Persisted LeakCandidateJpaEntity state; semantic authority remains with leakdete
 - `trg_hmr015_leak_candidate_provenance`: CREATE TRIGGER trg_hmr015_leak_candidate_provenance BEFORE INSERT OR UPDATE OF profile_id, run_id ON hidra_leak_detection_candidate FOR EACH ROW EXECUTE FUNCTION hmr015_validate_leak_candidate_provenance()
   - Catalog attributes: {"enabled": "O", "function_identity": "public.hmr015_validate_leak_candidate_provenance()"}
   - Function evidence: CREATE OR REPLACE FUNCTION public.hmr015_validate_leak_candidate_provenance()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>DECLARE<br>    profile_status varchar(40);<br>    run_profile_id varchar(80);<br>    run_status varchar(40);<br>BEGIN<br>    SELECT p.status<br>      INTO profile_status<br>      FROM hidra_leak_detection_profile p<br>     WHERE p.id = NEW.profile_id;<br><br>    IF profile_status IS NULL OR profile_status &lt;&gt; 'ACTIVE' THEN<br>        RAISE EXCEPTION<br>            'LeakCandidate creation requires an ACTIVE LeakDetectionProfile: %',<br>            NEW.profile_id<br>            USING ERRCODE = '23514';<br>    END IF;<br><br>    IF NEW.run_id IS NOT NULL THEN<br>        SELECT r.profile_id, r.status<br>          INTO run_profile_id, run_status<br>          FROM hidra_leak_detection_run r<br>         WHERE r.id = NEW.run_id;<br><br>        IF run_profile_id IS NULL THEN<br>            RAISE EXCEPTION<br>                'LeakCandidate run must reference an existing LeakDetectionRun: %',<br>                NEW.run_id<br>                USING ERRCODE = '23514';<br>        END IF;<br><br>        IF run_profile_id &lt;&gt; NEW.profile_id THEN<br>            RAISE EXCEPTION<br>                'LeakCandidate run and profile provenance must match'<br>                USING ERRCODE = '23514';<br>        END IF;<br><br>        IF run_status NOT IN ('RUNNING', 'COMPLETED') THEN<br>            RAISE EXCEPTION<br>                'LeakCandidate run must be RUNNING or COMPLETED'<br>                USING ERRCODE = '23514';<br>        END IF;<br>    END IF;<br><br>    RETURN NEW;<br>END;<br>$function$<br>
+- `trg_t13_leak_candidate_origin_guard`: CREATE TRIGGER trg_t13_leak_candidate_origin_guard BEFORE UPDATE ON hidra_leak_detection_candidate FOR EACH ROW EXECUTE FUNCTION t13_leak_candidate_origin_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t13_leak_candidate_origin_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t13_leak_candidate_origin_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>  IF EXISTS (SELECT 1 FROM public.hidra_leak_detection_evaluation_trigger t<br>             WHERE t.candidate_id = OLD.id)<br>      AND (NEW.profile_id IS DISTINCT FROM OLD.profile_id<br>       OR NEW.run_id IS DISTINCT FROM OLD.run_id<br>       OR NEW.candidate_number IS DISTINCT FROM OLD.candidate_number<br>       OR NEW.topology_asset_type IS DISTINCT FROM OLD.topology_asset_type<br>       OR NEW.topology_asset_id IS DISTINCT FROM OLD.topology_asset_id<br>       OR NEW.topology_asset_code IS DISTINCT FROM OLD.topology_asset_code<br>       OR NEW.suspected_at IS DISTINCT FROM OLD.suspected_at<br>       OR NEW.first_evidence_at IS DISTINCT FROM OLD.first_evidence_at<br>       OR NEW.confidence_score IS DISTINCT FROM OLD.confidence_score<br>       OR NEW.severity_level IS DISTINCT FROM OLD.severity_level<br>       OR NEW.summary IS DISTINCT FROM OLD.summary) THEN<br>    RAISE EXCEPTION 'T13: linked candidate origin is immutable';<br>  END IF;<br>  RETURN NEW;<br>END $function$<br>
 
 ### public.hidra_leak_detection_case
 
@@ -15125,6 +15129,78 @@ Persisted LeakEscalationReferenceJpaEntity state; semantic authority remains wit
 
 None captured in this catalog category.
 
+### public.hidra_leak_detection_evaluation_trigger
+
+Owner: **leakdetection**; relation kind: `r`.
+
+LeakDetection-owned immutable, human-declared suspected-leak trigger by Monitoring evaluation ID with one candidate FK; no Monitoring physical foreign key, calibrated probability or leak determination.
+
+- Evidence: [V20261112_006__t13_leak_evaluation_trigger.sql](../../src/main/resources/db/migration/V20261112_006__t13_leak_evaluation_trigger.sql)
+- Evidence: [JdbcLeakEvaluationTriggerAdapter.java](../../src/main/java/dz/sh/hidra/modules/leakdetection/infrastructure/persistence/adapter/JdbcLeakEvaluationTriggerAdapter.java)
+- Migration mention (not inferred introduction): [V20261112_006__t13_leak_evaluation_trigger.sql](../../src/main/resources/db/migration/V20261112_006__t13_leak_evaluation_trigger.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| evaluation_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| candidate_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| rule_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| rule_revision | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| asset_type | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| asset_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| unit_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| target_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| approval_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| trusted_reading_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| evaluated_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| profile_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| declared_confidence | numeric(10,6) | False | None; identity=; generated= | No current mapped Java column | — |
+| reason | character varying(500) | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| created_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_leak_detection_evaluation_trigg_declared_confidence_check`: CHECK (declared_confidence &gt;= 0::numeric AND declared_confidence &lt;= 1::numeric)
+  - Catalog attributes: {"columns": ["declared_confidence"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_leak_detection_evaluation_trigger_candidate_id_fkey`: FOREIGN KEY (candidate_id) REFERENCES hidra_leak_detection_candidate(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["candidate_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_leak_detection_candidate"}, "type": "f", "validated": true}
+- `hidra_leak_detection_evaluation_trigger_candidate_id_key`: UNIQUE (candidate_id)
+  - Catalog attributes: {"columns": ["candidate_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_leak_detection_evaluation_trigger_check`: CHECK (btrim(evaluation_id::text) &lt;&gt; ''::text AND btrim(rule_id::text) &lt;&gt; ''::text AND btrim(company_party_id::text) &lt;&gt; ''::text AND btrim(asset_type::text) &lt;&gt; ''::text AND btrim(asset_id::text) &lt;&gt; ''::text AND btrim(unit_id::text) &lt;&gt; ''::text AND btrim(target_id::text) &lt;&gt; ''::text AND btrim(approval_id::text) &lt;&gt; ''::text AND btrim(trusted_reading_id::text) &lt;&gt; ''::text AND btrim(profile_id::text) &lt;&gt; ''::text AND btrim(actor_id::text) &lt;&gt; ''::text)
+  - Catalog attributes: {"columns": ["evaluation_id", "rule_id", "company_party_id", "asset_type", "asset_id", "unit_id", "target_id", "approval_id", "trusted_reading_id", "profile_id", "actor_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_leak_detection_evaluation_trigger_created_at_check`: CHECK (isfinite(created_at))
+  - Catalog attributes: {"columns": ["created_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_leak_detection_evaluation_trigger_evaluated_at_check`: CHECK (isfinite(evaluated_at))
+  - Catalog attributes: {"columns": ["evaluated_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_leak_detection_evaluation_trigger_pkey`: PRIMARY KEY (evaluation_id)
+  - Catalog attributes: {"columns": ["evaluation_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_leak_detection_evaluation_trigger_reason_check`: CHECK (btrim(reason::text) &lt;&gt; ''::text)
+  - Catalog attributes: {"columns": ["reason"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_leak_detection_evaluation_trigger_rule_revision_check`: CHECK (rule_revision &gt; 0)
+  - Catalog attributes: {"columns": ["rule_revision"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_leak_detection_evaluation_trigger_candidate_id_key`: CREATE UNIQUE INDEX hidra_leak_detection_evaluation_trigger_candidate_id_key ON public.hidra_leak_detection_evaluation_trigger USING btree (candidate_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_leak_detection_evaluation_trigger_pkey`: CREATE UNIQUE INDEX hidra_leak_detection_evaluation_trigger_pkey ON public.hidra_leak_detection_evaluation_trigger USING btree (evaluation_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `ix_t13_leak_trigger_rule`: CREATE INDEX ix_t13_leak_trigger_rule ON public.hidra_leak_detection_evaluation_trigger USING btree (rule_id, rule_revision)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+
+#### Triggers
+
+- `trg_t13_leak_trigger_insert_guard`: CREATE TRIGGER trg_t13_leak_trigger_insert_guard BEFORE INSERT ON hidra_leak_detection_evaluation_trigger FOR EACH ROW EXECUTE FUNCTION t13_leak_trigger_insert_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t13_leak_trigger_insert_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t13_leak_trigger_insert_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>  IF NOT EXISTS (<br>    SELECT 1 FROM public.hidra_leak_detection_candidate c<br>      WHERE c.id = NEW.candidate_id AND c.profile_id = NEW.profile_id<br>        AND c.run_id IS NULL AND c.status = 'NEW'<br>        AND c.topology_asset_type = NEW.asset_type<br>        AND c.topology_asset_id = NEW.asset_id<br>        AND c.suspected_at = NEW.evaluated_at<br>        AND c.first_evidence_at = NEW.evaluated_at<br>        AND c.confidence_score = NEW.declared_confidence<br>        AND c.summary = NEW.reason<br>  ) THEN<br>    RAISE EXCEPTION 'T13: candidate origin and immutable trigger disagree';<br>  END IF;<br>  RETURN NEW;<br>END $function$<br>
+- `trg_t13_leak_trigger_no_change`: CREATE TRIGGER trg_t13_leak_trigger_no_change BEFORE DELETE OR UPDATE ON hidra_leak_detection_evaluation_trigger FOR EACH ROW EXECUTE FUNCTION t13_leak_trigger_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t13_leak_trigger_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t13_leak_trigger_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>  RAISE EXCEPTION 'T13: immutable evaluation-trigger evidence';<br>END $function$<br>
+- `trg_t13_leak_trigger_no_truncate`: CREATE TRIGGER trg_t13_leak_trigger_no_truncate BEFORE TRUNCATE ON hidra_leak_detection_evaluation_trigger FOR EACH STATEMENT EXECUTE FUNCTION t13_leak_trigger_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t13_leak_trigger_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t13_leak_trigger_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>  RAISE EXCEPTION 'T13: immutable evaluation-trigger evidence';<br>END $function$<br>
+
 ### public.hidra_leak_detection_evidence_link
 
 Owner: **leakdetection**; relation kind: `r`.
@@ -15134,6 +15210,7 @@ Persisted LeakEvidenceLinkJpaEntity state; semantic authority remains with leakd
 - Evidence: [LeakEvidenceLinkJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/leakdetection/infrastructure/persistence/entity/LeakEvidenceLinkJpaEntity.java)
 - Migration mention (not inferred introduction): [V20260611_009__create_leakdetection_tables.sql](../../src/main/resources/db/migration/V20260611_009__create_leakdetection_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
+- Migration mention (not inferred introduction): [V20261112_006__t13_leak_evaluation_trigger.sql](../../src/main/resources/db/migration/V20261112_006__t13_leak_evaluation_trigger.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -15165,10 +15242,17 @@ Persisted LeakEvidenceLinkJpaEntity state; semantic authority remains with leakd
   - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
 - `ix_hidra_leak_detection_evidence_link_evidence_reference_id`: CREATE INDEX ix_hidra_leak_detection_evidence_link_evidence_reference_id ON public.hidra_leak_detection_evidence_link USING btree (evidence_reference_id)
   - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+- `uq_t13_leak_monitoring_evidence`: CREATE UNIQUE INDEX uq_t13_leak_monitoring_evidence ON public.hidra_leak_detection_evidence_link USING btree (candidate_id, evidence_reference_id) WHERE ((evidence_type)::text = 'MONITORING_DEVIATION'::text)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
 
 #### Triggers
 
-None captured in this catalog category.
+- `trg_t13_leak_evidence_guard`: CREATE TRIGGER trg_t13_leak_evidence_guard BEFORE INSERT OR DELETE OR UPDATE ON hidra_leak_detection_evidence_link FOR EACH ROW EXECUTE FUNCTION t13_leak_evidence_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t13_leak_evidence_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t13_leak_evidence_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>  IF TG_OP='INSERT' THEN<br>    IF NEW.evidence_type='MONITORING_DEVIATION'<br>       AND EXISTS (SELECT 1 FROM public.hidra_leak_detection_evaluation_trigger t<br>                   WHERE t.candidate_id = NEW.candidate_id)<br>       AND NOT EXISTS (SELECT 1 FROM public.hidra_leak_detection_evaluation_trigger t<br>                       WHERE t.candidate_id = NEW.candidate_id AND t.evaluation_id = NEW.evidence_reference_id) THEN<br>      RAISE EXCEPTION 'T13: evidence must refer to original evaluation';<br>    END IF;<br>    RETURN NEW;<br>  END IF;<br>  IF OLD.evidence_type='MONITORING_DEVIATION' AND<br>     EXISTS (SELECT 1 FROM public.hidra_leak_detection_evaluation_trigger t<br>             WHERE t.candidate_id=OLD.candidate_id) THEN<br>    RAISE EXCEPTION 'T13: linked evidence is immutable';<br>  END IF;<br>  IF TG_OP='UPDATE' THEN RETURN NEW; END IF;<br>  RETURN OLD;<br>END $function$<br>
+- `trg_t13_leak_evidence_no_truncate`: CREATE TRIGGER trg_t13_leak_evidence_no_truncate BEFORE TRUNCATE ON hidra_leak_detection_evidence_link FOR EACH STATEMENT EXECUTE FUNCTION t13_leak_evidence_no_truncate()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t13_leak_evidence_no_truncate()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t13_leak_evidence_no_truncate()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>  IF EXISTS (SELECT 1 FROM public.hidra_leak_detection_evidence_link l<br>             JOIN public.hidra_leak_detection_evaluation_trigger t ON t.candidate_id=l.candidate_id<br>             WHERE l.evidence_type='MONITORING_DEVIATION') THEN<br>    RAISE EXCEPTION 'T13: protected evidence cannot be truncated';<br>  END IF;<br>  RETURN NULL;<br>END $function$<br>
 
 ### public.hidra_leak_detection_localization_estimate
 

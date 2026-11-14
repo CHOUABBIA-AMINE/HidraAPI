@@ -150,7 +150,14 @@ class LeakEvidenceLinkedNativeHttpPostgresIntegrationTest {
             at=at.plus(1,ChronoUnit.MICROS);
             JsonNode evaluation=requireStatus(send(client,"POST",evalPath,token,
                     request(plan.target(),fresh,at)),200);
-            assertOutcome(evaluation,"COMPUTED");
+            // COMPUTED is a qualified numeric result; only non-COMPUTED states
+            // must withhold actual, expected and difference values.
+            assertEquals("COMPUTED",evaluation.path("outcome").asText());
+            assertTrue(evaluation.path("actual").isNumber());
+            assertTrue(evaluation.path("expected").isNumber());
+            assertTrue(evaluation.path("difference").isNumber());
+            assertEquals(105,evaluation.path("actual").asInt());
+            assertEquals(100,evaluation.path("expected").asInt());
             assertEquals(5,evaluation.path("difference").asInt());
             String evaluationId=evaluation.path("id").asText();
 

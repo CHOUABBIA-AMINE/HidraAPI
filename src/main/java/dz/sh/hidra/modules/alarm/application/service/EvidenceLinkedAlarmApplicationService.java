@@ -41,7 +41,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public final class EvidenceLinkedAlarmApplicationService implements EvidenceLinkedAlarmUseCase {
+public class EvidenceLinkedAlarmApplicationService implements EvidenceLinkedAlarmUseCase {
     private final MonitoringEvaluationEvidencePort monitoring;
     private final AlarmResourceAuthorizationPort scopes;
     private final AlarmEvaluationTriggerPort triggers;

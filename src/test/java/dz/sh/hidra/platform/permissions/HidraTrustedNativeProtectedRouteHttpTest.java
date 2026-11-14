@@ -167,6 +167,8 @@ class HidraTrustedNativeProtectedRouteHttpTest {
    var routes=registry.candidates();
    assertEquals(62,routes.size());
    var expected=java.util.Set.of(
+     "POST /api/v1/alarm/alarms/from-evaluation",
+     "GET /api/v1/alarm/alarms/{id}/evidence",
     "POST /api/v1/monitoring/rules",
     "POST /api/v1/monitoring/create-monitoring-rule",
     "GET /api/v1/monitoring/rules",

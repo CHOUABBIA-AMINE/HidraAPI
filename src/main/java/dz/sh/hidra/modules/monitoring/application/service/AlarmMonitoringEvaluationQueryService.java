@@ -30,7 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 /** A global receipt ID is resolved inside its owner; no foreign repository imports. */
 @Service
-public final class AlarmMonitoringEvaluationQueryService implements AlarmMonitoringEvaluationContract {
+public class AlarmMonitoringEvaluationQueryService implements AlarmMonitoringEvaluationContract {
     private final AuthoritativeDeviationUseCase deviations;
     private final AuthoritativeDeviationRepositoryPort receipts;
     private final MonitoringRuleRevisionPort rules;

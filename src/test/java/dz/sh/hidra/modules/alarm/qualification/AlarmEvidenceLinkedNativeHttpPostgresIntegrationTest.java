@@ -213,9 +213,10 @@ class AlarmEvidenceLinkedNativeHttpPostgresIntegrationTest {
                     Long.class, alarmId));
             assertThrows(org.springframework.dao.DataAccessException.class, () -> database.update(
                     "update hidra_alarm_evaluation_trigger set rule_id=? where evaluation_id=?", id(), evaluationId));
-            var ack = requireStatus(send(client, "POST", alarmBase + "/acknowledgements", token,
-                    Map.of("alarmId", alarmId, "comment", "Reviewed synthetic deviation")), 200);
-            assertFalse(ack.asText().isBlank());
+            var ack = send(client, "POST", alarmBase + "/acknowledgements", token,
+                    Map.of("alarmId", alarmId, "comment", "Reviewed synthetic deviation"));
+            assertEquals(200, ack.statusCode(), ack.body());
+            assertFalse(ack.body().isBlank());
             assertEquals("ACKNOWLEDGED", requireStatus(send(client, "GET", alarmBase + "/" + alarmId,
                     token, null), 200).path("currentState").asText());
             JsonNode staleEvaluation = requireStatus(send(client, "POST", path, token,

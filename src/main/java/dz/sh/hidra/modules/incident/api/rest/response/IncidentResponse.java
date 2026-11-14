@@ -21,6 +21,7 @@ package dz.sh.hidra.modules.incident.api.rest.response;
 
 import dz.sh.hidra.modules.incident.domain.value.IncidentSourceType;
 import dz.sh.hidra.modules.incident.domain.value.IncidentStatus;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.Instant;
 
@@ -34,6 +35,12 @@ public record IncidentResponse(
         String classificationId,
         String severityId,
         IncidentStatus status,
+        // Keep the legacy open-incident response vocabulary unchanged. Suspected
+        // leak candidates are escalated by the separate T14 source-qualified API.
+        @Schema(allowableValues = {
+            "MANUAL", "MONITORING_ALERT", "ALARM", "LEAK_CASE",
+            "HSE_EVENT", "INTEGRATION", "OTHER"
+        })
         IncidentSourceType sourceType,
         String topologyAssetTypeCode,
         String topologyAssetId,

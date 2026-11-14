@@ -9,7 +9,7 @@
 | Status | ACTIVE |
 | Authority | Sole task register and execution source for HidraAPI |
 | Owner adoption | 2026-11-10 |
-| Active task selection | T13 — evidence-linked suspected leak candidate registered for one complete implementation stage after exact-head documentation validation. T12 accepted on CI #1236; independent-JVM integrated proof remains under T15. |
+| Active task selection | T14 — complete human escalation registered; T13 accepted on exact-SHA Full CI #1240; independent-JVM GZ2 proof remains T15. |
 
 The task register controls scope, dependencies, status and acceptance. Existing technical policy and verified implementation evidence retain their applicability. Task status advances only with recorded evidence. The initial status for each task is PLANNED. The first candidate is T01.
 
@@ -95,8 +95,8 @@ A task includes its required authorization, REST contract, persistence, failure 
 | Task | Owner | Depends on | Deliverable | Pass condition | Status |
 |---|---|---|---|---|---|
 | **T12 · Raise and acknowledge an evidence-linked alarm** | Alarm with Monitoring | T11 | Accept eligible scoped evidence, apply correlation/deduplication and expose alarm, exact evidence and operator acknowledgement. | Replay of the same qualifying trigger yields one alarm outcome. An authorized operator acknowledges it. Unauthorized actors cannot read or mutate it. **FG-06 / A06.** | COMPLETED |
-| **T13 · Create a suspected leak candidate from eligible evidence** | Leak Detection with Monitoring or Telemetry | T11 or T09, according to the admitted trigger policy | Create a candidate with exact source references, uncertainty, status and duplicate policy. Return candidate detail without promoting suspicion to confirmation. | Replaying the eligible trigger preserves one candidate. Insufficient evidence is handled explicitly. The candidate and its evidence remain retrievable under exact scope. **FG-06 / A06.** | IN PROGRESS |
-| **T14 · Escalate a correlated alarm or leak to a case** | Incident with Alarm, Leak Detection and Workflow | T12, T13 | Add authorized human escalation, exact target linkage and a typed receipt/history of the new or linked case. | Eligible operator escalates once and sees the linked case and decision timeline after restart. Wrong scope or target cannot create a case. **FG-06/07/18 / A06/A07/A18.** | PLANNED |
+| **T13 · Create a suspected leak candidate from eligible evidence** | Leak Detection with Monitoring or Telemetry | T11 or T09, according to the admitted trigger policy | Create a candidate with exact source references, uncertainty, status and duplicate policy. Return candidate detail without promoting suspicion to confirmation. | Replaying the eligible trigger preserves one candidate. Insufficient evidence is handled explicitly. The candidate and its evidence remain retrievable under exact scope. **FG-06 / A06.** | COMPLETED |
+| **T14 · Escalate a correlated alarm or leak to a case** | Incident with Alarm, Leak Detection and Workflow | T12, T13 | Add authorized human escalation, exact target linkage and a typed receipt/history of the new or linked case. | Eligible operator escalates once and sees the linked case and decision timeline after restart. Wrong scope or target cannot create a case. **FG-06/07/18 / A06/A07/A18.** | IN PROGRESS |
 
 ### Increment 6 — Integrated development acceptance
 
@@ -1402,3 +1402,69 @@ The API contract/dictionary lane generated genuine runtime OpenAPI, checked back
 **One selected repair; exact message:** `fix(leakdetection): restore T13 validation and authorization order`. **Closed write scope:** `src/main/java/dz/sh/hidra/modules/leakdetection/api/rest/controller/SpringLeakdetectionController.java`, `src/main/java/dz/sh/hidra/modules/leakdetection/application/service/LeakDetectionApplicationService.java`, and this `doc/roadmap/ROADMAP.md`. Remove class-level Spring AOP `@Validated` while retaining every `@Valid @RequestBody` argument for Spring MVC request validation. In the transactional legacy candidate use case, fail with 403 when the actor has no current eligible write scope and check the requested exact asset grant before Topology resolution and persistence. This leaves original scoped JPA/SQL ownership, replay, protected native routes, DTOs, REST mapping, migrations, OpenAPI/dictionary snapshots and all existing test assertions unchanged. One existing signed HTTP/PostgreSQL T13 journey covers foreign denial on both historical candidate POST URLs plus later replay, scope and evidence assertions; no additional test suite, sharding or CI relaxation is authorized.
 
 **Evidence boundary.** This change has not been compiled or executed locally: Maven and a local PostgreSQL test runtime were not available to this agent. The first failure prevented later assertions from running; their success remains unproven. T13 stays **IN PROGRESS** pending the new commit's exact-SHA CI # full verification and documentation results; any further observed root cause requires a newly bounded `Fail` repair. Do not infer T14/T15 authorization, industrial leak-algorithm validation, deployment or SITE acceptance. Publish once to guarded `main`, observe applicable CI queued/started and STOP.
+
+
+### T14 source-audited registration and complete one-stage envelope — 2026-11-14
+
+**Accepted predecessor and selected documentation stage.** The audited live `main` parent is `7b16d04fb361fbb2d2f5b8c7e173ce0ac415cb75` with tree `b4e5a4a5ad60ab5b0b6ad6295654d58ec7859b4d` and parent `c302a14af876d421c0377e236106ab6b5a14aa71`. [Full CI #1240](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/43602423347) completed **SUCCESS** for all mandatory jobs, including unit/architecture, exact API/dictionary and all 14 PostgreSQL shards, and [Documentation Validation #1060](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/43602423342) completed **SUCCESS** on the same SHA. The T13 signed-native candidate scenario passed shard 7. **T13 is COMPLETED for its scoped synthetic software contract**, not industrial detection validity or T15 independent-JVM proof. T14 was PLANNED without a source-approved file envelope. This `Next` therefore performs only its **single documentation registration**, with message `docs(roadmap): accept T13 and register T14 incident escalation`. T14 is now **IN PROGRESS — registered, not implemented**. After this documentation-only commit's passing exact-SHA Documentation Validation, the next `Next` executes the entire T14 code/test/migration/contract delivery in **one** source commit with exact message `feat(incident): escalate correlated alarms and leaks to cases`. No intermediate approval, test-only, preflight-only or implementation subset is registered.
+
+**Source-backed inventory and ownership.** Incident owns case `Incident`, timeline, escalation and evidence rows, not Alarm or LeakDetection aggregate state. T12 Alarm owns `EvidenceLinkedAlarmUseCase.evidence(alarmId)`, and T13 LeakDetection owns `EvidenceLinkedLeakCandidateUseCase.evidence(candidateId)`; both require current source-owner plus Monitoring READ for protected evaluation lineage. The Incident `OpenIncidentUseCase` currently accepts caller-designated `sourceType/sourceReferenceId`, while the `IncidentQueryApplicationService` currently calls unscoped `findAll/count/findById`, which cannot expose T14 protected cases safely. `IncidentSourceType` and `IncidentEvidenceType` currently expose `ALARM` and `LEAK_CASE` but no distinct `LEAK_CANDIDATE`; do not falsify a suspected candidate as a confirmed case. The existing `hidra_incident_evidence_link`, `hidra_incident_timeline_entry` and `hidra_incident_escalation` entities are available, but no applicable public signed atomic source-to-case command, immutable evaluation mapping, scoped list/count or timeline read exists. `IncidentWorkflowContract` provides closure proof only, not automatic escalation approval. `SpringIncidentController` currently has the same class-level `@Validated`/overridden-`@Valid` shape previously responsible for HV000151 in T13; address that known hazard within the one T14 code stage and keep Spring MVC request DTO validation.
+
+**Complete T14 contract and acceptance policy.** New human-initiated, signed `POST /api/v1/incident/incidents/from-evidence` accepts the source family `ALARM` or `LEAK_CANDIDATE`, source ID, chosen eligible Incident classification/severity, required French title and reason; it never trusts client actor, company, asset, source evaluation, lifecycle status or timestamps. Owners export Incident-specific scalar protected evidence through deliberate public contracts, not foreign JPA/domain models. Source READ and current Monitoring READ must hold, and Incident independently checks current *paired direct* company plus exact asset EXECUTE scope before any protected existence, detail, write or response is exposed; GLOBAL route permission alone is insufficient. `GET /api/v1/incident/incidents/{id}/escalation` and `GET /api/v1/incident/incidents/{id}/timeline` provide typed authorized receipts; existing Incident detail/list/totals become asset/company scoped in SQL before paging and counting. A reader without the source-owning READ must not see protected evaluation IDs or numeric provenance even if Incident READ is present. Protect legacy manual `POST /api/v1/incident/incidents` and alias from forged T14 `ALARM`/`LEAK_CANDIDATE` provenance; preserve unrelated pre-existing manual use cases. Accepted Incident state is `OPEN` and human-declared, never proven leak, physical action or autonomous escalation. Do not introduce a fictitious Workflow approval step; preserve existing Incident Workflow closure governance and validate any explicitly linked workflow target with its owner if needed.
+
+**Correlation, storage, concurrency and time.** A T12 alarm and T13 suspected candidate may reference the same immutable T11 evaluation. Under one Incident-owned transaction serialize on that evaluation, establish a single case per qualifying correlation, and attach the second source as another verified evidence link without creating a second case; exact replay returns the existing typed receipt and contradictory payload/asset/company/source conflict is 409. Persist the actor, reason, qualified source identity, evidence kind, evaluation ID, timestamp and case ID with a database uniqueness guard; resolve current owner before protected source disclosure, validate exact asset match and lock on replay. The accepted additive candidate migration path `V20261112_007__t14_incident_evaluation_escalation.sql` is not a claim it already exists; it must use true PostgreSQL FKs/uniqueness/immutability/index proof against the latest migrated schema without rewriting earlier migrations. Existing Incident catalogue validation, server-side actor derivation, record ownership and Workflow closure invariants remain intact. Handle malformed 400/422, unauthorized non-disclosing 403/404, mismatched 409, stale/revoked evidence and atomic rollback consistently. Do not require real plant data, numerical simulation, live SCADA, OT command or new release/deployment configuration.
+
+**Closed implementation file allowlist (all exact paths; proposed new files are not source-presence claims).** Only these files may be created or modified by the later one-stage implementation, after exact-head reinspection:
+- `src/main/java/dz/sh/hidra/modules/incident/domain/value/IncidentSourceType.java`
+- `src/main/java/dz/sh/hidra/modules/incident/domain/value/IncidentEvidenceType.java`
+- `src/main/java/dz/sh/hidra/modules/incident/domain/value/IncidentEscalationSourceType.java`
+- `src/main/java/dz/sh/hidra/modules/incident/domain/model/IncidentSourceEscalation.java`
+- `src/main/java/dz/sh/hidra/modules/incident/application/port/in/EscalateEvidenceToIncidentUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/incident/application/port/in/IncidentQueryUseCase.java`
+- `src/main/java/dz/sh/hidra/modules/incident/application/port/out/IncidentEscalationSourcePort.java`
+- `src/main/java/dz/sh/hidra/modules/incident/application/port/out/IncidentEscalationAuthorizationPort.java`
+- `src/main/java/dz/sh/hidra/modules/incident/application/port/out/IncidentEscalationStorePort.java`
+- `src/main/java/dz/sh/hidra/modules/incident/application/port/out/IncidentRepositoryPort.java`
+- `src/main/java/dz/sh/hidra/modules/incident/application/service/EvidenceLinkedIncidentEscalationApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/incident/application/service/IncidentApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/incident/application/service/IncidentQueryApplicationService.java`
+- `src/main/java/dz/sh/hidra/modules/incident/api/rest/controller/EvidenceLinkedIncidentEscalationController.java`
+- `src/main/java/dz/sh/hidra/modules/incident/api/rest/controller/IncidentQueryController.java`
+- `src/main/java/dz/sh/hidra/modules/incident/api/rest/controller/SpringIncidentController.java`
+- `src/main/java/dz/sh/hidra/modules/incident/api/rest/request/EscalateEvidenceToIncidentRequest.java`
+- `src/main/java/dz/sh/hidra/modules/incident/api/rest/response/IncidentEscalationReceiptResponse.java`
+- `src/main/java/dz/sh/hidra/modules/incident/infrastructure/persistence/adapter/JpaIncidentRepositoryAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/incident/infrastructure/persistence/repository/IncidentJpaRepository.java`
+- `src/main/java/dz/sh/hidra/modules/incident/infrastructure/persistence/adapter/JdbcIncidentSourceEscalationAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/incident/infrastructure/integration/IncidentEscalationSourceAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/incident/infrastructure/integration/IncidentReferencePolicyAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/incident/infrastructure/security/IncidentEscalationAuthorizationAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/application/contract/incident/IncidentAlarmEvidenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/alarm/application/service/IncidentAlarmEvidenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/leakdetection/application/contract/incident/IncidentLeakCandidateEvidenceContract.java`
+- `src/main/java/dz/sh/hidra/modules/leakdetection/application/service/IncidentLeakCandidateEvidenceQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/incident/IncidentScopedAuthorizationContract.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/out/IncidentExplicitGrantEvidencePort.java`
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/IncidentScopedAuthorizationQueryService.java`
+- `src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JpaIncidentExplicitGrantEvidenceAdapter.java`
+- `src/main/java/dz/sh/hidra/modules/topology/application/contract/incident/IncidentTopologyOwnershipContract.java`
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/reference/JpaIncidentTopologyOwnershipAdapter.java`
+- `src/main/resources/db/migration/V20261112_007__t14_incident_evaluation_escalation.sql`
+- `src/main/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistry.java`
+- `src/test/java/dz/sh/hidra/modules/incident/qualification/IncidentCorrelatedEscalationNativeHttpPostgresIntegrationTest.java`
+- `src/test/java/dz/sh/hidra/modules/incident/application/service/IncidentQueryApplicationServiceTest.java`
+- `src/test/java/dz/sh/hidra/modules/incident/semantic/IncidentSemanticRemediationTest.java`
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java`
+- `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java`
+- `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java`
+- `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistryTest.java`
+- `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteStartupValidatorTest.java`
+- `.github/ci-test-inventory.json`
+- `.github/database-dictionary-ownership.json`
+- `doc/architecture/CROSS_MODULE_CONTRACTS.md`
+- `doc/roadmap/ROADMAP.md`
+- `doc/api/openapi.yaml`
+- `doc/database/DATA_DICTIONARY.md`
+- `.github/documentation-validation.json`
+
+**One integrated verification and publication discipline.** Reuse existing signed LOCAL native HTTP/T12 and T13 synthetic GZ2 fixtures; add one Incident-owned `IncidentCorrelatedEscalationNativeHttpPostgresIntegrationTest` scenario for qualified Alarm and candidate source (including shared evaluation), same/concurrent replay, mismatch conflict, scoped Incident count/detail/evidence/timeline readback, foreign/revoked/partial-scope denial, unchanged old manual operations, invalid source status/type, rollback, PostgreSQL uniqueness and timestamp/actor provenance. No duplicate restart suite: independent-JVM restart and whole GZ2 chain remain T15. Update CI test-inventory fingerprints and exact protected MVC route/startup declarations together, retaining strict architecture/forensic guardrails and all existing 14 shards, OpenAPI compatibility/equality, physical dictionary comparison and Full Verification Gate. Genuine OpenAPI/dictionary/manifest files in the allowlist may change only from actual generated artifacts, never hand-derived schema. If local runtime cannot execute, report CI-first gaps honestly; no CI bypass or test deletion. T14 completion requires exact-SHA Full HidraAPI CI **SUCCESS**, not merely a documentation run. This stage writes only `doc/roadmap/ROADMAP.md`; publish guarded to main, observe matching Documentation Validation queued/started, then STOP without beginning T14 implementation or T15.

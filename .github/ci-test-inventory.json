@@ -48,7 +48,7 @@
       "lane": "unit-architecture",
       "owner": "architecture",
       "path": "src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java",
-      "source_sha256": "5e0f201edd3e8c89d0f82be98255d56d9bd8dee7979940e80bc448db79f78905",
+      "source_sha256": "7856cf4ac4d49fe837d8733c4b04c20967f35e4a483c3dade1dd3c7c4cc4353a",
       "supports": []
     },
     {
@@ -99,7 +99,7 @@
       "lane": "unit-architecture",
       "owner": "architecture",
       "path": "src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java",
-      "source_sha256": "1cb9d5ada508b9ab76d592d17a161f4c232e60604bab5fa7355d0ac5d17807ad",
+      "source_sha256": "af0f086a61aea98c13541a58373c7ce87aff699b4d4d99fb1c3086e4e6a12b27",
       "supports": []
     },
     {
@@ -4650,7 +4650,21 @@
       "lane": "unit-architecture",
       "owner": "leakdetection",
       "path": "src/test/java/dz/sh/hidra/modules/leakdetection/application/service/LeakDetectionQueryApplicationServiceTest.java",
-      "source_sha256": "cd00bbd8eea2cb12adbbd3790d4642b681b8066b447c66f41dca93c4ec3417b9",
+      "source_sha256": "9cc8567b551f8c971b80f35cf637622c66bc1e633115125ad617868b18179853",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "signedEvaluationCreatesOneDurableSuspectedLeakCandidate"
+      ],
+      "class": "dz.sh.hidra.modules.leakdetection.qualification.LeakEvidenceLinkedNativeHttpPostgresIntegrationTest",
+      "dependency_reason": "T13 one genuine signed GZ2 Monitoring-to-Leak suspected-candidate HTTP journey, exact scoped grants, replay, provenance and immutable PostgreSQL evidence.",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "leakdetection",
+      "path": "src/test/java/dz/sh/hidra/modules/leakdetection/qualification/LeakEvidenceLinkedNativeHttpPostgresIntegrationTest.java",
+      "source_sha256": "72d25aa7225d0027028fd8990572ad5421bf2d147001e517a4bf42d3a46c946d",
       "supports": []
     },
     {
@@ -11721,7 +11735,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java",
-      "source_sha256": "80371d8700058c8addaa9fd975314d01a8c64447f21d5aff0d5a67604412e764",
+      "source_sha256": "b34794ca2413bdb299d26536c5333793f3e10bc2b6441413d05837d72a5a45a1",
       "supports": []
     },
     {
@@ -11745,7 +11759,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistryTest.java",
-      "source_sha256": "525c6724d83da1017116928e8bd65057fe8f131cf93a48a6ee3c624fcf0deb04",
+      "source_sha256": "4be29a399042912573e814fd4300013c50962c26d6d11c3672a023ffe22b0927",
       "supports": []
     },
     {
@@ -11765,7 +11779,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteStartupValidatorTest.java",
-      "source_sha256": "f197afb93c695963628324dad3d775a25d9f5274e4a5b41f020176fc7b863a25",
+      "source_sha256": "c4cc7cef96c3fab00bbff9bd03bbf7ed296cccffbac8e4e56aea038d8cd460fd",
       "supports": []
     },
     {

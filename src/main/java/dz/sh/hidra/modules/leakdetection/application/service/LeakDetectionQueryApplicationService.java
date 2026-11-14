@@ -21,40 +21,50 @@ package dz.sh.hidra.modules.leakdetection.application.service;
 
 import dz.sh.hidra.modules.leakdetection.application.port.in.LeakDetectionQueryUseCase;
 import dz.sh.hidra.modules.leakdetection.application.port.out.LeakCandidateRepositoryPort;
+import dz.sh.hidra.modules.leakdetection.application.port.out.LeakCandidateResourceAuthorizationPort;
 import dz.sh.hidra.modules.leakdetection.application.port.out.LeakDetectionCaseRepositoryPort;
 import dz.sh.hidra.modules.leakdetection.domain.model.LeakCandidate;
 import dz.sh.hidra.modules.leakdetection.domain.model.LeakDetectionCase;
 import java.util.List;
 import java.util.Objects;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class LeakDetectionQueryApplicationService implements LeakDetectionQueryUseCase {
 
     private static final int MAX_PAGE_SIZE = 200;
     private final LeakCandidateRepositoryPort candidateRepositoryPort;
+    private final LeakCandidateResourceAuthorizationPort candidateScope;
     private final LeakDetectionCaseRepositoryPort caseRepositoryPort;
 
     public LeakDetectionQueryApplicationService(
             LeakCandidateRepositoryPort candidateRepositoryPort,
-            LeakDetectionCaseRepositoryPort caseRepositoryPort
+            LeakDetectionCaseRepositoryPort caseRepositoryPort,
+            LeakCandidateResourceAuthorizationPort candidateScope
     ) {
         this.candidateRepositoryPort = Objects.requireNonNull(candidateRepositoryPort, "LeakCandidateRepositoryPort must not be null.");
         this.caseRepositoryPort = Objects.requireNonNull(caseRepositoryPort, "LeakDetectionCaseRepositoryPort must not be null.");
+        this.candidateScope = Objects.requireNonNull(candidateScope, "Candidate scope is required.");
     }
 
     @Override
+    @Transactional
     public Page<LeakCandidateView> candidates(int page, int size) {
         validatePage(page, size);
-        List<LeakCandidateView> content = candidateRepositoryPort.findAll(page, size).stream().map(this::toCandidateView).toList();
-        long total = candidateRepositoryPort.count();
+        var authorized=candidateRepositoryPort.findAuthorized(
+                candidateScope.permittedAssets("leakdetection:candidates:read"),page,size);
+        List<LeakCandidateView> content = authorized.content().stream().map(this::toCandidateView).toList();
+        long total = authorized.total();
         int totalPages = total == 0 ? 0 : (int) Math.ceil((double) total / size);
         return new Page<>(content, page, size, total, totalPages, page + 1 < totalPages);
     }
 
     @Override
+    @Transactional
     public LeakCandidateView candidate(String id) {
         String normalizedId = requireId(id, "candidate");
+        candidateScope.requireCandidate("leakdetection:candidates:read",normalizedId);
         return candidateRepositoryPort.findById(normalizedId)
                 .map(this::toCandidateView)
                 .orElseThrow(() -> new IllegalArgumentException("Unknown leak candidate: " + id));

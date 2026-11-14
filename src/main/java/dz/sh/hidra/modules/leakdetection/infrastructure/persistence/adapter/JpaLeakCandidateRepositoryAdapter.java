@@ -20,6 +20,7 @@
 package dz.sh.hidra.modules.leakdetection.infrastructure.persistence.adapter;
 
 import dz.sh.hidra.modules.leakdetection.application.port.out.LeakCandidateRepositoryPort;
+import dz.sh.hidra.modules.leakdetection.application.port.out.LeakCandidateResourceAuthorizationPort.AssetRef;
 import dz.sh.hidra.modules.leakdetection.domain.exception.InvalidLeakDetectionValueException;
 import dz.sh.hidra.modules.leakdetection.domain.model.LeakCandidate;
 import dz.sh.hidra.modules.leakdetection.domain.service.LeakConfidenceClassifier;
@@ -33,6 +34,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
@@ -63,6 +66,31 @@ public class JpaLeakCandidateRepositoryAdapter implements LeakCandidateRepositor
                 "LeakDetectionRunJpaRepository must not be null."
         );
     }
+
+
+    @Override
+    public Optional<ProfileRef> profile(String id) {
+        return profileRepository.findById(id).map(p -> new ProfileRef(p.id(),p.topologyAssetType(),
+                p.topologyAssetId(),p.status()==LeakDetectionProfileStatus.ACTIVE));
+    }
+
+    @Override
+    public AuthorizedPage findAuthorized(List<AssetRef> assets, int page, int size) {
+        if (assets == null || assets.isEmpty()) return new AuthorizedPage(List.of(),0);
+        // Database-side asset predicate is applied before OFFSET/LIMIT and total calculation.
+        Specification<dz.sh.hidra.modules.leakdetection.infrastructure.persistence.entity.LeakCandidateJpaEntity> predicate=
+            (root, query, cb)->cb.or(assets.stream()
+                .map(a->cb.and(cb.equal(root.get("topologyAssetType"),a.type()),
+                               cb.equal(root.get("topologyAssetId"),a.id())))
+                .toArray(Predicate[]::new));
+        var selected=repository.findAll(predicate,
+                PageRequest.of(page,size,Sort.by(Sort.Direction.DESC,"updatedAt")));
+        return new AuthorizedPage(selected.getContent().stream()
+                .map(LeakDetectionPersistenceMapper::toDomain).toList(),selected.getTotalElements());
+    }
+
+    @Override
+    public void flush() { repository.flush(); }
 
     @Override
     public LeakCandidate save(LeakCandidate model) {

@@ -115,7 +115,26 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
             Class<?> alarmEvaluation=Class.forName(alarmRest+"controller.EvidenceLinkedAlarmController");
             Class<?> alarmEvaluationRequest=Class.forName(alarmRest+"request.EvidenceLinkedAlarmRequest");
             String alarmBase="/api/v1/alarm/alarms";
+            final String leakRest="dz.sh.hidra.modules.leakdetection.api.rest.";
+            Class<?> leakEvidence=Class.forName(leakRest+"controller.EvidenceLinkedLeakCandidateController");
+            Class<?> leakRequest=Class.forName(leakRest+"request.LeakCandidateFromEvaluationRequest");
+            Class<?> leakWrite=Class.forName(leakRest+"controller.SpringLeakdetectionController");
+            Class<?> leakLegacyRequest=Class.forName(leakRest+"request.CreateLeakCandidateRequest");
+            Class<?> leakRead=Class.forName(leakRest+"controller.LeakDetectionQueryController");
+            String leakBase="/api/v1/leakdetection/candidates";
             return List.of(
+                new Route(leakEvidence,leakEvidence.getDeclaredMethod("create",leakRequest),
+                    "POST",leakBase+"/from-evaluation"),
+                new Route(leakEvidence,leakEvidence.getDeclaredMethod("evidence",String.class),
+                    "GET",leakBase+"/{id}/evidence"),
+                new Route(leakWrite,leakWrite.getDeclaredMethod("createLeakCandidate",leakLegacyRequest),
+                    "POST",leakBase),
+                new Route(leakWrite,leakWrite.getDeclaredMethod("createLeakCandidate",leakLegacyRequest),
+                    "POST","/api/v1/leakdetection/create-leak-candidate"),
+                new Route(leakRead,leakRead.getDeclaredMethod("candidates",int.class,int.class),
+                    "GET",leakBase),
+                new Route(leakRead,leakRead.getDeclaredMethod("candidate",String.class),
+                    "GET",leakBase+"/{id}"),
                 new Route(alarmEvaluation,alarmEvaluation.getDeclaredMethod("create",alarmEvaluationRequest),
                     "POST",alarmBase+"/from-evaluation"),
                 new Route(alarmEvaluation,alarmEvaluation.getDeclaredMethod("evidence",String.class),

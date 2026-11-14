@@ -28,6 +28,7 @@ import dz.sh.hidra.modules.leakdetection.application.port.in.CreateLeakCandidate
 import dz.sh.hidra.modules.leakdetection.application.port.in.EscalateLeakCaseUseCase;
 import dz.sh.hidra.modules.leakdetection.application.port.in.OpenLeakCaseUseCase;
 import jakarta.validation.Valid;
+import dz.sh.hidra.platform.permissions.NativeProtectedOperation;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -84,6 +85,7 @@ public class SpringLeakdetectionController implements LeakdetectionController {
     }
 
     @Override
+    @NativeProtectedOperation
     @PostMapping({"/create-leak-candidate", "/candidates"})
     public LeakCandidateResponse createLeakCandidate(@Valid @RequestBody CreateLeakCandidateRequest request) {
         Objects.requireNonNull(request, "CreateLeakCandidateRequest must not be null.");

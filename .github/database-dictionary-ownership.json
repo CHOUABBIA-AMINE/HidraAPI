@@ -296,6 +296,14 @@
     "owner": "leakdetection",
     "purpose": "Leakdetection-owned case state; physical prefix is hidra_leak_detection."
   },
+  "public.hidra_leak_detection_evaluation_trigger": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261112_006__t13_leak_evaluation_trigger.sql",
+      "src/main/java/dz/sh/hidra/modules/leakdetection/infrastructure/persistence/adapter/JdbcLeakEvaluationTriggerAdapter.java"
+    ],
+    "owner": "leakdetection",
+    "purpose": "LeakDetection-owned immutable, human-declared suspected-leak trigger by Monitoring evaluation ID with one candidate FK; no Monitoring physical foreign key, calibrated probability or leak determination."
+  },
   "public.hidra_monitoring_authoritative_evaluation": {
     "owner": "monitoring",
     "purpose": "Immutable Monitoring comparison receipts with exact evidence identifiers, deterministic replay identity and nullable numeric outcome.",

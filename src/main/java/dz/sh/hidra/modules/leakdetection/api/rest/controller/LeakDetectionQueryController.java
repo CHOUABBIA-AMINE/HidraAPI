@@ -24,6 +24,10 @@ import dz.sh.hidra.modules.leakdetection.application.port.in.LeakDetectionQueryU
 import dz.sh.hidra.modules.leakdetection.application.port.in.LeakDetectionQueryUseCase.LeakCaseView;
 import dz.sh.hidra.modules.leakdetection.application.port.in.LeakDetectionQueryUseCase.Page;
 import java.util.Objects;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
+import dz.sh.hidra.platform.permissions.NativeProtectedOperation;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,6 +44,7 @@ public class LeakDetectionQueryController {
         this.queryUseCase = Objects.requireNonNull(queryUseCase, "LeakDetectionQueryUseCase must not be null.");
     }
 
+    @NativeProtectedOperation
     @GetMapping("/candidates")
     public Page<LeakCandidateView> candidates(
             @RequestParam(defaultValue = "0") int page,
@@ -48,9 +53,15 @@ public class LeakDetectionQueryController {
         return queryUseCase.candidates(page, size);
     }
 
+    @NativeProtectedOperation
     @GetMapping("/candidates/{id}")
     public LeakCandidateView candidate(@PathVariable String id) {
         return queryUseCase.candidate(id);
+    }
+
+    @ExceptionHandler(java.util.NoSuchElementException.class)
+    ProblemDetail hidden(java.util.NoSuchElementException ignored) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND,"Protected Leak candidate unavailable.");
     }
 
     @GetMapping("/cases")

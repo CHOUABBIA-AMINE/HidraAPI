@@ -21,11 +21,12 @@ package dz.sh.hidra.modules.leakdetection.infrastructure.persistence.repository;
 
 import dz.sh.hidra.modules.leakdetection.infrastructure.persistence.entity.LeakCandidateJpaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 /**
  * Spring Data JPA repository for LeakCandidate.
  */
 @Repository
-public interface LeakCandidateJpaRepository extends JpaRepository<LeakCandidateJpaEntity, String> {
+public interface LeakCandidateJpaRepository extends JpaRepository<LeakCandidateJpaEntity, String>, JpaSpecificationExecutor<LeakCandidateJpaEntity> {
 }

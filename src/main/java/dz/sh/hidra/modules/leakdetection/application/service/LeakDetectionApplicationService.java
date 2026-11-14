@@ -29,6 +29,7 @@ import dz.sh.hidra.modules.leakdetection.application.port.in.CreateLeakCandidate
 import dz.sh.hidra.modules.leakdetection.application.port.in.EscalateLeakCaseUseCase;
 import dz.sh.hidra.modules.leakdetection.application.port.in.OpenLeakCaseUseCase;
 import dz.sh.hidra.modules.leakdetection.application.port.out.LeakCandidateRepositoryPort;
+import dz.sh.hidra.modules.leakdetection.application.port.out.LeakCandidateResourceAuthorizationPort;
 import dz.sh.hidra.modules.leakdetection.application.port.out.LeakDetectionCaseRepositoryPort;
 import dz.sh.hidra.modules.leakdetection.application.port.out.LeakEscalationReferenceRepositoryPort;
 import dz.sh.hidra.modules.leakdetection.domain.exception.InvalidLeakDetectionValueException;
@@ -46,26 +47,31 @@ import java.time.Instant;
 import java.util.Locale;
 import java.util.Objects;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Application service for leak detection candidate/case workflows.
  */
 @Service
-public final class LeakDetectionApplicationService
+public class LeakDetectionApplicationService
         implements CreateLeakCandidateUseCase, OpenLeakCaseUseCase, EscalateLeakCaseUseCase {
 
     private final LeakCandidateRepositoryPort candidateRepositoryPort;
+    private final LeakCandidateResourceAuthorizationPort candidateScope;
     private final LeakDetectionCaseRepositoryPort caseRepositoryPort;
     private final LeakEscalationReferenceRepositoryPort escalationRepositoryPort;
     private final LeakConfidenceClassifier confidenceClassifier;
     private final LeakDetectionTopologyAssetContract topologyAssetContract;
 
+    @Autowired
     public LeakDetectionApplicationService(
             LeakCandidateRepositoryPort candidateRepositoryPort,
             LeakDetectionCaseRepositoryPort caseRepositoryPort,
             LeakEscalationReferenceRepositoryPort escalationRepositoryPort,
             LeakConfidenceClassifier confidenceClassifier,
-            LeakDetectionTopologyAssetContract topologyAssetContract
+            LeakDetectionTopologyAssetContract topologyAssetContract,
+            LeakCandidateResourceAuthorizationPort candidateScope
     ) {
         this.candidateRepositoryPort = Objects.requireNonNull(
                 candidateRepositoryPort,
@@ -87,9 +93,20 @@ public final class LeakDetectionApplicationService
                 topologyAssetContract,
                 "Leak Detection Topology asset contract must not be null."
         );
+        this.candidateScope=candidateScope;
+    }
+
+
+    /** Direct legacy semantic-fixture constructor. Spring uses the injected guarded one above. */
+    @Deprecated
+    public LeakDetectionApplicationService(LeakCandidateRepositoryPort candidates,
+            LeakDetectionCaseRepositoryPort cases, LeakEscalationReferenceRepositoryPort escalations,
+            LeakConfidenceClassifier classifier, LeakDetectionTopologyAssetContract topology) {
+        this(candidates,cases,escalations,classifier,topology,null);
     }
 
     @Override
+    @Transactional
     public LeakCandidateSummaryDto createLeakCandidate(CreateLeakCandidateCommand command) {
         Objects.requireNonNull(command, "Create leak candidate command must not be null.");
 
@@ -114,6 +131,9 @@ public final class LeakDetectionApplicationService
             );
         }
 
+        // Native HTTP wiring always includes current paired company/asset grants.
+        if(candidateScope!=null)candidateScope.requireAsset(
+                "leakdetection:candidates:execute",topologyAssetType,resolution.id());
         Instant now = Instant.now();
         LeakSeverityLevel severity = confidenceClassifier.classify(command.confidenceScore());
         LeakCandidate candidate = new LeakCandidate(

@@ -794,6 +794,18 @@ class ArchitectureGuardrailTest {
      * two owner-exported Alarm contracts and their nested scalar projection types.
      * No other consumer, sibling type or owner infrastructure is made public.
      */
+
+    private static boolean isLeakT13OwnerExport(String source,String target) {
+        String monitoring="dz.sh.hidra.modules.monitoring.application.contract.leakdetection.LeakDetectionMonitoringEvaluationContract";
+        String identity="dz.sh.hidra.modules.identity.application.contract.leakdetection.LeakDetectionScopedAuthorizationContract";
+        String topology="dz.sh.hidra.modules.topology.application.contract.leakdetection.LeakDetectionTopologyOwnershipContract";
+        if(source.equals("dz.sh.hidra.modules.leakdetection.infrastructure.integration.LeakMonitoringEvidenceAdapter"))
+            return target.equals(monitoring)||target.startsWith(monitoring+"$");
+        if(source.equals("dz.sh.hidra.modules.leakdetection.infrastructure.security.LeakCandidateResourceAuthorizationAdapter"))
+            return target.equals(identity)||target.startsWith(identity+"$")
+                ||target.equals(topology)||target.startsWith(topology+"$");
+        return false;
+    }
     private static boolean isAlarmMonitoringEvidenceExport(String source, String target) {
         String consumer = "dz.sh.hidra.modules.alarm.infrastructure.integration.MonitoringEvaluationEvidenceAdapter";
         String owner = "dz.sh.hidra.modules.monitoring.application.contract.alarm.AlarmMonitoringEvaluationContract";
@@ -887,6 +899,7 @@ class ArchitectureGuardrailTest {
         if(isBaselineOwnerExport(sourceClassName,targetClassName))return false;
         if(isAlarmOwnerExport(sourceClassName,targetClassName))return false;
         if(isAlarmMonitoringEvidenceExport(sourceClassName,targetClassName))return false;
+        if(isLeakT13OwnerExport(sourceClassName,targetClassName))return false;
         if(isTelemetryNativeOwnerExport(sourceClassName,targetClassName))return false;
         if(isMonitoringRuleOwnerExport(sourceClassName,targetClassName))return false;
         // HAPI-605: generic exported-package allowances must not admit unauthorized

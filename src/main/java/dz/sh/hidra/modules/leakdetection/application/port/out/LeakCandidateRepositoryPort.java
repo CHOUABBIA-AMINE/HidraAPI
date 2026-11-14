@@ -28,6 +28,14 @@ import java.util.Optional;
  */
 public interface LeakCandidateRepositoryPort {
 
+    record ProfileRef(String id, String assetType, String assetId, boolean active) { }
+    record AuthorizedPage(List<LeakCandidate> content, long total) { }
+    Optional<ProfileRef> profile(String profileId);
+    AuthorizedPage findAuthorized(List<dz.sh.hidra.modules.leakdetection.application.port.out.LeakCandidateResourceAuthorizationPort.AssetRef> assets,
+            int page, int size);
+
+    void flush();
+
     LeakCandidate save(LeakCandidate model);
 
     Optional<LeakCandidate> findById(String id);

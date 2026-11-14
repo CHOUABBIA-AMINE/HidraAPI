@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 
 import dz.sh.hidra.modules.leakdetection.application.port.out.LeakCandidateRepositoryPort;
 import dz.sh.hidra.modules.leakdetection.application.port.out.LeakDetectionCaseRepositoryPort;
+import dz.sh.hidra.modules.leakdetection.application.port.out.LeakCandidateResourceAuthorizationPort;
 import dz.sh.hidra.modules.leakdetection.domain.model.LeakCandidate;
 import dz.sh.hidra.modules.leakdetection.domain.model.LeakDetectionCase;
 import dz.sh.hidra.modules.leakdetection.domain.value.LeakCandidateStatus;
@@ -28,15 +29,20 @@ class LeakDetectionQueryApplicationServiceTest {
 
     @Mock
     private LeakDetectionCaseRepositoryPort caseRepository;
+    @Mock
+    private LeakCandidateResourceAuthorizationPort candidateScope;
 
     @Test
     void returnsPagedCandidatesAndCandidateDetail() {
         LeakCandidate candidate = candidate("cand-1");
-        when(candidateRepository.findAll(0, 50)).thenReturn(List.of(candidate));
-        when(candidateRepository.count()).thenReturn(1L);
+        when(candidateScope.permittedAssets("leakdetection:candidates:read"))
+                .thenReturn(List.of(new LeakCandidateResourceAuthorizationPort.AssetRef("PIPELINE","pipe-1")));
+        when(candidateRepository.findAuthorized(
+                List.of(new LeakCandidateResourceAuthorizationPort.AssetRef("PIPELINE","pipe-1")),0,50))
+                .thenReturn(new LeakCandidateRepositoryPort.AuthorizedPage(List.of(candidate),1L));
         when(candidateRepository.findById("cand-1")).thenReturn(Optional.of(candidate));
 
-        var service = new LeakDetectionQueryApplicationService(candidateRepository, caseRepository);
+        var service = new LeakDetectionQueryApplicationService(candidateRepository, caseRepository, candidateScope);
         var page = service.candidates(0, 50);
 
         assertThat(page.content()).hasSize(1);
@@ -56,7 +62,7 @@ class LeakDetectionQueryApplicationServiceTest {
         when(candidateRepository.findById("missing")).thenReturn(Optional.empty());
         when(caseRepository.findById("missing")).thenReturn(Optional.empty());
 
-        var service = new LeakDetectionQueryApplicationService(candidateRepository, caseRepository);
+        var service = new LeakDetectionQueryApplicationService(candidateRepository, caseRepository, candidateScope);
         var page = service.cases(0, 50);
 
         assertThat(page.content()).hasSize(1);
@@ -69,7 +75,7 @@ class LeakDetectionQueryApplicationServiceTest {
 
     @Test
     void rejectsInvalidPaging() {
-        var service = new LeakDetectionQueryApplicationService(candidateRepository, caseRepository);
+        var service = new LeakDetectionQueryApplicationService(candidateRepository, caseRepository, candidateScope);
         assertThatThrownBy(() -> service.candidates(-1, 50)).isInstanceOf(IllegalArgumentException.class);
         assertThatThrownBy(() -> service.cases(0, 201)).isInstanceOf(IllegalArgumentException.class);
     }

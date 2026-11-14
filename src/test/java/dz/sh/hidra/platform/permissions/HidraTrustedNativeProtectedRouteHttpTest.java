@@ -156,7 +156,7 @@ class HidraTrustedNativeProtectedRouteHttpTest {
    var resolver = org.mockito.Mockito.mock(HidraEffectivePermissionResolver.class);
    authenticated();
    var registry = new HidraTrustedNativeProtectedRouteRegistry();
-   assertEquals(62,registry.candidates().size());
+   assertEquals(68,registry.candidates().size());
    var mvc = mvc(owner, new UntrustedController(), resolver,registry);
    assertThrows(Exception.class, () ->
       mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(TRUSTED)));
@@ -165,8 +165,14 @@ class HidraTrustedNativeProtectedRouteHttpTest {
  @Test void realManufacturerTupleRegistryRejectsWrongVerbAndSiblingPattern() throws Exception {
    var registry=new HidraTrustedNativeProtectedRouteRegistry();
    var routes=registry.candidates();
-   assertEquals(62,routes.size());
+   assertEquals(68,routes.size());
    var expected=java.util.Set.of(
+     "POST /api/v1/leakdetection/candidates/from-evaluation",
+     "GET /api/v1/leakdetection/candidates/{id}/evidence",
+     "POST /api/v1/leakdetection/candidates",
+     "POST /api/v1/leakdetection/create-leak-candidate",
+     "GET /api/v1/leakdetection/candidates",
+     "GET /api/v1/leakdetection/candidates/{id}",
      "POST /api/v1/alarm/alarms/from-evaluation",
      "GET /api/v1/alarm/alarms/{id}/evidence",
     "POST /api/v1/monitoring/rules",
@@ -279,6 +285,17 @@ class HidraTrustedNativeProtectedRouteHttpTest {
     var alarmEvidenceController = new dz.sh.hidra.modules.alarm.api.rest.controller.EvidenceLinkedAlarmController(
         org.mockito.Mockito.mock(dz.sh.hidra.modules.alarm.application.port.in.EvidenceLinkedAlarmUseCase.class));
     owners.put(alarmEvidenceController.getClass(), alarmEvidenceController);
+    var leakEvidenceController=new dz.sh.hidra.modules.leakdetection.api.rest.controller.EvidenceLinkedLeakCandidateController(
+        org.mockito.Mockito.mock(dz.sh.hidra.modules.leakdetection.application.port.in.EvidenceLinkedLeakCandidateUseCase.class));
+    owners.put(leakEvidenceController.getClass(),leakEvidenceController);
+    var leakWriteController=new dz.sh.hidra.modules.leakdetection.api.rest.controller.SpringLeakdetectionController(
+        org.mockito.Mockito.mock(dz.sh.hidra.modules.leakdetection.application.port.in.CreateLeakCandidateUseCase.class),
+        org.mockito.Mockito.mock(dz.sh.hidra.modules.leakdetection.application.port.in.EscalateLeakCaseUseCase.class),
+        org.mockito.Mockito.mock(dz.sh.hidra.modules.leakdetection.application.port.in.OpenLeakCaseUseCase.class));
+    owners.put(leakWriteController.getClass(),leakWriteController);
+    var leakReadController=new dz.sh.hidra.modules.leakdetection.api.rest.controller.LeakDetectionQueryController(
+        org.mockito.Mockito.mock(dz.sh.hidra.modules.leakdetection.application.port.in.LeakDetectionQueryUseCase.class));
+    owners.put(leakReadController.getClass(),leakReadController);
 
     // The same logical operation has two distinct native-protected MVC methods, never one multi-pattern mapping.
     var ruleCreate=routes.stream().filter(r->r.pattern().equals("/api/v1/monitoring/rules")

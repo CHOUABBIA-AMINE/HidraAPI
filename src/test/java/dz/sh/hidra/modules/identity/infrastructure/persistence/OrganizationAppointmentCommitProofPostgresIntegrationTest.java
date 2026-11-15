@@ -42,7 +42,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class OrganizationAppointmentCommitProofPostgresIntegrationTest {
     @Container static final PostgreSQLContainer<?> POSTGRES=new PostgreSQLContainer<>("postgres:16")
             .withCommand("postgres","-c","log_min_error_statement=panic","-c","log_error_verbosity=terse",
-                    "-c","log_parameter_max_length_on_error=0");
+                    "-c","log_parameter_max_length_on_error=0",
+                    "-c","max_locks_per_transaction=256");
     static final String ADMIN="proof_key_admin", PUBLISHER="proof_publisher", ORDINARY="proof_ordinary", CONFIG="proof_org_config";
     static final String PASSWORD="synthetic-proof-test-only";
     static final UUID AUDIENCE=UUID.fromString("11111111-1111-1111-1111-111111111111");

@@ -142,6 +142,12 @@ class Gz2SignedWorkflowFixture {
         sql.execute("GRANT " + publicationRights + " ON " + tables + " TO " + PUBLICATION);
     }
 
+    void enablePlanningProductReferenceLock() {
+        // The signed runtime takes FOR SHARE on the Custody catalog row. It needs a
+        // column-level UPDATE privilege for that lock, without writable product attributes.
+        sql.execute("GRANT UPDATE (updated_at) ON public.hidra_custody_catalog_entry TO " + APP);
+    }
+
     private void verifyRuntimeUnitLock() {
         var runtimeSql = new JdbcTemplate(new DriverManagerDataSource(postgres.getJdbcUrl(), APP, APP_PASSWORD));
         assertEquals(pressureUnit, runtimeSql.queryForObject("""
@@ -428,8 +434,20 @@ class Gz2SignedWorkflowFixture {
 
         JsonNode json(String method, String route, String token, Object body, int status) throws Exception {
             var response = send(method, route, token, body);
-            assertEquals(status, response.statusCode(), () -> method + " " + route + ": " + redact(response.body()));
+            assertEquals(status, response.statusCode(), () -> method + " " + route + ": "
+                    + redact(response.body()) + (response.statusCode() >= 500 ? serverDiagnostics() : ""));
             return JSON.readTree(response.body());
+        }
+
+        private String serverDiagnostics() {
+            try {
+                String logs = Files.readString(log);
+                String tail = logs.substring(Math.max(0, logs.length() - 6000));
+                return "\nGZ2 child log tail:\n" + redact(tail)
+                        .replaceAll("[A-Za-z0-9_-]{12,}\\.[A-Za-z0-9_-]{12,}\\.[A-Za-z0-9_-]{12,}", "[redacted JWT]");
+            } catch (IOException unavailable) {
+                return "\nGZ2 child log could not be read.";
+            }
         }
 
         JsonNode get(String route, String token) throws Exception {

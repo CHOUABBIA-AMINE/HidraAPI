@@ -156,7 +156,7 @@ class HidraTrustedNativeProtectedRouteHttpTest {
    var resolver = org.mockito.Mockito.mock(HidraEffectivePermissionResolver.class);
    authenticated();
    var registry = new HidraTrustedNativeProtectedRouteRegistry();
-   assertEquals(95,registry.candidates().size());
+   assertEquals(98,registry.candidates().size());
    var mvc = mvc(owner, new UntrustedController(), resolver,registry);
    assertThrows(Exception.class, () ->
       mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(TRUSTED)));
@@ -165,8 +165,11 @@ class HidraTrustedNativeProtectedRouteHttpTest {
  @Test void realManufacturerTupleRegistryRejectsWrongVerbAndSiblingPattern() throws Exception {
    var registry=new HidraTrustedNativeProtectedRouteRegistry();
    var routes=registry.candidates();
-   assertEquals(95,routes.size());
+   assertEquals(98,routes.size());
    var expected=java.util.Set.of(
+     "POST /api/v1/planning/revisions/{revisionId}/nominations",
+     "POST /api/v1/planning/nominations/{id}/disposition",
+     "GET /api/v1/planning/nominations/{id}/history",
      "POST /api/v1/integrity/findings/{findingId}/maintenance-approvals",
      "GET /api/v1/integrity/findings/{findingId}/maintenance-handoffs/{approvalId}",
      "POST /api/v1/assets/maintenance-work-orders/from-integrity",
@@ -341,6 +344,9 @@ class HidraTrustedNativeProtectedRouteHttpTest {
     var t18Assets=new dz.sh.hidra.modules.assets.api.rest.controller.IntegrityWorkOrderController(
         org.mockito.Mockito.mock(dz.sh.hidra.modules.assets.application.port.in.IntegrityWorkOrderUseCase.class));
     owners.put(t18Assets.getClass(),t18Assets);
+    var nominations = new dz.sh.hidra.modules.planning.api.rest.controller.PlanningNominationCommandController(
+        org.mockito.Mockito.mock(dz.sh.hidra.modules.planning.application.port.in.PlanningNominationCommandUseCase.class));
+    owners.put(nominations.getClass(), nominations);
 
 
     // The same logical operation has two distinct native-protected MVC methods, never one multi-pattern mapping.

@@ -24,6 +24,7 @@ import dz.sh.hidra.modules.planning.api.rest.response.PlanningNominationCommandR
 import dz.sh.hidra.modules.planning.application.port.in.PlanningNominationCommandUseCase;
 import dz.sh.hidra.modules.planning.domain.exception.InvalidPlanningValueException;
 import dz.sh.hidra.modules.planning.domain.exception.PlanningRevisionConflictException;
+import dz.sh.hidra.modules.planning.domain.service.NominationLifecyclePolicy;
 import dz.sh.hidra.platform.permissions.NativeProtectedOperation;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -65,8 +66,12 @@ public class PlanningNominationCommandController {
     @PostMapping("/nominations/{id}/disposition")
     public PlanningNominationCommandResponse.Receipt dispose(@PathVariable String id,
             @Valid @RequestBody PlanningNominationCommandRequest.Disposition request) {
+        var decision = switch (request.decision()) {
+            case CONFIRM -> NominationLifecyclePolicy.Decision.CONFIRM;
+            case REJECT -> NominationLifecyclePolicy.Decision.REJECT;
+        };
         var command = new PlanningNominationCommandUseCase.Disposition(request.commandId(), request.expectedVersion(),
-                request.decision(), request.reason());
+                decision, request.reason());
         return PlanningNominationCommandResponse.Receipt.from(commands.dispose(id, command));
     }
 

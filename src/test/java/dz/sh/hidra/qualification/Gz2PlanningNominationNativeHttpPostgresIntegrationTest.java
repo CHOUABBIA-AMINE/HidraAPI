@@ -38,6 +38,7 @@ class Gz2PlanningNominationNativeHttpPostgresIntegrationTest {
         try (var postgres = new PostgreSQLContainer<>("postgres:16").withDatabaseName("hidra_gz2_t19")) {
             postgres.start();
             var f = new Gz2SignedWorkflowFixture(postgres);
+            f.enablePlanningProductReferenceLock();
             grantPlanning(f);
             var review = f.review("planning", "PLAN_REVISION", "PLAN_REVISION_APPROVAL", true);
             String nominationType = f.catalog("planning", "NOMINATION_TYPE", "T19_SYNTHETIC_MOVEMENT");
@@ -70,10 +71,10 @@ class Gz2PlanningNominationNativeHttpPostgresIntegrationTest {
                 assertEquals(404, runtime.send("POST", createPath, author, sameEndpoint).statusCode());
                 var unapprovedProduct = new LinkedHashMap<>(request);
                 unapprovedProduct.put("productTypeId", f.catalog("custody", "PRODUCT", "T19_UNAPPROVED_PRODUCT"));
-                assertEquals(400, runtime.send("POST", createPath, author, unapprovedProduct).statusCode());
+                runtime.json("POST", createPath, author, unapprovedProduct, 400);
                 var unapprovedUnit = new LinkedHashMap<>(request);
                 unapprovedUnit.put("quantityUnitId", f.pressureUnit);
-                assertEquals(400, runtime.send("POST", createPath, author, unapprovedUnit).statusCode());
+                runtime.json("POST", createPath, author, unapprovedUnit, 400);
                 assertEquals(0, f.sql.queryForObject(
                         "SELECT count(*) FROM hidra_planning_nomination WHERE revision_id=?", Integer.class, original.id()));
 

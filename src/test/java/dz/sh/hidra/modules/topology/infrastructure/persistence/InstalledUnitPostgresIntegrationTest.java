@@ -51,7 +51,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class InstalledUnitPostgresIntegrationTest {
     @Container
     static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgres:16")
-            .withDatabaseName("hidra_test");
+            .withDatabaseName("hidra_test")
+            .withCommand("postgres", "-c", "max_locks_per_transaction=256");
     private static final Path MIGRATION = Path.of(
             "src/main/resources/db/migration/V20261028_002__topology_installed_unit_identity_and_history.sql");
     private static final Instant T = Instant.parse("2026-01-01T00:00:00Z");

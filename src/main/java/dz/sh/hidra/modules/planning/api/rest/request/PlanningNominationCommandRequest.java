@@ -19,7 +19,6 @@
  */
 package dz.sh.hidra.modules.planning.api.rest.request;
 
-import dz.sh.hidra.modules.planning.domain.service.NominationLifecyclePolicy.Decision;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
@@ -48,6 +47,8 @@ public final class PlanningNominationCommandRequest {
             @NotBlank @Size(max = 80) String destinationFacilityId,
             @NotNull Instant periodStart,
             @NotNull Instant periodEnd) { }
+
+    public enum Decision { CONFIRM, REJECT }
 
     @Schema(name = "PlanningNominationDispositionRequest")
     public record Disposition(

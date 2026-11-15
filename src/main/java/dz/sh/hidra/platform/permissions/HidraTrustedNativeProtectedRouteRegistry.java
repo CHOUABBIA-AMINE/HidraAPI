@@ -158,7 +158,17 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
             Class<?> maintenanceVerify=Class.forName(assetsMaintenanceRoot+"request.IntegrityWorkOrderRequest$Verify");
             String assetsMaintenanceBase="/api/v1/assets/maintenance-work-orders";
 
+            String nominationPackage = "dz.sh.hidra.modules.planning.api.rest.";
+            Class<?> nominationController = Class.forName(nominationPackage + "controller.PlanningNominationCommandController");
+            Class<?> nominationCreate = Class.forName(nominationPackage + "request.PlanningNominationCommandRequest$Create");
+            Class<?> nominationDisposition = Class.forName(nominationPackage + "request.PlanningNominationCommandRequest$Disposition");
             return List.of(
+                new Route(nominationController, nominationController.getDeclaredMethod("create", String.class, nominationCreate),
+                    "POST", "/api/v1/planning/revisions/{revisionId}/nominations"),
+                new Route(nominationController, nominationController.getDeclaredMethod("dispose", String.class, nominationDisposition),
+                    "POST", "/api/v1/planning/nominations/{id}/disposition"),
+                new Route(nominationController, nominationController.getDeclaredMethod("history", String.class),
+                    "GET", "/api/v1/planning/nominations/{id}/history"),
                 new Route(integrityMaintenance,integrityMaintenance.getDeclaredMethod("approve",String.class,integrityApproval),
                     "POST",integrityMaintenanceBase+"/maintenance-approvals"),
                 new Route(integrityMaintenance,integrityMaintenance.getDeclaredMethod("read",String.class,String.class),

@@ -255,20 +255,20 @@
     "purpose": "Identity provider with database-owned monotonic security generation and ordinary-writer mutation guards; generation is not token, session or permission authority."
   },
   "public.hidra_identity_refresh_family": {
-    "owner": "identity",
-    "purpose": "Fixed-expiry LOCAL refresh family and source generation snapshots; revocation never confers Identity permissions.",
     "evidence": [
       "src/main/resources/db/migration/V20261108_001__identity_refresh_token_rotation.sql",
       "src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcRefreshTokenRepositoryAdapter.java"
-    ]
+    ],
+    "owner": "identity",
+    "purpose": "Fixed-expiry LOCAL refresh family and source generation snapshots; revocation never confers Identity permissions."
   },
   "public.hidra_identity_refresh_token": {
-    "owner": "identity",
-    "purpose": "Keyed digest only, monotone generation and immutable native-bound token history; server-side single-use consumes and replay.",
     "evidence": [
       "src/main/resources/db/migration/V20261108_001__identity_refresh_token_rotation.sql",
       "src/main/java/dz/sh/hidra/modules/identity/infrastructure/persistence/adapter/JdbcRefreshTokenRepositoryAdapter.java"
-    ]
+    ],
+    "owner": "identity",
+    "purpose": "Keyed digest only, monotone generation and immutable native-bound token history; server-side single-use consumes and replay."
   },
   "public.hidra_incident": {
     "evidence": [
@@ -395,54 +395,54 @@
     "purpose": "Append-only LeakDetection owner verification/disposition receipts and exact replay provenance; no cross-module storage FK."
   },
   "public.hidra_monitoring_authoritative_evaluation": {
-    "owner": "monitoring",
-    "purpose": "Immutable Monitoring comparison receipts with exact evidence identifiers, deterministic replay identity and nullable numeric outcome.",
     "evidence": [
       "src/main/resources/db/migration/V20261112_004__t11_authoritative_deviation.sql",
       "src/main/java/dz/sh/hidra/modules/monitoring/infrastructure/persistence/adapter/JdbcAuthoritativeDeviationRepositoryAdapter.java"
-    ]
+    ],
+    "owner": "monitoring",
+    "purpose": "Immutable Monitoring comparison receipts with exact evidence identifiers, deterministic replay identity and nullable numeric outcome."
   },
   "public.hidra_monitoring_evaluation_freshness_policy": {
-    "owner": "monitoring",
-    "purpose": "Immutable per-rule-revision freshness input provisioned explicitly before numeric comparison.",
     "evidence": [
       "src/main/resources/db/migration/V20261112_004__t11_authoritative_deviation.sql",
       "src/main/java/dz/sh/hidra/modules/monitoring/infrastructure/persistence/adapter/JdbcAuthoritativeDeviationRepositoryAdapter.java"
-    ]
+    ],
+    "owner": "monitoring",
+    "purpose": "Immutable per-rule-revision freshness input provisioned explicitly before numeric comparison."
   },
   "public.hidra_monitoring_rule_activation": {
-    "owner": "monitoring",
-    "purpose": "Monitoring-owned immutable activation receipts with exact revision, actor and non-overlapping effective interval; does not authorize automatic actuation.",
     "evidence": [
       "src/main/resources/db/migration/V20261112_003__t10_monitoring_rule_versions.sql",
       "src/main/java/dz/sh/hidra/modules/monitoring/infrastructure/persistence/adapter/JdbcMonitoringRuleRevisionAdapter.java",
       "src/main/java/dz/sh/hidra/modules/monitoring/domain/model/MonitoringRuleRevision.java"
-    ]
+    ],
+    "owner": "monitoring",
+    "purpose": "Monitoring-owned immutable activation receipts with exact revision, actor and non-overlapping effective interval; does not authorize automatic actuation."
   },
   "public.hidra_monitoring_rule_head": {
-    "owner": "monitoring",
-    "purpose": "Monitoring-owned mutable serialized revision and activation head with expected-head concurrency and effective-window state; not immutable historical evidence.",
     "evidence": [
       "src/main/resources/db/migration/V20261112_003__t10_monitoring_rule_versions.sql",
       "src/main/java/dz/sh/hidra/modules/monitoring/infrastructure/persistence/adapter/JdbcMonitoringRuleRevisionAdapter.java"
-    ]
+    ],
+    "owner": "monitoring",
+    "purpose": "Monitoring-owned mutable serialized revision and activation head with expected-head concurrency and effective-window state; not immutable historical evidence."
   },
   "public.hidra_monitoring_rule_revision": {
-    "owner": "monitoring",
-    "purpose": "Monitoring-owned immutable numbered rule specification with company/asset, point, unit, evidence policy, validity and author provenance; registration does not execute a numerical rule.",
     "evidence": [
       "src/main/resources/db/migration/V20261112_003__t10_monitoring_rule_versions.sql",
       "src/main/java/dz/sh/hidra/modules/monitoring/infrastructure/persistence/adapter/JdbcMonitoringRuleRevisionAdapter.java",
       "src/main/java/dz/sh/hidra/modules/monitoring/domain/model/MonitoringRuleRevision.java"
-    ]
+    ],
+    "owner": "monitoring",
+    "purpose": "Monitoring-owned immutable numbered rule specification with company/asset, point, unit, evidence policy, validity and author provenance; registration does not execute a numerical rule."
   },
   "public.hidra_monitoring_rule_scope": {
-    "owner": "monitoring",
-    "purpose": "Monitoring-owned immutable rule-to-company/asset registration and server-derived creation actor provenance; used for scoped authorization, not a Telemetry physical foreign key.",
     "evidence": [
       "src/main/resources/db/migration/V20261112_003__t10_monitoring_rule_versions.sql",
       "src/main/java/dz/sh/hidra/modules/monitoring/infrastructure/persistence/adapter/JdbcMonitoringRuleRevisionAdapter.java"
-    ]
+    ],
+    "owner": "monitoring",
+    "purpose": "Monitoring-owned immutable rule-to-company/asset registration and server-derived creation actor provenance; used for scoped authorization, not a Telemetry physical foreign key."
   },
   "public.hidra_org_appointment_binding_head": {
     "evidence": [
@@ -547,12 +547,20 @@
     "purpose": "Owner-issued monotone live/tombstone witness for protected ACTIVE Party eligibility; not a publication epoch or permission."
   },
   "public.hidra_party_manufacturer_source_authorization": {
-    "owner": "party",
     "evidence": [
       "src/main/resources/db/migration/V20261030_001__party_manufacturer_source_authorizations.sql",
       "src/main/java/dz/sh/hidra/modules/party/infrastructure/persistence/adapter/JdbcSimulationManufacturerEvidenceAdapter.java"
     ],
+    "owner": "party",
     "purpose": "Party-owned explicit current company-to-manufacturer and exact model-scoped grant with revocation history; not implicit manufacturer role, product certification or Identity authorization."
+  },
+  "public.hidra_planning_nomination_event": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261115_004__t19_planning_nomination_governance.sql",
+      "src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/adapter/JdbcPlanningNominationGovernanceAdapter.java"
+    ],
+    "owner": "planning",
+    "purpose": "Planning-owned immutable nomination authoring and independent disposition evidence, command replay identity and ordered versions."
   },
   "public.hidra_planning_nomination_reference_mapping": {
     "evidence": [
@@ -604,20 +612,20 @@
     "purpose": "Simulation-owned immutable equipment parameters with exact qualified fluid/network bindings and supplied maps/limits."
   },
   "public.hidra_simulation_manufacturer_characteristic_qualification": {
-    "owner": "simulation",
     "evidence": [
       "src/main/resources/db/migration/V20261030_002__simulation_manufacturer_characteristic_sources.sql",
       "src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/adapter/JdbcManufacturerCharacteristicRevisionRepositoryAdapter.java"
     ],
+    "owner": "simulation",
     "purpose": "Simulation-owned append-only qualification receipt bound to an immutable manufacturer revision and exact terminal Workflow evidence; historical approval alone never grants current Party/Identity authority."
   },
   "public.hidra_simulation_manufacturer_characteristic_revision": {
-    "owner": "simulation",
     "evidence": [
       "src/main/resources/db/migration/V20261030_002__simulation_manufacturer_characteristic_sources.sql",
       "src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/adapter/JdbcManufacturerCharacteristicRevisionRepositoryAdapter.java",
       "src/main/java/dz/sh/hidra/modules/simulation/domain/model/ManufacturerCharacteristicRevision.java"
     ],
+    "owner": "simulation",
     "purpose": "Simulation-owned immutable canonical manufacturer characteristic source with digest, declared engineering applicability and original transaction provenance; no numerical solver or operational certification."
   },
   "public.hidra_telemetry_fluid_unit_policy": {
@@ -655,47 +663,47 @@
     "purpose": "Telemetry-owned immutable raw-reading replay receipt; one source-point-sequence reserves one untrusted canonical observation and its digest; no trust or operational approval is inferred."
   },
   "public.hidra_topology_baseline_publication": {
-    "owner": "topology",
-    "purpose": "Append-only approved baseline publications and request receipts. The greatest company/pipeline epoch is the published head.",
     "evidence": [
       "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringBaselinePublicationRepositoryAdapter.java",
       "src/main/resources/db/migration/V20261111_002__topology_engineering_baseline_publication.sql"
-    ]
+    ],
+    "owner": "topology",
+    "purpose": "Append-only approved baseline publications and request receipts. The greatest company/pipeline epoch is the published head."
   },
   "public.hidra_topology_baseline_submission": {
-    "owner": "topology",
-    "purpose": "Exact baseline submission tied to one immutable company/pipeline manifest revision and canonical digest.",
     "evidence": [
       "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringBaselinePublicationRepositoryAdapter.java",
       "src/main/resources/db/migration/V20261111_002__topology_engineering_baseline_publication.sql"
-    ]
+    ],
+    "owner": "topology",
+    "purpose": "Exact baseline submission tied to one immutable company/pipeline manifest revision and canonical digest."
   },
   "public.hidra_topology_engineering_baseline_draft": {
-    "owner": "topology",
-    "purpose": "Topology-owned mutable head pointer for a company/network/manifest draft; monotone version reference only, not frozen, authoritative or engineering-qualified.",
     "evidence": [
       "src/main/java/dz/sh/hidra/modules/topology/domain/model/EngineeringBaselineManifest.java",
       "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringBaselineDraftRepositoryAdapter.java",
       "src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql"
-    ]
+    ],
+    "owner": "topology",
+    "purpose": "Topology-owned mutable head pointer for a company/network/manifest draft; monotone version reference only, not frozen, authoritative or engineering-qualified."
   },
   "public.hidra_topology_engineering_baseline_request": {
-    "owner": "topology",
-    "purpose": "Topology-owned original-transaction idempotent create/update receipt bound to exact actor, request digest and immutable revision; does not grant resource or source permission.",
     "evidence": [
       "src/main/java/dz/sh/hidra/modules/topology/domain/model/EngineeringBaselineManifest.java",
       "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringBaselineDraftRepositoryAdapter.java",
       "src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql"
-    ]
+    ],
+    "owner": "topology",
+    "purpose": "Topology-owned original-transaction idempotent create/update receipt bound to exact actor, request digest and immutable revision; does not grant resource or source permission."
   },
   "public.hidra_topology_engineering_baseline_revision": {
-    "owner": "topology",
-    "purpose": "Topology-owned immutable exact manifest revision, canonical bytes, findings and original native transaction provenance; its captures remain draft/unqualified.",
     "evidence": [
       "src/main/java/dz/sh/hidra/modules/topology/domain/model/EngineeringBaselineManifest.java",
       "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringBaselineDraftRepositoryAdapter.java",
       "src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql"
-    ]
+    ],
+    "owner": "topology",
+    "purpose": "Topology-owned immutable exact manifest revision, canonical bytes, findings and original native transaction provenance; its captures remain draft/unqualified."
   },
   "public.hidra_topology_engineering_context": {
     "evidence": [
@@ -789,20 +797,20 @@
     "purpose": "Owner-issued monotone live/tombstone witness for protected Facility ownership; not a publication epoch or permission."
   },
   "public.hidra_topology_foundation_request": {
-    "owner": "topology",
-    "purpose": "Immutable native-authorized setup receipts with replay digest, reason, actor and transaction provenance.",
     "evidence": [
       "src/main/resources/db/migration/V20261105_001__topology_foundation_setup.sql",
       "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcTopologyFoundationAdapter.java"
-    ]
+    ],
+    "owner": "topology",
+    "purpose": "Immutable native-authorized setup receipts with replay digest, reason, actor and transaction provenance."
   },
   "public.hidra_topology_foundation_system_owner": {
-    "owner": "topology",
-    "purpose": "Explicit immutable company ownership for newly registered foundation systems; no inferred legacy company assignment.",
     "evidence": [
       "src/main/resources/db/migration/V20261105_001__topology_foundation_setup.sql",
       "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcTopologyFoundationAdapter.java"
-    ]
+    ],
+    "owner": "topology",
+    "purpose": "Explicit immutable company ownership for newly registered foundation systems; no inferred legacy company assignment."
   },
   "public.hidra_topology_installed_characteristic_approval": {
     "evidence": [
@@ -871,13 +879,13 @@
     "purpose": "Immutable Topology installation history revision ledger populated by database trigger, distinct from effective projection."
   },
   "public.hidra_topology_installed_unit_operation_request": {
-    "owner": "topology",
-    "purpose": "Immutable protected installed-unit command receipt and native actor/transaction provenance; not transferable authorization.",
     "evidence": [
       "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcProtectedInstalledUnitRepositoryAdapter.java",
       "src/main/resources/db/migration/V20261028_005__topology_installed_unit_protected_operations.sql",
       "src/main/resources/db/migration/V20261029_001__topology_installed_unit_replacement.sql"
-    ]
+    ],
+    "owner": "topology",
+    "purpose": "Immutable protected installed-unit command receipt and native actor/transaction provenance; not transferable authorization."
   },
   "public.hidra_topology_physical_network_revision": {
     "evidence": [
@@ -889,28 +897,28 @@
     "purpose": "Topology-owned append-only physical source revisions with canonical payload integrity; stored provenance and digest do not establish operational approval or live asset eligibility."
   },
   "public.hidra_topology_pipeline_authoring_revision": {
-    "owner": "topology",
-    "purpose": "Immutable canonical Pipeline owner/identity and authored label revisions; no engineering or numerical qualification.",
     "evidence": [
       "src/main/resources/db/migration/V20261103_005__foundation_pipeline_graph_associations.sql",
       "src/main/java/dz/sh/hidra/modules/topology/infrastructure/query/JpaAuthoredTopologyViewAdapter.java"
-    ]
+    ],
+    "owner": "topology",
+    "purpose": "Immutable canonical Pipeline owner/identity and authored label revisions; no engineering or numerical qualification."
   },
   "public.hidra_topology_pipeline_graph_binding": {
-    "owner": "topology",
-    "purpose": "Immutable PIPE branch references to exact canonical Pipeline revisions and optional same-Pipeline Segment identities; no duplicate graph store or surveyed geometry.",
     "evidence": [
       "src/main/resources/db/migration/V20261103_005__foundation_pipeline_graph_associations.sql",
       "src/main/java/dz/sh/hidra/modules/topology/infrastructure/query/JpaAuthoredTopologyViewAdapter.java"
-    ]
+    ],
+    "owner": "topology",
+    "purpose": "Immutable PIPE branch references to exact canonical Pipeline revisions and optional same-Pipeline Segment identities; no duplicate graph store or surveyed geometry."
   },
   "public.hidra_topology_pipeline_graph_snapshot": {
-    "owner": "topology",
-    "purpose": "Immutable company/system-scoped association snapshot pinned to the existing exact graph snapshot and original write transaction; stores no graph payload.",
     "evidence": [
       "src/main/resources/db/migration/V20261103_005__foundation_pipeline_graph_associations.sql",
       "src/main/java/dz/sh/hidra/modules/topology/infrastructure/query/JpaAuthoredTopologyViewAdapter.java"
-    ]
+    ],
+    "owner": "topology",
+    "purpose": "Immutable company/system-scoped association snapshot pinned to the existing exact graph snapshot and original write transaction; stores no graph payload."
   },
   "public.hidra_topology_station_configuration_head": {
     "evidence": [

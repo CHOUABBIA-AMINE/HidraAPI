@@ -112,6 +112,20 @@ public class PlanningAccessService implements PlanningRevisionWorkflowAuthorityC
         }
     }
 
+    public String nominationWriter(OperationalPlan plan, String destinationFacilityId, boolean reviewing) {
+        if (!"FACILITY".equals(plan.topologyScopeType()) || destinationFacilityId == null
+                || destinationFacilityId.isBlank() || !destinationFacilityId.equals(destinationFacilityId.strip())
+                || destinationFacilityId.equals(plan.topologyScopeId())) {
+            throw unavailable();
+        }
+        Access access = identity.current(reviewing ? Operation.PLAN_REVIEW : Operation.PLAN_AUTHOR);
+        var facilities = java.util.stream.Stream.of(plan.topologyScopeId(), destinationFacilityId).sorted().toList();
+        for (String facility : facilities) {
+            requirePlanScope(access, plan.periodId(), "FACILITY", facility);
+        }
+        return access.actorId();
+    }
+
     private String requirePlanScope(Access access, String periodId, String type, String assetId) {
         if (periodId == null || periodId.isBlank() || type == null || assetId == null
                 || !access.assets().contains(new Asset(type, assetId))) {

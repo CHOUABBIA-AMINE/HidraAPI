@@ -35,6 +35,7 @@ import dz.sh.hidra.modules.planning.infrastructure.persistence.entity.PlanningPe
 import dz.sh.hidra.modules.planning.infrastructure.persistence.entity.OperationalPlanJpaEntity;
 import dz.sh.hidra.modules.planning.infrastructure.persistence.entity.PlanRevisionJpaEntity;
 import dz.sh.hidra.modules.planning.infrastructure.persistence.entity.NominationJpaEntity;
+import dz.sh.hidra.modules.planning.infrastructure.persistence.entity.PlanningNominationGovernanceJpaEntity;
 import dz.sh.hidra.modules.planning.infrastructure.persistence.entity.PlanTargetJpaEntity;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Predicate;
@@ -114,13 +115,13 @@ public class JpaPlanningQueryAdapter implements PlanningQueryPort {
 
     @Override
     public Slice<Nomination> findNominationsByRevisionId(Set<AssetScope> assets, String revisionId, int page, int size) {
-        return toSlice(nominationRepository.findAll(JpaPlanningQueryAdapter.<NominationJpaEntity>descendantScope(assets)
+        return toSlice(nominationRepository.findAll(nominationScope(assets)
                 .and(fieldEquals("revisionId", revisionId)), pageable(page, size)), PlanningPersistenceMapper::toDomain);
     }
 
     @Override
     public Optional<Nomination> findNominationById(Set<AssetScope> assets, String id) {
-        return nominationRepository.findOne(JpaPlanningQueryAdapter.<NominationJpaEntity>descendantScope(assets)
+        return nominationRepository.findOne(nominationScope(assets)
                 .and(fieldEquals("id", id))).map(PlanningPersistenceMapper::toDomain);
     }
 
@@ -165,6 +166,40 @@ public class JpaPlanningQueryAdapter implements PlanningQueryPort {
                     planPredicate(cb, plan, period, assets));
             return cb.exists(matchingPlan);
         };
+    }
+
+    private static Specification<NominationJpaEntity> nominationScope(Set<AssetScope> assets) {
+        Specification<NominationJpaEntity> movementScope = (nomination, query, cb) -> {
+            var marker = Objects.requireNonNull(query).subquery(String.class);
+            var governed = marker.from(PlanningNominationGovernanceJpaEntity.class);
+            marker.select(governed.get("nominationId"))
+                    .where(cb.equal(governed.get("nominationId"), nomination.get("id")));
+
+            var facilitiesByCompany = new HashMap<String, List<String>>();
+            for (AssetScope asset : assets) {
+                if ("FACILITY".equals(asset.type())) {
+                    facilitiesByCompany.computeIfAbsent(asset.companyPartyId(), key -> new ArrayList<>())
+                            .add(asset.assetId());
+                }
+            }
+            var allowedMarker = query.subquery(String.class);
+            var scope = allowedMarker.from(PlanningNominationGovernanceJpaEntity.class);
+            Predicate[] allowedFacilities = facilitiesByCompany.entrySet().stream().map(entry -> cb.and(
+                    cb.equal(scope.get("companyId"), entry.getKey()),
+                    cb.equal(nomination.get("shipperPartyId"), entry.getKey()),
+                    scope.get("sourceFacilityId").in(entry.getValue()),
+                    scope.get("destinationFacilityId").in(entry.getValue())
+            )).toArray(Predicate[]::new);
+            allowedMarker.select(scope.get("nominationId")).where(
+                    cb.equal(scope.get("nominationId"), nomination.get("id")),
+                    cb.equal(scope.get("sourceFacilityId"), nomination.get("sourceAssetId")),
+                    cb.equal(scope.get("destinationFacilityId"), nomination.get("destinationAssetId")),
+                    cb.equal(nomination.get("sourceAssetType"), "FACILITY"),
+                    cb.equal(nomination.get("destinationAssetType"), "FACILITY"),
+                    cb.or(allowedFacilities));
+            return cb.or(cb.not(cb.exists(marker)), cb.exists(allowedMarker));
+        };
+        return JpaPlanningQueryAdapter.<NominationJpaEntity>descendantScope(assets).and(movementScope);
     }
 
     private static <T> Specification<T> descendantScope(Set<AssetScope> assets) {

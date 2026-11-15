@@ -434,7 +434,10 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
                 "alarmTypeId", alarmType, "severityId", alarmSeverity, "titleFr", "Stale synthetic source"), 422);
         String alarm = field(r.json("POST", ALARM + "/from-evaluation", operator, Map.of("evaluationId", evaluation,
                 "alarmTypeId", alarmType, "severityId", alarmSeverity, "titleFr", "Deviation synthétique"), 201), "alarmId");
-        r.json("POST", ALARM + "/acknowledgements", operator, Map.of("alarmId", alarm, "comment", "Reviewed synthetic deviation"), 200);
+        var acknowledgement = r.send("POST", ALARM + "/acknowledgements", operator,
+                Map.of("alarmId", alarm, "comment", "Reviewed synthetic deviation"));
+        assertEquals(200, acknowledgement.statusCode(), "Alarm acknowledgement status");
+        assertFalse(acknowledgement.body().isBlank(), "Alarm acknowledgement must return its ID");
         assertEquals("ACKNOWLEDGED", field(r.get(ALARM + "/" + alarm, operator), "currentState"));
 
         String method = id();

@@ -1368,7 +1368,7 @@
       "job_conclusion": "failure",
       "workflow_conclusion": "failure",
       "failed_step": "Enforce canonical OpenAPI snapshot equality",
-      "zip_sha256": "db6e78796f51cafe87714f8fa31599476acdf0a8d1e4f7f4182ea2d2067",
+      "zip_sha256": "db6e78796f51cafe87714f8fa5a18a31599476acdf0a8d1e4f7f4182ea2d2067",
       "json_sha256": "6cd3dedbe3108a73534729ba025d3acae588565d8990e4f2a8d008280c894be3",
       "database_evidence": {
         "artifact_id": 14129604811,

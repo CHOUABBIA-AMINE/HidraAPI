@@ -201,8 +201,8 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
                         "axes", List.of(Map.of("name", "north", "unitIdentifier", "metre"),
                                 Map.of("name", "east", "unitIdentifier", "metre"))),
                 "chainageOriginReference", "synthetic-origin", "direction", "FROM_TO", "evidenceReference", "gz2-synthetic-route",
-                "points", List.of(surveyPoint("p0", 1, 0), surveyPoint("p1", 10, 10)),
-                "sections", List.of(Map.of("id", "section-1", "startChainageMetres", 0, "endChainageMetres", 10,
+                "points", List.of(surveyPoint("p0", "1", "0"), surveyPoint("p1", "10", "10")),
+                "sections", List.of(Map.of("id", "section-1", "startChainageMetres", "0", "endChainageMetres", "10",
                         "evidenceReference", "gz2-synthetic-section")));
         r.json("PUT", engineeringScope(f, path + "/survey/gas-pipe"), author, Map.of("expectedVersion", 2, "profile", profile), 200);
         r.json("POST", engineeringScope(f, path + "/publications"), author,
@@ -215,9 +215,9 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
         return items.get(0).path("baselinePin");
     }
 
-    private static Map<String, Object> surveyPoint(String id, int coordinate, int chainage) {
+    private static Map<String, String> surveyPoint(String id, String coordinate, String chainage) {
         return Map.of("id", id, "firstCoordinate", coordinate, "secondCoordinate", coordinate,
-                "chainageMetres", chainage, "coordinatePrecision", 1, "chainagePrecisionMetres", 1);
+                "chainageMetres", chainage, "coordinatePrecision", "1", "chainagePrecisionMetres", "1");
     }
 
     private static JsonNode publishProduct(Gz2SignedWorkflowFixture f, Gz2SignedWorkflowFixture.Runtime r,

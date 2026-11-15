@@ -64,7 +64,7 @@ public final class LeakInvestigationController {
     @NativeProtectedOperation @Operation(operationId="recordLeakCaseHumanVerificationAction")
     @PostMapping("/{id}/investigation/actions")
     public LeakInvestigationResponse.Receipt action(@PathVariable String id,
-            @Valid @RequestBody LeakInvestigationRequest.Action r) {
+            @Valid @RequestBody LeakInvestigationRequest.LeakVerificationAction r) {
         return execute(id,new LeakInvestigationUseCase.Command(r.requestId(),r.expectedVersion(),
                 "ACTION",r.actionType(),null,null,r.result(),null));
     }

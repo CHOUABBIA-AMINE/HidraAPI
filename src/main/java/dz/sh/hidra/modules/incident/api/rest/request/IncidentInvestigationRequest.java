@@ -23,7 +23,7 @@ public final class IncidentInvestigationRequest {
     public record Evidence(@NotBlank String requestId,@PositiveOrZero long expectedVersion,
             @NotBlank String sourceType,@NotBlank String sourceId,@NotBlank String direction,
             @NotBlank String explanation) {}
-    public record Action(@NotBlank String requestId,@PositiveOrZero long expectedVersion,
+    public record InvestigationResponseAction(@NotBlank String requestId,@PositiveOrZero long expectedVersion,
             @NotBlank String actionTypeId,@NotBlank String description) {}
     public record Resolve(@NotBlank String requestId,@PositiveOrZero long expectedVersion,
             @NotBlank String resolutionTypeId,@NotBlank String summary,

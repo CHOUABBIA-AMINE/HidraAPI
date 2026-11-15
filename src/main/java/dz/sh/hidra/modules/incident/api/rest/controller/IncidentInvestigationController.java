@@ -57,7 +57,7 @@ public final class IncidentInvestigationController {
     @NativeProtectedOperation @Operation(operationId="recordIncidentInvestigationAction")
     @PostMapping("/actions")
     public IncidentInvestigationResponse.Receipt action(@PathVariable String id,
-            @Valid @RequestBody IncidentInvestigationRequest.Action r) {
+            @Valid @RequestBody IncidentInvestigationRequest.InvestigationResponseAction r) {
         return execute(id,new IncidentInvestigationUseCase.Command(r.requestId(),r.expectedVersion(),
                 "ACTION","RESPONSE_ACTION_TYPE",r.actionTypeId(),null,r.description(),null,false,false));
     }

@@ -130,7 +130,7 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
             Class<?> incidentInvestigation=Class.forName(incidentRest+"controller.IncidentInvestigationController");
             Class<?> ia=Class.forName(incidentRest+"request.IncidentInvestigationRequest$Assign");
             Class<?> ie=Class.forName(incidentRest+"request.IncidentInvestigationRequest$Evidence");
-            Class<?> ix=Class.forName(incidentRest+"request.IncidentInvestigationRequest$Action");
+            Class<?> ix=Class.forName(incidentRest+"request.IncidentInvestigationRequest$InvestigationResponseAction");
             Class<?> is=Class.forName(incidentRest+"request.IncidentInvestigationRequest$Resolve");
             Class<?> ir=Class.forName(incidentRest+"request.IncidentInvestigationRequest$Review");
             Class<?> ic=Class.forName(incidentRest+"request.IncidentInvestigationRequest$Close");
@@ -139,7 +139,7 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
             Class<?> lo=Class.forName(leakRest+"request.LeakInvestigationRequest$Open");
             Class<?> la=Class.forName(leakRest+"request.LeakInvestigationRequest$Assign");
             Class<?> le=Class.forName(leakRest+"request.LeakInvestigationRequest$Evidence");
-            Class<?> lx=Class.forName(leakRest+"request.LeakInvestigationRequest$Action");
+            Class<?> lx=Class.forName(leakRest+"request.LeakInvestigationRequest$LeakVerificationAction");
             Class<?> ld=Class.forName(leakRest+"request.LeakInvestigationRequest$Disposition");
             Class<?> lr=Class.forName(leakRest+"request.LeakInvestigationRequest$Review");
             String leakInvestigationBase="/api/v1/leakdetection/cases/{id}/investigation";

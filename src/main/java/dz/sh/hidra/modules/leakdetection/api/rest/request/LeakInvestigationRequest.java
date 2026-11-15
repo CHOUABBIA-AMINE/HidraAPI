@@ -23,7 +23,7 @@ public final class LeakInvestigationRequest {
     public record Assign(@NotBlank String requestId,@PositiveOrZero long expectedVersion,@NotBlank String reason) {}
     public record Evidence(@NotBlank String requestId,@PositiveOrZero long expectedVersion,
             @NotBlank String evaluationId,@NotBlank String direction,@NotBlank String explanation) {}
-    public record Action(@NotBlank String requestId,@PositiveOrZero long expectedVersion,
+    public record LeakVerificationAction(@NotBlank String requestId,@PositiveOrZero long expectedVersion,
             @NotBlank String actionType,@NotBlank String result) {}
     public record Disposition(@NotBlank String requestId,@PositiveOrZero long expectedVersion,
             @NotBlank String disposition,@NotBlank String explanation) {}

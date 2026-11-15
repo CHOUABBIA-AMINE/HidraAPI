@@ -37,7 +37,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public final class IntegrityWorkOrderApplicationService implements IntegrityWorkOrderUseCase {
+public class IntegrityWorkOrderApplicationService implements IntegrityWorkOrderUseCase {
     private final IntegrityWorkOrderStorePort store;
     private final MaintainableAssetRepositoryPort assets;
     private final MaintenanceWorkOrderRepositoryPort orders;

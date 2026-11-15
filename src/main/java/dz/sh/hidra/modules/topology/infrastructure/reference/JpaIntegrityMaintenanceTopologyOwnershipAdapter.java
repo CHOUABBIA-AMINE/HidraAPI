@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
-public final class JpaIntegrityMaintenanceTopologyOwnershipAdapter implements IntegrityMaintenanceTopologyOwnershipContract {
+public class JpaIntegrityMaintenanceTopologyOwnershipAdapter implements IntegrityMaintenanceTopologyOwnershipContract {
     private final AlarmTopologyOwnershipContract source;
     public JpaIntegrityMaintenanceTopologyOwnershipAdapter(AlarmTopologyOwnershipContract source){
         this.source=Objects.requireNonNull(source);

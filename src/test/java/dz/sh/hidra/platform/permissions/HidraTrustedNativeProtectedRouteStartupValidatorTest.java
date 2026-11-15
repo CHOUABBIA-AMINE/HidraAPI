@@ -7,7 +7,7 @@
  *
  * @Name        : HidraTrustedNativeProtectedRouteStartupValidatorTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-11
+ * @UpdatedOn   : 2026-11-15
  *
  * @Type        : Class
  * @Layer       : Test
@@ -60,7 +60,7 @@ class HidraTrustedNativeProtectedRouteStartupValidatorTest {
 
     @Test void productionNativeExactRoutesFailWithoutCompiledMappings() {
         var registry = new HidraTrustedNativeProtectedRouteRegistry();
-        assertTrue(registry.candidates().size()==87);
+        assertTrue(registry.candidates().size()==95);
         assertThrows(IllegalStateException.class, ()->
                 new HidraTrustedNativeProtectedRouteStartupValidator(
                     new RequestMappingHandlerMapping(), registry).validate());

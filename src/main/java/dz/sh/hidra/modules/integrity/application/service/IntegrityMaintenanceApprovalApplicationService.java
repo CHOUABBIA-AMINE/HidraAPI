@@ -33,7 +33,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public final class IntegrityMaintenanceApprovalApplicationService
+public class IntegrityMaintenanceApprovalApplicationService
         implements IntegrityMaintenanceApprovalUseCase,ApprovedMaintenanceHandoffContract {
     private final IntegrityMaintenanceApprovalStorePort store;
     private final IntegrityMaintenanceScopedAuthorizationContract identity;

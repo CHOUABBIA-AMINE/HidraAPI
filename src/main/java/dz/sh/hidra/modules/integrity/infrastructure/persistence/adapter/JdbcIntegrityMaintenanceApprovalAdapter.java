@@ -30,7 +30,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
-public final class JdbcIntegrityMaintenanceApprovalAdapter implements IntegrityMaintenanceApprovalStorePort {
+public class JdbcIntegrityMaintenanceApprovalAdapter implements IntegrityMaintenanceApprovalStorePort {
     private final JdbcTemplate jdbc;
     public JdbcIntegrityMaintenanceApprovalAdapter(JdbcTemplate jdbc){this.jdbc=Objects.requireNonNull(jdbc);}
 

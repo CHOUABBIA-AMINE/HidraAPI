@@ -30,7 +30,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public final class MaintenanceScopedAuthorizationQueryService implements
+public class MaintenanceScopedAuthorizationQueryService implements
         IntegrityMaintenanceScopedAuthorizationContract,AssetsMaintenanceScopedAuthorizationContract {
     private static final Set<String> PERMISSIONS=Set.of(
         "integrity:maintenance:approve","integrity:maintenance:read",

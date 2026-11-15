@@ -7,7 +7,7 @@
  *
  * @Name        : HidraTrustedNativeProtectedRouteHttpTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-11
+ * @UpdatedOn   : 2026-11-15
  *
  * @Type        : Class
  * @Layer       : Test
@@ -156,7 +156,7 @@ class HidraTrustedNativeProtectedRouteHttpTest {
    var resolver = org.mockito.Mockito.mock(HidraEffectivePermissionResolver.class);
    authenticated();
    var registry = new HidraTrustedNativeProtectedRouteRegistry();
-   assertEquals(87,registry.candidates().size());
+   assertEquals(95,registry.candidates().size());
    var mvc = mvc(owner, new UntrustedController(), resolver,registry);
    assertThrows(Exception.class, () ->
       mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(TRUSTED)));
@@ -165,8 +165,16 @@ class HidraTrustedNativeProtectedRouteHttpTest {
  @Test void realManufacturerTupleRegistryRejectsWrongVerbAndSiblingPattern() throws Exception {
    var registry=new HidraTrustedNativeProtectedRouteRegistry();
    var routes=registry.candidates();
-   assertEquals(87,routes.size());
+   assertEquals(95,routes.size());
    var expected=java.util.Set.of(
+     "POST /api/v1/integrity/findings/{findingId}/maintenance-approvals",
+     "GET /api/v1/integrity/findings/{findingId}/maintenance-handoffs/{approvalId}",
+     "POST /api/v1/assets/maintenance-work-orders/from-integrity",
+     "POST /api/v1/assets/maintenance-work-orders/{id}/assignment",
+     "POST /api/v1/assets/maintenance-work-orders/{id}/start",
+     "POST /api/v1/assets/maintenance-work-orders/{id}/execution",
+     "POST /api/v1/assets/maintenance-work-orders/{id}/verification",
+     "GET /api/v1/assets/maintenance-work-orders/{id}/integrity-history",
      "GET /api/v1/incident/incidents/{id}/investigation",
      "POST /api/v1/incident/incidents/{id}/investigation/assign",
      "POST /api/v1/incident/incidents/{id}/investigation/evidence",
@@ -327,6 +335,12 @@ class HidraTrustedNativeProtectedRouteHttpTest {
     var t16Leak=new dz.sh.hidra.modules.leakdetection.api.rest.controller.LeakInvestigationController(
          org.mockito.Mockito.mock(dz.sh.hidra.modules.leakdetection.application.port.in.LeakInvestigationUseCase.class));
     owners.put(t16Leak.getClass(),t16Leak);
+    var t18Integrity=new dz.sh.hidra.modules.integrity.api.rest.controller.IntegrityMaintenanceApprovalController(
+        org.mockito.Mockito.mock(dz.sh.hidra.modules.integrity.application.port.in.IntegrityMaintenanceApprovalUseCase.class));
+    owners.put(t18Integrity.getClass(),t18Integrity);
+    var t18Assets=new dz.sh.hidra.modules.assets.api.rest.controller.IntegrityWorkOrderController(
+        org.mockito.Mockito.mock(dz.sh.hidra.modules.assets.application.port.in.IntegrityWorkOrderUseCase.class));
+    owners.put(t18Assets.getClass(),t18Assets);
 
 
     // The same logical operation has two distinct native-protected MVC methods, never one multi-pattern mapping.

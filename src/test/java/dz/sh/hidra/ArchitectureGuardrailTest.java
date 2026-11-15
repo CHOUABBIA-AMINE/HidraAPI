@@ -946,7 +946,7 @@ class ArchitectureGuardrailTest {
                 "dz.sh.hidra.modules.identity.application.contract.integrity.IntegrityMaintenanceScopedAuthorizationContract",
                 "dz.sh.hidra.modules.identity.application.contract.assets.AssetsMaintenanceScopedAuthorizationContract",
                 "dz.sh.hidra.modules.topology.application.contract.integrity.IntegrityMaintenanceTopologyOwnershipContract")
-                .stream().anyMatch(root->target.equals(root)||target.startsWith(root+"$"));
+                .stream().anyMatch(root->target.startsWith(root));
     }
     private static boolean isT18MaintenanceConsumer(String source,String target) {
         String owner="dz.sh.hidra.modules.integrity.application.service.IntegrityMaintenanceApprovalApplicationService";
@@ -978,6 +978,18 @@ class ArchitectureGuardrailTest {
         org.junit.jupiter.api.Assertions.assertTrue(isForbiddenCrossModuleDependency(
                 "dz.sh.hidra.modules.assets.application.service.Any", 
                 "dz.sh.hidra.modules.identity.application.contract.integrity.IntegrityMaintenanceScopedAuthorizationContract"));
+        // Keep T18 transactional participants suitable for Spring class-based AOP.
+        for (Class<?> bean : java.util.List.of(
+                dz.sh.hidra.modules.integrity.application.service.IntegrityMaintenanceApprovalApplicationService.class,
+                dz.sh.hidra.modules.assets.application.service.IntegrityWorkOrderApplicationService.class,
+                dz.sh.hidra.modules.assets.infrastructure.persistence.adapter.JdbcIntegrityWorkOrderAdapter.class,
+                dz.sh.hidra.modules.integrity.infrastructure.persistence.adapter.JdbcIntegrityMaintenanceApprovalAdapter.class,
+                dz.sh.hidra.modules.identity.application.service.MaintenanceScopedAuthorizationQueryService.class,
+                dz.sh.hidra.modules.topology.infrastructure.reference.JpaIntegrityMaintenanceTopologyOwnershipAdapter.class)) {
+            org.junit.jupiter.api.Assertions.assertFalse(
+                    java.lang.reflect.Modifier.isFinal(bean.getModifiers()),
+                    "T18 transactional bean must be proxyable: " + bean.getName());
+        }
     }
 
     private static boolean isForbiddenCrossModuleDependency(

@@ -31,7 +31,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
-public final class JdbcIntegrityWorkOrderAdapter implements IntegrityWorkOrderStorePort {
+public class JdbcIntegrityWorkOrderAdapter implements IntegrityWorkOrderStorePort {
     private final JdbcTemplate jdbc;
     public JdbcIntegrityWorkOrderAdapter(JdbcTemplate jdbc){this.jdbc=Objects.requireNonNull(jdbc);}
     private static final RowMapper<State> STATES=(rs,n)->new State(

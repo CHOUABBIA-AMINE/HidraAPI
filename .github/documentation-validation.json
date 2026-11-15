@@ -1239,9 +1239,9 @@
   ],
   "openapi": {
     "counts": {
-      "paths": 384,
-      "operations": 426,
-      "schemas": 471
+      "paths": 398,
+      "operations": 440,
+      "schemas": 482
     },
     "path": "doc/api/openapi.yaml",
     "prior_reviewed_provenance": {
@@ -1352,42 +1352,45 @@
       "zip_sha256": "2d04f3beec9c29019c97a4fc5abc0aa37c776779e8707a409c6ee48ccc96183a"
     },
     "provenance": {
-      "artifact_id": 14130640770,
+      "artifact_id": 14161568564,
       "artifact_member": "hidra-api.json",
-      "artifact_name": "hidra-api-openapi-ec75f24bf027c40acc54262b11d53569cd09eeea-43637206431-1-api-contract",
-      "source_sha": "ec75f24bf027c40acc54262b11d53569cd09eeea",
-      "run_id": 43637206431,
-      "run_attempt": 1,
-      "job_id": 132576511413,
+      "artifact_name": "hidra-api-openapi-7a344f40f4aa34fbc696742f7d6ca4475b4a16f6-43712866975-2-api-contract",
+      "source_sha": "7a344f40f4aa34fbc696742f7d6ca4475b4a16f6",
+      "run_id": 43712866975,
+      "run_attempt": 2,
+      "job_id": 132810815340,
       "generation_step": "Publish deterministic OpenAPI contract",
       "generation_step_number": 9,
       "generation_step_conclusion": "success",
-      "compatibility_review": "CI #1242 generated 384 paths, 426 operations and 471 component schemas. Runtime backward compatibility passed. The exact generated artifact supplies the three new T14 Incident escalation/receipt/timeline operations, two T14 DTO schemas and the widened legacy Incident request source enum; protected legacy response values remain unchanged.",
+      "compatibility_review": "HidraAPI CI #1250 attempt 2 generated exact runtime OpenAPI with 398 paths, 440 operations and 482 schemas; generation (step 9) and backward compatibility (step 13, against successful CI #1248) both passed. T16 added 14 supported operations on 14 paths and 11 schemas; previous response contracts are retained.",
       "conclusion": "success",
-      "conclusion_scope": "Runtime OpenAPI generation and backward compatibility only; #1242 API job failed strict canonical snapshot equality, PostgreSQL shard 7 failed signed Incident list/count, and Full Verification Gate failed upstream dependencies. This is not full-CI or T14 acceptance.",
+      "conclusion_scope": "Only source-SHA runtime OpenAPI generation and backward compatibility succeeded. CI #1250 attempt 2 API contract job and whole run failed the stale canonical OpenAPI snapshot at step 15; physical dictionary equality was skipped. This record does not assert a successful run or accepted T16.",
       "job_conclusion": "failure",
       "workflow_conclusion": "failure",
       "failed_step": "Enforce canonical OpenAPI snapshot equality",
-      "zip_sha256": "db6e78796f51cafe87714f8fa5a18a31599476acdf0a8d1e4f7f4182ea2d2067",
-      "json_sha256": "6cd3dedbe3108a73534729ba025d3acae588565d8990e4f2a8d008280c894be3",
+      "zip_sha256": "4cc3cc5739c6ea9cd16369495f1e3ad2ad6e95fe1c2e89e7900b5c2a93d9f667",
+      "json_sha256": "0dfbeae5803ab333cb7701dd1204800c3916b12667e3d37f6998f5c67d8ee461",
       "database_evidence": {
-        "artifact_id": 14129604811,
+        "artifact_id": 14161159723,
         "artifact_member": "DATA_DICTIONARY.md",
-        "artifact_zip_sha256": "0f759c815765198d05c644a51543b087a6583eb0e01df8155aba400d7f62df0f",
-        "catalog_sha256": "f4bf8cf215dbf0109ba6f4ff7ce3d3f73c4e19eeb3303ab1ad08d10734401d14",
-        "dictionary_sha256": "27b03d10b9cfdaa3ad9a61e3e97b04d02576c0bffb049eec835a0aa9da34a79c",
-        "source_bundle_sha256": "da2136b0fc21245da0987fa801bb81828df5d8dc8a5983147e17a1dd70446faa",
-        "source_sha": "ec75f24bf027c40acc54262b11d53569cd09eeea",
-        "migrations": 214,
-        "relations": 569,
-        "unresolved_owners": 0
+        "source_sha": "7a344f40f4aa34fbc696742f7d6ca4475b4a16f6",
+        "artifact_zip_sha256": "20d0bccd3762f8db1a3683a85ba607f5364fe225552d40b57d42bff626747223",
+        "catalog_sha256": "fe597d0c96cd31e3c2ccc41e23e0ac399e419662796788911546e19bdd63e874",
+        "dictionary_sha256": "35959384a1428a1e73ba13efee96003871c71f8e1101398e697eaa0a548dcf32",
+        "source_bundle_sha256": "15a6e758bb480d31aa015664a8dcc3d34f5a486083b0bc19a5c17918f583a268",
+        "migrations": 216,
+        "jpa_mappings": 470,
+        "relations": 573,
+        "unresolved_owners": 0,
+        "status": "Generated CURRENT dictionary at step 10; strict comparison step 16 was skipped after stale OpenAPI snapshot gate."
       },
       "remaining_gates": [
-        "Exact new source-SHA PostgreSQL signed Incident scenario, every full CI job, generated runtime OpenAPI strict equality, physical dictionary strict equality, Full Verification Gate; no industrial acceptance"
+        "Successful fresh-source-SHA exact CI: runtime OpenAPI semantic equality, physical dictionary strict equality, complete test provenance, Full Verification Gate",
+        "Independent exact-run T16 signed synthetic investigation/read/security review; T17 remains planned; no industrial acceptance"
       ]
     },
-    "sha256": "c2d1cf41a4fc872c89203e8e8dfe05fb2d1988976de6da707c845f7008ae2145",
-    "source_sha": "ec75f24bf027c40acc54262b11d53569cd09eeea",
+    "sha256": "8dc421634d939a13fb0a96f2ca587b0b2efbcd78958e7022fbaec2dc949a1fd5",
+    "source_sha": "7a344f40f4aa34fbc696742f7d6ca4475b4a16f6",
     "prior_reviewed_provenance_t11": {
       "artifact_id": 14071799646,
       "artifact_member": "hidra-api.json",
@@ -1483,6 +1486,41 @@
       },
       "remaining_gates": [
         "Exact next-SHA test, architecture, all PostgreSQL shards, regenerated OpenAPI equality, migrated physical dictionary equality and Full Verification Gate; no industrial qualification"
+      ]
+    },
+    "prior_reviewed_provenance_t14": {
+      "artifact_id": 14130640770,
+      "artifact_member": "hidra-api.json",
+      "artifact_name": "hidra-api-openapi-ec75f24bf027c40acc54262b11d53569cd09eeea-43637206431-1-api-contract",
+      "source_sha": "ec75f24bf027c40acc54262b11d53569cd09eeea",
+      "run_id": 43637206431,
+      "run_attempt": 1,
+      "job_id": 132576511413,
+      "generation_step": "Publish deterministic OpenAPI contract",
+      "generation_step_number": 9,
+      "generation_step_conclusion": "success",
+      "compatibility_review": "CI #1242 generated 384 paths, 426 operations and 471 component schemas. Runtime backward compatibility passed. The exact generated artifact supplies the three new T14 Incident escalation/receipt/timeline operations, two T14 DTO schemas and the widened legacy Incident request source enum; protected legacy response values remain unchanged.",
+      "conclusion": "success",
+      "conclusion_scope": "Runtime OpenAPI generation and backward compatibility only; #1242 API job failed strict canonical snapshot equality, PostgreSQL shard 7 failed signed Incident list/count, and Full Verification Gate failed upstream dependencies. This is not full-CI or T14 acceptance.",
+      "job_conclusion": "failure",
+      "workflow_conclusion": "failure",
+      "failed_step": "Enforce canonical OpenAPI snapshot equality",
+      "zip_sha256": "db6e78796f51cafe87714f8fa5a18a31599476acdf0a8d1e4f7f4182ea2d2067",
+      "json_sha256": "6cd3dedbe3108a73534729ba025d3acae588565d8990e4f2a8d008280c894be3",
+      "database_evidence": {
+        "artifact_id": 14129604811,
+        "artifact_member": "DATA_DICTIONARY.md",
+        "artifact_zip_sha256": "0f759c815765198d05c644a51543b087a6583eb0e01df8155aba400d7f62df0f",
+        "catalog_sha256": "f4bf8cf215dbf0109ba6f4ff7ce3d3f73c4e19eeb3303ab1ad08d10734401d14",
+        "dictionary_sha256": "27b03d10b9cfdaa3ad9a61e3e97b04d02576c0bffb049eec835a0aa9da34a79c",
+        "source_bundle_sha256": "da2136b0fc21245da0987fa801bb81828df5d8dc8a5983147e17a1dd70446faa",
+        "source_sha": "ec75f24bf027c40acc54262b11d53569cd09eeea",
+        "migrations": 214,
+        "relations": 569,
+        "unresolved_owners": 0
+      },
+      "remaining_gates": [
+        "Exact new source-SHA PostgreSQL signed Incident scenario, every full CI job, generated runtime OpenAPI strict equality, physical dictionary strict equality, Full Verification Gate; no industrial acceptance"
       ]
     }
   },

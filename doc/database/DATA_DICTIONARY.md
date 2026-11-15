@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `ec75f24bf027c40acc54262b11d53569cd09eeea`
+Captured source SHA: `7a344f40f4aa34fbc696742f7d6ca4475b4a16f6`
 PostgreSQL server: `16.16 (Debian 16.16-1.pgdg13+1)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `da2136b0fc21245da0987fa801bb81828df5d8dc8a5983147e17a1dd70446faa`.
-Migrations: 214; JPA mappings: 470; catalog relations: 569; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `15a6e758bb480d31aa015664a8dcc3d34f5a486083b0bc19a5c17918f583a268`.
+Migrations: 216; JPA mappings: 470; catalog relations: 573; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -10444,6 +10444,7 @@ Persisted PermissionJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261112_002__t09_telemetry_trust_publication.sql](../../src/main/resources/db/migration/V20261112_002__t09_telemetry_trust_publication.sql)
 - Migration mention (not inferred introduction): [V20261112_003__t10_monitoring_rule_versions.sql](../../src/main/resources/db/migration/V20261112_003__t10_monitoring_rule_versions.sql)
 - Migration mention (not inferred introduction): [V20261112_004__t11_authoritative_deviation.sql](../../src/main/resources/db/migration/V20261112_004__t11_authoritative_deviation.sql)
+- Migration mention (not inferred introduction): [V20261115_001__t16_incident_leak_investigations.sql](../../src/main/resources/db/migration/V20261115_001__t16_incident_leak_investigations.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -11287,6 +11288,8 @@ Incident-owned incident state; standalone table name is an explicit prefix excep
 - Migration mention (not inferred introduction): [V20261008_009__hmr_092_incident_response_action_integrity.sql](../../src/main/resources/db/migration/V20261008_009__hmr_092_incident_response_action_integrity.sql)
 - Migration mention (not inferred introduction): [V20261008_010__hmr_090_incident_closure_governance.sql](../../src/main/resources/db/migration/V20261008_010__hmr_090_incident_closure_governance.sql)
 - Migration mention (not inferred introduction): [V20261112_007__t14_incident_evaluation_escalation.sql](../../src/main/resources/db/migration/V20261112_007__t14_incident_evaluation_escalation.sql)
+- Migration mention (not inferred introduction): [V20261115_001__t16_incident_leak_investigations.sql](../../src/main/resources/db/migration/V20261115_001__t16_incident_leak_investigations.sql)
+- Migration mention (not inferred introduction): [V20261115_002__t16_incident_review_trigger_record_fix.sql](../../src/main/resources/db/migration/V20261115_002__t16_incident_review_trigger_record_fix.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -11342,6 +11345,8 @@ Incident-owned incident state; standalone table name is an explicit prefix excep
   - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
 - `tr_hmr090_parent_consistency`: TRIGGER DEFERRABLE INITIALLY DEFERRED
   - Catalog attributes: {"columns": [], "deferrable": true, "initially_deferred": true, "reference": null, "type": "t", "validated": true}
+- `trg_t16_incident_review_parent`: TRIGGER DEFERRABLE INITIALLY DEFERRED
+  - Catalog attributes: {"columns": [], "deferrable": true, "initially_deferred": true, "reference": null, "type": "t", "validated": true}
 
 #### Indexes
 
@@ -11386,6 +11391,9 @@ Incident-owned incident state; standalone table name is an explicit prefix excep
 - `tr_hmr090_parent_consistency`: CREATE CONSTRAINT TRIGGER tr_hmr090_parent_consistency AFTER INSERT OR UPDATE ON hidra_incident DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION hidra_incident_closure_deferred()
   - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_incident_closure_deferred()"}
   - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_incident_closure_deferred()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> IF TG_TABLE_NAME='hidra_incident' THEN PERFORM hidra_incident_closure_consistent(NEW.id);<br> ELSE PERFORM hidra_incident_closure_consistent(NEW.incident_id); END IF;<br> RETURN NULL;<br>END $function$<br>
+- `trg_t16_incident_review_parent`: CREATE CONSTRAINT TRIGGER trg_t16_incident_review_parent AFTER INSERT OR UPDATE ON hidra_incident DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION t16_incident_review_consistent()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t16_incident_review_consistent()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t16_incident_review_consistent()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>DECLARE<br>    target_id varchar(80);<br>    parent_row public.hidra_incident%ROWTYPE;<br>    investigation_row public.hidra_incident_investigation%ROWTYPE;<br>BEGIN<br>    IF TG_TABLE_SCHEMA &lt;&gt; 'public' THEN<br>        RAISE EXCEPTION 'T16 investigation trigger bound to unexpected schema';<br>    END IF;<br>    IF TG_TABLE_NAME = 'hidra_incident' THEN<br>        target_id := NEW.id;<br>    ELSIF TG_TABLE_NAME = 'hidra_incident_investigation' THEN<br>        target_id := NEW.incident_id;<br>    ELSE<br>        RAISE EXCEPTION 'T16 investigation trigger bound to unexpected relation';<br>    END IF;<br><br>    SELECT * INTO parent_row FROM public.hidra_incident<br>      WHERE id = target_id;<br>    IF NOT FOUND THEN RETURN NULL; END IF;<br>    SELECT * INTO investigation_row<br>      FROM public.hidra_incident_investigation WHERE incident_id = target_id;<br>    IF NOT FOUND THEN<br>        -- Pre-T16 Incident has no governed investigation head; existing<br>        -- incident lifecycle and HMR-090 closure integrity remain operative.<br>        RETURN NULL;<br>    END IF;<br>    IF parent_row.status = 'CLOSED'<br>       AND (investigation_row.state &lt;&gt; 'CLOSED' OR investigation_row.reviewed_by_id IS NULL) THEN<br>        RAISE EXCEPTION 'T16 governed Incident requires reviewed closure history';<br>    END IF;<br>    IF investigation_row.state IN ('APPROVED', 'CLOSED')<br>       AND parent_row.resolved_at IS NULL THEN<br>        RAISE EXCEPTION 'T16 approved Incident must retain canonical resolution timestamp';<br>    END IF;<br>    RETURN NULL;<br>END<br>$function$<br>
 
 ### public.hidra_incident_assignment
 
@@ -11501,6 +11509,7 @@ Persisted IncidentCatalogEntryJpaEntity state; semantic authority remains with i
 - Migration mention (not inferred introduction): [V20261008_009__hmr_092_incident_response_action_integrity.sql](../../src/main/resources/db/migration/V20261008_009__hmr_092_incident_response_action_integrity.sql)
 - Migration mention (not inferred introduction): [V20261008_010__hmr_090_incident_closure_governance.sql](../../src/main/resources/db/migration/V20261008_010__hmr_090_incident_closure_governance.sql)
 - Migration mention (not inferred introduction): [V20261112_007__t14_incident_evaluation_escalation.sql](../../src/main/resources/db/migration/V20261112_007__t14_incident_evaluation_escalation.sql)
+- Migration mention (not inferred introduction): [V20261115_001__t16_incident_leak_investigations.sql](../../src/main/resources/db/migration/V20261115_001__t16_incident_leak_investigations.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -11996,6 +12005,143 @@ Persisted IncidentImpactAssessmentJpaEntity state; semantic authority remains wi
 #### Triggers
 
 None captured in this catalog category.
+
+### public.hidra_incident_investigation
+
+Owner: **incident**; relation kind: `r`.
+
+Incident-owned versioned human investigator, reviewed resolution and closure head, foreign key solely within Incident owner, no external owner identity table access.
+
+- Evidence: [V20261115_001__t16_incident_leak_investigations.sql](../../src/main/resources/db/migration/V20261115_001__t16_incident_leak_investigations.sql)
+- Evidence: [JdbcIncidentInvestigationAdapter.java](../../src/main/java/dz/sh/hidra/modules/incident/infrastructure/persistence/adapter/JdbcIncidentInvestigationAdapter.java)
+- Migration mention (not inferred introduction): [V20261115_001__t16_incident_leak_investigations.sql](../../src/main/resources/db/migration/V20261115_001__t16_incident_leak_investigations.sql)
+- Migration mention (not inferred introduction): [V20261115_002__t16_incident_review_trigger_record_fix.sql](../../src/main/resources/db/migration/V20261115_002__t16_incident_review_trigger_record_fix.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| incident_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| state | character varying(24) | False | None; identity=; generated= | No current mapped Java column | — |
+| version | bigint | False | 0; identity=; generated= | No current mapped Java column | — |
+| investigator_id | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+| submitted_by_id | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+| reviewed_by_id | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+| resolution_type_id | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+| resolution_summary | text | True | None; identity=; generated= | No current mapped Java column | — |
+| corrective_required | boolean | False | false; identity=; generated= | No current mapped Java column | — |
+| preventive_required | boolean | False | false; identity=; generated= | No current mapped Java column | — |
+| has_evidence | boolean | False | false; identity=; generated= | No current mapped Java column | — |
+| has_action | boolean | False | false; identity=; generated= | No current mapped Java column | — |
+| updated_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_incident_investigation_check`: CHECK ((state::text &lt;&gt; ALL (ARRAY['ASSIGNED'::character varying, 'INVESTIGATING'::character varying, 'SUBMITTED'::character varying, 'APPROVED'::character varying, 'CLOSED'::character varying]::text[])) OR NULLIF(btrim(investigator_id::text), ''::text) IS NOT NULL)
+  - Catalog attributes: {"columns": ["state", "investigator_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_incident_investigation_check1`: CHECK ((state::text &lt;&gt; ALL (ARRAY['SUBMITTED'::character varying, 'APPROVED'::character varying, 'CLOSED'::character varying]::text[])) OR NULLIF(btrim(submitted_by_id::text), ''::text) IS NOT NULL AND NULLIF(btrim(resolution_summary), ''::text) IS NOT NULL AND resolution_type_id IS NOT NULL AND has_evidence AND has_action)
+  - Catalog attributes: {"columns": ["state", "submitted_by_id", "resolution_summary", "resolution_type_id", "has_evidence", "has_action"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_incident_investigation_check2`: CHECK ((state::text &lt;&gt; ALL (ARRAY['APPROVED'::character varying, 'CLOSED'::character varying]::text[])) OR NULLIF(btrim(reviewed_by_id::text), ''::text) IS NOT NULL AND reviewed_by_id::text &lt;&gt; investigator_id::text)
+  - Catalog attributes: {"columns": ["state", "reviewed_by_id", "investigator_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_incident_investigation_incident_id_fkey`: FOREIGN KEY (incident_id) REFERENCES hidra_incident(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["incident_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_incident"}, "type": "f", "validated": true}
+- `hidra_incident_investigation_pkey`: PRIMARY KEY (incident_id)
+  - Catalog attributes: {"columns": ["incident_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_incident_investigation_resolution_type_id_fkey`: FOREIGN KEY (resolution_type_id) REFERENCES hidra_incident_catalog_entry(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["resolution_type_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_incident_catalog_entry"}, "type": "f", "validated": true}
+- `hidra_incident_investigation_state_check`: CHECK (state::text = ANY (ARRAY['NEW'::character varying, 'ASSIGNED'::character varying, 'INVESTIGATING'::character varying, 'SUBMITTED'::character varying, 'APPROVED'::character varying, 'CLOSED'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["state"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_incident_investigation_updated_at_check`: CHECK (isfinite(updated_at))
+  - Catalog attributes: {"columns": ["updated_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_incident_investigation_version_check`: CHECK (version &gt;= 0)
+  - Catalog attributes: {"columns": ["version"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `trg_t16_incident_review_head`: TRIGGER DEFERRABLE INITIALLY DEFERRED
+  - Catalog attributes: {"columns": [], "deferrable": true, "initially_deferred": true, "reference": null, "type": "t", "validated": true}
+
+#### Indexes
+
+- `hidra_incident_investigation_pkey`: CREATE UNIQUE INDEX hidra_incident_investigation_pkey ON public.hidra_incident_investigation USING btree (incident_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `ix_t16_incident_investigator`: CREATE INDEX ix_t16_incident_investigator ON public.hidra_incident_investigation USING btree (investigator_id, state)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+
+#### Triggers
+
+- `trg_t16_incident_review_head`: CREATE CONSTRAINT TRIGGER trg_t16_incident_review_head AFTER INSERT OR UPDATE ON hidra_incident_investigation DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION t16_incident_review_consistent()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t16_incident_review_consistent()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t16_incident_review_consistent()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>DECLARE<br>    target_id varchar(80);<br>    parent_row public.hidra_incident%ROWTYPE;<br>    investigation_row public.hidra_incident_investigation%ROWTYPE;<br>BEGIN<br>    IF TG_TABLE_SCHEMA &lt;&gt; 'public' THEN<br>        RAISE EXCEPTION 'T16 investigation trigger bound to unexpected schema';<br>    END IF;<br>    IF TG_TABLE_NAME = 'hidra_incident' THEN<br>        target_id := NEW.id;<br>    ELSIF TG_TABLE_NAME = 'hidra_incident_investigation' THEN<br>        target_id := NEW.incident_id;<br>    ELSE<br>        RAISE EXCEPTION 'T16 investigation trigger bound to unexpected relation';<br>    END IF;<br><br>    SELECT * INTO parent_row FROM public.hidra_incident<br>      WHERE id = target_id;<br>    IF NOT FOUND THEN RETURN NULL; END IF;<br>    SELECT * INTO investigation_row<br>      FROM public.hidra_incident_investigation WHERE incident_id = target_id;<br>    IF NOT FOUND THEN<br>        -- Pre-T16 Incident has no governed investigation head; existing<br>        -- incident lifecycle and HMR-090 closure integrity remain operative.<br>        RETURN NULL;<br>    END IF;<br>    IF parent_row.status = 'CLOSED'<br>       AND (investigation_row.state &lt;&gt; 'CLOSED' OR investigation_row.reviewed_by_id IS NULL) THEN<br>        RAISE EXCEPTION 'T16 governed Incident requires reviewed closure history';<br>    END IF;<br>    IF investigation_row.state IN ('APPROVED', 'CLOSED')<br>       AND parent_row.resolved_at IS NULL THEN<br>        RAISE EXCEPTION 'T16 approved Incident must retain canonical resolution timestamp';<br>    END IF;<br>    RETURN NULL;<br>END<br>$function$<br>
+
+### public.hidra_incident_investigation_event
+
+Owner: **incident**; relation kind: `r`.
+
+Immutable Incident owner event receipts with one version and command key per case, actor-bound direction and human decision provenance.
+
+- Evidence: [V20261115_001__t16_incident_leak_investigations.sql](../../src/main/resources/db/migration/V20261115_001__t16_incident_leak_investigations.sql)
+- Evidence: [JdbcIncidentInvestigationAdapter.java](../../src/main/java/dz/sh/hidra/modules/incident/infrastructure/persistence/adapter/JdbcIncidentInvestigationAdapter.java)
+- Migration mention (not inferred introduction): [V20261115_001__t16_incident_leak_investigations.sql](../../src/main/resources/db/migration/V20261115_001__t16_incident_leak_investigations.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| incident_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| version | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| command_key | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| command_sha256 | character(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| operation | character varying(20) | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| reference_type | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+| reference_id | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+| evidence_direction | character varying(40) | True | None; identity=; generated= | No current mapped Java column | — |
+| detail | text | False | None; identity=; generated= | No current mapped Java column | — |
+| state_before | character varying(24) | False | None; identity=; generated= | No current mapped Java column | — |
+| state_after | character varying(24) | False | None; identity=; generated= | No current mapped Java column | — |
+| recorded_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_incident_investigation_event_actor_id_check`: CHECK (NULLIF(btrim(actor_id::text), ''::text) IS NOT NULL)
+  - Catalog attributes: {"columns": ["actor_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_incident_investigation_event_command_key_check`: CHECK (NULLIF(btrim(command_key::text), ''::text) IS NOT NULL)
+  - Catalog attributes: {"columns": ["command_key"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_incident_investigation_event_command_sha256_check`: CHECK (command_sha256 ~ '^[0-9a-f]{64}$'::text)
+  - Catalog attributes: {"columns": ["command_sha256"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_incident_investigation_event_detail_check`: CHECK (NULLIF(btrim(detail), ''::text) IS NOT NULL)
+  - Catalog attributes: {"columns": ["detail"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_incident_investigation_event_id_check`: CHECK (NULLIF(btrim(id::text), ''::text) IS NOT NULL)
+  - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_incident_investigation_event_incident_id_command_key_key`: UNIQUE (incident_id, command_key)
+  - Catalog attributes: {"columns": ["incident_id", "command_key"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_incident_investigation_event_incident_id_fkey`: FOREIGN KEY (incident_id) REFERENCES hidra_incident_investigation(incident_id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["incident_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["incident_id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_incident_investigation"}, "type": "f", "validated": true}
+- `hidra_incident_investigation_event_incident_id_version_key`: UNIQUE (incident_id, version)
+  - Catalog attributes: {"columns": ["incident_id", "version"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_incident_investigation_event_operation_check`: CHECK (operation::text = ANY (ARRAY['ASSIGN'::character varying, 'EVIDENCE'::character varying, 'ACTION'::character varying, 'SUBMIT'::character varying, 'REVIEW'::character varying, 'CLOSE'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["operation"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_incident_investigation_event_pkey`: PRIMARY KEY (id)
+  - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_incident_investigation_event_recorded_at_check`: CHECK (isfinite(recorded_at))
+  - Catalog attributes: {"columns": ["recorded_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_incident_investigation_event_version_check`: CHECK (version &gt;= 1)
+  - Catalog attributes: {"columns": ["version"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_incident_investigation_event_incident_id_command_key_key`: CREATE UNIQUE INDEX hidra_incident_investigation_event_incident_id_command_key_key ON public.hidra_incident_investigation_event USING btree (incident_id, command_key)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_incident_investigation_event_incident_id_version_key`: CREATE UNIQUE INDEX hidra_incident_investigation_event_incident_id_version_key ON public.hidra_incident_investigation_event USING btree (incident_id, version)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_incident_investigation_event_pkey`: CREATE UNIQUE INDEX hidra_incident_investigation_event_pkey ON public.hidra_incident_investigation_event USING btree (id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `ix_t16_incident_event_time`: CREATE INDEX ix_t16_incident_event_time ON public.hidra_incident_investigation_event USING btree (incident_id, recorded_at, id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+
+#### Triggers
+
+- `trg_t16_incident_event_immutable`: CREATE TRIGGER trg_t16_incident_event_immutable BEFORE DELETE OR UPDATE ON hidra_incident_investigation_event FOR EACH ROW EXECUTE FUNCTION t16_investigation_event_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t16_investigation_event_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t16_investigation_event_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T16 investigation evidence and decisions are append-only';<br>END $function$<br>
+- `trg_t16_incident_event_no_truncate`: CREATE TRIGGER trg_t16_incident_event_no_truncate BEFORE TRUNCATE ON hidra_incident_investigation_event FOR EACH STATEMENT EXECUTE FUNCTION t16_investigation_event_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t16_investigation_event_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t16_investigation_event_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T16 investigation evidence and decisions are append-only';<br>END $function$<br>
 
 ### public.hidra_incident_related_incident
 
@@ -14998,6 +15144,7 @@ Persisted LeakCandidateJpaEntity state; semantic authority remains with leakdete
 - Migration mention (not inferred introduction): [V20261004_015__hmr_015_leakdetection_leak_candidate.sql](../../src/main/resources/db/migration/V20261004_015__hmr_015_leakdetection_leak_candidate.sql)
 - Migration mention (not inferred introduction): [V20261006_001__hmr_059_leak_escalation_candidate_integrity.sql](../../src/main/resources/db/migration/V20261006_001__hmr_059_leak_escalation_candidate_integrity.sql)
 - Migration mention (not inferred introduction): [V20261112_006__t13_leak_evaluation_trigger.sql](../../src/main/resources/db/migration/V20261112_006__t13_leak_evaluation_trigger.sql)
+- Migration mention (not inferred introduction): [V20261115_001__t16_incident_leak_investigations.sql](../../src/main/resources/db/migration/V20261115_001__t16_incident_leak_investigations.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -15069,6 +15216,7 @@ Leakdetection-owned case state; physical prefix is hidra_leak_detection.
 - Evidence: [LeakDetectionCaseJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/leakdetection/infrastructure/persistence/entity/LeakDetectionCaseJpaEntity.java)
 - Migration mention (not inferred introduction): [V20260611_009__create_leakdetection_tables.sql](../../src/main/resources/db/migration/V20260611_009__create_leakdetection_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
+- Migration mention (not inferred introduction): [V20261115_001__t16_incident_leak_investigations.sql](../../src/main/resources/db/migration/V20261115_001__t16_incident_leak_investigations.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -15398,6 +15546,150 @@ Persisted LeakEvidenceLinkJpaEntity state; semantic authority remains with leakd
 - `trg_t13_leak_evidence_no_truncate`: CREATE TRIGGER trg_t13_leak_evidence_no_truncate BEFORE TRUNCATE ON hidra_leak_detection_evidence_link FOR EACH STATEMENT EXECUTE FUNCTION t13_leak_evidence_no_truncate()
   - Catalog attributes: {"enabled": "O", "function_identity": "public.t13_leak_evidence_no_truncate()"}
   - Function evidence: CREATE OR REPLACE FUNCTION public.t13_leak_evidence_no_truncate()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>  IF EXISTS (SELECT 1 FROM public.hidra_leak_detection_evidence_link l<br>             JOIN public.hidra_leak_detection_evaluation_trigger t ON t.candidate_id=l.candidate_id<br>             WHERE l.evidence_type='MONITORING_DEVIATION') THEN<br>    RAISE EXCEPTION 'T13: protected evidence cannot be truncated';<br>  END IF;<br>  RETURN NULL;<br>END $function$<br>
+
+### public.hidra_leak_detection_investigation
+
+Owner: **leakdetection**; relation kind: `r`.
+
+LeakDetection-owned versioned candidate-primary case and independent documentary disposition head; no physical leak verification inferred.
+
+- Evidence: [V20261115_001__t16_incident_leak_investigations.sql](../../src/main/resources/db/migration/V20261115_001__t16_incident_leak_investigations.sql)
+- Evidence: [JdbcLeakInvestigationAdapter.java](../../src/main/java/dz/sh/hidra/modules/leakdetection/infrastructure/persistence/adapter/JdbcLeakInvestigationAdapter.java)
+- Migration mention (not inferred introduction): [V20261115_001__t16_incident_leak_investigations.sql](../../src/main/resources/db/migration/V20261115_001__t16_incident_leak_investigations.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| case_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| candidate_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| opening_request_key | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| opening_sha256 | character(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| state | character varying(30) | False | None; identity=; generated= | No current mapped Java column | — |
+| version | bigint | False | 0; identity=; generated= | No current mapped Java column | — |
+| investigator_id | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+| submitted_by_id | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+| reviewed_by_id | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+| disposition | character varying(40) | True | None; identity=; generated= | No current mapped Java column | — |
+| has_evidence | boolean | False | false; identity=; generated= | No current mapped Java column | — |
+| has_action | boolean | False | false; identity=; generated= | No current mapped Java column | — |
+| updated_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_leak_detection_investigation_candidate_id_fkey`: FOREIGN KEY (candidate_id) REFERENCES hidra_leak_detection_candidate(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["candidate_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_leak_detection_candidate"}, "type": "f", "validated": true}
+- `hidra_leak_detection_investigation_candidate_id_key`: UNIQUE (candidate_id)
+  - Catalog attributes: {"columns": ["candidate_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_leak_detection_investigation_case_id_fkey`: FOREIGN KEY (case_id) REFERENCES hidra_leak_detection_case(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["case_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_leak_detection_case"}, "type": "f", "validated": true}
+- `hidra_leak_detection_investigation_check`: CHECK ((state::text &lt;&gt; ALL (ARRAY['ASSIGNED'::character varying, 'INVESTIGATING'::character varying, 'SUBMITTED'::character varying, 'INSUFFICIENT_EVIDENCE'::character varying, 'REVIEWED'::character varying]::text[])) OR NULLIF(btrim(investigator_id::text), ''::text) IS NOT NULL)
+  - Catalog attributes: {"columns": ["state", "investigator_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_leak_detection_investigation_check1`: CHECK ((state::text &lt;&gt; ALL (ARRAY['SUBMITTED'::character varying, 'INSUFFICIENT_EVIDENCE'::character varying, 'REVIEWED'::character varying]::text[])) OR NULLIF(btrim(submitted_by_id::text), ''::text) IS NOT NULL AND disposition IS NOT NULL AND has_evidence AND has_action)
+  - Catalog attributes: {"columns": ["state", "submitted_by_id", "disposition", "has_evidence", "has_action"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_leak_detection_investigation_check2`: CHECK ((state::text &lt;&gt; ALL (ARRAY['INSUFFICIENT_EVIDENCE'::character varying, 'REVIEWED'::character varying]::text[])) OR NULLIF(btrim(reviewed_by_id::text), ''::text) IS NOT NULL AND reviewed_by_id::text &lt;&gt; investigator_id::text)
+  - Catalog attributes: {"columns": ["state", "reviewed_by_id", "investigator_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_leak_detection_investigation_disposition_check`: CHECK (disposition::text = ANY (ARRAY['DISMISSED'::character varying, 'VERIFIED_LEAK'::character varying, 'INSUFFICIENT_EVIDENCE'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["disposition"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_leak_detection_investigation_opening_request_key_check`: CHECK (NULLIF(btrim(opening_request_key::text), ''::text) IS NOT NULL)
+  - Catalog attributes: {"columns": ["opening_request_key"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_leak_detection_investigation_opening_sha256_check`: CHECK (opening_sha256 ~ '^[0-9a-f]{64}$'::text)
+  - Catalog attributes: {"columns": ["opening_sha256"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_leak_detection_investigation_pkey`: PRIMARY KEY (case_id)
+  - Catalog attributes: {"columns": ["case_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_leak_detection_investigation_state_check`: CHECK (state::text = ANY (ARRAY['NEW'::character varying, 'ASSIGNED'::character varying, 'INVESTIGATING'::character varying, 'SUBMITTED'::character varying, 'INSUFFICIENT_EVIDENCE'::character varying, 'REVIEWED'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["state"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_leak_detection_investigation_updated_at_check`: CHECK (isfinite(updated_at))
+  - Catalog attributes: {"columns": ["updated_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_leak_detection_investigation_version_check`: CHECK (version &gt;= 0)
+  - Catalog attributes: {"columns": ["version"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_leak_detection_investigation_candidate_id_key`: CREATE UNIQUE INDEX hidra_leak_detection_investigation_candidate_id_key ON public.hidra_leak_detection_investigation USING btree (candidate_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_leak_detection_investigation_pkey`: CREATE UNIQUE INDEX hidra_leak_detection_investigation_pkey ON public.hidra_leak_detection_investigation USING btree (case_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `ix_t16_leak_investigator`: CREATE INDEX ix_t16_leak_investigator ON public.hidra_leak_detection_investigation USING btree (investigator_id, state)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+
+#### Triggers
+
+- `trg_t16_leak_primary`: CREATE TRIGGER trg_t16_leak_primary BEFORE INSERT OR UPDATE ON hidra_leak_detection_investigation FOR EACH ROW EXECUTE FUNCTION t16_leak_primary_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t16_leak_primary_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t16_leak_primary_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> IF NOT EXISTS (SELECT 1 FROM public.hidra_leak_detection_case c<br>     WHERE c.id=NEW.case_id AND c.primary_candidate_id=NEW.candidate_id) THEN<br>   RAISE EXCEPTION 'T16 primary Leak case/candidate correlation mismatch';<br> END IF;<br> RETURN NEW;<br>END $function$<br>
+
+### public.hidra_leak_detection_investigation_event
+
+Owner: **leakdetection**; relation kind: `r`.
+
+Append-only LeakDetection owner verification/disposition receipts and exact replay provenance; no cross-module storage FK.
+
+- Evidence: [V20261115_001__t16_incident_leak_investigations.sql](../../src/main/resources/db/migration/V20261115_001__t16_incident_leak_investigations.sql)
+- Evidence: [JdbcLeakInvestigationAdapter.java](../../src/main/java/dz/sh/hidra/modules/leakdetection/infrastructure/persistence/adapter/JdbcLeakInvestigationAdapter.java)
+- Migration mention (not inferred introduction): [V20261115_001__t16_incident_leak_investigations.sql](../../src/main/resources/db/migration/V20261115_001__t16_incident_leak_investigations.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| case_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| version | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| command_key | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| command_sha256 | character(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| operation | character varying(20) | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| reference_type | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+| reference_id | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+| evidence_direction | character varying(40) | True | None; identity=; generated= | No current mapped Java column | — |
+| detail | text | False | None; identity=; generated= | No current mapped Java column | — |
+| state_before | character varying(30) | False | None; identity=; generated= | No current mapped Java column | — |
+| state_after | character varying(30) | False | None; identity=; generated= | No current mapped Java column | — |
+| recorded_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_leak_detection_investigation_even_case_id_command_key_key`: UNIQUE (case_id, command_key)
+  - Catalog attributes: {"columns": ["case_id", "command_key"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_leak_detection_investigation_event_actor_id_check`: CHECK (NULLIF(btrim(actor_id::text), ''::text) IS NOT NULL)
+  - Catalog attributes: {"columns": ["actor_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_leak_detection_investigation_event_case_id_fkey`: FOREIGN KEY (case_id) REFERENCES hidra_leak_detection_investigation(case_id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["case_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["case_id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_leak_detection_investigation"}, "type": "f", "validated": true}
+- `hidra_leak_detection_investigation_event_case_id_version_key`: UNIQUE (case_id, version)
+  - Catalog attributes: {"columns": ["case_id", "version"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_leak_detection_investigation_event_command_key_check`: CHECK (NULLIF(btrim(command_key::text), ''::text) IS NOT NULL)
+  - Catalog attributes: {"columns": ["command_key"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_leak_detection_investigation_event_command_sha256_check`: CHECK (command_sha256 ~ '^[0-9a-f]{64}$'::text)
+  - Catalog attributes: {"columns": ["command_sha256"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_leak_detection_investigation_event_detail_check`: CHECK (NULLIF(btrim(detail), ''::text) IS NOT NULL)
+  - Catalog attributes: {"columns": ["detail"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_leak_detection_investigation_event_id_check`: CHECK (NULLIF(btrim(id::text), ''::text) IS NOT NULL)
+  - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_leak_detection_investigation_event_operation_check`: CHECK (operation::text = ANY (ARRAY['OPEN'::character varying, 'ASSIGN'::character varying, 'EVIDENCE'::character varying, 'ACTION'::character varying, 'SUBMIT'::character varying, 'REVIEW'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["operation"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_leak_detection_investigation_event_pkey`: PRIMARY KEY (id)
+  - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_leak_detection_investigation_event_recorded_at_check`: CHECK (isfinite(recorded_at))
+  - Catalog attributes: {"columns": ["recorded_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_leak_detection_investigation_event_version_check`: CHECK (version &gt;= 0)
+  - Catalog attributes: {"columns": ["version"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_leak_detection_investigation_even_case_id_command_key_key`: CREATE UNIQUE INDEX hidra_leak_detection_investigation_even_case_id_command_key_key ON public.hidra_leak_detection_investigation_event USING btree (case_id, command_key)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_leak_detection_investigation_event_case_id_version_key`: CREATE UNIQUE INDEX hidra_leak_detection_investigation_event_case_id_version_key ON public.hidra_leak_detection_investigation_event USING btree (case_id, version)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_leak_detection_investigation_event_pkey`: CREATE UNIQUE INDEX hidra_leak_detection_investigation_event_pkey ON public.hidra_leak_detection_investigation_event USING btree (id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `ix_t16_leak_event_time`: CREATE INDEX ix_t16_leak_event_time ON public.hidra_leak_detection_investigation_event USING btree (case_id, recorded_at, id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+
+#### Triggers
+
+- `trg_t16_leak_event_immutable`: CREATE TRIGGER trg_t16_leak_event_immutable BEFORE DELETE OR UPDATE ON hidra_leak_detection_investigation_event FOR EACH ROW EXECUTE FUNCTION t16_investigation_event_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t16_investigation_event_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t16_investigation_event_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T16 investigation evidence and decisions are append-only';<br>END $function$<br>
+- `trg_t16_leak_event_no_truncate`: CREATE TRIGGER trg_t16_leak_event_no_truncate BEFORE TRUNCATE ON hidra_leak_detection_investigation_event FOR EACH STATEMENT EXECUTE FUNCTION t16_investigation_event_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t16_investigation_event_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t16_investigation_event_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T16 investigation evidence and decisions are append-only';<br>END $function$<br>
 
 ### public.hidra_leak_detection_localization_estimate
 

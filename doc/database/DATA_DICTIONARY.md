@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `d2e756815da5a8811f17936ae3376783ecbe918c`
+Captured source SHA: `78d58ae5ee1891541e629cb49ec594c03097cab3`
 PostgreSQL server: `16.16 (Debian 16.16-1.pgdg13+1)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `c8f877318b044cb7b7899410f4f943b0a3b697e9871bf5c8f69339615054ae67`.
-Migrations: 217; JPA mappings: 470; catalog relations: 578; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `d6dd2d1ffecdab5beb437fd33cd044fc40f95cfee0fa503ddaa3ca747617df72`.
+Migrations: 218; JPA mappings: 471; catalog relations: 580; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -22147,6 +22147,7 @@ Persisted NominationJpaEntity state; semantic authority remains with planning.
 - Migration mention (not inferred introduction): [V20261008_020__hmr_094_planning_plan_target_integrity.sql](../../src/main/resources/db/migration/V20261008_020__hmr_094_planning_plan_target_integrity.sql)
 - Migration mention (not inferred introduction): [V20261008_025__hmr_080_nomination_owner_reference_policies.sql](../../src/main/resources/db/migration/V20261008_025__hmr_080_nomination_owner_reference_policies.sql)
 - Migration mention (not inferred introduction): [V20261008_026__hmr_080_planning_nomination_integrity.sql](../../src/main/resources/db/migration/V20261008_026__hmr_080_planning_nomination_integrity.sql)
+- Migration mention (not inferred introduction): [V20261115_004__t19_planning_nomination_governance.sql](../../src/main/resources/db/migration/V20261115_004__t19_planning_nomination_governance.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -22246,6 +22247,132 @@ Persisted NominationJpaEntity state; semantic authority remains with planning.
 - `hmr080_nomination_type`: CREATE TRIGGER hmr080_nomination_type BEFORE INSERT OR UPDATE ON hidra_planning_nomination FOR EACH ROW EXECUTE FUNCTION hmr080_nomination_type_guard()
   - Catalog attributes: {"enabled": "O", "function_identity": "public.hmr080_nomination_type_guard()"}
   - Function evidence: CREATE OR REPLACE FUNCTION public.hmr080_nomination_type_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>DECLARE family varchar(80); eligible boolean; unchanged boolean:=false;<br>BEGIN<br>    IF TG_OP='UPDATE' THEN unchanged:=NEW.nomination_type_id IS NOT DISTINCT FROM OLD.nomination_type_id; END IF;<br>    SELECT catalog_name,active INTO family,eligible FROM hidra_planning_catalog_entry WHERE id=NEW.nomination_type_id FOR SHARE;<br>    IF family IS DISTINCT FROM 'NOMINATION_TYPE' OR (NOT unchanged AND eligible IS DISTINCT FROM true)<br>    THEN RAISE EXCEPTION 'HMR-080: exact active fresh NOMINATION_TYPE required'; END IF;<br>    RETURN NEW;<br>END $function$<br>
+
+### public.hidra_planning_nomination_event
+
+Owner: **planning**; relation kind: `r`.
+
+Planning-owned immutable nomination authoring and independent disposition evidence, command replay identity and ordered versions.
+
+- Evidence: [V20261115_004__t19_planning_nomination_governance.sql](../../src/main/resources/db/migration/V20261115_004__t19_planning_nomination_governance.sql)
+- Evidence: [JdbcPlanningNominationGovernanceAdapter.java](../../src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/adapter/JdbcPlanningNominationGovernanceAdapter.java)
+- Migration mention (not inferred introduction): [V20261115_004__t19_planning_nomination_governance.sql](../../src/main/resources/db/migration/V20261115_004__t19_planning_nomination_governance.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| event_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| command_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| nomination_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| revision_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| event_version | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| previous_status | character varying(24) | True | None; identity=; generated= | No current mapped Java column | — |
+| status | character varying(24) | False | None; identity=; generated= | No current mapped Java column | — |
+| reason | character varying(500) | True | None; identity=; generated= | No current mapped Java column | — |
+| recorded_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| payload_fingerprint | character varying(64) | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_planning_nomination_event_actor_id_check`: CHECK (btrim(actor_id::text) &lt;&gt; ''::text)
+  - Catalog attributes: {"columns": ["actor_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_planning_nomination_event_check`: CHECK (event_version = 0 AND previous_status IS NULL AND status::text = 'DRAFT'::text AND reason IS NULL OR event_version = 1 AND previous_status IS NOT NULL AND previous_status::text = 'DRAFT'::text AND (status::text = ANY (ARRAY['CONFIRMED'::character varying, 'REJECTED'::character varying]::text[])) AND reason IS NOT NULL AND btrim(reason::text) &lt;&gt; ''::text)
+  - Catalog attributes: {"columns": ["event_version", "previous_status", "status", "reason"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_planning_nomination_event_nomination_id_event_version_key`: UNIQUE (nomination_id, event_version)
+  - Catalog attributes: {"columns": ["nomination_id", "event_version"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_planning_nomination_event_nomination_id_revision_id_fkey`: FOREIGN KEY (nomination_id, revision_id) REFERENCES hidra_planning_nomination_governance(nomination_id, revision_id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["nomination_id", "revision_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["nomination_id", "revision_id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_planning_nomination_governance"}, "type": "f", "validated": true}
+- `hidra_planning_nomination_event_payload_fingerprint_check`: CHECK (payload_fingerprint::text ~ '^[a-f0-9]{64}$'::text)
+  - Catalog attributes: {"columns": ["payload_fingerprint"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_planning_nomination_event_pkey`: PRIMARY KEY (event_id)
+  - Catalog attributes: {"columns": ["event_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_planning_nomination_event_recorded_at_check`: CHECK (isfinite(recorded_at))
+  - Catalog attributes: {"columns": ["recorded_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_planning_nomination_event_revision_id_command_id_key`: UNIQUE (revision_id, command_id)
+  - Catalog attributes: {"columns": ["revision_id", "command_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+
+#### Indexes
+
+- `hidra_planning_nomination_event_nomination_id_event_version_key`: CREATE UNIQUE INDEX hidra_planning_nomination_event_nomination_id_event_version_key ON public.hidra_planning_nomination_event USING btree (nomination_id, event_version)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_planning_nomination_event_pkey`: CREATE UNIQUE INDEX hidra_planning_nomination_event_pkey ON public.hidra_planning_nomination_event USING btree (event_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `hidra_planning_nomination_event_revision_id_command_id_key`: CREATE UNIQUE INDEX hidra_planning_nomination_event_revision_id_command_id_key ON public.hidra_planning_nomination_event USING btree (revision_id, command_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `hidra_t19_nomination_event_immutable`: CREATE TRIGGER hidra_t19_nomination_event_immutable BEFORE DELETE OR UPDATE ON hidra_planning_nomination_event FOR EACH ROW EXECUTE FUNCTION hidra_t19_nomination_append_only()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t19_nomination_append_only()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t19_nomination_append_only()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'T19 nomination governance evidence is immutable' USING ERRCODE = '23514';<br>END;<br>$function$<br>
+- `hidra_t19_nomination_event_insert_guard`: CREATE TRIGGER hidra_t19_nomination_event_insert_guard BEFORE INSERT ON hidra_planning_nomination_event FOR EACH ROW EXECUTE FUNCTION hidra_t19_nomination_event_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t19_nomination_event_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t19_nomination_event_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>DECLARE<br>    scope_author varchar(80);<br>    created timestamptz;<br>BEGIN<br>    SELECT author_id INTO STRICT scope_author<br>    FROM public.hidra_planning_nomination_governance WHERE nomination_id = NEW.nomination_id;<br>    IF NEW.event_version = 0 THEN<br>        IF NEW.actor_id &lt;&gt; scope_author THEN<br>            RAISE EXCEPTION 'T19 creation requires the registered author' USING ERRCODE = '23514';<br>        END IF;<br>    ELSE<br>        SELECT recorded_at INTO created FROM public.hidra_planning_nomination_event<br>        WHERE nomination_id = NEW.nomination_id AND event_version = 0;<br>        IF created IS NULL OR NEW.recorded_at &lt;= created OR NEW.actor_id = scope_author THEN<br>            RAISE EXCEPTION 'T19 disposition requires a later event and an independent reviewer'<br>                USING ERRCODE = '23514';<br>        END IF;<br>    END IF;<br>    RETURN NEW;<br>END;<br>$function$<br>
+- `hidra_t19_nomination_event_no_truncate`: CREATE TRIGGER hidra_t19_nomination_event_no_truncate BEFORE TRUNCATE ON hidra_planning_nomination_event FOR EACH STATEMENT EXECUTE FUNCTION hidra_t19_nomination_append_only()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t19_nomination_append_only()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t19_nomination_append_only()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'T19 nomination governance evidence is immutable' USING ERRCODE = '23514';<br>END;<br>$function$<br>
+
+### public.hidra_planning_nomination_governance
+
+Owner: **planning**; relation kind: `r`.
+
+Persisted PlanningNominationGovernanceJpaEntity state; semantic authority remains with planning.
+
+- Evidence: [PlanningNominationGovernanceJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/planning/infrastructure/persistence/entity/PlanningNominationGovernanceJpaEntity.java)
+- Migration mention (not inferred introduction): [V20261115_004__t19_planning_nomination_governance.sql](../../src/main/resources/db/migration/V20261115_004__t19_planning_nomination_governance.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| nomination_id | character varying(80) | False | None; identity=; generated= | nominationId: String; {"length": "80", "nullable": "false"}; columnDefinition=None | — |
+| revision_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| company_id | character varying(80) | False | None; identity=; generated= | companyId: String; {"length": "80", "nullable": "false"}; columnDefinition=None | — |
+| source_facility_id | character varying(80) | False | None; identity=; generated= | sourceFacilityId: String; {"length": "80", "nullable": "false"}; columnDefinition=None | — |
+| destination_facility_id | character varying(80) | False | None; identity=; generated= | destinationFacilityId: String; {"length": "80", "nullable": "false"}; columnDefinition=None | — |
+| normalized_code | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| author_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_planning_nomination_gover_revision_id_normalized_code_key`: UNIQUE (revision_id, normalized_code)
+  - Catalog attributes: {"columns": ["revision_id", "normalized_code"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_planning_nomination_governa_destination_facility_id_check`: CHECK (btrim(destination_facility_id::text) &lt;&gt; ''::text)
+  - Catalog attributes: {"columns": ["destination_facility_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_planning_nomination_governa_nomination_id_revision_id_key`: UNIQUE (nomination_id, revision_id)
+  - Catalog attributes: {"columns": ["nomination_id", "revision_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_planning_nomination_governance_author_id_check`: CHECK (btrim(author_id::text) &lt;&gt; ''::text)
+  - Catalog attributes: {"columns": ["author_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_planning_nomination_governance_check`: CHECK (source_facility_id::text &lt;&gt; destination_facility_id::text)
+  - Catalog attributes: {"columns": ["source_facility_id", "destination_facility_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_planning_nomination_governance_company_id_check`: CHECK (btrim(company_id::text) &lt;&gt; ''::text)
+  - Catalog attributes: {"columns": ["company_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_planning_nomination_governance_nomination_id_fkey`: FOREIGN KEY (nomination_id) REFERENCES hidra_planning_nomination(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["nomination_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_planning_nomination"}, "type": "f", "validated": true}
+- `hidra_planning_nomination_governance_normalized_code_check`: CHECK (normalized_code::text ~ '^[A-Z0-9][A-Z0-9._-]{0,79}$'::text)
+  - Catalog attributes: {"columns": ["normalized_code"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_planning_nomination_governance_pkey`: PRIMARY KEY (nomination_id)
+  - Catalog attributes: {"columns": ["nomination_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_planning_nomination_governance_revision_id_fkey`: FOREIGN KEY (revision_id) REFERENCES hidra_planning_plan_revision(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["revision_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_planning_plan_revision"}, "type": "f", "validated": true}
+- `hidra_planning_nomination_governance_source_facility_id_check`: CHECK (btrim(source_facility_id::text) &lt;&gt; ''::text)
+  - Catalog attributes: {"columns": ["source_facility_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_planning_nomination_gover_revision_id_normalized_code_key`: CREATE UNIQUE INDEX hidra_planning_nomination_gover_revision_id_normalized_code_key ON public.hidra_planning_nomination_governance USING btree (revision_id, normalized_code)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_planning_nomination_governa_nomination_id_revision_id_key`: CREATE UNIQUE INDEX hidra_planning_nomination_governa_nomination_id_revision_id_key ON public.hidra_planning_nomination_governance USING btree (nomination_id, revision_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_planning_nomination_governance_pkey`: CREATE UNIQUE INDEX hidra_planning_nomination_governance_pkey ON public.hidra_planning_nomination_governance USING btree (nomination_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `hidra_t19_nomination_governance_immutable`: CREATE TRIGGER hidra_t19_nomination_governance_immutable BEFORE DELETE OR UPDATE ON hidra_planning_nomination_governance FOR EACH ROW EXECUTE FUNCTION hidra_t19_nomination_append_only()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t19_nomination_append_only()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t19_nomination_append_only()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'T19 nomination governance evidence is immutable' USING ERRCODE = '23514';<br>END;<br>$function$<br>
+- `hidra_t19_nomination_governance_no_truncate`: CREATE TRIGGER hidra_t19_nomination_governance_no_truncate BEFORE TRUNCATE ON hidra_planning_nomination_governance FOR EACH STATEMENT EXECUTE FUNCTION hidra_t19_nomination_append_only()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t19_nomination_append_only()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t19_nomination_append_only()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'T19 nomination governance evidence is immutable' USING ERRCODE = '23514';<br>END;<br>$function$<br>
 
 ### public.hidra_planning_nomination_reference_mapping
 
@@ -22690,6 +22817,7 @@ Persisted PlanRevisionJpaEntity state; semantic authority remains with planning.
 - Migration mention (not inferred introduction): [V20261007_002__hmr_065_planning_operational_plan.sql](../../src/main/resources/db/migration/V20261007_002__hmr_065_planning_operational_plan.sql)
 - Migration mention (not inferred introduction): [V20261008_020__hmr_094_planning_plan_target_integrity.sql](../../src/main/resources/db/migration/V20261008_020__hmr_094_planning_plan_target_integrity.sql)
 - Migration mention (not inferred introduction): [V20261008_026__hmr_080_planning_nomination_integrity.sql](../../src/main/resources/db/migration/V20261008_026__hmr_080_planning_nomination_integrity.sql)
+- Migration mention (not inferred introduction): [V20261115_004__t19_planning_nomination_governance.sql](../../src/main/resources/db/migration/V20261115_004__t19_planning_nomination_governance.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|

@@ -1239,9 +1239,9 @@
   ],
   "openapi": {
     "counts": {
-      "paths": 406,
-      "operations": 448,
-      "schemas": 487
+      "paths": 409,
+      "operations": 451,
+      "schemas": 491
     },
     "path": "doc/api/openapi.yaml",
     "prior_reviewed_provenance": {
@@ -1352,6 +1352,43 @@
       "zip_sha256": "2d04f3beec9c29019c97a4fc5abc0aa37c776779e8707a409c6ee48ccc96183a"
     },
     "provenance": {
+      "artifact_id": 14179659166,
+      "artifact_member": "hidra-api.json",
+      "artifact_name": "hidra-api-openapi-78d58ae5ee1891541e629cb49ec594c03097cab3-43760181253-1-api-contract",
+      "source_sha": "78d58ae5ee1891541e629cb49ec594c03097cab3",
+      "run_id": 43760181253,
+      "run_attempt": 1,
+      "job_id": 132953013042,
+      "generation_step": "Publish deterministic OpenAPI contract",
+      "generation_step_number": 9,
+      "generation_step_conclusion": "success",
+      "compatibility_review": "CI #1259 passed runtime backward compatibility. The canonical delta adds three protected T19 endpoints and four schemas, with every prior path and schema object preserved.",
+      "conclusion": "success",
+      "conclusion_scope": "Runtime OpenAPI generation, backward compatibility and migrated dictionary capture succeeded. The API job and workflow failed strict OpenAPI equality. Dictionary comparison was skipped. All test lanes passed.",
+      "job_conclusion": "failure",
+      "workflow_conclusion": "failure",
+      "failed_step": "Enforce canonical OpenAPI snapshot equality",
+      "zip_sha256": "0bb690890ad6eae64b9495ad544a7e324eb0fa38647617fcf79ad86ed769d2d6",
+      "json_sha256": "9d54c30ed49c3fbd5d300ef9f81b35941a08614e5e9e8c6c4c0cc26417b6937a",
+      "database_evidence": {
+        "artifact_id": 14179554568,
+        "artifact_member": "DATA_DICTIONARY.md",
+        "artifact_zip_sha256": "62fc637ef5e973e209011a8b43a70bbae5438e5e27df6cfa84c92b5f6178eebe",
+        "dictionary_sha256": "9516618e0a49e883b2345962254c6ff16d70d0f8744bf1f659688df895ea4878",
+        "catalog_sha256": "35132ab44be98dfa3b2a56a259199ee0da63674dbf9a34b92deaa126f19c6366",
+        "source_bundle_sha256": "d6dd2d1ffecdab5beb437fd33cd044fc40f95cfee0fa503ddaa3ca747617df72",
+        "source_sha": "78d58ae5ee1891541e629cb49ec594c03097cab3",
+        "migrations": 218,
+        "jpa_mappings": 471,
+        "relations": 580,
+        "unresolved_owners": 0,
+        "status": "Generated from exact-SHA CI #1259 migrated PostgreSQL 16.16 catalog. Strict comparison was skipped after stale OpenAPI equality."
+      },
+      "remaining_gates": [
+        "Exact replacement-SHA strict OpenAPI and dictionary equality and Full Verification Gate."
+      ]
+    },
+    "prior_reviewed_provenance_t18": {
       "artifact_id": 14176575676,
       "artifact_member": "hidra-api.json",
       "artifact_name": "hidra-api-openapi-d2e756815da5a8811f17936ae3376783ecbe918c-43750356326-1-api-contract",
@@ -1389,8 +1426,8 @@
         "T18 software CI acceptance is distinct from engineering, deployment, and operational acceptance. T17 remains blocked by T24."
       ]
     },
-    "sha256": "deb63e9dbd22147bdd2e2c39f087fb8a58f377b7ab75869d59b611df045ca53f",
-    "source_sha": "d2e756815da5a8811f17936ae3376783ecbe918c",
+    "sha256": "3626280cf063a79379e747a2b7355dca981dfa371562265e180f9eae95d0cb39",
+    "source_sha": "78d58ae5ee1891541e629cb49ec594c03097cab3",
     "prior_reviewed_provenance_t11": {
       "artifact_id": 14071799646,
       "artifact_member": "hidra-api.json",

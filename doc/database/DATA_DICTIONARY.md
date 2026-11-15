@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `7a344f40f4aa34fbc696742f7d6ca4475b4a16f6`
+Captured source SHA: `d2e756815da5a8811f17936ae3376783ecbe918c`
 PostgreSQL server: `16.16 (Debian 16.16-1.pgdg13+1)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `15a6e758bb480d31aa015664a8dcc3d34f5a486083b0bc19a5c17918f583a268`.
-Migrations: 216; JPA mappings: 470; catalog relations: 573; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `c8f877318b044cb7b7899410f4f943b0a3b697e9871bf5c8f69339615054ae67`.
+Migrations: 217; JPA mappings: 470; catalog relations: 578; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -2545,6 +2545,158 @@ Persisted AssetInstallationJpaEntity state; semantic authority remains with asse
 
 None captured in this catalog category.
 
+### public.hidra_asset_integrity_work_order
+
+Owner: **assets**; relation kind: `r`.
+
+Assets-owned versioned source-bound work-order lifecycle head, preserving existing parent maintenance identity.
+
+- Evidence: [V20261115_003__t18_integrity_maintenance_handoff.sql](../../src/main/resources/db/migration/V20261115_003__t18_integrity_maintenance_handoff.sql)
+- Evidence: [JdbcIntegrityWorkOrderAdapter.java](../../src/main/java/dz/sh/hidra/modules/assets/infrastructure/persistence/adapter/JdbcIntegrityWorkOrderAdapter.java)
+- Migration mention (not inferred introduction): [V20261115_003__t18_integrity_maintenance_handoff.sql](../../src/main/resources/db/migration/V20261115_003__t18_integrity_maintenance_handoff.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| work_order_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| approval_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| finding_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| recommendation_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| company_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| asset_type | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| asset_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| maintainable_asset_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| status | character varying(30) | False | None; identity=; generated= | No current mapped Java column | — |
+| version | bigint | False | 0; identity=; generated= | No current mapped Java column | — |
+| assigned_actor_id | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+| completion_id | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+| created_at | timestamp with time zone | False | now(); identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_asset_integrity_work_order_approval_id_check`: CHECK (NULLIF(btrim(approval_id::text), ''::text) IS NOT NULL)
+  - Catalog attributes: {"columns": ["approval_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_asset_integrity_work_order_approval_id_key`: UNIQUE (approval_id)
+  - Catalog attributes: {"columns": ["approval_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_asset_integrity_work_order_asset_id_check`: CHECK (NULLIF(btrim(asset_id::text), ''::text) IS NOT NULL)
+  - Catalog attributes: {"columns": ["asset_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_asset_integrity_work_order_asset_type_check`: CHECK (asset_type::text = 'EQUIPMENT'::text)
+  - Catalog attributes: {"columns": ["asset_type"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_asset_integrity_work_order_check`: CHECK (status::text = 'DRAFT'::text OR NULLIF(btrim(assigned_actor_id::text), ''::text) IS NOT NULL)
+  - Catalog attributes: {"columns": ["status", "assigned_actor_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_asset_integrity_work_order_check1`: CHECK ((status::text &lt;&gt; ALL (ARRAY['COMPLETED'::character varying, 'VERIFIED'::character varying]::text[])) OR NULLIF(btrim(completion_id::text), ''::text) IS NOT NULL)
+  - Catalog attributes: {"columns": ["status", "completion_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_asset_integrity_work_order_company_id_check`: CHECK (NULLIF(btrim(company_id::text), ''::text) IS NOT NULL)
+  - Catalog attributes: {"columns": ["company_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_asset_integrity_work_order_created_at_check`: CHECK (isfinite(created_at))
+  - Catalog attributes: {"columns": ["created_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_asset_integrity_work_order_finding_id_check`: CHECK (NULLIF(btrim(finding_id::text), ''::text) IS NOT NULL)
+  - Catalog attributes: {"columns": ["finding_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_asset_integrity_work_order_maintainable_asset_id_fkey`: FOREIGN KEY (maintainable_asset_id) REFERENCES hidra_asset_maintainable_asset(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["maintainable_asset_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_asset_maintainable_asset"}, "type": "f", "validated": true}
+- `hidra_asset_integrity_work_order_pkey`: PRIMARY KEY (work_order_id)
+  - Catalog attributes: {"columns": ["work_order_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_asset_integrity_work_order_recommendation_id_check`: CHECK (NULLIF(btrim(recommendation_id::text), ''::text) IS NOT NULL)
+  - Catalog attributes: {"columns": ["recommendation_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_asset_integrity_work_order_recommendation_id_key`: UNIQUE (recommendation_id)
+  - Catalog attributes: {"columns": ["recommendation_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_asset_integrity_work_order_status_check`: CHECK (status::text = ANY (ARRAY['DRAFT'::character varying, 'SCHEDULED'::character varying, 'IN_PROGRESS'::character varying, 'COMPLETED'::character varying, 'VERIFIED'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["status"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_asset_integrity_work_order_version_check`: CHECK (version &gt;= 0)
+  - Catalog attributes: {"columns": ["version"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_asset_integrity_work_order_work_order_id_fkey`: FOREIGN KEY (work_order_id) REFERENCES hidra_asset_maintenance_work_order(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["work_order_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_asset_maintenance_work_order"}, "type": "f", "validated": true}
+
+#### Indexes
+
+- `hidra_asset_integrity_work_order_approval_id_key`: CREATE UNIQUE INDEX hidra_asset_integrity_work_order_approval_id_key ON public.hidra_asset_integrity_work_order USING btree (approval_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_asset_integrity_work_order_pkey`: CREATE UNIQUE INDEX hidra_asset_integrity_work_order_pkey ON public.hidra_asset_integrity_work_order USING btree (work_order_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `hidra_asset_integrity_work_order_recommendation_id_key`: CREATE UNIQUE INDEX hidra_asset_integrity_work_order_recommendation_id_key ON public.hidra_asset_integrity_work_order USING btree (recommendation_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `ix_t18_work_order_asset`: CREATE INDEX ix_t18_work_order_asset ON public.hidra_asset_integrity_work_order USING btree (company_id, asset_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+
+#### Triggers
+
+None captured in this catalog category.
+
+### public.hidra_asset_integrity_work_order_event
+
+Owner: **assets**; relation kind: `r`.
+
+Assets-owned append-only exact command and execution/verification receipts for the governed work-order lifecycle.
+
+- Evidence: [V20261115_003__t18_integrity_maintenance_handoff.sql](../../src/main/resources/db/migration/V20261115_003__t18_integrity_maintenance_handoff.sql)
+- Evidence: [JdbcIntegrityWorkOrderAdapter.java](../../src/main/java/dz/sh/hidra/modules/assets/infrastructure/persistence/adapter/JdbcIntegrityWorkOrderAdapter.java)
+- Migration mention (not inferred introduction): [V20261115_003__t18_integrity_maintenance_handoff.sql](../../src/main/resources/db/migration/V20261115_003__t18_integrity_maintenance_handoff.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| work_order_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| command_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| command_sha256 | character(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| operation | character varying(16) | False | None; identity=; generated= | No current mapped Java column | — |
+| status | character varying(30) | False | None; identity=; generated= | No current mapped Java column | — |
+| version | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| execution_id | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+| verdict | character varying(10) | True | None; identity=; generated= | No current mapped Java column | — |
+| summary | text | False | None; identity=; generated= | No current mapped Java column | — |
+| recorded_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_asset_integrity_work_order_even_work_order_id_version_key`: UNIQUE (work_order_id, version)
+  - Catalog attributes: {"columns": ["work_order_id", "version"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_asset_integrity_work_order_event_actor_id_check`: CHECK (NULLIF(btrim(actor_id::text), ''::text) IS NOT NULL)
+  - Catalog attributes: {"columns": ["actor_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_asset_integrity_work_order_event_command_id_check`: CHECK (NULLIF(btrim(command_id::text), ''::text) IS NOT NULL)
+  - Catalog attributes: {"columns": ["command_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_asset_integrity_work_order_event_command_id_key`: UNIQUE (command_id)
+  - Catalog attributes: {"columns": ["command_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_asset_integrity_work_order_event_command_sha256_check`: CHECK (command_sha256 ~ '^[0-9a-f]{64}$'::text)
+  - Catalog attributes: {"columns": ["command_sha256"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_asset_integrity_work_order_event_id_check`: CHECK (NULLIF(btrim(id::text), ''::text) IS NOT NULL)
+  - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_asset_integrity_work_order_event_operation_check`: CHECK (operation::text = ANY (ARRAY['CREATE'::character varying, 'ASSIGN'::character varying, 'START'::character varying, 'EXECUTE'::character varying, 'VERIFY'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["operation"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_asset_integrity_work_order_event_pkey`: PRIMARY KEY (id)
+  - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_asset_integrity_work_order_event_recorded_at_check`: CHECK (isfinite(recorded_at))
+  - Catalog attributes: {"columns": ["recorded_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_asset_integrity_work_order_event_status_check`: CHECK (status::text = ANY (ARRAY['DRAFT'::character varying, 'SCHEDULED'::character varying, 'IN_PROGRESS'::character varying, 'COMPLETED'::character varying, 'VERIFIED'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["status"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_asset_integrity_work_order_event_summary_check`: CHECK (length(btrim(summary)) &gt;= 1 AND length(btrim(summary)) &lt;= 1000)
+  - Catalog attributes: {"columns": ["summary"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_asset_integrity_work_order_event_verdict_check`: CHECK (verdict IS NULL OR (verdict::text = ANY (ARRAY['ACCEPT'::character varying, 'REJECT'::character varying]::text[])))
+  - Catalog attributes: {"columns": ["verdict"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_asset_integrity_work_order_event_version_check`: CHECK (version &gt;= 0)
+  - Catalog attributes: {"columns": ["version"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_asset_integrity_work_order_event_work_order_id_fkey`: FOREIGN KEY (work_order_id) REFERENCES hidra_asset_integrity_work_order(work_order_id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["work_order_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["work_order_id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_asset_integrity_work_order"}, "type": "f", "validated": true}
+
+#### Indexes
+
+- `hidra_asset_integrity_work_order_even_work_order_id_version_key`: CREATE UNIQUE INDEX hidra_asset_integrity_work_order_even_work_order_id_version_key ON public.hidra_asset_integrity_work_order_event USING btree (work_order_id, version)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_asset_integrity_work_order_event_command_id_key`: CREATE UNIQUE INDEX hidra_asset_integrity_work_order_event_command_id_key ON public.hidra_asset_integrity_work_order_event USING btree (command_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_asset_integrity_work_order_event_pkey`: CREATE UNIQUE INDEX hidra_asset_integrity_work_order_event_pkey ON public.hidra_asset_integrity_work_order_event USING btree (id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `ix_t18_work_order_event_history`: CREATE INDEX ix_t18_work_order_event_history ON public.hidra_asset_integrity_work_order_event USING btree (work_order_id, version, id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+
+#### Triggers
+
+- `trg_t18_assets_event_immutable`: CREATE TRIGGER trg_t18_assets_event_immutable BEFORE DELETE OR UPDATE ON hidra_asset_integrity_work_order_event FOR EACH ROW EXECUTE FUNCTION t18_maintenance_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t18_maintenance_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t18_maintenance_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T18 approval/handoff/verification/event is append-only';<br>END $function$<br>
+- `trg_t18_assets_event_no_truncate`: CREATE TRIGGER trg_t18_assets_event_no_truncate BEFORE TRUNCATE ON hidra_asset_integrity_work_order_event FOR EACH STATEMENT EXECUTE FUNCTION t18_maintenance_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t18_maintenance_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t18_maintenance_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T18 approval/handoff/verification/event is append-only';<br>END $function$<br>
+
 ### public.hidra_asset_lifecycle_event
 
 Owner: **assets**; relation kind: `r`.
@@ -2605,6 +2757,7 @@ Assets-owned maintainable-asset state; physical prefix is hidra_asset rather tha
 - Migration mention (not inferred introduction): [V20260611_014__create_assets_tables.sql](../../src/main/resources/db/migration/V20260611_014__create_assets_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_002__enforce_same_module_reference_integrity_b.sql](../../src/main/resources/db/migration/V20260929_002__enforce_same_module_reference_integrity_b.sql)
 - Migration mention (not inferred introduction): [V20261004_045__hmr_045_assets_maintainable_asset.sql](../../src/main/resources/db/migration/V20261004_045__hmr_045_assets_maintainable_asset.sql)
+- Migration mention (not inferred introduction): [V20261115_003__t18_integrity_maintenance_handoff.sql](../../src/main/resources/db/migration/V20261115_003__t18_integrity_maintenance_handoff.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -2898,6 +3051,7 @@ Persisted MaintenanceWorkOrderJpaEntity state; semantic authority remains with a
 - Migration mention (not inferred introduction): [V20260611_014__create_assets_tables.sql](../../src/main/resources/db/migration/V20260611_014__create_assets_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_002__enforce_same_module_reference_integrity_b.sql](../../src/main/resources/db/migration/V20260929_002__enforce_same_module_reference_integrity_b.sql)
 - Migration mention (not inferred introduction): [V20261008_011__hmr_069_assets_maintenance_work_order.sql](../../src/main/resources/db/migration/V20261008_011__hmr_069_assets_maintenance_work_order.sql)
+- Migration mention (not inferred introduction): [V20261115_003__t18_integrity_maintenance_handoff.sql](../../src/main/resources/db/migration/V20261115_003__t18_integrity_maintenance_handoff.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -10445,6 +10599,7 @@ Persisted PermissionJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261112_003__t10_monitoring_rule_versions.sql](../../src/main/resources/db/migration/V20261112_003__t10_monitoring_rule_versions.sql)
 - Migration mention (not inferred introduction): [V20261112_004__t11_authoritative_deviation.sql](../../src/main/resources/db/migration/V20261112_004__t11_authoritative_deviation.sql)
 - Migration mention (not inferred introduction): [V20261115_001__t16_incident_leak_investigations.sql](../../src/main/resources/db/migration/V20261115_001__t16_incident_leak_investigations.sql)
+- Migration mention (not inferred introduction): [V20261115_003__t18_integrity_maintenance_handoff.sql](../../src/main/resources/db/migration/V20261115_003__t18_integrity_maintenance_handoff.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -14033,6 +14188,7 @@ Persisted IntegrityCaseJpaEntity state; semantic authority remains with integrit
 - Migration mention (not inferred introduction): [V20260611_013__create_integrity_tables.sql](../../src/main/resources/db/migration/V20260611_013__create_integrity_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_002__enforce_same_module_reference_integrity_b.sql](../../src/main/resources/db/migration/V20260929_002__enforce_same_module_reference_integrity_b.sql)
 - Migration mention (not inferred introduction): [V20261008_018__hmr_098_integrity_case_reference_integrity.sql](../../src/main/resources/db/migration/V20261008_018__hmr_098_integrity_case_reference_integrity.sql)
+- Migration mention (not inferred introduction): [V20261115_003__t18_integrity_maintenance_handoff.sql](../../src/main/resources/db/migration/V20261115_003__t18_integrity_maintenance_handoff.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -14695,6 +14851,7 @@ Persisted InspectionFindingJpaEntity state; semantic authority remains with inte
 - Migration mention (not inferred introduction): [V20260611_013__create_integrity_tables.sql](../../src/main/resources/db/migration/V20260611_013__create_integrity_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_002__enforce_same_module_reference_integrity_b.sql](../../src/main/resources/db/migration/V20260929_002__enforce_same_module_reference_integrity_b.sql)
 - Migration mention (not inferred introduction): [V20261004_019__hmr_019_integrity_pipeline_defect.sql](../../src/main/resources/db/migration/V20261004_019__hmr_019_integrity_pipeline_defect.sql)
+- Migration mention (not inferred introduction): [V20261115_003__t18_integrity_maintenance_handoff.sql](../../src/main/resources/db/migration/V20261115_003__t18_integrity_maintenance_handoff.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -14798,6 +14955,195 @@ Persisted InspectionRunJpaEntity state; semantic authority remains with integrit
 
 None captured in this catalog category.
 
+### public.hidra_integrity_maintenance_approval
+
+Owner: **integrity**; relation kind: `r`.
+
+Immutable attributable approval over the exact Integrity finding, defect, case, recommendation and current company/equipment source; no Workflow substitution.
+
+- Evidence: [V20261115_003__t18_integrity_maintenance_handoff.sql](../../src/main/resources/db/migration/V20261115_003__t18_integrity_maintenance_handoff.sql)
+- Evidence: [JdbcIntegrityMaintenanceApprovalAdapter.java](../../src/main/java/dz/sh/hidra/modules/integrity/infrastructure/persistence/adapter/JdbcIntegrityMaintenanceApprovalAdapter.java)
+- Migration mention (not inferred introduction): [V20261115_003__t18_integrity_maintenance_handoff.sql](../../src/main/resources/db/migration/V20261115_003__t18_integrity_maintenance_handoff.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| command_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| command_sha256 | character(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| recommendation_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| finding_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| case_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| defect_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| asset_type | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| asset_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| company_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| approver_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| approved_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| reason | text | False | None; identity=; generated= | No current mapped Java column | — |
+| source_version | character varying(100) | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_integrity_maintenance_approval_approved_at_check`: CHECK (isfinite(approved_at))
+  - Catalog attributes: {"columns": ["approved_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_integrity_maintenance_approval_approver_id_check`: CHECK (NULLIF(btrim(approver_id::text), ''::text) IS NOT NULL)
+  - Catalog attributes: {"columns": ["approver_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_integrity_maintenance_approval_asset_id_check`: CHECK (NULLIF(btrim(asset_id::text), ''::text) IS NOT NULL)
+  - Catalog attributes: {"columns": ["asset_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_integrity_maintenance_approval_asset_type_check`: CHECK (asset_type::text = 'EQUIPMENT'::text)
+  - Catalog attributes: {"columns": ["asset_type"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_integrity_maintenance_approval_case_id_fkey`: FOREIGN KEY (case_id) REFERENCES hidra_integrity_case(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["case_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_integrity_case"}, "type": "f", "validated": true}
+- `hidra_integrity_maintenance_approval_command_id_check`: CHECK (NULLIF(btrim(command_id::text), ''::text) IS NOT NULL)
+  - Catalog attributes: {"columns": ["command_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_integrity_maintenance_approval_command_id_key`: UNIQUE (command_id)
+  - Catalog attributes: {"columns": ["command_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_integrity_maintenance_approval_command_sha256_check`: CHECK (command_sha256 ~ '^[0-9a-f]{64}$'::text)
+  - Catalog attributes: {"columns": ["command_sha256"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_integrity_maintenance_approval_company_id_check`: CHECK (NULLIF(btrim(company_id::text), ''::text) IS NOT NULL)
+  - Catalog attributes: {"columns": ["company_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_integrity_maintenance_approval_defect_id_fkey`: FOREIGN KEY (defect_id) REFERENCES hidra_integrity_pipeline_defect(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["defect_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_integrity_pipeline_defect"}, "type": "f", "validated": true}
+- `hidra_integrity_maintenance_approval_finding_id_fkey`: FOREIGN KEY (finding_id) REFERENCES hidra_integrity_inspection_finding(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["finding_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_integrity_inspection_finding"}, "type": "f", "validated": true}
+- `hidra_integrity_maintenance_approval_id_check`: CHECK (NULLIF(btrim(id::text), ''::text) IS NOT NULL)
+  - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_integrity_maintenance_approval_pkey`: PRIMARY KEY (id)
+  - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_integrity_maintenance_approval_reason_check`: CHECK (length(btrim(reason)) &gt;= 1 AND length(btrim(reason)) &lt;= 1000)
+  - Catalog attributes: {"columns": ["reason"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_integrity_maintenance_approval_recommendation_id_fkey`: FOREIGN KEY (recommendation_id) REFERENCES hidra_integrity_recommendation(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["recommendation_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_integrity_recommendation"}, "type": "f", "validated": true}
+- `hidra_integrity_maintenance_approval_recommendation_id_key`: UNIQUE (recommendation_id)
+  - Catalog attributes: {"columns": ["recommendation_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_integrity_maintenance_approval_source_version_check`: CHECK (NULLIF(btrim(source_version::text), ''::text) IS NOT NULL)
+  - Catalog attributes: {"columns": ["source_version"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_integrity_maintenance_approval_command_id_key`: CREATE UNIQUE INDEX hidra_integrity_maintenance_approval_command_id_key ON public.hidra_integrity_maintenance_approval USING btree (command_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_integrity_maintenance_approval_pkey`: CREATE UNIQUE INDEX hidra_integrity_maintenance_approval_pkey ON public.hidra_integrity_maintenance_approval USING btree (id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `hidra_integrity_maintenance_approval_recommendation_id_key`: CREATE UNIQUE INDEX hidra_integrity_maintenance_approval_recommendation_id_key ON public.hidra_integrity_maintenance_approval USING btree (recommendation_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `ix_t18_integrity_approval_finding`: CREATE INDEX ix_t18_integrity_approval_finding ON public.hidra_integrity_maintenance_approval USING btree (finding_id, approved_at, id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+
+#### Triggers
+
+- `trg_t18_approval_immutable`: CREATE TRIGGER trg_t18_approval_immutable BEFORE DELETE OR UPDATE ON hidra_integrity_maintenance_approval FOR EACH ROW EXECUTE FUNCTION t18_maintenance_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t18_maintenance_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t18_maintenance_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T18 approval/handoff/verification/event is append-only';<br>END $function$<br>
+- `trg_t18_approval_no_truncate`: CREATE TRIGGER trg_t18_approval_no_truncate BEFORE TRUNCATE ON hidra_integrity_maintenance_approval FOR EACH STATEMENT EXECUTE FUNCTION t18_maintenance_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t18_maintenance_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t18_maintenance_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T18 approval/handoff/verification/event is append-only';<br>END $function$<br>
+
+### public.hidra_integrity_maintenance_handoff
+
+Owner: **integrity**; relation kind: `r`.
+
+Immutable Integrity-owned approval-to-work-order acknowledgement, not an Assets-owned execution record.
+
+- Evidence: [V20261115_003__t18_integrity_maintenance_handoff.sql](../../src/main/resources/db/migration/V20261115_003__t18_integrity_maintenance_handoff.sql)
+- Evidence: [JdbcIntegrityMaintenanceApprovalAdapter.java](../../src/main/java/dz/sh/hidra/modules/integrity/infrastructure/persistence/adapter/JdbcIntegrityMaintenanceApprovalAdapter.java)
+- Migration mention (not inferred introduction): [V20261115_003__t18_integrity_maintenance_handoff.sql](../../src/main/resources/db/migration/V20261115_003__t18_integrity_maintenance_handoff.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| approval_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| work_order_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| linked_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_integrity_maintenance_handoff_approval_id_fkey`: FOREIGN KEY (approval_id) REFERENCES hidra_integrity_maintenance_approval(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["approval_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_integrity_maintenance_approval"}, "type": "f", "validated": true}
+- `hidra_integrity_maintenance_handoff_linked_at_check`: CHECK (isfinite(linked_at))
+  - Catalog attributes: {"columns": ["linked_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_integrity_maintenance_handoff_pkey`: PRIMARY KEY (approval_id)
+  - Catalog attributes: {"columns": ["approval_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_integrity_maintenance_handoff_work_order_id_check`: CHECK (NULLIF(btrim(work_order_id::text), ''::text) IS NOT NULL)
+  - Catalog attributes: {"columns": ["work_order_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_integrity_maintenance_handoff_work_order_id_key`: UNIQUE (work_order_id)
+  - Catalog attributes: {"columns": ["work_order_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+
+#### Indexes
+
+- `hidra_integrity_maintenance_handoff_pkey`: CREATE UNIQUE INDEX hidra_integrity_maintenance_handoff_pkey ON public.hidra_integrity_maintenance_handoff USING btree (approval_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `hidra_integrity_maintenance_handoff_work_order_id_key`: CREATE UNIQUE INDEX hidra_integrity_maintenance_handoff_work_order_id_key ON public.hidra_integrity_maintenance_handoff USING btree (work_order_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `trg_t18_handoff_immutable`: CREATE TRIGGER trg_t18_handoff_immutable BEFORE DELETE OR UPDATE ON hidra_integrity_maintenance_handoff FOR EACH ROW EXECUTE FUNCTION t18_maintenance_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t18_maintenance_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t18_maintenance_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T18 approval/handoff/verification/event is append-only';<br>END $function$<br>
+- `trg_t18_handoff_no_truncate`: CREATE TRIGGER trg_t18_handoff_no_truncate BEFORE TRUNCATE ON hidra_integrity_maintenance_handoff FOR EACH STATEMENT EXECUTE FUNCTION t18_maintenance_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t18_maintenance_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t18_maintenance_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T18 approval/handoff/verification/event is append-only';<br>END $function$<br>
+
+### public.hidra_integrity_maintenance_verification
+
+Owner: **integrity**; relation kind: `r`.
+
+Immutable independently verified or rejected maintenance outcome acknowledgment with one positive decision maximum.
+
+- Evidence: [V20261115_003__t18_integrity_maintenance_handoff.sql](../../src/main/resources/db/migration/V20261115_003__t18_integrity_maintenance_handoff.sql)
+- Evidence: [JdbcIntegrityMaintenanceApprovalAdapter.java](../../src/main/java/dz/sh/hidra/modules/integrity/infrastructure/persistence/adapter/JdbcIntegrityMaintenanceApprovalAdapter.java)
+- Migration mention (not inferred introduction): [V20261115_003__t18_integrity_maintenance_handoff.sql](../../src/main/resources/db/migration/V20261115_003__t18_integrity_maintenance_handoff.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| verification_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| approval_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| work_order_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| execution_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| verifier_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| verdict | character varying(10) | False | None; identity=; generated= | No current mapped Java column | — |
+| evidence | text | False | None; identity=; generated= | No current mapped Java column | — |
+| verified_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_integrity_maintenance_verification_approval_id_fkey`: FOREIGN KEY (approval_id) REFERENCES hidra_integrity_maintenance_handoff(approval_id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["approval_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["approval_id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_integrity_maintenance_handoff"}, "type": "f", "validated": true}
+- `hidra_integrity_maintenance_verification_evidence_check`: CHECK (length(btrim(evidence)) &gt;= 1 AND length(btrim(evidence)) &lt;= 1000)
+  - Catalog attributes: {"columns": ["evidence"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_integrity_maintenance_verification_execution_id_check`: CHECK (NULLIF(btrim(execution_id::text), ''::text) IS NOT NULL)
+  - Catalog attributes: {"columns": ["execution_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_integrity_maintenance_verification_pkey`: PRIMARY KEY (verification_id)
+  - Catalog attributes: {"columns": ["verification_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_integrity_maintenance_verification_verdict_check`: CHECK (verdict::text = ANY (ARRAY['ACCEPT'::character varying, 'REJECT'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["verdict"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_integrity_maintenance_verification_verification_id_check`: CHECK (NULLIF(btrim(verification_id::text), ''::text) IS NOT NULL)
+  - Catalog attributes: {"columns": ["verification_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_integrity_maintenance_verification_verified_at_check`: CHECK (isfinite(verified_at))
+  - Catalog attributes: {"columns": ["verified_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_integrity_maintenance_verification_verifier_id_check`: CHECK (NULLIF(btrim(verifier_id::text), ''::text) IS NOT NULL)
+  - Catalog attributes: {"columns": ["verifier_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_integrity_maintenance_verification_work_order_id_check`: CHECK (NULLIF(btrim(work_order_id::text), ''::text) IS NOT NULL)
+  - Catalog attributes: {"columns": ["work_order_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_integrity_maintenance_verification_pkey`: CREATE UNIQUE INDEX hidra_integrity_maintenance_verification_pkey ON public.hidra_integrity_maintenance_verification USING btree (verification_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `ix_t18_verification_history`: CREATE INDEX ix_t18_verification_history ON public.hidra_integrity_maintenance_verification USING btree (approval_id, verified_at, verification_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+- `uq_t18_positive_verification`: CREATE UNIQUE INDEX uq_t18_positive_verification ON public.hidra_integrity_maintenance_verification USING btree (approval_id) WHERE ((verdict)::text = 'ACCEPT'::text)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `trg_t18_verification_immutable`: CREATE TRIGGER trg_t18_verification_immutable BEFORE DELETE OR UPDATE ON hidra_integrity_maintenance_verification FOR EACH ROW EXECUTE FUNCTION t18_maintenance_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t18_maintenance_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t18_maintenance_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T18 approval/handoff/verification/event is append-only';<br>END $function$<br>
+- `trg_t18_verification_no_truncate`: CREATE TRIGGER trg_t18_verification_no_truncate BEFORE TRUNCATE ON hidra_integrity_maintenance_verification FOR EACH STATEMENT EXECUTE FUNCTION t18_maintenance_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t18_maintenance_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t18_maintenance_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T18 approval/handoff/verification/event is append-only';<br>END $function$<br>
+
 ### public.hidra_integrity_pipeline_defect
 
 Owner: **integrity**; relation kind: `r`.
@@ -14809,6 +15155,7 @@ Persisted PipelineDefectJpaEntity state; semantic authority remains with integri
 - Migration mention (not inferred introduction): [V20260929_002__enforce_same_module_reference_integrity_b.sql](../../src/main/resources/db/migration/V20260929_002__enforce_same_module_reference_integrity_b.sql)
 - Migration mention (not inferred introduction): [V20261004_019__hmr_019_integrity_pipeline_defect.sql](../../src/main/resources/db/migration/V20261004_019__hmr_019_integrity_pipeline_defect.sql)
 - Migration mention (not inferred introduction): [V20261008_018__hmr_098_integrity_case_reference_integrity.sql](../../src/main/resources/db/migration/V20261008_018__hmr_098_integrity_case_reference_integrity.sql)
+- Migration mention (not inferred introduction): [V20261115_003__t18_integrity_maintenance_handoff.sql](../../src/main/resources/db/migration/V20261115_003__t18_integrity_maintenance_handoff.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -14931,6 +15278,7 @@ Persisted IntegrityRecommendationJpaEntity state; semantic authority remains wit
 - Evidence: [IntegrityRecommendationJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/integrity/infrastructure/persistence/entity/IntegrityRecommendationJpaEntity.java)
 - Migration mention (not inferred introduction): [V20260611_013__create_integrity_tables.sql](../../src/main/resources/db/migration/V20260611_013__create_integrity_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_002__enforce_same_module_reference_integrity_b.sql](../../src/main/resources/db/migration/V20260929_002__enforce_same_module_reference_integrity_b.sql)
+- Migration mention (not inferred introduction): [V20261115_003__t18_integrity_maintenance_handoff.sql](../../src/main/resources/db/migration/V20261115_003__t18_integrity_maintenance_handoff.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|

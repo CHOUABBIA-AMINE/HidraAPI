@@ -22,6 +22,22 @@
     "owner": "alarm",
     "purpose": "Immutable Alarm-owned operator-trigger identity, source provenance, unique evaluation replay and same-owner Alarm reference; no Monitoring foreign key."
   },
+  "public.hidra_asset_integrity_work_order": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261115_003__t18_integrity_maintenance_handoff.sql",
+      "src/main/java/dz/sh/hidra/modules/assets/infrastructure/persistence/adapter/JdbcIntegrityWorkOrderAdapter.java"
+    ],
+    "owner": "assets",
+    "purpose": "Assets-owned versioned source-bound work-order lifecycle head, preserving existing parent maintenance identity."
+  },
+  "public.hidra_asset_integrity_work_order_event": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261115_003__t18_integrity_maintenance_handoff.sql",
+      "src/main/java/dz/sh/hidra/modules/assets/infrastructure/persistence/adapter/JdbcIntegrityWorkOrderAdapter.java"
+    ],
+    "owner": "assets",
+    "purpose": "Assets-owned append-only exact command and execution/verification receipts for the governed work-order lifecycle."
+  },
   "public.hidra_asset_maintainable_asset": {
     "evidence": [
       "src/main/java/dz/sh/hidra/modules/assets/infrastructure/persistence/entity/MaintainableAssetJpaEntity.java"
@@ -322,6 +338,30 @@
     ],
     "owner": "integrity",
     "purpose": "Integrity-owned field-role to approved catalog-family metadata, intentionally unseeded by its migration."
+  },
+  "public.hidra_integrity_maintenance_approval": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261115_003__t18_integrity_maintenance_handoff.sql",
+      "src/main/java/dz/sh/hidra/modules/integrity/infrastructure/persistence/adapter/JdbcIntegrityMaintenanceApprovalAdapter.java"
+    ],
+    "owner": "integrity",
+    "purpose": "Immutable attributable approval over the exact Integrity finding, defect, case, recommendation and current company/equipment source; no Workflow substitution."
+  },
+  "public.hidra_integrity_maintenance_handoff": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261115_003__t18_integrity_maintenance_handoff.sql",
+      "src/main/java/dz/sh/hidra/modules/integrity/infrastructure/persistence/adapter/JdbcIntegrityMaintenanceApprovalAdapter.java"
+    ],
+    "owner": "integrity",
+    "purpose": "Immutable Integrity-owned approval-to-work-order acknowledgement, not an Assets-owned execution record."
+  },
+  "public.hidra_integrity_maintenance_verification": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261115_003__t18_integrity_maintenance_handoff.sql",
+      "src/main/java/dz/sh/hidra/modules/integrity/infrastructure/persistence/adapter/JdbcIntegrityMaintenanceApprovalAdapter.java"
+    ],
+    "owner": "integrity",
+    "purpose": "Immutable independently verified or rejected maintenance outcome acknowledgment with one positive decision maximum."
   },
   "public.hidra_leak_detection_case": {
     "evidence": [

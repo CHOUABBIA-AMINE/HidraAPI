@@ -145,7 +145,37 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
             String leakInvestigationBase="/api/v1/leakdetection/cases/{id}/investigation";
 
 
+            final String integrityMaintenanceRoot="dz.sh.hidra.modules.integrity.api.rest.";
+            Class<?> integrityMaintenance=Class.forName(integrityMaintenanceRoot+"controller.IntegrityMaintenanceApprovalController");
+            Class<?> integrityApproval=Class.forName(integrityMaintenanceRoot+"request.IntegrityMaintenanceApprovalRequest");
+            String integrityMaintenanceBase="/api/v1/integrity/findings/{findingId}";
+            final String assetsMaintenanceRoot="dz.sh.hidra.modules.assets.api.rest.";
+            Class<?> assetsMaintenance=Class.forName(assetsMaintenanceRoot+"controller.IntegrityWorkOrderController");
+            Class<?> maintenanceCreate=Class.forName(assetsMaintenanceRoot+"request.IntegrityWorkOrderRequest$Create");
+            Class<?> maintenanceAssign=Class.forName(assetsMaintenanceRoot+"request.IntegrityWorkOrderRequest$Assign");
+            Class<?> maintenanceStart=Class.forName(assetsMaintenanceRoot+"request.IntegrityWorkOrderRequest$Start");
+            Class<?> maintenanceExecute=Class.forName(assetsMaintenanceRoot+"request.IntegrityWorkOrderRequest$Execute");
+            Class<?> maintenanceVerify=Class.forName(assetsMaintenanceRoot+"request.IntegrityWorkOrderRequest$Verify");
+            String assetsMaintenanceBase="/api/v1/assets/maintenance-work-orders";
+
             return List.of(
+                new Route(integrityMaintenance,integrityMaintenance.getDeclaredMethod("approve",String.class,integrityApproval),
+                    "POST",integrityMaintenanceBase+"/maintenance-approvals"),
+                new Route(integrityMaintenance,integrityMaintenance.getDeclaredMethod("read",String.class,String.class),
+                    "GET",integrityMaintenanceBase+"/maintenance-handoffs/{approvalId}"),
+                new Route(assetsMaintenance,assetsMaintenance.getDeclaredMethod("handoff",maintenanceCreate),
+                    "POST",assetsMaintenanceBase+"/from-integrity"),
+                new Route(assetsMaintenance,assetsMaintenance.getDeclaredMethod("assign",String.class,maintenanceAssign),
+                    "POST",assetsMaintenanceBase+"/{id}/assignment"),
+                new Route(assetsMaintenance,assetsMaintenance.getDeclaredMethod("start",String.class,maintenanceStart),
+                    "POST",assetsMaintenanceBase+"/{id}/start"),
+                new Route(assetsMaintenance,assetsMaintenance.getDeclaredMethod("execution",String.class,maintenanceExecute),
+                    "POST",assetsMaintenanceBase+"/{id}/execution"),
+                new Route(assetsMaintenance,assetsMaintenance.getDeclaredMethod("verification",String.class,maintenanceVerify),
+                    "POST",assetsMaintenanceBase+"/{id}/verification"),
+                new Route(assetsMaintenance,assetsMaintenance.getDeclaredMethod("history",String.class),
+                    "GET",assetsMaintenanceBase+"/{id}/integrity-history"),
+
                 new Route(incidentInvestigation,incidentInvestigation.getDeclaredMethod("history",String.class),
                     "GET",incidentInvestigationBase),
                 new Route(incidentInvestigation,incidentInvestigation.getDeclaredMethod("assign",String.class,ia),

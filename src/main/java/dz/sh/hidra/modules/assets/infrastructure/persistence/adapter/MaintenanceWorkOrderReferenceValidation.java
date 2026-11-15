@@ -24,6 +24,9 @@ import dz.sh.hidra.modules.assets.domain.exception.InvalidAssetsValueException;
 import dz.sh.hidra.modules.identity.application.contract.assets.MaintenanceWorkOrderActorReferenceContract;
 import dz.sh.hidra.modules.workflow.application.contract.assets.MaintenanceWorkOrderWorkflowReferenceContract;
 import dz.sh.hidra.modules.integrity.application.contract.assets.MaintenanceRecommendationReferenceContract;
+import dz.sh.hidra.modules.integrity.application.contract.assets.ApprovedMaintenanceHandoffContract;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import dz.sh.hidra.modules.organization.application.contract.assets.AssetsOrganizationUnitReferenceContract;
 import dz.sh.hidra.modules.assets.infrastructure.persistence.repository.MaintenancePlanJpaRepository;
 import java.time.Instant;
@@ -36,10 +39,25 @@ public final class MaintenanceWorkOrderReferenceValidation {
     private final MaintenanceRecommendationReferenceContract recommendations;
     private final AssetsOrganizationUnitReferenceContract units;
     private final MaintenancePlanJpaRepository maintenancePlanId;
+    private final ApprovedMaintenanceHandoffContract approved;
+    private final JdbcTemplate jdbc;
+    @Autowired
+    public MaintenanceWorkOrderReferenceValidation(MaintenanceWorkOrderActorReferenceContract actors,
+            MaintenanceWorkOrderWorkflowReferenceContract workflow,
+            MaintenanceRecommendationReferenceContract recommendations,
+            AssetsOrganizationUnitReferenceContract units,
+            MaintenancePlanJpaRepository maintenancePlanId,
+            ApprovedMaintenanceHandoffContract approved, JdbcTemplate jdbc) {
+        this.actors=Objects.requireNonNull(actors); this.workflow=Objects.requireNonNull(workflow);
+        this.recommendations=Objects.requireNonNull(recommendations); this.units=Objects.requireNonNull(units);
+        this.maintenancePlanId=Objects.requireNonNull(maintenancePlanId);
+        this.approved=Objects.requireNonNull(approved);this.jdbc=Objects.requireNonNull(jdbc);
+    }
     public MaintenanceWorkOrderReferenceValidation(MaintenanceWorkOrderActorReferenceContract actors, MaintenanceWorkOrderWorkflowReferenceContract workflow, MaintenanceRecommendationReferenceContract recommendations, AssetsOrganizationUnitReferenceContract units, MaintenancePlanJpaRepository maintenancePlanId) {
         this.actors=Objects.requireNonNull(actors); this.workflow=Objects.requireNonNull(workflow);
         this.recommendations=Objects.requireNonNull(recommendations); this.units=Objects.requireNonNull(units);
         this.maintenancePlanId=Objects.requireNonNull(maintenancePlanId);
+        this.approved=null;this.jdbc=null; // Legacy isolated tests only; production uses reviewed 7-argument constructor.
     }
     /** Called inside the parent save transaction after locking existing provenance. */
     public void validate(MaintenanceWorkOrder model,MaintenanceWorkOrder previous) {
@@ -52,6 +70,17 @@ public final class MaintenanceWorkOrderReferenceValidation {
             throw new InvalidAssetsValueException("Ineligible Identity createdByActorId reference.");
         if(changed(model.sourceRecommendationId(), previous==null?null:previous.sourceRecommendationId()) && !recommendations.exists(model.sourceRecommendationId()))
             throw new InvalidAssetsValueException("Integrity recommendation does not exist.");
+        if (model.sourceRecommendationId()!=null && approved!=null) {
+            var approvedId=approved.approvedRecommendation(model.sourceRecommendationId());
+            if(approvedId.isPresent()) {
+                var matching=jdbc.queryForList("""
+                    select work_order_id from public.hidra_asset_integrity_work_order
+                    where work_order_id=? and recommendation_id=? and approval_id=?
+                    """,String.class,model.id(),model.sourceRecommendationId(),approvedId.orElseThrow());
+                if(matching.size()!=1)throw new InvalidAssetsValueException(
+                    "Approved Integrity source must be linked through its governed Assets handoff.");
+            }
+        }
         if(changed(model.assignedOrganizationUnitId(), previous==null?null:previous.assignedOrganizationUnitId()) && !units.exists(model.assignedOrganizationUnitId()))
             throw new InvalidAssetsValueException("Assigned Organization unit does not exist.");
         if(changed(model.workflowInstanceId(),previous==null?null:previous.workflowInstanceId()) && !workflow.matches(model.workflowInstanceId(),model.id()))

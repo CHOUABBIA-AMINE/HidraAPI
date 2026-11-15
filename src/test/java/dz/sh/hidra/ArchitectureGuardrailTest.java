@@ -940,6 +940,46 @@ class ArchitectureGuardrailTest {
                 "dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.JpaTelemetryExplicitGrantEvidenceAdapter"));
     }
 
+    private static boolean isT18MaintenanceContract(String target) {
+        return java.util.Set.of(
+                "dz.sh.hidra.modules.integrity.application.contract.assets.ApprovedMaintenanceHandoffContract",
+                "dz.sh.hidra.modules.identity.application.contract.integrity.IntegrityMaintenanceScopedAuthorizationContract",
+                "dz.sh.hidra.modules.identity.application.contract.assets.AssetsMaintenanceScopedAuthorizationContract",
+                "dz.sh.hidra.modules.topology.application.contract.integrity.IntegrityMaintenanceTopologyOwnershipContract")
+                .stream().anyMatch(root->target.equals(root)||target.startsWith(root+"$"));
+    }
+    private static boolean isT18MaintenanceConsumer(String source,String target) {
+        String owner="dz.sh.hidra.modules.integrity.application.service.IntegrityMaintenanceApprovalApplicationService";
+        String assets="dz.sh.hidra.modules.assets.application.service.IntegrityWorkOrderApplicationService";
+        String validation="dz.sh.hidra.modules.assets.infrastructure.persistence.adapter.MaintenanceWorkOrderReferenceValidation";
+        String approval="dz.sh.hidra.modules.integrity.application.contract.assets.ApprovedMaintenanceHandoffContract";
+        String integrityAuth="dz.sh.hidra.modules.identity.application.contract.integrity.IntegrityMaintenanceScopedAuthorizationContract";
+        String assetsAuth="dz.sh.hidra.modules.identity.application.contract.assets.AssetsMaintenanceScopedAuthorizationContract";
+        String topology="dz.sh.hidra.modules.topology.application.contract.integrity.IntegrityMaintenanceTopologyOwnershipContract";
+        boolean match=(target.equals(approval)||target.startsWith(approval+"$"))
+                    &&(source.equals(assets)||source.startsWith(assets+"$")
+                        ||source.equals(validation)||source.startsWith(validation+"$"));
+        match|=(target.equals(integrityAuth)||target.startsWith(integrityAuth+"$"))
+                    &&(source.equals(owner)||source.startsWith(owner+"$"));
+        match|=(target.equals(assetsAuth)||target.startsWith(assetsAuth+"$"))
+                    &&(source.equals(assets)||source.startsWith(assets+"$"));
+        match|=(target.equals(topology)||target.startsWith(topology+"$"))
+                    &&(source.equals(owner)||source.startsWith(owner+"$"));
+        return match;
+    }
+    @Test void t18CrossOwnerCapabilitiesDoNotBecomeGeneralExports() {
+        String source="dz.sh.hidra.modules.assets.application.service.IntegrityWorkOrderApplicationService";
+        String target="dz.sh.hidra.modules.integrity.application.contract.assets.ApprovedMaintenanceHandoffContract";
+        org.junit.jupiter.api.Assertions.assertFalse(isForbiddenCrossModuleDependency(source,target));
+        org.junit.jupiter.api.Assertions.assertFalse(isForbiddenCrossModuleDependency(
+                "dz.sh.hidra.modules.assets.infrastructure.persistence.adapter.MaintenanceWorkOrderReferenceValidation",target));
+        org.junit.jupiter.api.Assertions.assertTrue(isForbiddenCrossModuleDependency(source+"Sibling",target));
+        org.junit.jupiter.api.Assertions.assertTrue(isForbiddenCrossModuleDependency(source,target+"Sibling"));
+        org.junit.jupiter.api.Assertions.assertTrue(isForbiddenCrossModuleDependency(
+                "dz.sh.hidra.modules.assets.application.service.Any", 
+                "dz.sh.hidra.modules.identity.application.contract.integrity.IntegrityMaintenanceScopedAuthorizationContract"));
+    }
+
     private static boolean isForbiddenCrossModuleDependency(
             String sourceClassName, String targetClassName) {
         String sourcePackage = packageName(sourceClassName);
@@ -949,6 +989,9 @@ class ArchitectureGuardrailTest {
 
         if (sourceModule == null || targetModule == null || sourceModule.equals(targetModule)) {
             return false;
+        }
+        if (isT18MaintenanceContract(targetClassName)) {
+            return !isT18MaintenanceConsumer(sourceClassName,targetClassName);
         }
         if(isBaselineOwnerExport(sourceClassName,targetClassName))return false;
         if(isAlarmOwnerExport(sourceClassName,targetClassName))return false;

@@ -8,6 +8,20 @@
   },
   "classes": [
     {
+      "baseline_seconds": 0,
+      "cases": [
+        "signedGz2WorkflowSurvivesSupersessionAndIndependentJvmRestart"
+      ],
+      "class": "dz.sh.hidra.qualification.Gz2SignedWorkflowNativeHttpPostgresIntegrationTest",
+      "dependency_reason": "T15 signed HTTP from an independent client across two application JVMs and one fresh PostgreSQL schema.",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "qualification",
+      "path": "src/test/java/dz/sh/hidra/qualification/Gz2SignedWorkflowNativeHttpPostgresIntegrationTest.java",
+      "source_sha256": "7dc3c3ee73301780af4abbd359f57ad254691d4344d3e16aba1636b94d09b960",
+      "supports": []
+    },
+    {
       "baseline_seconds": 2.776,
       "cases": [
         "apiMustNotDependOnInfrastructure",
@@ -14242,6 +14256,12 @@
     "zip_sha256": "df0fd3e0a2f73b1777375f24fde29f6655112b0028fbb476a66a7b5e7df1107c"
   },
   "supporting_classes": [
+    {
+      "class": "dz.sh.hidra.qualification.Gz2SignedWorkflowFixture",
+      "path": "src/test/java/dz/sh/hidra/qualification/Gz2SignedWorkflowFixture.java",
+      "source_sha256": "4ef6561433644506279cf304288e8afcbab3f71815e6f7bae23829d6342ec9df",
+      "supports": []
+    },
     {
       "abstract": true,
       "class": "dz.sh.hidra.modules.organization.infrastructure.persistence.EmployeeAppointmentPostgresFixture",

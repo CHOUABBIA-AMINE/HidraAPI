@@ -162,7 +162,13 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
             Class<?> nominationController = Class.forName(nominationPackage + "controller.PlanningNominationCommandController");
             Class<?> nominationCreate = Class.forName(nominationPackage + "request.PlanningNominationCommandRequest$Create");
             Class<?> nominationDisposition = Class.forName(nominationPackage + "request.PlanningNominationCommandRequest$Disposition");
+            Class<?> custodyController=Class.forName("dz.sh.hidra.modules.custody.api.rest.controller.CustodyMeasurementCaptureController");
+            Class<?> custodyCapture=Class.forName("dz.sh.hidra.modules.custody.api.rest.request.CustodyMeasurementCaptureRequest");
             return List.of(
+                new Route(custodyController,custodyController.getDeclaredMethod("capture",String.class,custodyCapture),
+                    "POST","/api/v1/custody/measurement-periods/{periodId}/measurements"),
+                new Route(custodyController,custodyController.getDeclaredMethod("read",String.class,String.class),
+                    "GET","/api/v1/custody/measurement-periods/{periodId}/measurements/{measurementId}"),
                 new Route(nominationController, nominationController.getDeclaredMethod("create", String.class, nominationCreate),
                     "POST", "/api/v1/planning/revisions/{revisionId}/nominations"),
                 new Route(nominationController, nominationController.getDeclaredMethod("dispose", String.class, nominationDisposition),

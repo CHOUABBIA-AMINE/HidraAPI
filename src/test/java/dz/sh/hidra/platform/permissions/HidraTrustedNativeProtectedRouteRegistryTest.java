@@ -85,6 +85,16 @@ class HidraTrustedNativeProtectedRouteRegistryTest {
         assertTrue(rows.stream().allMatch(v->v.method().isAnnotationPresent(NativeProtectedOperation.class)));
     }
 
+    @Test void t20ExactCustodyRoutesHaveOnlyTwoCompiledNativeBindings() {
+        var rows=new HidraTrustedNativeProtectedRouteRegistry().candidates().stream()
+          .filter(r->r.controller().getSimpleName().equals("CustodyMeasurementCaptureController")).toList();
+        assertEquals(2,rows.size());
+        assertEquals(java.util.Set.of(
+          "POST /api/v1/custody/measurement-periods/{periodId}/measurements",
+          "GET /api/v1/custody/measurement-periods/{periodId}/measurements/{measurementId}"),
+            rows.stream().map(r->r.verb()+" "+r.pattern()).collect(java.util.stream.Collectors.toSet()));
+        assertTrue(rows.stream().allMatch(r->r.method().isAnnotationPresent(NativeProtectedOperation.class)));
+    }
     @Test void t19RegistersOnlyExactNominationCommandAndHistoryTuples() {
         var routes = new HidraTrustedNativeProtectedRouteRegistry().candidates().stream()
                 .filter(route -> route.controller().getSimpleName().equals("PlanningNominationCommandController"))
@@ -114,7 +124,7 @@ class HidraTrustedNativeProtectedRouteRegistryTest {
 
     @Test void baselineRoutesDeclareOnlyFiveExactCompiledTuples(){
         var registry=new HidraTrustedNativeProtectedRouteRegistry();
-        assertEquals(98,registry.candidates().size());
+        assertEquals(100,registry.candidates().size());
         var rows=registry.candidates().stream().filter(r->r.controller().getSimpleName().equals("EngineeringBaselineDraftController")).toList();
         assertEquals(5,rows.size());
         assertEquals(java.util.Set.of("POST /api/v1/topology/engineering-baselines","PUT /api/v1/topology/engineering-baselines/{manifestId}",

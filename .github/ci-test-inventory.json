@@ -50,7 +50,7 @@
       "lane": "unit-architecture",
       "owner": "architecture",
       "path": "src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java",
-      "source_sha256": "7817b4e1523d2986bba81cbaca299744f6be62fd2ac1fbabc91e833be963ec2f",
+      "source_sha256": "a4f5ba0b133602c0461e200cf93c2993b05f7c976c6006d50ecec368090c3625",
       "supports": []
     },
     {
@@ -11814,7 +11814,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java",
-      "source_sha256": "2c64486ab8b2bd6346d53fc5f52f807bd54df59984d3839df749782ec5dab836",
+      "source_sha256": "a666209f13c810cefa0f267598c3b49972b4655887cbe4fb18e5bc89ea6f3880",
       "supports": []
     },
     {
@@ -11831,6 +11831,7 @@
         "t16ReviewerRoutesAreExactlyFourteenNativeCompiledTuples",
         "t18IntegrityAndAssetsNativeRoutesHaveExactlyEightApprovedTuples",
         "t19RegistersOnlyExactNominationCommandAndHistoryTuples",
+        "t20ExactCustodyRoutesHaveOnlyTwoCompiledNativeBindings",
         "trustedDeclarationsAreImmutableAndCannotBeSilentlyReplaced",
         "unvalidatedTrustedEntryNeverDelegates",
         "verifiedEntryMatchesExactCompiledSignatureVerbAndRoute"
@@ -11841,7 +11842,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistryTest.java",
-      "source_sha256": "7accf6ebf2a21d799f83053710156edc56522789e1d88b714c32a98e78d68a56",
+      "source_sha256": "fb9fe1d06f95b4a33b8704933443f780f7955be1b42041bf7400c754cc044a62",
       "supports": []
     },
     {
@@ -11861,7 +11862,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteStartupValidatorTest.java",
-      "source_sha256": "c73b9c09b7598a2feb0c926a45610e5eb5662e751522fc5444d407ec55b9cb4a",
+      "source_sha256": "083b343e4430d7ca91b3e0e3d00199d39de308a00c0594ce324f14d069170a70",
       "supports": []
     },
     {
@@ -12144,6 +12145,20 @@
       "owner": "qualification",
       "path": "src/test/java/dz/sh/hidra/qualification/Gz2IncidentLeakInvestigationNativeHttpPostgresIntegrationTest.java",
       "source_sha256": "ce738cb2e53a6ee589808587bd1019b1135a76da8facd496cc30e3c416ed7e8d",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "capturesQualifiedObservedIntervalAndPreservesScopedReceipt"
+      ],
+      "class": "dz.sh.hidra.qualification.Gz2CustodyMeasurementNativeHttpPostgresIntegrationTest",
+      "dependency_reason": "T20 signed native HTTP, current company and paired transfer grants, immutable qualified Telemetry interval evidence, active published product, exact Custody lifecycle, replay and PostgreSQL rejection proof.",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "qualification",
+      "path": "src/test/java/dz/sh/hidra/qualification/Gz2CustodyMeasurementNativeHttpPostgresIntegrationTest.java",
+      "source_sha256": "b668d91a25b6705098a12e33a35217aa668980bcc47fad4553debd30ad6371e2",
       "supports": []
     },
     {

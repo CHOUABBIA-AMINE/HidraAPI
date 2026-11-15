@@ -127,8 +127,54 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
             Class<?> incidentRequest=Class.forName(incidentRest+"request.EscalateEvidenceToIncidentRequest");
             Class<?> incidentRead=Class.forName(incidentRest+"controller.IncidentQueryController");
             String incidentBase="/api/v1/incident/incidents";
+            Class<?> incidentInvestigation=Class.forName(incidentRest+"controller.IncidentInvestigationController");
+            Class<?> ia=Class.forName(incidentRest+"request.IncidentInvestigationRequest$Assign");
+            Class<?> ie=Class.forName(incidentRest+"request.IncidentInvestigationRequest$Evidence");
+            Class<?> ix=Class.forName(incidentRest+"request.IncidentInvestigationRequest$Action");
+            Class<?> is=Class.forName(incidentRest+"request.IncidentInvestigationRequest$Resolve");
+            Class<?> ir=Class.forName(incidentRest+"request.IncidentInvestigationRequest$Review");
+            Class<?> ic=Class.forName(incidentRest+"request.IncidentInvestigationRequest$Close");
+            String incidentInvestigationBase=incidentBase+"/{id}/investigation";
+            Class<?> leakInvestigation=Class.forName(leakRest+"controller.LeakInvestigationController");
+            Class<?> lo=Class.forName(leakRest+"request.LeakInvestigationRequest$Open");
+            Class<?> la=Class.forName(leakRest+"request.LeakInvestigationRequest$Assign");
+            Class<?> le=Class.forName(leakRest+"request.LeakInvestigationRequest$Evidence");
+            Class<?> lx=Class.forName(leakRest+"request.LeakInvestigationRequest$Action");
+            Class<?> ld=Class.forName(leakRest+"request.LeakInvestigationRequest$Disposition");
+            Class<?> lr=Class.forName(leakRest+"request.LeakInvestigationRequest$Review");
+            String leakInvestigationBase="/api/v1/leakdetection/cases/{id}/investigation";
+
 
             return List.of(
+                new Route(incidentInvestigation,incidentInvestigation.getDeclaredMethod("history",String.class),
+                    "GET",incidentInvestigationBase),
+                new Route(incidentInvestigation,incidentInvestigation.getDeclaredMethod("assign",String.class,ia),
+                    "POST",incidentInvestigationBase+"/assign"),
+                new Route(incidentInvestigation,incidentInvestigation.getDeclaredMethod("evidence",String.class,ie),
+                    "POST",incidentInvestigationBase+"/evidence"),
+                new Route(incidentInvestigation,incidentInvestigation.getDeclaredMethod("action",String.class,ix),
+                    "POST",incidentInvestigationBase+"/actions"),
+                new Route(incidentInvestigation,incidentInvestigation.getDeclaredMethod("resolution",String.class,is),
+                    "POST",incidentInvestigationBase+"/resolution"),
+                new Route(incidentInvestigation,incidentInvestigation.getDeclaredMethod("review",String.class,ir),
+                    "POST",incidentInvestigationBase+"/review"),
+                new Route(incidentInvestigation,incidentInvestigation.getDeclaredMethod("close",String.class,ic),
+                    "POST",incidentInvestigationBase+"/close"),
+                new Route(leakInvestigation,leakInvestigation.getDeclaredMethod("open",lo),
+                    "POST","/api/v1/leakdetection/cases/from-candidate"),
+                new Route(leakInvestigation,leakInvestigation.getDeclaredMethod("history",String.class),
+                    "GET",leakInvestigationBase),
+                new Route(leakInvestigation,leakInvestigation.getDeclaredMethod("assign",String.class,la),
+                    "POST",leakInvestigationBase+"/assign"),
+                new Route(leakInvestigation,leakInvestigation.getDeclaredMethod("evidence",String.class,le),
+                    "POST",leakInvestigationBase+"/evidence"),
+                new Route(leakInvestigation,leakInvestigation.getDeclaredMethod("action",String.class,lx),
+                    "POST",leakInvestigationBase+"/actions"),
+                new Route(leakInvestigation,leakInvestigation.getDeclaredMethod("disposition",String.class,ld),
+                    "POST",leakInvestigationBase+"/disposition"),
+                new Route(leakInvestigation,leakInvestigation.getDeclaredMethod("review",String.class,lr),
+                    "POST",leakInvestigationBase+"/review"),
+
                 new Route(incidentEvidence,incidentEvidence.getDeclaredMethod("escalate",incidentRequest),
                     "POST",incidentBase+"/from-evidence"),
                 new Route(incidentEvidence,incidentEvidence.getDeclaredMethod("escalation",String.class),

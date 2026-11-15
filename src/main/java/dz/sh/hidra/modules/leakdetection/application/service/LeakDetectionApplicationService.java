@@ -168,8 +168,13 @@ public class LeakDetectionApplicationService
     }
 
     @Override
+    @Transactional
     public LeakCaseSummaryDto openLeakCase(OpenLeakCaseCommand command) {
         Objects.requireNonNull(command, "Open leak case command must not be null.");
+        // Legacy request includes caller-supplied openedBy/asset identities; never grant it T16 authority.
+        // Existing standalone semantic fixtures use the deprecated unbound test constructor only.
+        if (candidateScope != null)
+            throw new AccessDeniedException("Use the source-bound, signed /cases/from-candidate operation.");
         Instant now = Instant.now();
         LeakDetectionCase leakCase = new LeakDetectionCase(
                 LeakDetectionId.newId().value(),
@@ -195,8 +200,11 @@ public class LeakDetectionApplicationService
     }
 
     @Override
+    @Transactional
     public String escalateLeakCase(EscalateLeakCaseCommand command) {
         Objects.requireNonNull(command, "Escalate leak case command must not be null.");
+        if (candidateScope != null)
+            throw new AccessDeniedException("Legacy caller-asserted leak escalation cannot bypass governed case review.");
         LeakEscalationReference escalation = new LeakEscalationReference(
                 LeakDetectionId.newId().value(),
                 command.caseId(),

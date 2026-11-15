@@ -52,7 +52,7 @@ public class IncidentScopedAuthorizationQueryService implements IncidentScopedAu
     @Transactional(propagation=Propagation.MANDATORY)
     public boolean permitted(String permission,String company,String type,String assetId) {
         if (permission==null || !java.util.Set.of("incident:incidents:execute",
-                "incident:incidents:read").contains(permission)
+                "incident:incidents:read", "incident:incidents:review").contains(permission)
                 || company==null || company.isBlank() || assetId==null || assetId.isBlank()) return false;
         ScopeType assetType=switch(type==null?"":type) {
             case "FACILITY" -> ScopeType.FACILITY;

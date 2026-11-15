@@ -156,7 +156,7 @@ class HidraTrustedNativeProtectedRouteHttpTest {
    var resolver = org.mockito.Mockito.mock(HidraEffectivePermissionResolver.class);
    authenticated();
    var registry = new HidraTrustedNativeProtectedRouteRegistry();
-   assertEquals(73,registry.candidates().size());
+   assertEquals(87,registry.candidates().size());
    var mvc = mvc(owner, new UntrustedController(), resolver,registry);
    assertThrows(Exception.class, () ->
       mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(TRUSTED)));
@@ -165,8 +165,22 @@ class HidraTrustedNativeProtectedRouteHttpTest {
  @Test void realManufacturerTupleRegistryRejectsWrongVerbAndSiblingPattern() throws Exception {
    var registry=new HidraTrustedNativeProtectedRouteRegistry();
    var routes=registry.candidates();
-   assertEquals(73,routes.size());
+   assertEquals(87,routes.size());
    var expected=java.util.Set.of(
+     "GET /api/v1/incident/incidents/{id}/investigation",
+     "POST /api/v1/incident/incidents/{id}/investigation/assign",
+     "POST /api/v1/incident/incidents/{id}/investigation/evidence",
+     "POST /api/v1/incident/incidents/{id}/investigation/actions",
+     "POST /api/v1/incident/incidents/{id}/investigation/resolution",
+     "POST /api/v1/incident/incidents/{id}/investigation/review",
+     "POST /api/v1/incident/incidents/{id}/investigation/close",
+     "POST /api/v1/leakdetection/cases/from-candidate",
+     "GET /api/v1/leakdetection/cases/{id}/investigation",
+     "POST /api/v1/leakdetection/cases/{id}/investigation/assign",
+     "POST /api/v1/leakdetection/cases/{id}/investigation/evidence",
+     "POST /api/v1/leakdetection/cases/{id}/investigation/actions",
+     "POST /api/v1/leakdetection/cases/{id}/investigation/disposition",
+     "POST /api/v1/leakdetection/cases/{id}/investigation/review",
      "POST /api/v1/incident/incidents/from-evidence",
      "GET /api/v1/incident/incidents/{id}/escalation",
      "GET /api/v1/incident/incidents/{id}/timeline",
@@ -307,6 +321,13 @@ class HidraTrustedNativeProtectedRouteHttpTest {
     var incidentRead=new dz.sh.hidra.modules.incident.api.rest.controller.IncidentQueryController(
          org.mockito.Mockito.mock(dz.sh.hidra.modules.incident.application.port.in.IncidentQueryUseCase.class));
     owners.put(incidentRead.getClass(),incidentRead);
+    var t16Incident=new dz.sh.hidra.modules.incident.api.rest.controller.IncidentInvestigationController(
+         org.mockito.Mockito.mock(dz.sh.hidra.modules.incident.application.port.in.IncidentInvestigationUseCase.class));
+    owners.put(t16Incident.getClass(),t16Incident);
+    var t16Leak=new dz.sh.hidra.modules.leakdetection.api.rest.controller.LeakInvestigationController(
+         org.mockito.Mockito.mock(dz.sh.hidra.modules.leakdetection.application.port.in.LeakInvestigationUseCase.class));
+    owners.put(t16Leak.getClass(),t16Leak);
+
 
     // The same logical operation has two distinct native-protected MVC methods, never one multi-pattern mapping.
     var ruleCreate=routes.stream().filter(r->r.pattern().equals("/api/v1/monitoring/rules")

@@ -56,6 +56,7 @@ public class IncidentApplicationService implements OpenIncidentUseCase, RecordIn
     private final IncidentResponseActionRepositoryPort responseActionRepositoryPort;
     private final IncidentClosureRepositoryPort closureRepositoryPort;
     private final IncidentEscalationAuthorizationPort currentScopes;
+    private final dz.sh.hidra.modules.incident.application.port.out.IncidentInvestigationStorePort investigations;
 
     private final dz.sh.hidra.modules.incident.application.port.out.IncidentReferencePolicyPort references;
 
@@ -67,16 +68,31 @@ public class IncidentApplicationService implements OpenIncidentUseCase, RecordIn
         this(incidentRepositoryPort,responseActionRepositoryPort,closureRepositoryPort,references,null);
     }
 
+
+    /** Backward-compatible test/legacy dependency constructor, without T16 native case authority. */
+    @Deprecated
+    public IncidentApplicationService(
+            IncidentRepositoryPort incidentRepositoryPort,
+            IncidentResponseActionRepositoryPort responseActionRepositoryPort,
+            IncidentClosureRepositoryPort closureRepositoryPort,
+            dz.sh.hidra.modules.incident.application.port.out.IncidentReferencePolicyPort references,
+            IncidentEscalationAuthorizationPort currentScopes) {
+        this(incidentRepositoryPort,responseActionRepositoryPort,closureRepositoryPort,
+                references,currentScopes,null);
+    }
+
     @Autowired
     public IncidentApplicationService(
             IncidentRepositoryPort incidentRepositoryPort,
             IncidentResponseActionRepositoryPort responseActionRepositoryPort,
             IncidentClosureRepositoryPort closureRepositoryPort,
             dz.sh.hidra.modules.incident.application.port.out.IncidentReferencePolicyPort references,
-            IncidentEscalationAuthorizationPort currentScopes
+            IncidentEscalationAuthorizationPort currentScopes,
+            dz.sh.hidra.modules.incident.application.port.out.IncidentInvestigationStorePort investigations
     ) {
         this.references=Objects.requireNonNull(references);
         this.currentScopes=currentScopes;
+        this.investigations=investigations;
         this.incidentRepositoryPort = Objects.requireNonNull(incidentRepositoryPort, "Incident repository port must not be null.");
         this.responseActionRepositoryPort = Objects.requireNonNull(responseActionRepositoryPort, "Incident response action repository port must not be null.");
         this.closureRepositoryPort = Objects.requireNonNull(closureRepositoryPort, "Incident closure repository port must not be null.");
@@ -151,9 +167,19 @@ public class IncidentApplicationService implements OpenIncidentUseCase, RecordIn
         // Recheck current resource scope before the parent row, state or history is disclosed.
         if(currentScopes!=null)
             currentScopes.requireIncident("incident:incidents:execute",command.incidentId());
+        // An assigned T16 investigation has its own versioned response pathway and reviewer gate.
+        // The legacy alias cannot append actions without a corresponding case receipt.
+        if(investigations!=null && currentScopes!=null
+                && !"NEW".equals(investigations.view(command.incidentId()).state()))
+            throw new AccessDeniedException("Use the governed Incident investigation action operation.");
         var parent=incidentRepositoryPort.findByIdForUpdate(command.incidentId()).orElseThrow(() -> new IllegalArgumentException("Unknown Incident."));
         new dz.sh.hidra.modules.incident.domain.service.IncidentLifecycleGuard().ensureResponseActionAllowed(parent);
         Instant now = Instant.now();
+        // Legacy action metadata is untrusted; derive attribution from the current signed Identity actor.
+        var performer= currentScopes==null ? null : references.currentActor(now);
+        if(performer!=null && command.performedByActorId()!=null
+                && !performer.id().equals(command.performedByActorId()))
+            throw new AccessDeniedException("Cannot impersonate an Incident response performer.");
         IncidentResponseAction action = new IncidentResponseAction(
                 IncidentId.newId().value(),
                 command.incidentId(),
@@ -167,8 +193,8 @@ public class IncidentApplicationService implements OpenIncidentUseCase, RecordIn
                 command.plannedEndAt(),
                 command.startedAt(),
                 command.completedAt(),
-                command.performedByActorId(),
-                command.performedByActorNameSnapshot(),
+                performer==null?command.performedByActorId():performer.id(),
+                performer==null?command.performedByActorNameSnapshot():performer.label(),
                 command.organizationUnitId(),
                 command.resultSummary(),
                 command.failureReason(),
@@ -188,6 +214,9 @@ public class IncidentApplicationService implements OpenIncidentUseCase, RecordIn
         var parent=incidentRepositoryPort.findByIdForUpdate(command.incidentId()).orElseThrow(() -> new IllegalArgumentException("Unknown Incident."));
         if(parent.status()!=IncidentStatus.RESOLVED) throw new IllegalArgumentException("Only RESOLVED incidents may close.");
         var actor=references.currentActor(Instant.now());
+        if(investigations!=null && currentScopes!=null
+                && !investigations.reviewedForClosure(command.incidentId(),actor.id()))
+            throw new AccessDeniedException("Governed Incident closure requires independent reviewed T16 close transition.");
         IncidentClosure closure = new IncidentClosure(
                 IncidentId.newId().value(),
                 command.incidentId(),

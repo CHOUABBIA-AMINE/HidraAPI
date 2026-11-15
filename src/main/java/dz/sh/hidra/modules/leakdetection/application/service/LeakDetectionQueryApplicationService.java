@@ -71,8 +71,10 @@ public class LeakDetectionQueryApplicationService implements LeakDetectionQueryU
     }
 
     @Override
+    @Transactional
     public Page<LeakCaseView> cases(int page, int size) {
         validatePage(page, size);
+        // Leak case repository applies current paired actor/company/asset and candidate FK predicates in SQL before pagination.
         List<LeakCaseView> content = caseRepositoryPort.findAll(page, size).stream().map(this::toCaseView).toList();
         long total = caseRepositoryPort.count();
         int totalPages = total == 0 ? 0 : (int) Math.ceil((double) total / size);
@@ -80,6 +82,7 @@ public class LeakDetectionQueryApplicationService implements LeakDetectionQueryU
     }
 
     @Override
+    @Transactional
     public LeakCaseView leakCase(String id) {
         String normalizedId = requireId(id, "case");
         return caseRepositoryPort.findById(normalizedId)

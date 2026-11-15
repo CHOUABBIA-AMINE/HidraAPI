@@ -10,6 +10,82 @@
     {
       "baseline_seconds": 0,
       "cases": [
+        "noGlobalFallbackForWrongAssetCompanyOrUnknownOperation",
+        "reviewerHasDistinctCodeAndRequiresCurrentCompanyGrant"
+      ],
+      "class": "dz.sh.hidra.modules.identity.application.service.LeakDetectionScopedAuthorizationQueryServiceTest",
+      "dependency_reason": "T16 mock-bound independent Leak review company/asset grants and operation separation.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/application/service/LeakDetectionScopedAuthorizationQueryServiceTest.java",
+      "source_sha256": "05c44a244282358cd0eac2532b2ed458f8c6c2c541ad40d0ee8fb5aeb3b11afc",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "missingCompanyOrAssetAndUnregisteredPermissionFailBeforeOwnerDisclosure",
+        "reviewPermissionIsAcceptedButOnlyExactCurrentScopedEvidenceCanAuthorizeIt"
+      ],
+      "class": "dz.sh.hidra.modules.identity.application.service.IncidentScopedAuthorizationQueryServiceTest",
+      "dependency_reason": "T16 mock-bound dedicated Incident review permission and exact direct grant checks.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "identity",
+      "path": "src/test/java/dz/sh/hidra/modules/identity/application/service/IncidentScopedAuthorizationQueryServiceTest.java",
+      "source_sha256": "07c86dc3b93e12e4945fc3f2ea1d5415536445d52ff46b2be0f8be4f771d823a",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "humanInvestigatorCanSubmitEvidenceBackedSuspectedCase",
+        "noSelfReviewOrEvidenceFreeDisposition",
+        "terminalCaseIsImmutableAcrossEveryInvestigationOperation"
+      ],
+      "class": "dz.sh.hidra.modules.leakdetection.application.service.LeakInvestigationGuardTest",
+      "dependency_reason": "T16 pure Java suspected Leak case transition, evidence and independent reviewer invariants.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "leakdetection",
+      "path": "src/test/java/dz/sh/hidra/modules/leakdetection/application/service/LeakInvestigationGuardTest.java",
+      "source_sha256": "244badf08fa5fa6a311a069465fdfad579d2dd439bae176e17222c50b525346d",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "sameActorCannotSelfReviewOrCloseAndMissingEvidenceBlocksResolution",
+        "terminalAndStaleStatesCannotBeMutatedOrRelabelled",
+        "validIndependentHumanJourneyAdvancesOnlyAnEligibleOpenIncident"
+      ],
+      "class": "dz.sh.hidra.modules.incident.application.service.IncidentInvestigationGuardTest",
+      "dependency_reason": "T16 pure Java Incident aggregate transition and independent review negatives.",
+      "fast": true,
+      "lane": "unit-architecture",
+      "owner": "incident",
+      "path": "src/test/java/dz/sh/hidra/modules/incident/application/service/IncidentInvestigationGuardTest.java",
+      "source_sha256": "ac808151d583231a8138e1f063a4469fa3931b64688c3653c3b84958bdf98e60",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "signedInvestigationAndIndependentDispositionSurviveRestart"
+      ],
+      "class": "dz.sh.hidra.qualification.Gz2IncidentLeakInvestigationNativeHttpPostgresIntegrationTest",
+      "dependency_reason": "T16 signed GZ2 native HTTP Incident and suspected Leak case investigation, current reviewer grants, exact replay/denial, evidence and human disposition across independent JVM restart.",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "qualification",
+      "path": "src/test/java/dz/sh/hidra/qualification/Gz2IncidentLeakInvestigationNativeHttpPostgresIntegrationTest.java",
+      "source_sha256": "ce738cb2e53a6ee589808587bd1019b1135a76da8facd496cc30e3c416ed7e8d",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
         "signedGz2WorkflowSurvivesSupersessionAndIndependentJvmRestart"
       ],
       "class": "dz.sh.hidra.qualification.Gz2SignedWorkflowNativeHttpPostgresIntegrationTest",
@@ -11765,7 +11841,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java",
-      "source_sha256": "bf26d595ce398de07fbae2476c9812218b8bd11d34cf91a933f63cb186dd6d8a",
+      "source_sha256": "c112088d23765dd0ff48db9c145f7003a93f6530964dee76f5b24964c98165c8",
       "supports": []
     },
     {
@@ -11779,6 +11855,7 @@
         "pipelineRoutesDeclareThreeExactCompiledMarkedSignaturesAndNoSelfActivation",
         "productionRegistryDeclaresFiveManufacturerAndThreeTopologyApprovalTuples",
         "protectedHistoricalBaselineReadRoutesAreExact",
+        "t16ReviewerRoutesAreExactlyFourteenNativeCompiledTuples",
         "trustedDeclarationsAreImmutableAndCannotBeSilentlyReplaced",
         "unvalidatedTrustedEntryNeverDelegates",
         "verifiedEntryMatchesExactCompiledSignatureVerbAndRoute"
@@ -11789,7 +11866,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistryTest.java",
-      "source_sha256": "f7edb0ae6864ec3b857248f558f4c71e338af8c0145c89ece9e75d62f8acb865",
+      "source_sha256": "0f1afc98ac0b456cea406c093af9f8400ab24ac10c452139e0f3b2205347f0c3",
       "supports": []
     },
     {
@@ -11809,7 +11886,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteStartupValidatorTest.java",
-      "source_sha256": "4b76daea9b7b121acf5e7355650d919398ec1d4097fcc3dcc54f5ba349bdd682",
+      "source_sha256": "95d8b8ce09eb842b2c921c90404255bcbd04f237c9f159890fe25f9361eb7183",
       "supports": []
     },
     {

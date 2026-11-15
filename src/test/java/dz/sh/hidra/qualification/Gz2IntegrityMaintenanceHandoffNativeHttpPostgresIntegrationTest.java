@@ -40,7 +40,7 @@ class Gz2IntegrityMaintenanceHandoffNativeHttpPostgresIntegrationTest {
             String defect=Gz2SignedWorkflowFixture.id();
             String icase=Gz2SignedWorkflowFixture.id();
             String recommendation=Gz2SignedWorkflowFixture.id();
-            String workOrderType=f.catalog("assets","WORK_ORDER_TYPE","T18_SYNTHETIC_REPAIR");
+            String workOrderType=f.catalog("asset","WORK_ORDER_TYPE","T18_SYNTHETIC_REPAIR");
             seed(f,equipment,asset,run,finding,defect,icase,recommendation);
             grant(f,f.author,"integrity:maintenance:approve",equipment);
             grant(f,f.author,"integrity:maintenance:read",equipment);
@@ -193,7 +193,13 @@ class Gz2IntegrityMaintenanceHandoffNativeHttpPostgresIntegrationTest {
               (id,code,facility_id,equipment_type_id,status,created_at,updated_at)
             values (?,?,?,?,'ACTIVE',now(),now())
             """,equipment,equipment,f.asset,type);
-        String assetType=f.catalog("assets","ASSET_TYPE","T18_EQUIPMENT");
+        // HRA-111 requires the dedicated Assets type owner, not the generic catalog.
+        String assetType=Gz2SignedWorkflowFixture.id();
+        f.sql.update("""
+            insert into public.hidra_asset_type
+              (id,code,active,sort_order,system_defined,created_at,updated_at)
+            values (?,'T18_EQUIPMENT',true,0,false,now(),now())
+            """,assetType);
         f.sql.update("""
             insert into public.hidra_asset_maintainable_asset
               (id,asset_number,asset_code,asset_name,asset_type_id,

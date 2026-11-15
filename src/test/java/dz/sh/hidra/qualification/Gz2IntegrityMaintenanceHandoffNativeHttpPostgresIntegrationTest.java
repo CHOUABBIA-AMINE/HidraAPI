@@ -210,7 +210,13 @@ class Gz2IntegrityMaintenanceHandoffNativeHttpPostgresIntegrationTest {
         String inspection=f.catalog("integrity","INSPECTION_TYPE","T18_INSPECTION");
         String findingType=f.catalog("integrity","FINDING_TYPE","T18_FINDING");
         String defectType=f.catalog("integrity","DEFECT_TYPE","T18_DEFECT");
-        String caseType=f.catalog("integrity","CASE_TYPE","T18_CASE");
+        // Explicit synthetic HMR-098 field-role mapping: the role itself is not the catalog family.
+        f.sql.update("""
+            insert into public.hidra_integrity_catalog_field_policy
+              (field_role,catalog_name,active,created_at,updated_at)
+            values ('CASE_TYPE','T18_CASE_CATEGORY',true,now(),now())
+            """);
+        String caseType=f.catalog("integrity","T18_CASE_CATEGORY","T18_CASE");
         String recType=f.catalog("integrity","RECOMMENDATION_TYPE","T18_REPAIR");
         String campaign=Gz2SignedWorkflowFixture.id();
         f.sql.update("""

@@ -126,8 +126,17 @@ class Gz2PlanningNominationNativeHttpPostgresIntegrationTest {
                 assertEquals(404, runtime.send("GET", resource + "/history", revoked, null).statusCode());
                 assertEquals(0, runtime.get(list, revoked).path("totalElements").asLong());
 
-                approve(f, runtime, review, plan, targetType, author, reviewer, start, end);
-                assertEquals("SUPERSEDED", runtime.get(PLAN + "/revisions/" + original.id(), author).path("status").asText());
+                ApprovedRevision successor = approve(f, runtime, review, plan, targetType, author, reviewer, start, end);
+                assertNotEquals(original.id(), successor.id());
+                assertEquals(successor.id(), runtime.get(PLAN + "/operational-plans/" + plan, author)
+                        .path("approvedRevisionId").asText());
+                JsonNode formerRevision = runtime.get(PLAN + "/revisions/" + original.id(), author);
+                assertEquals("APPROVED", formerRevision.path("status").asText());
+                assertEquals(original.updatedAt(), formerRevision.path("updatedAt").asText());
+                assertEquals("SUPERSEDED", runtime.get(PLAN + "/targets/" + original.targetId(), author)
+                        .path("status").asText());
+                assertEquals("ACTIVE", runtime.get(PLAN + "/targets/" + successor.targetId(), author)
+                        .path("status").asText());
                 assertEquals("CONFIRMED", runtime.get(resource, author).path("status").asText());
                 assertEquals(2, runtime.get(resource + "/history", author).size());
                 assertEquals(409, runtime.send("POST", PLAN + "/nominations/" + pending + "/disposition",

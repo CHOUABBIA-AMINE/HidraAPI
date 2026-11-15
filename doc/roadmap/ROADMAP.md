@@ -1825,3 +1825,17 @@ src/test/java/dz/sh/hidra/qualification/Gz2PlanningNominationNativeHttpPostgresI
 .github/ci-test-inventory.json
 doc/roadmap/ROADMAP.md
 ```
+
+### T19 CI #1258 qualification repair — 2026-11-15
+
+**Owner `Fail` selection.** [HidraAPI CI #1258](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/43759032137) on `0036dbf23d3c8c24668fb6ebd3b9b54960d8797a`, tree `fe797c96167e44fc44454a78fb8e342624e877d3`, passed Java unit and architecture and 13 of 14 PostgreSQL shards, including the previously failing shards 5, 9 and 12. The prior Custody 503 did not recur. Documentation Validation #1087 and static validation passed. The distinct API failure remains strict canonical OpenAPI equality. The API job generated runtime OpenAPI and the migrated dictionary, and its backward compatibility check passed. The final evidence gate failed downstream of the two failing lanes.
+
+**Observed Planning failure and repair.** [Shard 11](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/43759032137/job/132949400316) completed the earlier unapproved product and unit checks, positive nomination writes, independent decisions and scoped read checks. The T19 scenario stopped at its assertion that the former approved revision would be relabeled SUPERSEDED after a successor approval. The existing decision service advances the plan's approved revision pointer, leaves the prior revision approval and version intact, and moves its former ACTIVE targets to SUPERSEDED. The signed scenario now requires all three facts, plus the successor target's ACTIVE state, preserved nomination and event history, and continued rejection of disposition on the former revision. Preserve current nomination guard, permissions, all other tests and migration history.
+
+**Exact repair scope and next stage.** Publish `fix(planning): verify T19 supersession through the approved revision pointer` for the exact paths below. Keep T19 IN PROGRESS. The registered generated-artifact documentation stage follows hosted qualification on the successor SHA. Preserve strict equality and reconcile both snapshots from authenticated source-run artifacts. Verify matching CI start and stop.
+
+```text
+src/test/java/dz/sh/hidra/qualification/Gz2PlanningNominationNativeHttpPostgresIntegrationTest.java
+.github/ci-test-inventory.json
+doc/roadmap/ROADMAP.md
+```

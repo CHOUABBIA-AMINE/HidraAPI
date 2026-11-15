@@ -93,6 +93,7 @@ class Gz2SignedWorkflowFixture {
         assertEquals(0, flyway.info().pending().length);
         restrictEngineeringRoles();
         seedScope();
+        verifyRuntimeUnitLock();
         author = human("author");
         reviewer = human("reviewer");
         producer = human("producer");
@@ -116,6 +117,9 @@ class Gz2SignedWorkflowFixture {
         restrict("hidra_custody_catalog_entry,hidra_custody_engineering_product_policy,"
                 + "hidra_telemetry_unit,hidra_telemetry_fluid_unit_policy,"
                 + "hidra_workflow_custody_publication_policy", "SELECT", "SELECT,UPDATE");
+        // PostgreSQL requires UPDATE on one column for a locking read. Planning,
+        // ingestion and Monitoring all take a shared lock on the unit row.
+        sql.execute("GRANT UPDATE (updated_at) ON public.hidra_telemetry_unit TO " + APP);
         restrict("hidra_topology_station_graph_head,hidra_topology_station_graph_operation_event",
                 "SELECT", "SELECT,INSERT,UPDATE,DELETE");
         restrict("hidra_topology_engineering_graph_snapshot,hidra_topology_engineering_survey_snapshot,"
@@ -136,6 +140,13 @@ class Gz2SignedWorkflowFixture {
             sql.execute("GRANT " + appRights + " ON " + tables + " TO " + APP);
         }
         sql.execute("GRANT " + publicationRights + " ON " + tables + " TO " + PUBLICATION);
+    }
+
+    private void verifyRuntimeUnitLock() {
+        var runtimeSql = new JdbcTemplate(new DriverManagerDataSource(postgres.getJdbcUrl(), APP, APP_PASSWORD));
+        assertEquals(pressureUnit, runtimeSql.queryForObject("""
+                SELECT id FROM public.hidra_telemetry_unit WHERE id = ? AND active FOR SHARE
+                """, String.class, pressureUnit));
     }
 
     private void seedScope() {

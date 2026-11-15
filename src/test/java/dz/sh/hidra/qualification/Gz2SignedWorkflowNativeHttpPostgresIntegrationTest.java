@@ -600,9 +600,13 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
     private static void noDisclosure(HttpResponse<String> response, String... protectedIds) throws Exception {
         assertDenied(response.statusCode());
         JsonNode payload = JSON.readTree(response.body());
-        if (payload instanceof ObjectNode problem
-                && response.request().uri().getPath().equals(problem.path("instance").asText())) {
-            problem.remove("instance");
+        if (payload instanceof ObjectNode problem) {
+            String requestPath = response.request().uri().getPath();
+            for (String field : List.of("instance", "path")) {
+                if (requestPath.equals(problem.path(field).asText())) {
+                    problem.remove(field);
+                }
+            }
         }
         String body = payload == null ? "" : payload.toString();
         for (String id : protectedIds) {

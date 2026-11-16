@@ -1239,9 +1239,9 @@
   ],
   "openapi": {
     "counts": {
-      "paths": 409,
-      "operations": 451,
-      "schemas": 491
+      "paths": 411,
+      "operations": 453,
+      "schemas": 493
     },
     "path": "doc/api/openapi.yaml",
     "prior_reviewed_provenance": {
@@ -1351,83 +1351,6 @@
       "workflow_conclusion": "failure",
       "zip_sha256": "2d04f3beec9c29019c97a4fc5abc0aa37c776779e8707a409c6ee48ccc96183a"
     },
-    "provenance": {
-      "artifact_id": 14179659166,
-      "artifact_member": "hidra-api.json",
-      "artifact_name": "hidra-api-openapi-78d58ae5ee1891541e629cb49ec594c03097cab3-43760181253-1-api-contract",
-      "source_sha": "78d58ae5ee1891541e629cb49ec594c03097cab3",
-      "run_id": 43760181253,
-      "run_attempt": 1,
-      "job_id": 132953013042,
-      "generation_step": "Publish deterministic OpenAPI contract",
-      "generation_step_number": 9,
-      "generation_step_conclusion": "success",
-      "compatibility_review": "CI #1259 passed runtime backward compatibility. The canonical delta adds three protected T19 endpoints and four schemas, with every prior path and schema object preserved.",
-      "conclusion": "success",
-      "conclusion_scope": "Runtime OpenAPI generation, backward compatibility and migrated dictionary capture succeeded. The API job and workflow failed strict OpenAPI equality. Dictionary comparison was skipped. All test lanes passed.",
-      "job_conclusion": "failure",
-      "workflow_conclusion": "failure",
-      "failed_step": "Enforce canonical OpenAPI snapshot equality",
-      "zip_sha256": "0bb690890ad6eae64b9495ad544a7e324eb0fa38647617fcf79ad86ed769d2d6",
-      "json_sha256": "9d54c30ed49c3fbd5d300ef9f81b35941a08614e5e9e8c6c4c0cc26417b6937a",
-      "database_evidence": {
-        "artifact_id": 14179554568,
-        "artifact_member": "DATA_DICTIONARY.md",
-        "artifact_zip_sha256": "62fc637ef5e973e209011a8b43a70bbae5438e5e27df6cfa84c92b5f6178eebe",
-        "dictionary_sha256": "9516618e0a49e883b2345962254c6ff16d70d0f8744bf1f659688df895ea4878",
-        "catalog_sha256": "35132ab44be98dfa3b2a56a259199ee0da63674dbf9a34b92deaa126f19c6366",
-        "source_bundle_sha256": "d6dd2d1ffecdab5beb437fd33cd044fc40f95cfee0fa503ddaa3ca747617df72",
-        "source_sha": "78d58ae5ee1891541e629cb49ec594c03097cab3",
-        "migrations": 218,
-        "jpa_mappings": 471,
-        "relations": 580,
-        "unresolved_owners": 0,
-        "status": "Generated from exact-SHA CI #1259 migrated PostgreSQL 16.16 catalog. Strict comparison was skipped after stale OpenAPI equality."
-      },
-      "remaining_gates": [
-        "Exact replacement-SHA strict OpenAPI and dictionary equality and Full Verification Gate."
-      ]
-    },
-    "prior_reviewed_provenance_t18": {
-      "artifact_id": 14176575676,
-      "artifact_member": "hidra-api.json",
-      "artifact_name": "hidra-api-openapi-d2e756815da5a8811f17936ae3376783ecbe918c-43750356326-1-api-contract",
-      "source_sha": "d2e756815da5a8811f17936ae3376783ecbe918c",
-      "run_id": 43750356326,
-      "run_attempt": 1,
-      "job_id": 132922721710,
-      "generation_step": "Publish deterministic OpenAPI contract",
-      "generation_step_number": 9,
-      "generation_step_conclusion": "success",
-      "compatibility_review": "HidraAPI CI #1255 step 13 passed backward compatibility. CI #1255 runtime artifact has 406 paths, 448 operations and 487 schemas; relative to the prior reviewed T16 canonical contract it adds exactly the eight T18 bearer-protected Integrity/Assets maintenance operations and five runtime schemas. Existing operation and schema objects are unchanged.",
-      "conclusion": "success",
-      "conclusion_scope": "Only runtime OpenAPI generation (step 9), migrated database evidence capture (step 10), and runtime backward compatibility (step 13) succeeded. The API job and workflow failed stale canonical OpenAPI equality (step 15). Dictionary comparison (step 16) and full verification remained blocked. No operational or release acceptance is implied.",
-      "job_conclusion": "failure",
-      "workflow_conclusion": "failure",
-      "failed_step": "Enforce canonical OpenAPI snapshot equality",
-      "zip_sha256": "cd84e6b9ff8c5ee44145f1df502bae2a4482277bd43e617650e0bf1170d17396",
-      "json_sha256": "8c4567b6dc28938191e45efb4ac71c50ad3949f5bfdb6c6911f4dd8cc3c8d854",
-      "database_evidence": {
-        "artifact_id": 14176331443,
-        "artifact_member": "database/DATA_DICTIONARY.md",
-        "artifact_zip_sha256": "0091586222f823975e888689e00a8d165444cfc63c72aca4d10b42b39162dd2c",
-        "dictionary_sha256": "2040760a0ad8df6547f4893d6f076c44f7d38c952d50e63b001870680b89c997",
-        "catalog_sha256": "6192dc337306cabfa5c7dca31bf10f03f4e52aee0914d29fe7d4848f16135b2a",
-        "source_bundle_sha256": "c8f877318b044cb7b7899410f4f943b0a3b697e9871bf5c8f69339615054ae67",
-        "source_sha": "d2e756815da5a8811f17936ae3376783ecbe918c",
-        "migrations": 217,
-        "jpa_mappings": 470,
-        "relations": 578,
-        "unresolved_owners": 0,
-        "status": "Generated from exact CI #1255 PostgreSQL 16.16 migrated catalog; canonical dictionary comparison was skipped after OpenAPI equality failure."
-      },
-      "remaining_gates": [
-        "Fresh exact-SHA full CI after this registered documentation commit must pass native tests, unit/architecture, static validation, all PostgreSQL shards, exact runtime OpenAPI equality, physical dictionary equality, and Full Verification Gate.",
-        "T18 software CI acceptance is distinct from engineering, deployment, and operational acceptance. T17 remains blocked by T24."
-      ]
-    },
-    "sha256": "3626280cf063a79379e747a2b7355dca981dfa371562265e180f9eae95d0cb39",
-    "source_sha": "78d58ae5ee1891541e629cb49ec594c03097cab3",
     "prior_reviewed_provenance_t11": {
       "artifact_id": 14071799646,
       "artifact_member": "hidra-api.json",
@@ -1597,7 +1520,122 @@
         "Successful fresh-source-SHA exact CI: runtime OpenAPI semantic equality, physical dictionary strict equality, complete test provenance, Full Verification Gate",
         "Independent exact-run T16 signed synthetic investigation/read/security review; T17 remains planned; no industrial acceptance"
       ]
-    }
+    },
+    "prior_reviewed_provenance_t18": {
+      "artifact_id": 14176575676,
+      "artifact_member": "hidra-api.json",
+      "artifact_name": "hidra-api-openapi-d2e756815da5a8811f17936ae3376783ecbe918c-43750356326-1-api-contract",
+      "source_sha": "d2e756815da5a8811f17936ae3376783ecbe918c",
+      "run_id": 43750356326,
+      "run_attempt": 1,
+      "job_id": 132922721710,
+      "generation_step": "Publish deterministic OpenAPI contract",
+      "generation_step_number": 9,
+      "generation_step_conclusion": "success",
+      "compatibility_review": "HidraAPI CI #1255 step 13 passed backward compatibility. CI #1255 runtime artifact has 406 paths, 448 operations and 487 schemas; relative to the prior reviewed T16 canonical contract it adds exactly the eight T18 bearer-protected Integrity/Assets maintenance operations and five runtime schemas. Existing operation and schema objects are unchanged.",
+      "conclusion": "success",
+      "conclusion_scope": "Only runtime OpenAPI generation (step 9), migrated database evidence capture (step 10), and runtime backward compatibility (step 13) succeeded. The API job and workflow failed stale canonical OpenAPI equality (step 15). Dictionary comparison (step 16) and full verification remained blocked. No operational or release acceptance is implied.",
+      "job_conclusion": "failure",
+      "workflow_conclusion": "failure",
+      "failed_step": "Enforce canonical OpenAPI snapshot equality",
+      "zip_sha256": "cd84e6b9ff8c5ee44145f1df502bae2a4482277bd43e617650e0bf1170d17396",
+      "json_sha256": "8c4567b6dc28938191e45efb4ac71c50ad3949f5bfdb6c6911f4dd8cc3c8d854",
+      "database_evidence": {
+        "artifact_id": 14176331443,
+        "artifact_member": "database/DATA_DICTIONARY.md",
+        "artifact_zip_sha256": "0091586222f823975e888689e00a8d165444cfc63c72aca4d10b42b39162dd2c",
+        "dictionary_sha256": "2040760a0ad8df6547f4893d6f076c44f7d38c952d50e63b001870680b89c997",
+        "catalog_sha256": "6192dc337306cabfa5c7dca31bf10f03f4e52aee0914d29fe7d4848f16135b2a",
+        "source_bundle_sha256": "c8f877318b044cb7b7899410f4f943b0a3b697e9871bf5c8f69339615054ae67",
+        "source_sha": "d2e756815da5a8811f17936ae3376783ecbe918c",
+        "migrations": 217,
+        "jpa_mappings": 470,
+        "relations": 578,
+        "unresolved_owners": 0,
+        "status": "Generated from exact CI #1255 PostgreSQL 16.16 migrated catalog; canonical dictionary comparison was skipped after OpenAPI equality failure."
+      },
+      "remaining_gates": [
+        "Fresh exact-SHA full CI after this registered documentation commit must pass native tests, unit/architecture, static validation, all PostgreSQL shards, exact runtime OpenAPI equality, physical dictionary equality, and Full Verification Gate.",
+        "T18 software CI acceptance is distinct from engineering, deployment, and operational acceptance. T17 remains blocked by T24."
+      ]
+    },
+    "prior_reviewed_provenance_t19": {
+      "artifact_id": 14179659166,
+      "artifact_member": "hidra-api.json",
+      "artifact_name": "hidra-api-openapi-78d58ae5ee1891541e629cb49ec594c03097cab3-43760181253-1-api-contract",
+      "source_sha": "78d58ae5ee1891541e629cb49ec594c03097cab3",
+      "run_id": 43760181253,
+      "run_attempt": 1,
+      "job_id": 132953013042,
+      "generation_step": "Publish deterministic OpenAPI contract",
+      "generation_step_number": 9,
+      "generation_step_conclusion": "success",
+      "compatibility_review": "CI #1259 passed runtime backward compatibility. The canonical delta adds three protected T19 endpoints and four schemas, with every prior path and schema object preserved.",
+      "conclusion": "success",
+      "conclusion_scope": "Runtime OpenAPI generation, backward compatibility and migrated dictionary capture succeeded. The API job and workflow failed strict OpenAPI equality. Dictionary comparison was skipped. All test lanes passed.",
+      "job_conclusion": "failure",
+      "workflow_conclusion": "failure",
+      "failed_step": "Enforce canonical OpenAPI snapshot equality",
+      "zip_sha256": "0bb690890ad6eae64b9495ad544a7e324eb0fa38647617fcf79ad86ed769d2d6",
+      "json_sha256": "9d54c30ed49c3fbd5d300ef9f81b35941a08614e5e9e8c6c4c0cc26417b6937a",
+      "database_evidence": {
+        "artifact_id": 14179554568,
+        "artifact_member": "DATA_DICTIONARY.md",
+        "artifact_zip_sha256": "62fc637ef5e973e209011a8b43a70bbae5438e5e27df6cfa84c92b5f6178eebe",
+        "dictionary_sha256": "9516618e0a49e883b2345962254c6ff16d70d0f8744bf1f659688df895ea4878",
+        "catalog_sha256": "35132ab44be98dfa3b2a56a259199ee0da63674dbf9a34b92deaa126f19c6366",
+        "source_bundle_sha256": "d6dd2d1ffecdab5beb437fd33cd044fc40f95cfee0fa503ddaa3ca747617df72",
+        "source_sha": "78d58ae5ee1891541e629cb49ec594c03097cab3",
+        "migrations": 218,
+        "jpa_mappings": 471,
+        "relations": 580,
+        "unresolved_owners": 0,
+        "status": "Generated from exact-SHA CI #1259 migrated PostgreSQL 16.16 catalog. Strict comparison was skipped after stale OpenAPI equality."
+      },
+      "remaining_gates": [
+        "Exact replacement-SHA strict OpenAPI and dictionary equality and Full Verification Gate."
+      ]
+    },
+    "provenance": {
+      "artifact_id": 14248974322,
+      "artifact_member": "hidra-api.json",
+      "artifact_name": "hidra-api-openapi-c3bc2b9a57deb137209fdc1944ffaac7389bf209-43915850843-1-api-contract",
+      "source_sha": "c3bc2b9a57deb137209fdc1944ffaac7389bf209",
+      "run_id": 43915850843,
+      "run_attempt": 1,
+      "job_id": 133469642843,
+      "generation_step": "Publish deterministic OpenAPI contract",
+      "generation_step_number": 9,
+      "generation_step_conclusion": "success",
+      "compatibility_review": "CI #43915850843 step 13 passed OpenAPI backward compatibility. Exact runtime artifact adds only the two scoped T20 custody measurement operations and two request/response schemas; previous paths and schema definitions are unchanged.",
+      "conclusion": "success",
+      "conclusion_scope": "Runtime OpenAPI generation, compatibility and migrated dictionary capture succeeded. API contract job and full workflow failed at canonical OpenAPI snapshot equality; strict physical dictionary equality was skipped. All 14 PostgreSQL shards, Java unit/architecture and static validation passed. No production or operational acceptance.",
+      "job_conclusion": "failure",
+      "workflow_conclusion": "failure",
+      "failed_step": "Enforce canonical OpenAPI snapshot equality",
+      "zip_sha256": "e4d325d65df63d8b3b423760ed03b340cfb0b45715fa59da54060d5040bd010a",
+      "json_sha256": "95d52722424ed5fde9dc26068ccc7a19e75c4dbe1fdfda085ea45c8c360070fc",
+      "database_evidence": {
+        "artifact_id": 14249134005,
+        "artifact_member": "DATA_DICTIONARY.md",
+        "artifact_name": "hidra-database-schema-c3bc2b9a57deb137209fdc1944ffaac7389bf209-43915850843-1-api-contract",
+        "artifact_zip_sha256": "b4d166f17c0b4fcbcfa3833563f3386a4942e8bd03bfd64cc9b44dad286c52a7",
+        "catalog_sha256": "c6949fa34b7dc61716acebcc103c9271cd1922499a330afdaf4616042f61b0a5",
+        "dictionary_sha256": "bf9f843794ca4939f008a93d01a0c5af20e7de428be27e7233ea07935fac498b",
+        "source_bundle_sha256": "b05433cd2c920a91e25d57b517f0eb39f994f4e9389037e4777899653d2ec612",
+        "source_sha": "c3bc2b9a57deb137209fdc1944ffaac7389bf209",
+        "migrations": 219,
+        "jpa_mappings": 471,
+        "relations": 582,
+        "unresolved_owners": 0,
+        "status": "Captured from exact T20 source CI #43915850843, PostgreSQL 16.16 fresh migrated catalog. Strict equality remained skipped after stale OpenAPI snapshot; must pass after this documentation commit."
+      },
+      "remaining_gates": [
+        "A fresh exact-SHA HidraAPI CI must pass canonical OpenAPI equality, PostgreSQL 16 physical dictionary equality, all required test lanes and Full Verification Gate. Engineering and operational acceptance remain separate."
+      ]
+    },
+    "sha256": "e9575b21ce20bcbb5fa6fbbd1cd07686d400d3744238240d6a0af402102bee75",
+    "source_sha": "c3bc2b9a57deb137209fdc1944ffaac7389bf209"
   },
   "register": "doc/governance/DOCUMENT_REGISTER.md",
   "register_areas": {

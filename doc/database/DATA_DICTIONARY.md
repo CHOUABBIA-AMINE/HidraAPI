@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `78d58ae5ee1891541e629cb49ec594c03097cab3`
+Captured source SHA: `c3bc2b9a57deb137209fdc1944ffaac7389bf209`
 PostgreSQL server: `16.16 (Debian 16.16-1.pgdg13+1)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `d6dd2d1ffecdab5beb437fd33cd044fc40f95cfee0fa503ddaa3ca747617df72`.
-Migrations: 218; JPA mappings: 471; catalog relations: 580; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `b05433cd2c920a91e25d57b517f0eb39f994f4e9389037e4777899653d2ec612`.
+Migrations: 219; JPA mappings: 471; catalog relations: 582; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -5514,6 +5514,7 @@ Persisted CustodyAgreementPartyJpaEntity state; semantic authority remains with 
 - Evidence: [CustodyAgreementPartyJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/entity/CustodyAgreementPartyJpaEntity.java)
 - Migration mention (not inferred introduction): [V20260611_015__create_custody_tables.sql](../../src/main/resources/db/migration/V20260611_015__create_custody_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_002__enforce_same_module_reference_integrity_b.sql](../../src/main/resources/db/migration/V20260929_002__enforce_same_module_reference_integrity_b.sql)
+- Migration mention (not inferred introduction): [V20261115_005__t20_qualified_custody_measurement_capture.sql](../../src/main/resources/db/migration/V20261115_005__t20_qualified_custody_measurement_capture.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -5676,6 +5677,7 @@ Persisted CustodyCatalogEntryJpaEntity state; semantic authority remains with cu
 - Migration mention (not inferred introduction): [V20261008_026__hmr_080_planning_nomination_integrity.sql](../../src/main/resources/db/migration/V20261008_026__hmr_080_planning_nomination_integrity.sql)
 - Migration mention (not inferred introduction): [V20261026_002__custody_product_engineering_drafts.sql](../../src/main/resources/db/migration/V20261026_002__custody_product_engineering_drafts.sql)
 - Migration mention (not inferred introduction): [V20261103_001__topology_engineering_baseline_drafts.sql](../../src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql)
+- Migration mention (not inferred introduction): [V20261115_005__t20_qualified_custody_measurement_capture.sql](../../src/main/resources/db/migration/V20261115_005__t20_qualified_custody_measurement_capture.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -6100,6 +6102,7 @@ Persisted CustodyMeasurementPeriodJpaEntity state; semantic authority remains wi
 - Migration mention (not inferred introduction): [V20260611_015__create_custody_tables.sql](../../src/main/resources/db/migration/V20260611_015__create_custody_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_002__enforce_same_module_reference_integrity_b.sql](../../src/main/resources/db/migration/V20260929_002__enforce_same_module_reference_integrity_b.sql)
 - Migration mention (not inferred introduction): [V20261004_018__hmr_018_custody_custody_measurement_period.sql](../../src/main/resources/db/migration/V20261004_018__hmr_018_custody_custody_measurement_period.sql)
+- Migration mention (not inferred introduction): [V20261115_005__t20_qualified_custody_measurement_capture.sql](../../src/main/resources/db/migration/V20261115_005__t20_qualified_custody_measurement_capture.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -6151,6 +6154,112 @@ Persisted CustodyMeasurementPeriodJpaEntity state; semantic authority remains wi
 
 None captured in this catalog category.
 
+### public.hidra_custody_measurement_receipt
+
+Owner: **custody**; relation kind: `r`.
+
+Custody-owned immutable observed interval capture receipt, scoped command replay, qualified source and company/product/party provenance, acceptedForCustody false.
+
+- Evidence: [V20261115_005__t20_qualified_custody_measurement_capture.sql](../../src/main/resources/db/migration/V20261115_005__t20_qualified_custody_measurement_capture.sql)
+- Evidence: [JdbcCustodyMeasurementCaptureAdapter.java](../../src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcCustodyMeasurementCaptureAdapter.java)
+- Migration mention (not inferred introduction): [V20261115_005__t20_qualified_custody_measurement_capture.sql](../../src/main/resources/db/migration/V20261115_005__t20_qualified_custody_measurement_capture.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| measurement_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| period_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| command_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| payload_fingerprint | character(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| meter_run_snapshot_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| metering_system_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| measurement_type_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| product_publication_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| agreement_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| company_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| transfer_point_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| asset_type | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| asset_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| trusted_reading_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| raw_reading_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| assessment_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| point_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| binding_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| interval_evidence_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| observed_quantity | numeric(18,6) | False | None; identity=; generated= | No current mapped Java column | — |
+| unit_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| quantity_basis | character varying(20) | False | None; identity=; generated= | No current mapped Java column | — |
+| interval_start | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| interval_end | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| captured_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_custody_measurement_rec_period_id_meter_run_snapshot__key`: UNIQUE (period_id, meter_run_snapshot_id, measurement_type_id, interval_evidence_id)
+  - Catalog attributes: {"columns": ["period_id", "meter_run_snapshot_id", "measurement_type_id", "interval_evidence_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_custody_measurement_receipt_actor_id_check`: CHECK (length(btrim(actor_id::text)) &gt;= 1 AND length(btrim(actor_id::text)) &lt;= 80)
+  - Catalog attributes: {"columns": ["actor_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_measurement_receipt_agreement_party_id_fkey`: FOREIGN KEY (agreement_party_id) REFERENCES hidra_custody_agreement_party(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["agreement_party_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_custody_agreement_party"}, "type": "f", "validated": true}
+- `hidra_custody_measurement_receipt_asset_id_check`: CHECK (length(btrim(asset_id::text)) &gt;= 1 AND length(btrim(asset_id::text)) &lt;= 80)
+  - Catalog attributes: {"columns": ["asset_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_measurement_receipt_asset_type_check`: CHECK (asset_type::text = 'FACILITY'::text)
+  - Catalog attributes: {"columns": ["asset_type"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_measurement_receipt_captured_at_check`: CHECK (isfinite(captured_at))
+  - Catalog attributes: {"columns": ["captured_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_measurement_receipt_check`: CHECK (interval_start &lt; interval_end)
+  - Catalog attributes: {"columns": ["interval_start", "interval_end"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_measurement_receipt_company_id_check`: CHECK (length(btrim(company_id::text)) &gt;= 1 AND length(btrim(company_id::text)) &lt;= 80)
+  - Catalog attributes: {"columns": ["company_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_measurement_receipt_interval_end_check`: CHECK (isfinite(interval_end))
+  - Catalog attributes: {"columns": ["interval_end"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_measurement_receipt_interval_start_check`: CHECK (isfinite(interval_start))
+  - Catalog attributes: {"columns": ["interval_start"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_measurement_receipt_measurement_id_fkey`: FOREIGN KEY (measurement_id) REFERENCES hidra_custody_measurement_snapshot(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["measurement_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_custody_measurement_snapshot"}, "type": "f", "validated": true}
+- `hidra_custody_measurement_receipt_measurement_type_id_fkey`: FOREIGN KEY (measurement_type_id) REFERENCES hidra_custody_catalog_entry(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["measurement_type_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_custody_catalog_entry"}, "type": "f", "validated": true}
+- `hidra_custody_measurement_receipt_meter_run_snapshot_id_fkey`: FOREIGN KEY (meter_run_snapshot_id) REFERENCES hidra_custody_meter_run_snapshot(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["meter_run_snapshot_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_custody_meter_run_snapshot"}, "type": "f", "validated": true}
+- `hidra_custody_measurement_receipt_metering_system_id_fkey`: FOREIGN KEY (metering_system_id) REFERENCES hidra_custody_metering_system(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["metering_system_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_custody_metering_system"}, "type": "f", "validated": true}
+- `hidra_custody_measurement_receipt_observed_quantity_check`: CHECK (observed_quantity &gt;= 0::numeric)
+  - Catalog attributes: {"columns": ["observed_quantity"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_measurement_receipt_payload_fingerprint_check`: CHECK (payload_fingerprint ~ '^[a-f0-9]{64}$'::text)
+  - Catalog attributes: {"columns": ["payload_fingerprint"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_measurement_receipt_period_id_command_id_key`: UNIQUE (period_id, command_id)
+  - Catalog attributes: {"columns": ["period_id", "command_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_custody_measurement_receipt_period_id_fkey`: FOREIGN KEY (period_id) REFERENCES hidra_custody_measurement_period(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["period_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_custody_measurement_period"}, "type": "f", "validated": true}
+- `hidra_custody_measurement_receipt_pkey`: PRIMARY KEY (measurement_id)
+  - Catalog attributes: {"columns": ["measurement_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_custody_measurement_receipt_quantity_basis_check`: CHECK (quantity_basis::text = 'OBSERVED'::text)
+  - Catalog attributes: {"columns": ["quantity_basis"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_measurement_receipt_transfer_point_id_fkey`: FOREIGN KEY (transfer_point_id) REFERENCES hidra_custody_transfer_point(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["transfer_point_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_custody_transfer_point"}, "type": "f", "validated": true}
+
+#### Indexes
+
+- `hidra_custody_measurement_rec_period_id_meter_run_snapshot__key`: CREATE UNIQUE INDEX hidra_custody_measurement_rec_period_id_meter_run_snapshot__key ON public.hidra_custody_measurement_receipt USING btree (period_id, meter_run_snapshot_id, measurement_type_id, interval_evidence_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_custody_measurement_receipt_period_id_command_id_key`: CREATE UNIQUE INDEX hidra_custody_measurement_receipt_period_id_command_id_key ON public.hidra_custody_measurement_receipt USING btree (period_id, command_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_custody_measurement_receipt_pkey`: CREATE UNIQUE INDEX hidra_custody_measurement_receipt_pkey ON public.hidra_custody_measurement_receipt USING btree (measurement_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `ix_t20_custody_receipt_company_point`: CREATE INDEX ix_t20_custody_receipt_company_point ON public.hidra_custody_measurement_receipt USING btree (company_id, transfer_point_id, captured_at)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+- `ix_t20_custody_receipt_period`: CREATE INDEX ix_t20_custody_receipt_period ON public.hidra_custody_measurement_receipt USING btree (period_id, captured_at)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+
+#### Triggers
+
+- `hidra_t20_custody_receipt_immutable`: CREATE TRIGGER hidra_t20_custody_receipt_immutable BEFORE DELETE OR UPDATE ON hidra_custody_measurement_receipt FOR EACH ROW EXECUTE FUNCTION hidra_t20_append_only()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t20_append_only()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t20_append_only()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T20 qualified interval and Custody receipt evidence is immutable' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `hidra_t20_custody_receipt_no_truncate`: CREATE TRIGGER hidra_t20_custody_receipt_no_truncate BEFORE TRUNCATE ON hidra_custody_measurement_receipt FOR EACH STATEMENT EXECUTE FUNCTION hidra_t20_append_only()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t20_append_only()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t20_append_only()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T20 qualified interval and Custody receipt evidence is immutable' USING ERRCODE='23514';<br>END;<br>$function$<br>
+
 ### public.hidra_custody_measurement_snapshot
 
 Owner: **custody**; relation kind: `r`.
@@ -6160,6 +6269,7 @@ Persisted CustodyMeasurementSnapshotJpaEntity state; semantic authority remains 
 - Evidence: [CustodyMeasurementSnapshotJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/entity/CustodyMeasurementSnapshotJpaEntity.java)
 - Migration mention (not inferred introduction): [V20260611_015__create_custody_tables.sql](../../src/main/resources/db/migration/V20260611_015__create_custody_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_002__enforce_same_module_reference_integrity_b.sql](../../src/main/resources/db/migration/V20260929_002__enforce_same_module_reference_integrity_b.sql)
+- Migration mention (not inferred introduction): [V20261115_005__t20_qualified_custody_measurement_capture.sql](../../src/main/resources/db/migration/V20261115_005__t20_qualified_custody_measurement_capture.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -6215,7 +6325,9 @@ Persisted CustodyMeasurementSnapshotJpaEntity state; semantic authority remains 
 
 #### Triggers
 
-None captured in this catalog category.
+- `hidra_t20_measurement_snapshot_immutable`: CREATE TRIGGER hidra_t20_measurement_snapshot_immutable BEFORE DELETE OR UPDATE ON hidra_custody_measurement_snapshot FOR EACH ROW EXECUTE FUNCTION hidra_t20_measurement_snapshot_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t20_measurement_snapshot_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t20_measurement_snapshot_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> IF EXISTS(SELECT 1 FROM public.hidra_custody_measurement_receipt<br>            WHERE measurement_id=OLD.id) THEN<br>    RAISE EXCEPTION 'T20 attested measurement snapshot is immutable' USING ERRCODE='23514';<br> END IF;<br> RETURN OLD;<br>END;<br>$function$<br>
 
 ### public.hidra_custody_meter_run_snapshot
 
@@ -6226,6 +6338,7 @@ Persisted CustodyMeterRunSnapshotJpaEntity state; semantic authority remains wit
 - Evidence: [CustodyMeterRunSnapshotJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/entity/CustodyMeterRunSnapshotJpaEntity.java)
 - Migration mention (not inferred introduction): [V20260611_015__create_custody_tables.sql](../../src/main/resources/db/migration/V20260611_015__create_custody_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_002__enforce_same_module_reference_integrity_b.sql](../../src/main/resources/db/migration/V20260929_002__enforce_same_module_reference_integrity_b.sql)
+- Migration mention (not inferred introduction): [V20261115_005__t20_qualified_custody_measurement_capture.sql](../../src/main/resources/db/migration/V20261115_005__t20_qualified_custody_measurement_capture.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -6275,6 +6388,7 @@ Persisted CustodyMeteringSystemJpaEntity state; semantic authority remains with 
 - Evidence: [CustodyMeteringSystemJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/entity/CustodyMeteringSystemJpaEntity.java)
 - Migration mention (not inferred introduction): [V20260611_015__create_custody_tables.sql](../../src/main/resources/db/migration/V20260611_015__create_custody_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_002__enforce_same_module_reference_integrity_b.sql](../../src/main/resources/db/migration/V20260929_002__enforce_same_module_reference_integrity_b.sql)
+- Migration mention (not inferred introduction): [V20261115_005__t20_qualified_custody_measurement_capture.sql](../../src/main/resources/db/migration/V20261115_005__t20_qualified_custody_measurement_capture.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -7366,6 +7480,7 @@ Persisted CustodyTransferPointJpaEntity state; semantic authority remains with c
 - Evidence: [CustodyTransferPointJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/entity/CustodyTransferPointJpaEntity.java)
 - Migration mention (not inferred introduction): [V20260611_015__create_custody_tables.sql](../../src/main/resources/db/migration/V20260611_015__create_custody_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_002__enforce_same_module_reference_integrity_b.sql](../../src/main/resources/db/migration/V20260929_002__enforce_same_module_reference_integrity_b.sql)
+- Migration mention (not inferred introduction): [V20261115_005__t20_qualified_custody_measurement_capture.sql](../../src/main/resources/db/migration/V20261115_005__t20_qualified_custody_measurement_capture.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -10600,6 +10715,7 @@ Persisted PermissionJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261112_004__t11_authoritative_deviation.sql](../../src/main/resources/db/migration/V20261112_004__t11_authoritative_deviation.sql)
 - Migration mention (not inferred introduction): [V20261115_001__t16_incident_leak_investigations.sql](../../src/main/resources/db/migration/V20261115_001__t16_incident_leak_investigations.sql)
 - Migration mention (not inferred introduction): [V20261115_003__t18_integrity_maintenance_handoff.sql](../../src/main/resources/db/migration/V20261115_003__t18_integrity_maintenance_handoff.sql)
+- Migration mention (not inferred introduction): [V20261115_005__t20_qualified_custody_measurement_capture.sql](../../src/main/resources/db/migration/V20261115_005__t20_qualified_custody_measurement_capture.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -27359,6 +27475,82 @@ Persisted SimulationValidationFindingJpaEntity state; semantic authority remains
 
 None captured in this catalog category.
 
+### public.hidra_telemetry_custody_interval_evidence
+
+Owner: **telemetry**; relation kind: `r`.
+
+Telemetry-owned immutable qualified interval-total attestation keyed to trusted reading, exact meter and effective binding. Synthetic GZ2 source only; no fiscal or numerical qualification.
+
+- Evidence: [V20261115_005__t20_qualified_custody_measurement_capture.sql](../../src/main/resources/db/migration/V20261115_005__t20_qualified_custody_measurement_capture.sql)
+- Evidence: [JdbcCustodyIntervalEvidenceAdapter.java](../../src/main/java/dz/sh/hidra/modules/telemetry/infrastructure/persistence/adapter/JdbcCustodyIntervalEvidenceAdapter.java)
+- Migration mention (not inferred introduction): [V20261115_005__t20_qualified_custody_measurement_capture.sql](../../src/main/resources/db/migration/V20261115_005__t20_qualified_custody_measurement_capture.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| trusted_reading_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| meter_run_snapshot_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| metering_system_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| asset_type | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| asset_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| measurement_kind | character varying(40) | False | None; identity=; generated= | No current mapped Java column | — |
+| observed_quantity | numeric(18,6) | False | None; identity=; generated= | No current mapped Java column | — |
+| unit_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| interval_start | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| interval_end | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| attested_at | timestamp with time zone | False | now(); identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_telemetry_custody_inter_id_trusted_reading_id_unit_id_key`: UNIQUE (id, trusted_reading_id, unit_id)
+  - Catalog attributes: {"columns": ["id", "trusted_reading_id", "unit_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_telemetry_custody_interval_ev_meter_run_snapshot_id_check`: CHECK (length(btrim(meter_run_snapshot_id::text)) &gt;= 1 AND length(btrim(meter_run_snapshot_id::text)) &lt;= 80)
+  - Catalog attributes: {"columns": ["meter_run_snapshot_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_telemetry_custody_interval_evide_metering_system_id_check`: CHECK (length(btrim(metering_system_id::text)) &gt;= 1 AND length(btrim(metering_system_id::text)) &lt;= 80)
+  - Catalog attributes: {"columns": ["metering_system_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_telemetry_custody_interval_eviden_observed_quantity_check`: CHECK (observed_quantity &gt;= 0::numeric)
+  - Catalog attributes: {"columns": ["observed_quantity"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_telemetry_custody_interval_eviden_trusted_reading_id_fkey`: FOREIGN KEY (trusted_reading_id) REFERENCES hidra_telemetry_trusted_reading(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["trusted_reading_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_telemetry_trusted_reading"}, "type": "f", "validated": true}
+- `hidra_telemetry_custody_interval_evidenc_measurement_kind_check`: CHECK (measurement_kind::text = 'INTERVAL_VOLUME_TOTAL'::text)
+  - Catalog attributes: {"columns": ["measurement_kind"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_telemetry_custody_interval_evidence_asset_id_check`: CHECK (length(btrim(asset_id::text)) &gt;= 1 AND length(btrim(asset_id::text)) &lt;= 80)
+  - Catalog attributes: {"columns": ["asset_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_telemetry_custody_interval_evidence_asset_type_check`: CHECK (asset_type::text = 'FACILITY'::text)
+  - Catalog attributes: {"columns": ["asset_type"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_telemetry_custody_interval_evidence_attested_at_check`: CHECK (isfinite(attested_at))
+  - Catalog attributes: {"columns": ["attested_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_telemetry_custody_interval_evidence_check`: CHECK (interval_start &lt; interval_end)
+  - Catalog attributes: {"columns": ["interval_start", "interval_end"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_telemetry_custody_interval_evidence_id_check`: CHECK (length(btrim(id::text)) &gt;= 1 AND length(btrim(id::text)) &lt;= 80)
+  - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_telemetry_custody_interval_evidence_interval_end_check`: CHECK (isfinite(interval_end))
+  - Catalog attributes: {"columns": ["interval_end"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_telemetry_custody_interval_evidence_interval_start_check`: CHECK (isfinite(interval_start))
+  - Catalog attributes: {"columns": ["interval_start"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_telemetry_custody_interval_evidence_pkey`: PRIMARY KEY (id)
+  - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_telemetry_custody_interval_evidence_unit_id_fkey`: FOREIGN KEY (unit_id) REFERENCES hidra_telemetry_unit(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["unit_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_telemetry_unit"}, "type": "f", "validated": true}
+
+#### Indexes
+
+- `hidra_telemetry_custody_inter_id_trusted_reading_id_unit_id_key`: CREATE UNIQUE INDEX hidra_telemetry_custody_inter_id_trusted_reading_id_unit_id_key ON public.hidra_telemetry_custody_interval_evidence USING btree (id, trusted_reading_id, unit_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_telemetry_custody_interval_evidence_pkey`: CREATE UNIQUE INDEX hidra_telemetry_custody_interval_evidence_pkey ON public.hidra_telemetry_custody_interval_evidence USING btree (id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `ix_t20_telemetry_interval_trusted`: CREATE INDEX ix_t20_telemetry_interval_trusted ON public.hidra_telemetry_custody_interval_evidence USING btree (trusted_reading_id, interval_start, interval_end)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+
+#### Triggers
+
+- `hidra_t20_telemetry_evidence_immutable`: CREATE TRIGGER hidra_t20_telemetry_evidence_immutable BEFORE DELETE OR UPDATE ON hidra_telemetry_custody_interval_evidence FOR EACH ROW EXECUTE FUNCTION hidra_t20_append_only()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t20_append_only()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t20_append_only()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T20 qualified interval and Custody receipt evidence is immutable' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `hidra_t20_telemetry_evidence_no_truncate`: CREATE TRIGGER hidra_t20_telemetry_evidence_no_truncate BEFORE TRUNCATE ON hidra_telemetry_custody_interval_evidence FOR EACH STATEMENT EXECUTE FUNCTION hidra_t20_append_only()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t20_append_only()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t20_append_only()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T20 qualified interval and Custody receipt evidence is immutable' USING ERRCODE='23514';<br>END;<br>$function$<br>
+
 ### public.hidra_telemetry_device
 
 Owner: **telemetry**; relation kind: `r`.
@@ -28257,6 +28449,7 @@ Persisted TrustedTelemetryReadingJpaEntity state; semantic authority remains wit
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261006_008__hmr_053_trusted_telemetry_gate.sql](../../src/main/resources/db/migration/V20261006_008__hmr_053_trusted_telemetry_gate.sql)
 - Migration mention (not inferred introduction): [V20261112_002__t09_telemetry_trust_publication.sql](../../src/main/resources/db/migration/V20261112_002__t09_telemetry_trust_publication.sql)
+- Migration mention (not inferred introduction): [V20261115_005__t20_qualified_custody_measurement_capture.sql](../../src/main/resources/db/migration/V20261115_005__t20_qualified_custody_measurement_capture.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -28448,6 +28641,7 @@ Persisted TelemetryUnitJpaEntity state; semantic authority remains with telemetr
 - Migration mention (not inferred introduction): [V20261008_026__hmr_080_planning_nomination_integrity.sql](../../src/main/resources/db/migration/V20261008_026__hmr_080_planning_nomination_integrity.sql)
 - Migration mention (not inferred introduction): [V20261027_002__telemetry_fluid_unit_policy.sql](../../src/main/resources/db/migration/V20261027_002__telemetry_fluid_unit_policy.sql)
 - Migration mention (not inferred introduction): [V20261110_001__telemetry_ingestion_replay_identity.sql](../../src/main/resources/db/migration/V20261110_001__telemetry_ingestion_replay_identity.sql)
+- Migration mention (not inferred introduction): [V20261115_005__t20_qualified_custody_measurement_capture.sql](../../src/main/resources/db/migration/V20261115_005__t20_qualified_custody_measurement_capture.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|

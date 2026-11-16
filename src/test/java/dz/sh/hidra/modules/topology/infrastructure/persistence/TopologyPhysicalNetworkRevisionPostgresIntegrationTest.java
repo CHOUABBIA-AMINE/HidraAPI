@@ -60,7 +60,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class TopologyPhysicalNetworkRevisionPostgresIntegrationTest {
     @Container
     static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgres:16")
-            .withDatabaseName("hidra_test");
+            .withDatabaseName("hidra_test")
+            .withCommand("postgres", "-c", "max_locks_per_transaction=256");
     private static final Path MIGRATION = Path.of("src/main/resources/db/migration/V20261009_001__p25_topology_physical_network_revisions.sql");
     private static final Path REGULATOR_MIGRATION = Path.of(
             "src/main/resources/db/migration/V20261010_003__p25_topology_regulator_physical_revision_format.sql");

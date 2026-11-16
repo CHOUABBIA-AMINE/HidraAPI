@@ -62,7 +62,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class StationInternalGraphRevisionPostgresIntegrationTest {
     @Container
     static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgres:16")
-            .withDatabaseName("hidra_test");
+            .withDatabaseName("hidra_test")
+            .withCommand("postgres", "-c", "max_locks_per_transaction=256");
     private static final String TABLE = "hidra_topology_station_graph_revision";
     private static final Path MIGRATION = Path.of(
             "src/main/resources/db/migration/V20261011_002__p25_topology_station_graph_revisions.sql");

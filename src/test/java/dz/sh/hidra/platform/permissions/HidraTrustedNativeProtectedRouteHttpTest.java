@@ -172,6 +172,8 @@ class HidraTrustedNativeProtectedRouteHttpTest {
      "GET /api/v1/planning/nominations/{id}/history",
      "POST /api/v1/integrity/findings/{findingId}/maintenance-approvals",
      "GET /api/v1/integrity/findings/{findingId}/maintenance-handoffs/{approvalId}",
+     "POST /api/v1/custody/measurement-periods/{periodId}/measurements",
+     "GET /api/v1/custody/measurement-periods/{periodId}/measurements/{measurementId}",
      "POST /api/v1/assets/maintenance-work-orders/from-integrity",
      "POST /api/v1/assets/maintenance-work-orders/{id}/assignment",
      "POST /api/v1/assets/maintenance-work-orders/{id}/start",
@@ -347,6 +349,9 @@ class HidraTrustedNativeProtectedRouteHttpTest {
     var nominations = new dz.sh.hidra.modules.planning.api.rest.controller.PlanningNominationCommandController(
         org.mockito.Mockito.mock(dz.sh.hidra.modules.planning.application.port.in.PlanningNominationCommandUseCase.class));
     owners.put(nominations.getClass(), nominations);
+    var t20Custody = new dz.sh.hidra.modules.custody.api.rest.controller.CustodyMeasurementCaptureController(
+        org.mockito.Mockito.mock(dz.sh.hidra.modules.custody.application.port.in.CustodyMeasurementCaptureUseCase.class));
+    owners.put(t20Custody.getClass(), t20Custody);
 
 
     // The same logical operation has two distinct native-protected MVC methods, never one multi-pattern mapping.

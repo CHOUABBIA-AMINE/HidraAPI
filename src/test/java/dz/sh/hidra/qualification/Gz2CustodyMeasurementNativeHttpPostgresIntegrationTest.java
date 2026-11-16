@@ -223,7 +223,7 @@ class Gz2CustodyMeasurementNativeHttpPostgresIntegrationTest {
         String path = PRODUCT + "/" + field(created, "draftId");
         var source = Map.of("origin", "SYNTHETIC", "reference", "GZ2-SYNTHETIC", "evidenceReference", "gz2-synthetic-gas");
         var method = Map.of("reference", "gz2-synthetic-method", "revision", "v1");
-        var pressure = Map.of("minimum", "50", "maximum", "150", "unitId", VOLUME);
+        var pressure = Map.of("minimum", "50", "maximum", "150", "unitId", f.pressureUnit);
         var temperature = Map.of("minimum", "250", "maximum", "350", "unitId", "gz2-temperature");
         var facts = Map.of("requestId", id(), "expectedVersion", 0, "expectedProductMetadataVersion", 1,
                 "source", source, "composition", Map.of("basis", "MOLE_FRACTION",
@@ -232,7 +232,7 @@ class Gz2CustodyMeasurementNativeHttpPostgresIntegrationTest {
                         "components", List.of("GAS-A"), "properties", List.of("DENSITY"),
                         "absolutePressure", pressure, "absoluteTemperature", temperature, "evidenceReference", "gz2-method")),
                 "properties", List.of(Map.of("observationId", "density", "property", "DENSITY", "value", "1.200",
-                        "unitId", "gz2-density", "absolutePressure", Map.of("value", "100", "unitId", VOLUME),
+                        "unitId", "gz2-density", "absolutePressure", Map.of("value", "100", "unitId", f.pressureUnit),
                         "absoluteTemperature", Map.of("value", "300", "unitId", "gz2-temperature"), "method", method, "source", source)));
         r.json("PUT", query(path + "/properties", "companyPartyId", f.company), author, facts, 201);
         var review = f.review("custody", "PRODUCT_SOURCE_PUBLICATION", "PRODUCT_SOURCE_PUBLICATION_APPROVAL", false);

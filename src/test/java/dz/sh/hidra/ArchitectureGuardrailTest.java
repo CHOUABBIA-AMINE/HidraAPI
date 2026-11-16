@@ -104,9 +104,6 @@ class ArchitectureGuardrailTest {
                     "dz.sh.hidra.modules.custody.application.contract.planning",
                     "dz.sh.hidra.modules.custody.application.contract.simulation",
                     "dz.sh.hidra.modules.telemetry.application.contract.monitoring",
-                     "dz.sh.hidra.modules.telemetry.application.contract.custody",
-                     "dz.sh.hidra.modules.topology.application.contract.custody",
-                     "dz.sh.hidra.modules.party.application.contract.custody",
                     "dz.sh.hidra.modules.telemetry.application.contract.simulation",
                     "dz.sh.hidra.modules.telemetry.application.contract.planning",
                     "dz.sh.hidra.modules.planning.application.contract.monitoring",
@@ -199,6 +196,21 @@ class ArchitectureGuardrailTest {
                 && (target.equals(root) || target.startsWith(root+"$"));
     }
 
+    // T20: exact owner contracts, no public-package exemption for sibling types.
+    private static final Set<String> T20_MEASUREMENT_OWNER_ROOTS = Set.of(
+            "dz.sh.hidra.modules.telemetry.application.contract.custody.CustodyIntervalEvidenceContract",
+            "dz.sh.hidra.modules.topology.application.contract.custody.CustodyMeasurementAssetOwnershipContract",
+            "dz.sh.hidra.modules.party.application.contract.custody.CustodyMeasurementPartyReferenceContract",
+            "dz.sh.hidra.modules.identity.application.contract.custody.CustodyMeasurementScopedAuthorizationContract");
+    private static boolean isT20MeasurementOwnerType(String target) {
+        return T20_MEASUREMENT_OWNER_ROOTS.stream().anyMatch(root -> isTargetRoot(target, root));
+    }
+    private static boolean isT20MeasurementOwnerExport(String source, String target) {
+        String coordinator="dz.sh.hidra.modules.custody.application.service.CustodyMeasurementCaptureApplicationService";
+        return (source.equals(coordinator) || source.startsWith(coordinator + "$"))
+                && isT20MeasurementOwnerType(target);
+    }
+
     @Test void custodyProductExportKeepsPartyAndIdentityInternalsClosed() {
         String source="dz.sh.hidra.modules.custody.application.service.ProtectedProductDraftAdmissionCoordinator";
         String root="dz.sh.hidra.modules.party.application.contract.custody.CustodyProtectedPartyEligibilityContract";
@@ -214,6 +226,15 @@ class ArchitectureGuardrailTest {
                 "dz.sh.hidra.modules.identity.infrastructure.security.ProtectedOperationIdentityParticipant$ProductClaimPair"));
         assertTrue(isForbiddenCrossModuleDependency(source,
                 "dz.sh.hidra.modules.party.infrastructure.persistence.adapter.JdbcCustodyProtectedPartyEligibilityAdapter"));
+        String t20="dz.sh.hidra.modules.custody.application.service.CustodyMeasurementCaptureApplicationService";
+        for (String exported : T20_MEASUREMENT_OWNER_ROOTS) {
+            assertFalse(isForbiddenCrossModuleDependency(t20,exported));
+            assertFalse(isForbiddenCrossModuleDependency(t20,exported+"$Evidence"));
+            assertTrue(isForbiddenCrossModuleDependency(t20+"Sibling",exported));
+            assertTrue(isForbiddenCrossModuleDependency(t20,exported+"Sibling"));
+            assertTrue(isForbiddenCrossModuleDependency(
+                    "dz.sh.hidra.modules.topology.application.service.Other",exported));
+        }
     }
 
     @Test void appointmentOwnerExportsAdmitOnlyTheirExactRootsAndNestedData() {
@@ -406,6 +427,11 @@ class ArchitectureGuardrailTest {
                 }
                 if (isPublicationSpecific(target.getName())) {
                     if(!isPublicationExportAllowed(source.getName(),target.getName()))violations.add(source.getName()+" -> "+target.getName());
+                    continue;
+                }
+                if (isT20MeasurementOwnerType(target.getName())) {
+                    if (!isT20MeasurementOwnerExport(source.getName(), target.getName()))
+                        violations.add(source.getName() + " -> " + target.getName());
                     continue;
                 }
                 if (isExplicitlyExported(target.getPackageName())) {
@@ -1060,6 +1086,8 @@ class ArchitectureGuardrailTest {
         }
         if(isProductPublicationSourceType(targetClassName))return true;
         if(isPublicationSpecific(targetClassName))return !isPublicationExportAllowed(sourceClassName,targetClassName);
+        if (isT20MeasurementOwnerType(targetClassName))
+            return !isT20MeasurementOwnerExport(sourceClassName,targetClassName);
         if (!isPrivateCrossModulePackage(targetPackage)) {
             return false;
         }

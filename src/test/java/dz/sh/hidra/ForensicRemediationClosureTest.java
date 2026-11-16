@@ -238,6 +238,18 @@ class ForensicRemediationClosureTest {
         assertFalse(baselineOwnerExport(baselineCoordinator+"Sibling",baselineIdentity));
         assertFalse(baselineOwnerExport(baselineReader,baselineManufacturer+"Sibling"));
         assertFalse(baselineOwnerExport(baselineReader,"dz.sh.hidra.modules.custody.infrastructure.integration.TopologyBaselineProductSourceAdapter"));
+        String t20Consumer="dz.sh.hidra.modules.custody.application.service.CustodyMeasurementCaptureApplicationService";
+        for (String t20Contract : Set.of(
+                "dz.sh.hidra.modules.telemetry.application.contract.custody.CustodyIntervalEvidenceContract",
+                "dz.sh.hidra.modules.topology.application.contract.custody.CustodyMeasurementAssetOwnershipContract",
+                "dz.sh.hidra.modules.party.application.contract.custody.CustodyMeasurementPartyReferenceContract",
+                "dz.sh.hidra.modules.identity.application.contract.custody.CustodyMeasurementScopedAuthorizationContract")) {
+            assertTrue(t20MeasurementOwnerExport(t20Consumer,t20Contract));
+            assertFalse(t20MeasurementOwnerExport(t20Consumer+"Sibling",t20Contract));
+            assertFalse(t20MeasurementOwnerExport(t20Consumer,t20Contract+"Sibling"));
+            assertFalse(t20MeasurementOwnerExport(t20Consumer,
+                    "dz.sh.hidra.modules.party.infrastructure.persistence.adapter.JpaCustodyMeasurementPartyReferenceAdapter"));
+        }
         List<String> violations = new ArrayList<>();
         for (SourceType source : sources().values()) {
             String sourceModule = module(source.packageName());
@@ -292,6 +304,7 @@ class ForensicRemediationClosureTest {
                 if (installedUnitOwnerExport(source.fqcn(), imported)) continue;
                 if (organizationOwnerExport(source.fqcn(), imported)) continue;
                 if (custodyProductOwnerExport(source.fqcn(), imported)) continue;
+                if (t20MeasurementOwnerExport(source.fqcn(), imported)) continue;
                 if (baselineOwnerExport(source.fqcn(), imported)) continue;
                 if (isAlarmOwnerExport(source.fqcn(), imported)) continue;
                 if (isAlarmMonitoringEvidenceExport(source.fqcn(), imported)) continue;
@@ -468,6 +481,17 @@ class ForensicRemediationClosureTest {
         String consumer="dz.sh.hidra.modules.topology.application.service.ProtectedInstalledUnitAdmissionCoordinator";
         String root="dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract";
         return source.equals(consumer) && (imported.equals(root) || imported.startsWith(root+"."));
+    }
+
+    // T20: the capture service consumes only the four reviewed owner contract roots.
+    private static boolean t20MeasurementOwnerExport(String source, String imported) {
+        if (!source.equals("dz.sh.hidra.modules.custody.application.service.CustodyMeasurementCaptureApplicationService")) return false;
+        return Set.of(
+                "dz.sh.hidra.modules.telemetry.application.contract.custody.CustodyIntervalEvidenceContract",
+                "dz.sh.hidra.modules.topology.application.contract.custody.CustodyMeasurementAssetOwnershipContract",
+                "dz.sh.hidra.modules.party.application.contract.custody.CustodyMeasurementPartyReferenceContract",
+                "dz.sh.hidra.modules.identity.application.contract.custody.CustodyMeasurementScopedAuthorizationContract")
+                .stream().anyMatch(root -> imported.equals(root) || imported.startsWith(root + "."));
     }
 
     private static boolean custodyProductOwnerExport(String source,String imported) {

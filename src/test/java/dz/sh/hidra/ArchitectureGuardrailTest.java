@@ -205,6 +205,10 @@ class ArchitectureGuardrailTest {
     private static boolean isT20MeasurementOwnerType(String target) {
         return T20_MEASUREMENT_OWNER_ROOTS.stream().anyMatch(root -> isTargetRoot(target, root));
     }
+    private static boolean hasT20MeasurementOwnerNamePrefix(String target) {
+        // A sibling sharing an export prefix is not a registered owner contract.
+        return T20_MEASUREMENT_OWNER_ROOTS.stream().anyMatch(target::startsWith);
+    }
     private static boolean isT20MeasurementOwnerExport(String source, String target) {
         String coordinator="dz.sh.hidra.modules.custody.application.service.CustodyMeasurementCaptureApplicationService";
         return (source.equals(coordinator) || source.startsWith(coordinator + "$"))
@@ -429,7 +433,7 @@ class ArchitectureGuardrailTest {
                     if(!isPublicationExportAllowed(source.getName(),target.getName()))violations.add(source.getName()+" -> "+target.getName());
                     continue;
                 }
-                if (isT20MeasurementOwnerType(target.getName())) {
+                if (hasT20MeasurementOwnerNamePrefix(target.getName())) {
                     if (!isT20MeasurementOwnerExport(source.getName(), target.getName()))
                         violations.add(source.getName() + " -> " + target.getName());
                     continue;
@@ -1086,7 +1090,7 @@ class ArchitectureGuardrailTest {
         }
         if(isProductPublicationSourceType(targetClassName))return true;
         if(isPublicationSpecific(targetClassName))return !isPublicationExportAllowed(sourceClassName,targetClassName);
-        if (isT20MeasurementOwnerType(targetClassName))
+        if (hasT20MeasurementOwnerNamePrefix(targetClassName))
             return !isT20MeasurementOwnerExport(sourceClassName,targetClassName);
         if (!isPrivateCrossModulePackage(targetPackage)) {
             return false;

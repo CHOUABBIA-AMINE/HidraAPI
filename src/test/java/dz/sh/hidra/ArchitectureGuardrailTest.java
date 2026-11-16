@@ -233,7 +233,7 @@ class ArchitectureGuardrailTest {
             assertTrue(isForbiddenCrossModuleDependency(t20+"Sibling",exported));
             assertTrue(isForbiddenCrossModuleDependency(t20,exported+"Sibling"));
             assertTrue(isForbiddenCrossModuleDependency(
-                    "dz.sh.hidra.modules.topology.application.service.Other",exported));
+                    "dz.sh.hidra.modules.planning.application.service.Other",exported));
         }
     }
 

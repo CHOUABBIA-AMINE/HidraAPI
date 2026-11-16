@@ -43,6 +43,13 @@ class Gz2CustodyMeasurementNativeHttpPostgresIntegrationTest {
                 INSERT INTO hidra_telemetry_unit(id,code,symbol,dimension,active,system_defined,created_at,updated_at)
                 VALUES (?,'T20_SYNTHETIC_VOLUME','m3','VOLUME',true,false,now(),now())
                 """,VOLUME);
+            // HRA-111 preserves the Custody-owned observed-unit FK; this synthetic
+            // mirror does not replace Telemetry's active VOLUME dimension check.
+            f.sql.update("""
+                INSERT INTO public.hidra_custody_catalog_entry
+                  (id,catalog_name,code,active,sort_order,system_defined,created_at,updated_at)
+                VALUES (?,'MEASUREMENT_UNIT','T20_SYNTHETIC_VOLUME',true,0,false,now(),now())
+                """,VOLUME);
             grantProduct(f);
             String transfer=id(),agreement=id(),period=id(),run=id(),meter=id(),partyRole=id(),agreementParty=id();
             setupCustody(f,transfer,agreement,period,run,meter,partyRole,agreementParty);
@@ -134,14 +141,16 @@ class Gz2CustodyMeasurementNativeHttpPostgresIntegrationTest {
                 assertEquals(created,runtime.get(getRoute,reader));
                 assertEquals(404,runtime.send("GET",getRoute,foreign,null).statusCode());
                 assertEquals(404,runtime.send("GET",getRoute,wrong,null).statusCode());
-                f.sql.update("UPDATE hidra_custody_metering_system SET active=false WHERE id=?",meter);
-                JsonNode replay=runtime.json("POST",route,author,cmd,200);
-                assertTrue(replay.path("replay").asBoolean());
-                assertEquals(measurement,field(replay,"measurementId"));
+                // A new command conflicts with the already captured eligible source.
                 var doubleSource=new java.util.HashMap<>(cmd);doubleSource.put("commandId",id());
                 assertEquals(409,runtime.send("POST",route,author,doubleSource).statusCode());
                 var changed=new java.util.HashMap<>(cmd);changed.put("intervalEvidenceId",id());
                 assertEquals(409,runtime.send("POST",route,author,changed).statusCode());
+                // An exact retry alone is valid after current source eligibility changes.
+                f.sql.update("UPDATE hidra_custody_metering_system SET active=false WHERE id=?",meter);
+                JsonNode replay=runtime.json("POST",route,author,cmd,200);
+                assertTrue(replay.path("replay").asBoolean());
+                assertEquals(measurement,field(replay,"measurementId"));
                 assertEquals(1,f.sql.queryForObject(
                     "SELECT count(*) FROM hidra_custody_measurement_receipt",Integer.class));
                 assertEquals(1,f.sql.queryForObject(

@@ -174,7 +174,12 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
             String t21Reconciliations="/api/v1/custody/reconciliations/{reconciliationId}";
             String t21Tickets="/api/v1/custody/transfer-tickets/{ticketId}";
             String t21Discrepancies="/api/v1/custody/discrepancies/{discrepancyId}";
+            Class<?> t22=Class.forName("dz.sh.hidra.modules.risk.api.rest.controller.GovernedRiskAssessmentController");
             return List.of(
+                new Route(t22,t22.getDeclaredMethod("assessment",String.class),"GET",
+                    "/api/v1/risk/assessments/{id}"),
+                new Route(t22,t22.getDeclaredMethod("decisionHistory",String.class),"GET",
+                    "/api/v1/risk/assessments/{id}/decision-history"),
                 new Route(t21,t21.getDeclaredMethod("period",String.class),"GET",t21Periods),
                 new Route(t21,t21.getDeclaredMethod("reconciliations",String.class),"GET",t21Periods+"/reconciliations"),
                 new Route(t21,t21.getDeclaredMethod("reconcile",String.class,t21Reconcile),"POST",t21Periods+"/reconciliations"),

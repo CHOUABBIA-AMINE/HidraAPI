@@ -664,6 +664,30 @@
     "owner": "risk",
     "purpose": "Risk-owned residual-risk assessment; hidra_residual_risk prefix is an explicit exception."
   },
+  "public.hidra_risk_governed_approval": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261117_002__t22_risk_assessment_governance_receipts.sql",
+      "src/main/java/dz/sh/hidra/modules/risk/infrastructure/persistence/adapter/JdbcGovernedRiskAssessmentAdapter.java"
+    ],
+    "owner": "risk",
+    "purpose": "Risk-owned final unique Workflow review/approval action and Audit receipt bound to the exact immutable submission digest."
+  },
+  "public.hidra_risk_governed_scope": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261117_002__t22_risk_assessment_governance_receipts.sql",
+      "src/main/java/dz/sh/hidra/modules/risk/infrastructure/persistence/adapter/JdbcGovernedRiskAssessmentAdapter.java"
+    ],
+    "owner": "risk",
+    "purpose": "Risk-owned immutable current company/active facility enrollment for a new single-facility assessment; no backfill or foreign module persistence ownership."
+  },
+  "public.hidra_risk_governed_submission": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261117_002__t22_risk_assessment_governance_receipts.sql",
+      "src/main/java/dz/sh/hidra/modules/risk/infrastructure/persistence/adapter/JdbcGovernedRiskAssessmentAdapter.java"
+    ],
+    "owner": "risk",
+    "purpose": "Risk-owned append-only scored inherent matrix-cell provenance, copied Alarm source identity/time and deterministic submission digest."
+  },
   "public.hidra_simulation_equipment_characteristic_revision": {
     "evidence": [
       "src/main/java/dz/sh/hidra/modules/simulation/domain/model/SimulationEquipmentParameterRevision.java",

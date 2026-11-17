@@ -70,6 +70,11 @@ public class WorkflowTransitionApplicationService implements ExecuteWorkflowTran
     private final WorkflowStepAssignmentRuleRepositoryPort assignmentRuleRepository;
     private final WorkflowDecisionGuard decisionGuard = new WorkflowDecisionGuard();
     private PlanningRevisionWorkflowAuthorityContract planningAuthority;
+    private dz.sh.hidra.modules.risk.application.contract.workflow.RiskAssessmentWorkflowAuthorityContract riskAuthority;
+    @org.springframework.beans.factory.annotation.Autowired
+    public void governedRiskAuthority(dz.sh.hidra.modules.risk.application.contract.workflow.RiskAssessmentWorkflowAuthorityContract risk) {
+        this.riskAuthority=Objects.requireNonNull(risk);
+    }
     private WorkflowDefinitionRepositoryPort currentDefinitions;
 
     @org.springframework.beans.factory.annotation.Autowired
@@ -139,6 +144,11 @@ public class WorkflowTransitionApplicationService implements ExecuteWorkflowTran
     public WorkflowTransitionExecutionDto executeForPlanning(ExecuteWorkflowTransitionCommand command) {
         return executeGuarded(command, true);
     }
+    /** Only Workflow's Risk owner application adapter invokes this transactional entry. */
+    @Transactional(propagation=org.springframework.transaction.annotation.Propagation.MANDATORY)
+    public WorkflowTransitionExecutionDto executeForRisk(ExecuteWorkflowTransitionCommand command) {
+        return executeGuarded(command,false);
+    }
 
     private WorkflowTransitionExecutionDto executeGuarded(
             ExecuteWorkflowTransitionCommand command, boolean planningEntry) {
@@ -190,7 +200,17 @@ public class WorkflowTransitionApplicationService implements ExecuteWorkflowTran
 
         WorkflowTransition transition = transitionRepository.findById(command.transitionId())
                 .orElseThrow(() -> new NoSuchElementException("Unknown workflow transition: " + command.transitionId()));
+
         validateTransition(instance, task, transition, command);
+        if("risk".equals(instance.targetModule())&&riskAuthority!=null
+                &&riskAuthority.governed(instance.targetId())) {
+            riskAuthority.requireReview(instance.targetId(),actor.id());
+            if(transition.decision()==WorkflowDecision.APPROVE
+                    &&!riskAuthority.finalizationArmed(instance.targetId())
+                    &&!transitionRepository.existsFromStep(instance.definitionId(),transition.toStepId()))
+                throw new WorkflowTransitionDeniedException(
+                        "Governed Risk final approval requires the Risk owner operation.");
+        }
 
         Instant now = Instant.now();
         // Custody ticket decisions must be independent human acts even before finalization.

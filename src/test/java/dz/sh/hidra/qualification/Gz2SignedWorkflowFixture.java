@@ -323,6 +323,51 @@ class Gz2SignedWorkflowFixture {
         return new Review(definition, type, purpose, initial, transition);
     }
 
+
+    record RiskReview(String definition,String type,String purpose,String firstStep,
+                      String firstTransition,String finalTransition) { }
+
+    /** A genuine intermediate human review followed by independent final approval. */
+    RiskReview riskReview() {
+        String type=workflowType("WORKFLOW_TARGET_TYPE","RISK_ASSESSMENT");
+        String purpose=workflowType("WORKFLOW_PURPOSE","RISK_ASSESSMENT_APPROVAL");
+        String definition=id(),first=id(),middle=id(),last=id(),reviewTransition=id(),approveTransition=id();
+        sql.update("""
+            INSERT INTO hidra_workflow_definition(id,code,name_fr,type_id,status,version,created_at,updated_at)
+            VALUES (?,?,'Synthetic scoped Risk review',?,'ACTIVE',1,now(),now())
+            """,definition,definition,type);
+        sql.update("""
+            INSERT INTO hidra_workflow_definition_target_binding(id,definition_id,target_module,target_type_id,
+                workflow_purpose_id,active,created_at,updated_at)
+            VALUES (?,?,'risk',?,?,true,now(),now())
+            """,id(),definition,type,purpose);
+        for (String[] step : List.of(new String[]{first,"0"},
+                new String[]{middle,"1"},new String[]{last,"2"})) {
+            sql.update("""
+                INSERT INTO hidra_workflow_step(id,definition_id,code,name_fr,step_order,
+                    mandatory,allow_claim,allow_delegation,allow_escalation,created_at,updated_at)
+                VALUES (?,?,?,'Synthetic Risk decision',?,true,false,false,false,now(),now())
+                """,step[0],definition,step[0],Integer.parseInt(step[1]));
+        }
+        String mode=workflowType("WORKFLOW_ASSIGNMENT_MODE","DIRECT");
+        String rule=id();
+        sql.update("""
+            INSERT INTO hidra_workflow_step_assignment_rule(id,definition_id,step_id,
+                    assignment_mode_id,actor_id,active,created_at,updated_at)
+            VALUES (?,?,?,?,?,true,now(),now())
+            """,rule,definition,middle,mode,operator);
+        sql.update("UPDATE hidra_workflow_step SET default_assignment_rule_id=? WHERE id=?",rule,middle);
+        for(String[] transition:List.of(new String[]{reviewTransition,first,middle},
+                new String[]{approveTransition,middle,last})) {
+            sql.update("""
+                INSERT INTO hidra_workflow_transition(id,definition_id,from_step_id,to_step_id,
+                    decision,reason_required,comment_required,created_at,updated_at)
+                VALUES (?,?,?,?,'APPROVE',false,false,now(),now())
+                """,transition[0],definition,transition[1],transition[2]);
+        }
+        return new RiskReview(definition,type,purpose,first,reviewTransition,approveTransition);
+    }
+
     private String workflowType(String family, String code) {
         var found = sql.queryForList("SELECT id FROM hidra_workflow_type_catalog WHERE catalog_name=? AND code=? AND active=true",
                 String.class, family, code);

@@ -25,6 +25,7 @@ import dz.sh.hidra.modules.workflow.application.port.in.ExecuteWorkflowTransitio
 import dz.sh.hidra.modules.workflow.application.command.ExecuteWorkflowTransitionCommand;
 import dz.sh.hidra.modules.workflow.domain.value.*;
 import dz.sh.hidra.modules.identity.application.contract.risk.RiskActorContract;
+import dz.sh.hidra.modules.risk.application.contract.workflow.RiskAssessmentWorkflowAuthorityContract;
 import java.time.Instant;
 import java.util.Set;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,13 @@ public class RiskAssessmentApprovalService implements RiskAssessmentApprovalCont
     private final WorkflowConfigurationPort configuration;
     private final ExecuteWorkflowTransitionUseCase transitions;
     private final RiskActorContract actors;
+    private RiskAssessmentWorkflowAuthorityContract riskAuthority;
+    private WorkflowDefinitionRepositoryPort currentDefinitions;
+    @org.springframework.beans.factory.annotation.Autowired
+    public void governedRiskAuthority(RiskAssessmentWorkflowAuthorityContract authority,
+            WorkflowDefinitionRepositoryPort definitions) {
+        this.riskAuthority=authority;this.currentDefinitions=definitions;
+    }
     public RiskAssessmentApprovalService(WorkflowInstanceRepositoryPort instances,
             WorkflowTaskRepositoryPort tasks, WorkflowActionRepositoryPort actions,
             WorkflowConfigurationPort configuration, ExecuteWorkflowTransitionUseCase transitions,
@@ -54,14 +62,37 @@ public class RiskAssessmentApprovalService implements RiskAssessmentApprovalCont
         if (!"risk".equals(instance.targetModule()) || !"RISK_ASSESSMENT".equals(type.code())
                 || !request.assessmentId().equals(instance.targetId()))
             throw new IllegalArgumentException("Workflow must target the exact Risk assessment.");
+
+        boolean governed=riskAuthority!=null&&riskAuthority.governed(request.assessmentId());
+        if(governed) {
+            riskAuthority.requireReview(request.assessmentId(),actor.id());
+            var purpose=configuration.requireActiveCatalog(instance.workflowPurposeId(),"WORKFLOW_PURPOSE");
+            if(currentDefinitions==null || currentDefinitions.findById(instance.definitionId())
+                    .filter(def->def.canStartInstance() && def.version()==instance.definitionVersion()).isEmpty()
+                    ||!configuration.activeBinding(instance.definitionId(),instance.targetModule(),
+                            instance.targetTypeId(),instance.workflowPurposeId())
+                    ||purpose.code()==null ||purpose.code().isBlank())
+                throw new IllegalArgumentException("No current matching Risk workflow definition and purpose.");
+        }
         var review=actions.findById(request.reviewActionId()).orElseThrow();
         if (!instance.id().equals(task.instanceId()) || !instance.id().equals(review.instanceId())
                 || review.decision()!=WorkflowDecision.APPROVE || review.actedAt()==null
                 || review.actorDisplayNameSnapshot()==null || review.actorDisplayNameSnapshot().isBlank())
             throw new IllegalArgumentException("An actual prior configured approval action is required as review evidence.");
-        var result=transitions.execute(new ExecuteWorkflowTransitionCommand(request.taskId(), request.transitionId(),
+
+        if(governed) {
+            if(review.taskId()==null ||review.taskId().equals(task.id())
+                    ||review.actorId()==null ||review.actorId().equals(actor.id())
+                    ||review.actorId().equals(instance.startedByActorId())
+                    )
+                throw new IllegalArgumentException("Risk assessment requires actual independent prior review.");
+            riskAuthority.captureReview(request.assessmentId(),review.taskId(),review.actedAt());
+        }
+        var command=new ExecuteWorkflowTransitionCommand(request.taskId(), request.transitionId(),
                 request.expectedTaskUpdatedAt(), request.reasonId(), request.decisionNote(), request.commentText(),
-                request.correlationId(), actor.id(), actor.username(), actor.displayName(), Set.of()));
+                request.correlationId(), actor.id(), actor.username(), actor.displayName(), Set.of());
+        var result=governed && transitions instanceof WorkflowTransitionApplicationService owner
+                ? owner.executeForRisk(command) : transitions.execute(command);
         if (!task.id().equals(result.taskId()) || !instance.id().equals(result.instanceId()) || !WorkflowDecision.APPROVE.name().equals(result.decision())
                 || !WorkflowInstanceStatus.COMPLETED.name().equals(result.instanceStatus()) || result.executedAt()==null)
             throw new IllegalArgumentException("The configured final Workflow decision must approve this assessment.");

@@ -156,7 +156,7 @@ class HidraTrustedNativeProtectedRouteHttpTest {
    var resolver = org.mockito.Mockito.mock(HidraEffectivePermissionResolver.class);
    authenticated();
    var registry = new HidraTrustedNativeProtectedRouteRegistry();
-   assertEquals(111,registry.candidates().size());
+   assertEquals(113,registry.candidates().size());
    var mvc = mvc(owner, new UntrustedController(), resolver,registry);
    assertThrows(Exception.class, () ->
       mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(TRUSTED)));
@@ -165,8 +165,10 @@ class HidraTrustedNativeProtectedRouteHttpTest {
  @Test void realManufacturerTupleRegistryRejectsWrongVerbAndSiblingPattern() throws Exception {
    var registry=new HidraTrustedNativeProtectedRouteRegistry();
    var routes=registry.candidates();
-   assertEquals(111,routes.size());
+   assertEquals(113,routes.size());
    var expected=java.util.Set.of(
+     "GET /api/v1/risk/assessments/{id}",
+     "GET /api/v1/risk/assessments/{id}/decision-history",
      "POST /api/v1/planning/revisions/{revisionId}/nominations",
      "POST /api/v1/planning/nominations/{id}/disposition",
      "GET /api/v1/planning/nominations/{id}/history",
@@ -366,6 +368,9 @@ class HidraTrustedNativeProtectedRouteHttpTest {
     var t21Custody=new dz.sh.hidra.modules.custody.api.rest.controller.CustodyTransferLifecycleController(
         org.mockito.Mockito.mock(dz.sh.hidra.modules.custody.application.port.in.CustodyTransferLifecycleUseCase.class));
     owners.put(t21Custody.getClass(),t21Custody);
+    var t22Risk=new dz.sh.hidra.modules.risk.api.rest.controller.GovernedRiskAssessmentController(
+        org.mockito.Mockito.mock(dz.sh.hidra.modules.risk.application.port.in.ReadGovernedRiskAssessmentUseCase.class));
+    owners.put(t22Risk.getClass(),t22Risk);
 
 
     // The same logical operation has two distinct native-protected MVC methods, never one multi-pattern mapping.

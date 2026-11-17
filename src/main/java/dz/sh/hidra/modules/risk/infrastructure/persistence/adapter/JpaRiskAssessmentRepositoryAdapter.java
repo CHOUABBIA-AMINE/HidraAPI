@@ -33,6 +33,15 @@ import dz.sh.hidra.modules.identity.application.contract.risk.RiskActorContract;
 import dz.sh.hidra.modules.workflow.application.contract.risk.RiskAssessmentApprovalContract;
 import dz.sh.hidra.modules.audit.application.contract.risk.RiskAssessmentAuditContract;
 import jakarta.persistence.EntityManager;
+import dz.sh.hidra.modules.risk.application.port.out.GovernedRiskAssessmentPort;
+import dz.sh.hidra.modules.risk.application.contract.workflow.RiskAssessmentWorkflowAuthorityContract;
+import dz.sh.hidra.modules.identity.application.contract.risk.RiskAssessmentScopedAuthorizationContract;
+import dz.sh.hidra.modules.topology.application.contract.risk.RiskAssessmentAssetOwnershipContract;
+import dz.sh.hidra.modules.alarm.application.contract.risk.RiskAlarmEvidenceContract;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.HexFormat;
 import java.time.Instant;
 import java.util.*;
 import org.springframework.stereotype.Component;
@@ -57,6 +66,23 @@ public class JpaRiskAssessmentRepositoryAdapter implements RiskAssessmentReposit
     private final RiskAssessmentApprovalContract workflow;
     private final RiskAssessmentAuditContract audit;
     private final EntityManager entityManager;
+    private GovernedRiskAssessmentPort t22;
+    private RiskAssessmentScopedAuthorizationContract t22Rights;
+    private RiskAssessmentAssetOwnershipContract t22Topology;
+    private RiskAlarmEvidenceContract t22Alarms;
+    private RiskAssessmentWorkflowAuthorityContract t22Workflow;
+    @org.springframework.beans.factory.annotation.Autowired
+    public void configureGovernedRisk(GovernedRiskAssessmentPort records,
+            RiskAssessmentScopedAuthorizationContract rights,
+            RiskAssessmentAssetOwnershipContract topology,
+            RiskAlarmEvidenceContract alarms,
+            RiskAssessmentWorkflowAuthorityContract workflowAuthority) {
+        this.t22=Objects.requireNonNull(records);
+        this.t22Rights=Objects.requireNonNull(rights);
+        this.t22Topology=Objects.requireNonNull(topology);
+        this.t22Alarms=Objects.requireNonNull(alarms);
+        this.t22Workflow=Objects.requireNonNull(workflowAuthority);
+    }
 
     public JpaRiskAssessmentRepositoryAdapter(RiskAssessmentJpaRepository repository,
             RiskAssessmentScopeJpaRepository scopes, RiskAssessmentScoringJpaRepository scoring,
@@ -73,6 +99,26 @@ public class JpaRiskAssessmentRepositoryAdapter implements RiskAssessmentReposit
     }
     private static void require(boolean condition, String message) {
         if (!condition) throw new InvalidRiskValueException(message);
+    }
+    private GovernedRiskAssessmentPort.Scope t22Scope(String id,String permission) {
+        if(t22==null) return null; // Synthetic direct construction; Spring wiring installs T22.
+        var scope=t22.scope(id).orElse(null);
+        if(scope!=null) {
+            var facility=t22Topology.currentFacility(scope.facilityId()).orElseThrow(
+                    ()->new NoSuchElementException("Protected Risk resource unavailable."));
+            if(!facility.companyPartyId().equals(scope.companyPartyId()))
+                throw new NoSuchElementException("Protected Risk resource unavailable.");
+            t22Rights.require(permission,scope.companyPartyId(),scope.facilityId());
+        }
+        return scope;
+    }
+    private static String t22Digest(String... values) {
+        try {
+            byte[] data=String.join("\u001f",values).getBytes(StandardCharsets.UTF_8);
+            return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(data));
+        } catch(NoSuchAlgorithmException unavailable) {
+            throw new IllegalStateException("SHA-256 unavailable.",unavailable);
+        }
     }
     private RiskAssessment locked(String id) {
         return repository.findLocked(id).map(RiskPersistenceMapper::toDomain).orElseThrow();
@@ -130,10 +176,26 @@ public class JpaRiskAssessmentRepositoryAdapter implements RiskAssessmentReposit
         require(a.assessedByActorId()==null || Objects.equals(actor.id(),a.assessedByActorId()),"Assessor must match authenticated actor.");
         var created=assessed(a,actor);
         catalogs(created,null);
+        boolean admit=inputs.size()==1 && inputs.getFirst()!=null
+                && "FACILITY".equalsIgnoreCase(inputs.getFirst().scopeType())
+                && inputs.getFirst().included();
+        RiskAssessmentAssetOwnershipContract.Facility current=null;
+        if(admit) {
+            require(t22!=null,"T22 Risk admission is not configured.");
+            String facility=inputs.getFirst().scopeId();
+            current=t22Topology.currentFacility(facility).orElseThrow(
+                    ()->new NoSuchElementException("Protected Risk facility unavailable."));
+            t22Rights.require("risk:assessments:author",current.companyPartyId(),facility);
+        }
         var children=inputs.stream().map(i -> scope(created.id(),i,created.createdAt())).toList();
         entityManager.persist(RiskPersistenceMapper.toEntity(created));
         for (var child:children) entityManager.persist(child);
         entityManager.flush();
+        if(admit) {
+            t22.enroll(new GovernedRiskAssessmentPort.Scope(created.id(),
+                    current.companyPartyId(),current.id()));
+            entityManager.flush();
+        }
         return created;
     }
     @Override public RiskAssessment save(RiskAssessment a) {
@@ -177,6 +239,10 @@ public class JpaRiskAssessmentRepositoryAdapter implements RiskAssessmentReposit
     @Override public RiskAssessment score(ScoreRiskAssessmentCommand command) {
         actors.currentActor(Instant.now());
         var a=locked(command.assessmentId()); editable(a);
+        if(t22Scope(a.id(),"risk:assessments:author")!=null)
+            require(a.status()==RiskAssessmentStatus.DRAFT && command.residualCellId()==null
+                    && command.residualContextId()==null && command.residualContextType()==null,
+                    "T22 supports inherent matrix-cell scoring only while DRAFT.");
         require(a.status()==RiskAssessmentStatus.DRAFT || a.status()==RiskAssessmentStatus.UNDER_REVIEW,"Assessment is not open for scoring.");
         var inherent=selected(command.inherentCellId());
         var residual=command.residualCellId()==null?null:selected(command.residualCellId());
@@ -192,18 +258,56 @@ public class JpaRiskAssessmentRepositoryAdapter implements RiskAssessmentReposit
     }
     @Override public RiskAssessment submit(String id) {
         actors.currentActor(Instant.now());
+
         var a=locked(id); require(a.status()==RiskAssessmentStatus.DRAFT,"Only DRAFT assessment can be submitted.");
+        var scope=t22Scope(id,"risk:assessments:author");
         validateScopes(a); catalogs(a,a);
+        if(scope!=null) {
+            require(a.inherentScore()!=null && a.inherentRatingId()!=null
+                    && a.residualScore()==null,"T22 submission requires inherent-only scoring.");
+            validateScoring(a);
+            var provenance=scoring.findById(id).orElseThrow();
+            var links=evidence.findByRiskAssessmentId(id);
+            require(links.size()==1 && "alarm".equals(links.getFirst().evidenceModule())
+                    && "Alarm".equals(links.getFirst().evidenceType()),
+                    "T22 submission requires exactly one Alarm source.");
+            var alarm=t22Alarms.resolve(links.getFirst().evidenceId(),
+                    scope.companyPartyId(),scope.facilityId()).orElseThrow(
+                            ()->new NoSuchElementException("Risk source evidence unavailable."));
+            Instant now=Instant.now();
+            String score=a.inherentScore().stripTrailingZeros().toPlainString();
+            String digest=t22Digest("GZ2-RISK-SNAPSHOT-v1",id,
+                    scope.companyPartyId(),scope.facilityId(),a.assessedByActorId(),
+                    provenance.inherentCellId(),provenance.inherentMatrixId(),
+                    provenance.inherentMatrixVersion(),score,a.inherentRatingId(),
+                    alarm.id(),alarm.alarmNumber(),alarm.raisedAt().toString());
+            t22.freeze(new GovernedRiskAssessmentPort.Submission(id,
+                    provenance.inherentCellId(),provenance.inherentMatrixId(),
+                    provenance.inherentMatrixVersion(),a.inherentScore(),
+                    a.inherentRatingId(),alarm.id(),alarm.alarmNumber(),
+                    alarm.raisedAt(),"GZ2-RISK-SNAPSHOT-v1",digest,now));
+        }
         return persist(submitted(a));
     }
     @Override public RiskAssessment approve(ApproveRiskAssessmentCommand command) {
         var actor=actors.currentActor(Instant.now());
         var a=locked(command.assessmentId());
+        var scope=t22Scope(a.id(),"risk:assessments:review");
         require(a.status()==RiskAssessmentStatus.UNDER_REVIEW,"Only submitted assessment can be approved.");
         validateScopes(a); catalogs(a,a);
+        if(scope!=null) {
+            require(t22Workflow!=null && t22.submission(a.id()).isPresent(),
+                    "Governed Risk submitted snapshot missing.");
+            require(!actor.id().equals(a.assessedByActorId()),"Assessor cannot approve Risk.");
+            return t22Workflow.withFinalization(a.id(),()->finishApproval(command,a,actor,true));
+        }
+        return finishApproval(command,a,actor,false);
+    }
+    private RiskAssessment finishApproval(ApproveRiskAssessmentCommand command,RiskAssessment a,
+            RiskActorContract.Actor actor,boolean governed) {
         var links=evidence.findByRiskAssessmentId(a.id());
         require(!links.isEmpty(),"Assessment must have owner-validated evidence before approval.");
-        for (var link:links) evidenceLookup.validate(RiskPersistenceMapper.toDomain(link));
+        if(!governed)for(var link:links) evidenceLookup.validate(RiskPersistenceMapper.toDomain(link));
         validateScoring(a);
         var decision=workflow.approve(new RiskAssessmentApprovalContract.Request(a.id(),command.workflowInstanceId(),
                 command.taskId(),command.transitionId(),command.reviewActionId(),command.expectedTaskUpdatedAt(),
@@ -212,6 +316,18 @@ public class JpaRiskAssessmentRepositoryAdapter implements RiskAssessmentReposit
         String receipt=audit.appendApproved(new RiskAssessmentAuditContract.ApprovalEvidence(a.id(),a.assessmentNumber(),
                 decision.approverId(),decision.approverUsername(),decision.approverDisplayName(),decision.reviewerId(),
                 decision.instanceId(),decision.taskId(),decision.actionId(),decision.reviewActionId(),decision.approvedAt()));
+        if(governed) {
+            var snapshot=t22.submission(a.id()).orElseThrow();
+            var reviewed=t22Workflow.reviewEvidence(a.id());
+            require(!decision.reviewerId().equals(decision.approverId())
+                    &&!decision.reviewerId().equals(a.assessedByActorId())
+                    &&!decision.approverId().equals(a.assessedByActorId()),
+                    "T22 needs three independent actors.");
+            t22.finalizeApproved(new GovernedRiskAssessmentPort.Receipt(a.id(),decision.instanceId(),
+                    reviewed.taskId(),decision.reviewActionId(),decision.reviewerId(),
+                    reviewed.actedAt(),decision.taskId(),decision.actionId(),decision.approverId(),
+                    decision.approvedAt(),receipt,snapshot.digest()));
+        }
         return persist(approved(a,decision,receipt));
     }
     private void validateScoring(RiskAssessment a) {

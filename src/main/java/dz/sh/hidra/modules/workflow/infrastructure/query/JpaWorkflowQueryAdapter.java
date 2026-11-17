@@ -45,7 +45,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
-@Transactional(readOnly = true)
+// Scoped Risk reads require current PostgreSQL native grant and Topology row fences;
+// PostgreSQL read-only transactions cannot acquire the required PESSIMISTIC_READ locks.
+@Transactional
 public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase, ManufacturerWorkflowFencePort {
 
     private static final String ALL_PERMISSIONS = "*";
@@ -330,7 +332,10 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase, Manufactur
                     || ("simulation".equals(instance.targetModule())
                         && "MANUFACTURER_CHARACTERISTIC_REVISION".equals(catalog.code()))
                     || ("planning".equals(instance.targetModule())
-                        && "PLAN_REVISION".equals(catalog.code())));
+                        && "PLAN_REVISION".equals(catalog.code()))
+                    || ("risk".equals(instance.targetModule())
+                        && "RISK_ASSESSMENT".equals(catalog.code())
+                        && t22Risk!=null && t22Risk.governed(instance.targetId())));
         var scope = new WorkflowFoundationReadAuthorizationPort.Scope(instance.id(),
                 instance.startedByActorId(), instance.targetModule(), instance.targetTypeId(),
                 instance.targetId(), instance.targetCodeSnapshot(), ownerReadAdmitted);
@@ -357,7 +362,23 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase, Manufactur
         requireProtectedRead(instance, access);
     }
 
+    private dz.sh.hidra.modules.risk.application.contract.workflow.RiskAssessmentWorkflowAuthorityContract t22Risk;
+    @org.springframework.beans.factory.annotation.Autowired
+    public void governedRiskRead(dz.sh.hidra.modules.risk.application.contract.workflow.RiskAssessmentWorkflowAuthorityContract authority) {
+        this.t22Risk=java.util.Objects.requireNonNull(authority);
+    }
     private void requireProtectedRead(WorkflowInstanceJpaEntity instance, WorkflowOwnedTargetLookup.ProtectedRead access) {
+        if("risk".equals(instance.targetModule()) && t22Risk!=null
+                &&t22Risk.governed(instance.targetId())) {
+            WorkflowCatalogEntryJpaEntity kind=entityManager.find(
+                    WorkflowCatalogEntryJpaEntity.class,instance.targetTypeId());
+            if(kind==null ||!"WORKFLOW_TARGET_TYPE".equals(kind.catalogName())
+                    ||!kind.active() ||!"RISK_ASSESSMENT".equals(kind.code()))
+                throw new NoSuchElementException("Workflow target unavailable.");
+            try { t22Risk.requireProtectedRead(instance.targetId()); }
+            catch(RuntimeException denied){throw new NoSuchElementException("Workflow target unavailable.");}
+            return;
+        }
         boolean topology="topology".equals(instance.targetModule());
         boolean simulation="simulation".equals(instance.targetModule());
         boolean planning="planning".equals(instance.targetModule());

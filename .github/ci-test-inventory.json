@@ -52,7 +52,7 @@
       "lane": "unit-architecture",
       "owner": "architecture",
       "path": "src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java",
-      "source_sha256": "710afef37d0ac63b9ee121ff8520b90aaf2bd6183a2fe5f1a020fc0d03dc5594",
+      "source_sha256": "dea5ea268f8d7dec722a04076749a13606a231544b8bbdc48ad338ef6fb6c7f3",
       "supports": []
     },
     {
@@ -11846,7 +11846,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java",
-      "source_sha256": "5ef18a271652f828b050fe93f20d8884ae1dd7d444c71319d1d35bd2c712f382",
+      "source_sha256": "45d0a7720117817c453eae4509d8872ca83b64ec6cac4fb0c996e00ea5f83a73",
       "supports": []
     },
     {
@@ -11875,7 +11875,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistryTest.java",
-      "source_sha256": "4913c56e6306d4eeabfb2bb78391eff03273185e21c57cc45fe7ee5a1e39acd8",
+      "source_sha256": "bb1049a0236a6c8216b9a55cb7dd63580207827800afe02529ea87c34fd78bf4",
       "supports": []
     },
     {
@@ -11895,7 +11895,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteStartupValidatorTest.java",
-      "source_sha256": "176672941ca728bc74814baa7521bc29690d5ea5b0763ee1531670ae067e2f14",
+      "source_sha256": "47b956918b0966ba0101817fad324680745a1735c718d78aad9a670215b71578",
       "supports": []
     },
     {
@@ -12248,6 +12248,20 @@
       "owner": "qualification",
       "path": "src/test/java/dz/sh/hidra/qualification/Gz2SignedWorkflowNativeHttpPostgresIntegrationTest.java",
       "source_sha256": "1e153683c338e5b9f20029d6ca4faa889a6525d97138ac2cf5d4d61274650f6a",
+      "supports": []
+    },
+    {
+      "baseline_seconds": 0,
+      "cases": [
+        "approvesScopedRiskAndReadsImmutableDecisionHistory"
+      ],
+      "class": "dz.sh.hidra.qualification.Gz2RiskAssessmentGovernanceNativeHttpPostgresIntegrationTest",
+      "dependency_reason": "T22 signed native GZ2 Risk company/facility/Alarm provenance, independent Workflow review and owner approval, immutable PostgreSQL projection, and denied reads.",
+      "fast": false,
+      "lane": "postgres-integration",
+      "owner": "qualification",
+      "path": "src/test/java/dz/sh/hidra/qualification/Gz2RiskAssessmentGovernanceNativeHttpPostgresIntegrationTest.java",
+      "source_sha256": "7547e90f21fd1c758545505b5312f647a5f87eec2af5df843302a25d8b438cf5",
       "supports": []
     }
   ],
@@ -14429,7 +14443,7 @@
     {
       "class": "dz.sh.hidra.qualification.Gz2SignedWorkflowFixture",
       "path": "src/test/java/dz/sh/hidra/qualification/Gz2SignedWorkflowFixture.java",
-      "source_sha256": "30ca171443ad0edd9d0ff951c1670151016fe31dff578a4872f3c8f6f7a0190e",
+      "source_sha256": "4df7a31c27571cb13c95def8d3a65e751cd0fbbd05f9553c7835cf904e4e7f6c",
       "supports": []
     },
     {

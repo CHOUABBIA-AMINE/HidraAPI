@@ -47,6 +47,11 @@ import dz.sh.hidra.modules.risk.domain.value.RiskRegisterStatus;
 
 import java.time.Instant;
 import java.util.Objects;
+import dz.sh.hidra.modules.risk.application.port.out.GovernedRiskAssessmentPort;
+import dz.sh.hidra.modules.identity.application.contract.risk.RiskAssessmentScopedAuthorizationContract;
+import dz.sh.hidra.modules.topology.application.contract.risk.RiskAssessmentAssetOwnershipContract;
+import dz.sh.hidra.modules.alarm.application.contract.risk.RiskAlarmEvidenceContract;
+import java.util.NoSuchElementException;
 
 /**
  * Application service for risk register and assessment workflows.
@@ -61,6 +66,19 @@ public class RiskApplicationService implements CreateRiskRegisterUseCase, Create
     private final RiskTopologyScopeReferenceContract topologyScopeReferenceContract;
     private final RiskRegisterAuditContract auditContract;
     private final dz.sh.hidra.modules.risk.application.port.out.RiskEvidenceLookupPort evidenceLookup;
+    private GovernedRiskAssessmentPort t22;
+    private RiskAssessmentScopedAuthorizationContract t22Rights;
+    private RiskAssessmentAssetOwnershipContract t22Owners;
+    private RiskAlarmEvidenceContract t22Alarms;
+    @org.springframework.beans.factory.annotation.Autowired
+    public void configureRiskEvidenceAuthority(GovernedRiskAssessmentPort records,
+            RiskAssessmentScopedAuthorizationContract rights,
+            RiskAssessmentAssetOwnershipContract owners,RiskAlarmEvidenceContract alarms) {
+        this.t22=Objects.requireNonNull(records);
+        this.t22Rights=Objects.requireNonNull(rights);
+        this.t22Owners=Objects.requireNonNull(owners);
+        this.t22Alarms=Objects.requireNonNull(alarms);
+    }
 
     public RiskApplicationService(RiskRegisterRepositoryPort registers,
             RiskAssessmentRepositoryPort assessments, RiskEvidenceLinkRepositoryPort evidence,
@@ -227,8 +245,26 @@ public class RiskApplicationService implements CreateRiskRegisterUseCase, Create
     }
 
     @Override
+    @Transactional
     public String addRiskEvidence(AddRiskEvidenceCommand command) {
         Objects.requireNonNull(command, "Add risk evidence command must not be null.");
+        if(t22!=null) {
+            var enrolled=t22.scope(command.riskAssessmentId()).orElse(null);
+            if(enrolled!=null) {
+                var source=t22Owners.currentFacility(enrolled.facilityId()).orElseThrow(
+                        ()->new NoSuchElementException("Protected Risk resource unavailable."));
+                if(!source.companyPartyId().equals(enrolled.companyPartyId()))
+                    throw new NoSuchElementException("Protected Risk resource unavailable.");
+                t22Rights.require("risk:assessments:author",
+                        enrolled.companyPartyId(),enrolled.facilityId());
+                var parent=assessmentRepositoryPort.findById(command.riskAssessmentId()).orElseThrow();
+                if(parent.status()!=RiskAssessmentStatus.DRAFT || !"alarm".equals(command.evidenceModule())
+                        || !"Alarm".equals(command.evidenceType())
+                        ||t22Alarms.resolve(command.evidenceId(),enrolled.companyPartyId(),
+                                enrolled.facilityId()).isEmpty())
+                    throw new NoSuchElementException("Governed Risk evidence unavailable.");
+            }
+        }
         RiskEvidenceLink evidence = new RiskEvidenceLink(
                 RiskId.newId().value(),
                 command.riskAssessmentId(),

@@ -39,6 +39,7 @@
         "t10TransactionalOwnerServicesStayProxyable",
         "t14OwnerExportsAreExactAndExcludeSiblings",
         "t18CrossOwnerCapabilitiesDoNotBecomeGeneralExports",
+        "t21CustodyLifecycleTransactionalComponentsRemainSpringProxyable",
         "telemetryNativeAuthorizationContractsRemainExactAndOwnerPrivate",
         "transactionalOrganizationResponsibilityServicesMustRemainProxyable",
         "transitionalCrossModuleAllowlistMustRemainExactAndInUse",
@@ -50,7 +51,7 @@
       "lane": "unit-architecture",
       "owner": "architecture",
       "path": "src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java",
-      "source_sha256": "925049c47354ef199ffa6b689af2ae68e4eabbd6269e3a07aeb2c40eb390f2bc",
+      "source_sha256": "89ed1fc4529753dc97138a0c72994803c44a3c8e7c460dd44ae369ed0e643e47",
       "supports": []
     },
     {

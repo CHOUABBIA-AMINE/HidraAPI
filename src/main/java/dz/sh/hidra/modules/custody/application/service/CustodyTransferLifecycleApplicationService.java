@@ -33,7 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public final class CustodyTransferLifecycleApplicationService implements CustodyTransferLifecycleUseCase {
+public class CustodyTransferLifecycleApplicationService implements CustodyTransferLifecycleUseCase {
     private static final String PERIOD_READ="custody:periods:read";
     private static final String RECON_READ="custody:reconciliations:read";
     private static final String RECON_WRITE="custody:reconciliations:reconcile";

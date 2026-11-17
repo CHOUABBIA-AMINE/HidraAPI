@@ -27,7 +27,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.*;
 @Repository
-public final class JdbcCustodyTransferLifecycleAdapter implements CustodyTransferLifecyclePort,WorkflowOwnedTargetLookup {
+public class JdbcCustodyTransferLifecycleAdapter implements CustodyTransferLifecyclePort,WorkflowOwnedTargetLookup {
     private final JdbcTemplate jdbc;
     private final CustodyMeasurementScopedAuthorizationContract identity;
     private final CustodyMeasurementAssetOwnershipContract ownership;

@@ -21,7 +21,7 @@ import java.util.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.*;
 @Service
-public final class CustodyTransferTicketApprovalEvidenceQueryService implements CustodyTransferTicketApprovalEvidenceContract {
+public class CustodyTransferTicketApprovalEvidenceQueryService implements CustodyTransferTicketApprovalEvidenceContract {
     private final WorkflowInstanceRepositoryPort instances;
     private final WorkflowTaskRepositoryPort tasks;
     private final WorkflowActionRepositoryPort actions;

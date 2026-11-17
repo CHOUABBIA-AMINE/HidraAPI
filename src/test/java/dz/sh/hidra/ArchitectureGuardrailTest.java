@@ -936,6 +936,17 @@ class ArchitectureGuardrailTest {
                 .stream().anyMatch(exported->target.equals(exported)||target.startsWith(exported+"$"));
     }
 
+    @Test void t21CustodyLifecycleTransactionalComponentsRemainSpringProxyable() throws ClassNotFoundException {
+        for(String component: java.util.List.of(
+                "dz.sh.hidra.modules.custody.application.service.CustodyTransferLifecycleApplicationService",
+                "dz.sh.hidra.modules.custody.infrastructure.persistence.adapter.JdbcCustodyTransferLifecycleAdapter",
+                "dz.sh.hidra.modules.workflow.application.service.CustodyTransferTicketApprovalEvidenceQueryService")) {
+            Class<?> type=Class.forName(component);
+            assertFalse(java.lang.reflect.Modifier.isFinal(type.getModifiers()),
+                    ()->"T21 transactional component cannot be proxied: "+component);
+        }
+    }
+
     @Test void t10TransactionalOwnerServicesStayProxyable() throws ClassNotFoundException {
         for(String component: java.util.List.of(
                 "dz.sh.hidra.modules.identity.application.service.MonitoringRuleScopedAuthorizationQueryService",

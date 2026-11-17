@@ -2235,3 +2235,30 @@ T23 remains **IN PROGRESS / CI-FAILED** until the corrected exact-SHA
 PostgreSQL, signed HTTP, runtime OpenAPI and physical dictionary evidence pass.
 Any generated OpenAPI or dictionary reconciliation remains the separately
 registered T23 documentation scope. Do not advance to T24.
+
+### T23 CI #1282 shard 11 and canonical-contract follow-up — 2026-11-17
+
+Repair commit `af732e39f5baaae1d42f0fe7786b5f3b46da06d9` passed static,
+Java 21 unit/architecture and PostgreSQL shards 0–10, 12 and 13.
+[CI #1282](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44105745202)
+failed shard 11 at the T23 signed HTTP fixture before execution: T23's synthetic
+`ABSOLUTE_DEVIATION` definition reused the valid T11 Telemetry unit ID
+`gz2-pressure`, but the pre-existing HRA-111 Analytics foreign key requires
+that identifier also exist in `hidra_analytics_catalog_entry`. The bounded
+test-only repair explicitly provisions that same synthetic ID in the Analytics
+`UNIT` catalog before inserting the definition; it preserves the production
+Analytics/Telemetry ownership boundary and all constraints. The changed test
+fingerprint in the strict CI inventory is refreshed.
+
+CI #1282 generated runtime OpenAPI and PostgreSQL 16 physical dictionary evidence
+successfully and passed backward compatibility. Its API/dictionary lane failed
+strict canonical OpenAPI snapshot equality against the older T22 snapshot;
+dictionary strict comparison was skipped. This is **not** a dictionary-validation
+pass. The exact generated runtime artifacts from CI #1282 require the separately
+registered documentation reconciliation
+`docs(analytics): reconcile T23 generated contracts and physical dictionary`,
+with verified artifact provenance and both equality gates retained.
+
+T23 remains **IN PROGRESS / CI-FAILED** pending signed shard 11, generated
+contract/dictionary reconciliation and exact-SHA Full Verification Gate.
+T24 remains unselected.

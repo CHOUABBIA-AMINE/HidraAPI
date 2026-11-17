@@ -54,6 +54,13 @@ class Gz2DeviationMetricNativeHttpPostgresIntegrationTest {
                     (id,code,name_fr,owner_module,active,created_at,updated_at)
                 VALUES (?,?,'Analyse synthétique GZ2','analytics',true,now(),now())
                 """,subject,"T23-"+subject);
+        // T11 uses an existing Telemetry unit. The separate Analytics catalog
+        // must own the same synthetic identifier for its HRA-111 unit FK.
+        f.sql.update("""
+                INSERT INTO hidra_analytics_catalog_entry
+                    (id,catalog_name,code,active,sort_order,system_defined,created_at,updated_at)
+                VALUES (?,'UNIT','GZ2_PRESSURE',true,0,false,now(),now())
+                """,f.pressureUnit);
         f.sql.update("""
                 INSERT INTO hidra_analytics_metric_definition
                   (id,code,name_fr,subject_area_id,metric_type,formula_expression,unit_id,

@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `001857cc2f2fb485d68052dcf2ee2662b7d0e050`
+Captured source SHA: `8a94105f8493454600ff40772c28d725dc665257`
 PostgreSQL server: `16.16 (Debian 16.16-1.pgdg13+1)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `61a71888c72c0ddb6bb34547b7e79e6ee04e00b8da0244a61b2ce4c1bd46dfcc`.
-Migrations: 220; JPA mappings: 471; catalog relations: 591; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `a7f733f2c32c6a113bcf14cb74ea570ca6c38e396c3dcf306e1382d98341a6b8`.
+Migrations: 221; JPA mappings: 471; catalog relations: 594; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -11281,6 +11281,7 @@ Persisted PermissionJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261115_003__t18_integrity_maintenance_handoff.sql](../../src/main/resources/db/migration/V20261115_003__t18_integrity_maintenance_handoff.sql)
 - Migration mention (not inferred introduction): [V20261115_005__t20_qualified_custody_measurement_capture.sql](../../src/main/resources/db/migration/V20261115_005__t20_qualified_custody_measurement_capture.sql)
 - Migration mention (not inferred introduction): [V20261117_001__t21_custody_transfer_lifecycle.sql](../../src/main/resources/db/migration/V20261117_001__t21_custody_transfer_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261117_002__t22_risk_assessment_governance_receipts.sql](../../src/main/resources/db/migration/V20261117_002__t22_risk_assessment_governance_receipts.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -25104,6 +25105,7 @@ Persisted RiskAssessmentJpaEntity state; semantic authority remains with risk.
 - Migration mention (not inferred introduction): [V20260611_011__create_risk_tables.sql](../../src/main/resources/db/migration/V20260611_011__create_risk_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261008_005__hmr_058_risk_assessment_governance.sql](../../src/main/resources/db/migration/V20261008_005__hmr_058_risk_assessment_governance.sql)
+- Migration mention (not inferred introduction): [V20261117_002__t22_risk_assessment_governance_receipts.sql](../../src/main/resources/db/migration/V20261117_002__t22_risk_assessment_governance_receipts.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -25227,6 +25229,9 @@ Persisted RiskAssessmentJpaEntity state; semantic authority remains with risk.
 - `tr_risk_assessment_truncate`: CREATE TRIGGER tr_risk_assessment_truncate BEFORE TRUNCATE ON hidra_risk_assessment FOR EACH STATEMENT EXECUTE FUNCTION hidra_risk_assessment_truncate_guard()
   - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_risk_assessment_truncate_guard()"}
   - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_risk_assessment_truncate_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    IF EXISTS(SELECT 1 FROM hidra_risk_assessment WHERE status IN ('APPROVED','ACTIVE'))<br>        OR (TG_TABLE_NAME IN ('hidra_risk_assessment_scope','hidra_risk_assessment_scoring')<br>            AND EXISTS(SELECT 1 FROM hidra_risk_assessment))<br>    THEN RAISE EXCEPTION 'TRUNCATE would destroy governed Risk aggregate evidence'; END IF;<br>    RETURN NULL;<br>END $function$<br>
+- `tr_risk_governed_parent_guard`: CREATE TRIGGER tr_risk_governed_parent_guard BEFORE DELETE OR UPDATE ON hidra_risk_assessment FOR EACH ROW EXECUTE FUNCTION hidra_risk_governed_parent_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_risk_governed_parent_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_risk_governed_parent_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>DECLARE frozen hidra_risk_governed_submission%ROWTYPE;<br>receipt hidra_risk_governed_approval%ROWTYPE;<br>BEGIN<br>    IF TG_OP = 'DELETE' THEN RETURN OLD; END IF;<br>    IF EXISTS (SELECT 1 FROM hidra_risk_governed_scope WHERE assessment_id=NEW.id) THEN<br>        IF TG_OP = 'UPDATE' AND OLD.status IN ('UNDER_REVIEW','APPROVED','ACTIVE') AND NEW IS DISTINCT FROM OLD THEN<br>            IF NOT (OLD.status='UNDER_REVIEW' AND NEW.status='APPROVED') THEN<br>                RAISE EXCEPTION 'T22 submitted assessment is immutable';<br>            END IF;<br>        END IF;<br>        IF NEW.status IN ('UNDER_REVIEW','APPROVED','ACTIVE') THEN<br>            SELECT * INTO frozen FROM hidra_risk_governed_submission WHERE assessment_id=NEW.id;<br>            IF NOT FOUND OR NEW.inherent_score IS DISTINCT FROM frozen.inherent_score<br>                    OR NEW.inherent_rating_id IS DISTINCT FROM frozen.inherent_rating_id<br>                    OR NEW.residual_score IS NOT NULL OR NEW.residual_rating_id IS NOT NULL<br>                    OR NEW.assessed_by_actor_id IS NULL THEN<br>                RAISE EXCEPTION 'T22 governed status requires frozen inherent score and evidence';<br>            END IF;<br>        END IF;<br>        IF NEW.status IN ('APPROVED','ACTIVE') THEN<br>            SELECT * INTO receipt FROM hidra_risk_governed_approval WHERE assessment_id=NEW.id;<br>            IF NOT FOUND OR NEW.workflow_reference_id IS DISTINCT FROM receipt.workflow_instance_id<br>                    OR NEW.audit_reference_id IS DISTINCT FROM receipt.audit_receipt_id<br>                    OR NEW.approved_by_actor_id IS DISTINCT FROM receipt.approver_id<br>                    OR NEW.reviewed_by_actor_id IS DISTINCT FROM receipt.reviewer_id<br>                    OR receipt.submission_digest IS DISTINCT FROM frozen.digest<br>                    OR NEW.assessed_by_actor_id IN (receipt.reviewer_id,receipt.approver_id) THEN<br>                RAISE EXCEPTION 'T22 approval requires matching independent immutable receipt';<br>            END IF;<br>        END IF;<br>    END IF;<br>    RETURN NEW;<br>END $function$<br>
 
 ### public.hidra_risk_assessment_scope
 
@@ -25238,6 +25243,7 @@ Persisted RiskAssessmentScopeJpaEntity state; semantic authority remains with ri
 - Migration mention (not inferred introduction): [V20260611_011__create_risk_tables.sql](../../src/main/resources/db/migration/V20260611_011__create_risk_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261008_005__hmr_058_risk_assessment_governance.sql](../../src/main/resources/db/migration/V20261008_005__hmr_058_risk_assessment_governance.sql)
+- Migration mention (not inferred introduction): [V20261117_002__t22_risk_assessment_governance_receipts.sql](../../src/main/resources/db/migration/V20261117_002__t22_risk_assessment_governance_receipts.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -25280,6 +25286,9 @@ Persisted RiskAssessmentScopeJpaEntity state; semantic authority remains with ri
 
 #### Triggers
 
+- `tr_risk_governed_scope_freeze`: CREATE TRIGGER tr_risk_governed_scope_freeze BEFORE INSERT OR DELETE OR UPDATE ON hidra_risk_assessment_scope FOR EACH ROW EXECUTE FUNCTION hidra_risk_governed_child_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_risk_governed_child_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_risk_governed_child_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>DECLARE parent_id varchar(80);<br>BEGIN<br>    parent_id=COALESCE(to_jsonb(NEW)-&gt;&gt;'risk_assessment_id',to_jsonb(NEW)-&gt;&gt;'assessment_id',<br>                       to_jsonb(OLD)-&gt;&gt;'risk_assessment_id',to_jsonb(OLD)-&gt;&gt;'assessment_id');<br>    IF EXISTS (SELECT 1 FROM hidra_risk_governed_submission WHERE assessment_id=parent_id) THEN<br>        RAISE EXCEPTION 'T22 submitted evidence and scoring associations are immutable';<br>    END IF;<br>    IF TG_OP='DELETE' THEN RETURN OLD; END IF;<br>    RETURN NEW;<br>END $function$<br>
 - `tr_risk_scope_complete`: CREATE CONSTRAINT TRIGGER tr_risk_scope_complete AFTER INSERT OR DELETE OR UPDATE ON hidra_risk_assessment_scope DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION hidra_risk_assessment_complete()
   - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_risk_assessment_complete()"}
   - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_risk_assessment_complete()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>DECLARE old_parent text; new_parent text; pid text; a hidra_risk_assessment%ROWTYPE;<br>    provenance hidra_risk_assessment_scoring%ROWTYPE; cell hidra_risk_matrix_cell%ROWTYPE; version text;<br>BEGIN<br>    IF TG_OP&lt;&gt;'INSERT' THEN old_parent=COALESCE(to_jsonb(OLD)-&gt;&gt;'risk_assessment_id',to_jsonb(OLD)-&gt;&gt;'assessment_id',to_jsonb(OLD)-&gt;&gt;'id'); END IF;<br>    IF TG_OP&lt;&gt;'DELETE' THEN new_parent=COALESCE(to_jsonb(NEW)-&gt;&gt;'risk_assessment_id',to_jsonb(NEW)-&gt;&gt;'assessment_id',to_jsonb(NEW)-&gt;&gt;'id'); END IF;<br>    FOR pid IN SELECT DISTINCT p FROM unnest(ARRAY[old_parent,new_parent]) p WHERE p IS NOT NULL ORDER BY p LOOP<br>        SELECT * INTO a FROM hidra_risk_assessment WHERE id=pid FOR UPDATE;<br>        IF NOT FOUND THEN CONTINUE; END IF;<br>        IF NOT EXISTS(SELECT 1 FROM hidra_risk_assessment_scope WHERE risk_assessment_id=pid) THEN<br>            RAISE EXCEPTION 'Assessment requires at least one scope at commit'; END IF;<br>        SELECT * INTO provenance FROM hidra_risk_assessment_scoring WHERE assessment_id=pid;<br>        IF NOT FOUND THEN<br>            IF a.inherent_likelihood_id IS NOT NULL OR a.inherent_consequence_id IS NOT NULL OR a.inherent_score IS NOT NULL<br>                OR a.inherent_rating_id IS NOT NULL OR a.residual_likelihood_id IS NOT NULL<br>                OR a.residual_consequence_id IS NOT NULL OR a.residual_score IS NOT NULL OR a.residual_rating_id IS NOT NULL<br>            THEN RAISE EXCEPTION 'Scoring requires explicit matrix-cell provenance'; END IF;<br>            CONTINUE;<br>        END IF;<br>        SELECT * INTO cell FROM hidra_risk_matrix_cell WHERE id=provenance.inherent_cell_id FOR SHARE;<br>        SELECT m.version INTO version FROM hidra_risk_matrix m WHERE id=provenance.inherent_matrix_id FOR SHARE;<br>        IF cell.risk_matrix_id IS DISTINCT FROM provenance.inherent_matrix_id OR version IS DISTINCT FROM provenance.inherent_matrix_version<br>            OR a.inherent_likelihood_id IS DISTINCT FROM cell.likelihood_level_id<br>            OR a.inherent_consequence_id IS DISTINCT FROM cell.consequence_level_id<br>            OR a.inherent_score IS DISTINCT FROM cell.score_value OR a.inherent_rating_id IS DISTINCT FROM cell.rating_id<br>        THEN RAISE EXCEPTION 'Inherent scoring tuple must match selected cell and matrix version'; END IF;<br>        IF provenance.residual_cell_id IS NULL THEN<br>            IF a.residual_likelihood_id IS NOT NULL OR a.residual_consequence_id IS NOT NULL OR a.residual_score IS NOT NULL OR a.residual_rating_id IS NOT NULL<br>            THEN RAISE EXCEPTION 'Residual tuple requires explicit residual provenance'; END IF;<br>        ELSE<br>            SELECT * INTO cell FROM hidra_risk_matrix_cell WHERE id=provenance.residual_cell_id FOR SHARE;<br>            SELECT m.version INTO version FROM hidra_risk_matrix m WHERE id=provenance.residual_matrix_id FOR SHARE;<br>            IF cell.risk_matrix_id IS DISTINCT FROM provenance.residual_matrix_id OR version IS DISTINCT FROM provenance.residual_matrix_version<br>                OR a.residual_likelihood_id IS DISTINCT FROM cell.likelihood_level_id<br>                OR a.residual_consequence_id IS DISTINCT FROM cell.consequence_level_id<br>                OR a.residual_score IS DISTINCT FROM cell.score_value OR a.residual_rating_id IS DISTINCT FROM cell.rating_id<br>            THEN RAISE EXCEPTION 'Residual scoring tuple must match selected cell and matrix version'; END IF;<br>            IF provenance.residual_context_type='CONTROL' THEN<br>                PERFORM id FROM hidra_risk_control WHERE id=provenance.residual_context_id AND risk_assessment_id=pid FOR SHARE;<br>            ELSE<br>                PERFORM id FROM hidra_risk_treatment_plan WHERE id=provenance.residual_context_id AND risk_assessment_id=pid FOR SHARE;<br>            END IF;<br>            IF NOT FOUND THEN RAISE EXCEPTION 'Residual context must belong to the same assessment'; END IF;<br>        END IF;<br>    END LOOP;<br>    RETURN NULL;<br>END $function$<br>
@@ -25298,6 +25307,7 @@ Persisted RiskAssessmentScoringJpaEntity state; semantic authority remains with 
 
 - Evidence: [RiskAssessmentScoringJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/risk/infrastructure/persistence/entity/RiskAssessmentScoringJpaEntity.java)
 - Migration mention (not inferred introduction): [V20261008_005__hmr_058_risk_assessment_governance.sql](../../src/main/resources/db/migration/V20261008_005__hmr_058_risk_assessment_governance.sql)
+- Migration mention (not inferred introduction): [V20261117_002__t22_risk_assessment_governance_receipts.sql](../../src/main/resources/db/migration/V20261117_002__t22_risk_assessment_governance_receipts.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -25339,6 +25349,9 @@ Persisted RiskAssessmentScoringJpaEntity state; semantic authority remains with 
 
 #### Triggers
 
+- `tr_risk_governed_scoring_freeze`: CREATE TRIGGER tr_risk_governed_scoring_freeze BEFORE INSERT OR DELETE OR UPDATE ON hidra_risk_assessment_scoring FOR EACH ROW EXECUTE FUNCTION hidra_risk_governed_child_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_risk_governed_child_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_risk_governed_child_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>DECLARE parent_id varchar(80);<br>BEGIN<br>    parent_id=COALESCE(to_jsonb(NEW)-&gt;&gt;'risk_assessment_id',to_jsonb(NEW)-&gt;&gt;'assessment_id',<br>                       to_jsonb(OLD)-&gt;&gt;'risk_assessment_id',to_jsonb(OLD)-&gt;&gt;'assessment_id');<br>    IF EXISTS (SELECT 1 FROM hidra_risk_governed_submission WHERE assessment_id=parent_id) THEN<br>        RAISE EXCEPTION 'T22 submitted evidence and scoring associations are immutable';<br>    END IF;<br>    IF TG_OP='DELETE' THEN RETURN OLD; END IF;<br>    RETURN NEW;<br>END $function$<br>
 - `tr_risk_scoring_complete`: CREATE CONSTRAINT TRIGGER tr_risk_scoring_complete AFTER INSERT OR DELETE OR UPDATE ON hidra_risk_assessment_scoring DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION hidra_risk_assessment_complete()
   - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_risk_assessment_complete()"}
   - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_risk_assessment_complete()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>DECLARE old_parent text; new_parent text; pid text; a hidra_risk_assessment%ROWTYPE;<br>    provenance hidra_risk_assessment_scoring%ROWTYPE; cell hidra_risk_matrix_cell%ROWTYPE; version text;<br>BEGIN<br>    IF TG_OP&lt;&gt;'INSERT' THEN old_parent=COALESCE(to_jsonb(OLD)-&gt;&gt;'risk_assessment_id',to_jsonb(OLD)-&gt;&gt;'assessment_id',to_jsonb(OLD)-&gt;&gt;'id'); END IF;<br>    IF TG_OP&lt;&gt;'DELETE' THEN new_parent=COALESCE(to_jsonb(NEW)-&gt;&gt;'risk_assessment_id',to_jsonb(NEW)-&gt;&gt;'assessment_id',to_jsonb(NEW)-&gt;&gt;'id'); END IF;<br>    FOR pid IN SELECT DISTINCT p FROM unnest(ARRAY[old_parent,new_parent]) p WHERE p IS NOT NULL ORDER BY p LOOP<br>        SELECT * INTO a FROM hidra_risk_assessment WHERE id=pid FOR UPDATE;<br>        IF NOT FOUND THEN CONTINUE; END IF;<br>        IF NOT EXISTS(SELECT 1 FROM hidra_risk_assessment_scope WHERE risk_assessment_id=pid) THEN<br>            RAISE EXCEPTION 'Assessment requires at least one scope at commit'; END IF;<br>        SELECT * INTO provenance FROM hidra_risk_assessment_scoring WHERE assessment_id=pid;<br>        IF NOT FOUND THEN<br>            IF a.inherent_likelihood_id IS NOT NULL OR a.inherent_consequence_id IS NOT NULL OR a.inherent_score IS NOT NULL<br>                OR a.inherent_rating_id IS NOT NULL OR a.residual_likelihood_id IS NOT NULL<br>                OR a.residual_consequence_id IS NOT NULL OR a.residual_score IS NOT NULL OR a.residual_rating_id IS NOT NULL<br>            THEN RAISE EXCEPTION 'Scoring requires explicit matrix-cell provenance'; END IF;<br>            CONTINUE;<br>        END IF;<br>        SELECT * INTO cell FROM hidra_risk_matrix_cell WHERE id=provenance.inherent_cell_id FOR SHARE;<br>        SELECT m.version INTO version FROM hidra_risk_matrix m WHERE id=provenance.inherent_matrix_id FOR SHARE;<br>        IF cell.risk_matrix_id IS DISTINCT FROM provenance.inherent_matrix_id OR version IS DISTINCT FROM provenance.inherent_matrix_version<br>            OR a.inherent_likelihood_id IS DISTINCT FROM cell.likelihood_level_id<br>            OR a.inherent_consequence_id IS DISTINCT FROM cell.consequence_level_id<br>            OR a.inherent_score IS DISTINCT FROM cell.score_value OR a.inherent_rating_id IS DISTINCT FROM cell.rating_id<br>        THEN RAISE EXCEPTION 'Inherent scoring tuple must match selected cell and matrix version'; END IF;<br>        IF provenance.residual_cell_id IS NULL THEN<br>            IF a.residual_likelihood_id IS NOT NULL OR a.residual_consequence_id IS NOT NULL OR a.residual_score IS NOT NULL OR a.residual_rating_id IS NOT NULL<br>            THEN RAISE EXCEPTION 'Residual tuple requires explicit residual provenance'; END IF;<br>        ELSE<br>            SELECT * INTO cell FROM hidra_risk_matrix_cell WHERE id=provenance.residual_cell_id FOR SHARE;<br>            SELECT m.version INTO version FROM hidra_risk_matrix m WHERE id=provenance.residual_matrix_id FOR SHARE;<br>            IF cell.risk_matrix_id IS DISTINCT FROM provenance.residual_matrix_id OR version IS DISTINCT FROM provenance.residual_matrix_version<br>                OR a.residual_likelihood_id IS DISTINCT FROM cell.likelihood_level_id<br>                OR a.residual_consequence_id IS DISTINCT FROM cell.consequence_level_id<br>                OR a.residual_score IS DISTINCT FROM cell.score_value OR a.residual_rating_id IS DISTINCT FROM cell.rating_id<br>            THEN RAISE EXCEPTION 'Residual scoring tuple must match selected cell and matrix version'; END IF;<br>            IF provenance.residual_context_type='CONTROL' THEN<br>                PERFORM id FROM hidra_risk_control WHERE id=provenance.residual_context_id AND risk_assessment_id=pid FOR SHARE;<br>            ELSE<br>                PERFORM id FROM hidra_risk_treatment_plan WHERE id=provenance.residual_context_id AND risk_assessment_id=pid FOR SHARE;<br>            END IF;<br>            IF NOT FOUND THEN RAISE EXCEPTION 'Residual context must belong to the same assessment'; END IF;<br>        END IF;<br>    END LOOP;<br>    RETURN NULL;<br>END $function$<br>
@@ -25360,6 +25373,7 @@ Persisted RiskCatalogEntryJpaEntity state; semantic authority remains with risk.
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261004_029__hmr_029_risk_risk_matrix_cell.sql](../../src/main/resources/db/migration/V20261004_029__hmr_029_risk_risk_matrix_cell.sql)
 - Migration mention (not inferred introduction): [V20261008_005__hmr_058_risk_assessment_governance.sql](../../src/main/resources/db/migration/V20261008_005__hmr_058_risk_assessment_governance.sql)
+- Migration mention (not inferred introduction): [V20261117_002__t22_risk_assessment_governance_receipts.sql](../../src/main/resources/db/migration/V20261117_002__t22_risk_assessment_governance_receipts.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -25587,6 +25601,7 @@ Persisted RiskEvidenceLinkJpaEntity state; semantic authority remains with risk.
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261008_004__hmr_077_risk_evidence_identity_integrity.sql](../../src/main/resources/db/migration/V20261008_004__hmr_077_risk_evidence_identity_integrity.sql)
 - Migration mention (not inferred introduction): [V20261008_005__hmr_058_risk_assessment_governance.sql](../../src/main/resources/db/migration/V20261008_005__hmr_058_risk_assessment_governance.sql)
+- Migration mention (not inferred introduction): [V20261117_002__t22_risk_assessment_governance_receipts.sql](../../src/main/resources/db/migration/V20261117_002__t22_risk_assessment_governance_receipts.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -25630,6 +25645,9 @@ Persisted RiskEvidenceLinkJpaEntity state; semantic authority remains with risk.
 - `tr_risk_evidence_truncate`: CREATE TRIGGER tr_risk_evidence_truncate BEFORE TRUNCATE ON hidra_risk_evidence_link FOR EACH STATEMENT EXECUTE FUNCTION hidra_risk_assessment_truncate_guard()
   - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_risk_assessment_truncate_guard()"}
   - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_risk_assessment_truncate_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    IF EXISTS(SELECT 1 FROM hidra_risk_assessment WHERE status IN ('APPROVED','ACTIVE'))<br>        OR (TG_TABLE_NAME IN ('hidra_risk_assessment_scope','hidra_risk_assessment_scoring')<br>            AND EXISTS(SELECT 1 FROM hidra_risk_assessment))<br>    THEN RAISE EXCEPTION 'TRUNCATE would destroy governed Risk aggregate evidence'; END IF;<br>    RETURN NULL;<br>END $function$<br>
+- `tr_risk_governed_evidence_freeze`: CREATE TRIGGER tr_risk_governed_evidence_freeze BEFORE INSERT OR DELETE OR UPDATE ON hidra_risk_evidence_link FOR EACH ROW EXECUTE FUNCTION hidra_risk_governed_child_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_risk_governed_child_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_risk_governed_child_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>DECLARE parent_id varchar(80);<br>BEGIN<br>    parent_id=COALESCE(to_jsonb(NEW)-&gt;&gt;'risk_assessment_id',to_jsonb(NEW)-&gt;&gt;'assessment_id',<br>                       to_jsonb(OLD)-&gt;&gt;'risk_assessment_id',to_jsonb(OLD)-&gt;&gt;'assessment_id');<br>    IF EXISTS (SELECT 1 FROM hidra_risk_governed_submission WHERE assessment_id=parent_id) THEN<br>        RAISE EXCEPTION 'T22 submitted evidence and scoring associations are immutable';<br>    END IF;<br>    IF TG_OP='DELETE' THEN RETURN OLD; END IF;<br>    RETURN NEW;<br>END $function$<br>
 
 ### public.hidra_risk_exposure
 
@@ -25693,6 +25711,185 @@ Persisted RiskExposureJpaEntity state; semantic authority remains with risk.
 #### Triggers
 
 None captured in this catalog category.
+
+### public.hidra_risk_governed_approval
+
+Owner: **risk**; relation kind: `r`.
+
+Risk-owned final unique Workflow review/approval action and Audit receipt bound to the exact immutable submission digest.
+
+- Evidence: [V20261117_002__t22_risk_assessment_governance_receipts.sql](../../src/main/resources/db/migration/V20261117_002__t22_risk_assessment_governance_receipts.sql)
+- Evidence: [JdbcGovernedRiskAssessmentAdapter.java](../../src/main/java/dz/sh/hidra/modules/risk/infrastructure/persistence/adapter/JdbcGovernedRiskAssessmentAdapter.java)
+- Migration mention (not inferred introduction): [V20261117_002__t22_risk_assessment_governance_receipts.sql](../../src/main/resources/db/migration/V20261117_002__t22_risk_assessment_governance_receipts.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| assessment_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| workflow_instance_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| review_task_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| review_action_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| reviewer_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| reviewed_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| approval_task_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| approval_action_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| approver_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| approved_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| audit_receipt_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| submission_digest | character varying(64) | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `ck_risk_governed_independence`: CHECK (reviewer_id::text &lt;&gt; approver_id::text)
+  - Catalog attributes: {"columns": ["reviewer_id", "approver_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_risk_governed_approval_approval_action_id_check`: CHECK (approval_action_id::text ~ '[^[:space:]]'::text)
+  - Catalog attributes: {"columns": ["approval_action_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_risk_governed_approval_approval_action_id_key`: UNIQUE (approval_action_id)
+  - Catalog attributes: {"columns": ["approval_action_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_risk_governed_approval_approval_task_id_check`: CHECK (approval_task_id::text ~ '[^[:space:]]'::text)
+  - Catalog attributes: {"columns": ["approval_task_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_risk_governed_approval_approver_id_check`: CHECK (approver_id::text ~ '[^[:space:]]'::text)
+  - Catalog attributes: {"columns": ["approver_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_risk_governed_approval_assessment_id_fkey`: FOREIGN KEY (assessment_id) REFERENCES hidra_risk_governed_submission(assessment_id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["assessment_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["assessment_id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_risk_governed_submission"}, "type": "f", "validated": true}
+- `hidra_risk_governed_approval_audit_receipt_id_check`: CHECK (audit_receipt_id::text ~ '[^[:space:]]'::text)
+  - Catalog attributes: {"columns": ["audit_receipt_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_risk_governed_approval_audit_receipt_id_key`: UNIQUE (audit_receipt_id)
+  - Catalog attributes: {"columns": ["audit_receipt_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_risk_governed_approval_check`: CHECK (approved_at &gt;= reviewed_at)
+  - Catalog attributes: {"columns": ["approved_at", "reviewed_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_risk_governed_approval_pkey`: PRIMARY KEY (assessment_id)
+  - Catalog attributes: {"columns": ["assessment_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_risk_governed_approval_review_action_id_check`: CHECK (review_action_id::text ~ '[^[:space:]]'::text)
+  - Catalog attributes: {"columns": ["review_action_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_risk_governed_approval_review_action_id_key`: UNIQUE (review_action_id)
+  - Catalog attributes: {"columns": ["review_action_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_risk_governed_approval_review_task_id_check`: CHECK (review_task_id::text ~ '[^[:space:]]'::text)
+  - Catalog attributes: {"columns": ["review_task_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_risk_governed_approval_reviewer_id_check`: CHECK (reviewer_id::text ~ '[^[:space:]]'::text)
+  - Catalog attributes: {"columns": ["reviewer_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_risk_governed_approval_submission_digest_check`: CHECK (submission_digest::text ~ '^[0-9a-f]{64}$'::text)
+  - Catalog attributes: {"columns": ["submission_digest"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_risk_governed_approval_workflow_instance_id_check`: CHECK (workflow_instance_id::text ~ '[^[:space:]]'::text)
+  - Catalog attributes: {"columns": ["workflow_instance_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_risk_governed_approval_workflow_instance_id_key`: UNIQUE (workflow_instance_id)
+  - Catalog attributes: {"columns": ["workflow_instance_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+
+#### Indexes
+
+- `hidra_risk_governed_approval_approval_action_id_key`: CREATE UNIQUE INDEX hidra_risk_governed_approval_approval_action_id_key ON public.hidra_risk_governed_approval USING btree (approval_action_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_risk_governed_approval_audit_receipt_id_key`: CREATE UNIQUE INDEX hidra_risk_governed_approval_audit_receipt_id_key ON public.hidra_risk_governed_approval USING btree (audit_receipt_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_risk_governed_approval_pkey`: CREATE UNIQUE INDEX hidra_risk_governed_approval_pkey ON public.hidra_risk_governed_approval USING btree (assessment_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `hidra_risk_governed_approval_review_action_id_key`: CREATE UNIQUE INDEX hidra_risk_governed_approval_review_action_id_key ON public.hidra_risk_governed_approval USING btree (review_action_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_risk_governed_approval_workflow_instance_id_key`: CREATE UNIQUE INDEX hidra_risk_governed_approval_workflow_instance_id_key ON public.hidra_risk_governed_approval USING btree (workflow_instance_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `tr_risk_governed_approval_immutable`: CREATE TRIGGER tr_risk_governed_approval_immutable BEFORE DELETE OR UPDATE ON hidra_risk_governed_approval FOR EACH ROW EXECUTE FUNCTION hidra_risk_governed_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_risk_governed_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_risk_governed_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    IF TG_OP &lt;&gt; 'INSERT' THEN<br>        RAISE EXCEPTION 'T22 immutable scope, submission or approval cannot be changed';<br>    END IF;<br>    RETURN NEW;<br>END $function$<br>
+
+### public.hidra_risk_governed_scope
+
+Owner: **risk**; relation kind: `r`.
+
+Risk-owned immutable current company/active facility enrollment for a new single-facility assessment; no backfill or foreign module persistence ownership.
+
+- Evidence: [V20261117_002__t22_risk_assessment_governance_receipts.sql](../../src/main/resources/db/migration/V20261117_002__t22_risk_assessment_governance_receipts.sql)
+- Evidence: [JdbcGovernedRiskAssessmentAdapter.java](../../src/main/java/dz/sh/hidra/modules/risk/infrastructure/persistence/adapter/JdbcGovernedRiskAssessmentAdapter.java)
+- Migration mention (not inferred introduction): [V20261117_002__t22_risk_assessment_governance_receipts.sql](../../src/main/resources/db/migration/V20261117_002__t22_risk_assessment_governance_receipts.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| assessment_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| facility_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| enrolled_at | timestamp with time zone | False | now(); identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_risk_governed_scope_assessment_id_fkey`: FOREIGN KEY (assessment_id) REFERENCES hidra_risk_assessment(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["assessment_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_risk_assessment"}, "type": "f", "validated": true}
+- `hidra_risk_governed_scope_company_party_id_check`: CHECK (company_party_id::text ~ '[^[:space:]]'::text)
+  - Catalog attributes: {"columns": ["company_party_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_risk_governed_scope_facility_id_check`: CHECK (facility_id::text ~ '[^[:space:]]'::text)
+  - Catalog attributes: {"columns": ["facility_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_risk_governed_scope_pkey`: PRIMARY KEY (assessment_id)
+  - Catalog attributes: {"columns": ["assessment_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+
+#### Indexes
+
+- `hidra_risk_governed_scope_pkey`: CREATE UNIQUE INDEX hidra_risk_governed_scope_pkey ON public.hidra_risk_governed_scope USING btree (assessment_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `tr_risk_governed_scope_immutable`: CREATE TRIGGER tr_risk_governed_scope_immutable BEFORE DELETE OR UPDATE ON hidra_risk_governed_scope FOR EACH ROW EXECUTE FUNCTION hidra_risk_governed_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_risk_governed_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_risk_governed_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    IF TG_OP &lt;&gt; 'INSERT' THEN<br>        RAISE EXCEPTION 'T22 immutable scope, submission or approval cannot be changed';<br>    END IF;<br>    RETURN NEW;<br>END $function$<br>
+
+### public.hidra_risk_governed_submission
+
+Owner: **risk**; relation kind: `r`.
+
+Risk-owned append-only scored inherent matrix-cell provenance, copied Alarm source identity/time and deterministic submission digest.
+
+- Evidence: [V20261117_002__t22_risk_assessment_governance_receipts.sql](../../src/main/resources/db/migration/V20261117_002__t22_risk_assessment_governance_receipts.sql)
+- Evidence: [JdbcGovernedRiskAssessmentAdapter.java](../../src/main/java/dz/sh/hidra/modules/risk/infrastructure/persistence/adapter/JdbcGovernedRiskAssessmentAdapter.java)
+- Migration mention (not inferred introduction): [V20261117_002__t22_risk_assessment_governance_receipts.sql](../../src/main/resources/db/migration/V20261117_002__t22_risk_assessment_governance_receipts.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| assessment_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| inherent_cell_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| inherent_matrix_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| inherent_matrix_version | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| inherent_score | numeric | False | None; identity=; generated= | No current mapped Java column | — |
+| inherent_rating_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| alarm_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| alarm_code_snapshot | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| alarm_raised_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| digest_format | character varying(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| digest | character varying(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| submitted_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_risk_governed_submission_alarm_code_snapshot_check`: CHECK (alarm_code_snapshot::text ~ '[^[:space:]]'::text)
+  - Catalog attributes: {"columns": ["alarm_code_snapshot"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_risk_governed_submission_alarm_id_check`: CHECK (alarm_id::text ~ '[^[:space:]]'::text)
+  - Catalog attributes: {"columns": ["alarm_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_risk_governed_submission_assessment_id_fkey`: FOREIGN KEY (assessment_id) REFERENCES hidra_risk_governed_scope(assessment_id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["assessment_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["assessment_id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_risk_governed_scope"}, "type": "f", "validated": true}
+- `hidra_risk_governed_submission_digest_check`: CHECK (digest::text ~ '^[0-9a-f]{64}$'::text)
+  - Catalog attributes: {"columns": ["digest"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_risk_governed_submission_digest_format_check`: CHECK (digest_format::text = 'GZ2-RISK-SNAPSHOT-v1'::text)
+  - Catalog attributes: {"columns": ["digest_format"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_risk_governed_submission_inherent_cell_id_fkey`: FOREIGN KEY (inherent_cell_id) REFERENCES hidra_risk_matrix_cell(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["inherent_cell_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_risk_matrix_cell"}, "type": "f", "validated": true}
+- `hidra_risk_governed_submission_inherent_matrix_id_fkey`: FOREIGN KEY (inherent_matrix_id) REFERENCES hidra_risk_matrix(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["inherent_matrix_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_risk_matrix"}, "type": "f", "validated": true}
+- `hidra_risk_governed_submission_inherent_matrix_version_check`: CHECK (inherent_matrix_version::text ~ '[^[:space:]]'::text)
+  - Catalog attributes: {"columns": ["inherent_matrix_version"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_risk_governed_submission_inherent_rating_id_fkey`: FOREIGN KEY (inherent_rating_id) REFERENCES hidra_risk_catalog_entry(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["inherent_rating_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_risk_catalog_entry"}, "type": "f", "validated": true}
+- `hidra_risk_governed_submission_pkey`: PRIMARY KEY (assessment_id)
+  - Catalog attributes: {"columns": ["assessment_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+
+#### Indexes
+
+- `hidra_risk_governed_submission_pkey`: CREATE UNIQUE INDEX hidra_risk_governed_submission_pkey ON public.hidra_risk_governed_submission USING btree (assessment_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `tr_risk_governed_submission_immutable`: CREATE TRIGGER tr_risk_governed_submission_immutable BEFORE DELETE OR UPDATE ON hidra_risk_governed_submission FOR EACH ROW EXECUTE FUNCTION hidra_risk_governed_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_risk_governed_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_risk_governed_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    IF TG_OP &lt;&gt; 'INSERT' THEN<br>        RAISE EXCEPTION 'T22 immutable scope, submission or approval cannot be changed';<br>    END IF;<br>    RETURN NEW;<br>END $function$<br>
 
 ### public.hidra_risk_likelihood
 
@@ -25760,6 +25957,7 @@ Persisted RiskMatrixJpaEntity state; semantic authority remains with risk.
 - Migration mention (not inferred introduction): [V20260611_011__create_risk_tables.sql](../../src/main/resources/db/migration/V20260611_011__create_risk_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261008_005__hmr_058_risk_assessment_governance.sql](../../src/main/resources/db/migration/V20261008_005__hmr_058_risk_assessment_governance.sql)
+- Migration mention (not inferred introduction): [V20261117_002__t22_risk_assessment_governance_receipts.sql](../../src/main/resources/db/migration/V20261117_002__t22_risk_assessment_governance_receipts.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -25823,6 +26021,7 @@ Persisted RiskMatrixCellJpaEntity state; semantic authority remains with risk.
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261004_029__hmr_029_risk_risk_matrix_cell.sql](../../src/main/resources/db/migration/V20261004_029__hmr_029_risk_risk_matrix_cell.sql)
 - Migration mention (not inferred introduction): [V20261008_005__hmr_058_risk_assessment_governance.sql](../../src/main/resources/db/migration/V20261008_005__hmr_058_risk_assessment_governance.sql)
+- Migration mention (not inferred introduction): [V20261117_002__t22_risk_assessment_governance_receipts.sql](../../src/main/resources/db/migration/V20261117_002__t22_risk_assessment_governance_receipts.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|

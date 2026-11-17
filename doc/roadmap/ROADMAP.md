@@ -9,7 +9,7 @@
 | Status | ACTIVE |
 | Authority | Sole task register and execution source for HidraAPI |
 | Owner adoption | 2026-11-10 |
-| Active task selection | T22 COMPLETED for synthetic software scope on exact-SHA HidraAPI CI #1280 and Documentation Validation #1113. T23 PLANNED — execution envelope registered below, implementation requires separate Next. T17 awaits T24. |
+| Active task selection | T23 COMPLETED for synthetic software scope on exact-SHA HidraAPI CI #1285 and Documentation Validation #1119. T24 PLANNED — execution envelope registered below, implementation requires separate Next. T17 awaits T24. |
 
 The task register controls scope, dependencies, status and acceptance. Existing technical policy and verified implementation evidence retain their applicability. Task status advances only with recorded evidence. The initial status for each task is PLANNED. The first candidate is T01.
 
@@ -115,7 +115,7 @@ A task includes its required authorization, REST contract, persistence, failure 
 | **T20 · Capture and retrieve qualified custody measurements** | Custody with Telemetry, Party and product owners | T09 and eligible meter/product/Party references | Bind scoped measurements to meter, product, party, units, basis, interval and qualified source evidence. | Authorized readback preserves exact source, quantity, basis and measurement window. Wrong meter, product or unit is rejected. **FG-09 / A09.** | COMPLETED |
 | **T21 · Reconcile, finalize and correct custody transfers** | Custody | T20 | Expose period/ticket/discrepancy read and disposition, reconciliation, finalization and versioned correction. | A synthetic ticket is reconciled and finalized. Correction retains original and superseding records with attributable reason and evidence. **FG-09 / A09.** | COMPLETED |
 | **T22 · Expose governed Risk results and decision history** | Risk with owner evidence providers | Eligible evidence and the existing scoring/approval path | Expose scoped assessment, score inputs, evidence, independent decision and approved history. | Later source or method changes do not alter the approved historical result. Revoked and unrelated principals cannot read it. **FG-10 / A10.** | COMPLETED |
-| **T23 · Execute and retrieve a deterministic analytics metric** | Analytics with source owners | One supported metric and eligible versioned input, such as T11 | Execute the metric, persist durable run/result state and expose source lineage, units and version. | Synthetic inputs produce a predictable value after restart. Bad inputs have explicit failed/unavailable outcomes. **FG-11 / A11.** | PLANNED |
+| **T23 · Execute and retrieve a deterministic analytics metric** | Analytics with source owners | One supported metric and eligible versioned input, such as T11 | Execute the metric, persist durable run/result state and expose source lineage, units and version. | Synthetic inputs produce a predictable value after restart. Bad inputs have explicit failed/unavailable outcomes. **FG-11 / A11.** | COMPLETED |
 | **T24 · Discover and supersede controlled Documents** | Documents with target owners | Existing byte upload/download and owner target references | Expose scoped discovery, exact version/link history, acceptance and supersession where required. | An authorized client can discover and retrieve exact bytes and hash for old and current versions. Revoked users cannot download. **FG-14 / A14.** | PLANNED |
 | **T25 · Render and download an authorized report** | Reporting with Documents and Workflow | T24 and an eligible approved report input, such as T23 | Admit template and parameters, render a durable artifact and expose run status and scoped byte retrieval. | Downloaded bytes match the stored hash and exact input version. Failed rendering cannot produce a downloadable success. **FG-12 / A12.** | PLANNED |
 | **T26 · Execute and replay a governed synthetic exchange** | Integration with receiving owner | Supported synthetic mapping and receiving contract | Expose mapping version, job/attempt/result, dead letter and privileged replay for one exchange. | Simulated transient failure and authorized replay yield one receiving outcome and a durable attempt history. **FG-15 / A15.** | PLANNED |
@@ -2324,3 +2324,264 @@ code and inventory, so the reconciled runtime inputs are identical. Both strict
 equality gates, the signed qualification and all existing CI requirements apply
 to the replacement SHA. T23 remains **IN PROGRESS** pending full CI and T24
 remains unselected.
+
+### T23 synthetic software acceptance and T24 execution envelope — 2026-11-17
+
+**T23 COMPLETED for synthetic software scope (FG-11 / A11).** [HidraAPI CI #1285](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44114920904)
+and [Documentation Validation #1119](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44114920893)
+passed on exact main SHA `c78765b066a0f94070920c896d6eaf42115b5795`, parent
+`2de8f327bcd64d924bbeb73aafe0f195cb4f10ac`, tree
+`e8bff94bb5fd75367a734ef338ff8bec6581bd15`. Implementation began at
+`832e5b02f131f0283b47e5ece85362c2b93d6000`; bounded repairs culminated in
+`2de8f327bcd64d924bbeb73aafe0f195cb4f10ac` and this canonical artifact reconciliation.
+Static validation, Java 21 unit/architecture, all fourteen PostgreSQL shards,
+OpenAPI compatibility and strict canonical equality, strict physical dictionary
+equality and Full Verification Gate passed. The optional serial diagnostic was
+skipped. Independently downloaded [shard 11 raw reports](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44114920904/artifacts/14342886561),
+verified archive SHA-256 `96dd8449d2c2cc53ffdb069378e5f7c88b07c8081a3bb1da0859159fd80b3870`
+against GitHub metadata and confirmed
+`Gz2DeviationMetricNativeHttpPostgresIntegrationTest.executesAndReadsScopedDeviationMetricAcrossJvmRestart`
+passed with one test and zero failures, errors or skips. Retained
+[OpenAPI](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44114920904/artifacts/14341804413),
+[dictionary](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44114920904/artifacts/14343685408)
+and [full evidence](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44114920904/artifacts/14342358816)
+support the accepted synthetic deviation, persisted failed-source outcome,
+current authorization, exact replay, immutability and independent JVM restart.
+Engineering and operational qualification remain separate.
+
+**Selected next task: T24 — Discover and supersede controlled Documents (FG-14 / A14), PLANNED.**
+T17 awaits T24; T25 depends on T24 and eligible report inputs. The next task is T24,
+with implementation selected only by a separate owner `Next` after successful
+documentation validation. This roadmap-only registration uses
+`docs(roadmap): close T23 and register T24 execution envelope`.
+The implementation message is
+`feat(documents): discover and supersede controlled document versions`.
+
+**Verified prerequisites and gaps.** Existing `RegisterDocumentUseCase`,
+`UploadDocumentBinaryVersionUseCase`, `DownloadDocumentVersionContentUseCase`,
+`DocumentContentTransferService`, `LocalDocumentBinaryStorageAdapter` and
+document/version/storage/link persistence provide real content transfer, SHA-256,
+atomic database orchestration and confirmed-rollback cleanup. An unknown commit
+outcome preserves the candidate blob for reconciliation. Existing constraints
+require same-document current version, unique positive version number,
+non-self supersession, active catalog families and exact uploader identity.
+Existing `DocumentsOwnedTargetLookup` exports owner-controlled identity/code/label
+and includes Topology FACILITY, but does not prove owning company or current scoped
+authority. Current download resolves a version/storage and opens content without a
+record-aware company/facility authorization check. There is no scoped controlled
+discovery, version/link history, acceptance or supersession command. Generic
+Workbench configuration could expose Documents counts/rows without record scope.
+These are the bounded T24 gaps. The GZ2 signed fixture can restart an independent
+app JVM, but needs an explicit persistent per-fixture storage root/provider and
+multipart/binary helpers. Existing Documents unit/PostgreSQL tests construct the
+services directly; their constructor updates are listed below.
+
+**Chosen first scope and acceptance semantics.** One company and one active
+Topology FACILITY, with a newly registered Document whose owner tuple is
+`topology / FACILITY / facilityId`. Enroll it atomically through the new scoped
+create route in a Documents-owned immutable scope binding. Existing non-enrolled
+records retain their legacy command semantics and are excluded from the new
+scoped queries. Each controlled exact version can have immutable evidence links
+only to that same facility, with an active `DOCUMENT_LINK_ROLE`. One primary
+version-specific owner link is appended automatically upon successful acceptance.
+This establishes the reusable Documents foundation for later T17/T25 integrations;
+target-specific HSE/Reporting attachment behavior belongs to its consuming task.
+
+Here acceptance is an explicit Documents custodian decision backed by the
+`documents:controlled:accept` permission, actor, reason, exact byte hash and
+request identity. It publishes a DRAFT content version as CURRENT and the
+Document as ACTIVE, without setting a Workflow approval reference or an APPROVED
+state. The acceptor must differ from both the document creator and the uploader.
+A first acceptance requires no current version. Supersession atomically accepts
+a higher numbered DRAFT of the same document, marks the prior CURRENT as
+SUPERSEDED with `supersededByVersionId`, advances
+`Document.currentVersionId` and appends the decision and successor's exact target
+link. Existing upload/approval metadata is retained. Domain policy returns the
+permitted version transition using immutable existing domain records.
+`Document.currentVersionId` is the sole current-version pointer; decision history
+is append-only. A version's bytes, storage/hash/size, uploader and original
+target evidence are frozen once accepted. Controlled decisions provide evidence
+acceptance; content engineering validity requires its applicable owner process.
+
+**Application and authorization envelope.** New Documents port and application
+service coordinate the existing registration and content use cases. A shared
+record guard uses the controlled JDBC repository internally, avoiding a dependency
+cycle through the version repository. The only importer of the new Identity and
+Topology contracts is `ControlledDocumentOwnerAccessAdapter`. Identity supplies
+the verified LOCAL actor and permissions `documents:controlled:create`,
+`documents:controlled:write`, `documents:controlled:read`,
+`documents:controlled:accept`. Require direct current permits for each requested
+capability on both `CUSTOM documents-company:{companyId}` and
+`FACILITY facilityId`, plus current assertion/effective-deny evaluation.
+Read is required with each mutation. Resolve current active facility ownership
+through Topology after authorizing the requested scope and require the owner
+company to equal the bound company. On ownership change, the former owner loses
+controlled access and the new owner is not automatically granted historical
+Documents access. Recheck grants on each request, including historical byte reads.
+
+The guard covers both metadata upload aliases, binary upload, both target-link
+aliases, known-version byte download, document/storage existence exports and the
+controlled repository write path. Resolve hidden scope internally, then authorize
+before any existence/hash/history/availability disclosure or blob access.
+Legacy routes retain their transport permission requirements and gain this
+additional record fence for enrolled records. New native routes call the same
+guarded services. An authenticated broad legacy permission must not bypass a
+controlled scope. Metadata-only upload cannot attach another document's blob to
+an enrolled document. Scope the storage guard to any storage object referenced
+by an enrolled version, including mixed references. Generic Workbench Documents
+entity exposure is disabled, including explicit configured exposure, because its
+list/search/count/detail pipeline cannot apply the controlled record predicate.
+This is an intentional compatibility change for generic Documents Workbench reads.
+
+**Exact REST surface.** The base `B` below means
+`/api/v1/documents/companies/{companyId}/facilities/{facilityId}/controlled-documents`.
+Every path carries current scoped authorization, exact document/version parenting
+and native LOCAL authentication.
+
+| Method and path | Exact controller method | Request/response and behavior |
+| --- | --- | --- |
+| POST B | `create(String,String,ControlledDocumentRequests.Create)` | Explicit requestId, code, titleFr, documentTypeId and classificationId; server derives owner and actor. 201 new / 200 exact replay. |
+| GET B | `discover(String,String,Integer,Integer,String)` | page 0+, size 1–100, optional code filter; authorized documents only with total, current version/hash and stable code/id ordering. |
+| GET B/{documentId} | `detail(String,String,String)` | Document identity, bound facility and authoritative current version. |
+| GET B/{documentId}/versions | `versions(String,String,String,Integer,Integer)` | Scoped page of exact draft/current/superseded version IDs, numbers, hashes, sizes and dates. |
+| GET B/{documentId}/links | `links(String,String,String,Integer,Integer)` | Scoped page of immutable exact-version facility links and decision lineage, ordered linkedAt/id. |
+| POST B/{documentId}/versions/upload | `upload(String,String,String,UploadDocumentBinaryVersionRequest,MultipartFile)` | Reuse multipart metadata+file shape. Body documentId must match path. 200 typed draft version; existing version-number uniqueness resolves concurrent uploads, confirmed rollback cleans only the losing blob. |
+| GET B/{documentId}/versions/{versionId}/content | `content(String,String,String,String)` | Reuse attachment content response with exact bytes/length and SHA-256 ETag; available historical accepted versions remain retrievable. |
+| POST B/{documentId}/versions/{versionId}/accept | `accept(String,String,String,String,ControlledDocumentRequests.Accept)` | requestId, reason and linkRoleId; require current head null; 201 decision / 200 exact replay. |
+| POST B/{documentId}/versions/{versionId}/supersede | `supersede(String,String,String,String,ControlledDocumentRequests.Supersede)` | versionId is successor; requestId, reason, linkRoleId and expectedCurrentVersionId pin the predecessor; 201 decision / 200 replay, 409 stale head or payload conflict. |
+
+All nested response schema names must be explicitly prefixed ControlledDocument
+to avoid the global `Source`/`History` schema collisions. Keep common configured
+null omission and typed optional fields consistent. Malformed inputs use 400,
+authorized state/duplicate conflicts 409, missing/foreign/revoked protected scope
+a generic non-disclosing 404, content-integrity failure a typed 409 or existing
+storage failure mapping. A rejected acceptance never advances current state or
+creates a successful link/decision.
+
+**Physical state, concurrency and storage proof.** Add
+`hidra_documents_controlled_scope` keyed by document ID and
+`hidra_documents_controlled_decision` keyed by decision ID. Scope binds company,
+facility, create requestId/payload digest, actor and time. Decision pins
+document, version, optional predecessor, requestId/payload digest, actor/reason,
+action, exact checksum/length, owner snapshots, selected linkRoleId/link ID and
+time. Use restrictive same-document references, a unique scoped create request,
+a unique document request, a unique accepted version and a unique non-null
+predecessor to prevent branching. Lock the existing document row for accept and
+supersede and check exact replay before mutable head eligibility. Replaying a
+successful request returns its recorded decision even after another successor;
+contradictory payload returns 409. Serialize pending create identity before
+inserting a document and use database uniqueness as the second guard.
+Flush pending JPA writes before JDBC references; clear/refresh stale state
+before projecting results. Never perform SELECT FOR UPDATE/SHARE inside a
+read-only transaction.
+
+Migration guards apply to enrolled records, with separate PL/pgSQL branches for
+each row type. Prove correct parent/current/head relation, allowed DRAFT→CURRENT
+and CURRENT→SUPERSEDED transitions with a matching decision in the same
+transaction, increasing successor number, valid checksum/length and immutable
+acceptance/links. Freeze accepted storage/version metadata, restrict content
+reparenting and guard DELETE/TRUNCATE. Preserve existing history and constraints;
+seed permission definitions only. Reuse the existing SHA-256 storage provider
+and rollback synchronization. Verify physical bytes against version/storage
+metadata before acceptance and before delivering controlled content, closing
+streams on every failure. Use one opened file handle to check and rewind for
+delivery so the verified bytes are the returned bytes; admit a Documents-only
+extension on the binary port for that operation. The new implementation must
+preserve the existing store/open/delete methods and their callers. Configure
+synthetic storage via an isolated temporary directory shared by both app JVMs
+within the test, retain the same provider ID, and clean it when the scenario ends.
+
+**Exact file allowlist.** The CREATE paths are absent and UPDATE paths are present
+in the accepted 7,025-entry Git tree; `V20261117_005` is free at this baseline.
+
+| Create | Exact responsibility |
+| --- | --- |
+| `src/main/java/dz/sh/hidra/modules/documents/domain/model/ControlledDocumentDecision.java` | Immutable acceptance/supersession receipt, request identity, version/hash pins, actor, reason and time. |
+| `src/main/java/dz/sh/hidra/modules/documents/domain/service/ControlledDocumentPolicy.java` | Pure Java invariants for independent acceptance, head comparison, same-document increasing successor and replay payload equality. |
+| `src/main/java/dz/sh/hidra/modules/documents/application/port/in/ControlledDocumentsUseCase.java` | Nine operations plus named nested command/query/result records; use document DTO projections rather than entities. |
+| `src/main/java/dz/sh/hidra/modules/documents/application/port/out/ControlledDocumentRepositoryPort.java` | Company/facility binding, locked head, scoped queries, exact-version/link history and append-only decision persistence. |
+| `src/main/java/dz/sh/hidra/modules/documents/application/port/out/ControlledDocumentAuthorizationPort.java` | Current actor, current company/facility capability and facility ownership checks. |
+| `src/main/java/dz/sh/hidra/modules/documents/application/service/ControlledDocumentsApplicationService.java` | Coordinate scoped create/discovery/detail/history/content, independent acceptance and successor publication; reuse registration and content-transfer use cases. |
+| `src/main/java/dz/sh/hidra/modules/documents/application/service/ControlledDocumentAccessService.java` | Shared record-aware guard for existing upload/download/link and reference queries. Resolve enrolled owner internally and authorize before protected metadata or bytes. |
+| `src/main/java/dz/sh/hidra/modules/documents/api/rest/controller/ControlledDocumentsController.java` | Nine exact native MVC methods with typed JSON, multipart upload and authenticated stream response. |
+| `src/main/java/dz/sh/hidra/modules/documents/api/rest/request/ControlledDocumentRequests.java` | Nested Create, Accept and Supersede DTOs with explicit requestId, reason and expected-current-version fields; reuse existing upload metadata. |
+| `src/main/java/dz/sh/hidra/modules/documents/api/rest/response/ControlledDocumentResponses.java` | Dedicated Discovery, Detail, Versions, Links, Decision and scoped nested summary types; bounded paging and exact version hash. |
+| `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/adapter/JdbcControlledDocumentRepositoryAdapter.java` | Explicit JDBC rows, JPA flush/clear boundary, locking, replay and CAS, immutable receipts, scoped filters and history joins. |
+| `src/main/java/dz/sh/hidra/modules/documents/infrastructure/integration/ControlledDocumentOwnerAccessAdapter.java` | Only new Documents importer of the Identity authorization and Topology ownership exports; implement Documents-owned outbound authorization port. |
+| `src/main/java/dz/sh/hidra/modules/identity/application/contract/documents/ControlledDocumentScopedAuthorizationContract.java` | Narrow scalar current-local-actor and paired company/facility authority export. |
+| `src/main/java/dz/sh/hidra/modules/identity/application/service/ControlledDocumentScopedAuthorizationQueryService.java` | Reuse direct grants, assertion and deny-precedence evaluation with Documents-specific permission codes and company namespace. |
+| `src/main/java/dz/sh/hidra/modules/topology/application/contract/documents/ControlledDocumentFacilityOwnershipContract.java` | Provider-owned active facility ID, current owning company and display snapshots. |
+| `src/main/java/dz/sh/hidra/modules/topology/infrastructure/reference/JpaControlledDocumentFacilityOwnershipAdapter.java` | Resolve active facility and owner inside Topology, with write-time locking and a read path compatible with actual transaction mode. |
+| `src/main/resources/db/migration/V20261117_005__t24_controlled_document_history.sql` | Add enrolled scope and append-only decision relations, scoped indexes, replay/parent/hash/transition guards, local head integrity and capability records. |
+| `src/test/java/dz/sh/hidra/qualification/Gz2ControlledDocumentsNativeHttpPostgresIntegrationTest.java` | One signed scenario exercising both content versions, discovery, independent acceptance, supersession, original/current bytes, scoped denial and restart. |
+
+| Update | Exact responsibility |
+| --- | --- |
+| `src/main/java/dz/sh/hidra/modules/documents/application/service/DocumentsApplicationService.java` | Call controlled guard before protected document/version lookup in both upload and target-link aliases; enforce exact FACILITY target and selected version. |
+| `src/main/java/dz/sh/hidra/modules/documents/application/service/DocumentContentTransferService.java` | Guard enrolled upload before opening/writing blobs and download before returning availability or streams; retain rollback cleanup, recheck storage/version agreement and compute integrity for controlled transfers. |
+| `src/main/java/dz/sh/hidra/modules/documents/application/service/AuditDocumentReferenceQueryService.java` | Authorize enrolled records before boolean existence disclosure. |
+| `src/main/java/dz/sh/hidra/modules/documents/application/service/ReportingDocumentReferenceQueryService.java` | Authorize enrolled document/storage references before boolean disclosure. |
+| `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/adapter/JpaDocumentVersionRepositoryAdapter.java` | Ensure controlled persistence writes follow admitted transitions and cannot alter sealed metadata; coordinate legacy JPA write path with the guard. |
+| `src/main/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistry.java` | Add only the nine compiled ControlledDocumentsController signatures and HTTP patterns; existing 115 entries become 124. |
+| `src/main/java/dz/sh/hidra/platform/workbench/HidraOperationalWorkbenchExposurePolicy.java` | Deny generic Documents entity exposure because generic queries cannot apply controlled company/facility predicates. |
+| `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java` | Admit only exact two new owner exports/nested scalar types to the one registered integration adapter; include negative sibling/private-import checks. |
+| `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java` | Mirror exact new consumer/import pairs in the source boundary gate. |
+| `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistryTest.java` | Verify all nine tuples/signatures and candidate count 124. |
+| `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java` | Construct typed controller fixture, cover MVC matching and count 124. |
+| `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteStartupValidatorTest.java` | Check missing/wrong/ambiguous compiled mappings and update count 124. |
+| `src/test/java/dz/sh/hidra/platform/workbench/HidraOperationalWorkbenchExposurePolicyTest.java` | Verify Documents exposure is denied even if configured, while preserving other configured resources. |
+| `src/test/java/dz/sh/hidra/qualification/Gz2SignedWorkflowFixture.java` | Provide per-fixture storage root/provider launch options and multipart/binary HTTP helpers; keep default start() behavior for existing callers and redact diagnostics. |
+| `src/test/java/dz/sh/hidra/modules/documents/application/service/DocumentContentTransferServiceTest.java` | Supply the explicit controlled guard dependency and retain storage cleanup, rollback/unknown-outcome and validation cases. |
+| `src/test/java/dz/sh/hidra/modules/documents/infrastructure/persistence/DocumentsSemanticPostgresTest.java` | Supply guard dependency in the existing transfer-service fixture; retain original PostgreSQL semantics. |
+| `src/test/java/dz/sh/hidra/modules/documents/semantic/DocumentSemanticRemediationTest.java` | Update constructor fixtures for application guard injection and retain actor/owner/catalog constraints. |
+| `src/test/java/dz/sh/hidra/modules/documents/semantic/DocumentVersionSemanticRemediationTest.java` | Update application/repository constructor fixtures and assert original version-parent/supersession checks remain. |
+| `src/test/java/dz/sh/hidra/modules/documents/semantic/DocumentTargetLinkSemanticRemediationTest.java` | Update guarded service fixtures and retain target/version/actor/catalog validation. |
+| `src/test/java/dz/sh/hidra/modules/documents/application/service/AuditDocumentReferenceQueryServiceTest.java` | Supply guard and check protected existence queries fail closed. |
+| `src/test/java/dz/sh/hidra/modules/documents/application/service/ReportingDocumentReferenceQueryServiceTest.java` | Supply guard and check protected document/storage existence queries fail closed. |
+| `.github/ci-test-inventory.json` | Register the single new PostgreSQL test, source hash, fixture supports and all changed test fingerprints; refresh shared fixture supports for every affected existing class. |
+| `.github/database-dictionary-ownership.json` | Assign the new controlled-scope and decision relations to Documents with exact source evidence. |
+| `doc/architecture/CROSS_MODULE_CONTRACTS.md` | Document both owner exports, exact importer and revocation/ownership guarantees. |
+| `doc/roadmap/ROADMAP.md` | Record T24 implementation state and truthful checks, retaining task sequence and dated evidence. |
+| `src/main/java/dz/sh/hidra/modules/documents/application/port/out/DocumentBinaryStoragePort.java` | Add verified-open with hash/length inputs and a caller-owned lifetime; retain store/open/delete callers and provide an equivalently verified compatible default. |
+| `src/main/java/dz/sh/hidra/modules/documents/infrastructure/storage/LocalDocumentBinaryStorageAdapter.java` | Check content SHA-256/length and rewind the same open handle for delivery; close on failure. |
+| `src/test/java/dz/sh/hidra/modules/documents/infrastructure/storage/LocalDocumentBinaryStorageAdapterTest.java` | Retain original cases, verify exact bytes and reject changed or truncated content. |
+
+**File-scope totals are 18 CREATE, 28 UPDATE, 0 DELETE.** All paths are exact.
+The binary-port extension must provide either an equivalently verified default
+for existing in-memory implementations or adapt the existing listed fixtures.
+Preserve the open handle's lifetime and clean up any temporary spool on close
+and on failure. New nested types live within the listed files.
+
+**Generated evidence scope.** If exact candidate runtime artifacts are available
+before implementation publication, only `doc/api/openapi.yaml`,
+`doc/database/DATA_DICTIONARY.md` and `.github/documentation-validation.json`
+are additionally admitted. Otherwise use the registered
+`docs(documents): reconcile T24 generated contracts and physical dictionary`
+commit, limited to those three paths and this roadmap, from exact source-SHA
+Actions artifacts. Preserve both strict equality gates. No workflow/POM,
+deployment/version bump, previous migration edit, unrelated module or
+placeholder file is admitted.
+
+**One complete signed acceptance.** Register
+`Gz2ControlledDocumentsNativeHttpPostgresIntegrationTest.discoversAcceptsAndSupersedesScopedDocumentVersions`
+as one PostgreSQL qualification case, fast false, initially unmeasured, with
+actual source/support SHA-256s. Provision only synthetic company/facility,
+identity grants and Documents catalog/storage provider fixtures. Through signed
+native HTTP register a document, upload bytes A, discover it, independently
+accept version 1, upload different bytes B and supersede with exact head 1.
+Assert old/new version and link history, exact A/B bytes, lengths and SHA-256,
+one current pointer and immutable decisions. Reconstruct both byte reads and
+history using an independent app JVM on the same database/storage directory.
+Inside the same scenario check wrong company/facility, revoked grants,
+independent custodian rule, broad-legacy-permission bypass, protected query/count
+and boolean-export non-disclosure, duplicate version/blob cleanup, concurrent
+supersession, exact replay after successor, stale-head/payload conflict, changed
+storage bytes refusing acceptance/download, transaction rollback and DB
+immutability. Reuse existing supporting tests; do not split the delivery into
+preflight/code/test sub-stages. Refresh all fingerprints affected by shared
+fixture changes. Require all current architecture/security/inventory,
+fourteen PostgreSQL lanes, raw signed test report, runtime OpenAPI compatibility
+and equality, migrated dictionary equality and Full Verification Gate.
+After expected-head publication confirm the exact-SHA workflow is queued or
+started and stop for owner feedback. T17/T25 selection follows separate
+acceptance review.

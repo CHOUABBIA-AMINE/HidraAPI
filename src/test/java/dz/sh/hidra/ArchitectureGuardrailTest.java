@@ -1072,11 +1072,6 @@ class ArchitectureGuardrailTest {
     @Test void t23OwnerExportsAreExclusiveToAnalyticsAdapter() {
         String consumer="dz.sh.hidra.modules.analytics.infrastructure.integration.DeviationMetricOwnerAccessAdapter";
         for(String root:java.util.Set.of(
-                "dz.sh.hidra.modules.identity.application.contract.documents.ControlledDocumentScopedAuthorizationContract",
-                "dz.sh.hidra.modules.topology.application.contract.documents.ControlledDocumentFacilityOwnershipContract"))
-            if(targetClassName.startsWith(root))
-                return !t24DocumentOwnerExport(sourceClassName,targetClassName);
-        for(String root:java.util.Set.of(
                 "dz.sh.hidra.modules.identity.application.contract.analytics.AnalyticsMetricScopedAuthorizationContract",
                 "dz.sh.hidra.modules.monitoring.application.contract.analytics.AnalyticsDeviationSourceContract")) {
             assertFalse(isForbiddenCrossModuleDependency(consumer,root));
@@ -1103,6 +1098,17 @@ class ArchitectureGuardrailTest {
             org.junit.jupiter.api.Assertions.assertFalse(t24DocumentOwnerExport(adapter+"Sibling",root));
             org.junit.jupiter.api.Assertions.assertFalse(t24DocumentOwnerExport(adapter,root+"Sibling"));
         }
+        // T24 methods use class-based Spring transaction proxies.
+        for(Class<?> service:java.util.List.of(
+                dz.sh.hidra.modules.documents.application.service.AuditDocumentReferenceQueryService.class,
+                dz.sh.hidra.modules.documents.application.service.ReportingDocumentReferenceQueryService.class,
+                dz.sh.hidra.modules.documents.application.service.ControlledDocumentAccessService.class,
+                dz.sh.hidra.modules.documents.application.service.ControlledDocumentsApplicationService.class,
+                dz.sh.hidra.modules.identity.application.service.ControlledDocumentScopedAuthorizationQueryService.class,
+                dz.sh.hidra.modules.documents.infrastructure.persistence.adapter.JdbcControlledDocumentRepositoryAdapter.class)){
+            assertFalse(java.lang.reflect.Modifier.isFinal(service.getModifiers()),
+                    "T24 transactional bean must be proxyable: "+service.getName());
+        }
     }
 
     private static boolean isForbiddenCrossModuleDependency(
@@ -1115,6 +1121,11 @@ class ArchitectureGuardrailTest {
         if (sourceModule == null || targetModule == null || sourceModule.equals(targetModule)) {
             return false;
         }
+        for(String root:java.util.Set.of(
+                "dz.sh.hidra.modules.identity.application.contract.documents.ControlledDocumentScopedAuthorizationContract",
+                "dz.sh.hidra.modules.topology.application.contract.documents.ControlledDocumentFacilityOwnershipContract"))
+            if(targetClassName.startsWith(root))
+                return !t24DocumentOwnerExport(sourceClassName,targetClassName);
         for(String root:java.util.Set.of(
                 "dz.sh.hidra.modules.identity.application.contract.analytics.AnalyticsMetricScopedAuthorizationContract",
                 "dz.sh.hidra.modules.monitoring.application.contract.analytics.AnalyticsDeviationSourceContract"))

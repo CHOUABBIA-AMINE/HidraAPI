@@ -22,7 +22,7 @@ import dz.sh.hidra.modules.documents.application.contract.audit.AuditDocumentRef
 import dz.sh.hidra.modules.documents.application.port.out.DocumentRepositoryPort;
 import org.springframework.stereotype.Service;
 @Service
-public final class AuditDocumentReferenceQueryService implements AuditDocumentReferenceContract {
+public class AuditDocumentReferenceQueryService implements AuditDocumentReferenceContract {
     private final DocumentRepositoryPort repository;
     private final ControlledDocumentAccessService controlled;
     public AuditDocumentReferenceQueryService(DocumentRepositoryPort repository,ControlledDocumentAccessService controlled) {

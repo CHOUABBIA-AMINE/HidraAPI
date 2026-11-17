@@ -2620,3 +2620,41 @@ OpenAPI/physical dictionary reconciliation is reserved in the separately registe
 stage if artifact generation is unavailable before source publication. Do not
 fabricate those runtime artifacts. T17/T25 remain unselected until T24
 acceptance is reviewed; no simulation, release, deployment or OT work is implied.
+
+
+### T24 CI #1286 scoped failure repair — 2026-11-17
+
+**T24 remains IN PROGRESS; no acceptance or stage advancement.** Exact source
+commit `e0315034d8caec2592b6a583bd8d8f7d5bfe4094`, parent
+`a69fa8e664630e5ff0c70440fc0435dc7576ea5d`, tree
+`dd0e2892a0bf5310e8a31c3c3dc6a4372b301baf` was published with
+the registered T24 message. [HidraAPI CI #1286](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44165044492)
+failed. The exact job logs distinguish two directly observed problems:
+`ArchitectureGuardrailTest` at lines 1077–1078 placed a T24 classifier
+expression with `targetClassName`, `sourceClassName` and a return value
+inside the `void` T23 test, so `testCompile` failed in unit and all
+fourteen PostgreSQL shards. The API job independently reached Spring startup
+but failed constructing a transactional CGLIB proxy for the final
+`AuditDocumentReferenceQueryService`. The similarly final
+`ReportingDocumentReferenceQueryService` also has newly introduced
+`@Transactional` methods. Missing selected test reports and the Full
+Verification Gate failure are downstream symptoms, **not passed PostgreSQL tests**.
+[Documentation Validation #1121](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44165044504)
+passed on the same source SHA.
+
+The bounded repair relocates the exact T24 owner classifier to
+`isForbiddenCrossModuleDependency`, preserves T23 test semantics and both
+exact-consumer negative checks, and makes both transaction-advised Documents
+reference services Spring class-proxyable. The existing T24 architecture test
+now asserts proxyability for those and all other introduced transactional
+components. Refresh the exact `ArchitectureGuardrailTest` SHA-256 fingerprint
+in `.github/ci-test-inventory.json`; preserve the entire test inventory,
+permission checks, migrations, workflow settings, and canonical runtime contracts.
+
+This is a **CI-first source repair**, not a claim that the repair passed
+compilation, PostgreSQL execution, runtime OpenAPI, dictionary reconciliation,
+or the Full Verification Gate. The successor expected-head commit must start
+the same GitHub workflows and stop for feedback. Once executable source
+verification is recovered, evaluate any remaining T24 signed acceptance or
+generated-contract failures by their own exact-SHA CI evidence. T17/T25 are not
+selected.

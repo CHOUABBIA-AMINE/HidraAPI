@@ -24,7 +24,7 @@ import dz.sh.hidra.modules.documents.application.port.out.DocumentStorageObjectR
 import java.util.Objects;
 import org.springframework.stereotype.Service;
 @Service
-public final class ReportingDocumentReferenceQueryService implements ReportingDocumentReferenceContract {
+public class ReportingDocumentReferenceQueryService implements ReportingDocumentReferenceContract {
     private final DocumentRepositoryPort documents;
     private final DocumentStorageObjectRepositoryPort storage;
     private final ControlledDocumentAccessService controlled;

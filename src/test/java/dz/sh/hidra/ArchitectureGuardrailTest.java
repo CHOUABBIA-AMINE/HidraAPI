@@ -211,8 +211,15 @@ class ArchitectureGuardrailTest {
     }
     private static boolean isT20MeasurementOwnerExport(String source, String target) {
         String coordinator="dz.sh.hidra.modules.custody.application.service.CustodyMeasurementCaptureApplicationService";
-        return (source.equals(coordinator) || source.startsWith(coordinator + "$"))
-                && isT20MeasurementOwnerType(target);
+        String lifecycle="dz.sh.hidra.modules.custody.application.service.CustodyTransferLifecycleApplicationService";
+        String jdbc="dz.sh.hidra.modules.custody.infrastructure.persistence.adapter.JdbcCustodyTransferLifecycleAdapter";
+        String ownerContract="dz.sh.hidra.modules.identity.application.contract.custody.CustodyMeasurementScopedAuthorizationContract";
+        String topologyContract="dz.sh.hidra.modules.topology.application.contract.custody.CustodyMeasurementAssetOwnershipContract";
+        return ((source.equals(coordinator) || source.startsWith(coordinator + "$"))
+                && isT20MeasurementOwnerType(target))
+            || ((source.equals(lifecycle) || source.startsWith(lifecycle+"$")
+                ||source.equals(jdbc)||source.startsWith(jdbc+"$"))
+                && (isTargetRoot(target,ownerContract)||isTargetRoot(target,topologyContract)));
     }
 
     @Test void custodyProductExportKeepsPartyAndIdentityInternalsClosed() {

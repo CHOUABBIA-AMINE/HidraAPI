@@ -28,7 +28,10 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 @Service
 public class CustodyMeasurementScopedAuthorizationQueryService implements CustodyMeasurementScopedAuthorizationContract {
-    private static final Set<String> OPS=Set.of("custody:measurements:capture","custody:measurements:read");
+    private static final Set<String> OPS=Set.of("custody:measurements:capture","custody:measurements:read",
+        "custody:periods:read","custody:reconciliations:read","custody:reconciliations:reconcile",
+        "custody:tickets:read","custody:tickets:finalize","custody:tickets:correct",
+        "custody:discrepancies:read","custody:discrepancies:dispose");
     private final TelemetryNativeLocalActorPort actors;
     private final IncidentExplicitGrantEvidencePort direct;
     private final AuthorizationEvidencePort evidence;

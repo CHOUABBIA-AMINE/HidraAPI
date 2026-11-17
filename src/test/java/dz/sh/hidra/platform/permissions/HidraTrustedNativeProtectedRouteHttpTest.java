@@ -156,7 +156,7 @@ class HidraTrustedNativeProtectedRouteHttpTest {
    var resolver = org.mockito.Mockito.mock(HidraEffectivePermissionResolver.class);
    authenticated();
    var registry = new HidraTrustedNativeProtectedRouteRegistry();
-   assertEquals(100,registry.candidates().size());
+   assertEquals(111,registry.candidates().size());
    var mvc = mvc(owner, new UntrustedController(), resolver,registry);
    assertThrows(Exception.class, () ->
       mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(TRUSTED)));
@@ -165,13 +165,24 @@ class HidraTrustedNativeProtectedRouteHttpTest {
  @Test void realManufacturerTupleRegistryRejectsWrongVerbAndSiblingPattern() throws Exception {
    var registry=new HidraTrustedNativeProtectedRouteRegistry();
    var routes=registry.candidates();
-   assertEquals(100,routes.size());
+   assertEquals(111,routes.size());
    var expected=java.util.Set.of(
      "POST /api/v1/planning/revisions/{revisionId}/nominations",
      "POST /api/v1/planning/nominations/{id}/disposition",
      "GET /api/v1/planning/nominations/{id}/history",
      "POST /api/v1/integrity/findings/{findingId}/maintenance-approvals",
      "GET /api/v1/integrity/findings/{findingId}/maintenance-handoffs/{approvalId}",
+     "GET /api/v1/custody/measurement-periods/{periodId}",
+     "GET /api/v1/custody/measurement-periods/{periodId}/reconciliations",
+     "POST /api/v1/custody/measurement-periods/{periodId}/reconciliations",
+     "GET /api/v1/custody/reconciliations/{reconciliationId}",
+     "GET /api/v1/custody/transfer-tickets/{ticketId}",
+     "GET /api/v1/custody/transfer-tickets/{ticketId}/history",
+     "POST /api/v1/custody/transfer-tickets/{ticketId}/finalizations",
+     "POST /api/v1/custody/transfer-tickets/{ticketId}/corrections",
+     "GET /api/v1/custody/reconciliations/{reconciliationId}/discrepancies",
+     "GET /api/v1/custody/discrepancies/{discrepancyId}",
+     "POST /api/v1/custody/discrepancies/{discrepancyId}/dispositions",
      "POST /api/v1/custody/measurement-periods/{periodId}/measurements",
      "GET /api/v1/custody/measurement-periods/{periodId}/measurements/{measurementId}",
      "POST /api/v1/assets/maintenance-work-orders/from-integrity",
@@ -352,6 +363,9 @@ class HidraTrustedNativeProtectedRouteHttpTest {
     var t20Custody = new dz.sh.hidra.modules.custody.api.rest.controller.CustodyMeasurementCaptureController(
         org.mockito.Mockito.mock(dz.sh.hidra.modules.custody.application.port.in.CustodyMeasurementCaptureUseCase.class));
     owners.put(t20Custody.getClass(), t20Custody);
+    var t21Custody=new dz.sh.hidra.modules.custody.api.rest.controller.CustodyTransferLifecycleController(
+        org.mockito.Mockito.mock(dz.sh.hidra.modules.custody.application.port.in.CustodyTransferLifecycleUseCase.class));
+    owners.put(t21Custody.getClass(),t21Custody);
 
 
     // The same logical operation has two distinct native-protected MVC methods, never one multi-pattern mapping.

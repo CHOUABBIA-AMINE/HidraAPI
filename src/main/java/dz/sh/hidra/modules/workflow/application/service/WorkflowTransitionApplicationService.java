@@ -193,6 +193,16 @@ public class WorkflowTransitionApplicationService implements ExecuteWorkflowTran
         validateTransition(instance, task, transition, command);
 
         Instant now = Instant.now();
+        // Custody ticket decisions must be independent human acts even before finalization.
+        // The finalizing owner additionally validates exact ticket/digest and current grants.
+        if("custody".equals(instance.targetModule())
+                && (transition.decision()==WorkflowDecision.APPROVE
+                     ||transition.decision()==WorkflowDecision.REJECT)) {
+            var ticketType=configuration.requireActiveCatalog(instance.targetTypeId(),"WORKFLOW_TARGET_TYPE");
+            if("CUSTODY_TRANSFER_TICKET".equals(ticketType.code())
+                    && !eligibleIndependentHumanReviewer(actor.id(),instance.startedByActorId()))
+                throw new WorkflowTransitionDeniedException("Independent Custody ticket human reviewer required.");
+        }
         if("custody".equals(instance.targetModule()) && transition.decision()==WorkflowDecision.APPROVE) {
             var type=configuration.requireActiveCatalog(instance.targetTypeId(),"WORKFLOW_TARGET_TYPE");
             if("PRODUCT_SOURCE_PUBLICATION".equals(type.code())) {

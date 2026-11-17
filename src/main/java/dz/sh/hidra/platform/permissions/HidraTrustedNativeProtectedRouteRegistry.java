@@ -164,7 +164,28 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
             Class<?> nominationDisposition = Class.forName(nominationPackage + "request.PlanningNominationCommandRequest$Disposition");
             Class<?> custodyController=Class.forName("dz.sh.hidra.modules.custody.api.rest.controller.CustodyMeasurementCaptureController");
             Class<?> custodyCapture=Class.forName("dz.sh.hidra.modules.custody.api.rest.request.CustodyMeasurementCaptureRequest");
+            final String t21Root="dz.sh.hidra.modules.custody.api.rest.";
+            Class<?> t21=Class.forName(t21Root+"controller.CustodyTransferLifecycleController");
+            Class<?> t21Reconcile=Class.forName(t21Root+"request.CustodyTransferLifecycleRequests$Reconcile");
+            Class<?> t21Finalize=Class.forName(t21Root+"request.CustodyTransferLifecycleRequests$Finalize");
+            Class<?> t21Correct=Class.forName(t21Root+"request.CustodyTransferLifecycleRequests$Correct");
+            Class<?> t21Disposition=Class.forName(t21Root+"request.CustodyTransferLifecycleRequests$Disposition");
+            String t21Periods="/api/v1/custody/measurement-periods/{periodId}";
+            String t21Reconciliations="/api/v1/custody/reconciliations/{reconciliationId}";
+            String t21Tickets="/api/v1/custody/transfer-tickets/{ticketId}";
+            String t21Discrepancies="/api/v1/custody/discrepancies/{discrepancyId}";
             return List.of(
+                new Route(t21,t21.getDeclaredMethod("period",String.class),"GET",t21Periods),
+                new Route(t21,t21.getDeclaredMethod("reconciliations",String.class),"GET",t21Periods+"/reconciliations"),
+                new Route(t21,t21.getDeclaredMethod("reconcile",String.class,t21Reconcile),"POST",t21Periods+"/reconciliations"),
+                new Route(t21,t21.getDeclaredMethod("reconciliation",String.class),"GET",t21Reconciliations),
+                new Route(t21,t21.getDeclaredMethod("ticket",String.class),"GET",t21Tickets),
+                new Route(t21,t21.getDeclaredMethod("history",String.class),"GET",t21Tickets+"/history"),
+                new Route(t21,t21.getDeclaredMethod("finalizeTicket",String.class,t21Finalize),"POST",t21Tickets+"/finalizations"),
+                new Route(t21,t21.getDeclaredMethod("correctTicket",String.class,t21Correct),"POST",t21Tickets+"/corrections"),
+                new Route(t21,t21.getDeclaredMethod("discrepancies",String.class),"GET",t21Reconciliations+"/discrepancies"),
+                new Route(t21,t21.getDeclaredMethod("discrepancy",String.class),"GET",t21Discrepancies),
+                new Route(t21,t21.getDeclaredMethod("dispose",String.class,t21Disposition),"POST",t21Discrepancies+"/dispositions"),
                 new Route(custodyController,custodyController.getDeclaredMethod("capture",String.class,custodyCapture),
                     "POST","/api/v1/custody/measurement-periods/{periodId}/measurements"),
                 new Route(custodyController,custodyController.getDeclaredMethod("read",String.class,String.class),

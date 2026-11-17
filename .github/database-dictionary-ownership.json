@@ -172,6 +172,78 @@
     "owner": "custody",
     "purpose": "Custody-owned immutable supplied facts and authored metadata binding with exact payload, replay and transaction provenance; no numerical or engineering qualification."
   },
+  "public.hidra_custody_t21_calculation": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261117_001__t21_custody_transfer_lifecycle.sql",
+      "src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcCustodyTransferLifecycleAdapter.java"
+    ],
+    "owner": "custody",
+    "purpose": "T21 Custody-owned Immutable observed-volume calculation snapshot with explicit official=false and no conversion."
+  },
+  "public.hidra_custody_t21_command": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261117_001__t21_custody_transfer_lifecycle.sql",
+      "src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcCustodyTransferLifecycleAdapter.java"
+    ],
+    "owner": "custody",
+    "purpose": "T21 Custody-owned Append-only signed actor, period and request fingerprint for exact idempotent lifecycle replay."
+  },
+  "public.hidra_custody_t21_correction": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261117_001__t21_custody_transfer_lifecycle.sql",
+      "src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcCustodyTransferLifecycleAdapter.java"
+    ],
+    "owner": "custody",
+    "purpose": "T21 Custody-owned One-to-one immutable original-to-successor ticket correction provenance and human reason."
+  },
+  "public.hidra_custody_t21_discrepancy": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261117_001__t21_custody_transfer_lifecycle.sql",
+      "src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcCustodyTransferLifecycleAdapter.java"
+    ],
+    "owner": "custody",
+    "purpose": "T21 Custody-owned Immutable nonzero ticket-versus-measured quantity discrepancy."
+  },
+  "public.hidra_custody_t21_disposition": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261117_001__t21_custody_transfer_lifecycle.sql",
+      "src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcCustodyTransferLifecycleAdapter.java"
+    ],
+    "owner": "custody",
+    "purpose": "T21 Custody-owned Append-only attributable explicit acceptance or rejection of an observed discrepancy."
+  },
+  "public.hidra_custody_t21_finalization": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261117_001__t21_custody_transfer_lifecycle.sql",
+      "src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcCustodyTransferLifecycleAdapter.java"
+    ],
+    "owner": "custody",
+    "purpose": "T21 Custody-owned Append-only independent Workflow decision evidence and software-finalization record."
+  },
+  "public.hidra_custody_t21_reconciliation": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261117_001__t21_custody_transfer_lifecycle.sql",
+      "src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcCustodyTransferLifecycleAdapter.java"
+    ],
+    "owner": "custody",
+    "purpose": "T21 Custody-owned Immutable exact-scoped observed receipt reconciliation and selection digest; no fiscal acceptance."
+  },
+  "public.hidra_custody_t21_reconciliation_receipt": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261117_001__t21_custody_transfer_lifecycle.sql",
+      "src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcCustodyTransferLifecycleAdapter.java"
+    ],
+    "owner": "custody",
+    "purpose": "T21 Custody-owned Append-only ordered qualified T20 receipt membership under exact reconciliation scope."
+  },
+  "public.hidra_custody_t21_ticket": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261117_001__t21_custody_transfer_lifecycle.sql",
+      "src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcCustodyTransferLifecycleAdapter.java"
+    ],
+    "owner": "custody",
+    "purpose": "T21 Custody-owned Immutable software-only custody transfer ticket revision, pending/finalized distinction, and Workflow target digest."
+  },
   "public.hidra_hse_catalog_field_policy": {
     "evidence": [
       "src/main/resources/db/migration/V20261008_014__hmr_082_hse_case_lifecycle.sql"

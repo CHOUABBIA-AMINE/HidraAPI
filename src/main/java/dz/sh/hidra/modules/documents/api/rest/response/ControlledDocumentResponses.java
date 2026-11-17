@@ -16,7 +16,6 @@ package dz.sh.hidra.modules.documents.api.rest.response;
 
 import dz.sh.hidra.modules.documents.application.port.in.ControlledDocumentsUseCase;
 import dz.sh.hidra.modules.documents.application.port.in.ControlledDocumentsUseCase.*;
-import dz.sh.hidra.modules.documents.domain.model.ControlledDocumentDecision;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.Instant;
 import java.util.List;

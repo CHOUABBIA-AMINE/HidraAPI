@@ -2658,3 +2658,50 @@ the same GitHub workflows and stop for feedback. Once executable source
 verification is recovered, evaluate any remaining T24 signed acceptance or
 generated-contract failures by their own exact-SHA CI evidence. T17/T25 are not
 selected.
+
+
+### T24 CI #1287 scoped repair — 2026-11-17
+
+**T24 remains IN PROGRESS, without engineering or CI acceptance.** [CI #1287](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44166664521)
+failed at the exact parent `ebe31ab1bd6212e3bd34b4bbc524673c1aa9427a`.
+Java 21 compilation and application startup succeeded; unit/architecture found
+four fail-closed assertions: the native registry expanded from 115 to 124
+entries but its complete-route fixture and both counts were not updated; the
+direct ArchUnit cross-module loop omitted the *exact* two-contract Documents
+owner adapter admission although the classifier already rejected all other
+consumers; and REST response code directly referenced a non-enum Domain
+decision, violating HRA-102. The repair retains every original 115 tuple and
+adds only the exact nine T24 tuples, a real mock-controlled controller for
+startup signature validation, the exact bounded owner-export check, and an
+Application-owned immutable decision projection instead of Domain-to-REST
+coupling. Three changed test source SHA-256 fingerprints are refreshed
+without dropping required tests or test inventory cases.
+
+Thirteen PostgreSQL shards passed; shard 9's signed
+`Gz2ControlledDocumentsNativeHttpPostgresIntegrationTest` failed the initial
+synthetic registration because its native POST returned 500 at transaction
+commit with `bad SQL grammar []` instead of 201. That generic response
+alone does not reveal the underlying PostgreSQL error. The same test retains
+the 201 assertion, but adds on-failure synthetic PostgreSQL container
+server-log evidence to identify the exact failing statement on the next
+hosted run; it does not swallow or downgrade a failed workflow. The
+PostgreSQL DDL/migration is preserved unchanged pending a verified cause
+and approved migration-history-safe remediation. The Full Verification
+Gate failed because required unit, PostgreSQL, and API jobs failed.
+
+The exact-SHA API contract job passed runtime OpenAPI backward-compatibility
+but failed canonical snapshot equality as expected for T24's new operations.
+[Documentation Validation #1122](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44166664282)
+passed. Genuine runtime OpenAPI and migrated physical database schema artifacts
+were generated on CI #1287; the separately registered
+`docs(documents): reconcile T24 generated contracts and physical dictionary`
+task is the only authorized later path for artifact/manifest reconciliation
+when source repair publishes first. Do not bypass either equality gate or
+fabricate physical metadata. No extra migration, unrelated module,
+OpenAPI fixture, CI workflow or version/deployment change is authorized in
+this T24 code repair.
+
+The successor exact-head guarded commit uses the registered T24 implementation
+message. After publication confirm exact-SHA CI queue/start and stop; no
+tests, PostgreSQL acceptance, snapshot equality, Full Verification Gate,
+T24 completion, T17 or T25 advancement may be claimed without evidence.

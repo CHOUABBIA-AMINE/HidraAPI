@@ -160,7 +160,7 @@ public class ControlledDocumentsApplicationService implements ControlledDocument
         var replay=repository.decision(documentId,requestId);
         if(replay.isPresent()){
             policy.requireReplay(replay.get(),digest);
-            return new DecisionResult(replay.get(),true);
+            return new DecisionResult(decisionView(replay.get()),true);
         }
         var document=documents.findById(documentId).orElseThrow(ControlledDocumentsApplicationService::hidden);
         var version=versions.findById(versionId)
@@ -186,7 +186,12 @@ public class ControlledDocumentsApplicationService implements ControlledDocument
                 expected==null?"ACCEPT":"SUPERSEDE",version.checksumValue().toLowerCase(Locale.ROOT),
                 version.fileSizeBytes(),company,facility,linkRoleId,DocumentId.newId().value(),Instant.now());
         repository.accept(decision,current.code(),current.label());
-        return new DecisionResult(decision,false);
+        return new DecisionResult(decisionView(decision),false);
+    }
+    private static DecisionView decisionView(ControlledDocumentDecision d){
+        return new DecisionView(d.id(),d.documentId(),d.versionId(),d.previousVersionId(),
+                d.action(),d.requestId(),d.checksumSha256(),d.contentLength(),
+                d.companyId(),d.facilityId(),d.linkId(),d.decidedAt());
     }
     private void authorize(String company,String facility,String permission){
         requireText(company,"Company");requireText(facility,"Facility");

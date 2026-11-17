@@ -86,7 +86,12 @@ class Gz2ControlledDocumentsNativeHttpPostgresIntegrationTest {
                 var create=Map.of("requestId",createKey,"code","GZ2-DOC-"+id(),
                         "titleFr","Preuve d'inspection GZ2","documentTypeId",type,
                         "classificationId",classification);
-                JsonNode created=runtime.json("POST",base(f),author,create,201);
+                var createResponse=runtime.send("POST",base(f),author,create);
+                assertEquals(201,createResponse.statusCode(),() ->
+                        "Controlled document creation response: "+new String(
+                                createResponse.body(),StandardCharsets.UTF_8)
+                        +"\nPostgreSQL server logs:\n"+postgres.getLogs());
+                JsonNode created=JSON.readTree(createResponse.body());
                 doc=required(created.path("document"),"id");
                 assertEquals("DRAFT",required(created.path("document"),"status"));
                 assertEquals(doc,required(runtime.json("POST",base(f),author,create,200)

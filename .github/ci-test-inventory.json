@@ -54,7 +54,7 @@
       "lane": "unit-architecture",
       "owner": "architecture",
       "path": "src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java",
-      "source_sha256": "e4f2293c29cf285742da7b4279faa6b49bd5e9aa6c9211d7b6b64aed49e52e79",
+      "source_sha256": "cd9ee7b8158ab46393bc831879ba8f003cb080cd4d11861d1d3d8e1539175639",
       "supports": []
     },
     {
@@ -11851,7 +11851,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java",
-      "source_sha256": "15d57a1d7d79e12b8e9a48b5f7946bb0df8442815968847888956b51d193962e",
+      "source_sha256": "937d2e830b1a330f54a4180c14e858781f3d06e00d42992f898cfcac45dc6d61",
       "supports": []
     },
     {
@@ -12185,7 +12185,7 @@
       "lane": "postgres-integration",
       "owner": "qualification",
       "path": "src/test/java/dz/sh/hidra/qualification/Gz2ControlledDocumentsNativeHttpPostgresIntegrationTest.java",
-      "source_sha256": "5fa54d12205ac5770aa86873cf372c8aa69e66931c9106bd0279d8d17a66de0e",
+      "source_sha256": "c4437dae208e12c29fceb201c21887a6dcd9d56daaf07a8cdd2ddd9c0dee6b7b",
       "supports": []
     },
     {

@@ -16,7 +16,6 @@ package dz.sh.hidra.modules.documents.application.port.in;
 
 import dz.sh.hidra.modules.documents.application.dto.DocumentVersionContentDto;
 import dz.sh.hidra.modules.documents.application.dto.DocumentVersionSummaryDto;
-import dz.sh.hidra.modules.documents.domain.model.ControlledDocumentDecision;
 import java.io.InputStream;
 import java.time.Instant;
 import java.util.List;
@@ -33,7 +32,10 @@ public interface ControlledDocumentsUseCase {
             String targetId,String roleId,boolean primary,Instant linkedAt){}
     record Page<T>(List<T> items,long total,int page,int size){}
     record CreateResult(DocumentView document,boolean replayed){}
-    record DecisionResult(ControlledDocumentDecision decision,boolean replayed){}
+    record DecisionView(String id,String documentId,String versionId,String previousVersionId,
+            String action,String requestId,String checksumSha256,long contentLength,
+            String companyId,String facilityId,String linkId,Instant decidedAt){}
+    record DecisionResult(DecisionView decision,boolean replayed){}
     CreateResult create(String companyId,String facilityId,Create command);
     Page<DocumentView> discover(String companyId,String facilityId,int page,int size,String code);
     DocumentView detail(String companyId,String facilityId,String documentId);

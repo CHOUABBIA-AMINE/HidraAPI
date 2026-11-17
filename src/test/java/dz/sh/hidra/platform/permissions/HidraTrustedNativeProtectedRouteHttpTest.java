@@ -163,7 +163,7 @@ class HidraTrustedNativeProtectedRouteHttpTest {
    var resolver = org.mockito.Mockito.mock(HidraEffectivePermissionResolver.class);
    authenticated();
    var registry = new HidraTrustedNativeProtectedRouteRegistry();
-   assertEquals(115,registry.candidates().size());
+   assertEquals(124,registry.candidates().size());
    var mvc = mvc(owner, new UntrustedController(), resolver,registry);
    assertThrows(Exception.class, () ->
       mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(TRUSTED)));
@@ -172,8 +172,17 @@ class HidraTrustedNativeProtectedRouteHttpTest {
  @Test void realManufacturerTupleRegistryRejectsWrongVerbAndSiblingPattern() throws Exception {
    var registry=new HidraTrustedNativeProtectedRouteRegistry();
    var routes=registry.candidates();
-   assertEquals(115,routes.size());
+   assertEquals(124,routes.size());
    var expected=java.util.Set.of(
+     "POST /api/v1/documents/companies/{companyId}/facilities/{facilityId}/controlled-documents",
+     "GET /api/v1/documents/companies/{companyId}/facilities/{facilityId}/controlled-documents",
+     "GET /api/v1/documents/companies/{companyId}/facilities/{facilityId}/controlled-documents/{documentId}",
+     "GET /api/v1/documents/companies/{companyId}/facilities/{facilityId}/controlled-documents/{documentId}/versions",
+     "GET /api/v1/documents/companies/{companyId}/facilities/{facilityId}/controlled-documents/{documentId}/links",
+     "POST /api/v1/documents/companies/{companyId}/facilities/{facilityId}/controlled-documents/{documentId}/versions/upload",
+     "GET /api/v1/documents/companies/{companyId}/facilities/{facilityId}/controlled-documents/{documentId}/versions/{versionId}/content",
+     "POST /api/v1/documents/companies/{companyId}/facilities/{facilityId}/controlled-documents/{documentId}/versions/{versionId}/accept",
+     "POST /api/v1/documents/companies/{companyId}/facilities/{facilityId}/controlled-documents/{documentId}/versions/{versionId}/supersede",
      "POST /api/v1/analytics/companies/{companyId}/facilities/{facilityId}/deviation-metric-runs",
      "GET /api/v1/analytics/companies/{companyId}/facilities/{facilityId}/deviation-metric-runs/{runId}",
      "GET /api/v1/risk/assessments/{id}",
@@ -383,6 +392,10 @@ class HidraTrustedNativeProtectedRouteHttpTest {
     var t23Analytics=new dz.sh.hidra.modules.analytics.api.rest.controller.DeviationMetricRunController(
        org.mockito.Mockito.mock(dz.sh.hidra.modules.analytics.application.port.in.DeviationMetricRunUseCase.class));
     owners.put(t23Analytics.getClass(),t23Analytics);
+    var t24Documents=new dz.sh.hidra.modules.documents.api.rest.controller.ControlledDocumentsController(
+      org.mockito.Mockito.mock(dz.sh.hidra.modules.documents.application.port.in.ControlledDocumentsUseCase.class),
+      52428800L);
+    owners.put(t24Documents.getClass(),t24Documents);
 
 
     // The same logical operation has two distinct native-protected MVC methods, never one multi-pattern mapping.

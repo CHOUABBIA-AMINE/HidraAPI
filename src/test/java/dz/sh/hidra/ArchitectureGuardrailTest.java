@@ -468,6 +468,8 @@ class ArchitectureGuardrailTest {
                 if (isT14OwnerExport(source.getName(),target.getName())) continue;
                 if (isTelemetryNativeOwnerExport(source.getName(),target.getName())) continue;
                 if (isMonitoringRuleOwnerExport(source.getName(),target.getName())) continue;
+                // Only the two T24 Documents owner contracts may be consumed by this exact adapter.
+                if (t24DocumentOwnerExport(source.getName(),target.getName())) continue;
 
                 violations.add(source.getName() + " -> " + target.getName());
             }

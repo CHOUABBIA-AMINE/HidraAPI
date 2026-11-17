@@ -58,6 +58,15 @@ class Gz2RiskAssessmentGovernanceNativeHttpPostgresIntegrationTest {
                     created_at,updated_at)
                 VALUES (?,?,'Synthetic inherent Risk matrix',?,'t22-v1','ACTIVE',now(),now())
                 """,matrix,"GZ2-"+matrix,matrixType);
+            // The matrix cell uses a concrete Risk rating entity, not merely its
+            // independently validated catalog entry. Seed both with one ID so
+            // PostgreSQL's same-owner FK remains enforced in the synthetic journey.
+            f.sql.update("""
+                INSERT INTO hidra_risk_rating(
+                    id,code,name_fr,severity_order,requires_treatment,
+                    requires_approval,active,created_at,updated_at)
+                VALUES (?,'T22_RATING','Synthetic GZ2 Risk rating',1,false,true,true,now(),now())
+                """,rating);
             f.sql.update("""
                 INSERT INTO hidra_risk_matrix_cell(id,risk_matrix_id,likelihood_level_id,
                     consequence_level_id,score_value,rating_id,requires_treatment,

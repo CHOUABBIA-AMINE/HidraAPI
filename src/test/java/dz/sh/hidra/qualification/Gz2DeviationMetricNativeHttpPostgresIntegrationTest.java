@@ -22,7 +22,7 @@ package dz.sh.hidra.qualification;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.util.Map;
 import java.math.BigDecimal;
-import java.util.Set;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -115,7 +115,11 @@ class Gz2DeviationMetricNativeHttpPostgresIntegrationTest {
                     gate.countDown();
                     var first=left.get(35,TimeUnit.SECONDS);
                     var second=right.get(35,TimeUnit.SECONDS);
-                    assertEquals(Set.of(200,201),Set.of(first.statusCode(),second.statusCode()));
+                    int firstStatus = first.statusCode();
+                    int secondStatus = second.statusCode();
+                    assertEquals(List.of(200, 201),
+                            List.of(Math.min(firstStatus, secondStatus), Math.max(firstStatus, secondStatus)),
+                            () -> "Expected one create and one replay; received " + firstStatus + " and " + secondStatus);
                     var readerJson=new ObjectMapper();
                     var createdResponse=first.statusCode()==201?first:second;
                     var replayResponse=first.statusCode()==200?first:second;

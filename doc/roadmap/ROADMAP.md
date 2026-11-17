@@ -2262,3 +2262,35 @@ with verified artifact provenance and both equality gates retained.
 T23 remains **IN PROGRESS / CI-FAILED** pending signed shard 11, generated
 contract/dictionary reconciliation and exact-SHA Full Verification Gate.
 T24 remains unselected.
+
+### T23 CI #1283 deferred trigger row repair — 2026-11-17
+
+[HidraAPI CI #1283](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44109027154)
+failed on `76dd6ba9f3f9379b74ead60ecf328b38cacd5634` (parent
+`af732e39f5baaae1d42f0fe7786b5f3b46da06d9`). Java and architecture, static
+validation and thirteen PostgreSQL shards passed. Shard 11 reached the signed
+Analytics race and returned HTTP 500 twice. Its test then masked the pair by
+attempting `Set.of(500, 500)`. A local PostgreSQL 16.6 reproduction with the
+exact T23 migration and a synthetic subset of the catalog reproduced
+`record "new" has no field "run_id"` when the deferred trigger fires on a
+metric run. The shared PL/pgSQL CASE plans references to fields of distinct
+trigger row types together.
+
+The same-task repair uses the registered implementation message and adds only
+`src/main/resources/db/migration/V20261117_004__t23_deviation_metric_trigger_row_dispatch.sql` to the T23 migration allowlist. The forward-only
+replacement uses separate IF branches per table, preserves the existing checks
+and leaves the already-applied migration intact. The existing signed race test
+now asserts both status codes without rejecting duplicate diagnostic inputs,
+and its manifest fingerprint is refreshed. The local focused SQL exercise
+committed the value 5 and a separate STALE failure, and rejected an unsealed
+reserved run, numeric-result mutation and receipt deletion. The complete signed
+HTTP/JVM restart qualification and exact-SHA Full Verification Gate remain pending.
+
+The API job separately failed canonical OpenAPI equality after successful
+runtime generation and compatibility, so strict migrated dictionary comparison
+was skipped. The [OpenAPI](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44109027154/artifacts/14338964650)
+and [physical dictionary](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44109027154/artifacts/14338794832)
+archives were verified against the GitHub upload digests. This source repair
+changes a cataloged trigger function, so use the replacement exact-source-SHA
+capture for the separately registered canonical reconciliation. Keep both
+equality gates mandatory. T23 remains **IN PROGRESS** and T24 is unselected.

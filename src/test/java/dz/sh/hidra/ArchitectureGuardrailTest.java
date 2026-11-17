@@ -136,6 +136,8 @@ class ArchitectureGuardrailTest {
                     "dz.sh.hidra.modules.risk.application.contract.workflow",
                     "dz.sh.hidra.modules.alarm.application.contract.risk",
                     "dz.sh.hidra.modules.identity.application.contract.risk",
+                    "dz.sh.hidra.modules.identity.application.contract.analytics",
+                    "dz.sh.hidra.modules.monitoring.application.contract.analytics",
                     "dz.sh.hidra.modules.workflow.application.contract.risk",
                     "dz.sh.hidra.modules.audit.application.contract.simulation",
                     "dz.sh.hidra.modules.identity.application.contract.incident",
@@ -1060,6 +1062,25 @@ class ArchitectureGuardrailTest {
         }
     }
 
+    private static boolean isT23OwnerExport(String source,String target) {
+        final String consumer="dz.sh.hidra.modules.analytics.infrastructure.integration.DeviationMetricOwnerAccessAdapter";
+        return source.equals(consumer) && java.util.Set.of(
+                "dz.sh.hidra.modules.identity.application.contract.analytics.AnalyticsMetricScopedAuthorizationContract",
+                "dz.sh.hidra.modules.monitoring.application.contract.analytics.AnalyticsDeviationSourceContract")
+                .stream().anyMatch(root->target.equals(root)||target.startsWith(root+"$"));
+    }
+    @Test void t23OwnerExportsAreExclusiveToAnalyticsAdapter() {
+        String consumer="dz.sh.hidra.modules.analytics.infrastructure.integration.DeviationMetricOwnerAccessAdapter";
+        for(String root:java.util.Set.of(
+                "dz.sh.hidra.modules.identity.application.contract.analytics.AnalyticsMetricScopedAuthorizationContract",
+                "dz.sh.hidra.modules.monitoring.application.contract.analytics.AnalyticsDeviationSourceContract")) {
+            assertFalse(isForbiddenCrossModuleDependency(consumer,root));
+            assertFalse(isForbiddenCrossModuleDependency(consumer,root+"$Evaluation"));
+            assertTrue(isForbiddenCrossModuleDependency(consumer+"Sibling",root));
+            assertTrue(isForbiddenCrossModuleDependency(consumer,root+"Sibling"));
+            assertTrue(isForbiddenCrossModuleDependency(consumer,root.replace(".application.contract.analytics.",".infrastructure.persistence.")));
+        }
+    }
     private static boolean isForbiddenCrossModuleDependency(
             String sourceClassName, String targetClassName) {
         String sourcePackage = packageName(sourceClassName);
@@ -1070,6 +1091,10 @@ class ArchitectureGuardrailTest {
         if (sourceModule == null || targetModule == null || sourceModule.equals(targetModule)) {
             return false;
         }
+        for(String root:java.util.Set.of(
+                "dz.sh.hidra.modules.identity.application.contract.analytics.AnalyticsMetricScopedAuthorizationContract",
+                "dz.sh.hidra.modules.monitoring.application.contract.analytics.AnalyticsDeviationSourceContract"))
+            if(targetClassName.startsWith(root))return !isT23OwnerExport(sourceClassName,targetClassName);
         if (isT18MaintenanceContract(targetClassName)) {
             return !isT18MaintenanceConsumer(sourceClassName,targetClassName);
         }

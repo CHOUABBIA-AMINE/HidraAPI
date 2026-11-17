@@ -150,3 +150,28 @@ T13 is a **human-declared, source-linked suspected leak**, not an executing leak
 ## T14 Incident evidence-linked human escalation (2026-11-14)
 
 Incident owns the authoritative human decision, immutable evaluation/case correlation, source links and typed timeline. Alarm exports only `IncidentAlarmEvidenceContract` to the exact Incident integration adapter; LeakDetection exports only `IncidentLeakCandidateEvidenceContract` to that adapter. Each export delegates to its own already-protected T12/T13 owner read, which in turn requires currently eligible Monitoring READ. Identity's `IncidentScopedAuthorizationContract` and Topology's `IncidentTopologyOwnershipContract` are scalar, exact-consumer exports used only by `IncidentEscalationAuthorizationAdapter`. The existing Topology Alarm owner projection is used by the Alarm-owned Incident evidence query. No aggregate/JPA ownership crosses modules, no generic permission replaces paired company/asset authority, and Workflow closure proof remains separate. Qualified suspected leak evidence is never a confirmed leak or an OT control action. This is a proposed implementation contract until exact-SHA CI passes.
+
+## T23 Analytics immutable deviation metric imports — 2026-11-17
+
+T23 uses exactly two new provider-owned scalar application contracts, each consumed only by
+`dz.sh.hidra.modules.analytics.infrastructure.integration.DeviationMetricOwnerAccessAdapter`:
+
+- `dz.sh.hidra.modules.monitoring.application.contract.analytics.AnalyticsDeviationSourceContract`:
+  Monitoring owns receipt lookup, exact rule/Revision and trusted/approved evidence, and
+  delegates to its current authorized `AuthoritativeDeviationUseCase.find`. The consumer
+  obtains immutable scalar source identifiers, actual/expected values, outcome, unit,
+  asset/company scope and time. Monitoring does not export its domain aggregate/JPA entity.
+- `dz.sh.hidra.modules.identity.application.contract.analytics.AnalyticsMetricScopedAuthorizationContract`:
+  Identity owns current LOCAL actor verification, direct explicit paired
+  `CUSTOM analytics-company:{companyId}` and `FACILITY {facilityId}` permits,
+  verified authorization assertions and effective-policy DENY precedence for
+  `analytics:deviation-metric:execute` and `analytics:deviation-metric:read`.
+  It exports no credential, mutable grant or Identity persistence model.
+
+Analytics is the sole owner of the version-selected deterministic `ABSOLUTE_DEVIATION_V1`
+calculation, immutable linked run/value result and append-only receipt. Both current Analytics
+and Monitoring owner READ permissions are required before any protected metric result or
+lineage is disclosed; replay cannot restore revoked authority. Package visibility does not
+authorize sibling consumer types. The two test-enforced exact importer/type allowances
+reject private, lookalike and foreign imports. No physical operating decision or OT actuation
+is inferred. Synthetic software implementation and exact-SHA CI remain acceptance gates.

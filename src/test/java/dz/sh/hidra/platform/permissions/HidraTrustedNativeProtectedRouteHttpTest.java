@@ -156,7 +156,7 @@ class HidraTrustedNativeProtectedRouteHttpTest {
    var resolver = org.mockito.Mockito.mock(HidraEffectivePermissionResolver.class);
    authenticated();
    var registry = new HidraTrustedNativeProtectedRouteRegistry();
-   assertEquals(113,registry.candidates().size());
+   assertEquals(115,registry.candidates().size());
    var mvc = mvc(owner, new UntrustedController(), resolver,registry);
    assertThrows(Exception.class, () ->
       mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(TRUSTED)));
@@ -165,8 +165,10 @@ class HidraTrustedNativeProtectedRouteHttpTest {
  @Test void realManufacturerTupleRegistryRejectsWrongVerbAndSiblingPattern() throws Exception {
    var registry=new HidraTrustedNativeProtectedRouteRegistry();
    var routes=registry.candidates();
-   assertEquals(113,routes.size());
+   assertEquals(115,routes.size());
    var expected=java.util.Set.of(
+     "POST /api/v1/analytics/companies/{companyId}/facilities/{facilityId}/deviation-metric-runs",
+     "GET /api/v1/analytics/companies/{companyId}/facilities/{facilityId}/deviation-metric-runs/{runId}",
      "GET /api/v1/risk/assessments/{id}",
      "GET /api/v1/risk/assessments/{id}/decision-history",
      "POST /api/v1/planning/revisions/{revisionId}/nominations",
@@ -371,6 +373,9 @@ class HidraTrustedNativeProtectedRouteHttpTest {
     var t22Risk=new dz.sh.hidra.modules.risk.api.rest.controller.GovernedRiskAssessmentController(
         org.mockito.Mockito.mock(dz.sh.hidra.modules.risk.application.port.in.ReadGovernedRiskAssessmentUseCase.class));
     owners.put(t22Risk.getClass(),t22Risk);
+    var t23Analytics=new dz.sh.hidra.modules.analytics.api.rest.controller.DeviationMetricRunController(
+       org.mockito.Mockito.mock(dz.sh.hidra.modules.analytics.application.port.in.DeviationMetricRunUseCase.class));
+    owners.put(t23Analytics.getClass(),t23Analytics);
 
 
     // The same logical operation has two distinct native-protected MVC methods, never one multi-pattern mapping.

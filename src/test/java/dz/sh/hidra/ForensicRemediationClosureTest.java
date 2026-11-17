@@ -98,6 +98,8 @@ class ForensicRemediationClosureTest {
             "dz.sh.hidra.modules.audit.application.contract.risk",
             "dz.sh.hidra.modules.risk.application.contract.evidence",
             "dz.sh.hidra.modules.identity.application.contract.risk",
+            "dz.sh.hidra.modules.identity.application.contract.analytics",
+            "dz.sh.hidra.modules.monitoring.application.contract.analytics",
             "dz.sh.hidra.modules.workflow.application.contract.risk",
             "dz.sh.hidra.modules.audit.application.contract.simulation",
             "dz.sh.hidra.modules.identity.application.contract.incident",
@@ -117,6 +119,22 @@ class ForensicRemediationClosureTest {
             "dz.sh.hidra.modules.workflow.application.contract.hse",
             "dz.sh.hidra.modules.assets.application.contract.hse"
     );
+
+    private static boolean t23AnalyticsOwnerExport(String consumer,String imported) {
+        final String approved="dz.sh.hidra.modules.analytics.infrastructure.integration.DeviationMetricOwnerAccessAdapter";
+        return approved.equals(consumer) && java.util.Set.of(
+                "dz.sh.hidra.modules.monitoring.application.contract.analytics.AnalyticsDeviationSourceContract",
+                "dz.sh.hidra.modules.identity.application.contract.analytics.AnalyticsMetricScopedAuthorizationContract")
+                .stream().anyMatch(root->imported.equals(root)||imported.startsWith(root+"$"));
+    }
+    @Test void t23SourceImportsAreExclusive() {
+        String consumer="dz.sh.hidra.modules.analytics.infrastructure.integration.DeviationMetricOwnerAccessAdapter";
+        String source="dz.sh.hidra.modules.monitoring.application.contract.analytics.AnalyticsDeviationSourceContract";
+        assertTrue(t23AnalyticsOwnerExport(consumer,source));
+        assertTrue(t23AnalyticsOwnerExport(consumer,source+"$Evaluation"));
+        assertFalse(t23AnalyticsOwnerExport(consumer+"Sibling",source));
+        assertFalse(t23AnalyticsOwnerExport(consumer,source+"Sibling"));
+    }
 
     /** Only the T22 consumers named in the registered boundary may call these new owner exports. */
     private static boolean t22RiskOwnerExport(String consumer, String imported) {
@@ -341,6 +359,7 @@ class ForensicRemediationClosureTest {
                 if (isMonitoringRuleOwnerExport(source.fqcn(), imported)) continue;
                 if (isPlanningReviewerExport(source.fqcn(), imported)) continue;
                 if (t22RiskOwnerExport(source.fqcn(), imported)) continue;
+                if (t23AnalyticsOwnerExport(source.fqcn(), imported)) continue;
                 violations.add(source.fqcn() + " -> " + imported);
             }
         }

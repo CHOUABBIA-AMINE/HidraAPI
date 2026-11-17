@@ -22,6 +22,14 @@
     "owner": "alarm",
     "purpose": "Immutable Alarm-owned operator-trigger identity, source provenance, unique evaluation replay and same-owner Alarm reference; no Monitoring foreign key."
   },
+  "public.hidra_analytics_deviation_metric_receipt": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261117_003__t23_analytics_deviation_metric_receipts.sql",
+      "src/main/java/dz/sh/hidra/modules/analytics/infrastructure/persistence/adapter/JdbcDeviationMetricReceiptAdapter.java"
+    ],
+    "owner": "analytics",
+    "purpose": "Analytics-owned append-only source-scoped, versioned ABSOLUTE_DEVIATION_V1 execution receipt: exact Monitoring evaluation, run/value references, actor, units, replay key and frozen source lineage; never an OT control result."
+  },
   "public.hidra_asset_integrity_work_order": {
     "evidence": [
       "src/main/resources/db/migration/V20261115_003__t18_integrity_maintenance_handoff.sql",

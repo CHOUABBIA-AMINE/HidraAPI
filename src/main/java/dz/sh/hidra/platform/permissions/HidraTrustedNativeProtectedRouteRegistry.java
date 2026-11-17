@@ -175,7 +175,14 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
             String t21Tickets="/api/v1/custody/transfer-tickets/{ticketId}";
             String t21Discrepancies="/api/v1/custody/discrepancies/{discrepancyId}";
             Class<?> t22=Class.forName("dz.sh.hidra.modules.risk.api.rest.controller.GovernedRiskAssessmentController");
+            final String t23Base="/api/v1/analytics/companies/{companyId}/facilities/{facilityId}/deviation-metric-runs";
+            Class<?> t23=Class.forName("dz.sh.hidra.modules.analytics.api.rest.controller.DeviationMetricRunController");
+            Class<?> t23Request=Class.forName("dz.sh.hidra.modules.analytics.api.rest.request.ExecuteDeviationMetricRunRequest");
             return List.of(
+                new Route(t23,t23.getDeclaredMethod("execute",String.class,String.class,t23Request),
+                        "POST",t23Base),
+                new Route(t23,t23.getDeclaredMethod("read",String.class,String.class,String.class),
+                        "GET",t23Base+"/{runId}"),
                 new Route(t22,t22.getDeclaredMethod("assessment",String.class),"GET",
                     "/api/v1/risk/assessments/{id}"),
                 new Route(t22,t22.getDeclaredMethod("decisionHistory",String.class),"GET",

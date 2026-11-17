@@ -133,7 +133,7 @@ class HidraTrustedNativeProtectedRouteRegistryTest {
 
     @Test void baselineRoutesDeclareOnlyFiveExactCompiledTuples(){
         var registry=new HidraTrustedNativeProtectedRouteRegistry();
-        assertEquals(113,registry.candidates().size());
+        assertEquals(115,registry.candidates().size());
         var rows=registry.candidates().stream().filter(r->r.controller().getSimpleName().equals("EngineeringBaselineDraftController")).toList();
         assertEquals(5,rows.size());
         assertEquals(java.util.Set.of("POST /api/v1/topology/engineering-baselines","PUT /api/v1/topology/engineering-baselines/{manifestId}",
@@ -141,6 +141,18 @@ class HidraTrustedNativeProtectedRouteRegistryTest {
             "POST /api/v1/topology/engineering-baselines/{manifestId}/validation"),
             rows.stream().map(r->r.verb()+" "+r.pattern()).collect(java.util.stream.Collectors.toSet()));
         assertTrue(rows.stream().allMatch(r->r.method().isAnnotationPresent(NativeProtectedOperation.class)));
+    }
+
+    @Test void deviationMetricRoutesAreExactlyRegistered() {
+        var entries=new HidraTrustedNativeProtectedRouteRegistry().candidates().stream()
+                .filter(r->r.controller().getSimpleName().equals("DeviationMetricRunController")).toList();
+        assertEquals(2,entries.size());
+        assertEquals(java.util.Set.of(
+                "POST /api/v1/analytics/companies/{companyId}/facilities/{facilityId}/deviation-metric-runs",
+                "GET /api/v1/analytics/companies/{companyId}/facilities/{facilityId}/deviation-metric-runs/{runId}"),
+                entries.stream().map(r->r.verb()+" "+r.pattern())
+                       .collect(java.util.stream.Collectors.toSet()));
+        assertTrue(entries.stream().allMatch(r->r.method().isAnnotationPresent(NativeProtectedOperation.class)));
     }
 
     @Test void protectedHistoricalBaselineReadRoutesAreExact() {

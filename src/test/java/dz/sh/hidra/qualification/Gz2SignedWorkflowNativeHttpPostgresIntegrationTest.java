@@ -386,8 +386,12 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
 
     private static Reading trust(Gz2SignedWorkflowFixture f, Gz2SignedWorkflowFixture.Runtime r, String producer,
             JsonNode commissioned, String quality, Instant observed) throws Exception {
+        return trust(f,r,producer,commissioned,quality,observed,105);
+    }
+    private static Reading trust(Gz2SignedWorkflowFixture f, Gz2SignedWorkflowFixture.Runtime r, String producer,
+            JsonNode commissioned, String quality, Instant observed,int numeric) throws Exception {
         String path = POINT + field(commissioned, "pointId") + "/readings";
-        var raw = Map.of("sourceId", field(commissioned, "sourceId"), "sourceSequenceNumber", id(), "numericValue", 105,
+        var raw = Map.of("sourceId", field(commissioned, "sourceId"), "sourceSequenceNumber", id(), "numericValue", numeric,
                 "qualityCodeId", quality, "unitId", f.pressureUnit, "sourceTimestamp", observed.toString());
         String rawId = field(r.json("POST", path, producer, raw, 201), "id");
         JsonNode replay = r.json("POST", path, producer, raw, 200);
@@ -401,6 +405,58 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
         assertEquals(field(commissioned, "bindingId"), field(trusted, "bindingId"));
         assertEquals(f.pressureUnit, field(trusted, "unitId"));
         return new Reading(rawId, assessment, field(trusted, "id"));
+    }
+
+
+    /**
+     * T23 reuse: authentic T11 source receipts without constructing unrelated Alarm or Incident state.
+     * Keeps the existing T15 journey and its synthetic expected actual=105 unchanged.
+     */
+    static record MetricEvidence(String computedId,String staleId,String ruleId) { }
+
+    static MetricEvidence prepareDeviationMetricEvidence(
+            Gz2SignedWorkflowFixture f,Gz2SignedWorkflowFixture.Runtime r) throws Exception {
+        grantPlanning(f);
+        grantOperatingAuthorities(f);
+        f.global(f.author,"workflow:instances:execute","workflow:tasks:execute");
+        f.global(f.reviewer,"workflow:tasks:execute","workflow:tasks:read");
+        String author=r.login(f.author), reviewer=r.login(f.reviewer);
+        String producer=r.login(f.producer), operator=r.login(f.operator);
+        Instant start=now().minusSeconds(900);
+        Instant end=start.plusSeconds(7200);
+        JsonNode commissioned=commission(f,r,producer,start);
+        String point=field(commissioned,"pointId");
+        Plan plan=approvePlan(f,r,author,reviewer,point,start,end);
+        String quality=prepareTelemetry(f,commissioned);
+        producer=r.login(f.producer);
+        Instant observed=now().minusSeconds(5);
+        Reading fresh=trust(f,r,producer,commissioned,quality,observed,95);
+        Reading aged=trust(f,r,producer,commissioned,quality,observed.minusSeconds(300),95);
+        String policy="TRUSTED_PLAN_COMPARISON";
+        f.catalog("monitoring","EVIDENCE_POLICY",policy);
+        String rule=field(r.json("POST",RULE,operator,Map.of(
+                "code","GZ2-T23-COMPARISON","nameFr","Comparaison absolue synthétique",
+                "ruleType","PLAN_COMPARISON","topologyAssetType","FACILITY",
+                "topologyAssetId",f.asset,"telemetryPointId",point),200),"id");
+        String root=RULE+"/"+rule;
+        r.json("POST",root+"/revisions",operator,Map.of("unitId",f.pressureUnit,
+                "evidencePolicyCode",policy,"validFrom",start.toString(),"validTo",end.toString()),201);
+        r.json("POST",root+"/revisions/1/activate",operator,Map.of("expectedHeadRevision",0,
+                "effectiveFrom",start.toString(),"effectiveUntil",end.toString()),200);
+        f.sql.update("""
+                INSERT INTO hidra_monitoring_evaluation_freshness_policy(rule_id,rule_revision,maximum_age_seconds)
+                VALUES (?,1,120)
+                """,rule);
+        Instant evaluatedAt=now();
+        JsonNode computed=r.json("POST",root+"/evaluations",operator,
+                evaluationRequest(plan,fresh,evaluatedAt),200);
+        assertEquals("COMPUTED",field(computed,"outcome"));
+        assertEquals(100,computed.path("expected").asInt(-1));
+        assertEquals(95,computed.path("actual").asInt(-1));
+        JsonNode stale=r.json("POST",root+"/evaluations",operator,
+                evaluationRequest(plan,aged,evaluatedAt),200);
+        assertEquals("STALE",field(stale,"outcome"));
+        return new MetricEvidence(field(computed,"id"),field(stale,"id"),rule);
     }
 
     private static ResponseChain respond(Gz2SignedWorkflowFixture f, Gz2SignedWorkflowFixture.Runtime r, String operator,

@@ -1239,9 +1239,9 @@
   ],
   "openapi": {
     "counts": {
-      "paths": 423,
-      "operations": 466,
-      "schemas": 502
+      "paths": 425,
+      "operations": 468,
+      "schemas": 505
     },
     "path": "doc/api/openapi.yaml",
     "prior_reviewed_provenance": {
@@ -1673,6 +1673,46 @@
       ]
     },
     "provenance": {
+      "artifact_id": 14341941133,
+      "artifact_member": "hidra-api.json",
+      "artifact_name": "hidra-api-openapi-bf4fb3f66049a4aabed9d227452de29db5c580ca-44112060641-1-api-contract",
+      "source_sha": "bf4fb3f66049a4aabed9d227452de29db5c580ca",
+      "run_id": 44112060641,
+      "run_attempt": 1,
+      "job_id": 134140027149,
+      "generation_step": "Publish deterministic OpenAPI contract",
+      "generation_step_number": 9,
+      "generation_step_conclusion": "success",
+      "compatibility_review": "CI #1284 generated the exact T23 runtime OpenAPI and passed backward compatibility. The T23 signed Analytics execute and read routes and their generated schemas are recorded from that artifact.",
+      "conclusion": "success",
+      "conclusion_scope": "Runtime OpenAPI generation and backward compatibility only. The old canonical OpenAPI failed strict comparison and the physical dictionary strict comparison was skipped. Shard 2 failed Maven distribution download before tests and shard 11 failed the T23 null-serialization assertion.",
+      "failed_step": "Enforce canonical OpenAPI snapshot equality",
+      "job_conclusion": "failure",
+      "workflow_conclusion": "failure",
+      "zip_sha256": "cd3e0777167f56259cc45797a36e26221415a684d3637ad6b033a3de6ba9eaa1",
+      "json_sha256": "80c3e688f15db5b4378ee776f05fd74ec13d7bc8b10efb94926bf944edb36ad1",
+      "database_evidence": {
+        "artifact_id": 14342105680,
+        "artifact_member": "DATA_DICTIONARY.md",
+        "artifact_name": "hidra-database-schema-bf4fb3f66049a4aabed9d227452de29db5c580ca-44112060641-1-api-contract",
+        "artifact_zip_sha256": "893ca8b3c457eadf4ca12055dc91775707e04aea16edbdaa829e76aef49a5beb",
+        "dictionary_sha256": "e3a83e9a074afd531f4f846a6977d2846dc483e1806dbee5b12792dde4f21ad8",
+        "catalog_sha256": "61d5c772764258ea0ff648e1db970f4bec488050eaf4a8bb01bdeda29115c21b",
+        "source_bundle_sha256": "4d061874addc3045db2f532a9f9e6b1d22187cf18ff58c4890c2cefbd9287e88",
+        "source_sha": "bf4fb3f66049a4aabed9d227452de29db5c580ca",
+        "migrations": 223,
+        "jpa_mappings": 471,
+        "relations": 595,
+        "unresolved_owners": 0,
+        "status": "Generated CURRENT from the exact CI #1284 PostgreSQL 16.16 migrated catalog; strict comparison was skipped."
+      },
+      "remaining_gates": [
+        "Exact replacement SHA signed test, required fourteen PostgreSQL shards, strict OpenAPI and migrated physical dictionary equality, and Full Verification Gate."
+      ]
+    },
+    "sha256": "a23c5d5170320f7857f6d5eee98010f44b9950b3e6e94e1bc7c36ae1f4036146",
+    "source_sha": "bf4fb3f66049a4aabed9d227452de29db5c580ca",
+    "prior_reviewed_provenance_t22": {
       "artifact_id": 14331046566,
       "artifact_member": "hidra-api.json",
       "artifact_name": "hidra-api-openapi-8a94105f8493454600ff40772c28d725dc665257-44088768377-1-api-contract",
@@ -1710,9 +1750,7 @@
       "source_sha": "8a94105f8493454600ff40772c28d725dc665257",
       "workflow_conclusion": "failure",
       "zip_sha256": "735cd6c9e95c8701d55f1b703ae8a26455c00def1373a8529836bc7713a7f728"
-    },
-    "sha256": "260183a10fbd95697d35050439389a923948d2447d01f81fa6e120f3998368e7",
-    "source_sha": "8a94105f8493454600ff40772c28d725dc665257"
+    }
   },
   "register": "doc/governance/DOCUMENT_REGISTER.md",
   "register_areas": {

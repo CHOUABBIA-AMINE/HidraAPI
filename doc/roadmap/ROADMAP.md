@@ -2294,3 +2294,33 @@ archives were verified against the GitHub upload digests. This source repair
 changes a cataloged trigger function, so use the replacement exact-source-SHA
 capture for the separately registered canonical reconciliation. Keep both
 equality gates mandatory. T23 remains **IN PROGRESS** and T24 is unselected.
+
+### T23 CI #1284 qualification assertion and canonical reconciliation — 2026-11-17
+
+[HidraAPI CI #1284](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44112060641)
+ran on `bf4fb3f66049a4aabed9d227452de29db5c580ca`. PostgreSQL shard 11 passed the signed execute/replay
+race, scope-authorized GET and creation of a persisted `FAILED / SOURCE_UNAVAILABLE`
+run, then reached the failed-value JSON assertion. The common Jackson
+`non_null` setting omits the unset numeric member. The signed test now requires
+the absence of a numeric result on both creation and post-restart retrieval
+while retaining successful numeric assertions and failed-result database
+cardinality checks. The test inventory is refreshed for the exact changed file.
+
+PostgreSQL shard 2 stopped at the Maven Wrapper 3.9.11 distribution download
+from Maven Central before running tests. Missing reports and evidence followed
+from that failure. The next full run retests shard 2 with the normal workflow.
+
+The API job passed runtime OpenAPI generation, migrated PostgreSQL capture,
+and backward compatibility, then failed canonical OpenAPI equality. Strict
+dictionary equality was skipped. The registered documentation reconciliation
+uses the SHA-256-verified [runtime OpenAPI](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44112060641/artifacts/14341941133)
+and [migrated PostgreSQL dictionary](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44112060641/artifacts/14342105680)
+from this exact runtime source revision. The canonicalized OpenAPI matches the
+generated artifact semantically and adds only two Analytics paths, two
+operations and three schemas. The dictionary is the generated CURRENT artifact
+with 223 migrations, 471 JPA mappings, 595 relations and no unresolved owners,
+including the corrected T23 trigger function. The test repair changes only test
+code and inventory, so the reconciled runtime inputs are identical. Both strict
+equality gates, the signed qualification and all existing CI requirements apply
+to the replacement SHA. T23 remains **IN PROGRESS** pending full CI and T24
+remains unselected.

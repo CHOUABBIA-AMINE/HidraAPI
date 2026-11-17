@@ -2208,3 +2208,30 @@ If generated artifacts differ, use the separately registered documentation
 reconciliation `docs(analytics): reconcile T23 generated contracts and physical dictionary`
 from the CI-produced artifact on the exact source SHA; do not weaken either
 strict equality gate. T24 is not selected or executed.
+
+### T23 CI #1281 failure and corrective SQL repair — 2026-11-17
+
+Implementation commit `832e5b02f131f0283b47e5ece85362c2b93d6000` was published
+on `main`; Documentation Validation #1115 passed, and
+[HidraAPI CI #1281](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44103609373)
+**failed**. Static validation and Java 21 unit/architecture passed. All 14
+PostgreSQL shards failed during Flyway before application-context initialization;
+API contract/dictionary generation also failed on the same migration, and the
+Full Verification Gate failed. This is a common database startup defect, not
+evidence of independently failing all business implementations.
+
+Root cause from the exact-SHA job logs: T23 migration
+`V20261117_003__t23_analytics_deviation_metric_receipts.sql`
+defined `hidra_analytics_t23_frozen` with a malformed closing dollar quote
+(`END $;` instead of `END $$;`), leading to PostgreSQL's syntax error at
+migration line 138. The in-scope T23 CI repair corrects that delimiter and
+guards the reserved-definition predicate against absent historical catalog rows
+without changing permissions, uniqueness, receipt immutability, native routes,
+test assertions, CI gating or any earlier migration. The failed fresh-schema
+migration is corrected within its originally selected T23 artifact; there is no
+production-data migration or backfill assertion.
+
+T23 remains **IN PROGRESS / CI-FAILED** until the corrected exact-SHA
+PostgreSQL, signed HTTP, runtime OpenAPI and physical dictionary evidence pass.
+Any generated OpenAPI or dictionary reconciliation remains the separately
+registered T23 documentation scope. Do not advance to T24.

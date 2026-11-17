@@ -54,6 +54,7 @@ DECLARE
     def record;
     value_row public.hidra_analytics_metric_value%ROWTYPE;
     count_values bigint;
+    reserved_method boolean;
 BEGIN
     rid := CASE WHEN TG_TABLE_NAME='hidra_analytics_deviation_metric_receipt'
                 THEN NEW.run_id
@@ -63,12 +64,18 @@ BEGIN
     IF NOT FOUND THEN
         -- No ordinary starter or alias can produce a reserved T23 run without its receipt.
         IF TG_TABLE_NAME='hidra_analytics_metric_evaluation_run' THEN
-            SELECT d.code,v.version_number,v.formula_expression INTO def
-              FROM public.hidra_analytics_metric_definition_version v
-              JOIN public.hidra_analytics_metric_definition d ON d.id=v.metric_definition_id
-              WHERE v.id=NEW.metric_definition_version_id;
-            IF def.code='ABSOLUTE_DEVIATION' AND def.version_number=1
-                 AND def.formula_expression='ABSOLUTE_DEVIATION_V1' THEN
+            -- Missing legacy catalog rows are not classified as T23.
+            SELECT EXISTS (
+                SELECT 1
+                FROM public.hidra_analytics_metric_definition_version v
+                JOIN public.hidra_analytics_metric_definition d
+                  ON d.id=v.metric_definition_id
+                WHERE v.id=NEW.metric_definition_version_id
+                  AND d.code='ABSOLUTE_DEVIATION'
+                  AND v.version_number=1
+                  AND v.formula_expression='ABSOLUTE_DEVIATION_V1'
+            ) INTO reserved_method;
+            IF reserved_method THEN
                 RAISE EXCEPTION 'T23 reserved metric run requires sealed owner receipt';
             END IF;
         END IF;
@@ -157,7 +164,7 @@ BEGIN
     END IF;
     IF TG_OP='DELETE' THEN RETURN OLD; END IF;
     RETURN NEW;
-END $;
+END $$;
 CREATE TRIGGER tr_t23_receipt_frozen
     BEFORE UPDATE OR DELETE ON public.hidra_analytics_deviation_metric_receipt
     FOR EACH ROW EXECUTE FUNCTION public.hidra_analytics_t23_frozen();

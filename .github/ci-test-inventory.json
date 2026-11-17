@@ -12261,7 +12261,7 @@
       "lane": "postgres-integration",
       "owner": "qualification",
       "path": "src/test/java/dz/sh/hidra/qualification/Gz2RiskAssessmentGovernanceNativeHttpPostgresIntegrationTest.java",
-      "source_sha256": "70e2321b185de020800ac3193012cbbd77df7fef9b9e1f47d1ad9f48f1f343d2",
+      "source_sha256": "0382ffc5375afaafbd56e55082d316fd563d691e7318be7f437031a36f7c7ebc",
       "supports": []
     }
   ],

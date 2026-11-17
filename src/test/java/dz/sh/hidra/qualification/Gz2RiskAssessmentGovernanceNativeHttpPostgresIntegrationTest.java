@@ -47,7 +47,15 @@ class Gz2RiskAssessmentGovernanceNativeHttpPostgresIntegrationTest {
             String likelihood=f.catalog("risk","RISK_LIKELIHOOD_LEVEL","T22_POSSIBLE");
             String consequence=f.catalog("risk","RISK_CONSEQUENCE_LEVEL","T22_CONSEQUENCE");
             String rating=f.catalog("risk","RISK_RATING","T22_RATING");
-            String register=id(), matrix=id(),cell=id(),alarm=id();
+            String scenarioType=f.catalog("risk","RISK_SCENARIO_TYPE","T22_GAS_SCENARIO");
+            String register=id(), matrix=id(),cell=id(),alarm=id(),scenario=id();
+            // Assessment persistence references the concrete Risk scenario table.
+            // Both the Risk-owned scenario and its cataloged type must be seeded.
+            f.sql.update("""
+                INSERT INTO hidra_risk_scenario(id,code,name_fr,scenario_type_id,
+                    active,created_at,updated_at)
+                VALUES (?, ?, 'Synthetic GZ2 Risk scenario', ?, true, now(), now())
+                """,scenario,"GZ2-"+scenario,scenarioType);
             f.sql.update("""
                 INSERT INTO hidra_risk_register(id,code,name_fr,register_type_id,
                     scope_type,scope_id,status,created_at,updated_at)
@@ -105,7 +113,7 @@ class Gz2RiskAssessmentGovernanceNativeHttpPostgresIntegrationTest {
                     Map.entry("riskRegisterId",register),Map.entry("assessmentNumber","T22-"+id()),
                     Map.entry("title","GZ2 synthetic scoped assessment"),
                     Map.entry("assessmentTypeId",assessmentType),
-                    Map.entry("methodologyId",method),Map.entry("riskScenarioId","GZ2_SYNTHETIC"),
+                    Map.entry("methodologyId",method),Map.entry("riskScenarioId",scenario),
                     Map.entry("assessedByActorId",f.author),
                     Map.entry("scopes",List.of(Map.of("scopeType","FACILITY","scopeId",f.asset,
                             "included",true))));

@@ -46,7 +46,7 @@ CREATE INDEX ix_t21_reconciliation_period ON public.hidra_custody_t21_reconcilia
 -- Both the period and agreement are Custody-owned; guard their actual relationship.
 -- Company ownership remains a live Topology assertion in the application boundary.
 CREATE FUNCTION public.hidra_t21_reconciliation_context_guard() RETURNS trigger
-LANGUAGE plpgsql AS $
+LANGUAGE plpgsql AS $$
 BEGIN
  IF NOT EXISTS(
    SELECT 1 FROM public.hidra_custody_measurement_period p
@@ -67,7 +67,7 @@ BEGIN
  END IF;
  RETURN NEW;
 END;
-$;
+$$;
 CREATE TRIGGER hidra_t21_reconciliation_context_guard
  BEFORE INSERT ON public.hidra_custody_t21_reconciliation
  FOR EACH ROW EXECUTE FUNCTION public.hidra_t21_reconciliation_context_guard();

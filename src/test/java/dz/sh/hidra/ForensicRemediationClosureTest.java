@@ -250,6 +250,18 @@ class ForensicRemediationClosureTest {
             assertFalse(t20MeasurementOwnerExport(t20Consumer,
                     "dz.sh.hidra.modules.party.infrastructure.persistence.adapter.JpaCustodyMeasurementPartyReferenceAdapter"));
         }
+        String t21Owner="dz.sh.hidra.modules.topology.application.contract.custody.CustodyMeasurementAssetOwnershipContract";
+        for(String exactConsumer:Set.of(
+            "dz.sh.hidra.modules.custody.application.service.CustodyTransferLifecycleApplicationService",
+            "dz.sh.hidra.modules.custody.infrastructure.persistence.adapter.JdbcCustodyTransferLifecycleAdapter")){
+            assertTrue(t21CustodyOwnershipExport(exactConsumer,t21Owner));
+            assertFalse(t21CustodyOwnershipExport(exactConsumer+"Sibling",t21Owner));
+            assertFalse(t21CustodyOwnershipExport(exactConsumer,t21Owner+"Sibling"));
+            assertFalse(t21CustodyOwnershipExport(exactConsumer,
+                "dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.JdbcCustodyMeasurementAssetOwnershipAdapter"));
+        }
+        assertFalse(t21CustodyOwnershipExport(
+            "dz.sh.hidra.modules.planning.application.service.Other",t21Owner));
         List<String> violations = new ArrayList<>();
         for (SourceType source : sources().values()) {
             String sourceModule = module(source.packageName());
@@ -305,6 +317,7 @@ class ForensicRemediationClosureTest {
                 if (organizationOwnerExport(source.fqcn(), imported)) continue;
                 if (custodyProductOwnerExport(source.fqcn(), imported)) continue;
                 if (t20MeasurementOwnerExport(source.fqcn(), imported)) continue;
+                if (t21CustodyOwnershipExport(source.fqcn(), imported)) continue;
                 if (baselineOwnerExport(source.fqcn(), imported)) continue;
                 if (isAlarmOwnerExport(source.fqcn(), imported)) continue;
                 if (isAlarmMonitoringEvidenceExport(source.fqcn(), imported)) continue;
@@ -481,6 +494,17 @@ class ForensicRemediationClosureTest {
         String consumer="dz.sh.hidra.modules.topology.application.service.ProtectedInstalledUnitAdmissionCoordinator";
         String root="dz.sh.hidra.modules.identity.application.contract.topology.TopologyInstalledUnitAuthorizationContract";
         return source.equals(consumer) && (imported.equals(root) || imported.startsWith(root+"."));
+    }
+
+    // T21: only the exact custody lifecycle coordinator and persistence adapter may
+    // use the pre-existing Topology-owned live facility/company lookup. This is
+    // not a package-wide exemption and never exports Topology persistence internals.
+    private static boolean t21CustodyOwnershipExport(String source, String imported) {
+        String root="dz.sh.hidra.modules.topology.application.contract.custody.CustodyMeasurementAssetOwnershipContract";
+        return Set.of(
+            "dz.sh.hidra.modules.custody.application.service.CustodyTransferLifecycleApplicationService",
+            "dz.sh.hidra.modules.custody.infrastructure.persistence.adapter.JdbcCustodyTransferLifecycleAdapter")
+            .contains(source) && imported.equals(root);
     }
 
     // T20: the capture service consumes only the four reviewed owner contract roots.

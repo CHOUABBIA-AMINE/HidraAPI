@@ -24,6 +24,14 @@ import org.springframework.stereotype.Service;
 @Service
 public final class AuditDocumentReferenceQueryService implements AuditDocumentReferenceContract {
     private final DocumentRepositoryPort repository;
-    public AuditDocumentReferenceQueryService(DocumentRepositoryPort repository) {this.repository=java.util.Objects.requireNonNull(repository);}
-    public boolean exists(String id) {return id!=null && !id.isBlank() && repository.findById(id.trim()).isPresent();}
+    private final ControlledDocumentAccessService controlled;
+    public AuditDocumentReferenceQueryService(DocumentRepositoryPort repository,ControlledDocumentAccessService controlled) {
+        this.repository=java.util.Objects.requireNonNull(repository);this.controlled=java.util.Objects.requireNonNull(controlled);
+    }
+    @org.springframework.transaction.annotation.Transactional(readOnly=true)
+    public boolean exists(String id) {
+        if(id==null || id.isBlank())return false;
+        controlled.forDocument(id.trim(),"documents:controlled:read");
+        return repository.findById(id.trim()).isPresent();
+    }
 }

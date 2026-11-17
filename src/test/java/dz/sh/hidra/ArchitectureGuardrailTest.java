@@ -1072,6 +1072,11 @@ class ArchitectureGuardrailTest {
     @Test void t23OwnerExportsAreExclusiveToAnalyticsAdapter() {
         String consumer="dz.sh.hidra.modules.analytics.infrastructure.integration.DeviationMetricOwnerAccessAdapter";
         for(String root:java.util.Set.of(
+                "dz.sh.hidra.modules.identity.application.contract.documents.ControlledDocumentScopedAuthorizationContract",
+                "dz.sh.hidra.modules.topology.application.contract.documents.ControlledDocumentFacilityOwnershipContract"))
+            if(targetClassName.startsWith(root))
+                return !t24DocumentOwnerExport(sourceClassName,targetClassName);
+        for(String root:java.util.Set.of(
                 "dz.sh.hidra.modules.identity.application.contract.analytics.AnalyticsMetricScopedAuthorizationContract",
                 "dz.sh.hidra.modules.monitoring.application.contract.analytics.AnalyticsDeviationSourceContract")) {
             assertFalse(isForbiddenCrossModuleDependency(consumer,root));
@@ -1081,6 +1086,25 @@ class ArchitectureGuardrailTest {
             assertTrue(isForbiddenCrossModuleDependency(consumer,root.replace(".application.contract.analytics.",".infrastructure.persistence.")));
         }
     }
+    private static boolean t24DocumentOwnerExport(String source,String target) {
+        final String owner="dz.sh.hidra.modules.documents.infrastructure.integration.ControlledDocumentOwnerAccessAdapter";
+        return source.equals(owner) && java.util.Set.of(
+                "dz.sh.hidra.modules.identity.application.contract.documents.ControlledDocumentScopedAuthorizationContract",
+                "dz.sh.hidra.modules.topology.application.contract.documents.ControlledDocumentFacilityOwnershipContract")
+                .stream().anyMatch(contract->target.equals(contract)||target.startsWith(contract+"$"));
+    }
+    @Test void t24DocumentsOwnerExportsRemainExactAndPrivate() {
+        String adapter="dz.sh.hidra.modules.documents.infrastructure.integration.ControlledDocumentOwnerAccessAdapter";
+        for(String root:java.util.Set.of(
+                "dz.sh.hidra.modules.identity.application.contract.documents.ControlledDocumentScopedAuthorizationContract",
+                "dz.sh.hidra.modules.topology.application.contract.documents.ControlledDocumentFacilityOwnershipContract")) {
+            org.junit.jupiter.api.Assertions.assertTrue(t24DocumentOwnerExport(adapter,root));
+            org.junit.jupiter.api.Assertions.assertTrue(t24DocumentOwnerExport(adapter,root+"$Facility"));
+            org.junit.jupiter.api.Assertions.assertFalse(t24DocumentOwnerExport(adapter+"Sibling",root));
+            org.junit.jupiter.api.Assertions.assertFalse(t24DocumentOwnerExport(adapter,root+"Sibling"));
+        }
+    }
+
     private static boolean isForbiddenCrossModuleDependency(
             String sourceClassName, String targetClassName) {
         String sourcePackage = packageName(sourceClassName);

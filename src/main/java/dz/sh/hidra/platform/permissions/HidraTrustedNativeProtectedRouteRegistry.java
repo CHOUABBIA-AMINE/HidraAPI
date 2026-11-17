@@ -178,7 +178,33 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
             final String t23Base="/api/v1/analytics/companies/{companyId}/facilities/{facilityId}/deviation-metric-runs";
             Class<?> t23=Class.forName("dz.sh.hidra.modules.analytics.api.rest.controller.DeviationMetricRunController");
             Class<?> t23Request=Class.forName("dz.sh.hidra.modules.analytics.api.rest.request.ExecuteDeviationMetricRunRequest");
+            final String t24Pkg="dz.sh.hidra.modules.documents.api.rest.";
+            final String t24Base="/api/v1/documents/companies/{companyId}/facilities/{facilityId}/controlled-documents";
+            Class<?> t24=Class.forName(t24Pkg+"controller.ControlledDocumentsController");
+            Class<?> t24Create=Class.forName(t24Pkg+"request.ControlledDocumentRequests$Create");
+            Class<?> t24Accept=Class.forName(t24Pkg+"request.ControlledDocumentRequests$Accept");
+            Class<?> t24Supersede=Class.forName(t24Pkg+"request.ControlledDocumentRequests$Supersede");
+            Class<?> t24Binary=Class.forName(t24Pkg+"request.UploadDocumentBinaryVersionRequest");
+            Class<?> t24Multipart=Class.forName("org.springframework.web.multipart.MultipartFile");
             return List.of(
+                new Route(t24,t24.getDeclaredMethod("create",String.class,String.class,t24Create),
+                    "POST",t24Base),
+                new Route(t24,t24.getDeclaredMethod("discover",String.class,String.class,Integer.class,Integer.class,String.class),
+                    "GET",t24Base),
+                new Route(t24,t24.getDeclaredMethod("detail",String.class,String.class,String.class),
+                    "GET",t24Base+"/{documentId}"),
+                new Route(t24,t24.getDeclaredMethod("versions",String.class,String.class,String.class,Integer.class,Integer.class),
+                    "GET",t24Base+"/{documentId}/versions"),
+                new Route(t24,t24.getDeclaredMethod("links",String.class,String.class,String.class,Integer.class,Integer.class),
+                    "GET",t24Base+"/{documentId}/links"),
+                new Route(t24,t24.getDeclaredMethod("upload",String.class,String.class,String.class,t24Binary,t24Multipart),
+                    "POST",t24Base+"/{documentId}/versions/upload"),
+                new Route(t24,t24.getDeclaredMethod("content",String.class,String.class,String.class,String.class),
+                    "GET",t24Base+"/{documentId}/versions/{versionId}/content"),
+                new Route(t24,t24.getDeclaredMethod("accept",String.class,String.class,String.class,String.class,t24Accept),
+                    "POST",t24Base+"/{documentId}/versions/{versionId}/accept"),
+                new Route(t24,t24.getDeclaredMethod("supersede",String.class,String.class,String.class,String.class,t24Supersede),
+                    "POST",t24Base+"/{documentId}/versions/{versionId}/supersede"),
                 new Route(t23,t23.getDeclaredMethod("execute",String.class,String.class,t23Request),
                         "POST",t23Base),
                 new Route(t23,t23.getDeclaredMethod("read",String.class,String.class,String.class),

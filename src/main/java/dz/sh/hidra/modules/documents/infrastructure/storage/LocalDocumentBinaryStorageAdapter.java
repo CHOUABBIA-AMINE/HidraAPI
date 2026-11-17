@@ -113,6 +113,36 @@ public final class LocalDocumentBinaryStorageAdapter implements DocumentBinarySt
     }
 
     @Override
+    public InputStream verifiedOpen(String referenceId,long expectedLength,String expectedSha256) {
+        java.nio.channels.FileChannel channel=null;
+        try {
+            channel=java.nio.channels.FileChannel.open(resolve(referenceId),java.nio.file.StandardOpenOption.READ);
+            MessageDigest digest=MessageDigest.getInstance(CHECKSUM_ALGORITHM);
+            java.nio.ByteBuffer bytes=java.nio.ByteBuffer.allocate(8192);
+            long length=0;
+            int n;
+            while((n=channel.read(bytes))!=-1){
+                if(n==0)continue;
+                length+=n;
+                bytes.flip();
+                digest.update(bytes);
+                bytes.clear();
+            }
+            if(length!=expectedLength || expectedSha256==null
+                    ||!HexFormat.of().formatHex(digest.digest()).equalsIgnoreCase(expectedSha256))
+                throw new IllegalStateException("Controlled document checksum or length mismatch.");
+            channel.position(0);
+            return java.nio.channels.Channels.newInputStream(channel);
+        }catch(IOException | NoSuchAlgorithmException | RuntimeException exception){
+            if(channel!=null)try{channel.close();}catch(IOException ignored){}
+            if(exception instanceof RuntimeException runtime)throw runtime;
+            throw new DocumentContentTransferException(
+                    DocumentContentTransferException.Reason.STORAGE_FAILURE,
+                    "Controlled document content verification failed.",exception);
+        }
+    }
+
+    @Override
     public boolean available(String referenceId) {
         return Files.isRegularFile(resolve(referenceId));
     }

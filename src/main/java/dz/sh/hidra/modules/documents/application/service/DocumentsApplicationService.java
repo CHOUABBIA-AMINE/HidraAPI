@@ -63,19 +63,22 @@ public class DocumentsApplicationService implements RegisterDocumentUseCase, Upl
     private final DocumentsCatalogEligibilityPort catalogs;
     private final DocumentTargetLookupPort targets;
     private final CurrentSecurityContext security;
+    private final ControlledDocumentAccessService controlled;
 
     public DocumentsApplicationService(
             DocumentRepositoryPort documentRepositoryPort,
             DocumentVersionRepositoryPort versionRepositoryPort,
             DocumentTargetLinkRepositoryPort targetLinkRepositoryPort,
             DocumentsActorContract actors, DocumentsCatalogEligibilityPort catalogs,
-            DocumentTargetLookupPort targets, CurrentSecurityContext security
+            DocumentTargetLookupPort targets, CurrentSecurityContext security,
+            ControlledDocumentAccessService controlled
     ) {
         this.documentRepositoryPort = Objects.requireNonNull(documentRepositoryPort, "Document repository port must not be null.");
         this.versionRepositoryPort = Objects.requireNonNull(versionRepositoryPort, "Document version repository port must not be null.");
         this.targetLinkRepositoryPort = Objects.requireNonNull(targetLinkRepositoryPort, "Document target link repository port must not be null.");
         this.actors=Objects.requireNonNull(actors);this.catalogs=Objects.requireNonNull(catalogs);
         this.targets=Objects.requireNonNull(targets);this.security=Objects.requireNonNull(security);
+        this.controlled=Objects.requireNonNull(controlled);
     }
 
     @Override
@@ -122,6 +125,7 @@ public class DocumentsApplicationService implements RegisterDocumentUseCase, Upl
         Instant now = Instant.now();
         var actor=currentActor(command.uploadedByActorId(),now);
         String documentId=text(command.documentId());
+        controlled.requireMetadataUpload(documentId,command.storageObjectId());
         if(documentId==null || documentRepositoryPort.findById(documentId).isEmpty())
             throw new IllegalArgumentException("Existing document required.");
         DocumentVersion version = new DocumentVersion(
@@ -161,6 +165,7 @@ public class DocumentsApplicationService implements RegisterDocumentUseCase, Upl
         Objects.requireNonNull(command, "Link document command must not be null.");
         var actor=currentActor(command.linkedByActorId(),Instant.now());
         String documentId=text(command.documentId()),versionId=text(command.documentVersionId());
+        controlled.requireLink(documentId,versionId,command.targetModule(),command.targetTypeCode(),command.targetId());
         if(documentId==null || documentRepositoryPort.findById(documentId).isEmpty())
             throw new IllegalArgumentException("Existing document required.");
         if(versionId!=null)versionRepositoryPort.findById(versionId).filter(v->documentId.equals(v.documentId()))

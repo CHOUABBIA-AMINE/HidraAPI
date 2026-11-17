@@ -42,16 +42,20 @@ public class JpaDocumentVersionRepositoryAdapter implements DocumentVersionRepos
 
     private final DocumentsActorContract actors;
     private final DocumentsApprovalReferenceContract workflow;
+    private final dz.sh.hidra.modules.documents.application.service.ControlledDocumentAccessService controlled;
     public JpaDocumentVersionRepositoryAdapter(DocumentVersionJpaRepository repository,DocumentsActorContract actors,
-            DocumentsApprovalReferenceContract workflow) {
+            DocumentsApprovalReferenceContract workflow,
+            dz.sh.hidra.modules.documents.application.service.ControlledDocumentAccessService controlled) {
         this.repository = Objects.requireNonNull(repository, "DocumentVersionJpaRepository must not be null.");
         this.actors=Objects.requireNonNull(actors);this.workflow=Objects.requireNonNull(workflow);
+        this.controlled=Objects.requireNonNull(controlled);
     }
 
     @Override
     @Transactional
     public DocumentVersion save(DocumentVersion model) {
         Objects.requireNonNull(model);
+        controlled.requireMetadataUpload(model.documentId(),model.storageObjectId());
         actors.eligibleActor(model.uploadedByActorId(),Instant.now()).filter(a->model.uploadedByActorId().equals(a.id()))
             .orElseThrow(()->new IllegalArgumentException("Eligible Identity uploader required."));
         if(model.approvedByWorkflowInstanceId()!=null && !workflow.exists(model.approvedByWorkflowInstanceId()))

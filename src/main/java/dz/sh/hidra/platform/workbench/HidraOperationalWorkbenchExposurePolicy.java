@@ -118,7 +118,7 @@ public final class HidraOperationalWorkbenchExposurePolicy {
             return true;
         }
         String normalized = key.toLowerCase(Locale.ROOT);
-        return normalized.contains("credential") || normalized.contains("secret");
+        return normalized.startsWith("documents:") || normalized.contains("credential") || normalized.contains("secret");
     }
 
     private static boolean isProhibitedField(String fieldName) {

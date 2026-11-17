@@ -54,13 +54,13 @@ class DocumentSemanticRemediationTest {
     }
     @Test void registrationUsesAuthenticatedOwnerSnapshotsAndRejectsImpersonation(){
         var repository=new Documents();
-        var service=new DocumentsApplicationService(repository,empty(DocumentVersionRepositoryPort.class),empty(DocumentTargetLinkRepositoryPort.class),ACTORS,(id,family)->{},(m,t,id)->new Target(id,"Owner code","Owner label"),new Security());
+        var service=new DocumentsApplicationService(repository,empty(DocumentVersionRepositoryPort.class),empty(DocumentTargetLinkRepositoryPort.class),ACTORS,(id,family)->{},(m,t,id)->new Target(id,"Owner code","Owner label"),new Security(),org.mockito.Mockito.mock(dz.sh.hidra.modules.documents.application.service.ControlledDocumentAccessService.class));
         service.registerDocument(command("actor","topology","PIPELINE","pipe"));
         assertEquals("Owner actor",repository.saved.createdByDisplayNameSnapshot());assertEquals("Owner code",repository.saved.ownerTargetCodeSnapshot());
         assertThrows(SecurityException.class,()->service.registerDocument(command("other",null,null,null)));
     }
     @Test void partialOwnerTupleDoesNotBecomeAnUnownedDocument(){
-        var service=new DocumentsApplicationService(new Documents(),empty(DocumentVersionRepositoryPort.class),empty(DocumentTargetLinkRepositoryPort.class),ACTORS,(id,family)->{},(m,t,id)->{throw new IllegalArgumentException("partial");},new Security());
+        var service=new DocumentsApplicationService(new Documents(),empty(DocumentVersionRepositoryPort.class),empty(DocumentTargetLinkRepositoryPort.class),ACTORS,(id,family)->{},(m,t,id)->{throw new IllegalArgumentException("partial");},new Security(),org.mockito.Mockito.mock(dz.sh.hidra.modules.documents.application.service.ControlledDocumentAccessService.class));
         assertThrows(IllegalArgumentException.class,()->service.registerDocument(command("actor","topology",null,null)));
         service.registerDocument(command("actor",null,null,null));
     }

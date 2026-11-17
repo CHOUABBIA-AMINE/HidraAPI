@@ -61,19 +61,21 @@ public class DocumentContentTransferService implements UploadDocumentBinaryVersi
     private final DocumentsActorContract actors;
     private final CurrentSecurityContext security;
     private final DocumentRepositoryPort documents;
+    private final ControlledDocumentAccessService controlled;
 
     public DocumentContentTransferService(
             DocumentBinaryStoragePort binaryStoragePort,
             DocumentStorageObjectRepositoryPort storageObjectRepositoryPort,
             DocumentVersionRepositoryPort versionRepositoryPort,
             UploadDocumentVersionUseCase uploadDocumentVersionUseCase,
-            DocumentsActorContract actors,CurrentSecurityContext security,DocumentRepositoryPort documents
+            DocumentsActorContract actors,CurrentSecurityContext security,DocumentRepositoryPort documents,
+            ControlledDocumentAccessService controlled
     ) {
         this.binaryStoragePort = Objects.requireNonNull(binaryStoragePort, "DocumentBinaryStoragePort must not be null.");
         this.storageObjectRepositoryPort = Objects.requireNonNull(storageObjectRepositoryPort, "DocumentStorageObjectRepositoryPort must not be null.");
         this.versionRepositoryPort = Objects.requireNonNull(versionRepositoryPort, "DocumentVersionRepositoryPort must not be null.");
         this.uploadDocumentVersionUseCase = Objects.requireNonNull(uploadDocumentVersionUseCase, "UploadDocumentVersionUseCase must not be null.");
-        this.actors=Objects.requireNonNull(actors);this.security=Objects.requireNonNull(security);this.documents=Objects.requireNonNull(documents);
+        this.actors=Objects.requireNonNull(actors);this.security=Objects.requireNonNull(security);this.documents=Objects.requireNonNull(documents);this.controlled=Objects.requireNonNull(controlled);
     }
 
     @Override
@@ -94,6 +96,7 @@ public class DocumentContentTransferService implements UploadDocumentBinaryVersi
             .orElseThrow(()->invalid("Eligible Identity uploader required."));
         if(actor.displayName()==null || actor.displayName().isBlank())throw invalid("Uploader display required.");
         String documentId=requireText(command.documentId(),"Document identity required.");
+        controlled.forDocument(documentId,"documents:controlled:write");
         if(documents.findById(documentId).isEmpty())throw invalid("Existing document required.");
         if(command.versionNumber()<1)throw invalid("Version number must be positive.");
         if(command.effectiveFrom()!=null && command.effectiveTo()!=null && command.effectiveTo().isBefore(command.effectiveFrom()))
@@ -143,7 +146,8 @@ public class DocumentContentTransferService implements UploadDocumentBinaryVersi
                 now
         ));
 
-        return uploadDocumentVersionUseCase.uploadDocumentVersion(new UploadDocumentVersionCommand(
+        controlled.beginBinaryMetadata(documentId,storageObjectId);
+        try {return uploadDocumentVersionUseCase.uploadDocumentVersion(new UploadDocumentVersionCommand(
                 command.documentId(),
                 command.versionNumber(),
                 command.versionLabel(),
@@ -164,15 +168,20 @@ public class DocumentContentTransferService implements UploadDocumentBinaryVersi
                 command.effectiveTo(),
                 actor.id(),
                 actor.displayName()
-        ));
+        ));} finally {controlled.finishBinaryMetadata();}
         }catch(RuntimeException | Error error){failure.set(error);cleanup.run();throw error;}
     }
 
     @Override
+    @Transactional(readOnly=true)
     public DocumentVersionContentDto downloadDocumentVersionContent(String versionId) {
         String normalizedVersionId = requireText(versionId, "Document version id must not be blank.");
+        boolean protectedVersion=controlled.forVersion(normalizedVersionId,"documents:controlled:read").isPresent();
         DocumentVersion version = versionRepositoryPort.findById(normalizedVersionId)
                 .orElseThrow(() -> notFound("Document version was not found: " + normalizedVersionId));
+        if(protectedVersion && version.versionStatus()!=dz.sh.hidra.modules.documents.domain.value.DocumentVersionStatus.CURRENT
+                && version.versionStatus()!=dz.sh.hidra.modules.documents.domain.value.DocumentVersionStatus.SUPERSEDED)
+            throw notFound("Protected Documents version unavailable.");
         String storageObjectId = requireText(version.storageObjectId(), "Document version has no storage object.");
         DocumentStorageObject storageObject = storageObjectRepositoryPort.findById(storageObjectId)
                 .orElseThrow(() -> notFound("Document storage object was not found for version: " + normalizedVersionId));
@@ -181,7 +190,14 @@ public class DocumentContentTransferService implements UploadDocumentBinaryVersi
             throw notFound("Document content is not available for version: " + normalizedVersionId);
         }
 
-        InputStream content = binaryStoragePort.open(storageObjectId);
+        if(protectedVersion && (storageObject.contentLengthBytes()!=version.fileSizeBytes()
+                || !storageObject.checksumAlgorithm().equalsIgnoreCase("SHA-256")
+                || !version.checksumAlgorithm().equalsIgnoreCase("SHA-256")
+                || !storageObject.checksumValue().equalsIgnoreCase(version.checksumValue())))
+            throw new IllegalStateException("Controlled document metadata integrity conflict.");
+        InputStream content = protectedVersion
+                ?binaryStoragePort.verifiedOpen(storageObjectId,version.fileSizeBytes(),version.checksumValue())
+                :binaryStoragePort.open(storageObjectId);
         return new DocumentVersionContentDto(
                 version.id(),
                 safeFilename(version.originalFilename()),

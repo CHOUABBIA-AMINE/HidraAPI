@@ -133,7 +133,7 @@ class HidraTrustedNativeProtectedRouteRegistryTest {
 
     @Test void baselineRoutesDeclareOnlyFiveExactCompiledTuples(){
         var registry=new HidraTrustedNativeProtectedRouteRegistry();
-        assertEquals(115,registry.candidates().size());
+        assertEquals(124,registry.candidates().size());
         var rows=registry.candidates().stream().filter(r->r.controller().getSimpleName().equals("EngineeringBaselineDraftController")).toList();
         assertEquals(5,rows.size());
         assertEquals(java.util.Set.of("POST /api/v1/topology/engineering-baselines","PUT /api/v1/topology/engineering-baselines/{manifestId}",
@@ -141,6 +141,26 @@ class HidraTrustedNativeProtectedRouteRegistryTest {
             "POST /api/v1/topology/engineering-baselines/{manifestId}/validation"),
             rows.stream().map(r->r.verb()+" "+r.pattern()).collect(java.util.stream.Collectors.toSet()));
         assertTrue(rows.stream().allMatch(r->r.method().isAnnotationPresent(NativeProtectedOperation.class)));
+    }
+
+    @Test void controlledDocumentsNineRoutesAreExactNativeCompiledAndMarked() {
+        var rows=new HidraTrustedNativeProtectedRouteRegistry().candidates().stream()
+            .filter(x->x.controller().getSimpleName().equals("ControlledDocumentsController")).toList();
+        final String base="/api/v1/documents/companies/{companyId}/facilities/{facilityId}/controlled-documents";
+        assertEquals(9,rows.size());
+        assertEquals(java.util.Set.of(
+                "POST "+base,
+                "GET "+base,
+                "GET "+base+"/{documentId}",
+                "GET "+base+"/{documentId}/versions",
+                "GET "+base+"/{documentId}/links",
+                "POST "+base+"/{documentId}/versions/upload",
+                "GET "+base+"/{documentId}/versions/{versionId}/content",
+                "POST "+base+"/{documentId}/versions/{versionId}/accept",
+                "POST "+base+"/{documentId}/versions/{versionId}/supersede"),
+                rows.stream().map(x->x.verb()+" "+x.pattern())
+                    .collect(java.util.stream.Collectors.toSet()));
+        assertTrue(rows.stream().allMatch(x->x.method().isAnnotationPresent(NativeProtectedOperation.class)));
     }
 
     @Test void deviationMetricRoutesAreExactlyRegistered() {

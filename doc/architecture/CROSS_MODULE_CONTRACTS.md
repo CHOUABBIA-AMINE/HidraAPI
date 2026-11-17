@@ -175,3 +175,15 @@ lineage is disclosed; replay cannot restore revoked authority. Package visibilit
 authorize sibling consumer types. The two test-enforced exact importer/type allowances
 reject private, lookalike and foreign imports. No physical operating decision or OT actuation
 is inferred. Synthetic software implementation and exact-SHA CI remain acceptance gates.
+
+
+## T24 bounded Documents native controlled-evidence owner exports — 2026-11-17
+
+T24 introduces exactly one importing adapter:
+\`dz.sh.hidra.modules.documents.infrastructure.integration.ControlledDocumentOwnerAccessAdapter\`.
+
+- **Identity** exports \`identity.application.contract.documents.ControlledDocumentScopedAuthorizationContract\` to that adapter alone. Its concrete \`ControlledDocumentScopedAuthorizationQueryService\` authenticates the current LOCAL actor, tests explicit current permits at **both** \`CUSTOM documents-company:{companyId}\` and \`FACILITY {facilityId}\`, then performs current verified policy evaluation with deny precedence for the four \`documents:controlled:{create,write,read,accept}\` operations. Receipts, routes, role names and caller-supplied actor fields are not grants.
+- **Topology** exports \`topology.application.contract.documents.ControlledDocumentFacilityOwnershipContract\` to that adapter alone. Its implementation resolves **active** FACILITY identity and currently owning company, reads under the active transaction and uses a lock-capable path for writes. It never transfers facility ownership, any Topology aggregate or JPA entity to Documents.
+- **Documents** owns its independent \`ControlledDocumentAuthorizationPort\`, \`ControlledDocumentRepositoryPort\`, narrow \`ControlledDocumentsUseCase\`, immutable custodian decisions and versioned binary and link history. The Documents authorization bridge imports exactly those two exported interfaces (including Topology's nested scalar \`Facility\`), not Identity or Topology implementation classes.
+
+\`ArchitectureGuardrailTest\` and \`ForensicRemediationClosureTest\` reject sibling contract classes and unauthorized consumers; the historical package-export index remains intact. Documents registration and legacy content/reference paths are subject to the same protected-record predicate. Revocation, inactive facility and company rebinding cause a fresh denial on reads, writes and replays. Accepted binary hashes and version receipts remain immutable historical evidence, not Workflow approval, numerical engineering qualification, OT action or a grant that survives current authorization. Neither user authority nor published content can be inferred from Workbench entity exposure.

@@ -34,21 +34,21 @@ class DocumentTargetLinkSemanticRemediationTest {
     @Test void neutralOwnerSnapshotsAndAuthenticatedActorUsed(){
         var docs=new DocumentSemanticRemediationTest.Documents();docs.saved=DocumentSemanticRemediationTest.document("Title","Actor",null);DocumentTargetLink[] saved={null};
         var links=(DocumentTargetLinkRepositoryPort)Proxy.newProxyInstance(getClass().getClassLoader(),new Class<?>[]{DocumentTargetLinkRepositoryPort.class},(p,m,a)->{saved[0]=(DocumentTargetLink)a[0];return a[0];});
-        var service=new DocumentsApplicationService(docs,DocumentSemanticRemediationTest.empty(DocumentVersionRepositoryPort.class),links,DocumentSemanticRemediationTest.ACTORS,(id,family)->{assertEquals("DOCUMENT_LINK_ROLE",family);},(m,t,id)->new Target(id,"Owner code","Owner label"),new DocumentSemanticRemediationTest.Security());
+        var service=new DocumentsApplicationService(docs,DocumentSemanticRemediationTest.empty(DocumentVersionRepositoryPort.class),links,DocumentSemanticRemediationTest.ACTORS,(id,family)->{assertEquals("DOCUMENT_LINK_ROLE",family);},(m,t,id)->new Target(id,"Owner code","Owner label"),new DocumentSemanticRemediationTest.Security(),org.mockito.Mockito.mock(dz.sh.hidra.modules.documents.application.service.ControlledDocumentAccessService.class));
         service.linkDocumentToTarget(command(null,"actor"));assertEquals("Owner label",saved[0].targetLabelSnapshot());assertNull(saved[0].documentVersionId());
         assertThrows(SecurityException.class,()->service.linkDocumentToTarget(command(null,"other")));
     }
     @Test void versionOfOtherDocumentRejectedBeforeLinkSave(){
         var docs=new DocumentSemanticRemediationTest.Documents();docs.saved=DocumentSemanticRemediationTest.document("Title","Actor",null);
         var versions=(DocumentVersionRepositoryPort)Proxy.newProxyInstance(getClass().getClassLoader(),new Class<?>[]{DocumentVersionRepositoryPort.class},(p,m,a)->Optional.of(DocumentSemanticRemediationTest.version("other")));
-        var service=new DocumentsApplicationService(docs,versions,DocumentSemanticRemediationTest.empty(DocumentTargetLinkRepositoryPort.class),DocumentSemanticRemediationTest.ACTORS,(id,family)->{},(m,t,id)->new Target(id,null,null),new DocumentSemanticRemediationTest.Security());
+        var service=new DocumentsApplicationService(docs,versions,DocumentSemanticRemediationTest.empty(DocumentTargetLinkRepositoryPort.class),DocumentSemanticRemediationTest.ACTORS,(id,family)->{},(m,t,id)->new Target(id,null,null),new DocumentSemanticRemediationTest.Security(),org.mockito.Mockito.mock(dz.sh.hidra.modules.documents.application.service.ControlledDocumentAccessService.class));
         assertThrows(IllegalArgumentException.class,()->service.linkDocumentToTarget(command("version","actor")));
     }
     @Test void missingTargetOrIneligibleRoleDeniedBeforeLinkSave(){
         var docs=new DocumentSemanticRemediationTest.Documents();docs.saved=DocumentSemanticRemediationTest.document("Title","Actor",null);
-        var service=new DocumentsApplicationService(docs,DocumentSemanticRemediationTest.empty(DocumentVersionRepositoryPort.class),DocumentSemanticRemediationTest.empty(DocumentTargetLinkRepositoryPort.class),DocumentSemanticRemediationTest.ACTORS,(id,family)->{throw new IllegalArgumentException("role");},(m,t,id)->new Target(id,null,null),new DocumentSemanticRemediationTest.Security());
+        var service=new DocumentsApplicationService(docs,DocumentSemanticRemediationTest.empty(DocumentVersionRepositoryPort.class),DocumentSemanticRemediationTest.empty(DocumentTargetLinkRepositoryPort.class),DocumentSemanticRemediationTest.ACTORS,(id,family)->{throw new IllegalArgumentException("role");},(m,t,id)->new Target(id,null,null),new DocumentSemanticRemediationTest.Security(),org.mockito.Mockito.mock(dz.sh.hidra.modules.documents.application.service.ControlledDocumentAccessService.class));
         assertThrows(IllegalArgumentException.class,()->service.linkDocumentToTarget(command(null,"actor")));
-        var missing=new DocumentsApplicationService(docs,DocumentSemanticRemediationTest.empty(DocumentVersionRepositoryPort.class),DocumentSemanticRemediationTest.empty(DocumentTargetLinkRepositoryPort.class),DocumentSemanticRemediationTest.ACTORS,(id,family)->{},(m,t,id)->{throw new IllegalArgumentException("missing");},new DocumentSemanticRemediationTest.Security());
+        var missing=new DocumentsApplicationService(docs,DocumentSemanticRemediationTest.empty(DocumentVersionRepositoryPort.class),DocumentSemanticRemediationTest.empty(DocumentTargetLinkRepositoryPort.class),DocumentSemanticRemediationTest.ACTORS,(id,family)->{},(m,t,id)->{throw new IllegalArgumentException("missing");},new DocumentSemanticRemediationTest.Security(),org.mockito.Mockito.mock(dz.sh.hidra.modules.documents.application.service.ControlledDocumentAccessService.class));
         assertThrows(IllegalArgumentException.class,()->missing.linkDocumentToTarget(command(null,"actor")));
     }
 }

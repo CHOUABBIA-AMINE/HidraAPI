@@ -151,7 +151,8 @@ class DocumentsSemanticPostgresTest {
         var service=new DocumentContentTransferService(binary,objects,versions,c->{
             jdbc.update(version("created","doc",c.versionNumber()).replace("'storage'","'"+c.storageObjectId()+"'"));
             return new DocumentVersionSummaryDto("created","doc",c.versionNumber(),null,c.mimeType(),c.originalFilename(),0,c.checksumValue(),DocumentVersionStatus.DRAFT,Instant.now());
-        },(id,at)->Optional.of(new DocumentsActorContract.Actor(id,"Actor")),security,documents);
+        },(id,at)->Optional.of(new DocumentsActorContract.Actor(id,"Actor")),security,documents,
+            org.mockito.Mockito.mock(dz.sh.hidra.modules.documents.application.service.ControlledDocumentAccessService.class));
         var command=new UploadDocumentBinaryVersionCommand("doc",1,null,null,null,null,null,null,null,null,null,"actor","Actor","file.txt","text/plain",InputStream.nullInputStream());
         assertThrows(RuntimeException.class,()->template.execute(status->service.uploadDocumentBinaryVersion(command)));
         assertEquals(java.util.Set.of("existing-blob"),blobs);

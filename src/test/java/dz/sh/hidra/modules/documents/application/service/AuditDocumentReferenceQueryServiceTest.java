@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 class AuditDocumentReferenceQueryServiceTest {
  @Test void onlyOwnerProvenReferencesResolve() {
-  var repo=mock(DocumentRepositoryPort.class);var service=new AuditDocumentReferenceQueryService(repo);
+  var repo=mock(DocumentRepositoryPort.class);var service=new AuditDocumentReferenceQueryService(repo,mock(ControlledDocumentAccessService.class));
   when(repo.findById("known")).thenReturn(Optional.of(mock(Document.class)));
   assertFalse(service.exists(null));assertFalse(service.exists(" "));assertFalse(service.exists("missing"));assertTrue(service.exists(" known "));
  }

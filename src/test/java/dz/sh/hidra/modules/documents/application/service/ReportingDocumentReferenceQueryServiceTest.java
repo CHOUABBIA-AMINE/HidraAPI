@@ -31,7 +31,7 @@ class ReportingDocumentReferenceQueryServiceTest {
         var documents=mock(DocumentRepositoryPort.class);var storage=mock(DocumentStorageObjectRepositoryPort.class);
         when(documents.findById("document")).thenReturn(Optional.of(mock(Document.class)));when(documents.findById("storage")).thenReturn(Optional.empty());
         when(storage.findById("storage")).thenReturn(Optional.of(mock(DocumentStorageObject.class)));when(storage.findById("document")).thenReturn(Optional.empty());
-        var query=new ReportingDocumentReferenceQueryService(documents,storage);
+        var query=new ReportingDocumentReferenceQueryService(documents,storage,mock(ControlledDocumentAccessService.class));
         assertTrue(query.documentExists(" document "));assertTrue(query.storageObjectExists(" storage "));
         assertFalse(query.documentExists("storage"));assertFalse(query.storageObjectExists("document"));
         assertFalse(query.documentExists(null));assertFalse(query.storageObjectExists(" "));

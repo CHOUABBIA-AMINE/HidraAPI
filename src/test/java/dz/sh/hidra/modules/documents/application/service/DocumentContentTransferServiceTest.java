@@ -60,7 +60,7 @@ class DocumentContentTransferServiceTest {
     static DocumentVersionSummaryDto summary(){return new DocumentVersionSummaryDto("version","doc",1,null,"text/plain","file.txt",0,"sum",DocumentVersionStatus.DRAFT,NOW);}
     DocumentContentTransferService service(Binary binary,Storage storage,Documents documents,UploadDocumentVersionUseCase upload){
         var versions=(DocumentVersionRepositoryPort)Proxy.newProxyInstance(getClass().getClassLoader(),new Class<?>[]{DocumentVersionRepositoryPort.class},(p,m,a)->Optional.empty());
-        return new DocumentContentTransferService(binary,storage,versions,upload,ACTORS,new Security(),documents);
+        return new DocumentContentTransferService(binary,storage,versions,upload,ACTORS,new Security(),documents,org.mockito.Mockito.mock(ControlledDocumentAccessService.class));
     }
     void begin(){TransactionSynchronizationManager.initSynchronization();TransactionSynchronizationManager.setActualTransactionActive(true);}
     void complete(int status){for(var sync:TransactionSynchronizationManager.getSynchronizations())sync.afterCompletion(status);}

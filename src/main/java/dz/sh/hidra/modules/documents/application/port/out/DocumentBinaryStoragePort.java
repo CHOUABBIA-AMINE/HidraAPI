@@ -30,6 +30,45 @@ public interface DocumentBinaryStoragePort {
 
     InputStream open(String referenceId);
 
+    /**
+     * Verify complete bytes before exposing an immutable content stream.
+     * The default supports test/integration providers and spools a single opened
+     * handle to a managed temporary file to avoid an unbounded heap copy.
+     */
+    default InputStream verifiedOpen(String referenceId,long expectedLength,String expectedSha256) {
+        java.nio.file.Path spool=null;
+        try {
+            spool=java.nio.file.Files.createTempFile("hidra-controlled-document-", ".bin");
+            java.security.MessageDigest digest=java.security.MessageDigest.getInstance("SHA-256");
+            long count=0;
+            try (InputStream source=open(referenceId);
+                    java.io.OutputStream output=java.nio.file.Files.newOutputStream(spool)) {
+                byte[] block=new byte[8192];
+                int read;
+                while ((read=source.read(block))!=-1) {
+                    if(read==0)continue;
+                    output.write(block,0,read);
+                    digest.update(block,0,read);
+                    count+=read;
+                }
+            }
+            if(count!=expectedLength || expectedSha256==null
+                    ||!java.util.HexFormat.of().formatHex(digest.digest()).equalsIgnoreCase(expectedSha256))
+                throw new IllegalStateException("Controlled document checksum or length mismatch.");
+            final java.nio.file.Path owned=spool;
+            InputStream input=java.nio.file.Files.newInputStream(spool);
+            return new java.io.FilterInputStream(input) {
+                @Override public void close() throws java.io.IOException {
+                    try {super.close();} finally {java.nio.file.Files.deleteIfExists(owned);}
+                }
+            };
+        }catch(java.io.IOException | java.security.NoSuchAlgorithmException | RuntimeException failure) {
+            if(spool!=null)try{java.nio.file.Files.deleteIfExists(spool);}catch(java.io.IOException cleanup){failure.addSuppressed(cleanup);}
+            if(failure instanceof RuntimeException runtime)throw runtime;
+            throw new IllegalStateException("Controlled document verification unavailable.",failure);
+        }
+    }
+
     boolean available(String referenceId);
 
     void delete(String referenceId);

@@ -41,7 +41,7 @@ class DocumentVersionSemanticRemediationTest {
     @Test void optionalWorkflowAndPopulatedSupersessionFailClosedBeforePersistence(){
         var repo=(DocumentVersionJpaRepository)Proxy.newProxyInstance(getClass().getClassLoader(),new Class<?>[]{DocumentVersionJpaRepository.class},(p,m,a)->{
             if(m.getName().equals("existsById"))return false;throw new AssertionError("Unexpected save");});
-        var adapter=new JpaDocumentVersionRepositoryAdapter(repo,DocumentSemanticRemediationTest.ACTORS,id->false);
+        var adapter=new JpaDocumentVersionRepositoryAdapter(repo,DocumentSemanticRemediationTest.ACTORS,id->false,org.mockito.Mockito.mock(dz.sh.hidra.modules.documents.application.service.ControlledDocumentAccessService.class));
         assertThrows(IllegalArgumentException.class,()->adapter.save(version(1,"text/plain","Historical display","missing",null)));
         assertThrows(IllegalArgumentException.class,()->adapter.save(version(1,"text/plain","Historical display",null,"missing")));
     }
@@ -49,7 +49,7 @@ class DocumentVersionSemanticRemediationTest {
         var documents=new DocumentSemanticRemediationTest.Documents();documents.saved=DocumentSemanticRemediationTest.document("Title","Actor",null);
         DocumentVersion[] captured={null};
         var versions=(DocumentVersionRepositoryPort)Proxy.newProxyInstance(getClass().getClassLoader(),new Class<?>[]{DocumentVersionRepositoryPort.class},(p,m,a)->{captured[0]=(DocumentVersion)a[0];return a[0];});
-        var service=new DocumentsApplicationService(documents,versions,DocumentSemanticRemediationTest.empty(DocumentTargetLinkRepositoryPort.class),DocumentSemanticRemediationTest.ACTORS,(id,family)->{},(m,t,id)->null,new DocumentSemanticRemediationTest.Security());
+        var service=new DocumentsApplicationService(documents,versions,DocumentSemanticRemediationTest.empty(DocumentTargetLinkRepositoryPort.class),DocumentSemanticRemediationTest.ACTORS,(id,family)->{},(m,t,id)->null,new DocumentSemanticRemediationTest.Security(),org.mockito.Mockito.mock(dz.sh.hidra.modules.documents.application.service.ControlledDocumentAccessService.class));
         var command=new UploadDocumentVersionCommand("doc",1,null,null,null,null,null,"storage","text/plain","file.txt",null,0,"SHA-256","sum",null,null,null,null,"actor","Forged display");
         service.uploadDocumentVersion(command);assertEquals("Owner actor",captured[0].uploadedByDisplayNameSnapshot());
         documents.saved=null;assertThrows(IllegalArgumentException.class,()->service.uploadDocumentVersion(command));

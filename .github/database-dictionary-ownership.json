@@ -252,6 +252,22 @@
     "owner": "custody",
     "purpose": "T21 Custody-owned Immutable software-only custody transfer ticket revision, pending/finalized distinction, and Workflow target digest."
   },
+  "public.hidra_documents_controlled_decision": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261117_005__t24_controlled_document_history.sql",
+      "src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/adapter/JdbcControlledDocumentRepositoryAdapter.java"
+    ],
+    "owner": "documents",
+    "purpose": "Documents-owned append-only version-specific independent custodian acceptance/supersession receipt preserving exact SHA-256, size, source actor and immutable Topology facility target link lineage."
+  },
+  "public.hidra_documents_controlled_scope": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261117_005__t24_controlled_document_history.sql",
+      "src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/adapter/JdbcControlledDocumentRepositoryAdapter.java"
+    ],
+    "owner": "documents",
+    "purpose": "Immutable Documents-owned enrolled FACILITY company binding, non-transferable create replay key and source actor provenance; no foreign Topology aggregate ownership."
+  },
   "public.hidra_hse_catalog_field_policy": {
     "evidence": [
       "src/main/resources/db/migration/V20261008_014__hmr_082_hse_case_lifecycle.sql"

@@ -2585,3 +2585,38 @@ and equality, migrated dictionary equality and Full Verification Gate.
 After expected-head publication confirm the exact-SHA workflow is queued or
 started and stop for owner feedback. T17/T25 selection follows separate
 acceptance review.
+
+
+### T24 bounded implementation candidate — 2026-11-17
+
+**T24 IN PROGRESS — implementation publication gate, not accepted.** Selected by
+the owner command \`Start HidraAPI T24 implementation\` after T23 exact-SHA
+acceptance and Documentation Validation #1120 on base
+\`a69fa8e664630e5ff0c70440fc0435dc7576ea5d\`.
+Exact task/commit identity remains
+\`feat(documents): discover and supersede controlled document versions\`.
+The implementation candidate is confined to the registered 18 CREATE / 28 UPDATE
+allowlist and one \`V20261117_005\` migration. It preserves non-enrolled
+Documents semantics, strict nine-route native delegation, two exact owner exports,
+newly enrolled FACILITY/company scope, checked binary access and independent
+custodian append-only acceptance/supersession evidence.
+
+The one synthetic Java 21/PostgreSQL GZ2 test is
+\`Gz2ControlledDocumentsNativeHttpPostgresIntegrationTest.discoversAcceptsAndSupersedesScopedDocumentVersions\`.
+Its test inventory registration uses the exact source SHA-256, refreshes all changed
+test/fixture fingerprints and does **not** claim an executed passing case. No Maven
+binary, network-accessible source checkout, Docker/PostgreSQL instance or executable
+local tests were available in the implementation session; the GitHub connector
+provided exact-SHA source and staged Git blobs only. Static review and manifest
+assembly are **not** compiler, PostgreSQL, HTTP runtime, CI or engineering evidence.
+
+**Acceptance gate remains OPEN.** The exact resulting main commit must enter the
+applicable HidraAPI CI workflows; require Java compile, fast tests, all fourteen
+PostgreSQL lanes, signed raw T24 report, native-route/startup authorization,
+canonical OpenAPI compatibility/equality, exact migrated dictionary equality and
+Full Verification Gate before any status change to COMPLETED. The strict
+OpenAPI/physical dictionary reconciliation is reserved in the separately registered
+\`docs(documents): reconcile T24 generated contracts and physical dictionary\`
+stage if artifact generation is unavailable before source publication. Do not
+fabricate those runtime artifacts. T17/T25 remain unselected until T24
+acceptance is reviewed; no simulation, release, deployment or OT work is implied.

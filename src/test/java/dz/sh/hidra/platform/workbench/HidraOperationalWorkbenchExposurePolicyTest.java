@@ -70,6 +70,17 @@ class HidraOperationalWorkbenchExposurePolicyTest {
     }
 
     @Test
+    void controlledDocumentsMayNeverBeExposedThroughGenericWorkbench() {
+        var policy=new HidraOperationalWorkbenchExposurePolicy("identity/users=id,username");
+        assertThat(policy.approvedFields("documents","document")).isEmpty();
+        assertThat(policy.approvedFields("documents","document-versions")).isEmpty();
+        assertThat(policy.approvedFields("identity","users")).isPresent();
+        assertThatThrownBy(()->new HidraOperationalWorkbenchExposurePolicy(
+            "documents/documents=id,code;identity/users=id"))
+            .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
     void passwordHashAndSecretFieldsCannotBeConfigured() {
         assertThatThrownBy(() -> new HidraOperationalWorkbenchExposurePolicy(
                 "identity/users=id,passwordHash"

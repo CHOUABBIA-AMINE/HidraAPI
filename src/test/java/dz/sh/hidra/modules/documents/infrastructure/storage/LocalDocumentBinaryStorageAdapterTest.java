@@ -49,5 +49,13 @@ class LocalDocumentBinaryStorageAdapterTest {
         try (var input = adapter.open("version-object-1")) {
             assertThat(input.readAllBytes()).isEqualTo(payload);
         }
+        try(var verified=adapter.verifiedOpen("version-object-1",payload.length,stored.checksumValue())){
+            assertThat(verified.readAllBytes()).isEqualTo(payload);
+        }
+        org.junit.jupiter.api.Assertions.assertThrows(IllegalStateException.class,
+                ()->adapter.verifiedOpen("version-object-1",payload.length+1,stored.checksumValue()));
+        java.nio.file.Files.writeString(tempDir.resolve("version-object-1"),"tampered");
+        org.junit.jupiter.api.Assertions.assertThrows(IllegalStateException.class,
+                ()->adapter.verifiedOpen("version-object-1",payload.length,stored.checksumValue()));
     }
 }

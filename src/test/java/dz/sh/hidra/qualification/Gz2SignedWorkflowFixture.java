@@ -383,7 +383,10 @@ class Gz2SignedWorkflowFixture {
     }
 
     Runtime start() throws Exception {
-        return new Runtime();
+        return new Runtime(null,null);
+    }
+    Runtime start(Path documentsRoot,String providerId) throws Exception {
+        return new Runtime(documentsRoot,providerId);
     }
 
     final class Runtime implements AutoCloseable {
@@ -392,7 +395,7 @@ class Gz2SignedWorkflowFixture {
         private final Path log;
         private final String base;
 
-        Runtime() throws Exception {
+        Runtime(Path documentRoot,String documentProviderId) throws Exception {
             int port;
             try (var socket = new ServerSocket(0, 0, InetAddress.getByName("127.0.0.1"))) {
                 port = socket.getLocalPort();
@@ -411,6 +414,10 @@ class Gz2SignedWorkflowFixture {
                     "--hidra.platform.persistence.publication.username=" + PUBLICATION,
                     "--hidra.platform.security.jwt.token-issuer=hidra-api",
                     "--hidra.api.errors.include-debug-details=false");
+            if(documentRoot!=null && documentProviderId!=null){
+                launcher.command().add("--hidra.documents.storage.root="+documentRoot.toAbsolutePath().normalize());
+                launcher.command().add("--hidra.documents.storage.provider-id="+documentProviderId);
+            }
             launcher.environment().put("SPRING_DATASOURCE_PASSWORD", APP_PASSWORD);
             launcher.environment().put("SPRING_FLYWAY_PASSWORD", postgres.getPassword());
             launcher.environment().put("HIDRA_PLATFORM_PERSISTENCE_PUBLICATION_PASSWORD", PUBLICATION_PASSWORD);
@@ -475,6 +482,32 @@ class Gz2SignedWorkflowFixture {
             request.method(method, body == null ? HttpRequest.BodyPublishers.noBody()
                     : HttpRequest.BodyPublishers.ofString(JSON.writeValueAsString(body)));
             return client.send(request.build(), HttpResponse.BodyHandlers.ofString());
+        }
+
+        HttpResponse<byte[]> multipart(String route,String token,Object metadata,byte[] payload)
+                throws Exception {
+            String boundary="GZ2-"+UUID.randomUUID();
+            byte[] pre=("--"+boundary+"\r\nContent-Disposition: form-data; name=\"metadata\""+
+                    "\r\nContent-Type: application/json\r\n\r\n"+
+                    JSON.writeValueAsString(metadata)+"\r\n--"+boundary+
+                    "\r\nContent-Disposition: form-data; name=\"file\"; filename=\"evidence.bin\""+
+                    "\r\nContent-Type: application/octet-stream\r\n\r\n")
+                    .getBytes(StandardCharsets.UTF_8);
+            byte[] tail=("\r\n--"+boundary+"--\r\n").getBytes(StandardCharsets.UTF_8);
+            byte[] data=new byte[pre.length+payload.length+tail.length];
+            System.arraycopy(pre,0,data,0,pre.length);
+            System.arraycopy(payload,0,data,pre.length,payload.length);
+            System.arraycopy(tail,0,data,pre.length+payload.length,tail.length);
+            var request=HttpRequest.newBuilder(URI.create(base+route)).timeout(Duration.ofSeconds(45))
+                    .header("Authorization","Bearer "+token)
+                    .header("Content-Type","multipart/form-data; boundary="+boundary)
+                    .POST(HttpRequest.BodyPublishers.ofByteArray(data)).build();
+            return client.send(request,HttpResponse.BodyHandlers.ofByteArray());
+        }
+        HttpResponse<byte[]> download(String route,String token)throws Exception{
+            var request=HttpRequest.newBuilder(URI.create(base+route)).timeout(Duration.ofSeconds(45))
+                    .header("Authorization","Bearer "+token).GET().build();
+            return client.send(request,HttpResponse.BodyHandlers.ofByteArray());
         }
 
         JsonNode json(String method, String route, String token, Object body, int status) throws Exception {

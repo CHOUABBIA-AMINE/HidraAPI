@@ -96,6 +96,13 @@ class HidraTrustedNativeProtectedRouteHttpTest {
  @AfterEach void clearAuthentication() {
    SecurityContextHolder.clearContext();
  }
+ @Test void t24DeclaredNativeRoutesKeepExactMethodAndSignature() {
+    var routes=new HidraTrustedNativeProtectedRouteRegistry().candidates().stream()
+        .filter(x->x.controller().getSimpleName().equals("ControlledDocumentsController")).toList();
+    assertEquals(9,routes.size());
+    assertTrue(routes.stream().allMatch(x->x.method().isAnnotationPresent(NativeProtectedOperation.class)));
+    assertEquals(9,routes.stream().map(x->x.verb()+" "+x.pattern()).distinct().count());
+ }
  @Test void exactNativeControllerRouteDelegatesWithoutGenericPermission() throws Exception {
    var owner = new OwnerController();
    var resolver = org.mockito.Mockito.mock(HidraEffectivePermissionResolver.class);

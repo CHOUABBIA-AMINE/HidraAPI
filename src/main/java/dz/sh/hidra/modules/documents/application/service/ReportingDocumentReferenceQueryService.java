@@ -27,9 +27,22 @@ import org.springframework.stereotype.Service;
 public final class ReportingDocumentReferenceQueryService implements ReportingDocumentReferenceContract {
     private final DocumentRepositoryPort documents;
     private final DocumentStorageObjectRepositoryPort storage;
-    public ReportingDocumentReferenceQueryService(DocumentRepositoryPort documents,DocumentStorageObjectRepositoryPort storage){
+    private final ControlledDocumentAccessService controlled;
+    public ReportingDocumentReferenceQueryService(DocumentRepositoryPort documents,DocumentStorageObjectRepositoryPort storage,
+            ControlledDocumentAccessService controlled){
         this.documents=Objects.requireNonNull(documents);this.storage=Objects.requireNonNull(storage);
+        this.controlled=Objects.requireNonNull(controlled);
     }
-    public boolean documentExists(String id){return id!=null && !id.isBlank() && documents.findById(id.trim()).isPresent();}
-    public boolean storageObjectExists(String id){return id!=null && !id.isBlank() && storage.findById(id.trim()).isPresent();}
+    @org.springframework.transaction.annotation.Transactional(readOnly=true)
+    public boolean documentExists(String id){
+        if(id==null||id.isBlank())return false;
+        controlled.forDocument(id.trim(),"documents:controlled:read");
+        return documents.findById(id.trim()).isPresent();
+    }
+    @org.springframework.transaction.annotation.Transactional(readOnly=true)
+    public boolean storageObjectExists(String id){
+        if(id==null||id.isBlank())return false;
+        controlled.forStorage(id.trim(),"documents:controlled:read");
+        return storage.findById(id.trim()).isPresent();
+    }
 }

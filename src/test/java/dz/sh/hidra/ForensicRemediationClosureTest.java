@@ -120,6 +120,25 @@ class ForensicRemediationClosureTest {
             "dz.sh.hidra.modules.assets.application.contract.hse"
     );
 
+    private static boolean t24DocumentOwnerExport(String source,String target) {
+        final String owner="dz.sh.hidra.modules.documents.infrastructure.integration.ControlledDocumentOwnerAccessAdapter";
+        return source.equals(owner) && java.util.Set.of(
+                "dz.sh.hidra.modules.identity.application.contract.documents.ControlledDocumentScopedAuthorizationContract",
+                "dz.sh.hidra.modules.topology.application.contract.documents.ControlledDocumentFacilityOwnershipContract")
+                .stream().anyMatch(contract->target.equals(contract)||target.startsWith(contract+"$"));
+    }
+    @Test void t24DocumentsOwnerExportsRemainExactAndPrivate() {
+        String adapter="dz.sh.hidra.modules.documents.infrastructure.integration.ControlledDocumentOwnerAccessAdapter";
+        for(String root:java.util.Set.of(
+                "dz.sh.hidra.modules.identity.application.contract.documents.ControlledDocumentScopedAuthorizationContract",
+                "dz.sh.hidra.modules.topology.application.contract.documents.ControlledDocumentFacilityOwnershipContract")) {
+            org.junit.jupiter.api.Assertions.assertTrue(t24DocumentOwnerExport(adapter,root));
+            org.junit.jupiter.api.Assertions.assertTrue(t24DocumentOwnerExport(adapter,root+"$Facility"));
+            org.junit.jupiter.api.Assertions.assertFalse(t24DocumentOwnerExport(adapter+"Sibling",root));
+            org.junit.jupiter.api.Assertions.assertFalse(t24DocumentOwnerExport(adapter,root+"Sibling"));
+        }
+    }
+
     private static boolean t23AnalyticsOwnerExport(String consumer,String imported) {
         final String approved="dz.sh.hidra.modules.analytics.infrastructure.integration.DeviationMetricOwnerAccessAdapter";
         return approved.equals(consumer) && java.util.Set.of(
@@ -315,6 +334,14 @@ class ForensicRemediationClosureTest {
                     violations.add(source.fqcn()+" -> "+imported);
                     continue;
                 }
+                // The existing Identity documents export package remains public for historical contracts.
+                // The new T24 scalar is an exact-consumer exception, not package-wide authority.
+                if (imported.startsWith("dz.sh.hidra.modules.identity.application.contract.documents.ControlledDocumentScopedAuthorizationContract")
+                    || imported.startsWith("dz.sh.hidra.modules.topology.application.contract.documents.ControlledDocumentFacilityOwnershipContract")) {
+                    if (!t24DocumentOwnerExport(source.fqcn(),imported))
+                        violations.add(source.fqcn()+" -> unauthorized T24 owner "+imported);
+                    continue;
+                }
                 if (EXPORTED_PACKAGES.stream().anyMatch(imported::startsWith)) {
                     continue;
                 }
@@ -359,6 +386,7 @@ class ForensicRemediationClosureTest {
                 if (isMonitoringRuleOwnerExport(source.fqcn(), imported)) continue;
                 if (isPlanningReviewerExport(source.fqcn(), imported)) continue;
                 if (t22RiskOwnerExport(source.fqcn(), imported)) continue;
+                if (t24DocumentOwnerExport(source.fqcn(), imported)) continue;
                 if (t23AnalyticsOwnerExport(source.fqcn(), imported)) continue;
                 violations.add(source.fqcn() + " -> " + imported);
             }

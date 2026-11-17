@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `c3bc2b9a57deb137209fdc1944ffaac7389bf209`
+Captured source SHA: `001857cc2f2fb485d68052dcf2ee2662b7d0e050`
 PostgreSQL server: `16.16 (Debian 16.16-1.pgdg13+1)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `b05433cd2c920a91e25d57b517f0eb39f994f4e9389037e4777899653d2ec612`.
-Migrations: 219; JPA mappings: 471; catalog relations: 582; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `61a71888c72c0ddb6bb34547b7e79e6ee04e00b8da0244a61b2ce4c1bd46dfcc`.
+Migrations: 220; JPA mappings: 471; catalog relations: 591; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -5453,6 +5453,7 @@ Persisted CustodyAgreementJpaEntity state; semantic authority remains with custo
 - Migration mention (not inferred introduction): [V20260611_015__create_custody_tables.sql](../../src/main/resources/db/migration/V20260611_015__create_custody_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_002__enforce_same_module_reference_integrity_b.sql](../../src/main/resources/db/migration/V20260929_002__enforce_same_module_reference_integrity_b.sql)
 - Migration mention (not inferred introduction): [V20261004_018__hmr_018_custody_custody_measurement_period.sql](../../src/main/resources/db/migration/V20261004_018__hmr_018_custody_custody_measurement_period.sql)
+- Migration mention (not inferred introduction): [V20261117_001__t21_custody_transfer_lifecycle.sql](../../src/main/resources/db/migration/V20261117_001__t21_custody_transfer_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -5515,6 +5516,7 @@ Persisted CustodyAgreementPartyJpaEntity state; semantic authority remains with 
 - Migration mention (not inferred introduction): [V20260611_015__create_custody_tables.sql](../../src/main/resources/db/migration/V20260611_015__create_custody_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_002__enforce_same_module_reference_integrity_b.sql](../../src/main/resources/db/migration/V20260929_002__enforce_same_module_reference_integrity_b.sql)
 - Migration mention (not inferred introduction): [V20261115_005__t20_qualified_custody_measurement_capture.sql](../../src/main/resources/db/migration/V20261115_005__t20_qualified_custody_measurement_capture.sql)
+- Migration mention (not inferred introduction): [V20261117_001__t21_custody_transfer_lifecycle.sql](../../src/main/resources/db/migration/V20261117_001__t21_custody_transfer_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -6103,6 +6105,7 @@ Persisted CustodyMeasurementPeriodJpaEntity state; semantic authority remains wi
 - Migration mention (not inferred introduction): [V20260929_002__enforce_same_module_reference_integrity_b.sql](../../src/main/resources/db/migration/V20260929_002__enforce_same_module_reference_integrity_b.sql)
 - Migration mention (not inferred introduction): [V20261004_018__hmr_018_custody_custody_measurement_period.sql](../../src/main/resources/db/migration/V20261004_018__hmr_018_custody_custody_measurement_period.sql)
 - Migration mention (not inferred introduction): [V20261115_005__t20_qualified_custody_measurement_capture.sql](../../src/main/resources/db/migration/V20261115_005__t20_qualified_custody_measurement_capture.sql)
+- Migration mention (not inferred introduction): [V20261117_001__t21_custody_transfer_lifecycle.sql](../../src/main/resources/db/migration/V20261117_001__t21_custody_transfer_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -6163,6 +6166,7 @@ Custody-owned immutable observed interval capture receipt, scoped command replay
 - Evidence: [V20261115_005__t20_qualified_custody_measurement_capture.sql](../../src/main/resources/db/migration/V20261115_005__t20_qualified_custody_measurement_capture.sql)
 - Evidence: [JdbcCustodyMeasurementCaptureAdapter.java](../../src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcCustodyMeasurementCaptureAdapter.java)
 - Migration mention (not inferred introduction): [V20261115_005__t20_qualified_custody_measurement_capture.sql](../../src/main/resources/db/migration/V20261115_005__t20_qualified_custody_measurement_capture.sql)
+- Migration mention (not inferred introduction): [V20261117_001__t21_custody_transfer_lifecycle.sql](../../src/main/resources/db/migration/V20261117_001__t21_custody_transfer_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -6339,6 +6343,7 @@ Persisted CustodyMeterRunSnapshotJpaEntity state; semantic authority remains wit
 - Migration mention (not inferred introduction): [V20260611_015__create_custody_tables.sql](../../src/main/resources/db/migration/V20260611_015__create_custody_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_002__enforce_same_module_reference_integrity_b.sql](../../src/main/resources/db/migration/V20260929_002__enforce_same_module_reference_integrity_b.sql)
 - Migration mention (not inferred introduction): [V20261115_005__t20_qualified_custody_measurement_capture.sql](../../src/main/resources/db/migration/V20261115_005__t20_qualified_custody_measurement_capture.sql)
+- Migration mention (not inferred introduction): [V20261117_001__t21_custody_transfer_lifecycle.sql](../../src/main/resources/db/migration/V20261117_001__t21_custody_transfer_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -6389,6 +6394,7 @@ Persisted CustodyMeteringSystemJpaEntity state; semantic authority remains with 
 - Migration mention (not inferred introduction): [V20260611_015__create_custody_tables.sql](../../src/main/resources/db/migration/V20260611_015__create_custody_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_002__enforce_same_module_reference_integrity_b.sql](../../src/main/resources/db/migration/V20260929_002__enforce_same_module_reference_integrity_b.sql)
 - Migration mention (not inferred introduction): [V20261115_005__t20_qualified_custody_measurement_capture.sql](../../src/main/resources/db/migration/V20261115_005__t20_qualified_custody_measurement_capture.sql)
+- Migration mention (not inferred introduction): [V20261117_001__t21_custody_transfer_lifecycle.sql](../../src/main/resources/db/migration/V20261117_001__t21_custody_transfer_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -7413,6 +7419,563 @@ Custody-owned immutable supplied facts and authored metadata binding with exact 
   - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_custody_supplied_fluid_immutable()"}
   - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_custody_supplied_fluid_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'Immutable supplied fluid storage' USING ERRCODE='23514';<br>END;<br>$function$<br>
 
+### public.hidra_custody_t21_calculation
+
+Owner: **custody**; relation kind: `r`.
+
+T21 Custody-owned Immutable observed-volume calculation snapshot with explicit official=false and no conversion.
+
+- Evidence: [V20261117_001__t21_custody_transfer_lifecycle.sql](../../src/main/resources/db/migration/V20261117_001__t21_custody_transfer_lifecycle.sql)
+- Evidence: [JdbcCustodyTransferLifecycleAdapter.java](../../src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcCustodyTransferLifecycleAdapter.java)
+- Migration mention (not inferred introduction): [V20261117_001__t21_custody_transfer_lifecycle.sql](../../src/main/resources/db/migration/V20261117_001__t21_custody_transfer_lifecycle.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| ticket_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| reconciliation_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| observed_total | numeric(18,6) | False | None; identity=; generated= | No current mapped Java column | — |
+| ticket_total | numeric(18,6) | False | None; identity=; generated= | No current mapped Java column | — |
+| unit_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| basis | character varying(20) | False | None; identity=; generated= | No current mapped Java column | — |
+| method_version | character varying(40) | False | None; identity=; generated= | No current mapped Java column | — |
+| official | boolean | False | false; identity=; generated= | No current mapped Java column | — |
+| created_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_custody_t21_calculation_basis_check`: CHECK (basis::text = 'OBSERVED'::text)
+  - Catalog attributes: {"columns": ["basis"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_t21_calculation_created_at_check`: CHECK (isfinite(created_at))
+  - Catalog attributes: {"columns": ["created_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_t21_calculation_id_ticket_id_key`: UNIQUE (id, ticket_id)
+  - Catalog attributes: {"columns": ["id", "ticket_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_custody_t21_calculation_method_version_check`: CHECK (method_version::text = 'T21-OBSERVED-1'::text)
+  - Catalog attributes: {"columns": ["method_version"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_t21_calculation_observed_total_check`: CHECK (observed_total &gt;= 0::numeric)
+  - Catalog attributes: {"columns": ["observed_total"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_t21_calculation_official_check`: CHECK (official = false)
+  - Catalog attributes: {"columns": ["official"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_t21_calculation_pkey`: PRIMARY KEY (id)
+  - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_custody_t21_calculation_reconciliation_id_fkey`: FOREIGN KEY (reconciliation_id) REFERENCES hidra_custody_t21_reconciliation(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["reconciliation_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_custody_t21_reconciliation"}, "type": "f", "validated": true}
+- `hidra_custody_t21_calculation_ticket_id_fkey`: FOREIGN KEY (ticket_id) REFERENCES hidra_custody_t21_ticket(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["ticket_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_custody_t21_ticket"}, "type": "f", "validated": true}
+- `hidra_custody_t21_calculation_ticket_id_key`: UNIQUE (ticket_id)
+  - Catalog attributes: {"columns": ["ticket_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_custody_t21_calculation_ticket_total_check`: CHECK (ticket_total &gt;= 0::numeric)
+  - Catalog attributes: {"columns": ["ticket_total"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_custody_t21_calculation_id_ticket_id_key`: CREATE UNIQUE INDEX hidra_custody_t21_calculation_id_ticket_id_key ON public.hidra_custody_t21_calculation USING btree (id, ticket_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_custody_t21_calculation_pkey`: CREATE UNIQUE INDEX hidra_custody_t21_calculation_pkey ON public.hidra_custody_t21_calculation USING btree (id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `hidra_custody_t21_calculation_ticket_id_key`: CREATE UNIQUE INDEX hidra_custody_t21_calculation_ticket_id_key ON public.hidra_custody_t21_calculation USING btree (ticket_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `hidra_custody_t21_calculation_immutable`: CREATE TRIGGER hidra_custody_t21_calculation_immutable BEFORE DELETE OR UPDATE ON hidra_custody_t21_calculation FOR EACH ROW EXECUTE FUNCTION hidra_t21_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t21_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t21_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T21 reconciliation and decision history is append-only' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `hidra_custody_t21_calculation_no_truncate`: CREATE TRIGGER hidra_custody_t21_calculation_no_truncate BEFORE TRUNCATE ON hidra_custody_t21_calculation FOR EACH STATEMENT EXECUTE FUNCTION hidra_t21_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t21_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t21_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T21 reconciliation and decision history is append-only' USING ERRCODE='23514';<br>END;<br>$function$<br>
+
+### public.hidra_custody_t21_command
+
+Owner: **custody**; relation kind: `r`.
+
+T21 Custody-owned Append-only signed actor, period and request fingerprint for exact idempotent lifecycle replay.
+
+- Evidence: [V20261117_001__t21_custody_transfer_lifecycle.sql](../../src/main/resources/db/migration/V20261117_001__t21_custody_transfer_lifecycle.sql)
+- Evidence: [JdbcCustodyTransferLifecycleAdapter.java](../../src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcCustodyTransferLifecycleAdapter.java)
+- Migration mention (not inferred introduction): [V20261117_001__t21_custody_transfer_lifecycle.sql](../../src/main/resources/db/migration/V20261117_001__t21_custody_transfer_lifecycle.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| operation | character varying(16) | False | None; identity=; generated= | No current mapped Java column | — |
+| command_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| payload_fingerprint | character(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| period_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| resource_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| created_at | timestamp with time zone | False | now(); identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_custody_t21_command_actor_id_check`: CHECK (length(btrim(actor_id::text)) &gt;= 1 AND length(btrim(actor_id::text)) &lt;= 80)
+  - Catalog attributes: {"columns": ["actor_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_t21_command_created_at_check`: CHECK (isfinite(created_at))
+  - Catalog attributes: {"columns": ["created_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_t21_command_operation_check`: CHECK (operation::text = ANY (ARRAY['RECONCILE'::character varying, 'DISPOSE'::character varying, 'FINALIZE'::character varying, 'CORRECT'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["operation"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_t21_command_payload_fingerprint_check`: CHECK (payload_fingerprint ~ '^[0-9a-f]{64}$'::text)
+  - Catalog attributes: {"columns": ["payload_fingerprint"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_t21_command_period_id_fkey`: FOREIGN KEY (period_id) REFERENCES hidra_custody_measurement_period(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["period_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_custody_measurement_period"}, "type": "f", "validated": true}
+- `hidra_custody_t21_command_pkey`: PRIMARY KEY (operation, command_id)
+  - Catalog attributes: {"columns": ["operation", "command_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+
+#### Indexes
+
+- `hidra_custody_t21_command_pkey`: CREATE UNIQUE INDEX hidra_custody_t21_command_pkey ON public.hidra_custody_t21_command USING btree (operation, command_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `hidra_custody_t21_command_immutable`: CREATE TRIGGER hidra_custody_t21_command_immutable BEFORE DELETE OR UPDATE ON hidra_custody_t21_command FOR EACH ROW EXECUTE FUNCTION hidra_t21_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t21_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t21_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T21 reconciliation and decision history is append-only' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `hidra_custody_t21_command_no_truncate`: CREATE TRIGGER hidra_custody_t21_command_no_truncate BEFORE TRUNCATE ON hidra_custody_t21_command FOR EACH STATEMENT EXECUTE FUNCTION hidra_t21_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t21_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t21_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T21 reconciliation and decision history is append-only' USING ERRCODE='23514';<br>END;<br>$function$<br>
+
+### public.hidra_custody_t21_correction
+
+Owner: **custody**; relation kind: `r`.
+
+T21 Custody-owned One-to-one immutable original-to-successor ticket correction provenance and human reason.
+
+- Evidence: [V20261117_001__t21_custody_transfer_lifecycle.sql](../../src/main/resources/db/migration/V20261117_001__t21_custody_transfer_lifecycle.sql)
+- Evidence: [JdbcCustodyTransferLifecycleAdapter.java](../../src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcCustodyTransferLifecycleAdapter.java)
+- Migration mention (not inferred introduction): [V20261117_001__t21_custody_transfer_lifecycle.sql](../../src/main/resources/db/migration/V20261117_001__t21_custody_transfer_lifecycle.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| original_ticket_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| successor_ticket_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| reason | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| evidence_reference | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| corrected_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_custody_t21_correction_actor_id_check`: CHECK (length(btrim(actor_id::text)) &gt;= 1 AND length(btrim(actor_id::text)) &lt;= 80)
+  - Catalog attributes: {"columns": ["actor_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_t21_correction_check`: CHECK (original_ticket_id::text &lt;&gt; successor_ticket_id::text)
+  - Catalog attributes: {"columns": ["original_ticket_id", "successor_ticket_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_t21_correction_corrected_at_check`: CHECK (isfinite(corrected_at))
+  - Catalog attributes: {"columns": ["corrected_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_t21_correction_evidence_reference_check`: CHECK (length(btrim(evidence_reference::text)) &gt;= 1 AND length(btrim(evidence_reference::text)) &lt;= 80)
+  - Catalog attributes: {"columns": ["evidence_reference"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_t21_correction_original_ticket_id_fkey`: FOREIGN KEY (original_ticket_id) REFERENCES hidra_custody_t21_ticket(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["original_ticket_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_custody_t21_ticket"}, "type": "f", "validated": true}
+- `hidra_custody_t21_correction_pkey`: PRIMARY KEY (original_ticket_id)
+  - Catalog attributes: {"columns": ["original_ticket_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_custody_t21_correction_reason_check`: CHECK (length(btrim(reason::text)) &gt;= 1 AND length(btrim(reason::text)) &lt;= 80)
+  - Catalog attributes: {"columns": ["reason"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_t21_correction_successor_ticket_id_fkey`: FOREIGN KEY (successor_ticket_id) REFERENCES hidra_custody_t21_ticket(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["successor_ticket_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_custody_t21_ticket"}, "type": "f", "validated": true}
+- `hidra_custody_t21_correction_successor_ticket_id_key`: UNIQUE (successor_ticket_id)
+  - Catalog attributes: {"columns": ["successor_ticket_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+
+#### Indexes
+
+- `hidra_custody_t21_correction_pkey`: CREATE UNIQUE INDEX hidra_custody_t21_correction_pkey ON public.hidra_custody_t21_correction USING btree (original_ticket_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `hidra_custody_t21_correction_successor_ticket_id_key`: CREATE UNIQUE INDEX hidra_custody_t21_correction_successor_ticket_id_key ON public.hidra_custody_t21_correction USING btree (successor_ticket_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `hidra_custody_t21_correction_immutable`: CREATE TRIGGER hidra_custody_t21_correction_immutable BEFORE DELETE OR UPDATE ON hidra_custody_t21_correction FOR EACH ROW EXECUTE FUNCTION hidra_t21_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t21_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t21_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T21 reconciliation and decision history is append-only' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `hidra_custody_t21_correction_no_truncate`: CREATE TRIGGER hidra_custody_t21_correction_no_truncate BEFORE TRUNCATE ON hidra_custody_t21_correction FOR EACH STATEMENT EXECUTE FUNCTION hidra_t21_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t21_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t21_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T21 reconciliation and decision history is append-only' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `hidra_t21_correction_guard`: CREATE TRIGGER hidra_t21_correction_guard BEFORE INSERT ON hidra_custody_t21_correction FOR EACH ROW EXECUTE FUNCTION hidra_t21_correction_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t21_correction_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t21_correction_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>DECLARE old_ticket public.hidra_custody_t21_ticket%ROWTYPE;<br>DECLARE next_ticket public.hidra_custody_t21_ticket%ROWTYPE;<br>BEGIN<br> SELECT * INTO old_ticket FROM public.hidra_custody_t21_ticket WHERE id=NEW.original_ticket_id FOR UPDATE;<br> SELECT * INTO next_ticket FROM public.hidra_custody_t21_ticket WHERE id=NEW.successor_ticket_id;<br> IF NOT FOUND OR old_ticket.id IS NULL<br>    OR NOT EXISTS(SELECT 1 FROM public.hidra_custody_t21_finalization WHERE ticket_id=old_ticket.id)<br>    OR next_ticket.parent_ticket_id IS DISTINCT FROM old_ticket.id<br>    OR next_ticket.period_id&lt;&gt;old_ticket.period_id<br>    OR next_ticket.company_id&lt;&gt;old_ticket.company_id<br>    OR next_ticket.transfer_point_id&lt;&gt;old_ticket.transfer_point_id<br>    OR next_ticket.version&lt;&gt;old_ticket.version+1<br>    OR EXISTS(SELECT 1 FROM public.hidra_custody_t21_finalization WHERE ticket_id=next_ticket.id)<br> THEN<br>    RAISE EXCEPTION 'T21 correction must extend one finalized same-owner head' USING ERRCODE='23514';<br> END IF;<br> RETURN NEW;<br>END;<br>$function$<br>
+
+### public.hidra_custody_t21_discrepancy
+
+Owner: **custody**; relation kind: `r`.
+
+T21 Custody-owned Immutable nonzero ticket-versus-measured quantity discrepancy.
+
+- Evidence: [V20261117_001__t21_custody_transfer_lifecycle.sql](../../src/main/resources/db/migration/V20261117_001__t21_custody_transfer_lifecycle.sql)
+- Evidence: [JdbcCustodyTransferLifecycleAdapter.java](../../src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcCustodyTransferLifecycleAdapter.java)
+- Migration mention (not inferred introduction): [V20261117_001__t21_custody_transfer_lifecycle.sql](../../src/main/resources/db/migration/V20261117_001__t21_custody_transfer_lifecycle.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| reconciliation_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| ticket_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| difference_quantity | numeric(18,6) | False | None; identity=; generated= | No current mapped Java column | — |
+| unit_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| opened_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_custody_t21_discrepancy_difference_quantity_check`: CHECK (difference_quantity &lt;&gt; 0::numeric)
+  - Catalog attributes: {"columns": ["difference_quantity"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_t21_discrepancy_opened_at_check`: CHECK (isfinite(opened_at))
+  - Catalog attributes: {"columns": ["opened_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_t21_discrepancy_pkey`: PRIMARY KEY (id)
+  - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_custody_t21_discrepancy_reconciliation_id_fkey`: FOREIGN KEY (reconciliation_id) REFERENCES hidra_custody_t21_reconciliation(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["reconciliation_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_custody_t21_reconciliation"}, "type": "f", "validated": true}
+- `hidra_custody_t21_discrepancy_reconciliation_id_key`: UNIQUE (reconciliation_id)
+  - Catalog attributes: {"columns": ["reconciliation_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_custody_t21_discrepancy_ticket_id_fkey`: FOREIGN KEY (ticket_id) REFERENCES hidra_custody_t21_ticket(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["ticket_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_custody_t21_ticket"}, "type": "f", "validated": true}
+
+#### Indexes
+
+- `hidra_custody_t21_discrepancy_pkey`: CREATE UNIQUE INDEX hidra_custody_t21_discrepancy_pkey ON public.hidra_custody_t21_discrepancy USING btree (id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `hidra_custody_t21_discrepancy_reconciliation_id_key`: CREATE UNIQUE INDEX hidra_custody_t21_discrepancy_reconciliation_id_key ON public.hidra_custody_t21_discrepancy USING btree (reconciliation_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `hidra_custody_t21_discrepancy_immutable`: CREATE TRIGGER hidra_custody_t21_discrepancy_immutable BEFORE DELETE OR UPDATE ON hidra_custody_t21_discrepancy FOR EACH ROW EXECUTE FUNCTION hidra_t21_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t21_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t21_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T21 reconciliation and decision history is append-only' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `hidra_custody_t21_discrepancy_no_truncate`: CREATE TRIGGER hidra_custody_t21_discrepancy_no_truncate BEFORE TRUNCATE ON hidra_custody_t21_discrepancy FOR EACH STATEMENT EXECUTE FUNCTION hidra_t21_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t21_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t21_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T21 reconciliation and decision history is append-only' USING ERRCODE='23514';<br>END;<br>$function$<br>
+
+### public.hidra_custody_t21_disposition
+
+Owner: **custody**; relation kind: `r`.
+
+T21 Custody-owned Append-only attributable explicit acceptance or rejection of an observed discrepancy.
+
+- Evidence: [V20261117_001__t21_custody_transfer_lifecycle.sql](../../src/main/resources/db/migration/V20261117_001__t21_custody_transfer_lifecycle.sql)
+- Evidence: [JdbcCustodyTransferLifecycleAdapter.java](../../src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcCustodyTransferLifecycleAdapter.java)
+- Migration mention (not inferred introduction): [V20261117_001__t21_custody_transfer_lifecycle.sql](../../src/main/resources/db/migration/V20261117_001__t21_custody_transfer_lifecycle.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| discrepancy_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| disposition | character varying(16) | False | None; identity=; generated= | No current mapped Java column | — |
+| reason | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| evidence_reference | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| disposed_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_custody_t21_disposition_actor_id_check`: CHECK (length(btrim(actor_id::text)) &gt;= 1 AND length(btrim(actor_id::text)) &lt;= 80)
+  - Catalog attributes: {"columns": ["actor_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_t21_disposition_discrepancy_id_fkey`: FOREIGN KEY (discrepancy_id) REFERENCES hidra_custody_t21_discrepancy(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["discrepancy_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_custody_t21_discrepancy"}, "type": "f", "validated": true}
+- `hidra_custody_t21_disposition_disposed_at_check`: CHECK (isfinite(disposed_at))
+  - Catalog attributes: {"columns": ["disposed_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_t21_disposition_disposition_check`: CHECK (disposition::text = ANY (ARRAY['ACCEPTED'::character varying, 'REJECTED'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["disposition"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_t21_disposition_evidence_reference_check`: CHECK (length(btrim(evidence_reference::text)) &gt;= 1 AND length(btrim(evidence_reference::text)) &lt;= 80)
+  - Catalog attributes: {"columns": ["evidence_reference"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_t21_disposition_pkey`: PRIMARY KEY (discrepancy_id)
+  - Catalog attributes: {"columns": ["discrepancy_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_custody_t21_disposition_reason_check`: CHECK (length(btrim(reason::text)) &gt;= 1 AND length(btrim(reason::text)) &lt;= 80)
+  - Catalog attributes: {"columns": ["reason"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_custody_t21_disposition_pkey`: CREATE UNIQUE INDEX hidra_custody_t21_disposition_pkey ON public.hidra_custody_t21_disposition USING btree (discrepancy_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `hidra_custody_t21_disposition_immutable`: CREATE TRIGGER hidra_custody_t21_disposition_immutable BEFORE DELETE OR UPDATE ON hidra_custody_t21_disposition FOR EACH ROW EXECUTE FUNCTION hidra_t21_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t21_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t21_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T21 reconciliation and decision history is append-only' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `hidra_custody_t21_disposition_no_truncate`: CREATE TRIGGER hidra_custody_t21_disposition_no_truncate BEFORE TRUNCATE ON hidra_custody_t21_disposition FOR EACH STATEMENT EXECUTE FUNCTION hidra_t21_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t21_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t21_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T21 reconciliation and decision history is append-only' USING ERRCODE='23514';<br>END;<br>$function$<br>
+
+### public.hidra_custody_t21_finalization
+
+Owner: **custody**; relation kind: `r`.
+
+T21 Custody-owned Append-only independent Workflow decision evidence and software-finalization record.
+
+- Evidence: [V20261117_001__t21_custody_transfer_lifecycle.sql](../../src/main/resources/db/migration/V20261117_001__t21_custody_transfer_lifecycle.sql)
+- Evidence: [JdbcCustodyTransferLifecycleAdapter.java](../../src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcCustodyTransferLifecycleAdapter.java)
+- Migration mention (not inferred introduction): [V20261117_001__t21_custody_transfer_lifecycle.sql](../../src/main/resources/db/migration/V20261117_001__t21_custody_transfer_lifecycle.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| ticket_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| workflow_instance_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| workflow_task_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| workflow_action_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| reviewer_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| approved_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| finalized_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| finalized_by | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_custody_t21_finalization_approved_at_check`: CHECK (isfinite(approved_at))
+  - Catalog attributes: {"columns": ["approved_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_t21_finalization_check`: CHECK (approved_at &lt;= finalized_at)
+  - Catalog attributes: {"columns": ["approved_at", "finalized_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_t21_finalization_finalized_at_check`: CHECK (isfinite(finalized_at))
+  - Catalog attributes: {"columns": ["finalized_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_t21_finalization_pkey`: PRIMARY KEY (ticket_id)
+  - Catalog attributes: {"columns": ["ticket_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_custody_t21_finalization_reviewer_id_check`: CHECK (length(btrim(reviewer_id::text)) &gt;= 1 AND length(btrim(reviewer_id::text)) &lt;= 80)
+  - Catalog attributes: {"columns": ["reviewer_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_t21_finalization_ticket_id_fkey`: FOREIGN KEY (ticket_id) REFERENCES hidra_custody_t21_ticket(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["ticket_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_custody_t21_ticket"}, "type": "f", "validated": true}
+- `hidra_custody_t21_finalization_workflow_action_id_key`: UNIQUE (workflow_action_id)
+  - Catalog attributes: {"columns": ["workflow_action_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+
+#### Indexes
+
+- `hidra_custody_t21_finalization_pkey`: CREATE UNIQUE INDEX hidra_custody_t21_finalization_pkey ON public.hidra_custody_t21_finalization USING btree (ticket_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `hidra_custody_t21_finalization_workflow_action_id_key`: CREATE UNIQUE INDEX hidra_custody_t21_finalization_workflow_action_id_key ON public.hidra_custody_t21_finalization USING btree (workflow_action_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `hidra_custody_t21_finalization_immutable`: CREATE TRIGGER hidra_custody_t21_finalization_immutable BEFORE DELETE OR UPDATE ON hidra_custody_t21_finalization FOR EACH ROW EXECUTE FUNCTION hidra_t21_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t21_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t21_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T21 reconciliation and decision history is append-only' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `hidra_custody_t21_finalization_no_truncate`: CREATE TRIGGER hidra_custody_t21_finalization_no_truncate BEFORE TRUNCATE ON hidra_custody_t21_finalization FOR EACH STATEMENT EXECUTE FUNCTION hidra_t21_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t21_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t21_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T21 reconciliation and decision history is append-only' USING ERRCODE='23514';<br>END;<br>$function$<br>
+
+### public.hidra_custody_t21_reconciliation
+
+Owner: **custody**; relation kind: `r`.
+
+T21 Custody-owned Immutable exact-scoped observed receipt reconciliation and selection digest; no fiscal acceptance.
+
+- Evidence: [V20261117_001__t21_custody_transfer_lifecycle.sql](../../src/main/resources/db/migration/V20261117_001__t21_custody_transfer_lifecycle.sql)
+- Evidence: [JdbcCustodyTransferLifecycleAdapter.java](../../src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcCustodyTransferLifecycleAdapter.java)
+- Migration mention (not inferred introduction): [V20261117_001__t21_custody_transfer_lifecycle.sql](../../src/main/resources/db/migration/V20261117_001__t21_custody_transfer_lifecycle.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| period_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| agreement_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| transfer_point_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| company_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| meter_run_snapshot_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| product_publication_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| agreement_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| unit_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| digest | character(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| ticket_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| parent_ticket_id | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+| observed_total | numeric(18,6) | False | None; identity=; generated= | No current mapped Java column | — |
+| ticket_total | numeric(18,6) | False | None; identity=; generated= | No current mapped Java column | — |
+| difference_quantity | numeric(18,6) | False | None; identity=; generated= | No current mapped Java column | — |
+| selection_version | character varying(40) | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| created_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_custody_t21_reconciliat_id_period_id_company_id_trans_key`: UNIQUE (id, period_id, company_id, transfer_point_id)
+  - Catalog attributes: {"columns": ["id", "period_id", "company_id", "transfer_point_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_custody_t21_reconciliation_actor_id_check`: CHECK (length(btrim(actor_id::text)) &gt;= 1 AND length(btrim(actor_id::text)) &lt;= 80)
+  - Catalog attributes: {"columns": ["actor_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_t21_reconciliation_agreement_id_fkey`: FOREIGN KEY (agreement_id) REFERENCES hidra_custody_agreement(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["agreement_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_custody_agreement"}, "type": "f", "validated": true}
+- `hidra_custody_t21_reconciliation_agreement_party_id_fkey`: FOREIGN KEY (agreement_party_id) REFERENCES hidra_custody_agreement_party(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["agreement_party_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_custody_agreement_party"}, "type": "f", "validated": true}
+- `hidra_custody_t21_reconciliation_check`: CHECK (difference_quantity = (ticket_total - observed_total))
+  - Catalog attributes: {"columns": ["difference_quantity", "ticket_total", "observed_total"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_t21_reconciliation_company_id_check`: CHECK (length(btrim(company_id::text)) &gt;= 1 AND length(btrim(company_id::text)) &lt;= 80)
+  - Catalog attributes: {"columns": ["company_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_t21_reconciliation_created_at_check`: CHECK (isfinite(created_at))
+  - Catalog attributes: {"columns": ["created_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_t21_reconciliation_digest_check`: CHECK (digest ~ '^[0-9a-f]{64}$'::text)
+  - Catalog attributes: {"columns": ["digest"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_t21_reconciliation_id_ticket_id_key`: UNIQUE (id, ticket_id)
+  - Catalog attributes: {"columns": ["id", "ticket_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_custody_t21_reconciliation_meter_run_snapshot_id_fkey`: FOREIGN KEY (meter_run_snapshot_id) REFERENCES hidra_custody_meter_run_snapshot(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["meter_run_snapshot_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_custody_meter_run_snapshot"}, "type": "f", "validated": true}
+- `hidra_custody_t21_reconciliation_observed_total_check`: CHECK (observed_total &gt;= 0::numeric)
+  - Catalog attributes: {"columns": ["observed_total"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_t21_reconciliation_period_id_fkey`: FOREIGN KEY (period_id) REFERENCES hidra_custody_measurement_period(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["period_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_custody_measurement_period"}, "type": "f", "validated": true}
+- `hidra_custody_t21_reconciliation_pkey`: PRIMARY KEY (id)
+  - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_custody_t21_reconciliation_selection_version_check`: CHECK (selection_version::text = 'T21-OBSERVED-1'::text)
+  - Catalog attributes: {"columns": ["selection_version"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_t21_reconciliation_ticket_id_key`: UNIQUE (ticket_id)
+  - Catalog attributes: {"columns": ["ticket_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_custody_t21_reconciliation_ticket_total_check`: CHECK (ticket_total &gt;= 0::numeric)
+  - Catalog attributes: {"columns": ["ticket_total"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_t21_reconciliation_transfer_point_id_fkey`: FOREIGN KEY (transfer_point_id) REFERENCES hidra_custody_transfer_point(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["transfer_point_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_custody_transfer_point"}, "type": "f", "validated": true}
+
+#### Indexes
+
+- `hidra_custody_t21_reconciliat_id_period_id_company_id_trans_key`: CREATE UNIQUE INDEX hidra_custody_t21_reconciliat_id_period_id_company_id_trans_key ON public.hidra_custody_t21_reconciliation USING btree (id, period_id, company_id, transfer_point_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_custody_t21_reconciliation_id_ticket_id_key`: CREATE UNIQUE INDEX hidra_custody_t21_reconciliation_id_ticket_id_key ON public.hidra_custody_t21_reconciliation USING btree (id, ticket_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_custody_t21_reconciliation_pkey`: CREATE UNIQUE INDEX hidra_custody_t21_reconciliation_pkey ON public.hidra_custody_t21_reconciliation USING btree (id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `hidra_custody_t21_reconciliation_ticket_id_key`: CREATE UNIQUE INDEX hidra_custody_t21_reconciliation_ticket_id_key ON public.hidra_custody_t21_reconciliation USING btree (ticket_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `ix_t21_reconciliation_period`: CREATE INDEX ix_t21_reconciliation_period ON public.hidra_custody_t21_reconciliation USING btree (period_id, created_at)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+- `uq_t21_initial_reconciliation_per_period`: CREATE UNIQUE INDEX uq_t21_initial_reconciliation_per_period ON public.hidra_custody_t21_reconciliation USING btree (period_id) WHERE (parent_ticket_id IS NULL)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `hidra_custody_t21_reconciliation_immutable`: CREATE TRIGGER hidra_custody_t21_reconciliation_immutable BEFORE DELETE OR UPDATE ON hidra_custody_t21_reconciliation FOR EACH ROW EXECUTE FUNCTION hidra_t21_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t21_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t21_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T21 reconciliation and decision history is append-only' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `hidra_custody_t21_reconciliation_no_truncate`: CREATE TRIGGER hidra_custody_t21_reconciliation_no_truncate BEFORE TRUNCATE ON hidra_custody_t21_reconciliation FOR EACH STATEMENT EXECUTE FUNCTION hidra_t21_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t21_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t21_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T21 reconciliation and decision history is append-only' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `hidra_t21_reconciliation_context_guard`: CREATE TRIGGER hidra_t21_reconciliation_context_guard BEFORE INSERT ON hidra_custody_t21_reconciliation FOR EACH ROW EXECUTE FUNCTION hidra_t21_reconciliation_context_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t21_reconciliation_context_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t21_reconciliation_context_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> IF NOT EXISTS(<br>   SELECT 1 FROM public.hidra_custody_measurement_period p<br>   JOIN public.hidra_custody_agreement a ON a.id=p.agreement_id<br>   JOIN public.hidra_custody_transfer_point tp ON tp.id=p.transfer_point_id<br>   JOIN public.hidra_custody_meter_run_snapshot mr ON mr.measurement_period_id=p.id<br>   JOIN public.hidra_custody_metering_system ms ON ms.id=mr.metering_system_id<br>   JOIN public.hidra_custody_agreement_party ap ON ap.agreement_id=a.id<br>   WHERE p.id=NEW.period_id AND p.agreement_id=NEW.agreement_id<br>      AND p.transfer_point_id=NEW.transfer_point_id<br>      AND a.transfer_point_id=p.transfer_point_id AND tp.id=NEW.transfer_point_id<br>      AND mr.id=NEW.meter_run_snapshot_id<br>      AND ms.transfer_point_id=NEW.transfer_point_id<br>      AND ap.id=NEW.agreement_party_id<br> ) THEN<br>    RAISE EXCEPTION 'T21 reconciliation is inconsistent with Custody period, agreement or metering'<br>       USING ERRCODE='23514';<br> END IF;<br> RETURN NEW;<br>END;<br>$function$<br>
+
+### public.hidra_custody_t21_reconciliation_receipt
+
+Owner: **custody**; relation kind: `r`.
+
+T21 Custody-owned Append-only ordered qualified T20 receipt membership under exact reconciliation scope.
+
+- Evidence: [V20261117_001__t21_custody_transfer_lifecycle.sql](../../src/main/resources/db/migration/V20261117_001__t21_custody_transfer_lifecycle.sql)
+- Evidence: [JdbcCustodyTransferLifecycleAdapter.java](../../src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcCustodyTransferLifecycleAdapter.java)
+- Migration mention (not inferred introduction): [V20261117_001__t21_custody_transfer_lifecycle.sql](../../src/main/resources/db/migration/V20261117_001__t21_custody_transfer_lifecycle.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| reconciliation_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| ordinal | integer | False | None; identity=; generated= | No current mapped Java column | — |
+| measurement_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_custody_t21_reconciliat_reconciliation_id_measurement_key`: UNIQUE (reconciliation_id, measurement_id)
+  - Catalog attributes: {"columns": ["reconciliation_id", "measurement_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_custody_t21_reconciliation_receipt_measurement_id_fkey`: FOREIGN KEY (measurement_id) REFERENCES hidra_custody_measurement_receipt(measurement_id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["measurement_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["measurement_id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_custody_measurement_receipt"}, "type": "f", "validated": true}
+- `hidra_custody_t21_reconciliation_receipt_ordinal_check`: CHECK (ordinal &gt;= 1)
+  - Catalog attributes: {"columns": ["ordinal"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_t21_reconciliation_receipt_pkey`: PRIMARY KEY (reconciliation_id, ordinal)
+  - Catalog attributes: {"columns": ["reconciliation_id", "ordinal"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_custody_t21_reconciliation_receipt_reconciliation_id_fkey`: FOREIGN KEY (reconciliation_id) REFERENCES hidra_custody_t21_reconciliation(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["reconciliation_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_custody_t21_reconciliation"}, "type": "f", "validated": true}
+
+#### Indexes
+
+- `hidra_custody_t21_reconciliat_reconciliation_id_measurement_key`: CREATE UNIQUE INDEX hidra_custody_t21_reconciliat_reconciliation_id_measurement_key ON public.hidra_custody_t21_reconciliation_receipt USING btree (reconciliation_id, measurement_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_custody_t21_reconciliation_receipt_pkey`: CREATE UNIQUE INDEX hidra_custody_t21_reconciliation_receipt_pkey ON public.hidra_custody_t21_reconciliation_receipt USING btree (reconciliation_id, ordinal)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `hidra_custody_t21_reconciliation_receipt_immutable`: CREATE TRIGGER hidra_custody_t21_reconciliation_receipt_immutable BEFORE DELETE OR UPDATE ON hidra_custody_t21_reconciliation_receipt FOR EACH ROW EXECUTE FUNCTION hidra_t21_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t21_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t21_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T21 reconciliation and decision history is append-only' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `hidra_custody_t21_reconciliation_receipt_no_truncate`: CREATE TRIGGER hidra_custody_t21_reconciliation_receipt_no_truncate BEFORE TRUNCATE ON hidra_custody_t21_reconciliation_receipt FOR EACH STATEMENT EXECUTE FUNCTION hidra_t21_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t21_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t21_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T21 reconciliation and decision history is append-only' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `hidra_t21_receipt_scope_guard`: CREATE TRIGGER hidra_t21_receipt_scope_guard BEFORE INSERT ON hidra_custody_t21_reconciliation_receipt FOR EACH ROW EXECUTE FUNCTION hidra_t21_receipt_scope_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t21_receipt_scope_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t21_receipt_scope_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>-- Serialize direct evidence membership writes on the same immutable parent.<br> PERFORM id FROM public.hidra_custody_t21_reconciliation<br>  WHERE id=NEW.reconciliation_id FOR UPDATE;<br> IF NOT FOUND THEN<br>   RAISE EXCEPTION 'T21 reconciliation is unavailable' USING ERRCODE='23514';<br> END IF;<br> IF EXISTS(<br>    SELECT 1 FROM public.hidra_custody_t21_reconciliation_receipt selected<br>    JOIN public.hidra_custody_measurement_receipt existing<br>      ON existing.measurement_id=selected.measurement_id<br>    JOIN public.hidra_custody_measurement_receipt incoming<br>      ON incoming.measurement_id=NEW.measurement_id<br>    WHERE selected.reconciliation_id=NEW.reconciliation_id<br>       AND incoming.interval_start&lt;existing.interval_end<br>       AND existing.interval_start&lt;incoming.interval_end<br> ) THEN<br>   RAISE EXCEPTION 'T21 overlapping immutable observed interval is prohibited' USING ERRCODE='23514';<br> END IF;<br> IF NOT EXISTS (<br>    SELECT 1 FROM public.hidra_custody_t21_reconciliation rec<br>      JOIN public.hidra_custody_measurement_receipt r ON r.measurement_id=NEW.measurement_id<br>     WHERE rec.id=NEW.reconciliation_id<br>       AND r.period_id=rec.period_id AND r.company_id=rec.company_id<br>       AND r.transfer_point_id=rec.transfer_point_id AND r.meter_run_snapshot_id=rec.meter_run_snapshot_id<br>       AND r.product_publication_id=rec.product_publication_id AND r.agreement_party_id=rec.agreement_party_id<br>       AND r.unit_id=rec.unit_id AND r.quantity_basis='OBSERVED'<br> ) THEN<br>   RAISE EXCEPTION 'T21 receipt and immutable reconciliation scope mismatch' USING ERRCODE='23514';<br> END IF;<br> RETURN NEW;<br>END;<br>$function$<br>
+
+### public.hidra_custody_t21_ticket
+
+Owner: **custody**; relation kind: `r`.
+
+T21 Custody-owned Immutable software-only custody transfer ticket revision, pending/finalized distinction, and Workflow target digest.
+
+- Evidence: [V20261117_001__t21_custody_transfer_lifecycle.sql](../../src/main/resources/db/migration/V20261117_001__t21_custody_transfer_lifecycle.sql)
+- Evidence: [JdbcCustodyTransferLifecycleAdapter.java](../../src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcCustodyTransferLifecycleAdapter.java)
+- Migration mention (not inferred introduction): [V20261117_001__t21_custody_transfer_lifecycle.sql](../../src/main/resources/db/migration/V20261117_001__t21_custody_transfer_lifecycle.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| reconciliation_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| period_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| agreement_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| transfer_point_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| company_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| calculation_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| approval_target_digest | character(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| issued_by | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| parent_ticket_id | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+| version | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| ticket_quantity | numeric(18,6) | False | None; identity=; generated= | No current mapped Java column | — |
+| unit_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| issued_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `fk_t21_ticket_calculation`: FOREIGN KEY (calculation_id, id) REFERENCES hidra_custody_t21_calculation(id, ticket_id) DEFERRABLE INITIALLY DEFERRED
+  - Catalog attributes: {"columns": ["calculation_id", "id"], "deferrable": true, "initially_deferred": true, "reference": {"columns": ["id", "ticket_id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_custody_t21_calculation"}, "type": "f", "validated": true}
+- `hidra_custody_t21_ticket_agreement_id_fkey`: FOREIGN KEY (agreement_id) REFERENCES hidra_custody_agreement(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["agreement_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_custody_agreement"}, "type": "f", "validated": true}
+- `hidra_custody_t21_ticket_approval_target_digest_check`: CHECK (approval_target_digest ~ '^[0-9a-f]{64}$'::text)
+  - Catalog attributes: {"columns": ["approval_target_digest"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_t21_ticket_approval_target_digest_key`: UNIQUE (approval_target_digest)
+  - Catalog attributes: {"columns": ["approval_target_digest"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_custody_t21_ticket_calculation_id_key`: UNIQUE (calculation_id)
+  - Catalog attributes: {"columns": ["calculation_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_custody_t21_ticket_id_period_id_company_id_transfer_p_key`: UNIQUE (id, period_id, company_id, transfer_point_id)
+  - Catalog attributes: {"columns": ["id", "period_id", "company_id", "transfer_point_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_custody_t21_ticket_issued_at_check`: CHECK (isfinite(issued_at))
+  - Catalog attributes: {"columns": ["issued_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_t21_ticket_issued_by_check`: CHECK (length(btrim(issued_by::text)) &gt;= 1 AND length(btrim(issued_by::text)) &lt;= 80)
+  - Catalog attributes: {"columns": ["issued_by"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_t21_ticket_parent_ticket_id_fkey`: FOREIGN KEY (parent_ticket_id) REFERENCES hidra_custody_t21_ticket(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["parent_ticket_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_custody_t21_ticket"}, "type": "f", "validated": true}
+- `hidra_custody_t21_ticket_period_id_version_key`: UNIQUE (period_id, version)
+  - Catalog attributes: {"columns": ["period_id", "version"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_custody_t21_ticket_pkey`: PRIMARY KEY (id)
+  - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_custody_t21_ticket_reconciliation_id_id_fkey`: FOREIGN KEY (reconciliation_id, id) REFERENCES hidra_custody_t21_reconciliation(id, ticket_id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["reconciliation_id", "id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id", "ticket_id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_custody_t21_reconciliation"}, "type": "f", "validated": true}
+- `hidra_custody_t21_ticket_reconciliation_id_period_id_compa_fkey`: FOREIGN KEY (reconciliation_id, period_id, company_id, transfer_point_id) REFERENCES hidra_custody_t21_reconciliation(id, period_id, company_id, transfer_point_id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["reconciliation_id", "period_id", "company_id", "transfer_point_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id", "period_id", "company_id", "transfer_point_id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_custody_t21_reconciliation"}, "type": "f", "validated": true}
+- `hidra_custody_t21_ticket_ticket_quantity_check`: CHECK (ticket_quantity &gt;= 0::numeric)
+  - Catalog attributes: {"columns": ["ticket_quantity"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_custody_t21_ticket_transfer_point_id_fkey`: FOREIGN KEY (transfer_point_id) REFERENCES hidra_custody_transfer_point(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["transfer_point_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_custody_transfer_point"}, "type": "f", "validated": true}
+- `hidra_custody_t21_ticket_version_check`: CHECK (version &gt;= 1)
+  - Catalog attributes: {"columns": ["version"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_custody_t21_ticket_approval_target_digest_key`: CREATE UNIQUE INDEX hidra_custody_t21_ticket_approval_target_digest_key ON public.hidra_custody_t21_ticket USING btree (approval_target_digest)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_custody_t21_ticket_calculation_id_key`: CREATE UNIQUE INDEX hidra_custody_t21_ticket_calculation_id_key ON public.hidra_custody_t21_ticket USING btree (calculation_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_custody_t21_ticket_id_period_id_company_id_transfer_p_key`: CREATE UNIQUE INDEX hidra_custody_t21_ticket_id_period_id_company_id_transfer_p_key ON public.hidra_custody_t21_ticket USING btree (id, period_id, company_id, transfer_point_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_custody_t21_ticket_period_id_version_key`: CREATE UNIQUE INDEX hidra_custody_t21_ticket_period_id_version_key ON public.hidra_custody_t21_ticket USING btree (period_id, version)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_custody_t21_ticket_pkey`: CREATE UNIQUE INDEX hidra_custody_t21_ticket_pkey ON public.hidra_custody_t21_ticket USING btree (id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `ix_t21_ticket_period`: CREATE INDEX ix_t21_ticket_period ON public.hidra_custody_t21_ticket USING btree (period_id, version)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+
+#### Triggers
+
+- `hidra_custody_t21_ticket_immutable`: CREATE TRIGGER hidra_custody_t21_ticket_immutable BEFORE DELETE OR UPDATE ON hidra_custody_t21_ticket FOR EACH ROW EXECUTE FUNCTION hidra_t21_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t21_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t21_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T21 reconciliation and decision history is append-only' USING ERRCODE='23514';<br>END;<br>$function$<br>
+- `hidra_custody_t21_ticket_no_truncate`: CREATE TRIGGER hidra_custody_t21_ticket_no_truncate BEFORE TRUNCATE ON hidra_custody_t21_ticket FOR EACH STATEMENT EXECUTE FUNCTION hidra_t21_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t21_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t21_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T21 reconciliation and decision history is append-only' USING ERRCODE='23514';<br>END;<br>$function$<br>
+
 ### public.hidra_custody_ticket_line
 
 Owner: **custody**; relation kind: `r`.
@@ -7481,6 +8044,7 @@ Persisted CustodyTransferPointJpaEntity state; semantic authority remains with c
 - Migration mention (not inferred introduction): [V20260611_015__create_custody_tables.sql](../../src/main/resources/db/migration/V20260611_015__create_custody_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_002__enforce_same_module_reference_integrity_b.sql](../../src/main/resources/db/migration/V20260929_002__enforce_same_module_reference_integrity_b.sql)
 - Migration mention (not inferred introduction): [V20261115_005__t20_qualified_custody_measurement_capture.sql](../../src/main/resources/db/migration/V20261115_005__t20_qualified_custody_measurement_capture.sql)
+- Migration mention (not inferred introduction): [V20261117_001__t21_custody_transfer_lifecycle.sql](../../src/main/resources/db/migration/V20261117_001__t21_custody_transfer_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -10716,6 +11280,7 @@ Persisted PermissionJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261115_001__t16_incident_leak_investigations.sql](../../src/main/resources/db/migration/V20261115_001__t16_incident_leak_investigations.sql)
 - Migration mention (not inferred introduction): [V20261115_003__t18_integrity_maintenance_handoff.sql](../../src/main/resources/db/migration/V20261115_003__t18_integrity_maintenance_handoff.sql)
 - Migration mention (not inferred introduction): [V20261115_005__t20_qualified_custody_measurement_capture.sql](../../src/main/resources/db/migration/V20261115_005__t20_qualified_custody_measurement_capture.sql)
+- Migration mention (not inferred introduction): [V20261117_001__t21_custody_transfer_lifecycle.sql](../../src/main/resources/db/migration/V20261117_001__t21_custody_transfer_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|

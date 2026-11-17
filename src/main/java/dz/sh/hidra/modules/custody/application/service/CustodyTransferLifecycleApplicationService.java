@@ -68,6 +68,9 @@ public class CustodyTransferLifecycleApplicationService implements CustodyTransf
         return value;
     }
     private static UUID command(UUID id){return Objects.requireNonNull(id,"Client command ID required.");}
+    // These REST reads acquire the live Topology FOR SHARE ownership fence.
+    // The database transaction must therefore be lock-capable (not READ ONLY);
+    // no mutation is performed on successful read.
     private CustodyTransferLifecyclePort.Scope visible(Optional<CustodyTransferLifecyclePort.Scope> optional,String operation){
         var s=optional.orElseThrow(CustodyTransferLifecycleApplicationService::unavailable);
         String company=ownership.activeOwner(s.assetType(),s.assetId())
@@ -182,14 +185,14 @@ public class CustodyTransferLifecycleApplicationService implements CustodyTransf
         return new Discrepancy(newId(),reconciliation.id(),reconciliation.ticketId(),
             s.difference(),s.unitId(),null,null,null,null,now(),null);
     }
-    @Override @Transactional(readOnly=true)
+    @Override @Transactional
     public Period period(String id){
         var s=visible(persistence.scopeForPeriod(required(id)),PERIOD_READ);
         return new Period(s.periodId(),s.agreementId(),s.transferPointId(),
             ownership.activeOwner(s.assetType(),s.assetId()).orElseThrow(CustodyTransferLifecycleApplicationService::unavailable),
             s.status(),s.periodStart(),s.periodEnd());
     }
-    @Override @Transactional(readOnly=true)
+    @Override @Transactional
     public List<Reconciliation> reconciliations(String periodId){
         visible(persistence.scopeForPeriod(required(periodId)),RECON_READ);
         return persistence.reconciliations(periodId);
@@ -213,17 +216,17 @@ public class CustodyTransferLifecycleApplicationService implements CustodyTransf
             receipt("RECONCILE",key,actor,fingerprint,periodId,id));
         return reconciliation;
     }
-    @Override @Transactional(readOnly=true)
+    @Override @Transactional
     public Reconciliation reconciliation(String id){
         visible(persistence.scopeForReconciliation(required(id)),RECON_READ);
         return persistence.reconciliation(id).orElseThrow(CustodyTransferLifecycleApplicationService::unavailable);
     }
-    @Override @Transactional(readOnly=true)
+    @Override @Transactional
     public Ticket ticket(String id){
         visible(persistence.scopeForTicket(required(id)),TICKET_READ);
         return persistence.ticket(id).orElseThrow(CustodyTransferLifecycleApplicationService::unavailable);
     }
-    @Override @Transactional(readOnly=true)
+    @Override @Transactional
     public List<Ticket> history(String id){
         visible(persistence.scopeForTicket(required(id)),TICKET_READ);
         return persistence.history(id);
@@ -305,12 +308,12 @@ public class CustodyTransferLifecycleApplicationService implements CustodyTransf
             makeDiscrepancy(rec),receipt("CORRECT",key,actor,fingerprint,scope.periodId(),successorId));
         return ticket;
     }
-    @Override @Transactional(readOnly=true)
+    @Override @Transactional
     public List<Discrepancy> discrepancies(String reconciliationId){
         visible(persistence.scopeForReconciliation(required(reconciliationId)),DISC_READ);
         return persistence.discrepancies(reconciliationId);
     }
-    @Override @Transactional(readOnly=true)
+    @Override @Transactional
     public Discrepancy discrepancy(String id){
         visible(persistence.scopeForDiscrepancy(required(id)),DISC_READ);
         return persistence.discrepancy(id).orElseThrow(CustodyTransferLifecycleApplicationService::unavailable);

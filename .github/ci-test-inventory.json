@@ -40,6 +40,7 @@
         "t14OwnerExportsAreExactAndExcludeSiblings",
         "t18CrossOwnerCapabilitiesDoNotBecomeGeneralExports",
         "t21CustodyLifecycleTransactionalComponentsRemainSpringProxyable",
+        "t21ScopedReadsUseLockCapableTransactionsForLiveTopologyOwnership",
         "telemetryNativeAuthorizationContractsRemainExactAndOwnerPrivate",
         "transactionalOrganizationResponsibilityServicesMustRemainProxyable",
         "transitionalCrossModuleAllowlistMustRemainExactAndInUse",
@@ -51,7 +52,7 @@
       "lane": "unit-architecture",
       "owner": "architecture",
       "path": "src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java",
-      "source_sha256": "89ed1fc4529753dc97138a0c72994803c44a3c8e7c460dd44ae369ed0e643e47",
+      "source_sha256": "710afef37d0ac63b9ee121ff8520b90aaf2bd6183a2fe5f1a020fc0d03dc5594",
       "supports": []
     },
     {
@@ -12190,7 +12191,7 @@
       "lane": "postgres-integration",
       "owner": "qualification",
       "path": "src/test/java/dz/sh/hidra/qualification/Gz2CustodyTransferLifecycleNativeHttpPostgresIntegrationTest.java",
-      "source_sha256": "364888a9ad9bf88200a362b9aacb62a450695e0762149908d862a3916f6b0cc0",
+      "source_sha256": "2b0f4414521584ee8c69cab82fe182825f1e2ad4c7b342ea227866aa46e8aa69",
       "supports": []
     },
     {

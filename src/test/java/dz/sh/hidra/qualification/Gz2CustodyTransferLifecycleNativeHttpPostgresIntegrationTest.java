@@ -150,7 +150,7 @@ class Gz2CustodyTransferLifecycleNativeHttpPostgresIntegrationTest {
                 // One native HTTP journey: signed T20 source -> immutable T21 reconciliation
                 // -> independent Workflow decision -> software finalization -> correction.
                 String reconciliationRoute="/api/v1/custody/measurement-periods/"+period+"/reconciliations";
-                assertEquals(404,runtime.send("GET",reconciliationRoute,foreign,null).statusCode());
+                runtime.json("GET",reconciliationRoute,foreign,null,404);
                 var reconCommand=Map.of("commandId",id());
                 JsonNode reconciliation=runtime.json("POST",reconciliationRoute,author,reconCommand,200);
                 assertEquals("75.500000",reconciliation.path("observedTotal").decimalValue()
@@ -161,17 +161,16 @@ class Gz2CustodyTransferLifecycleNativeHttpPostgresIntegrationTest {
                 assertEquals(reconciliation,runtime.json("POST",reconciliationRoute,author,reconCommand,200));
                 var mismatchedReconcile=new java.util.HashMap<>(reconCommand);
                 mismatchedReconcile.put("ticketQuantity","65.000000");
-                assertEquals(409,runtime.send("POST",reconciliationRoute,author,mismatchedReconcile).statusCode());
-                assertEquals(409,runtime.send("POST",reconciliationRoute,author,
-                    Map.of("commandId",id())).statusCode());
+                runtime.json("POST",reconciliationRoute,author,mismatchedReconcile,409);
+                runtime.json("POST",reconciliationRoute,author,Map.of("commandId",id()),409);
                 String firstTicketId=field(reconciliation,"ticketId");
                 String firstTicketRoute="/api/v1/custody/transfer-tickets/"+firstTicketId;
                 JsonNode firstTicket=runtime.get(firstTicketRoute,author);
                 assertEquals("PENDING_SOFTWARE_FINALIZATION",field(firstTicket,"status"));
-                assertEquals(404,runtime.send("GET",firstTicketRoute,foreign,null).statusCode());
+                runtime.json("GET",firstTicketRoute,foreign,null,404);
                 var wrongDecision=Map.of("commandId",id(),"expectedVersion",1,
                     "workflowInstanceId",id(),"workflowTaskId",id(),"workflowActionId",id());
-                assertEquals(409,runtime.send("POST",firstTicketRoute+"/finalizations",author,wrongDecision).statusCode());
+                runtime.json("POST",firstTicketRoute+"/finalizations",author,wrongDecision,409);
                 var review=f.review("custody","CUSTODY_TRANSFER_TICKET","CUSTODY_TRANSFER_TICKET_APPROVAL",false);
                 var approval=workflowDecision(f,runtime,author,reviewer,review,"custody",
                     field(firstTicket,"approvalTargetDigest"),firstTicketId,id());
@@ -181,7 +180,7 @@ class Gz2CustodyTransferLifecycleNativeHttpPostgresIntegrationTest {
                 assertEquals("SOFTWARE_FINALIZED",field(finalized,"status"));
                 assertFalse(finalized.path("official").asBoolean());
                 assertFalse(finalized.path("acceptedForCustody").asBoolean());
-                assertEquals(409,runtime.send("POST",firstTicketRoute+"/finalizations",author,wrongDecision).statusCode());
+                runtime.json("POST",firstTicketRoute+"/finalizations",author,wrongDecision,409);
                 var correction=Map.of("commandId",id(),"expectedVersion",1,
                     "revisedQuantity","75.400000","reason","Synthetic meter ticket correction",
                     "evidenceReference","GZ2-EVIDENCE-1");
@@ -196,10 +195,10 @@ class Gz2CustodyTransferLifecycleNativeHttpPostgresIntegrationTest {
                 String discrepancyRoute="/api/v1/custody/reconciliations/"+field(corrected,"reconciliationId")+"/discrepancies";
                 JsonNode discrepancy=runtime.get(discrepancyRoute,author).get(0);
                 String issueRoute="/api/v1/custody/discrepancies/"+field(discrepancy,"id");
-                assertEquals(404,runtime.send("GET",issueRoute,foreign,null).statusCode());
-                assertEquals(409,runtime.send("POST",correctedRoute+"/finalizations",author,
+                runtime.json("GET",issueRoute,foreign,null,404);
+                runtime.json("POST",correctedRoute+"/finalizations",author,
                     Map.of("commandId",id(),"expectedVersion",2,"workflowInstanceId",id(),
-                        "workflowTaskId",id(),"workflowActionId",id())).statusCode());
+                        "workflowTaskId",id(),"workflowActionId",id()),409);
                 var disposition=Map.of("commandId",id(),"disposition","ACCEPTED",
                     "reason","Accepted observed-ticket delta","evidenceReference","GZ2-REVIEW-2");
                 JsonNode disposed=runtime.json("POST",issueRoute+"/dispositions",author,disposition,200);

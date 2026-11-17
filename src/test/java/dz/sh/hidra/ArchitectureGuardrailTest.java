@@ -23,6 +23,7 @@ import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.tngtech.archunit.core.domain.Dependency;
@@ -934,6 +935,20 @@ class ArchitectureGuardrailTest {
                 "dz.sh.hidra.modules.identity.application.contract.monitoring.MonitoringRuleScopedAuthorizationContract",
                 "dz.sh.hidra.modules.topology.application.contract.monitoring.MonitoringRuleAssetOwnershipContract")
                 .stream().anyMatch(exported->target.equals(exported)||target.startsWith(exported+"$"));
+    }
+
+    @Test void t21ScopedReadsUseLockCapableTransactionsForLiveTopologyOwnership() throws Exception {
+        var type=Class.forName(
+            "dz.sh.hidra.modules.custody.application.service.CustodyTransferLifecycleApplicationService");
+        for(String name:java.util.List.of("period","reconciliations","reconciliation",
+                "ticket","history","discrepancies","discrepancy")){
+            var method=java.util.Arrays.stream(type.getDeclaredMethods())
+                .filter(m->m.getName().equals(name)).findFirst().orElseThrow();
+            var transaction=method.getAnnotation(org.springframework.transaction.annotation.Transactional.class);
+            assertNotNull(transaction,()->"Missing T21 transaction for "+name);
+            assertFalse(transaction.readOnly(),
+                ()->"T21 live Topology FOR SHARE ownership requires a lock-capable transaction: "+name);
+        }
     }
 
     @Test void t21CustodyLifecycleTransactionalComponentsRemainSpringProxyable() throws ClassNotFoundException {

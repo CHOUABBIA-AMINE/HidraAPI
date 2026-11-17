@@ -9,7 +9,7 @@
 | Status | ACTIVE |
 | Authority | Sole task register and execution source for HidraAPI |
 | Owner adoption | 2026-11-10 |
-| Active task selection | T20 IN PROGRESS — signed measurement implementation and unit/architecture/all PostgreSQL shard checks passed at `c3bc2b9`; generated contracts reconciled from exact-run artifacts, replacement exact-SHA CI pending. T19 COMPLETED for synthetic software scope. T17 awaits T24. |
+| Active task selection | T20 COMPLETED for synthetic software scope at `03c0fc426bb79184c1384768fc1e544a2cea53ff` (HidraAPI CI #1265 attempt 2 and Documentation Validation passed). T21 PLANNED — exact implementation envelope registered below; execution requires separate `Next`. T17 awaits T24. |
 
 The task register controls scope, dependencies, status and acceptance. Existing technical policy and verified implementation evidence retain their applicability. Task status advances only with recorded evidence. The initial status for each task is PLANNED. The first candidate is T01.
 
@@ -112,7 +112,7 @@ A task includes its required authorization, REST contract, persistence, failure 
 | **T17 · Verify and close HSE corrective actions** | HSE with Incident, Documents and Workflow | T16, T24 | Assign corrective/preventive actions, capture evidence, verify effectiveness and close with reason and authority. | Closure requires the admitted decision and linked evidence. Foreign actors cannot view case history or counts. **FG-07/18 / A07/A18.** | PLANNED |
 | **T18 · Hand off an integrity finding and verify maintenance** | Integrity and Assets | Eligible Topology and maintainable-asset references | Expose approved finding → assigned work order → execution → verification, with typed outcome/history on both sides. | Correct asset and finding are linked through completion. Wrong binding or stale transition fails atomically. Both owners retain exact outcome evidence. **FG-08 / A08.** | COMPLETED |
 | **T19 · Author and govern Planning nominations** | Planning with Party and Workflow where required | T03 | Create a scoped nomination, link it to an eligible plan revision and expose allowed disposition and historical reads. | A signed client creates and retrieves the nomination and exact revision. Invalid relationship or unauthorized disposition is denied. **FG-03 extension / A03.** | COMPLETED |
-| **T20 · Capture and retrieve qualified custody measurements** | Custody with Telemetry, Party and product owners | T09 and eligible meter/product/Party references | Bind scoped measurements to meter, product, party, units, basis, interval and qualified source evidence. | Authorized readback preserves exact source, quantity, basis and measurement window. Wrong meter, product or unit is rejected. **FG-09 / A09.** | IN PROGRESS |
+| **T20 · Capture and retrieve qualified custody measurements** | Custody with Telemetry, Party and product owners | T09 and eligible meter/product/Party references | Bind scoped measurements to meter, product, party, units, basis, interval and qualified source evidence. | Authorized readback preserves exact source, quantity, basis and measurement window. Wrong meter, product or unit is rejected. **FG-09 / A09.** | COMPLETED |
 | **T21 · Reconcile, finalize and correct custody transfers** | Custody | T20 | Expose period/ticket/discrepancy read and disposition, reconciliation, finalization and versioned correction. | A synthetic ticket is reconciled and finalized. Correction retains original and superseding records with attributable reason and evidence. **FG-09 / A09.** | PLANNED |
 | **T22 · Expose governed Risk results and decision history** | Risk with owner evidence providers | Eligible evidence and the existing scoring/approval path | Expose scoped assessment, score inputs, evidence, independent decision and approved history. | Later source or method changes do not alter the approved historical result. Revoked and unrelated principals cannot read it. **FG-10 / A10.** | PLANNED |
 | **T23 · Execute and retrieve a deterministic analytics metric** | Analytics with source owners | One supported metric and eligible versioned input, such as T11 | Execute the metric, persist durable run/result state and expose source lineage, units and version. | Synthetic inputs produce a predictable value after restart. Bad inputs have explicit failed/unavailable outcomes. **FG-11 / A11.** | PLANNED |
@@ -1919,4 +1919,123 @@ src/test/java/dz/sh/hidra/qualification/Gz2SignedWorkflowFixture.java
 
 **Reviewed exact-source artifacts:** Runtime OpenAPI artifact `14248974322` (`hidra-api.json`, ZIP SHA-256 `e4d325d65df63d8b3b423760ed03b340cfb0b45715fa59da54060d5040bd010a`; member SHA-256 `95d52722424ed5fde9dc26068ccc7a19e75c4dbe1fdfda085ea45c8c360070fc`) contains 411 paths, 453 operations and 493 schemas. Relative to the prior reviewed T19 snapshot, it adds exactly the two T20 native measurement endpoints and two wire schemas, without changes to existing operations or schemas. Migrated PostgreSQL 16.16 dictionary artifact `14249134005` (`DATA_DICTIONARY.md`, ZIP SHA-256 `b4d166f17c0b4fcbcfa3833563f3386a4942e8bd03bfd64cc9b44dad286c52a7`, member SHA-256 `bf9f843794ca4939f008a93d01a0c5af20e7de428be27e7233ea07935fac498b`) records 219 migrations, 471 JPA mappings, 582 relations and zero unresolved owners. The reviewed canonical files are reconstructed byte-for-byte from those artifacts, preserving source SHA `c3bc2b9a57deb137209fdc1944ffaac7389bf209` and manifest provenance; the fresh catalog reflects two additional T20-owned physical relations.
 
-**Status and remaining acceptance:** T20 **IN PROGRESS — documentation reconciliation published only after a guarded commit; new exact-SHA CI not yet accepted**. Recheck canonical OpenAPI/runtime equality and physical dictionary equality, all required unit/architecture and PostgreSQL lanes, and Full Verification Gate on the forthcoming documentation SHA. A passing CI gate is software qualification only, not engineering, deployment or operational acceptance. T21 remains dependent; do not advance automatically.
+**Verified T20 closeout — 2026-11-17.** The guarded documentation commit [`03c0fc426bb79184c1384768fc1e544a2cea53ff`](https://github.com/CHOUABBIA-AMINE/HidraAPI/commit/03c0fc426bb79184c1384768fc1e544a2cea53ff) passed [Documentation Validation](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/43945129516) and [HidraAPI CI #1265](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/43945129531) on retry attempt 2. Static validation, Java unit/architecture, API contract/dictionary, all fourteen PostgreSQL shards and Full Verification Gate succeeded. Attempt 1 had a Topology PostgreSQL lock conflict in shard 7; retry succeeded without a source change. T20 is **COMPLETED for synthetic software qualification**. No industrial calibration, fiscal certification, operational deployment or SITE acceptance is claimed. T21 dependency T20 is satisfied.
+
+### T21 custody reconciliation, finalization and correction — execution envelope registered 2026-11-17
+
+**Registration stage and authority.** Owner explicitly requested T20 closure and precise T21 implementation preparation. This roadmap-only stage uses the exact message `docs(roadmap): close T20 and register T21 execution envelope`; it does not start T21 source implementation. T21 remains **PLANNED** until the owner selects `Next` after the registration commit's Documentation Validation. The selected T21 implementation commit message is **`feat(custody): reconcile finalize and correct transfer tickets`**. One bounded implementation stage must include its required code, migration, fixture, inventory and tests; generated runtime OpenAPI and physical dictionary may require the separately registered follow-up **`docs(custody): reconcile T21 generated contracts and physical dictionary`**, only from exact source-run artifacts. Do not substitute this registration for implementation approval or evidence.
+
+**Verified starting point at `03c0fc4`.** T20 owns immutable OBSERVED interval receipts and captured measurements with `acceptedForCustody=false`. Existing Custody JPA entities include measurement period, reconciliation, quantity calculation, ticket, ticket line, discrepancy and measurement snapshot; their presence does not establish an implemented fiscal lifecycle. `CustodyApplicationService` currently exposes period/ticket/discrepancy creation, and `SpringCustodyController` exposes only those legacy writes and capabilities. Existing statuses are period OPEN/LOCKED/CALCULATED/APPROVED/CLOSED/REOPENED/CANCELLED; reconciliation DRAFT/IN_PROGRESS/BALANCED/DISCREPANCY_FOUND/APPROVED/CLOSED/CANCELLED; ticket DRAFT/SUBMITTED/UNDER_REVIEW/APPROVED/REJECTED/CANCELLED/CLOSED; discrepancy OPEN/UNDER_REVIEW/ACCEPTED/REJECTED/RESOLVED/CLOSED/CANCELLED. Do not treat these enums as implemented transitions. Existing `CustodyTransferTicketReferenceValidation` checks actor, Workflow, Audit, batch and calculation references; retain those guarantees. Existing `numeric(18,6)` measurement and calculation columns constrain exact arithmetic.
+
+**Bounded domain and decision policy.** Custody owns the measurement period, reconciliation snapshot, transfer ticket, discrepancy disposition and correction chain. Telemetry owns qualified immutable measurement evidence; Identity owns current grants; Topology owns asset/company; Party owns eligibility; Workflow owns independent decision evidence; Audit owns audit references. One synthetic facility-scoped GZ2 gas period, one configured observed-volume unit and qualified T20 receipts only. No standard-volume conversion, physical correction factors, calorific or fiscal certification, multiphase, numerical solver, SCADA or production integration. Require explicit signed actor and exact current company/transfer-point grants separately for period/ticket/discrepancy reads, reconciliation, discrepancy disposition, finalization and correction. Deny protected existence, counts, history and replay before revealing details. Resolve ownership from Topology and match the immutable T20 scope; historical authorized reads retain original evidence.
+
+**Lifecycle and invariants.** Reconcile only an OPEN period with a nonempty deterministic set of eligible T20 interval receipts from the same period, agreement, transfer point, company, meter/product basis and exact unit. Require no overlap/duplicate contribution; snapshot receipt IDs, evidence versions, quantity and unit, selection algorithm/version, actor and time. Aggregate exact decimal quantities without rounding. The initial supported ticket quantity equals the selected observed total; record a deterministic zero difference and 0% when denominator is positive, with an explicit zero-denominator policy. If an existing ticket quantity differs, record a discrepancy and block finalization until an authorized explicit disposition; never silently adjust measured evidence. Reconciliation freezes its input set. New measurements or eligibility changes after reconciliation cannot rewrite the snapshot; require an explicit new version or fail closed. Ticket and period state changes are monotonic under the admitted transition table; a terminal ticket is immutable. Finalization requires balanced or explicitly disposed reconciliation, a bound eligible ticket and calculation, no unresolved discrepancy, exact current authority, and independent decision evidence where a fiscal/official approval is asserted. No self-approval, generic Workflow bypass, stale decision, stale version or unverified approval. Preserve existing status meanings; do not mark `official=true` or `acceptedForCustody=true` merely because T20 source was qualified. The owner may implement a bounded software-finalized state without claiming legally certified custody transfer.
+
+**Correction policy.** No in-place edit to finalized measured values, reconciliation evidence or issued ticket quantities. An authorized correction requires original finalized ticket ID, reason, actor, exact evidence and expected current version; create a new superseding ticket/reconciliation/calculation snapshot and an append-only correction link, preserving the original, full chain and original approval evidence. Recheck eligibility and authority for the correction transaction; preserve historical source lineage without requalifying old evidence. Enforce a single active successor per corrected head, unique correction command ID, deterministic replay and conflict on changed payload. The superseding record must complete the same independent finalization gate; a pending correction cannot masquerade as an effective finalized ticket. Prevent cycles, cross-period links, cross-company substitutions and concurrent double successors.
+
+**Proposed additive native REST contract (confirm against runtime OpenAPI compatibility before implementation).** `GET /api/v1/custody/measurement-periods/{periodId}`; `GET /api/v1/custody/measurement-periods/{periodId}/reconciliations`; `POST /api/v1/custody/measurement-periods/{periodId}/reconciliations`; `GET /api/v1/custody/reconciliations/{reconciliationId}`; `GET /api/v1/custody/transfer-tickets/{ticketId}`; `GET /api/v1/custody/transfer-tickets/{ticketId}/history`; `POST /api/v1/custody/transfer-tickets/{ticketId}/finalizations`; `POST /api/v1/custody/transfer-tickets/{ticketId}/corrections`; `GET /api/v1/custody/reconciliations/{reconciliationId}/discrepancies`; `GET /api/v1/custody/discrepancies/{discrepancyId}`; `POST /api/v1/custody/discrepancies/{discrepancyId}/dispositions`. Explicit DTOs must expose stable IDs, scope, version, status, quantities/units/basis, input receipt IDs, provenance, decision, actor, timestamps, reason and correction lineage; request IDs and expected-version tokens are server-validated. Use existing problem/error conventions, non-disclosing protected 404, deterministic conflict on CAS/idempotency, and validation errors for authorized invalid inputs. Do not alter existing v1 request requirements or route semantics. Prefer a dedicated native controller to avoid changing legacy write behavior.
+
+**Closed implementation path envelope.** All paths below are exact repository-relative candidates; files marked NEW are admitted additions. Do not modify paths outside this envelope without first amending this registration in a separate authorized roadmap stage. In particular, never weaken security, tests, migration history or generated-contract gates to obtain CI success.
+
+Domain — MODIFY:
+```text
+src/main/java/dz/sh/hidra/modules/custody/domain/model/CustodyMeasurementPeriod.java
+src/main/java/dz/sh/hidra/modules/custody/domain/model/CustodyTransferTicket.java
+src/main/java/dz/sh/hidra/modules/custody/domain/model/CustodyDiscrepancy.java
+src/main/java/dz/sh/hidra/modules/custody/domain/value/CustodyPeriodStatus.java
+src/main/java/dz/sh/hidra/modules/custody/domain/value/CustodyTicketStatus.java
+src/main/java/dz/sh/hidra/modules/custody/domain/value/CustodyReconciliationStatus.java
+src/main/java/dz/sh/hidra/modules/custody/domain/value/CustodyDiscrepancyStatus.java
+```
+Domain — NEW:
+```text
+src/main/java/dz/sh/hidra/modules/custody/domain/model/CustodyReconciliationSnapshot.java
+src/main/java/dz/sh/hidra/modules/custody/domain/model/CustodyTicketCorrection.java
+src/main/java/dz/sh/hidra/modules/custody/domain/service/CustodyReconciliationPolicy.java
+src/main/java/dz/sh/hidra/modules/custody/domain/service/CustodyTicketFinalizationPolicy.java
+src/main/java/dz/sh/hidra/modules/custody/domain/service/CustodyTicketCorrectionPolicy.java
+```
+Application ports/services — NEW:
+```text
+src/main/java/dz/sh/hidra/modules/custody/application/port/in/CustodyTransferLifecycleUseCase.java
+src/main/java/dz/sh/hidra/modules/custody/application/port/out/CustodyTransferLifecyclePort.java
+src/main/java/dz/sh/hidra/modules/custody/application/service/CustodyTransferLifecycleApplicationService.java
+```
+Application/persistence — MODIFY:
+```text
+src/main/java/dz/sh/hidra/modules/custody/application/port/out/CustodyMeasurementCapturePort.java
+src/main/java/dz/sh/hidra/modules/custody/application/port/out/CustodyMeasurementPeriodRepositoryPort.java
+src/main/java/dz/sh/hidra/modules/custody/application/port/out/CustodyTransferTicketRepositoryPort.java
+src/main/java/dz/sh/hidra/modules/custody/application/port/out/CustodyDiscrepancyRepositoryPort.java
+src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JpaCustodyTransferTicketRepositoryAdapter.java
+src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JpaCustodyMeasurementPeriodRepositoryAdapter.java
+src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JpaCustodyDiscrepancyRepositoryAdapter.java
+src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/CustodyTransferTicketReferenceValidation.java
+src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/mapper/CustodyPersistenceMapper.java
+src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/repository/CustodyTransferTicketJpaRepository.java
+src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/repository/CustodyMeasurementPeriodJpaRepository.java
+src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/repository/CustodyDiscrepancyJpaRepository.java
+src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/entity/CustodyTransferTicketJpaEntity.java
+src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/entity/CustodyMeasurementPeriodJpaEntity.java
+src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/entity/CustodyReconciliationJpaEntity.java
+src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/entity/CustodyQuantityCalculationJpaEntity.java
+src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/entity/CustodyTicketLineJpaEntity.java
+src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/entity/CustodyDiscrepancyJpaEntity.java
+```
+Persistence — NEW:
+```text
+src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcCustodyTransferLifecycleAdapter.java
+src/main/resources/db/migration/V20261117_001__t21_custody_transfer_lifecycle.sql
+```
+REST — NEW:
+```text
+src/main/java/dz/sh/hidra/modules/custody/api/rest/controller/CustodyTransferLifecycleController.java
+src/main/java/dz/sh/hidra/modules/custody/api/rest/request/CustodyTransferLifecycleRequests.java
+src/main/java/dz/sh/hidra/modules/custody/api/rest/response/CustodyTransferLifecycleResponses.java
+```
+REST/security — MODIFY:
+```text
+src/main/java/dz/sh/hidra/modules/custody/api/rest/controller/SpringCustodyController.java
+src/main/java/dz/sh/hidra/modules/identity/application/contract/custody/CustodyMeasurementScopedAuthorizationContract.java
+src/main/java/dz/sh/hidra/modules/identity/application/service/CustodyMeasurementScopedAuthorizationQueryService.java
+src/main/java/dz/sh/hidra/modules/topology/application/contract/custody/CustodyMeasurementAssetOwnershipContract.java
+src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcCustodyMeasurementAssetOwnershipAdapter.java
+src/main/java/dz/sh/hidra/modules/workflow/application/contract/custody/CustodyTransferTicketWorkflowReferenceContract.java
+src/main/java/dz/sh/hidra/modules/audit/application/contract/custody/CustodyTicketAuditReferenceContract.java
+src/main/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistry.java
+```
+Tests, inventories, schema ownership — MODIFY:
+```text
+src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java
+src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistryTest.java
+src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java
+src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteStartupValidatorTest.java
+src/test/java/dz/sh/hidra/qualification/Gz2SignedWorkflowFixture.java
+src/test/java/dz/sh/hidra/qualification/Gz2CustodyMeasurementNativeHttpPostgresIntegrationTest.java
+src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/CustodyTransferTicketSemanticPostgresIntegrationTest.java
+src/test/java/dz/sh/hidra/modules/custody/semantic/CustodyMeasurementPeriodSemanticRemediationTest.java
+src/test/java/dz/sh/hidra/modules/custody/semantic/CustodyTransferTicketSemanticRemediationTest.java
+src/test/java/dz/sh/hidra/modules/custody/semantic/CustodyDiscrepancySemanticRemediationTest.java
+.github/ci-test-inventory.json
+.github/database-dictionary-ownership.json
+```
+Tests — NEW:
+```text
+src/test/java/dz/sh/hidra/modules/custody/domain/service/CustodyTransferLifecyclePolicyTest.java
+src/test/java/dz/sh/hidra/qualification/Gz2CustodyTransferLifecycleNativeHttpPostgresIntegrationTest.java
+```
+Generated documentation follow-up ONLY if source-run comparison proves needed:
+```text
+doc/api/openapi.yaml
+doc/database/DATA_DICTIONARY.md
+.github/documentation-validation.json
+doc/roadmap/ROADMAP.md
+```
+
+**Persistence and transaction requirements.** Inspect the actual physical DDL, existing composite FKs, table uniqueness and the latest Flyway version before implementing the proposed `V20261117_001`; rename the new migration in the roadmap first if the version collides. Keep all previous migrations intact. Reuse existing JPA tables only where their columns and constraints preserve the required history. Add forward-only append-only reconciliation input/evidence, decision, finalization and correction-chain relations or constraints as needed; no invented backfill. Link every ticket/reconciliation/calculation/discrepancy to its exact period and transfer-point context; enforce same-owner composite references, unique effective successor, version/CAS, command replay uniqueness and immutable evidence at PostgreSQL level. Use deterministic lock ordering and one transaction per state change; simulate rollback after downstream failure. If the existing JPA entity cannot safely represent immutable versions, store versioned evidence in new JDBC-owned tables rather than overwriting the entity.
+
+**Authorization/Workflow gate.** Identity must supply typed current actor/grant checks; Topology must supply current owner and exact transfer-point eligibility. For finalization, inspect the existing Workflow ticket-target contract and verify independent decision bound to the exact ticket and reconciliation digest; if the current Workflow model cannot supply that evidence, fail closed and register the missing provider path before implementation. Do not invent approval or treat an optional `workflowInstanceId` as sufficient. Audit references are traceability only, not authorization. No cross-module private persistence imports from Custody domain/application.
+
+**Acceptance matrix.** Register `Gz2CustodyTransferLifecycleNativeHttpPostgresIntegrationTest.reconcilesFinalizesAndCorrectsScopedObservedTransfer` in an existing PostgreSQL shard and inventory. Exercise signed actor A capture (T20), authorized reconciliation, exact deterministic totals and receipt IDs, discrepancy create/read/disposition, independent reviewer B finalization, historical ticket/detail/readback after restart, authorized correction with reason and evidence, superseding finalization and full old/new history. Negative cases: wrong period/agreement/point/company/product/unit; mixed or overlapping readings; empty set; rounding/overflow; stale expected version; two concurrent finalize/correct commands; duplicate command replay versus changed payload; missing or wrong-target Workflow decision; self-approval; unresolved discrepancy; revoked and foreign principal; protected list/count/history leakage; rollback injection; wrong HTTP verb/pattern; unsupported conversion and altered historical evidence. Preserve T20 receipt and existing ticket semantic tests. Verify new exact native route tuples, total counts and MVC startup/HTTP fixtures together, architecture guardrails, new migration/JPA fresh-schema validation, runtime OpenAPI backward compatibility and equality, physical dictionary equality and Full Verification Gate. Only exact-SHA green CI qualifies synthetic software completion.
+
+**Stop rule.** After the registration documentation commit, verify its parent/tree, sole changed path, exact message, main head and Documentation Validation queued/started, then STOP. Do not start T21 implementation, wait for CI or automatically mark T21 IN PROGRESS.

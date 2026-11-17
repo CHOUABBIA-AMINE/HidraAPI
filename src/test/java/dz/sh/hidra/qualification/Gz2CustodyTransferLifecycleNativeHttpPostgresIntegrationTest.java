@@ -174,8 +174,10 @@ class Gz2CustodyTransferLifecycleNativeHttpPostgresIntegrationTest {
                 var review=f.review("custody","CUSTODY_TRANSFER_TICKET","CUSTODY_TRANSFER_TICKET_APPROVAL",false);
                 var approval=workflowDecision(f,runtime,author,reviewer,review,"custody",
                     field(firstTicket,"approvalTargetDigest"),firstTicketId,id());
-                var finalizeOne=new java.util.HashMap<String,Object>(approval);
-                finalizeOne.put("commandId",id());finalizeOne.put("expectedVersion",1);
+                // The generic Workflow transition response uses instanceId/taskId/actionId.
+                // The Custody finalization request intentionally uses explicit workflow-prefixed
+                // identifiers; do not silently accept unrelated/unbound payload shapes.
+                var finalizeOne=finalizationRequest(approval,1);
                 JsonNode finalized=runtime.json("POST",firstTicketRoute+"/finalizations",author,finalizeOne,200);
                 assertEquals("SOFTWARE_FINALIZED",field(finalized,"status"));
                 assertFalse(finalized.path("official").asBoolean());
@@ -207,8 +209,7 @@ class Gz2CustodyTransferLifecycleNativeHttpPostgresIntegrationTest {
                 var correctionReview=f.review("custody","CUSTODY_TRANSFER_TICKET","CUSTODY_TRANSFER_TICKET_APPROVAL",false);
                 var secondApproval=workflowDecision(f,runtime,author,reviewer,correctionReview,"custody",
                     field(corrected,"approvalTargetDigest"),correctedId,id());
-                var finalizeTwo=new java.util.HashMap<String,Object>(secondApproval);
-                finalizeTwo.put("commandId",id());finalizeTwo.put("expectedVersion",2);
+                var finalizeTwo=finalizationRequest(secondApproval,2);
                 JsonNode finalCorrection=runtime.json("POST",correctedRoute+"/finalizations",author,finalizeTwo,200);
                 assertEquals("SOFTWARE_FINALIZED",field(finalCorrection,"status"));
                 assertEquals(2,runtime.get(firstTicketRoute+"/history",author).size());
@@ -342,6 +343,16 @@ class Gz2CustodyTransferLifecycleNativeHttpPostgresIntegrationTest {
         JsonNode current = r.get(query(publications + "/current", "companyPartyId", f.company), author);
         assertEquals(publication.path("baselinePin"), current.path("baselinePin"));
         return current.path("baselinePin");
+    }
+
+    private static Map<String,Object> finalizationRequest(Map<String,String> workflowDecision,
+            long expectedVersion){
+        return Map.of(
+            "commandId",id(),
+            "expectedVersion",expectedVersion,
+            "workflowInstanceId",workflowDecision.get("instanceId"),
+            "workflowTaskId",workflowDecision.get("taskId"),
+            "workflowActionId",workflowDecision.get("actionId"));
     }
 
     private static Map<String, String> workflowDecision(Gz2SignedWorkflowFixture f, Gz2SignedWorkflowFixture.Runtime r,

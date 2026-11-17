@@ -27,7 +27,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
-public final class JdbcGovernedRiskAssessmentAdapter implements GovernedRiskAssessmentPort {
+public class JdbcGovernedRiskAssessmentAdapter implements GovernedRiskAssessmentPort {
     private final JdbcTemplate db;
     public JdbcGovernedRiskAssessmentAdapter(JdbcTemplate db) { this.db=db; }
     @Override @Transactional(propagation=Propagation.MANDATORY)

@@ -14,7 +14,6 @@
  */
 package dz.sh.hidra.modules.risk.api.rest.response;
 
-import dz.sh.hidra.modules.risk.domain.model.GovernedRiskAssessment;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -32,19 +31,7 @@ public record GovernedRiskAssessmentResponse(
             String reviewActionId,String reviewerId,Instant reviewedAt,
             String approvalTaskId,String approvalActionId,String approverId,
             Instant approvedAt,String auditReceiptId,String submissionDigest) {
-        public static DecisionHistory from(GovernedRiskAssessment.Decision d) {
-            return new DecisionHistory(d.workflowInstanceId(),d.reviewTaskId(),
-                    d.reviewActionId(),d.reviewerId(),d.reviewedAt(),d.approvalTaskId(),
-                    d.approvalActionId(),d.approverId(),d.approvedAt(),d.auditReceiptId(),
-                    d.submissionDigest());
-        }
+
     }
-    public static GovernedRiskAssessmentResponse from(GovernedRiskAssessment a) {
-        return new GovernedRiskAssessmentResponse(a.assessmentId(),a.companyPartyId(),
-                a.facilityId(),a.status(),a.inherentScore(),a.inherentRatingId(),
-                a.inherentCellId(),a.inherentMatrixId(),a.inherentMatrixVersion(),
-                a.alarmId(),a.alarmCodeSnapshot(),a.alarmRaisedAt(),
-                a.submissionFormat(),a.submissionDigest(),a.submittedAt(),
-                a.decisions().stream().map(DecisionHistory::from).toList());
-    }
+
 }

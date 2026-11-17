@@ -118,6 +118,20 @@ class ForensicRemediationClosureTest {
             "dz.sh.hidra.modules.assets.application.contract.hse"
     );
 
+    /** Only the T22 consumers named in the registered boundary may call these new owner exports. */
+    private static boolean t22RiskOwnerExport(String consumer, String imported) {
+        if (imported.equals("dz.sh.hidra.modules.risk.application.contract.workflow.RiskAssessmentWorkflowAuthorityContract")) {
+            return consumer.equals("dz.sh.hidra.modules.workflow.application.service.RiskAssessmentApprovalService");
+        }
+        if (imported.equals("dz.sh.hidra.modules.alarm.application.contract.risk.RiskAlarmEvidenceContract")) {
+            return Set.of(
+                    "dz.sh.hidra.modules.risk.application.service.RiskApplicationService",
+                    "dz.sh.hidra.modules.risk.infrastructure.persistence.adapter.JpaRiskAssessmentRepositoryAdapter")
+                    .contains(consumer);
+        }
+        return false;
+    }
+
     private static boolean isPlanningReviewerExport(String consumer, String imported) {
         return consumer.equals("dz.sh.hidra.modules.workflow.application.service.WorkflowTransitionApplicationService")
                 && imported.equals("dz.sh.hidra.modules.planning.application.contract.workflow.PlanningRevisionWorkflowAuthorityContract");
@@ -326,6 +340,7 @@ class ForensicRemediationClosureTest {
                 if (isTelemetryNativeOwnerExport(source.fqcn(), imported)) continue;
                 if (isMonitoringRuleOwnerExport(source.fqcn(), imported)) continue;
                 if (isPlanningReviewerExport(source.fqcn(), imported)) continue;
+                if (t22RiskOwnerExport(source.fqcn(), imported)) continue;
                 violations.add(source.fqcn() + " -> " + imported);
             }
         }

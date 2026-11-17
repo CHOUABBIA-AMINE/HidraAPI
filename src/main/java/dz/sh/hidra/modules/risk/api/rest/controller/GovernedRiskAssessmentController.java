@@ -15,6 +15,7 @@
 package dz.sh.hidra.modules.risk.api.rest.controller;
 
 import dz.sh.hidra.modules.risk.api.rest.response.GovernedRiskAssessmentResponse;
+import dz.sh.hidra.modules.risk.domain.model.GovernedRiskAssessment;
 import dz.sh.hidra.modules.risk.application.port.in.ReadGovernedRiskAssessmentUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import dz.sh.hidra.platform.permissions.NativeProtectedOperation;
@@ -32,13 +33,32 @@ public class GovernedRiskAssessmentController {
     @Operation(operationId="getGovernedRiskAssessment")
     @GetMapping("/{id}")
     public GovernedRiskAssessmentResponse assessment(@PathVariable String id) {
-        return GovernedRiskAssessmentResponse.from(reads.read(id));
+        return map(reads.read(id));
     }
     @NativeProtectedOperation
     @Operation(operationId="getGovernedRiskAssessmentDecisionHistory")
     @GetMapping("/{id}/decision-history")
     public List<GovernedRiskAssessmentResponse.DecisionHistory> decisionHistory(@PathVariable String id) {
-        return reads.decisionHistory(id).stream().map(
-                GovernedRiskAssessmentResponse.DecisionHistory::from).toList();
+        return reads.decisionHistory(id).stream().map(GovernedRiskAssessmentController::mapDecision).toList();
     }
+    private static GovernedRiskAssessmentResponse map(GovernedRiskAssessment assessment) {
+        return new GovernedRiskAssessmentResponse(assessment.assessmentId(),
+                assessment.companyPartyId(),assessment.facilityId(),assessment.status(),
+                assessment.inherentScore(),assessment.inherentRatingId(),
+                assessment.inherentCellId(),assessment.inherentMatrixId(),
+                assessment.inherentMatrixVersion(),assessment.alarmId(),
+                assessment.alarmCodeSnapshot(),assessment.alarmRaisedAt(),
+                assessment.submissionFormat(),assessment.submissionDigest(),
+                assessment.submittedAt(),assessment.decisions().stream()
+                        .map(GovernedRiskAssessmentController::mapDecision).toList());
+    }
+    private static GovernedRiskAssessmentResponse.DecisionHistory mapDecision(
+            GovernedRiskAssessment.Decision decision) {
+        return new GovernedRiskAssessmentResponse.DecisionHistory(
+                decision.workflowInstanceId(),decision.reviewTaskId(),
+                decision.reviewActionId(),decision.reviewerId(),decision.reviewedAt(),
+                decision.approvalTaskId(),decision.approvalActionId(),decision.approverId(),
+                decision.approvedAt(),decision.auditReceiptId(),decision.submissionDigest());
+    }
+
 }

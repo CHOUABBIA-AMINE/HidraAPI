@@ -88,8 +88,7 @@ class Gz2ControlledDocumentsNativeHttpPostgresIntegrationTest {
                         "classificationId",classification);
                 var createResponse=runtime.send("POST",base(f),author,create);
                 assertEquals(201,createResponse.statusCode(),() ->
-                        "Controlled document creation response: "+new String(
-                                createResponse.body(),StandardCharsets.UTF_8)
+                        "Controlled document creation response: "+createResponse.body()
                         +"\nPostgreSQL server logs:\n"+postgres.getLogs());
                 JsonNode created=JSON.readTree(createResponse.body());
                 doc=required(created.path("document"),"id");

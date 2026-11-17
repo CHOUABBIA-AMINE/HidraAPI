@@ -2705,3 +2705,33 @@ The successor exact-head guarded commit uses the registered T24 implementation
 message. After publication confirm exact-SHA CI queue/start and stop; no
 tests, PostgreSQL acceptance, snapshot equality, Full Verification Gate,
 T24 completion, T17 or T25 advancement may be claimed without evidence.
+
+
+### T24 CI #1288 test-compilation repair — 2026-11-17
+
+**T24 stays IN PROGRESS.** Exact parent `190b72ae6ac0ecfcfd45178a4e095cc846114a67` entered
+[CI #1288](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44170139552)
+and failed. Its independent Java testCompile job and all fourteen PostgreSQL
+shards stopped at the same Java 21 compiler error in
+`Gz2ControlledDocumentsNativeHttpPostgresIntegrationTest` line 91: the new
+on-failure diagnostic called `new String(response.body(), UTF_8)` although
+the shared `Gz2SignedWorkflowFixture.Runtime.send` returns an
+`HttpResponse<String>`, making `body()` a String rather than byte[]. The
+repair directly concatenates the already decoded String. It preserves the
+strict HTTP 201 assertion, PostgreSQL log diagnostics and signed GZ2
+security/integrity scenario. Only that test, its exact source SHA-256 entry
+in `.github/ci-test-inventory.json`, and this append-only roadmap evidence
+are changed. No tests, routes, runtime data contracts, migrations, or CI
+acceptance checks are removed or weakened.
+
+The independent API job generated the new T24 OpenAPI runtime document but
+failed canonical snapshot equality; generated evidence reconciliation remains
+separately registered under `docs(documents): reconcile T24 generated contracts
+and physical dictionary` and **not** part of this compilation repair.
+[Documentation Validation #1123](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44170139806)
+passed on the same SHA. Since the Java compiler failed before tests, #1288
+provides no new PostgreSQL runtime evidence and cannot resolve the earlier
+synthetic registration 500; await actual new evidence instead of guessing.
+The Full Verification Gate is not satisfied. The exact-head successor commit
+must use `feat(documents): discover and supersede controlled document versions`,
+queue/check its exact-SHA CI workflows and stop. T17/T25 remain unselected.

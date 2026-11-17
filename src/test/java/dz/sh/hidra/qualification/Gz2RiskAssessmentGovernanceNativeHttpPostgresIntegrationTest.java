@@ -139,8 +139,9 @@ class Gz2RiskAssessmentGovernanceNativeHttpPostgresIntegrationTest {
                 assertEquals(64,digest.length());
                 assertEquals(cell,field(before,"inherentCellId"));
                 assertEquals("t22-v1",field(before,"inherentMatrixVersion"));
-                denied(runtime,"POST",base+"/score",author,
-                        Map.of("assessmentId",assessment,"inherentCellId",cell));
+                var rejectedScore=runtime.json("POST",base+"/score",author,
+                        Map.of("assessmentId",assessment,"inherentCellId",cell),422);
+                assertEquals("RISK_INVALID_OPERATION",field(rejectedScore,"code"));
                 denied(runtime,"POST",evidence,author,Map.of("riskAssessmentId",assessment,
                         "evidenceModule","alarm","evidenceType","Alarm","evidenceId",alarm));
                 String instance=field(runtime.json("POST","/api/v1/workflow/instances",author,Map.of(

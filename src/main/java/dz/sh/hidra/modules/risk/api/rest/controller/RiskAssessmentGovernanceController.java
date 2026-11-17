@@ -22,6 +22,9 @@ package dz.sh.hidra.modules.risk.api.rest.controller;
 import dz.sh.hidra.modules.risk.application.command.*;
 import dz.sh.hidra.modules.risk.application.dto.RiskAssessmentSummaryDto;
 import dz.sh.hidra.modules.risk.application.port.in.RiskAssessmentGovernanceUseCase;
+import dz.sh.hidra.modules.risk.domain.exception.RiskDomainException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -43,5 +46,13 @@ public class RiskAssessmentGovernanceController {
     public RiskAssessmentSummaryDto approve(@PathVariable String id, @RequestBody ApproveRiskAssessmentCommand request) {
         if (!id.equals(request.assessmentId())) throw new IllegalArgumentException("Assessment identity mismatch.");
         return governance.approve(request);
+    }
+    @ExceptionHandler(RiskDomainException.class)
+    public ProblemDetail rejectedRiskOperation(RiskDomainException ignored) {
+        ProblemDetail detail = ProblemDetail.forStatus(HttpStatus.UNPROCESSABLE_ENTITY);
+        detail.setTitle("RISK_INVALID_OPERATION");
+        detail.setDetail("Risk operation rejected by its owner invariants.");
+        detail.setProperty("code", "RISK_INVALID_OPERATION");
+        return detail;
     }
 }

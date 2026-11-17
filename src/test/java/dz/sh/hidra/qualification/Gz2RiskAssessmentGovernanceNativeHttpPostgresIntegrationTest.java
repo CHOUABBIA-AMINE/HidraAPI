@@ -101,8 +101,12 @@ class Gz2RiskAssessmentGovernanceNativeHttpPostgresIntegrationTest {
             f.assetGrant(f.revoked,"risk:assessments:read",f.company,f.asset);
             f.global(f.author,"risk:assessments:execute","risk:evidence:execute",
                     "workflow:instances:execute","workflow:tasks:execute");
-            f.global(f.reviewer,"workflow:tasks:execute","workflow:tasks:read");
-            f.global(f.operator,"workflow:tasks:execute","workflow:tasks:read");
+            // Both reviewers must pass the Risk route gate; the final Workflow
+            // approval still requires its independent actor and current scope.
+            f.global(f.reviewer,"risk:assessments:execute",
+                    "workflow:tasks:execute","workflow:tasks:read");
+            f.global(f.operator,"risk:assessments:execute",
+                    "workflow:tasks:execute","workflow:tasks:read");
             try(var runtime=f.start()) {
                 String author=runtime.login(f.author),reviewer=runtime.login(f.reviewer);
                 String approver=runtime.login(f.operator),reader=runtime.login(f.reader);
@@ -171,7 +175,9 @@ class Gz2RiskAssessmentGovernanceNativeHttpPostgresIntegrationTest {
                 denied(runtime,"POST",approvalTaskPath+"/transitions/"
                         +review.finalTransition()+"/execute",approver,
                         Map.of("expectedTaskUpdatedAt",field(approvalTask,"updatedAt")));
-                denied(runtime,"POST",base+"/approve",reviewer,approval);
+                // Reviewer has route permission, but cannot approve their own review.
+                var rejectedSelfApproval=runtime.json("POST",base+"/approve",reviewer,approval,400);
+                assertEquals("INVALID_REQUEST",field(rejectedSelfApproval,"code"));
                 assertEquals(0L,f.sql.queryForObject(
                         "SELECT count(*) FROM hidra_risk_governed_approval WHERE assessment_id=?",
                         Long.class,assessment));

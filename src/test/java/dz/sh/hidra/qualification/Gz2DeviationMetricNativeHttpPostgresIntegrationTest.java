@@ -142,7 +142,7 @@ class Gz2DeviationMetricNativeHttpPostgresIntegrationTest {
                 failedId=text(failed,"runId");
                 assertEquals("FAILED",text(failed,"status"));
                 assertEquals("SOURCE_UNAVAILABLE",text(failed,"errorCode"));
-                assertTrue(failed.path("value").isNull());
+                assertFalse(failed.hasNonNull("value"), "A failed run must not expose a metric value");
                 assertEquals("STALE",text(failed.path("source"),"outcome"));
                 assertEquals(422,r.send("POST",base(f),operator,Map.of(
                         "definitionVersionId",id(),"evaluationId",computed)).statusCode());
@@ -195,7 +195,7 @@ class Gz2DeviationMetricNativeHttpPostgresIntegrationTest {
                 JsonNode unavailable=next.get(base(f)+"/"+failedId,operator);
                 assertEquals("FAILED",text(unavailable,"status"));
                 assertEquals("SOURCE_UNAVAILABLE",text(unavailable,"errorCode"));
-                assertTrue(unavailable.path("value").isNull());
+                assertFalse(unavailable.hasNonNull("value"), "A failed run must not expose a metric value after restart");
                 assertEquals("VALUE_OUT_OF_RANGE",AbsoluteDeviationMetricV1.evaluate(
                         "COMPUTED",new BigDecimal("9999999999999.000001"),BigDecimal.ZERO).errorCode());
                 assertEquals(runId,text(next.json("POST",base(f),operator,

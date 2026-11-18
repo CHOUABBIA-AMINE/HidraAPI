@@ -2909,3 +2909,62 @@ verify exact parent/tree and four-file diff, and publish directly to
 existing `main` with expected-head guard. Once exact-SHA HidraAPI CI
 and Documentation Validation are queued or started, STOP for feedback.
 T17/T25 and deployment are not selected.
+
+
+### T24 CI #1292 stale expected-head ordering repair — 2026-11-18
+
+**T24 remains IN PROGRESS; acceptance still open.** Exact main
+`bf5b468dccd9903bd2d049748730733e9be78ddf` entered
+[HidraAPI CI #1292](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44235621345),
+which failed. Java 21 unit/architecture, static validation, and twelve
+PostgreSQL integration shards passed. T24 shard 9's unmodified signed
+`Gz2ControlledDocumentsNativeHttpPostgresIntegrationTest` now advances
+through scoped create, authorized read/discovery, upload, initial accept
+and binary retrieval, but fails test line 169: an authorized supersession
+with a random `expectedCurrentVersionId` returns HTTP 404 when the
+registered contract requires HTTP 409 for a stale expected head.
+The concrete cause is in
+`ControlledDocumentsApplicationService.decide`: following the
+document lock and request replay check, the application looks up the
+caller-supplied predecessor version ID before comparing it to the
+actual authoritative `Document.currentVersionId`. A non-existent
+expected predecessor raises the generic non-disclosing 404 before
+the stale-head conflict check can run.
+
+The bounded corrective change is **one existing T24 application service**
+`src/main/java/dz/sh/hidra/modules/documents/application/service/ControlledDocumentsApplicationService.java`:
+after `repository.lockDocument`, exact replay handling, and loading
+the owned document, reject a non-null `expectedCurrentVersionId` not
+equal to its current head with the existing generic 409 conflict.
+This happens before looking up the predecessor version. The check
+preserves the successful exact-request replay even after subsequent
+supersession, unchanged authorization before resource access, row locking
+and fresh-state persistence semantics, custodian independence,
+immutable receipt lineage and byte checks. Non-existent/foreign
+document and version resources retain their existing 404 protection.
+The original signed GZ2 negative assertion remains unchanged; the
+test inventory and migration history require no update.
+
+There is **one other failed PostgreSQL shard** on CI #1292: shard 6,
+`Gz2SignedWorkflowNativeHttpPostgresIntegrationTest`, expected 200
+when POSTing a Topology engineering-baseline draft, but got 503
+`Baseline draft outcome unavailable; confirm the request receipt before retry`.
+This is outside the bounded T24 Documents implementation and has not
+been established as a T24 regression. It is neither repaired nor
+dismissed here; its real outcome remains a required CI gate.
+No Topology change, test relaxation, CI shard removal, retry masking,
+or transaction-guarantee weakening is authorized.
+
+The independent API lane still failed canonical runtime OpenAPI
+snapshot equality; preserve the equality gate for the separately
+registered `docs(documents): reconcile T24 generated contracts and
+physical dictionary` task. [Documentation Validation #1127](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44235621444)
+passed at the same SHA. The Full Verification Gate remains failed.
+Use the exact registered T24 message
+`feat(documents): discover and supersede controlled document versions`
+for the single repair commit, with only this application service and
+append-only roadmap evidence modified. Review exact parent/tree and
+blobs, publish to the existing `main` with expected-head guard,
+confirm both new exact-SHA workflows queued/started, and STOP.
+Local Maven/PostgreSQL execution, CI success, engineering acceptance,
+T17/T25 selection and deployment are not claimed.

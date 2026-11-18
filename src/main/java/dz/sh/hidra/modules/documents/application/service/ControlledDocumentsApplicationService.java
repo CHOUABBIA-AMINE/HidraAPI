@@ -166,6 +166,10 @@ public class ControlledDocumentsApplicationService implements ControlledDocument
             return new DecisionResult(decisionView(replay.get()),true);
         }
         var document=documents.findById(documentId).orElseThrow(ControlledDocumentsApplicationService::hidden);
+        // The document row is locked and its persistence context refreshed. A stale
+        // expected head is a conflict, even when its supplied id does not exist.
+        // Check it after replay resolution and before resolving predecessor history.
+        if(expected!=null && !expected.equals(document.currentVersionId()))throw conflict();
         var version=versions.findById(versionId)
                 .filter(v->documentId.equals(v.documentId())).orElseThrow(ControlledDocumentsApplicationService::hidden);
         DocumentVersion prior=expected==null?null:versions.findById(expected)

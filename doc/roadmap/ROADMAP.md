@@ -9,7 +9,7 @@
 | Status | ACTIVE |
 | Authority | Sole task register and execution source for HidraAPI |
 | Owner adoption | 2026-11-10 |
-| Active task selection | T23 COMPLETED for synthetic software scope on exact-SHA HidraAPI CI #1285 and Documentation Validation #1119. T24 PLANNED — execution envelope registered below, implementation requires separate Next. T17 awaits T24. |
+| Active task selection | T24 VERIFIED / COMPLETED for synthetic backend software at exact-SHA HidraAPI CI #1294 and Documentation Validation #1129. T17 is the next dependency-eligible task, selected for source-audited envelope registration only; its implementation is PLANNED and requires separate owner Next. T25 is not selected. |
 
 The task register controls scope, dependencies, status and acceptance. Existing technical policy and verified implementation evidence retain their applicability. Task status advances only with recorded evidence. The initial status for each task is PLANNED. The first candidate is T01.
 
@@ -116,7 +116,7 @@ A task includes its required authorization, REST contract, persistence, failure 
 | **T21 · Reconcile, finalize and correct custody transfers** | Custody | T20 | Expose period/ticket/discrepancy read and disposition, reconciliation, finalization and versioned correction. | A synthetic ticket is reconciled and finalized. Correction retains original and superseding records with attributable reason and evidence. **FG-09 / A09.** | COMPLETED |
 | **T22 · Expose governed Risk results and decision history** | Risk with owner evidence providers | Eligible evidence and the existing scoring/approval path | Expose scoped assessment, score inputs, evidence, independent decision and approved history. | Later source or method changes do not alter the approved historical result. Revoked and unrelated principals cannot read it. **FG-10 / A10.** | COMPLETED |
 | **T23 · Execute and retrieve a deterministic analytics metric** | Analytics with source owners | One supported metric and eligible versioned input, such as T11 | Execute the metric, persist durable run/result state and expose source lineage, units and version. | Synthetic inputs produce a predictable value after restart. Bad inputs have explicit failed/unavailable outcomes. **FG-11 / A11.** | COMPLETED |
-| **T24 · Discover and supersede controlled Documents** | Documents with target owners | Existing byte upload/download and owner target references | Expose scoped discovery, exact version/link history, acceptance and supersession where required. | An authorized client can discover and retrieve exact bytes and hash for old and current versions. Revoked users cannot download. **FG-14 / A14.** | PLANNED |
+| **T24 · Discover and supersede controlled Documents** | Documents with target owners | Existing byte upload/download and owner target references | Expose scoped discovery, exact version/link history, acceptance and supersession where required. | An authorized client can discover and retrieve exact bytes and hash for old and current versions. Revoked users cannot download. **FG-14 / A14.** | COMPLETED |
 | **T25 · Render and download an authorized report** | Reporting with Documents and Workflow | T24 and an eligible approved report input, such as T23 | Admit template and parameters, render a durable artifact and expose run status and scoped byte retrieval. | Downloaded bytes match the stored hash and exact input version. Failed rendering cannot produce a downloadable success. **FG-12 / A12.** | PLANNED |
 | **T26 · Execute and replay a governed synthetic exchange** | Integration with receiving owner | Supported synthetic mapping and receiving contract | Expose mapping version, job/attempt/result, dead letter and privileged replay for one exchange. | Simulated transient failure and authorized replay yield one receiving outcome and a durable attempt history. **FG-15 / A15.** | PLANNED |
 | **T27 · Deliver a recipient-scoped notification inbox** | Notification | One eligible business event and a supported delivery channel | Expose inbox, delivery state and recipient acknowledgement independently of business workflow state. | Intended recipient reads and acknowledges one notification. Foreign recipient cannot see it. The underlying task state is unchanged by acknowledgement. **FG-16 / A16.** | PLANNED |
@@ -3019,3 +3019,346 @@ and STOP. Require both strict equalities, all signed/raw tests and the
 Full Verification Gate before T24 software acceptance. T17/T25,
 engineering/site qualification, simulation, release and deployment
 remain unselected.
+
+
+### T24 synthetic software acceptance and T17 implementation envelope — 2026-11-18
+
+**T24 VERIFIED / COMPLETED — synthetic backend software only.**
+Exact current executable/documentation head
+[`7c19b6411fca200e555462287877b5f71dc46270`](https://github.com/CHOUABBIA-AMINE/HidraAPI/commit/7c19b6411fca200e555462287877b5f71dc46270),
+parent `14c6be04466e1b3c1a1ffc2ae1bea3d083d9dd8a`, tree
+`f64e4041780c54317a90387fbae4a4aaa7aa17af`.
+[HidraAPI CI #1294](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44267272483)
+and [Documentation Validation #1129](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44267272456)
+both completed SUCCESS on that SHA. Full CI: Java 21 unit/architecture,
+all 14 PostgreSQL integration shards, static validation, actual generated
+OpenAPI backward compatibility, strict OpenAPI snapshot equality, fresh
+PostgreSQL physical dictionary strict equality and Full Verification Gate
+were SUCCESS. PostgreSQL shard 9 source inventory reported 12 classes,
+119 tests, zero failures, zero errors, zero skips, including the original
+signed T24 Documents GZ2 qualification. [Exact run full evidence artifact
+14411536130](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44267272483/artifacts/14411536130)
+and [shard 9 artifact 14410349612](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44267272483/artifacts/14410349612)
+remain available. The verified full-gate format was
+`development-partitioned`; `serial_oracle=false`,
+`optimized_adoption_eligible=false`, `release_eligible=false`. No
+unrestricted release oracle, field/SITE testing, production data, operational
+commissioning, deployment, independent industrial calibration or OT access
+is inferred. T24 acceptance closes only the registered FG-14/A14 synthetic
+software journey. Historical CI #1286–1293 failure records and the prior
+T24 reconciliation entry remain unchanged.
+
+**Task selection:** T17 — Verify and close HSE corrective actions
+(FG-07/FG-18; A07/A18) is the first pending task by roadmap order whose
+prerequisites are now met: T16 COMPLETED and T24 COMPLETED. T25 also depends
+on T24 but is later in the register and is NOT selected. This owner-requested
+commit selects **T17 for envelope registration/preparation only**, not source
+implementation, CI acceptance or a new phase. T17 remains
+**PLANNED — EXECUTION ENVELOPE REGISTERED / IMPLEMENTATION NOT STARTED**.
+A subsequent explicit owner `Next` selects its single implementation
+delivery after checking a fresh main lease and source/policy evidence.
+This roadmap-only documentation acceptance/registration commit has the
+exact message
+`docs(roadmap): accept T24 and register T17 HSE CAPA envelope`.
+The future **one source implementation** message is registered as
+`feat(hse): verify and close scoped corrective actions`.
+A future generated-artifact reconciliation is NOT automatically selected.
+
+#### T17 owned boundary, admitted synthetic journey and explicit policy
+
+HSE owns `HseCase`, `HseCorrectivePreventiveAction`, `HseClosure`,
+HSE evidence, effectiveness and terminal state. The existing
+`HseCase` → `HseCorrectivePreventiveAction` association, HSE-owned case
+status history and HMR-082/096/097 constraints remain authoritative.
+Identity owns actual current grants and actors; Topology owns current
+FACILITY/company identity; Incident owns T16 investigation/review; Documents
+owns T24 accepted immutable version bytes/decisions; Workflow owns review
+definitions, target bindings and independent decisions. HSE consumes only
+new explicit provider-owned `application.contract.hse` scalar contracts
+through its sole new HSE owner-access adapter. No foreign private domain,
+infrastructure/persistence, generic Workbench bypass, new autonomous action,
+simulation or direct industrial-control integration is authorized.
+
+**First supported flow:** one synthetic GZ2 company, one active Topology
+FACILITY, one eligible reviewed T16 Incident on that same facility, and
+one or more new HSE-enrolled cases/CAPAs. All new enrolled case creation
+uses the exact incident/company/facility proof and persists an immutable
+HSE-owned scope binding atomically with the HSE case. The old generic HSE
+case/CAPA objects have no reliable company scope field; do **not**
+retroactively treat existing rows as scoped, infer company from organization
+hierarchy, or migrate pre-existing records. Original un-enrolled API behavior
+is retained where currently admitted. A T17-enrolled row must be hidden from
+ALL existing legacy unscoped case/CAPA list/count/detail routes and may not
+be created, mutated or closed through context-free legacy aliases.
+Non-enrolled legacy policy remains a separate T29 resource-read coverage
+concern and is not asserted as globally qualified by T17.
+
+**Human sequence:**
+`PROPOSED → APPROVED → IN_PROGRESS → COMPLETED → VERIFIED → CLOSED`
+for newly enrolled CAPAs. The assign command is the approved CAPA owner's
+transition from APPROVED to IN_PROGRESS. Rejected/inapplicable decisions
+and legacy statuses remain meaningful; this first enrolled flow does not
+rewrite old CAPAs or manufacture state-machine rules for those records.
+A CAPA approval requires the actual current Workflow `HSE_CAPA` decision,
+not just `caseMatches`, `taskMatches` or an arbitrary workflow ID.
+Only an authorized distinct verifier may assert an EFFECTIVE finding with
+an immutable accepted document-version link, reason and time. An
+INEFFECTIVE/INDETERMINATE outcome is persistable evidence but does NOT
+set VERIFIED or authorize closure; a follow-up may require a new versioned
+review attempt. The HSE CASE closure requires every enrolled required CAPA
+to have a persisted effective VERIFIED decision, a linked exact retained
+evidence version, impact/evidence attestation traceable to persisted HSE
+sources, a non-empty reason, and an independent, exact-target approved
+Workflow `HSE_CASE` decision. Closure atomically records actual
+HSE closure, status history, admitted Workflow decision/receipt and terminal
+CAPA state without trusting caller-provided `impactAssessed`,
+`capaCompleted` or `evidenceReviewed` booleans as authoritative facts.
+No invented physical effectiveness threshold or real-site calibration
+is required. Optional regulatory review retains its existing explicit,
+owner-governed applicability rather than defaulting to an invented rule.
+
+**Authorization and consistency:**
+register explicit sensitive permissions
+`hse:capa:create`, `hse:capa:read`, `hse:capa:execute`,
+`hse:capa:review`, `hse:capa:close` without seeding any user grants.
+For every enrolled command/read/count/history/replay, authenticate the
+current actor and check explicit CURRENT direct permits and effective
+policy at both the company-specific CUSTOM scope and exact FACILITY
+scope, with deny precedence; verify currently ACTIVE facility ownership
+matches the captured company and the Incident/Document/Workflow owner
+references. No role-name, DTO claim, historical receipt, Workbench row,
+stale session or user-supplied actor can authorize a transition. Check
+current authority **before** revealing existence; recheck inside the
+lock-capable transaction for mutation or protected disclosure.
+Do not run current-grant `SELECT FOR SHARE/UPDATE` in a read-only transaction.
+A later company transfer, revoked actor, withdrawn evidence or mismatched
+current owner must fail closed; immutable historical evidence remains
+reconstructible for an independently authorized reviewer.
+
+Use exact `requestId` + canonical payload digest per enrolled
+case/CAPA command, unique request/case, unique sequential revision,
+`expectedVersion` compare-and-swap and actual HSE parent/CAPA row locks.
+Matching replay is read-authorized and returns the same immutable receipt;
+a different payload for a reused key or stale expected version is
+`409` without extra writes. Lock ordering is HSE case then CAPA then
+HSE event/version, not the reverse. Source owner lookups and current
+company/asset authorization must precede any new HSE commit. Commit
+actual HSE record, event, evidence, verifier findings and closure together;
+rollback must leave no partial approved, verified or closed outcome.
+Use stable paging/order and no existence/count/history side channel.
+
+**PostgreSQL migration shape:** next free version as currently observed
+`V20261118_002__t17_hse_capa_governed_lifecycle.sql`; rescan versions at
+the next execution lease and never overwrite `V20261118_001` or any other
+applied migration. Exactly six proposed NEW HSE-owned, non-JPA tables:
+`hidra_hse_t17_case_scope` (immutable company/facility/Incident and create
+digest), `hidra_hse_t17_capa_state` (one locked revision per CAPA),
+`hidra_hse_t17_capa_event` (immutable request/transition/actor event),
+`hidra_hse_t17_capa_evidence` (immutable accepted exact Documents version,
+checksum/length), `hidra_hse_t17_capa_verification` (append-only reviewer
+finding and evidence linkage), `hidra_hse_t17_case_close_receipt`
+(exact Workflow decision and HSE closure ID).
+Foreign keys are permitted only to HSE-owned parent rows where lifecycle
+appropriate, with explicit RESTRICT, sequence uniqueness, non-null/shape
+checks and non-deletion/immutable guards. Incident/Topology/Documents/
+Workflow references remain scalar IDs plus owner-validated immutable
+snapshots, **not** cross-owner table writes or speculative physical FKs.
+The migration inserts permission catalogue identities only, never
+company-specific grants or real data. Require physical deferred consistency
+guards so legacy/direct SQL cannot bypass enrolled transition,
+case-close/receipt and evidence/verification relationships.
+
+#### T17 proposed signed native HTTP contract — 13 exact operations
+
+| Method | Proposed path | Responsibility |
+|---|---|---|
+| `POST` | `/api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases/from-incident` | Create one enrolled HSE case bound to approved T16 Incident and active FACILITY/company. |
+| `GET` | `/api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases` | Company+facility scoped, stable ordered list/count; no foreign/legacy leak. |
+| `GET` | `/api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases/{caseId}` | Authorized case detail with scope/incident/workflow snapshots. |
+| `POST` | `/api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases/{caseId}/capas` | Create exact parent-bound PROPOSED CAPA with approved action-type family. |
+| `GET` | `/api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases/{caseId}/capas` | Scoped CAPA list/count and current status/verification summary. |
+| `GET` | `/api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases/{caseId}/capas/{capaId}` | Exact scoped CAPA and latest immutable decision/evidence refs. |
+| `POST` | `/api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases/{caseId}/capas/{capaId}/approve` | Independent Workflow-backed approval and expected revision. |
+| `POST` | `/api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases/{caseId}/capas/{capaId}/assign` | Eligible current owner assignment; transition to IN_PROGRESS only after approval. |
+| `POST` | `/api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases/{caseId}/capas/{capaId}/evidence` | Append exact accepted T24 document-version evidence. |
+| `POST` | `/api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases/{caseId}/capas/{capaId}/complete` | Owner completion with stored evidence/expected revision. |
+| `POST` | `/api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases/{caseId}/capas/{capaId}/verify` | Independent human effectiveness outcome, linked evidence, reason and revision. |
+| `POST` | `/api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases/{caseId}/close` | Exact independent Workflow HSE_CASE decision and authoritative persisted closure. |
+| `GET` | `/api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases/{caseId}/history` | Scoped immutable ordered case/CAPA/verification/closure history. |
+
+All paths above are **TARGET/PROPOSED**, not currently implemented
+endpoints. Each controller method must have a deliberate typed inbound
+port, concrete native signature, explicit authorization, validation and
+consistent 400/401/403/404/409/5xx error handling. Refusals do not
+leak protected record IDs, counts, source history or the existence of
+foreign documents. Reuse the existing production exception mapping;
+do not invent a second error format. A case is an HSE aggregate, not an
+Incident/Workflow/Document aggregate. No binary HSE download or duplicate
+Document storage is created: authorized evidence retrieval remains
+Documents-owned under T24 authorization.
+
+#### T17 SOURCE IMPLEMENTATION write allowlist (reviewed against current tree)
+
+**CREATE: 33 exact absent files.** These paths are candidates
+registered by this document, not files that now exist. Each new Java source
+must use the canonical repository header/package, pass inward dependency
+guards and be accepted by tests.
+
+| # | Exact CREATE path | Required purpose |
+|---:|---|---|
+| 1 | `src/main/java/dz/sh/hidra/modules/hse/domain/model/HseCapaEvidence.java` | Immutable HSE evidence binding to one exact T24 document/version, accepted decision, checksum, length, company/facility and actor snapshots. |
+| 2 | `src/main/java/dz/sh/hidra/modules/hse/domain/model/HseCapaVerification.java` | Immutable independently authored effectiveness outcome (EFFECTIVE, INEFFECTIVE or INDETERMINATE), evidence IDs, reason, reviewer and time. |
+| 3 | `src/main/java/dz/sh/hidra/modules/hse/domain/service/HseCapaLifecycleGuard.java` | Pure Java CAPA/case transition invariants, independent approval/verification and closure prerequisites. |
+| 4 | `src/main/java/dz/sh/hidra/modules/hse/application/port/in/HseCapaLifecycleUseCase.java` | Typed inbound commands and scoped read models for enroll, create, approve, assign, attach, complete, verify, close and history. |
+| 5 | `src/main/java/dz/sh/hidra/modules/hse/application/port/out/HseCapaLifecycleStorePort.java` | HSE-aggregate locks, immutable scope/event/evidence/verification/closure records, CAS and request replay contract. |
+| 6 | `src/main/java/dz/sh/hidra/modules/hse/application/port/out/HseCapaAuthorityPort.java` | Current authenticated principal and exact direct company+facility operation authority, evaluated before existence queries. |
+| 7 | `src/main/java/dz/sh/hidra/modules/hse/application/port/out/HseCapaFacilityPort.java` | Current active FACILITY identity, owning company and immutable identity snapshots. |
+| 8 | `src/main/java/dz/sh/hidra/modules/hse/application/port/out/HseCapaIncidentPort.java` | T16 reviewed Incident exact source, outcome and facility eligibility, without importing private Incident types. |
+| 9 | `src/main/java/dz/sh/hidra/modules/hse/application/port/out/HseCapaDocumentsPort.java` | Owner-verified accepted T24 document version/decision/checksum/length for the same company/facility. |
+| 10 | `src/main/java/dz/sh/hidra/modules/hse/application/port/out/HseCapaWorkflowPort.java` | Actual Workflow decision, exact HSE_CAPA or HSE_CASE target, independent actor, eligible current binding and digest. |
+| 11 | `src/main/java/dz/sh/hidra/modules/hse/application/service/HseCapaLifecycleApplicationService.java` | Transactional HSE coordinator; current permission first, exact owners, parent lock, replay/CAS and authoritative writes. |
+| 12 | `src/main/java/dz/sh/hidra/modules/hse/api/rest/controller/HseCapaLifecycleController.java` | 13 exact signed native methods on the restricted company/FACILITY HSE path; no generic route bypass. |
+| 13 | `src/main/java/dz/sh/hidra/modules/hse/api/rest/request/HseCapaLifecycleRequest.java` | Nested validated request records per command: requestId, expected revision, reason and typed evidence; no trusted caller actor. |
+| 14 | `src/main/java/dz/sh/hidra/modules/hse/api/rest/response/HseCapaLifecycleResponse.java` | Nested typed scoped case/CAPA/read/history/decision/receipt responses including versions and replay status. |
+| 15 | `src/main/java/dz/sh/hidra/modules/hse/api/rest/mapper/HseCapaLifecycleRestMapper.java` | Explicit HTTP-to-application and application-to-HTTP conversion; never expose JPA entities. |
+| 16 | `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/adapter/JdbcHseCapaLifecycleStoreAdapter.java` | PostgreSQL owner scope lock and CAS, atomic HSE event/decision/closure persistence, deterministic pagination/count and replay. |
+| 17 | `src/main/java/dz/sh/hidra/modules/hse/infrastructure/integration/HseCapaOwnerAccessAdapter.java` | Sole approved HSE cross-owner bridge consuming five exact exported contracts, not owner repositories/models. |
+| 18 | `src/main/java/dz/sh/hidra/modules/identity/application/contract/hse/HseCapaScopedAuthorizationContract.java` | NEW Identity HSE-only authorization contract, current paired CUSTOM documents-company and FACILITY grant checks. |
+| 19 | `src/main/java/dz/sh/hidra/modules/identity/application/service/HseCapaScopedAuthorizationQueryService.java` | NEW Identity implementation using current actor, direct permits and policy deny precedence inside lock-capable transaction. |
+| 20 | `src/main/java/dz/sh/hidra/modules/topology/application/contract/hse/HseFacilityOwnershipContract.java` | NEW HSE-specific Topology export of active facility and current company ownership. |
+| 21 | `src/main/java/dz/sh/hidra/modules/topology/application/service/HseFacilityOwnershipQueryService.java` | NEW Topology-owned current facility query, preserving Topology authority and source/transaction coherence. |
+| 22 | `src/main/java/dz/sh/hidra/modules/incident/application/contract/hse/HseIncidentSourceContract.java` | NEW Incident HSE-only reviewed T16 case/source projection, exact asset/scope and historical review provenance. |
+| 23 | `src/main/java/dz/sh/hidra/modules/incident/application/service/HseIncidentSourceQueryService.java` | NEW Incident owner implementation reading approved T16 reviewed investigation from current owned evidence. |
+| 24 | `src/main/java/dz/sh/hidra/modules/documents/application/contract/hse/HseControlledDocumentEvidenceContract.java` | NEW Documents HSE-only exact accepted version/decision/read-scope attestation; no binary or repository export. |
+| 25 | `src/main/java/dz/sh/hidra/modules/documents/application/service/HseControlledDocumentEvidenceQueryService.java` | NEW Documents owner implementation validating T24 scope, accepted immutable decision and current read authorization. |
+| 26 | `src/main/java/dz/sh/hidra/modules/workflow/application/contract/hse/HseCapaDecisionContract.java` | NEW Workflow HSE-only actual decision proof; existence/matching alone must never equal approval. |
+| 27 | `src/main/java/dz/sh/hidra/modules/workflow/application/service/HseCapaDecisionQueryService.java` | NEW Workflow owner query of approved matching target/digest/decision and independent actor. |
+| 28 | `src/main/resources/db/migration/V20261118_002__t17_hse_capa_governed_lifecycle.sql` | Forward-only, newly reserved version: T17 HSE owner scope/state/event/evidence/verification/closure tables and constraints; no old migration edits. |
+| 29 | `src/test/java/dz/sh/hidra/modules/hse/domain/service/HseCapaLifecycleGuardTest.java` | New pure-Java allowed/forbidden lifecycle, independer/ineffective/closure proof. |
+| 30 | `src/test/java/dz/sh/hidra/modules/hse/application/service/HseCapaLifecycleApplicationServiceTest.java` | New authority-first, lock/replay, validation, owner fault/rollback and conflict tests. |
+| 31 | `src/test/java/dz/sh/hidra/modules/hse/infrastructure/persistence/HseCapaLifecyclePostgresIntegrationTest.java` | New real PostgreSQL 16 fresh Flyway/constraints/duplicate races/immutability and rollback tests. |
+| 32 | `src/test/java/dz/sh/hidra/modules/hse/infrastructure/integration/HseCapaOwnerAccessAdapterTest.java` | New five-owner proof, wrong facility/foreign document/invalid workflow and current denial tests. |
+| 33 | `src/test/java/dz/sh/hidra/qualification/Gz2HseCapaNativeHttpPostgresIntegrationTest.java` | New native signed GZ2 full journey, byte integrity, negative matrix and independent JVM persisted readback. |
+
+**UPDATE: 31 exact existing files.**
+These are the only admitted modifications during the separately selected
+T17 source implementation. Do not change source owners' private repositories
+from HSE; each owner implementation updates only its own public contracts
+and own source. Preserve all existing test assertions and architecture
+exceptions unless the exact new adapter/export is registered.
+
+| # | Exact UPDATE path | Required purpose |
+|---:|---|---|
+| 1 | `src/main/java/dz/sh/hidra/modules/hse/application/service/HseApplicationService.java` | Explicitly deny T17-enrolled case/CAPA mutation through legacy context-free commands; preserve non-enrolled behavior. |
+| 2 | `src/main/java/dz/sh/hidra/modules/hse/application/service/HseQueryApplicationService.java` | Ensure legacy case/CAPA page/count/detail cannot expose T17 enrolled rows without a scoped authorization. |
+| 3 | `src/main/java/dz/sh/hidra/modules/hse/application/port/out/HseCaseRepositoryPort.java` | Add HSE-owned enrolled detection and safe legacy filtered query contract; retain existing parent-locked operations. |
+| 4 | `src/main/java/dz/sh/hidra/modules/hse/application/port/out/HseCorrectivePreventiveActionRepositoryPort.java` | Add HSE-owned safe enrolled/legacy CAPA lookups without unfiltered enrolled counts. |
+| 5 | `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/adapter/JpaHseCaseRepositoryAdapter.java` | Implement safe legacy visibility and coordinated enrolled parent guard. |
+| 6 | `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/adapter/JpaHseCorrectivePreventiveActionRepositoryAdapter.java` | Implement safe legacy visibility/guard while preserving the HMR-097 parent lock and catalog eligibility. |
+| 7 | `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/adapter/JpaHseClosureLifecycleAdapter.java` | Check T17 enrolled authoritative CAPA verdicts, independent decision and linked evidence before old atomic closure/history write. |
+| 8 | `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/adapter/HseCapaReferenceValidation.java` | Preserve actor/unit/work-order/catalog snapshots; add enrolled-specific transition admissibility without weakening legacy semantics. |
+| 9 | `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/repository/HseCaseJpaRepository.java` | HSE case scope-safe legacy detail/page/count and parent row locking. |
+| 10 | `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/repository/HseCorrectivePreventiveActionJpaRepository.java` | Scope-safe CAPA lookup and actual current row-lock access. |
+| 11 | `src/main/java/dz/sh/hidra/modules/hse/domain/service/HseCaseClosureGuard.java` | Extend closure preconditions with persisted T17 evidence/decision while retaining HMR-082/HMR-096 original checks. |
+| 12 | `src/main/java/dz/sh/hidra/modules/hse/api/rest/controller/HseQueryController.java` | Legacy case/CAPA reads preserve signatures but fail closed for T17 enrolled evidence. |
+| 13 | `src/main/java/dz/sh/hidra/modules/hse/api/rest/controller/SpringHseController.java` | Legacy create/CAPA/closure aliases cannot bypass T17 enrolled scope and approval. |
+| 14 | `src/main/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistry.java` | Exactly register 13 T17 native HTTP handler/verb/path tuples; preserve existing complete native registry. |
+| 15 | `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java` | Enforce only exact HSE owner exports to one bridge, valid inward dependencies and transaction-advised proxyability. |
+| 16 | `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java` | Reject HSE imports of private owner classes, alternate consumers and sibling exports. |
+| 17 | `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistryTest.java` | Assert all exact T17 tuples and preserve every old compiled native permission row. |
+| 18 | `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java` | Prove method/verb/signature mapping and no annotation-only or wrong-route privilege escalation. |
+| 19 | `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteStartupValidatorTest.java` | Reject mismatched/renamed runtime handler signatures before service starts. |
+| 20 | `src/test/java/dz/sh/hidra/qualification/Gz2SignedWorkflowFixture.java` | Seed synthetic HSE scope, company/facility direct grants, HSE catalog, independent reviewers and allowed Workflow source. |
+| 21 | `src/test/java/dz/sh/hidra/modules/hse/application/service/HseQueryApplicationServiceTest.java` | Negative legacy unscoped list/count/detail enrollment leakage. |
+| 22 | `src/test/java/dz/sh/hidra/modules/hse/semantic/HseCorrectivePreventiveActionSemanticRemediationTest.java` | Preserve HMR-097 catalog/reference and no invented legacy parent-status restriction. |
+| 23 | `src/test/java/dz/sh/hidra/modules/hse/semantic/HseClosureSemanticRemediationTest.java` | Preserve HMR-096 old case/history atomicity, spoofing and source Workflow matching. |
+| 24 | `src/test/java/dz/sh/hidra/modules/hse/infrastructure/persistence/HseLifecycleSemanticPostgresIntegrationTest.java` | Retain old HMR-082/096/097 direct physical adverse writes, add enrolled consistency regression. |
+| 25 | `src/test/java/dz/sh/hidra/modules/identity/semantic/HseActorContractTest.java` | Preserve current-actor contract and cover new current paired-permission HSE denial/withdrawal. |
+| 26 | `src/test/java/dz/sh/hidra/modules/workflow/semantic/HseWorkflowReferenceContractTest.java` | Preserve context-only HSE workflow evidence and separately prove actual approved reviewer decisions. |
+| 27 | `.github/ci-test-inventory.json` | Register exact new test classes and refresh all changed test/support SHA-256 fingerprints and raw selected cases. |
+| 28 | `.github/database-dictionary-ownership.json` | Explicit HSE ownership metadata for each new non-JPA relation with source-backed migration evidence. |
+| 29 | `doc/architecture/CROSS_MODULE_CONTRACTS.md` | List five exact T17 owner HSE exports and sole HSE bridge import admissibility. |
+| 30 | `doc/modules/hse.md` | Update HSE owned capabilities/constraints only after code exists, preserving status distinction. |
+| 31 | `doc/roadmap/ROADMAP.md` | Append implementation SHA, validation and exact acceptance status; no premature completion. |
+
+**DELETE: 0.** No migration, domain history, legacy API,
+architecture check, permission guard, test class, archival governance,
+binary storage or other source is authorized for deletion or truncation.
+
+**Conditional generated-contract documentation (3 existing paths,
+NOT part of the source 33-CREATE/31-UPDATE ledger):**
+
+| Exact path | Admission |
+|---|---|
+| `doc/api/openapi.yaml` | Only from actual source-SHA runtime JSON, preserving compatibility and strict equality. |
+| `doc/database/DATA_DICTIONARY.md` | Only from actual fresh PostgreSQL 16 migrated catalog, preserving strict physical comparison. |
+| `.github/documentation-validation.json` | Only after exact generated SHA/counts/digests and actual run/artifact provenance are known. |
+
+Prefer genuine exact candidate artifacts before the ONE future
+implementation commit and include these three paths only when
+source-equivalent runtime output exists and every digest is verified.
+If this is not possible until hosted CI, preserve the strict validators
+and request a separately selected, explicit same-T17
+`docs(hse): reconcile T17 generated contracts and physical dictionary`
+stage limited to these 3 paths plus append-only roadmap evidence.
+That later stage is only **conditionally proposed/registered**, not executed
+or preauthorized to bypass the owner's bounded commit-count preference.
+Do not handcraft OpenAPI/physical catalog output to obtain green CI.
+
+#### T17 acceptance matrix and stop boundary
+
+1. **Prerequisite truth:** independently recheck full T16 reviewed Incident
+   outcome and T24 exact accepted Documents version/hash, facility ownership,
+   current principal, and Workflow HSE_CAPA/HSE_CASE review capability.
+   Required synthetic approved CAPA type policy and Workflow binding must be
+   supplied explicitly as non-production fixtures; no default industry
+   policy or fabricated field data.
+2. **Positive signed journey:** via native LOCAL JWT and real
+   PostgreSQL 16 fresh schema, one scoped Incident-backed HSE case
+   is enrolled, proposed CAPA approved by Workflow, assigned, furnished
+   with an exact accepted T24 version, completed, independently verified
+   effective and case closed with independent Workflow HSE_CASE decision.
+   Same company/asset scoped list/count/detail/history reconstruct exact
+   decisions and checksum/bytes through the Documents owner after a
+   distinct application OS-JVM restart.
+3. **Protected negatives:** anonymous/foreign company/foreign facility/
+   removed company grant/removed FACILITY grant/current deny/invalid
+   actor/owner change do not disclose existence, counts, history or
+   accept any mutation; legacy HSE routes cannot reach enrolled rows.
+   Invalid Incident linkage, inactive facility, wrong Document version,
+   missing Document acceptance, stale/hash-changed content, mismatched
+   Workflow target, reused decision, self-review, incomplete/ineffective
+   CAPA and false caller-provided closure flags all fail closed.
+4. **Concurrency and physical integrity:** same-payload replay returns one
+   receipt; same key with different payload conflicts; stale expected
+   head conflicts; two concurrent conflicting verifications or closures
+   yield one authoritative winner. JDBC error, owner failure or injected
+   rollback leaves no partial transitions. Direct SQL cannot forge closed
+   case or mutate append-only history; HMR-082/096/097 and unchanged legacy
+   CAPA semantics continue to pass.
+5. **Source and CI gates:** all new/changed tests and their support
+   fingerprints registered in existing `.github/ci-test-inventory.json`,
+   exact 13 native-route registration plus denial tests, ArchUnit/
+   ForensicRemediationClosureTest, real JPA/Flyway validation,
+   all fourteen existing PostgreSQL shards, runtime OpenAPI backward
+   compatibility and **strict canonical equality**, regenerated real
+   physical dictionary strict equality, source-level test-inventory
+   verification and the **Full Verification Gate** at the exact
+   implementation/reconciliation SHA. Skipped Testcontainers tests are
+   not database proof. An unexecuted planned test is not acceptance.
+
+**This publication is a roadmap/documentation-only T24 closure and T17
+registration.** File scope of THIS commit: only
+`doc/roadmap/ROADMAP.md`, with registered exact commit message
+`docs(roadmap): accept T24 and register T17 HSE CAPA envelope`.
+No T17 source or migration is selected/committed by this request.
+At the following owner `Next`, refresh HEAD, parent/tree, current CI,
+the exact CREATE/UPDATE statuses and all owner contracts; if the
+version or allowed scope has changed, report and reconcile rather
+than expanding silently. If an unresolved business decision would
+change the independent review/closure contract, return the exact
+decision before writing code. Publish to existing main only with
+expected-head guard; verify changed paths, parent/tree/blobs/message.
+Confirm applicable exact-SHA CI was created/queued or started, then
+STOP. T25 and other pending tasks, P3, release/deployment and
+industrial/SITE acceptance are not selected.

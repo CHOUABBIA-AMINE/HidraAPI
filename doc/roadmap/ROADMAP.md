@@ -2735,3 +2735,57 @@ synthetic registration 500; await actual new evidence instead of guessing.
 The Full Verification Gate is not satisfied. The exact-head successor commit
 must use `feat(documents): discover and supersede controlled document versions`,
 queue/check its exact-SHA CI workflows and stop. T17/T25 remain unselected.
+
+
+### T24 CI #1289 PostgreSQL deferred-trigger repair — 2026-11-18
+
+**T24 IN PROGRESS; acceptance remains open.** [CI #1289](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44171359630)
+on exact main `352d4df9781c3f17d174a4975cb140a30a212837`
+compiled and passed Java 21 unit/architecture, static validation and thirteen
+PostgreSQL integration shards. PostgreSQL shard 9 failed the *unchanged*
+signed `Gz2ControlledDocumentsNativeHttpPostgresIntegrationTest` initial
+scoped document creation, returning HTTP 500 instead of HTTP 201. The newly
+retained PostgreSQL 16.16 container log supplies the exact cause:
+`ERROR: record "d" has no field "document_id"` at deferred `COMMIT`,
+in `public.hidra_documents_t24_consistency()` line 62. Its PL/pgSQL
+`DECLARE d record` shadows the `d` SQL alias of
+`public.hidra_documents_controlled_decision` in the accepted-version
+anti-join. This is a genuine physical consistency-function defect, not a
+test-fixture, permission or Java compilation failure.
+
+**Explicit repair scope and migration-history conflict:** the original T24
+implementation envelope registered one new migration,
+`V20261117_005__t24_controlled_document_history.sql`, and the prior
+CI #1287 *source-only* repair note excluded extra migrations. The later
+exact-SHA PostgreSQL failure now proves a database-function correction is
+necessary. Rewriting the applied Flyway migration would violate checksum and
+migration-history preservation, so this selected `Fail` repair adds only one
+strictly ordered forward-only corrective migration,
+`src/main/resources/db/migration/V20261118_001__t24_consistency_decision_alias.sql`,
+as an expressly recorded corrective exception, not as an unregistered
+feature or status change. It uses `CREATE OR REPLACE FUNCTION` with the
+original deferred trigger function body and changes **only** the shadowed
+anti-join alias from `d` to `decision_row`. All existing constraints,
+indexes, triggers, immutable receipt rules, receipt lineage and version
+state invariants remain in place; `V20261117_005` stays untouched. No
+test, production data, backfill, OT access, endpoint, permission or
+security exception changes are authorized or introduced by the repair.
+
+The [Documentation Validation #1124](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44171359595)
+passed on the same prior SHA. The API contract job independently generated
+runtime OpenAPI and passed backward compatibility, but still fails canonical
+snapshot equality for T24 changes. Preserve this gate; the only permitted
+generated-contract and physical-dictionary reconciliation is the separately
+registered `docs(documents): reconcile T24 generated contracts and physical
+dictionary` stage after code behavior can be verified. No canonical
+snapshot or manifest changes occur in this corrective code commit.
+
+The original registered commit message remains
+`feat(documents): discover and supersede controlled document versions`.
+The repair is based on exact parent/tree and the active `main` lease. Local
+PostgreSQL and Maven execution are not available in the publishing
+environment, so **only source/static review** precedes the successor
+exact-SHA CI. The commit must be checked for precise file scope and
+published guarded to existing `main`; confirm new HidraAPI CI and
+Documentation Validation workflow queue/start then STOP. No T24 CI pass,
+engineering acceptance, T17/T25 stage advancement or deployment is implied.

@@ -66,6 +66,23 @@ class HidraTrustedNativeProtectedRouteRegistryTest {
     }
 
 
+    @Test void t26RegistersExactlyFiveScopedIntegrationTuples() {
+        var routes=new HidraTrustedNativeProtectedRouteRegistry().candidates().stream()
+                .filter(route -> route.controller().getSimpleName().equals("SyntheticExchangesController"))
+                .toList();
+        String base="/api/v1/integration/companies/{companyId}/facilities/{facilityId}";
+        assertEquals(5,routes.size());
+        assertEquals(java.util.Set.of(
+                "GET "+base+"/synthetic-mappings/{profileId}",
+                "POST "+base+"/synthetic-exchanges",
+                "GET "+base+"/synthetic-exchanges/{exchangeId}",
+                "GET "+base+"/synthetic-exchanges/{exchangeId}/attempts",
+                "POST "+base+"/synthetic-exchanges/{exchangeId}/replay"),
+                routes.stream().map(route -> route.verb()+" "+route.pattern())
+                        .collect(java.util.stream.Collectors.toSet()));
+        assertTrue(routes.stream().allMatch(r->r.method().isAnnotationPresent(NativeProtectedOperation.class)));
+    }
+
     @Test void t25RegistersExactlyFiveScopedReportingTuples() {
         var routes = new HidraTrustedNativeProtectedRouteRegistry().candidates().stream()
                 .filter(route -> route.controller().getSimpleName().equals("ScopedReportsController"))
@@ -177,7 +194,7 @@ class HidraTrustedNativeProtectedRouteRegistryTest {
 
     @Test void baselineRoutesDeclareOnlyFiveExactCompiledTuples(){
         var registry=new HidraTrustedNativeProtectedRouteRegistry();
-        assertEquals(143,registry.candidates().size());
+        assertEquals(148,registry.candidates().size());
         var rows=registry.candidates().stream().filter(r->r.controller().getSimpleName().equals("EngineeringBaselineDraftController")).toList();
         assertEquals(5,rows.size());
         assertEquals(java.util.Set.of("POST /api/v1/topology/engineering-baselines","PUT /api/v1/topology/engineering-baselines/{manifestId}",

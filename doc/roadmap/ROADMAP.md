@@ -4303,8 +4303,12 @@ published SHA before acceptance.
 
 This registration changes only this roadmap and uses
 `docs(roadmap): accept T25 and register T26 implementation envelope`.
-T26 remains PLANNED. After this exact-SHA Documentation Validation passes,
-the owner may select the registered T26 implementation with `Next`.
+T26 is IN PROGRESS under owner instruction `Start HidraAPI T26 implementation`.
+The bounded implementation commit contains only the 21 CREATE and 13 UPDATE paths
+registered above. Local Maven, Docker and PostgreSQL acceptance results have not
+been established in this session; a successful exact-SHA Full Verification Gate,
+OpenAPI/dictionary equality and the registered negative/security cases remain
+required before completion. No T27 implementation is selected.
 Its implementation commit message is
 `feat(integration): execute and replay scoped synthetic exchanges`.
 T27 remains unselected.

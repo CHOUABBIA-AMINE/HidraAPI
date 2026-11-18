@@ -196,9 +196,24 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
             Class<?> t25Submit=Class.forName(t25Package+"request.ScopedReportRequests$T25SubmitReport");
             Class<?> t25Render=Class.forName(t25Package+"request.ScopedReportRequests$T25RenderReport");
             Class<?> t25Seal=Class.forName(t25Package+"request.ScopedReportRequests$T25SealReport");
+            String t26Package="dz.sh.hidra.modules.integration.api.rest.";
+            Class<?> t26=Class.forName(t26Package+"controller.SyntheticExchangesController");
+            Class<?> t26Submit=Class.forName(t26Package+"request.SyntheticExchangeRequests$T26SubmitExchange");
+            Class<?> t26Replay=Class.forName(t26Package+"request.SyntheticExchangeRequests$T26ReplayExchange");
+            String t26Base="/api/v1/integration/companies/{companyId}/facilities/{facilityId}";
             String t25Base="/api/v1/reporting/companies/{companyId}/facilities/{facilityId}";
             String t17Base="/api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases";
             return List.of(
+                new Route(t26,t26.getDeclaredMethod("mapping",String.class,String.class,String.class),
+                    "GET",t26Base+"/synthetic-mappings/{profileId}"),
+                new Route(t26,t26.getDeclaredMethod("submit",String.class,String.class,t26Submit),
+                    "POST",t26Base+"/synthetic-exchanges"),
+                new Route(t26,t26.getDeclaredMethod("detail",String.class,String.class,String.class),
+                    "GET",t26Base+"/synthetic-exchanges/{exchangeId}"),
+                new Route(t26,t26.getDeclaredMethod("attempts",String.class,String.class,String.class),
+                    "GET",t26Base+"/synthetic-exchanges/{exchangeId}/attempts"),
+                new Route(t26,t26.getDeclaredMethod("replay",String.class,String.class,String.class,t26Replay),
+                    "POST",t26Base+"/synthetic-exchanges/{exchangeId}/replay"),
                 new Route(t25,t25.getDeclaredMethod("submit",String.class,String.class,t25Submit),
                     "POST",t25Base+"/report-requests"),
                 new Route(t25,t25.getDeclaredMethod("render",String.class,String.class,String.class,t25Render),

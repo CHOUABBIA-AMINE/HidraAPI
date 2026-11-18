@@ -146,6 +146,25 @@ class ForensicRemediationClosureTest {
         }
     }
 
+    private static final String T26_BRIDGE =
+            "dz.sh.hidra.modules.integration.infrastructure.integration.SyntheticExchangeOwnerAccessAdapter";
+    private static final Set<String> T26_OWNER_ROOTS=Set.of(
+            "dz.sh.hidra.modules.identity.application.contract.integration.IntegrationSyntheticExchangeAuthorizationContract",
+            "dz.sh.hidra.modules.topology.application.contract.integration.IntegrationSyntheticFacilityOwnershipContract",
+            "dz.sh.hidra.modules.documents.application.contract.integration.IntegrationSyntheticDraftReceiptContract");
+    private static boolean t26Export(String consumer,String imported) {
+        return consumer.equals(T26_BRIDGE) && T26_OWNER_ROOTS.stream()
+                .anyMatch(root->imported.equals(root)||imported.startsWith(root+"$"));
+    }
+    @Test void t26OnlyTheRegisteredConsumerMayImportExactScalarContracts() {
+        for (String root:T26_OWNER_ROOTS) {
+            assertTrue(t26Export(T26_BRIDGE,root));
+            assertTrue(t26Export(T26_BRIDGE,root+"$Facility"));
+            assertFalse(t26Export(T26_BRIDGE+"Sibling",root));
+            assertFalse(t26Export(T26_BRIDGE,root+"Sibling"));
+        }
+    }
+
     private static final String T25_BRIDGE = "dz.sh.hidra.modules.reporting.infrastructure.integration.ScopedReportOwnerAccessAdapter";
     private static final String T25_TARGET_RESOLVER = "dz.sh.hidra.modules.reporting.infrastructure.integration.ScopedReportWorkflowTargetLookup";
     private static final String T25_TARGET_CONTRACT = "dz.sh.hidra.modules.workflow.application.contract.target.WorkflowOwnedTargetLookup";
@@ -382,11 +401,17 @@ class ForensicRemediationClosureTest {
                 if (targetModule == null || sourceModule.equals(targetModule)) {
                     continue;
                 }
+                if (T26_OWNER_ROOTS.stream().anyMatch(imported::startsWith)) {
+                    if (!t26Export(source.fqcn(),imported))
+                        violations.add(source.fqcn()+" -> unauthorized T26 owner "+imported);
+                    continue;
+                }
                 if (T25_OWNER_ROOTS.stream().anyMatch(imported::startsWith)) {
                     if (!t25Export(source.fqcn(),imported))
                         violations.add(source.fqcn()+" -> unauthorized T25 owner "+imported);
                     continue;
                 }
+                if (t26Export(source.fqcn(),imported)) continue;
                 if (t25Export(source.fqcn(),imported)) continue;
                 if (!isPrivate(importedPackage)) {
                     continue;

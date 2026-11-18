@@ -68,6 +68,27 @@ class ExternalSystemSemanticRemediationTest {
     }
 
     @Test
+    void legacyJobAndMessageApisRejectReservedT26IdentitiesBeforePersistence() {
+        IntegrationApplicationService service=new IntegrationApplicationService(
+                mock(ExternalSystemRepositoryPort.class),mock(IntegrationJobRunRepositoryPort.class),
+                mock(IntegrationExchangeMessageRepositoryPort.class),id->true);
+        var job=new dz.sh.hidra.modules.integration.application.command.StartIntegrationJobRunCommand(
+                "legacy-job",dz.sh.hidra.modules.integration.domain.value.JobTriggerType.MANUAL,
+                "actor","T26:reserved");
+        assertThatThrownBy(()->service.startIntegrationJobRun(job))
+                .isInstanceOf(InvalidIntegrationValueException.class);
+        var message=new dz.sh.hidra.modules.integration.application.command.RecordExchangeMessageCommand(
+                "job","sys",null,
+                dz.sh.hidra.modules.integration.domain.value.IntegrationDirection.INBOUND,
+                "message-type","T26:reserved","json",
+                dz.sh.hidra.modules.integration.domain.value.PayloadStorageMode.HASH_ONLY,
+                null,null,"hash",null,java.time.Instant.now(),"cid",
+                dz.sh.hidra.modules.integration.domain.value.ExchangeMessageStatus.RECEIVED);
+        assertThatThrownBy(()->service.recordExchangeMessage(message))
+                .isInstanceOf(InvalidIntegrationValueException.class);
+    }
+
+    @Test
     void migrationProvidesConcurrencySafeCodeUniquenessWithoutOrganizationForeignKey() throws Exception {
         String sql = Files.readString(Path.of(
                 "src/main/resources/db/migration/"

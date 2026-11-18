@@ -35,6 +35,7 @@ import dz.sh.hidra.modules.integration.application.port.in.StartIntegrationJobRu
 import dz.sh.hidra.modules.integration.application.port.out.ExternalSystemRepositoryPort;
 import dz.sh.hidra.modules.integration.application.port.out.IntegrationExchangeMessageRepositoryPort;
 import dz.sh.hidra.modules.integration.application.port.out.IntegrationJobRunRepositoryPort;
+import dz.sh.hidra.modules.integration.application.port.out.SyntheticExchangeRepositoryPort;
 import dz.sh.hidra.modules.integration.domain.exception.InvalidIntegrationValueException;
 import dz.sh.hidra.modules.organization.application.contract.integration.IntegrationOrganizationUnitReferenceContract;
 import dz.sh.hidra.modules.integration.domain.model.ExternalSystem;
@@ -58,18 +59,30 @@ public final class IntegrationApplicationService implements RegisterExternalSyst
     private final IntegrationJobRunRepositoryPort jobRunRepositoryPort;
     private final IntegrationExchangeMessageRepositoryPort exchangeMessageRepositoryPort;
     private final IntegrationOrganizationUnitReferenceContract organizationUnitReferenceContract;
+    private final SyntheticExchangeRepositoryPort syntheticExchangeRepositoryPort;
 
     @Autowired
     public IntegrationApplicationService(
             ExternalSystemRepositoryPort externalSystemRepositoryPort,
             IntegrationJobRunRepositoryPort jobRunRepositoryPort,
             IntegrationExchangeMessageRepositoryPort exchangeMessageRepositoryPort,
-            IntegrationOrganizationUnitReferenceContract organizationUnitReferenceContract
+            IntegrationOrganizationUnitReferenceContract organizationUnitReferenceContract,
+            SyntheticExchangeRepositoryPort syntheticExchangeRepositoryPort
     ) {
         this.externalSystemRepositoryPort = Objects.requireNonNull(externalSystemRepositoryPort, "External system repository port must not be null.");
         this.jobRunRepositoryPort = Objects.requireNonNull(jobRunRepositoryPort, "Integration job run repository port must not be null.");
         this.exchangeMessageRepositoryPort = Objects.requireNonNull(exchangeMessageRepositoryPort, "Integration exchange message repository port must not be null.");
         this.organizationUnitReferenceContract = Objects.requireNonNull(organizationUnitReferenceContract, "Integration OrganizationUnit reference contract must not be null.");
+        this.syntheticExchangeRepositoryPort=Objects.requireNonNull(syntheticExchangeRepositoryPort);
+    }
+
+    public IntegrationApplicationService(
+            ExternalSystemRepositoryPort externalSystemRepositoryPort,
+            IntegrationJobRunRepositoryPort jobRunRepositoryPort,
+            IntegrationExchangeMessageRepositoryPort exchangeMessageRepositoryPort,
+            IntegrationOrganizationUnitReferenceContract organizationUnitReferenceContract) {
+        this(externalSystemRepositoryPort, jobRunRepositoryPort, exchangeMessageRepositoryPort,
+                organizationUnitReferenceContract, new NoUnscopedSyntheticExchangeRepository());
     }
 
     public IntegrationApplicationService(
@@ -125,6 +138,8 @@ public final class IntegrationApplicationService implements RegisterExternalSyst
     @Override
     public IntegrationJobRunSummaryDto startIntegrationJobRun(StartIntegrationJobRunCommand command) {
         Objects.requireNonNull(command, "Start integration job run command must not be null.");
+        if (syntheticExchangeRepositoryPort.isReservedJob(command.jobDefinitionId(),command.correlationId()))
+            throw new InvalidIntegrationValueException("Reserved synthetic exchange requires the governed native path.");
         Instant now = Instant.now();
         IntegrationJobRun jobRun = new IntegrationJobRun(
                 IntegrationId.newId().value(),
@@ -152,6 +167,8 @@ public final class IntegrationApplicationService implements RegisterExternalSyst
     @Override
     public IntegrationExchangeMessageSummaryDto recordExchangeMessage(RecordExchangeMessageCommand command) {
         Objects.requireNonNull(command, "Record exchange message command must not be null.");
+        if (syntheticExchangeRepositoryPort.isReservedMessage(command.jobRunId(),command.externalMessageId()))
+            throw new InvalidIntegrationValueException("Reserved synthetic exchange requires the governed native path.");
         Instant now = Instant.now();
         IntegrationExchangeMessage message = new IntegrationExchangeMessage(
                 IntegrationId.newId().value(),
@@ -173,5 +190,35 @@ public final class IntegrationApplicationService implements RegisterExternalSyst
                 now
         );
         return IntegrationApplicationMapper.toSummary(exchangeMessageRepositoryPort.save(message));
+    }
+    /** Legacy in-memory construction remains restricted to unrelated Integration identities. */
+    private static final class NoUnscopedSyntheticExchangeRepository implements SyntheticExchangeRepositoryPort {
+        private static UnsupportedOperationException unavailable() {
+            return new UnsupportedOperationException("Scoped synthetic exchange repository unavailable.");
+        }
+        @Override public boolean isReservedJob(String job,String correlation) {
+            return correlation!=null && correlation.startsWith("T26:");
+        }
+        @Override public boolean isReservedMessage(String run,String external) {
+            return external!=null && external.startsWith("T26:");
+        }
+        @Override public void lockKey(dz.sh.hidra.modules.integration.domain.model.SyntheticExchange.Scope scope,String key) {throw unavailable();}
+        @Override public Binding activeBinding(dz.sh.hidra.modules.integration.domain.model.SyntheticExchange.Scope scope,String profile) {throw unavailable();}
+        @Override public void requireCurrentBinding(dz.sh.hidra.modules.integration.domain.model.SyntheticExchange exchange) {throw unavailable();}
+        @Override public java.util.Optional<dz.sh.hidra.modules.integration.domain.model.SyntheticExchange> byKey(
+                dz.sh.hidra.modules.integration.domain.model.SyntheticExchange.Scope scope,String key) {throw unavailable();}
+        @Override public java.util.Optional<dz.sh.hidra.modules.integration.domain.model.SyntheticExchange> byId(
+                dz.sh.hidra.modules.integration.domain.model.SyntheticExchange.Scope scope,String id,boolean lock) {throw unavailable();}
+        @Override public java.util.List<dz.sh.hidra.modules.integration.domain.model.SyntheticExchange.Attempt> attempts(String id) {throw unavailable();}
+        @Override public void insert(dz.sh.hidra.modules.integration.domain.model.SyntheticExchange e,
+                dz.sh.hidra.modules.integration.domain.model.SyntheticExchange.Attempt a) {throw unavailable();}
+        @Override public void insertReplay(dz.sh.hidra.modules.integration.domain.model.SyntheticExchange e,
+                dz.sh.hidra.modules.integration.domain.model.SyntheticExchange.Attempt a) {throw unavailable();}
+        @Override public void abandon(dz.sh.hidra.modules.integration.domain.model.SyntheticExchange e,
+                dz.sh.hidra.modules.integration.domain.model.SyntheticExchange.Attempt a,String code) {throw unavailable();}
+        @Override public void succeeded(dz.sh.hidra.modules.integration.domain.model.SyntheticExchange e,
+                dz.sh.hidra.modules.integration.domain.model.SyntheticExchange.Attempt a,String d) {throw unavailable();}
+        @Override public void failed(dz.sh.hidra.modules.integration.domain.model.SyntheticExchange e,
+                dz.sh.hidra.modules.integration.domain.model.SyntheticExchange.Attempt a,String code) {throw unavailable();}
     }
 }

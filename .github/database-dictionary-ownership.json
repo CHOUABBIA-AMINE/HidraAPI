@@ -491,6 +491,30 @@
     "owner": "integration",
     "purpose": "Integration-owned per-job last run-number state with a job-definition foreign key; this is a table, not a PostgreSQL sequence."
   },
+  "public.hidra_integration_t26_attempt_receipt": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261118_005__t26_governed_synthetic_exchange.sql",
+      "src/main/java/dz/sh/hidra/modules/integration/infrastructure/persistence/adapter/JdbcSyntheticExchangeRepositoryAdapter.java"
+    ],
+    "owner": "integration",
+    "purpose": "Integration-owned per-attempt native run/message/inbound and dead-letter references, preserved terminal history and one optional receiving draft receipt."
+  },
+  "public.hidra_integration_t26_exchange_receipt": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261118_005__t26_governed_synthetic_exchange.sql",
+      "src/main/java/dz/sh/hidra/modules/integration/infrastructure/persistence/adapter/JdbcSyntheticExchangeRepositoryAdapter.java"
+    ],
+    "owner": "integration",
+    "purpose": "Integration-owned immutable pinned scope, mapping and sanitized source digest with unique idempotency and a fenced latest-attempt outcome; Documents remains receiver owner."
+  },
+  "public.hidra_integration_t26_mapping_binding": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261118_005__t26_governed_synthetic_exchange.sql",
+      "src/main/java/dz/sh/hidra/modules/integration/infrastructure/persistence/adapter/JdbcSyntheticExchangeRepositoryAdapter.java"
+    ],
+    "owner": "integration",
+    "purpose": "Integration-owned synthetic scope/binding registration to existing profile, active schema, manual native job and vetted Documents draft type; no enterprise mapping or grant is seeded."
+  },
   "public.hidra_integrity_catalog_field_policy": {
     "evidence": [
       "src/main/resources/db/migration/V20261008_017__hmr_098_integrity_case_catalog_field_policy.sql"

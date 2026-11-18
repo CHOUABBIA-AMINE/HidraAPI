@@ -215,3 +215,27 @@ The owner contracts use scoped projections, exact retained decisions and
 transaction-bound custody. Workflow metadata discovery is available outside a
 transaction. Its Reporting admission and protected reads apply current authority
 at request time. No consumer imports another module's persistence types.
+
+## T26 governed synthetic Integration-to-Documents draft exchange — 2026-11-18
+
+Only `dz.sh.hidra.modules.integration.infrastructure.integration.SyntheticExchangeOwnerAccessAdapter`
+may import these three provider-owned, opaque, consumer-scoped scalar interfaces:
+
+- `identity.application.contract.integration.IntegrationSyntheticExchangeAuthorizationContract`:
+  current authenticated LOCAL actor, paired `CUSTOM integration-company:{companyId}` and
+  `FACILITY {facilityId}` direct grants, current policy PERMIT and DENY precedence for
+  `integration:synthetic-exchange:{read,execute,replay}`. A historical receipt grants nothing.
+- `topology.application.contract.integration.IntegrationSyntheticFacilityOwnershipContract`:
+  current ACTIVE facility and company identity, not an exported Topology aggregate.
+- `documents.application.contract.integration.IntegrationSyntheticDraftReceiptContract`:
+  current T24 controlled Documents read/create authority and the sole idempotent draft creation
+  receiver using `T26-{exchangeId}`. It returns only the owner document ID and replay marker;
+  no Documents entity, persistence adapter, binary, accepted version or link is exported.
+
+All three are owner-validated inside current scoped transaction boundaries.
+Integration owns its three additive mapping, exchange and immutable-attempt tables,
+canonical title projection and native run/message/inbound/dead-letter accounting. Separate
+native runs preserve HMR-014 terminal immutability. The adapter is the only cross-module
+consumer; no generic importing APIs or OT connectors are introduced. Exact typed
+contract roots, nested scalar types and consumer exclusivity are enforced by Architecture
+and Forensic guardrails. Declared implementation is not an accepted CI or SITE outcome.

@@ -142,3 +142,37 @@ The linked decisions carry the precise per-subject exceptions and source/test/mi
 | ExternalSystem | [HMSR-056 reconciled rule](../domain/SEMANTIC_DECISIONS.md#integration-externalsystem) |
 | IntegrationExchangeMessage | [HMSR-067 reconciled rule](../domain/SEMANTIC_DECISIONS.md#integration-integrationexchangemessage) |
 | IntegrationDeadLetterRecord | [HMSR-084 reconciled rule](../domain/SEMANTIC_DECISIONS.md#integration-integrationdeadletterrecord) |
+
+## T26 governed synthetic document-draft exchange (implementation under CI acceptance)
+
+The selected fixed profile `SYNTHETIC_DOCUMENT_DRAFT_V1` is limited to a current configured
+SANDBOX Integration system, exact ACTIVE source/profile/schema/manual job and one validated
+`titleFr` mapping. The operator uses a bounded request key and active profile/schema
+identity. Admission freezes a canonical sanitized `titleFr` projection, SHA-256 digest,
+mapping/schema checksums and Documents type/classification. New Integration receipts retain
+one logical scoped exchange and separate immutable native job/message/inbound records per
+attempt. The receiver is T24 controlled Documents draft creation, via its protected typed
+application contract. No binary upload, version acceptance or external connection occurs.
+
+Five native scoped endpoints expose candidate mapping, admission, scoped receipt, bounded
+attempt history and privileged manual replay. Current LOCAL Identity and both company/facility
+direct permits plus effective policy, active Topology ownership and Documents create authority
+are rechecked. After a recognized transient failure, a new transaction stores a terminal
+dead-lettered attempt; only a different eligible actor may replay with a reason and expected
+ordinal. A successful replay preserves its old run and resolves the dead letter with current
+actor evidence. The duplicate request key never creates a second receiving document.
+Unrecognized commit outcomes, authorization changes and invalid configuration fail closed.
+
+Source packages: `integration.domain.model.SyntheticExchange`,
+`integration.domain.service.SyntheticDocumentDraftMappingV1`,
+`integration.application.port.in.SyntheticExchangeUseCase`,
+`integration.application.port.out.SyntheticExchangeRepositoryPort`,
+`integration.application.port.out.SyntheticExchangeOwnerPort`,
+`integration.application.service.SyntheticExchangeApplicationService`,
+`integration.infrastructure.integration.SyntheticExchangeOwnerAccessAdapter` and
+`integration.infrastructure.persistence.adapter.JdbcSyntheticExchangeRepositoryAdapter`.
+Provider exports and exact consumer are registered in
+[Cross-module contracts](../architecture/CROSS_MODULE_CONTRACTS.md).
+The migration is additive `V20261118_005__t26_governed_synthetic_exchange.sql`.
+This description does not claim tests passed, generated contract parity, production
+installation, or industrial/OT operation.

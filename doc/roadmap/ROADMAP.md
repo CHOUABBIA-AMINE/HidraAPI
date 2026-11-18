@@ -9,7 +9,7 @@
 | Status | ACTIVE |
 | Authority | Sole task register and execution source for HidraAPI |
 | Owner adoption | 2026-11-10 |
-| Active task selection | T17 COMPLETED for synthetic software acceptance on exact-SHA CI #1304 attempt 2. T25 IN PROGRESS following the registered source implementation and local signed PostgreSQL validation. Hosted exact-SHA CI and generated-artifact reconciliation remain required. |
+| Active task selection | T25 COMPLETED for synthetic software acceptance on CI #1306 attempt 2. T26 is the next task and remains PLANNED with a registered implementation envelope. |
 
 The task register controls scope, dependencies, status and acceptance. Existing technical policy and verified implementation evidence retain their applicability. Task status advances only with recorded evidence. The initial status for each task is PLANNED. The first candidate is T01.
 
@@ -117,7 +117,7 @@ A task includes its required authorization, REST contract, persistence, failure 
 | **T22 · Expose governed Risk results and decision history** | Risk with owner evidence providers | Eligible evidence and the existing scoring/approval path | Expose scoped assessment, score inputs, evidence, independent decision and approved history. | Later source or method changes do not alter the approved historical result. Revoked and unrelated principals cannot read it. **FG-10 / A10.** | COMPLETED |
 | **T23 · Execute and retrieve a deterministic analytics metric** | Analytics with source owners | One supported metric and eligible versioned input, such as T11 | Execute the metric, persist durable run/result state and expose source lineage, units and version. | Synthetic inputs produce a predictable value after restart. Bad inputs have explicit failed/unavailable outcomes. **FG-11 / A11.** | COMPLETED |
 | **T24 · Discover and supersede controlled Documents** | Documents with target owners | Existing byte upload/download and owner target references | Expose scoped discovery, exact version/link history, acceptance and supersession where required. | An authorized client can discover and retrieve exact bytes and hash for old and current versions. Revoked users cannot download. **FG-14 / A14.** | COMPLETED |
-| **T25 · Render and download an authorized report** | Reporting with Documents and Workflow | T24 and an eligible approved report input, such as T23 | Admit template and parameters, render a durable artifact and expose run status and scoped byte retrieval. | Downloaded bytes match the stored hash and exact input version. Failed rendering cannot produce a downloadable success. **FG-12 / A12.** | IN PROGRESS |
+| **T25 · Render and download an authorized report** | Reporting with Documents and Workflow | T24 and an eligible approved report input, such as T23 | Admit template and parameters, render a durable artifact and expose run status and scoped byte retrieval. | Downloaded bytes match the stored hash and exact input version. Failed rendering cannot produce a downloadable success. **FG-12 / A12.** | COMPLETED |
 | **T26 · Execute and replay a governed synthetic exchange** | Integration with receiving owner | Supported synthetic mapping and receiving contract | Expose mapping version, job/attempt/result, dead letter and privileged replay for one exchange. | Simulated transient failure and authorized replay yield one receiving outcome and a durable attempt history. **FG-15 / A15.** | PLANNED |
 | **T27 · Deliver a recipient-scoped notification inbox** | Notification | One eligible business event and a supported delivery channel | Expose inbox, delivery state and recipient acknowledgement independently of business workflow state. | Intended recipient reads and acknowledges one notification. Foreign recipient cannot see it. The underlying task state is unchanged by acknowledgement. **FG-16 / A16.** | PLANNED |
 | **T28 · Search and export scoped Audit evidence** | Audit with Identity and Documents where needed | Durable owner events and authorized export storage | Expose typed event search, export state, manifest/hash and scoped retrieval. Recheck current grant at download. | Export contains only the admitted company, asset and time window. Download after revocation is denied and access evidence is retained. **FG-17 / A17.** | PLANNED |
@@ -4093,3 +4093,218 @@ changed. Historical evidence, existing business implementation and CI strict
 gates remain preserved. T25 stays **IN PROGRESS** until the new exact-SHA
 full CI passes. Engineering and operational qualification remain separate.
 T26 is not selected.
+
+### T25 synthetic software acceptance and T26 implementation envelope — 2026-11-18
+
+**T25 COMPLETED for synthetic software acceptance.** [CI #1306 attempt 2](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44394538042/attempts/2)
+and [Documentation Validation #1145](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44394538082)
+passed on `5c85dfa51d3574998e9819c08dac99f1413a5c63`. Its parent is
+`82437fc40dd4ca37383619bc8bd73fc8deeb4a7e` and its tree is
+`5c141ff712e8473efb929792298472a77d95253f`.
+The [Full Verification Gate archive](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44394538042/artifacts/14469988330)
+matches ZIP SHA-256 `917134ca5487c2755775725e73344b94fec0190319ad30842a014d439592fe83`.
+It records 603 classes and 4,479 tests with zero failures, errors or skips
+across the required development partitions. PostgreSQL shard 0 passed in
+attempt 2. The other required lane evidence came from attempt 1 of the
+same run and SHA. The serial release oracle was outside this development run.
+
+The API lane passed strict OpenAPI and physical dictionary equality with 496
+operations, 451 paths, 533 schemas, 229 Flyway migrations, 471 JPA mappings,
+605 relations and zero unresolved owners. The archive includes the signed
+T25 PostgreSQL case in shard 5 with zero failures, errors or skips. That
+journey proved deterministic output, independent Workflow and Documents
+decisions, controlled failure and rollback, exact bytes after supersession
+and a process restart, and denial after revocation. The evidence is
+synthetic software acceptance. Engineering, operational and release
+qualification remain separate.
+
+#### T26 scope and dependencies
+
+**T26 — Execute and replay a governed synthetic exchange (FG-15/A15).**
+The selected candidate scope is one inbound profile, `SYNTHETIC_DOCUMENT_DRAFT_V1`,
+from a configured local SANDBOX integration system to a T24 controlled
+Documents draft. T24 is complete and supplies the receiver transaction,
+scope and idempotent create. T25 completion satisfies task order. No
+operational asset or live connection is part of the synthetic fixture.
+
+The existing Integration REST and application service register systems, open
+job runs and record message metadata. `TargetModuleImportPort` only exposes
+availability, and `NoopExternalConnectorGateway` supplies no receiving
+execution. Existing mapping, job, message, inbound record, retry and dead
+letter tables are reusable. HMR-014 allocates run numbers and forbids a
+terminal run changing status. Each T26 attempt must therefore have its own
+native run and message, with a stable scoped exchange ID across attempts.
+T24 already binds a created draft to a facility and an idempotency key in
+one transaction, so T26 requires a narrow Documents export and no new
+Documents persistence model.
+
+Integration owns the admitted mapping snapshot, exchange identity,
+attempt sequence, controlled outcome and replay. Documents owns the
+created draft. Identity owns live grant and policy evidence. Topology owns
+the facility and company association. Use an Integration-side outbound
+bridge for the three narrow owner contracts. No direct cross-owner writes
+or foreign keys. The result is one draft receipt with its exact identifier.
+Version upload, acceptance, external network calls, generic transformations,
+SCADA, production data, schedules, webhooks and autonomous retries are outside
+the scope.
+
+#### T26 mapping, authorization and HTTP
+
+The owner configures one active scope binding for the fixed profile and
+its active manual inbound job definition, SANDBOX external system,
+matching connector registry row, ACTIVE data contract and ACTIVE schema
+version with STRICT mapping validation. Use existing catalog identifiers. The connector row
+identifies configuration only. Validate the exact profile, lineage,
+schema version and checksum, and the fixed allowlisted field mapping.
+The one input field is bounded `titleFr` (1–160 characters, normalized
+and checked for controls). The request also contains a bounded request
+key and the selected profile ID and schema version ID. Freeze the
+projection, map digest, source version, Documents type and classification
+IDs, and approved scope before delivery. Documents validates those
+catalog IDs at execution. The server derives the destination code and
+idempotency key from the exchange ID. Store the bounded sanitized typed
+projection and a SHA-256 digest. Reject arbitrary object fields, URLs,
+unapproved payload modes and caller-supplied destination, actor or status.
+A changed mapping or receiver configuration after admission must fail
+closed for replay if it invalidates the pinned tuple. Prior evidence
+remains readable under current authority.
+
+Use current native LOCAL identity and paired direct grants at
+`CUSTOM integration-company:{companyId}` and `FACILITY {facilityId}`.
+Require an Identity policy PERMIT at both scopes and current Topology
+ownership. Require Integration read before read projections and the
+operation-specific grant on execute or replay. Replay additionally
+requires a distinct currently authorized operator, a bounded reason,
+and the expected failed attempt ordinal. Both sender and replayer must
+satisfy Documents create scope when delivering under their own identity.
+The Integration view omits unrelated Documents content. Any Documents
+detail request uses the existing Documents read fence.
+
+Base path `/api/v1/integration/companies/{companyId}/facilities/{facilityId}`.
+
+| Method and suffix | Input, result and authority |
+|---|---|
+| GET `/synthetic-mappings/{profileId}` | Active pinned-profile candidate and schema version/checksum. Requires `integration:synthetic-exchange:read`. |
+| POST `/synthetic-exchanges` | `T26SubmitExchange(requestKey, mappingProfileId, schemaVersionId, titleFr)`. Requires `integration:synthetic-exchange:execute` and read. Returns 201 on first admission, 200 on exact same-actor replay, with the logical exchange and first-attempt outcome. |
+| GET `/synthetic-exchanges/{exchangeId}` | Scoped summary, pinned version/digests, latest attempt, safe dead-letter state and owner receipt only on success. Requires read. |
+| GET `/synthetic-exchanges/{exchangeId}/attempts` | Bounded ordered history with attempt, actor, native run and message IDs, safe reason and timestamps. Requires read. |
+| POST `/synthetic-exchanges/{exchangeId}/replay` | `T26ReplayExchange(requestKey, expectedAttempt, reason)`. Requires `integration:synthetic-exchange:replay` and read. Exact same reviewer/key returns the same replay outcome. Competing or stale eligible requests return 409. |
+
+Use the existing protected unavailable policy before exposing existence,
+history or counts. Malformed input returns 400, eligible digest or state
+conflict returns 409, and transient receiver failure is a typed logged
+outcome. Exclude raw exception text and sensitive payloads from receipts.
+
+#### T26 transaction and state envelope
+
+1. In a short admission transaction lock the scope/key, deduplicate exact
+   payload and actor, and persist the scoped exchange and immutable
+   mapping snapshot. Claim attempt 1 with one allocated HMR-014 run, one
+   synthetic exchange message and one inbound record. Preserve separate
+   receipt linkage for each attempt and require one current attempt per exchange.
+2. In a separate bounded transaction lock the exchange and attempt,
+   recheck current authority and the admitted configuration, call the
+   Documents contract and persist the receiver ID and all success states
+   atomically. Store that ID only on success. No receiver commit is
+   possible independently of the Integration success receipt. Use
+   the existing T24 request key and scoped Documents creation semantics.
+3. A recognized transient database/receiver failure rolls back the
+   receiving transaction. A new short transaction fences the same
+   attempt and commits its terminal failure and a single OPEN dead letter.
+   Do not produce a dead letter for denied admission or misclassify unknown
+   commits. Resolve ambiguous outcomes by re-reading the durable exchange
+   before resumption. Keep a bounded attempt lease. On expired interrupted
+   claims, use the same fenced attempt for original same-actor resumption,
+   or mark it ABANDONED under privileged replay when no result committed.
+   Never allow an expired claimant to write success after another claim.
+4. Permit one manual replay for a retryable dead letter or a fenced abandoned
+   first claim. Serialize replay admission on the exchange. Allocate a new
+   native job/message/inbound record, retain the first terminal states, and
+   keep the same Documents idempotency key. A replay success sets the dead
+   letter REPLAYED with actual actor/reason/time and one receiving outcome.
+   Second failure remains a terminal dead letter, with both attempt facts
+   intact. No implicit retry or silent state rewrite.
+5. The migration adds an Integration-owned scoped mapping binding, exchange
+   receipt and attempt receipt. Pin exact local parent pairs, enforce unique
+   scope/idempotency and ordinals, constrain phase/receipt shape, retain
+   terminal evidence and test deferred guards at real commit. Reserve the
+   profile from legacy Integration start/message writes and reject orphan
+   writes on reserved keys at the physical boundary. Provision only three
+   permission identities. Supply owner configuration and grants in synthetic
+   fixtures. Preserve all prior migrations and native owner constraints.
+
+#### T26 exact implementation allowlist
+
+Validation lease for this envelope is `5c85dfa51d3574998e9819c08dac99f1413a5c63`.
+Recheck lease, file presence and Flyway version before implementation.
+Register all five native handler, method and path tuples, extending
+the exact count from 143 to 148.
+
+| Operation | Exact repository path | Responsibility |
+|---|---|---|
+| CREATE | `src/main/java/dz/sh/hidra/modules/integration/domain/model/SyntheticExchange.java` | Pure Java scoped exchange, claim, ordinal, terminal state and replay invariants. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/integration/domain/service/SyntheticDocumentDraftMappingV1.java` | Fixed validated projection, stable normalization and canonical SHA-256 evidence. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/integration/application/port/in/SyntheticExchangeUseCase.java` | Five typed cases and bounded owner-neutral projections. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/integration/application/port/out/SyntheticExchangeRepositoryPort.java` | Exact binding/lineage reads, scoped claims, fenced transitions, and legacy reserved-key checks. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/integration/application/port/out/SyntheticExchangeOwnerPort.java` | Integration-owned scoped authority, facility, and Documents receiving commands and results. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/integration/application/service/SyntheticExchangeApplicationService.java` | Admission, separate atomic receiver execution, failure finalization, privileged replay and bounded reads. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/integration/infrastructure/integration/SyntheticExchangeOwnerAccessAdapter.java` | Sole Integration consumer of the three new exports. Translate only typed owner outcomes and recognized transient failures. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/integration/infrastructure/persistence/adapter/JdbcSyntheticExchangeRepositoryAdapter.java` | Scoped SQL, locks, atomic receipt/accounting writes and reuse of native HMR-014 run allocation and legacy records. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/integration/api/rest/controller/SyntheticExchangesController.java` | Five native routes, stable method signatures and safe HTTP outcome codes. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/integration/api/rest/request/SyntheticExchangeRequests.java` | Distinct T26 request DTOs with size, shape and replay bounds. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/integration/api/rest/response/SyntheticExchangeResponses.java` | Distinct T26 mapping, exchange and attempt views with safe codes. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/integration/api/rest/mapper/SyntheticExchangeRestMapper.java` | Explicit HTTP adapters without persistence or owner DTO leakage. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/application/contract/integration/IntegrationSyntheticExchangeAuthorizationContract.java` | Current scoped read, execute and replay authority. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/application/service/IntegrationSyntheticExchangeAuthorizationQueryService.java` | Reuse the native LOCAL actor, locked direct grant and deny-precedence policy ports. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/topology/application/contract/integration/IntegrationSyntheticFacilityOwnershipContract.java` | Active facility and exact company ownership scalar export. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/topology/application/service/IntegrationSyntheticFacilityOwnershipQueryService.java` | Reuse the existing Topology-side facility ownership proof inside the caller transaction. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/documents/application/contract/integration/IntegrationSyntheticDraftReceiptContract.java` | Narrow typed idempotent draft receiver with bounded fields and exact owner receipt. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/documents/application/service/IntegrationSyntheticDraftReceiptService.java` | Mandatory transaction wrapper over T24 create, synthetic catalog validation and exact persisted draft receipt. |
+| CREATE | `src/main/resources/db/migration/V20261118_005__t26_governed_synthetic_exchange.sql` | Three Integration-owned relations, guarded reserved native keys, immutable evidence and permission identities without grants. |
+| CREATE | `src/test/java/dz/sh/hidra/modules/integration/domain/service/SyntheticDocumentDraftMappingV1Test.java` | Exact canonical bytes/digest, bounds, replay state and scope mismatch. |
+| CREATE | `src/test/java/dz/sh/hidra/qualification/Gz2SyntheticExchangeNativeHttpPostgresIntegrationTest.java` | Signed synthetic lifecycle through separate application JVMs and one real T24 receiving draft. Keep new fixture setup in this file. |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/integration/application/service/IntegrationApplicationService.java` | Block legacy writes for the reserved profile and scoped native identities. Preserve ordinary legacy behavior. |
+| UPDATE | `src/test/java/dz/sh/hidra/modules/integration/semantic/ExternalSystemSemanticRemediationTest.java` | Supply the new port to existing direct construction if its signature changes. Assert reserved aliases fail before legacy persistence. |
+| UPDATE | `src/main/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistry.java` | Five exact handler/verb/path/signature additions. Preserve all existing tuples. |
+| UPDATE | `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java` | Exact new tuples and native handler, wrong verbs and sibling paths. |
+| UPDATE | `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistryTest.java` | Total 148 and exact T26 tuple set. |
+| UPDATE | `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteStartupValidatorTest.java` | Verify the complete exact registry, including the five new compiled signatures. |
+| UPDATE | `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java` | Exact Integration bridge imports and owner transaction proxy constraints. Reject private and lookalike imports. |
+| UPDATE | `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java` | Mirror exact source-level owner and consumer boundaries. |
+| UPDATE | `.github/ci-test-inventory.json` | Register exact cases and test fingerprints, record the reused GZ2 fixture and preserve the 14-shard coverage. |
+| UPDATE | `.github/database-dictionary-ownership.json` | Map `public.hidra_integration_t26_mapping_binding`, `public.hidra_integration_t26_exchange_receipt` and `public.hidra_integration_t26_attempt_receipt` to Integration with migration evidence. |
+| UPDATE | `doc/architecture/CROSS_MODULE_CONTRACTS.md` | Register the three new exact exports, sole consumer, scope and transaction rules. |
+| UPDATE | `doc/modules/integration.md` | Document the supported synthetic mapping, stable exchange and replay semantics and the owner boundary. |
+| UPDATE | `doc/roadmap/ROADMAP.md` | Record T26 implementation status and actual validation evidence. |
+
+**Source ledger:** 21 CREATE, 13 UPDATE, zero DELETE. Three conditional
+generated UPDATE paths are `doc/api/openapi.yaml`,
+`doc/database/DATA_DICTIONARY.md` and `.github/documentation-validation.json`.
+Use exact-source generated artifacts. If the initial CI supplies them,
+reconcile them in one registered same-task documentation commit,
+`docs(integration): reconcile T26 generated contracts and physical dictionary`,
+also appending corresponding evidence here. Leave strict gates enabled.
+
+#### T26 acceptance and publication
+
+Use one signed LOCAL journey on fresh PostgreSQL 16. Seed the exact owner
+configuration, caller, distinct replayer and foreign/revoked actors. Force
+a recognized first-attempt transient failure at the receiving boundary
+with test-only fault injection. Verify rollback leaves zero draft rows,
+then replay and prove one durable Documents draft and both native terminal
+attempts from a separate application JVM. Cover same-key concurrency,
+changed-payload conflict, stale and simultaneous replay, historical rejected
+attempt, blocked legacy aliases, direct SQL commit guards, revoked and
+foreign reads/replay, and scope and mapping mismatches. Verify both
+successful restart read and failed recovery with no second receiving
+outcome. Run architecture, all fourteen PostgreSQL shards, exact
+OpenAPI/dictionary equality and the Full Verification Gate on the
+published SHA before acceptance.
+
+This registration changes only this roadmap and uses
+`docs(roadmap): accept T25 and register T26 implementation envelope`.
+T26 remains PLANNED. After this exact-SHA Documentation Validation passes,
+the owner may select the registered T26 implementation with `Next`.
+Its implementation commit message is
+`feat(integration): execute and replay scoped synthetic exchanges`.
+T27 remains unselected.

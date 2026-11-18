@@ -131,7 +131,8 @@ public class JdbcControlledDocumentRepositoryAdapter implements ControlledDocume
     @Override public Page<DocumentView> discover(String company,String facility,int page,int size,String code){
         // Keep both owner predicates mandatory. PostgreSQL cannot type a bare null
         // JDBC parameter in "? IS NULL"; bind the optional prefix only when present.
-        String fragment=" WHERE s.company_id=? AND s.facility_id=?";
+        String fragment=" WHERE s.company_id=? AND s.facility_id=?"
+                +" AND NOT EXISTS (SELECT 1 FROM public.hidra_documents_t25_report_output m WHERE m.document_id=d.id)";
         var args=new java.util.ArrayList<Object>(List.of(company,facility));
         if(code!=null&&!code.isBlank()){
             fragment+=" AND d.code LIKE ?";

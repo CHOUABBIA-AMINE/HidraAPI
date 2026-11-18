@@ -98,6 +98,16 @@ public class WorkflowExecutionOwnership {
     /** Refresh native Topology rights at every Workflow operation. */
     public void requireProtectedCurrentTarget(dz.sh.hidra.modules.workflow.domain.model.WorkflowInstance instance,
             dz.sh.hidra.modules.workflow.application.port.out.WorkflowConfigurationPort configuration) {
+        if ("reporting".equals(instance.targetModule())) {
+            var type=configuration.requireActiveCatalog(instance.targetTypeId(),"WORKFLOW_TARGET_TYPE");
+            var purpose=configuration.requireActiveCatalog(instance.workflowPurposeId(),"WORKFLOW_PURPOSE");
+            if (!WorkflowOwnedTargetLookup.scopedReportApproval(type.code(),purpose.code())
+                    || !configuration.activeBinding(instance.definitionId(),"reporting",
+                            instance.targetTypeId(),instance.workflowPurposeId()))
+                throw denied("Workflow target unavailable.");
+            requireTarget("reporting",type.code(),instance.targetId());
+            return;
+        }
         if ("hse".equals(instance.targetModule())) {
             var type = configuration.requireActiveCatalog(instance.targetTypeId(), "WORKFLOW_TARGET_TYPE");
             var purpose = configuration.requireActiveCatalog(instance.workflowPurposeId(), "WORKFLOW_PURPOSE");
@@ -118,6 +128,17 @@ public class WorkflowExecutionOwnership {
                         instance.targetTypeId(),instance.workflowPurposeId()))
             throw denied("Topology Workflow target unavailable.");
         requireTarget(instance.targetModule(),type.code(),instance.targetId(),instance.targetCodeSnapshot());
+    }
+    public boolean scopedReportStarterAllowed(String targetId) {
+        return targets.stream().filter(t -> "reporting".equals(t.module())
+                && t.targetTypeCodes().contains(WorkflowOwnedTargetLookup.REPORT_REQUEST_TARGET))
+                .anyMatch(t -> t.scopedReportStarterAllowed(targetId));
+    }
+    public boolean scopedReportReviewerAllowed(String targetId) {
+        var owners=targets.stream().filter(t -> "reporting".equals(t.module())
+                && t.targetTypeCodes().contains(WorkflowOwnedTargetLookup.REPORT_REQUEST_TARGET)).toList();
+        return owners.size()==1 && owners.getFirst().protectedReviewAllowed(
+                WorkflowOwnedTargetLookup.REPORT_REQUEST_TARGET,targetId,null);
     }
     public boolean hseReviewerAllowed(String type, String targetId) {
         var owners = targets.stream().filter(t -> "hse".equals(t.module())

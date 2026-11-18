@@ -146,6 +146,35 @@ class ForensicRemediationClosureTest {
         }
     }
 
+    private static final String T25_BRIDGE = "dz.sh.hidra.modules.reporting.infrastructure.integration.ScopedReportOwnerAccessAdapter";
+    private static final String T25_TARGET_RESOLVER = "dz.sh.hidra.modules.reporting.infrastructure.integration.ScopedReportWorkflowTargetLookup";
+    private static final String T25_TARGET_CONTRACT = "dz.sh.hidra.modules.workflow.application.contract.target.WorkflowOwnedTargetLookup";
+    private static final String T25_DOCS_ADAPTER = "dz.sh.hidra.modules.documents.infrastructure.integration.ControlledDocumentOwnerAccessAdapter";
+    private static final String T25_IDENTITY_CONTRACT = "dz.sh.hidra.modules.identity.application.contract.reporting.ScopedReportAuthorizationContract";
+    private static final Set<String> T25_OWNER_ROOTS = Set.of(
+            "dz.sh.hidra.modules.analytics.application.contract.reporting.ReportingDeviationMetricContract",
+            "dz.sh.hidra.modules.documents.application.contract.reporting.ScopedReportDocumentContract",
+            "dz.sh.hidra.modules.identity.application.contract.reporting.ScopedReportAuthorizationContract",
+            "dz.sh.hidra.modules.topology.application.contract.reporting.ReportingFacilityOwnershipContract",
+            "dz.sh.hidra.modules.workflow.application.contract.reporting.ScopedReportApprovalContract");
+    private static boolean t25Export(String source,String target) {
+        if (T25_TARGET_RESOLVER.equals(source))
+            return target.equals(T25_TARGET_CONTRACT)||target.startsWith(T25_TARGET_CONTRACT+".");
+        return T25_OWNER_ROOTS.stream().filter(root->target.equals(root)||target.startsWith(root+"."))
+                .anyMatch(root->T25_BRIDGE.equals(source)
+                        || T25_DOCS_ADAPTER.equals(source)&&T25_IDENTITY_CONTRACT.equals(root));
+    }
+    @Test void t25OwnerExportsAreExact() {
+        for (String owner:T25_OWNER_ROOTS) {
+            assertTrue(t25Export(T25_BRIDGE,owner));
+            assertFalse(t25Export(T25_BRIDGE+"Sibling",owner));
+            assertFalse(t25Export(T25_BRIDGE,owner+"Sibling"));
+        }
+        assertTrue(t25Export(T25_TARGET_RESOLVER,T25_TARGET_CONTRACT));
+        assertFalse(t25Export(T25_TARGET_RESOLVER+"Sibling",T25_TARGET_CONTRACT));
+        assertTrue(t25Export(T25_DOCS_ADAPTER,T25_IDENTITY_CONTRACT));
+    }
+
     private static boolean t24DocumentOwnerExport(String source,String target) {
         final String owner="dz.sh.hidra.modules.documents.infrastructure.integration.ControlledDocumentOwnerAccessAdapter";
         return source.equals(owner) && java.util.Set.of(
@@ -353,6 +382,12 @@ class ForensicRemediationClosureTest {
                 if (targetModule == null || sourceModule.equals(targetModule)) {
                     continue;
                 }
+                if (T25_OWNER_ROOTS.stream().anyMatch(imported::startsWith)) {
+                    if (!t25Export(source.fqcn(),imported))
+                        violations.add(source.fqcn()+" -> unauthorized T25 owner "+imported);
+                    continue;
+                }
+                if (t25Export(source.fqcn(),imported)) continue;
                 if (!isPrivate(importedPackage)) {
                     continue;
                 }

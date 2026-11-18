@@ -55,7 +55,10 @@ class ReportRequestSemanticRemediationTest {
                 mock(ReportOutputArtifactRepositoryPort.class),
                 request -> true,
                 (workflow, request) -> true,
-                id -> true
+                id -> true,
+                mock(dz.sh.hidra.modules.reporting.application.port.out.ReportQueueEvidencePort.class),
+                mock(dz.sh.hidra.modules.documents.application.contract.reporting.ReportingDocumentReferenceContract.class),
+                mock(dz.sh.hidra.modules.reporting.application.port.out.ScopedReportRepositoryPort.class)
         );
 
         assertThatThrownBy(() -> service.requestReport(command()))

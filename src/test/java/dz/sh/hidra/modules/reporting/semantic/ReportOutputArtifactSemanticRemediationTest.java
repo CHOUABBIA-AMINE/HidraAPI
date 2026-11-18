@@ -32,14 +32,20 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.ArgumentMatchers.*;
 class ReportOutputArtifactSemanticRemediationTest {
+    final dz.sh.hidra.modules.reporting.application.port.out.ScopedReportRepositoryPort scopedReports=mock(dz.sh.hidra.modules.reporting.application.port.out.ScopedReportRepositoryPort.class);
     static final Instant NOW=Instant.parse("2026-10-07T00:00:00Z");
     final ReportRunRepositoryPort runs=mock(ReportRunRepositoryPort.class);
     final ReportOutputArtifactRepositoryPort artifacts=mock(ReportOutputArtifactRepositoryPort.class);
     final ReportingDocumentReferenceContract documents=mock(ReportingDocumentReferenceContract.class);
-    ReportingApplicationService service(){return new ReportingApplicationService(mock(ReportDefinitionRepositoryPort.class),mock(ReportRequestRepositoryPort.class),runs,artifacts,q->false,(w,r)->false,id->false,mock(ReportQueueEvidencePort.class),documents);}
+    ReportingApplicationService service(){return new ReportingApplicationService(mock(ReportDefinitionRepositoryPort.class),mock(ReportRequestRepositoryPort.class),runs,artifacts,q->false,(w,r)->false,id->false,mock(ReportQueueEvidencePort.class),documents,scopedReports);}
     static ReportOutputArtifact artifact(String storage,String document,String checksum){return new ReportOutputArtifact("artifact","run",ReportArtifactType.PRIMARY_REPORT,ReportFormat.PDF,"report.pdf","application/pdf",storage,document,checksum,1L,NOW,null,NOW);}
     GenerateReportArtifactCommand command(String storage,String document){return new GenerateReportArtifactCommand("run",ReportArtifactType.PRIMARY_REPORT,ReportFormat.PDF,"report.pdf","application/pdf",storage,document,"hash",1L,null);}
     void ready(){when(runs.findById("run")).thenReturn(Optional.of(new ReportRun("run","request","definition","version",ReportRunStatus.QUEUED,ReportRunMode.MANUAL,NOW,null,null,null,null,0L,0L,null,null,NOW,NOW)));when(artifacts.save(any())).thenAnswer(i->i.getArgument(0));}
+    @Test void managedRunCannotUseLegacyAlias() {
+        when(scopedReports.managedRun("run")).thenReturn(true);
+        assertThrows(java.util.NoSuchElementException.class, () -> service().generateReportArtifact(command("storage",null)));
+        verifyNoInteractions(runs);
+    }
     @Test void normalizedDocumentOrStorageReferenceIsRequired(){
         assertThrows(InvalidReportingValueException.class,()->artifact(null,null,"hash"));assertThrows(InvalidReportingValueException.class,()->artifact(" "," ","hash"));
         assertTrue(artifact(" storage ",null,"hash").reproducibleArtifact());assertEquals("document",artifact(null," document ","hash").documentReferenceId());

@@ -17,6 +17,7 @@ package dz.sh.hidra.modules.documents.application.service;
 import dz.sh.hidra.modules.documents.application.port.out.ControlledDocumentRepositoryPort;
 import dz.sh.hidra.modules.documents.application.port.out.ControlledDocumentAuthorizationPort;
 import dz.sh.hidra.modules.documents.application.port.out.ControlledDocumentRepositoryPort.Scope;
+import dz.sh.hidra.modules.documents.application.port.out.ScopedReportDocumentMarkerPort;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
@@ -30,8 +31,12 @@ public class ControlledDocumentAccessService {
     private final ControlledDocumentRepositoryPort repository;
     private final ControlledDocumentAuthorizationPort authority;
     private static final Object TRUSTED_UPLOAD_KEY=ControlledDocumentAccessService.class.getName()+".binary";
+    private static final Object REPORT_OPERATION_KEY=ControlledDocumentAccessService.class.getName()+".report";
+    private record ReportOperation(String documentId,String permission) {}
+    private final ScopedReportDocumentMarkerPort reports;
     public ControlledDocumentAccessService(ControlledDocumentRepositoryPort repository,
-            ControlledDocumentAuthorizationPort authority) {
+            ControlledDocumentAuthorizationPort authority,ScopedReportDocumentMarkerPort reports) {
+        this.reports=Objects.requireNonNull(reports);
         this.repository=Objects.requireNonNull(repository);
         this.authority=Objects.requireNonNull(authority);
     }
@@ -62,6 +67,7 @@ public class ControlledDocumentAccessService {
         if(!scope.facilityId().equals(facility.id()) ||
                 !scope.companyId().equals(facility.companyId()))
             throw unavailable();
+        requireReportAccess(scope,permission);
     }
     @Transactional(propagation=Propagation.MANDATORY)
     public Scope requireBound(String documentId,String company,String facility,String permission){
@@ -71,7 +77,24 @@ public class ControlledDocumentAccessService {
         if(!company.equals(current.companyId()))throw unavailable();
         var scope=repository.byDocument(documentId).orElseThrow(ControlledDocumentAccessService::unavailable);
         if(!company.equals(scope.companyId()) || !facility.equals(scope.facilityId()))throw unavailable();
+        requireReportAccess(scope,permission);
         return scope;
+    }
+    private void requireReportAccess(Scope scope,String permission) {
+        var marker=reports.find(scope.documentId(),false);
+        if (marker.isEmpty()) return;
+        if (Objects.equals(new ReportOperation(scope.documentId(),permission),
+                TransactionSynchronizationManager.getResource(REPORT_OPERATION_KEY))) return;
+        authority.requireReportingRead(scope.companyId(),scope.facilityId());
+        // The initial draft and acceptance belong to Reporting. Once sealed,
+        // T24 may create a successor without changing the pinned output.
+        if (marker.get().acceptanceId()==null) throw unavailable();
+    }
+    void beginReportOperation(String document,String permission) {
+        TransactionSynchronizationManager.bindResource(REPORT_OPERATION_KEY,new ReportOperation(document,permission));
+    }
+    void finishReportOperation() {
+        TransactionSynchronizationManager.unbindResource(REPORT_OPERATION_KEY);
     }
     /**
      * Bind a newly stored binary to its one same-transaction metadata insertion.

@@ -22,6 +22,11 @@ package dz.sh.hidra.modules.workflow.application.contract.target;
 import java.util.Optional;
 import java.util.Set;
 public interface WorkflowOwnedTargetLookup {
+    default boolean scopedReportStarterAllowed(String requestId) { return false; }
+    String REPORT_REQUEST_TARGET = "REPORT_REQUEST";
+    static boolean scopedReportApproval(String type, String purpose) {
+        return REPORT_REQUEST_TARGET.equals(type) && "REPORT_APPROVAL".equals(purpose);
+    }
     String BASELINE_TARGET = "ENGINEERING_BASELINE_REVISION";
     String BASELINE_PURPOSE = "ENGINEERING_BASELINE_APPROVAL";
 

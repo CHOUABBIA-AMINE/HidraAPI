@@ -9,7 +9,7 @@
 | Status | ACTIVE |
 | Authority | Sole task register and execution source for HidraAPI |
 | Owner adoption | 2026-11-10 |
-| Active task selection | T17 COMPLETED for synthetic software acceptance on exact-SHA CI #1304 attempt 2. T25 is next and remains PLANNED with its reconciled implementation envelope registered below. Implementation is selected by a subsequent owner Next after exact-SHA Documentation Validation and a refreshed main lease. |
+| Active task selection | T17 COMPLETED for synthetic software acceptance on exact-SHA CI #1304 attempt 2. T25 IN PROGRESS following the registered source implementation and local signed PostgreSQL validation. Hosted exact-SHA CI and generated-artifact reconciliation remain required. |
 
 The task register controls scope, dependencies, status and acceptance. Existing technical policy and verified implementation evidence retain their applicability. Task status advances only with recorded evidence. The initial status for each task is PLANNED. The first candidate is T01.
 
@@ -117,7 +117,7 @@ A task includes its required authorization, REST contract, persistence, failure 
 | **T22 · Expose governed Risk results and decision history** | Risk with owner evidence providers | Eligible evidence and the existing scoring/approval path | Expose scoped assessment, score inputs, evidence, independent decision and approved history. | Later source or method changes do not alter the approved historical result. Revoked and unrelated principals cannot read it. **FG-10 / A10.** | COMPLETED |
 | **T23 · Execute and retrieve a deterministic analytics metric** | Analytics with source owners | One supported metric and eligible versioned input, such as T11 | Execute the metric, persist durable run/result state and expose source lineage, units and version. | Synthetic inputs produce a predictable value after restart. Bad inputs have explicit failed/unavailable outcomes. **FG-11 / A11.** | COMPLETED |
 | **T24 · Discover and supersede controlled Documents** | Documents with target owners | Existing byte upload/download and owner target references | Expose scoped discovery, exact version/link history, acceptance and supersession where required. | An authorized client can discover and retrieve exact bytes and hash for old and current versions. Revoked users cannot download. **FG-14 / A14.** | COMPLETED |
-| **T25 · Render and download an authorized report** | Reporting with Documents and Workflow | T24 and an eligible approved report input, such as T23 | Admit template and parameters, render a durable artifact and expose run status and scoped byte retrieval. | Downloaded bytes match the stored hash and exact input version. Failed rendering cannot produce a downloadable success. **FG-12 / A12.** | PLANNED |
+| **T25 · Render and download an authorized report** | Reporting with Documents and Workflow | T24 and an eligible approved report input, such as T23 | Admit template and parameters, render a durable artifact and expose run status and scoped byte retrieval. | Downloaded bytes match the stored hash and exact input version. Failed rendering cannot produce a downloadable success. **FG-12 / A12.** | IN PROGRESS |
 | **T26 · Execute and replay a governed synthetic exchange** | Integration with receiving owner | Supported synthetic mapping and receiving contract | Expose mapping version, job/attempt/result, dead letter and privileged replay for one exchange. | Simulated transient failure and authorized replay yield one receiving outcome and a durable attempt history. **FG-15 / A15.** | PLANNED |
 | **T27 · Deliver a recipient-scoped notification inbox** | Notification | One eligible business event and a supported delivery channel | Expose inbox, delivery state and recipient acknowledgement independently of business workflow state. | Intended recipient reads and acknowledges one notification. Foreign recipient cannot see it. The underlying task state is unchanged by acknowledgement. **FG-16 / A16.** | PLANNED |
 | **T28 · Search and export scoped Audit evidence** | Audit with Identity and Documents where needed | Durable owner events and authorized export storage | Expose typed event search, export state, manifest/hash and scoped retrieval. Recheck current grant at download. | Export contains only the admitted company, asset and time window. Download after revocation is denied and access evidence is retained. **FG-17 / A17.** | PLANNED |
@@ -4030,3 +4030,35 @@ PLANNED until a subsequent owner `Next` after Documentation Validation and a
 refreshed main lease. Its registered implementation message is
 `feat(reporting): render and download scoped approved reports`. T26 remains
 unselected.
+
+### T25 scoped Reporting implementation — 2026-11-18
+
+The owner selected the registered implementation with `Next` after
+[Documentation Validation #1143](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44323379946)
+passed on `e35c5647478cec7ff913ccfb4b5183fe4fff1f04`. This single source commit
+uses `feat(reporting): render and download scoped approved reports`. Its 28
+CREATE paths, 24 UPDATE paths and zero DELETE paths match the refreshed ledger.
+The five native tuples bring the exact registry to 143.
+
+The fixed report profile admits one authorized T23 completion receipt and
+consumes one exact independent Workflow approval. Deterministic JSON is
+stored as a T24 draft and separately accepted by an independent custodian.
+The download re-verifies the original bytes against the sealed checksum and
+length. Reporting protects workflow access and legacy aliases. Documents
+preserves the original accepted output across authorized supersession.
+Migration `20261118.004` adds two owner receipts and commit-time consistency
+checks while preserving all previous migrations.
+
+Local focused verification passed 109 tests with zero failures, errors or
+skips. The local signed test used PostgreSQL 16.16 directly in place of its
+Testcontainers launcher. It exercised signed approval, concurrent render,
+failed-source and foreign-scope denials, rollback and retry at seal, durable
+storage failure, supersession, restart and grant revocation. Flyway applied
+and validated 229 migrations in that fresh database. Source inventory and
+canonical documentation validation passed.
+
+T25 remains **IN PROGRESS** pending hosted exact-SHA verification and genuine
+runtime OpenAPI and physical dictionary reconciliation. The committed
+canonical snapshots still describe the pre-T25 contract and schema. The
+registered reconciliation stage uses hosted generated artifacts and preserves
+both strict equality checks. T26 remains unselected.

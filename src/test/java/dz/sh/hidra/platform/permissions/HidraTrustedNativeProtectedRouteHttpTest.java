@@ -163,7 +163,7 @@ class HidraTrustedNativeProtectedRouteHttpTest {
    var resolver = org.mockito.Mockito.mock(HidraEffectivePermissionResolver.class);
    authenticated();
    var registry = new HidraTrustedNativeProtectedRouteRegistry();
-   assertEquals(138,registry.candidates().size());
+   assertEquals(143,registry.candidates().size());
    var mvc = mvc(owner, new UntrustedController(), resolver,registry);
    assertThrows(Exception.class, () ->
       mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(TRUSTED)));
@@ -172,8 +172,13 @@ class HidraTrustedNativeProtectedRouteHttpTest {
  @Test void realManufacturerTupleRegistryRejectsWrongVerbAndSiblingPattern() throws Exception {
    var registry=new HidraTrustedNativeProtectedRouteRegistry();
    var routes=registry.candidates();
-   assertEquals(138,routes.size());
+   assertEquals(143,routes.size());
    var expected=java.util.Set.of(
+     "POST /api/v1/reporting/companies/{companyId}/facilities/{facilityId}/report-requests",
+     "POST /api/v1/reporting/companies/{companyId}/facilities/{facilityId}/report-requests/{requestId}/render",
+     "GET /api/v1/reporting/companies/{companyId}/facilities/{facilityId}/report-runs/{runId}",
+     "POST /api/v1/reporting/companies/{companyId}/facilities/{facilityId}/report-runs/{runId}/seal",
+     "GET /api/v1/reporting/companies/{companyId}/facilities/{facilityId}/report-runs/{runId}/content",
      "POST /api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases/from-incident",
      "POST /api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases/{caseId}/impact-assessments",
      "GET /api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases",
@@ -413,6 +418,9 @@ class HidraTrustedNativeProtectedRouteHttpTest {
     var t17Hse=new dz.sh.hidra.modules.hse.api.rest.controller.HseCapaLifecycleController(
         org.mockito.Mockito.mock(dz.sh.hidra.modules.hse.application.port.in.HseCapaLifecycleUseCase.class));
     owners.put(t17Hse.getClass(),t17Hse);
+    var t25=new dz.sh.hidra.modules.reporting.api.rest.controller.ScopedReportsController(
+        org.mockito.Mockito.mock(dz.sh.hidra.modules.reporting.application.port.in.ScopedReportUseCase.class));
+    owners.put(t25.getClass(),t25);
 
 
     // The same logical operation has two distinct native-protected MVC methods, never one multi-pattern mapping.

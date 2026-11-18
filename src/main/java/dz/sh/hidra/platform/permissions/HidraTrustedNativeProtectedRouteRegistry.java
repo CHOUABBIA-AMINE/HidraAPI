@@ -191,8 +191,24 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
             Class<?> t17Enroll=Class.forName(t17Root+"request.HseCapaLifecycleRequest$Enroll");
             Class<?> t17Propose=Class.forName(t17Root+"request.HseCapaLifecycleRequest$Propose");
             Class<?> t17Action=Class.forName(t17Root+"request.HseCapaLifecycleRequest$ScopedHseCapaAction");
+            String t25Package="dz.sh.hidra.modules.reporting.api.rest.";
+            Class<?> t25=Class.forName(t25Package+"controller.ScopedReportsController");
+            Class<?> t25Submit=Class.forName(t25Package+"request.ScopedReportRequests$T25SubmitReport");
+            Class<?> t25Render=Class.forName(t25Package+"request.ScopedReportRequests$T25RenderReport");
+            Class<?> t25Seal=Class.forName(t25Package+"request.ScopedReportRequests$T25SealReport");
+            String t25Base="/api/v1/reporting/companies/{companyId}/facilities/{facilityId}";
             String t17Base="/api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases";
             return List.of(
+                new Route(t25,t25.getDeclaredMethod("submit",String.class,String.class,t25Submit),
+                    "POST",t25Base+"/report-requests"),
+                new Route(t25,t25.getDeclaredMethod("render",String.class,String.class,String.class,t25Render),
+                    "POST",t25Base+"/report-requests/{requestId}/render"),
+                new Route(t25,t25.getDeclaredMethod("read",String.class,String.class,String.class),
+                    "GET",t25Base+"/report-runs/{runId}"),
+                new Route(t25,t25.getDeclaredMethod("seal",String.class,String.class,String.class,t25Seal),
+                    "POST",t25Base+"/report-runs/{runId}/seal"),
+                new Route(t25,t25.getDeclaredMethod("content",String.class,String.class,String.class),
+                    "GET",t25Base+"/report-runs/{runId}/content"),
                 new Route(t17,t17.getDeclaredMethod("assessImpact",String.class,String.class,String.class,
                         Class.forName(t17Root+"request.HseCapaLifecycleRequest$HseCaseImpactAssessmentRequest")),
                     "POST",t17Base+"/{caseId}/impact-assessments"),

@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.modules.reporting.application.service;
 
+import dz.sh.hidra.modules.reporting.application.port.out.ScopedReportRepositoryPort;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -73,6 +74,7 @@ public final class ReportingApplicationService implements CreateReportDefinition
     private final ReportingOrganizationUnitReferenceContract organizationUnitReferenceContract;
     private final ReportQueueEvidencePort queueEvidence;
     private final ReportingDocumentReferenceContract documents;
+    private final ScopedReportRepositoryPort scopedReports;
     private final ReportReproducibilityGuard reproducibilityGuard = new ReportReproducibilityGuard();
 
     @Autowired
@@ -85,8 +87,10 @@ public final class ReportingApplicationService implements CreateReportDefinition
             ReportingWorkflowApprovalContract workflowApprovalContract,
             ReportingOrganizationUnitReferenceContract organizationUnitReferenceContract,
             ReportQueueEvidencePort queueEvidence,
-            ReportingDocumentReferenceContract documents
+            ReportingDocumentReferenceContract documents,
+            ScopedReportRepositoryPort scopedReports
     ) {
+        this.scopedReports=Objects.requireNonNull(scopedReports);
         this.documents=Objects.requireNonNull(documents);
         this.queueEvidence = Objects.requireNonNull(queueEvidence);
         this.definitionRepositoryPort = Objects.requireNonNull(definitionRepositoryPort, "Report definition repository port must not be null.");
@@ -96,43 +100,6 @@ public final class ReportingApplicationService implements CreateReportDefinition
         this.accessAuthorizationContract = Objects.requireNonNull(accessAuthorizationContract, "Reporting access authorization contract must not be null.");
         this.workflowApprovalContract = Objects.requireNonNull(workflowApprovalContract, "Reporting workflow approval contract must not be null.");
         this.organizationUnitReferenceContract = Objects.requireNonNull(organizationUnitReferenceContract, "Reporting OrganizationUnit contract must not be null.");
-    }
-
-    public ReportingApplicationService(ReportDefinitionRepositoryPort definitions,ReportRequestRepositoryPort requests,
-            ReportRunRepositoryPort runs,ReportOutputArtifactRepositoryPort artifacts,
-            ReportingAccessAuthorizationContract access,ReportingWorkflowApprovalContract approval,
-            ReportingOrganizationUnitReferenceContract organization,ReportQueueEvidencePort evidence){
-        this(definitions,requests,runs,artifacts,access,approval,organization,evidence,new ReportingDocumentReferenceContract(){
-            public boolean documentExists(String id){return false;}
-            public boolean storageObjectExists(String id){return false;}
-        });
-    }
-
-    public ReportingApplicationService(ReportDefinitionRepositoryPort definitions,ReportRequestRepositoryPort requests,
-            ReportRunRepositoryPort runs,ReportOutputArtifactRepositoryPort artifacts,
-            ReportingAccessAuthorizationContract access,ReportingWorkflowApprovalContract approval,
-            ReportingOrganizationUnitReferenceContract organization){
-        this(definitions,requests,runs,artifacts,access,approval,organization,new ReportQueueEvidencePort(){
-            public boolean eligibleTemplate(String version,String definition){return false;}
-            public boolean requiredParametersPresent(String request,String definition){return false;}
-        });
-    }
-
-    public ReportingApplicationService(
-            ReportDefinitionRepositoryPort definitionRepositoryPort,
-            ReportRequestRepositoryPort requestRepositoryPort,
-            ReportRunRepositoryPort runRepositoryPort,
-            ReportOutputArtifactRepositoryPort artifactRepositoryPort
-    ) {
-        this(
-                definitionRepositoryPort,
-                requestRepositoryPort,
-                runRepositoryPort,
-                artifactRepositoryPort,
-                request -> false,
-                (workflowReferenceId, reportRequestId) -> false,
-                organizationUnitId -> false
-        );
     }
 
     @Override
@@ -207,6 +174,8 @@ public final class ReportingApplicationService implements CreateReportDefinition
     @Override
     public ReportRunSummaryDto queueReportRun(QueueReportRunCommand command) {
         Objects.requireNonNull(command, "Queue report run command must not be null.");
+        if (scopedReports.managedRequest(command.reportRequestId()))
+            throw new java.util.NoSuchElementException("Protected report unavailable.");
         ReportRequest request = requestRepositoryPort.findById(command.reportRequestId())
                 .orElseThrow(() -> new InvalidReportingValueException(
                         "ReportRun report request must exist."
@@ -319,6 +288,8 @@ public final class ReportingApplicationService implements CreateReportDefinition
     @Override
     public ReportOutputArtifactSummaryDto generateReportArtifact(GenerateReportArtifactCommand command) {
         Objects.requireNonNull(command, "Generate report artifact command must not be null.");
+        if (scopedReports.managedRun(command.reportRunId()))
+            throw new java.util.NoSuchElementException("Protected report unavailable.");
         if(runRepositoryPort.findById(command.reportRunId()).isEmpty())
             throw new InvalidReportingValueException("Artifact ReportRun must exist.");
         String storage=normalize(command.storageObjectReferenceId()),document=normalize(command.documentReferenceId());

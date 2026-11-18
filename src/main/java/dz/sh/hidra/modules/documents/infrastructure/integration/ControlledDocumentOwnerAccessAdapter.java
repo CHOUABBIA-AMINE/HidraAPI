@@ -17,6 +17,7 @@ package dz.sh.hidra.modules.documents.infrastructure.integration;
 import dz.sh.hidra.modules.documents.application.port.out.ControlledDocumentAuthorizationPort;
 import dz.sh.hidra.modules.identity.application.contract.documents.ControlledDocumentScopedAuthorizationContract;
 import dz.sh.hidra.modules.topology.application.contract.documents.ControlledDocumentFacilityOwnershipContract;
+import dz.sh.hidra.modules.identity.application.contract.reporting.ScopedReportAuthorizationContract;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import org.springframework.stereotype.Component;
@@ -26,8 +27,13 @@ public final class ControlledDocumentOwnerAccessAdapter
         implements ControlledDocumentAuthorizationPort {
     private final ControlledDocumentScopedAuthorizationContract identity;
     private final ControlledDocumentFacilityOwnershipContract topology;
+    private final ScopedReportAuthorizationContract reporting;
+    @Override public void requireReportingRead(String company,String facility) {
+        reporting.require("reporting:scoped-report:read",company,facility);
+    }
     public ControlledDocumentOwnerAccessAdapter(ControlledDocumentScopedAuthorizationContract identity,
-            ControlledDocumentFacilityOwnershipContract topology) {
+            ControlledDocumentFacilityOwnershipContract topology,ScopedReportAuthorizationContract reporting) {
+        this.reporting=Objects.requireNonNull(reporting);
         this.identity=Objects.requireNonNull(identity);
         this.topology=Objects.requireNonNull(topology);
     }

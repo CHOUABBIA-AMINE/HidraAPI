@@ -150,3 +150,14 @@ The linked decisions carry the precise per-subject exceptions and source/test/mi
 | ReportRequest | [HMSR-057 reconciled rule](../domain/SEMANTIC_DECISIONS.md#reporting-reportrequest) |
 | ReportRun | [HMSR-068 reconciled rule](../domain/SEMANTIC_DECISIONS.md#reporting-reportrun) |
 | ReportOutputArtifact | [HMSR-110 reconciled rule](../domain/SEMANTIC_DECISIONS.md#reporting-reportoutputartifact) |
+
+### Scoped GZ2 deviation report
+
+T25 submits one immutable completed Analytics metric under an authorized company
+and facility. The requester renders a deterministic JSON draft only after an
+independent Workflow decision for that exact request. A separate Documents
+custodian accepts the exact draft. The completed report pins the accepted version,
+its checksum and length, and the Analytics and Workflow lineage. The content
+endpoint verifies the retained bytes before delivery. Failed and unsealed runs
+have no report download. Scoped run and request IDs cannot use the legacy
+Reporting queue or artifact metadata routes.

@@ -199,3 +199,19 @@ T17 registers exactly five new provider-owned, scalar `application.contract.hse`
 - Workflow: `workflow.application.contract.hse.HseCapaDecisionContract`. Actual retained APPROVE action, exact HSE_CAPA/HSE_CASE binding, independent reviewer, receipt/digest. Mere Workflow target existence is insufficient.
 
 `ArchitectureGuardrailTest` and `ForensicRemediationClosureTest` add exact type/consumer negative assertions without broadening the exported-package list. T17 application/domain import none of the foreign owner implementations or persistence models. Synthetic code and SQL existence do **not** constitute independently passed CI, industrial HSE effectiveness, live OT access or operational acceptance. Exact-SHA CI, GZ2 signed journey and generated-contract reconciliation remain acceptance gates.
+
+### Scoped Reporting T25
+
+| Owner export | Exact consumer |
+|---|---|
+| `analytics.application.contract.reporting.ReportingDeviationMetricContract` | `reporting.infrastructure.integration.ScopedReportOwnerAccessAdapter` |
+| `identity.application.contract.reporting.ScopedReportAuthorizationContract` | `reporting.infrastructure.integration.ScopedReportOwnerAccessAdapter` and `documents.infrastructure.integration.ControlledDocumentOwnerAccessAdapter` |
+| `topology.application.contract.reporting.ReportingFacilityOwnershipContract` | `reporting.infrastructure.integration.ScopedReportOwnerAccessAdapter` |
+| `workflow.application.contract.reporting.ScopedReportApprovalContract` | `reporting.infrastructure.integration.ScopedReportOwnerAccessAdapter` |
+| `documents.application.contract.reporting.ScopedReportDocumentContract` | `reporting.infrastructure.integration.ScopedReportOwnerAccessAdapter` |
+| `workflow.application.contract.target.WorkflowOwnedTargetLookup` | `reporting.infrastructure.integration.ScopedReportWorkflowTargetLookup` for exact `REPORT_REQUEST` admission only |
+
+The owner contracts use scoped projections, exact retained decisions and
+transaction-bound custody. Workflow metadata discovery is available outside a
+transaction. Its Reporting admission and protected reads apply current authority
+at request time. No consumer imports another module's persistence types.

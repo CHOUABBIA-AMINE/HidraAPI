@@ -31,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.ArgumentMatchers.*;
 class ReportRunSemanticRemediationTest {
+    final dz.sh.hidra.modules.reporting.application.port.out.ScopedReportRepositoryPort scopedReports=mock(dz.sh.hidra.modules.reporting.application.port.out.ScopedReportRepositoryPort.class);
     static final Instant NOW=Instant.parse("2026-10-07T00:00:00Z");
     final ReportDefinitionRepositoryPort definitions=mock(ReportDefinitionRepositoryPort.class);
     final ReportRequestRepositoryPort requests=mock(ReportRequestRepositoryPort.class);
@@ -38,7 +39,7 @@ class ReportRunSemanticRemediationTest {
     final ReportQueueEvidencePort evidence=mock(ReportQueueEvidencePort.class);
     ReportRequest request(ReportRequestStatus status){return new ReportRequest("request","definition","actor","user","Actor","ROLE",null,null,NOW,"purpose",status,null,"workflow",NOW,NOW);}
     ReportDefinition definition(ReportDefinitionStatus status,boolean approval,boolean restricted){return new ReportDefinition("definition","code",null,"Rapport",null,"category","reporting",null,status,null,approval,restricted,NOW,NOW);}
-    ReportingApplicationService service(boolean access,boolean approval){return new ReportingApplicationService(definitions,requests,runs,mock(ReportOutputArtifactRepositoryPort.class),q->access,(w,r)->approval,id->true,evidence);}
+    ReportingApplicationService service(boolean access,boolean approval){return new ReportingApplicationService(definitions,requests,runs,mock(ReportOutputArtifactRepositoryPort.class),q->access,(w,r)->approval,id->true,evidence,mock(dz.sh.hidra.modules.documents.application.contract.reporting.ReportingDocumentReferenceContract.class),scopedReports);}
     void ready(ReportRequestStatus status,boolean approval,boolean restricted){
         when(requests.findById("request")).thenReturn(Optional.of(request(status)));
         when(definitions.findById("definition")).thenReturn(Optional.of(definition(ReportDefinitionStatus.ACTIVE,approval,restricted)));
@@ -47,6 +48,11 @@ class ReportRunSemanticRemediationTest {
         when(runs.save(any())).thenAnswer(i->i.getArgument(0));
     }
     QueueReportRunCommand command(){return new QueueReportRunCommand("request","definition","version",ReportRunMode.MANUAL,null);}
+    @Test void managedRequestCannotUseLegacyAlias() {
+        when(scopedReports.managedRequest("request")).thenReturn(true);
+        assertThrows(java.util.NoSuchElementException.class, () -> service(true,true).queueReportRun(command()));
+        verifyNoInteractions(requests);
+    }
     @Test void terminalEvidenceIsRequired(){
         assertThrows(InvalidReportingValueException.class,()->run(ReportRunStatus.COMPLETED,null,null));
         assertThrows(InvalidReportingValueException.class,()->run(ReportRunStatus.FAILED,null," "));
@@ -91,7 +97,7 @@ class ReportRunSemanticRemediationTest {
         ready(ReportRequestStatus.SUBMITTED,false,true);
         when(requests.accessPoliciesForDefinition("definition")).thenReturn(List.of(new ReportRequestRepositoryPort.AccessPolicyView("ACTOR","actor","REPORT_READ")));
         assertThrows(InvalidReportingValueException.class,()->service(false,true).queueReportRun(command()));
-        var svc=new ReportingApplicationService(definitions,requests,runs,mock(ReportOutputArtifactRepositoryPort.class),q->{assertEquals("actor",q.actorId());assertEquals("REPORT_READ",q.permissionCode());return true;},(w,r)->true,id->true,evidence);
+        var svc=new ReportingApplicationService(definitions,requests,runs,mock(ReportOutputArtifactRepositoryPort.class),q->{assertEquals("actor",q.actorId());assertEquals("REPORT_READ",q.permissionCode());return true;},(w,r)->true,id->true,evidence,mock(dz.sh.hidra.modules.documents.application.contract.reporting.ReportingDocumentReferenceContract.class),scopedReports);
         assertNotNull(svc.queueReportRun(command()));
     }
 }

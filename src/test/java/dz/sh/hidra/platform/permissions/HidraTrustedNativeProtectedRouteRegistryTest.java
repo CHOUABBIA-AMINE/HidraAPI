@@ -66,6 +66,21 @@ class HidraTrustedNativeProtectedRouteRegistryTest {
     }
 
 
+    @Test void t25RegistersExactlyFiveScopedReportingTuples() {
+        var routes = new HidraTrustedNativeProtectedRouteRegistry().candidates().stream()
+                .filter(route -> route.controller().getSimpleName().equals("ScopedReportsController"))
+                .toList();
+        assertEquals(5, routes.size());
+        assertEquals(java.util.Set.of(
+                "POST /api/v1/reporting/companies/{companyId}/facilities/{facilityId}/report-requests",
+                "POST /api/v1/reporting/companies/{companyId}/facilities/{facilityId}/report-requests/{requestId}/render",
+                "GET /api/v1/reporting/companies/{companyId}/facilities/{facilityId}/report-runs/{runId}",
+                "POST /api/v1/reporting/companies/{companyId}/facilities/{facilityId}/report-runs/{runId}/seal",
+                "GET /api/v1/reporting/companies/{companyId}/facilities/{facilityId}/report-runs/{runId}/content"),
+                routes.stream().map(route -> route.verb()+" "+route.pattern())
+                        .collect(java.util.stream.Collectors.toSet()));
+    }
+
     @Test void t17RegistersExactlyFourteenScopedNativeHseTuples() {
         var routes = new HidraTrustedNativeProtectedRouteRegistry().candidates().stream()
                 .filter(route -> route.controller().getSimpleName().equals("HseCapaLifecycleController"))
@@ -162,7 +177,7 @@ class HidraTrustedNativeProtectedRouteRegistryTest {
 
     @Test void baselineRoutesDeclareOnlyFiveExactCompiledTuples(){
         var registry=new HidraTrustedNativeProtectedRouteRegistry();
-        assertEquals(138,registry.candidates().size());
+        assertEquals(143,registry.candidates().size());
         var rows=registry.candidates().stream().filter(r->r.controller().getSimpleName().equals("EngineeringBaselineDraftController")).toList();
         assertEquals(5,rows.size());
         assertEquals(java.util.Set.of("POST /api/v1/topology/engineering-baselines","PUT /api/v1/topology/engineering-baselines/{manifestId}",

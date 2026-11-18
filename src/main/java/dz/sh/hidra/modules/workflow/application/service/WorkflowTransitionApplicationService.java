@@ -253,6 +253,11 @@ public class WorkflowTransitionApplicationService implements ExecuteWorkflowTran
                                 && actor.displayName().equals(h.displayName())).isEmpty())
                 throw new WorkflowTransitionDeniedException("Independent eligible human Topology reviewer required.");
         }
+        if ("reporting".equals(instance.targetModule())
+                && (transition.decision()==WorkflowDecision.APPROVE || transition.decision()==WorkflowDecision.REJECT)
+                && (!eligibleIndependentHumanReviewer(actor.id(),instance.startedByActorId())
+                   || !ownership.scopedReportReviewerAllowed(instance.targetId())))
+            throw new WorkflowTransitionDeniedException("Independent scoped Reporting reviewer required.");
         if ("hse".equals(instance.targetModule())
                 && (transition.decision() == WorkflowDecision.APPROVE
                     || transition.decision() == WorkflowDecision.REJECT)) {

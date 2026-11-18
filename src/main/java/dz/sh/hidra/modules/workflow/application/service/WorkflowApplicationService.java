@@ -103,6 +103,12 @@ public class WorkflowApplicationService implements StartWorkflowInstanceUseCase,
                 && !dz.sh.hidra.modules.workflow.application.contract.target.WorkflowOwnedTargetLookup
                         .hseApproval(type.code(), purpose.code()))
             throw new InvalidWorkflowValueException("Exact HSE approval family required.");
+        if ("reporting".equals(command.targetModule())
+                && !dz.sh.hidra.modules.workflow.application.contract.target.WorkflowOwnedTargetLookup
+                        .scopedReportApproval(type.code(),purpose.code())
+                        || "reporting".equals(command.targetModule())
+                            && !ownership.scopedReportStarterAllowed(command.targetId()))
+            throw new InvalidWorkflowValueException("Exact Reporting approval family required.");
         if(!configuration.activeBinding(command.definitionId(),command.targetModule(),command.targetTypeId(),command.workflowPurposeId()))
             throw new InvalidWorkflowValueException("Exact active Workflow target/purpose binding required.");
         if(command.currentStepId()!=null && !command.currentStepId().isBlank()) {

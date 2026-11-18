@@ -15,6 +15,7 @@
 package dz.sh.hidra.modules.documents.application.port.out;
 
 public interface ControlledDocumentAuthorizationPort {
+    void requireReportingRead(String company,String facility);
     record Facility(String id,String companyId,String code,String label){}
     String currentLocalActor();
     void require(String permission,String companyId,String facilityId);

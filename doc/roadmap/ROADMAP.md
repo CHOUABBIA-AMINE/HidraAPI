@@ -4062,3 +4062,34 @@ runtime OpenAPI and physical dictionary reconciliation. The committed
 canonical snapshots still describe the pre-T25 contract and schema. The
 registered reconciliation stage uses hosted generated artifacts and preserves
 both strict equality checks. T26 remains unselected.
+
+
+### T25 CI #1305 generated-evidence reconciliation — 2026-11-18
+
+The T25 implementation at `82437fc40dd4ca37383619bc8bd73fc8deeb4a7e` had [HidraAPI CI #1305](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44329245163/attempts/2)
+with initial failure of the Maven distribution download before tests in the API
+job. Attempt 2 generated the runtime OpenAPI and genuine PostgreSQL 16.16
+catalog, passed backward-compatibility, Java/architecture and all fourteen
+PostgreSQL shards. The API job then failed strict canonical snapshot equality;
+the dictionary equality step was skipped. The Full Verification Gate failed
+consequently. No workflow PASS or release eligibility is claimed by #1305.
+
+This separately registered same-T25 evidence reconciliation uses the actual
+attempt-2 ZIP artifacts: OpenAPI 14440361275 (ZIP SHA-256
+`823490f470fc33dccb6fdee120d273b881fa221be72c5ebd77c8d1016f1f58cb`),
+and dictionary 14440915029 (ZIP SHA-256
+`4474623358ffaa298fe066a6a9a650181be17fa34512a3cc80f58187b4389a81`).
+The canonical contract has 451 paths, 496 operations and 533 schemas; exactly
+five new T25 Reporting paths and four T25 request/response schemas were added,
+without changes to existing objects. The fresh catalog has 229 migrations,
+471 JPA mappings, 605 relations, and zero unresolved owners. Two added T25
+relations are `hidra_documents_t25_report_output` and
+`hidra_reporting_t25_run_receipt`; other dictionary deltas are their linked
+physical references, constraints, migration evidence and new source provenance.
+
+Only `doc/api/openapi.yaml`, `doc/database/DATA_DICTIONARY.md`,
+`.github/documentation-validation.json` and this append-only roadmap have
+changed. Historical evidence, existing business implementation and CI strict
+gates remain preserved. T25 stays **IN PROGRESS** until the new exact-SHA
+full CI passes. Engineering and operational qualification remain separate.
+T26 is not selected.

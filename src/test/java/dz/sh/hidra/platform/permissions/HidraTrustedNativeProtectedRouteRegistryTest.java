@@ -66,18 +66,35 @@ class HidraTrustedNativeProtectedRouteRegistryTest {
     }
 
 
-    @Test void t17RegistersExactlyThirteenScopedNativeHseTuples() {
-        var routes=new HidraTrustedNativeProtectedRouteRegistry().candidates().stream()
-            .filter(x->x.controller().getSimpleName().equals("HseCapaLifecycleController")).toList();
-        assertEquals(13,routes.size());
-        assertEquals(5,routes.stream().filter(x->x.verb().equals("GET")).count());
-        assertEquals(8,routes.stream().filter(x->x.verb().equals("POST")).count());
-        assertEquals(13,routes.stream().map(x->x.verb()+" "+x.pattern()).distinct().count());
-        assertTrue(routes.stream().allMatch(x->x.method()
-                .isAnnotationPresent(NativeProtectedOperation.class)));
-        assertTrue(routes.stream().allMatch(x->x.pattern().startsWith(
-                "/api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases")));
+    @Test void t17RegistersExactlyFourteenScopedNativeHseTuples() {
+        var routes = new HidraTrustedNativeProtectedRouteRegistry().candidates().stream()
+                .filter(route -> route.controller().getSimpleName().equals("HseCapaLifecycleController"))
+                .toList();
+        String cases = "/api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases";
+        String casePath = cases + "/{caseId}";
+        String capaPath = casePath + "/capas/{capaId}";
+        assertEquals(14, routes.size());
+        assertEquals(java.util.Set.of(
+                "GET " + cases,
+                "GET " + casePath,
+                "GET " + casePath + "/capas",
+                "GET " + capaPath,
+                "GET " + casePath + "/history",
+                "POST " + cases + "/from-incident",
+                "POST " + casePath + "/impact-assessments",
+                "POST " + casePath + "/capas",
+                "POST " + capaPath + "/approve",
+                "POST " + capaPath + "/assign",
+                "POST " + capaPath + "/evidence",
+                "POST " + capaPath + "/complete",
+                "POST " + capaPath + "/verify",
+                "POST " + casePath + "/close"),
+                routes.stream().map(route -> route.verb() + " " + route.pattern())
+                        .collect(java.util.stream.Collectors.toSet()));
+        assertTrue(routes.stream().allMatch(route ->
+                route.method().isAnnotationPresent(NativeProtectedOperation.class)));
     }
+
     @Test void t16ReviewerRoutesAreExactlyFourteenNativeCompiledTuples() {
         var routes=new HidraTrustedNativeProtectedRouteRegistry().candidates().stream()
                 .filter(v->java.util.Set.of("IncidentInvestigationController","LeakInvestigationController")

@@ -3867,3 +3867,26 @@ locally. Exact-SHA CI remains required. The committed canonical artifacts predat
 new route and migration. Reconcile them only from genuine runtime and migrated
 catalog artifacts following existing owner rules. T17 stays IN PROGRESS. T25 remains
 gated by exact CI and signed T17 qualification acceptance.
+
+#### T17 startup and route-registry repair
+
+[HidraAPI CI #1302](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44312055947)
+failed on `bd82abdcef417ac3b703ac33a95a72b024e09d4c`. The HSE Workflow resolver
+eagerly constructed the shared HSE owner adapter, whose Incident dependency
+returns to the Workflow query adapter. The resulting Spring startup cycle
+blocked runtime contract generation and all fourteen PostgreSQL integration
+shards, including both HSE qualification tests before HTTP execution. The unit
+and architecture lane separately failed one of 2,603 tests because its T17
+registry assertion expected thirteen routes after the assessment POST added a
+fourteenth.
+
+This repair defers all three port references to the shared owner adapter until
+lookup use and checks the complete fourteen-tuple native registry in the
+existing HSE test. It updates the CI test inventory for that test and appends
+this evidence. The four modified paths are
+`src/main/java/dz/sh/hidra/modules/hse/infrastructure/integration/HseWorkflowTargetLookup.java`,
+`src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistryTest.java`,
+`.github/ci-test-inventory.json`, and this roadmap. The authorization checks,
+required lanes, runtime contract and catalog gates still apply. T17 remains IN
+PROGRESS pending exact-SHA CI, signed qualification and canonical artifact
+reconciliation. T25 remains gated.

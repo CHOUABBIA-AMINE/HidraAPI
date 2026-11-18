@@ -11936,7 +11936,7 @@
         "productionRegistryDeclaresFiveManufacturerAndThreeTopologyApprovalTuples",
         "protectedHistoricalBaselineReadRoutesAreExact",
         "t16ReviewerRoutesAreExactlyFourteenNativeCompiledTuples",
-        "t17RegistersExactlyThirteenScopedNativeHseTuples",
+        "t17RegistersExactlyFourteenScopedNativeHseTuples",
         "t18IntegrityAndAssetsNativeRoutesHaveExactlyEightApprovedTuples",
         "t19RegistersOnlyExactNominationCommandAndHistoryTuples",
         "t20ExactCustodyRoutesHaveOnlyTwoCompiledNativeBindings",
@@ -11951,7 +11951,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistryTest.java",
-      "source_sha256": "b6faebe52a4eb25fe4ef79dfa357a900e819af69971d806260c371f60be2191a",
+      "source_sha256": "c4ede9a3e4839f6bf04438c680f2ff9de08aaabe54922a4271488c54fd4e4489",
       "supports": []
     },
     {

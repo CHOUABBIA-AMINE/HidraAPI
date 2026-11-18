@@ -22,6 +22,7 @@ import dz.sh.hidra.modules.workflow.application.contract.target.WorkflowOwnedTar
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -36,8 +37,12 @@ public class HseWorkflowTargetLookup implements WorkflowOwnedTargetLookup {
     private final HseCapaFacilityPort facilities;
     private final HseCapaIncidentPort incidents;
 
-    public HseWorkflowTargetLookup(HseCapaLifecycleStorePort store, HseCapaAuthorityPort authority,
-                                   HseCapaFacilityPort facilities, HseCapaIncidentPort incidents) {
+    // Workflow registers this lookup during startup. The shared owner adapter uses
+    // Incident services that themselves depend on Workflow, so resolve it on use.
+    public HseWorkflowTargetLookup(HseCapaLifecycleStorePort store,
+                                   @Lazy HseCapaAuthorityPort authority,
+                                   @Lazy HseCapaFacilityPort facilities,
+                                   @Lazy HseCapaIncidentPort incidents) {
         this.store = store;
         this.authority = authority;
         this.facilities = facilities;

@@ -9,7 +9,7 @@
 | Status | ACTIVE |
 | Authority | Sole task register and execution source for HidraAPI |
 | Owner adoption | 2026-11-10 |
-| Active task selection | T17 passed exact-SHA CI #1301 and Documentation Validation #1137. T17 remains IN PROGRESS pending positive signed CAPA-to-closure acceptance. T25 is selected for implementation-envelope registration and remains PLANNED; execution is gated by T17 acceptance and a separate owner Next. |
+| Active task selection | T17 COMPLETED for synthetic software acceptance on exact-SHA CI #1304 attempt 2. T25 is next and remains PLANNED with its reconciled implementation envelope registered below. Implementation is selected by a subsequent owner Next after exact-SHA Documentation Validation and a refreshed main lease. |
 
 The task register controls scope, dependencies, status and acceptance. Existing technical policy and verified implementation evidence retain their applicability. Task status advances only with recorded evidence. The initial status for each task is PLANNED. The first candidate is T01.
 
@@ -109,7 +109,7 @@ A task includes its required authorization, REST contract, persistence, failure 
 | Task | Owner | Depends on | Deliverable | Pass condition | Status |
 |---|---|---|---|---|---|
 | **T16 · Complete incident and leak investigations** | Incident and Leak Detection | T14 | Expose scoped assignment, investigation actions, evidence timeline, disposition and closure. | An authorized investigator progresses a case and a separate eligible reviewer completes its required disposition. Actions and evidence survive restart. **FG-07 / A07.** | COMPLETED |
-| **T17 · Verify and close HSE corrective actions** | HSE with Incident, Documents and Workflow | T16, T24 | Assign corrective/preventive actions, capture evidence, verify effectiveness and close with reason and authority. | Closure requires the admitted decision and linked evidence. Foreign actors cannot view case history or counts. **FG-07/18 / A07/A18.** | IN PROGRESS |
+| **T17 · Verify and close HSE corrective actions** | HSE with Incident, Documents and Workflow | T16, T24 | Assign corrective/preventive actions, capture evidence, verify effectiveness and close with reason and authority. | Closure requires the admitted decision and linked evidence. Foreign actors cannot view case history or counts. **FG-07/18 / A07/A18.** | COMPLETED |
 | **T18 · Hand off an integrity finding and verify maintenance** | Integrity and Assets | Eligible Topology and maintainable-asset references | Expose approved finding → assigned work order → execution → verification, with typed outcome/history on both sides. | Correct asset and finding are linked through completion. Wrong binding or stale transition fails atomically. Both owners retain exact outcome evidence. **FG-08 / A08.** | COMPLETED |
 | **T19 · Author and govern Planning nominations** | Planning with Party and Workflow where required | T03 | Create a scoped nomination, link it to an eligible plan revision and expose allowed disposition and historical reads. | A signed client creates and retrieves the nomination and exact revision. Invalid relationship or unauthorized disposition is denied. **FG-03 extension / A03.** | COMPLETED |
 | **T20 · Capture and retrieve qualified custody measurements** | Custody with Telemetry, Party and product owners | T09 and eligible meter/product/Party references | Bind scoped measurements to meter, product, party, units, basis, interval and qualified source evidence. | Authorized readback preserves exact source, quantity, basis and measurement window. Wrong meter, product or unit is rejected. **FG-09 / A09.** | COMPLETED |
@@ -3924,3 +3924,109 @@ attached to six existing triggers. No prior migrations were edited.
 
 T17 remains IN PROGRESS pending exact publication-SHA hosted CI and signed
 HTTP qualification. The existing T25 reservation and acceptance gate apply.
+
+### T17 synthetic software acceptance and T25 execution-envelope refresh — 2026-11-18
+
+**T17 COMPLETED for synthetic software acceptance.** The earlier [CI #1301](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44304247806)
+succeeded on `720fa4a7d87922f05b5c796b7e492b75db1640d9` and remains the
+historical baseline with a negative signed HSE case. Current main was
+`5bb8d4b7ed4b21e454b2a401d59222ee2c61dadb`, parent
+`f5144de33bb0a62e5d3b8d83f4caa45800afbb1e`, tree
+`13dd32b462e3ab791333fd7fb59d071a5f453f69`. [CI #1304 attempt 2](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44318153068/attempts/2)
+and [Documentation Validation #1142](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44318153077)
+succeeded on that exact SHA. Attempt 1 shard 12 failed before tests during
+the Maven distribution download. The accepted aggregate uses shard 12 from
+attempt 2 and the other required lanes from attempt 1, all on the same SHA
+and run. The [evidence bundle](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44318153068/artifacts/14434462896)
+matched the published ZIP SHA-256
+`a135b91780b412dfc3b222de9860903363c316fe8eb4aedd1e113bad6ecb8f47`.
+It reports 601 classes and 4,472 tests with zero failures, errors or skips.
+It records strict OpenAPI and dictionary equality, all 14 PostgreSQL shards
+and the Full Verification Gate. The contract contains 446 paths, 491
+operations and 529 schemas. The migrated PostgreSQL 16.16 catalog has 228
+migrations, 471 JPA mappings, 603 relations and zero unresolved owners. The
+development evidence has `release_eligible=false`.
+
+The [shard 1 signed HSE report](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44318153068/artifacts/14433024636)
+contains two completed cases with zero failures, errors or skips. The positive
+case covers reviewed Incident enrollment, one impact receipt under concurrent
+replay, independent CAPA and closure approval, exact T24 accepted evidence
+identity and bytes, rollback of a faulted closure and successful retry,
+and retained history and exact bytes after a separate application JVM.
+The signed negative cases cover wrong scope, revoked grants, stale/conflicting
+requests, wrong evidence and non-independent approval. This closes the registered
+T17 software gate. Engineering and operational acceptance remain separate.
+
+**T25 selected for implementation planning.** The registered T25 envelope above
+continues to define the product scope, HTTP contract and acceptance. T23 and
+T24 are complete. T25 renders one fixed `GZ2_ABSOLUTE_DEVIATION_JSON_V1` report
+from a current, authorized, immutable T23 completion receipt, consumes the exact
+independent Workflow approval, and seals one accepted T24 version before bytes
+are available. Reporting sequences the operation and retains the lineage.
+Analytics, Workflow, Documents, Identity and Topology retain their respective
+owner decisions. The T23 use-case receipt already exposes the required definition
+and method versions, unit, value and approved source evidence.
+
+#### T25 exact path reconciliation against current main
+
+All 27 prior CREATE paths and 16 prior UPDATE paths were checked against current
+main. The historical CREATE item 23 is replaced by
+`src/main/resources/db/migration/V20261118_004__t25_scoped_report_rendering.sql`.
+Version `20261118.004` is free and follows the applied `20261118.003.1`.
+It adds only the registered Reporting receipt and Documents managed marker,
+four permission identities without grants, and physical consistency guards.
+Use table-qualified columns and distinct PL/pgSQL variables. Exercise deferred
+constraints at actual commit, not just a rolled-back test transaction.
+
+The five new native routes must extend the exact 138 existing tuples to 143.
+The existing registry and three registry/startup/HTTP test paths in the UPDATE
+ledger have this corrected expected count. Preserve exact handler type, parameter
+order, marker, HTTP verb and route pattern checks.
+
+The historical T25 approval-reader entries cover consumption only. Current
+`WorkflowExecutionOwnership.requireTarget` requires a unique owner resolver.
+The current code has no Reporting `REPORT_REQUEST` resolver or scoped
+Workflow mutation/read gate. Without those files the signed approval journey
+would stop at Workflow start or leave Workflow disclosure outside Reporting
+scope. Register this additional CREATE and eight additional UPDATE paths.
+
+| Operation | Exact repository path | Work |
+|---|---|---|
+| CREATE | `src/main/java/dz/sh/hidra/modules/reporting/infrastructure/integration/ScopedReportWorkflowTargetLookup.java` | Implement the Reporting-owned resolver for the exact `REPORT_REQUEST` type. Read only typed scoped request facts through Reporting ports. Require signed native scope before returning the target. Allow decision admission only while the request is submitted, with an independent current reviewer. Metadata requires no transaction. Defer the owner bridge dependency to avoid a startup cycle with Workflow. |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/workflow/application/contract/target/WorkflowOwnedTargetLookup.java` | Define the exact Reporting target/purpose selector and retain owner read/review hooks. |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/workflow/application/service/WorkflowApplicationService.java` | Check the exact Reporting family before start, preserve the active binding and resolve owner-supplied snapshots. Existing create/claim paths use the refreshed ownership guard. |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/workflow/application/service/WorkflowExecutionOwnership.java` | Recheck the Reporting target and exact active binding for task mutations. Connect the independent reviewer gate to the Reporting resolver through the existing owner contract. |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/workflow/application/service/WorkflowTransitionApplicationService.java` | Require current same-scope native Reporting read authority and assigned Workflow decision rights for an independent human reviewer before APPROVE or REJECT. Preserve durable rejection. |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/workflow/infrastructure/query/JpaWorkflowQueryAdapter.java` | Apply current Reporting owner scope on existing protected instance, task and history reads before returning facts. Use the existing non-disclosing errors and safe transaction handoff for owner reads. |
+| UPDATE | `src/test/java/dz/sh/hidra/modules/reporting/semantic/ReportRequestSemanticRemediationTest.java` | Supply the scoped Reporting repository port to direct service construction. Preserve all existing legacy request semantics. |
+| UPDATE | `src/test/java/dz/sh/hidra/modules/reporting/semantic/ReportRunSemanticRemediationTest.java` | Update both direct constructions for the scoped port. Preserve legacy queue authorization and add the managed-request denial where the queue enters the service. |
+| UPDATE | `src/test/java/dz/sh/hidra/modules/reporting/semantic/ReportOutputArtifactSemanticRemediationTest.java` | Supply the scoped port. Preserve legacy artifact checks and assert the managed-run alias cannot create output metadata. |
+
+The existing Reporting repository port gains an internal scoped request
+projection for the resolver and managed request/run checks for legacy entry
+points. The approval query binds the terminal instance, task and exact action to
+the same scoped request. The resolver consumes the existing Reporting owner
+port plus Reporting repository port. The existing architecture and source
+guardrail updates allow only the exact Workflow target interface at the new
+resolver, alongside the previously registered owner bridge imports. The
+existing inventory update includes the three amended Reporting test classes.
+Reuse `Gz2SignedWorkflowFixture.review` and keep T25-specific test setup in the
+new signed test. The fixture itself needs no update.
+
+The finalized source ledger is **28 CREATE, 24 UPDATE, zero DELETE**.
+The three conditional generated UPDATE paths remain as registered. Preserve the
+T25 acceptance matrix, including signed Reporting approval through existing
+Workflow HTTP entry points, exact sealed-byte retrieval after restart, scope
+denials, correlated replay, one-winner concurrency, commit-time rollback and
+protected legacy alias checks. The existing Reporting, Workflow and Documents
+public route sets retain their established behavior. No migration history,
+workflow files or validators are scheduled for change.
+
+**Publication boundary.** This documentation update changes only
+`doc/roadmap/ROADMAP.md`, with the registered message
+`docs(roadmap): record T17 CI and register T25 execution envelope`. Run canonical
+documentation validation and confirm its exact-SHA workflow starts. T25 stays
+PLANNED until a subsequent owner `Next` after Documentation Validation and a
+refreshed main lease. Its registered implementation message is
+`feat(reporting): render and download scoped approved reports`. T26 remains
+unselected.

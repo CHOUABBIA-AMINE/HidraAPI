@@ -3890,3 +3890,37 @@ this evidence. The four modified paths are
 required lanes, runtime contract and catalog gates still apply. T17 remains IN
 PROGRESS pending exact-SHA CI, signed qualification and canonical artifact
 reconciliation. T25 remains gated.
+
+#### T17 CI #1303 scoped repair and artifact reconciliation
+
+[HidraAPI CI #1303](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44313944057)
+failed on `f5144de33bb0a62e5d3b8d83f4caa45800afbb1e`. Unit and architecture,
+static validation and twelve PostgreSQL shards passed. Shard 1 reached signed
+enrollment and failed at commit. Local PostgreSQL reproduction identified the
+deferred T17 trigger's ambiguous `target_id` reference. The valid enrollment
+committed after the forward repair. A mismatched facility still failed and
+rolled back. Shard 6 established that the HSE Workflow resolver's metadata
+method inherited a mandatory transaction. The resolver now applies mandatory
+transactions only to its two transactional lookup operations, retaining the
+existing isolated protected read and all live owner checks.
+
+The API job generated both artifacts and passed backward compatibility. It
+stopped at strict OpenAPI equality and skipped strict dictionary equality.
+The reviewed runtime artifact contains one additional scoped POST and two new
+schemas. The dictionary comes from a fresh disposable PostgreSQL 16.16 instance
+using the same Debian build and Flyway 12.4.0. Its pre-repair catalog and Flyway
+history matched CI #1303. Flyway applied the new migration and validated all
+228 migrations. The catalog delta was confined to the one function body
+attached to six existing triggers. No prior migrations were edited.
+
+| Exact path | Operation and purpose |
+|---|---|
+| `src/main/java/dz/sh/hidra/modules/hse/infrastructure/integration/HseWorkflowTargetLookup.java` | UPDATE transaction boundaries on lookup methods so metadata can be read without a transaction. |
+| `src/main/resources/db/migration/V20261118_003_1__t17_disambiguate_case_consistency.sql` | CREATE forward replacement of the deferred function with an unambiguous case variable, preserving triggers and invariants. |
+| `doc/api/openapi.yaml` | UPDATE from the exact-SHA runtime contract. |
+| `doc/database/DATA_DICTIONARY.md` | UPDATE from the verified, migrated repair catalog. |
+| `.github/documentation-validation.json` | UPDATE with the hosted contract provenance and the local catalog capture evidence. |
+| `doc/roadmap/ROADMAP.md` | UPDATE by appending this reconciliation. |
+
+T17 remains IN PROGRESS pending exact publication-SHA hosted CI and signed
+HTTP qualification. The existing T25 reservation and acceptance gate apply.

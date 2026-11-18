@@ -29,7 +29,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
-@Transactional(propagation = Propagation.MANDATORY)
 public class HseWorkflowTargetLookup implements WorkflowOwnedTargetLookup {
     private static final Set<String> TYPES = Set.of("HSE_CASE", "HSE_CAPA");
     private final HseCapaLifecycleStorePort store;
@@ -53,6 +52,7 @@ public class HseWorkflowTargetLookup implements WorkflowOwnedTargetLookup {
     @Override public Set<String> targetTypeCodes() { return TYPES; }
 
     @Override
+    @Transactional(propagation = Propagation.MANDATORY)
     public Optional<Target> eligibleTarget(String type, String id) {
         return resolve(type, id, true, false);
     }
@@ -64,6 +64,7 @@ public class HseWorkflowTargetLookup implements WorkflowOwnedTargetLookup {
     }
 
     @Override
+    @Transactional(propagation = Propagation.MANDATORY)
     public boolean protectedReviewAllowed(String type, String id, String locator) {
         return resolve(type, id, true, true).isPresent();
     }

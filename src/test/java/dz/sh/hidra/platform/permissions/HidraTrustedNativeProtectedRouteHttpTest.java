@@ -174,6 +174,19 @@ class HidraTrustedNativeProtectedRouteHttpTest {
    var routes=registry.candidates();
    assertEquals(137,routes.size());
    var expected=java.util.Set.of(
+     "POST /api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases/from-incident",
+     "GET /api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases",
+     "GET /api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases/{caseId}",
+     "POST /api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases/{caseId}/capas",
+     "GET /api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases/{caseId}/capas",
+     "GET /api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases/{caseId}/capas/{capaId}",
+     "POST /api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases/{caseId}/capas/{capaId}/approve",
+     "POST /api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases/{caseId}/capas/{capaId}/assign",
+     "POST /api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases/{caseId}/capas/{capaId}/evidence",
+     "POST /api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases/{caseId}/capas/{capaId}/complete",
+     "POST /api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases/{caseId}/capas/{capaId}/verify",
+     "POST /api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases/{caseId}/close",
+     "GET /api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases/{caseId}/history",
      "POST /api/v1/documents/companies/{companyId}/facilities/{facilityId}/controlled-documents",
      "GET /api/v1/documents/companies/{companyId}/facilities/{facilityId}/controlled-documents",
      "GET /api/v1/documents/companies/{companyId}/facilities/{facilityId}/controlled-documents/{documentId}",
@@ -396,6 +409,9 @@ class HidraTrustedNativeProtectedRouteHttpTest {
       org.mockito.Mockito.mock(dz.sh.hidra.modules.documents.application.port.in.ControlledDocumentsUseCase.class),
       52428800L);
     owners.put(t24Documents.getClass(),t24Documents);
+    var t17Hse=new dz.sh.hidra.modules.hse.api.rest.controller.HseCapaLifecycleController(
+        org.mockito.Mockito.mock(dz.sh.hidra.modules.hse.application.port.in.HseCapaLifecycleUseCase.class));
+    owners.put(t17Hse.getClass(),t17Hse);
 
 
     // The same logical operation has two distinct native-protected MVC methods, never one multi-pattern mapping.

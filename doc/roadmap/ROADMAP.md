@@ -9,7 +9,7 @@
 | Status | ACTIVE |
 | Authority | Sole task register and execution source for HidraAPI |
 | Owner adoption | 2026-11-10 |
-| Active task selection | T24 VERIFIED / COMPLETED for synthetic backend software at exact-SHA HidraAPI CI #1294 and Documentation Validation #1129. T17 is the next dependency-eligible task, selected for source-audited envelope registration only; its implementation is PLANNED and requires separate owner Next. T25 is not selected. |
+| Active task selection | T17 passed exact-SHA CI #1301 and Documentation Validation #1137. T17 remains IN PROGRESS pending positive signed CAPA-to-closure acceptance. T25 is selected for implementation-envelope registration and remains PLANNED; execution is gated by T17 acceptance and a separate owner Next. |
 
 The task register controls scope, dependencies, status and acceptance. Existing technical policy and verified implementation evidence retain their applicability. Task status advances only with recorded evidence. The initial status for each task is PLANNED. The first candidate is T01.
 
@@ -3430,3 +3430,271 @@ Record honest generation-only provenance and preserve prior T24 provenance in th
 **Local validation and limitations.** Passed `validate_docs.py`, `validate_openapi_snapshot.py` with the exact generated artifact and source SHA, `openapi_compatibility.py` against the actual historical runtime artifact, `verify_ci_test_inventory.py`, and `generate_data_dictionary.py --input ... --source-sha 10c2fe7adc727b30169d982fff6b1f3deb6826f5 --ownership .github/database-dictionary-ownership.json --check doc/database/DATA_DICTIONARY.md`. Validator regression suites passed: snapshot 10, dictionary 18, inventory 38 and documentation 21 tests (87 total). `git diff --check` passed. Java 21 and Maven wrapper version checks succeeded; offline `bash ./mvnw -o -B -q -DskipTests test-compile` could not resolve the uncached Spring Boot parent `4.1.1`. Docker/PostgreSQL are unavailable locally; no Java compilation or database-test pass is claimed and no complete environment is provisioned. Artifact replay verifies captured catalog/render equality, not a new local database execution.
 
 **Acceptance/stop.** T17 remains **IN PROGRESS — CI-FIRST / NOT ACCEPTED**. Require replacement-SHA overall HidraAPI CI success, including both repaired fixtures, all fourteen PostgreSQL shards, Java/architecture, runtime backward compatibility, strict canonical OpenAPI and freshly migrated dictionary equality, and Full Verification Gate; retain signed GZ2 positive/negative/restart lifecycle acceptance. Verify the published commit's parent, tree, seven paths/blobs and exact message, observe applicable exact-SHA CI creation/queue/start, report actual links/state and STOP without waiting for completion. T25 remains the next later registered task, unselected and gated by acceptance of the current T17 delivery. Engineering/operational acceptance, simulation, release, deployment and live OT access are not established or authorized.
+
+
+### T17 CI #1301 verification and T25 implementation envelope — 2026-11-18
+
+**T17 CI VERIFIED — software acceptance remains IN PROGRESS.** GitHub main was
+[720fa4a7d87922f05b5c796b7e492b75db1640d9](https://github.com/CHOUABBIA-AMINE/HidraAPI/commit/720fa4a7d87922f05b5c796b7e492b75db1640d9),
+with parent `10c2fe7adc727b30169d982fff6b1f3deb6826f5` and tree
+`aaa1a749d493b62309831ea746c442cb94dd5a76`.
+[HidraAPI CI #1301](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44304247806)
+and [Documentation Validation #1137](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44304247812)
+completed successfully on that SHA. Static validation, unit/architecture, all 14 PostgreSQL
+shards, OpenAPI compatibility and strict runtime equality, fresh PostgreSQL dictionary
+strict equality, and the Full Verification Gate passed. The
+[aggregate evidence](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44304247806/artifacts/14428960465)
+reports 601 classes and 4,471 tests with zero failures, errors or skips in development
+partitioned mode. Shard 3 passed 125 cases and shard 10 passed 112. The runtime contract
+contains 445 paths, 490 operations and 527 schemas. PostgreSQL 16.16 supplied 226 migrations,
+471 JPA mappings and 603 relations with zero unresolved owners. The optional serial oracle
+job was skipped and the run was ineligible for release.
+
+The [shard 1 raw Surefire archive](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44304247806/artifacts/14428506680)
+was downloaded and matched GitHub ZIP SHA-256
+`087945863ac68cd0532a3f09cd9cd17318f70de9b89c081ec1b6e74fd905c6c6`.
+`Gz2HseCapaNativeHttpPostgresIntegrationTest` ran its sole registered case,
+`signedCompanyAndFacilityReadsConcealNonexistentCasesAndRejectWrongScope`,
+with zero failures, errors or skips. The source asserts denial of anonymous, foreign
+and missing-case reads and zero created scope records after an independent JVM restart.
+It does not enroll a reviewed incident, progress and independently verify a CAPA with
+accepted T24 bytes, or close and reconstruct an existing case after restart. The HSE
+unit and physical-schema coverage does not supply that integrated proof. The previously
+registered positive journey and remaining applicable protected-negative, concurrency
+and rollback evidence must be demonstrated before T17 COMPLETED. T17 implementation and
+past failure/reconciliation entries remain traceable. Engineering and operational
+acceptance remain separate.
+
+**Selection and publication.** T25 — Render and download an authorized report
+(FG-12/A12) is the next task selected by the owner for planning and envelope registration.
+Its business prerequisites are T24 COMPLETED and a T23 completed deterministic metric
+over approved T11 Planning/Monitoring/Telemetry evidence. These are independent of
+HSE data. The latest T17 stop boundary still gates progression to T25 implementation
+on T17 acceptance. This turn authorizes the roadmap registration only, under
+`docs(roadmap): record T17 CI and register T25 execution envelope`.
+T25 remains PLANNED. After T17 software acceptance, successful registration documentation
+validation, refreshed main and a separate owner `Next`, the registered implementation
+message is `feat(reporting): render and download scoped approved reports`.
+T26 is the next later registered candidate and remains unselected.
+
+#### T25 exact-source gap and chosen workflow
+
+`SpringReportingController` exposes create/request/queue and metadata artifact POST
+aliases plus capabilities. `ReportingApplicationService.queueReportRun` checks the
+existing request, active definition, template lineage, required concrete parameters
+and Workflow where configured, then writes QUEUED. Its `generateReportArtifact` accepts
+caller-supplied filename, size, checksum and existing Documents reference and persists
+artifact metadata. It does not perform deterministic rendering or read exact bytes.
+`ReportingDocumentReferenceContract` checks only document/storage existence.
+`ReportingWorkflowApprovalQueryService.approved` checks completion, target module/ID
+and existence of some APPROVE action; T25 needs one exact bound action and an
+independent reviewer. `ReportingAccessAuthorizationContract` is the legacy access-policy
+lookup, not the native current actor company/FACILITY fence. T23
+`DeviationMetricRunApplicationService.read` already authorizes the retained result
+and its source, while T24 `ControlledDocumentsApplicationService` already supplies
+facility-scoped create/upload/independent accept and verified exact-version content.
+`DocumentContentTransferService` includes rollback cleanup for a new blob and retains
+unknown-commit objects for owner reconciliation. Preserve those semantics when composing
+transactions.
+
+**Scope.** One manual `GZ2_ABSOLUTE_DEVIATION_JSON_V1` report type, one approval-required
+active Reporting definition, one active linked template revision, one required typed
+`metricRunId` REFERENCE parameter. Template v1 specifies a fixed field set/order with
+canonical UTF-8 JSON and LF, exact numeric rules (normalize decimal trailing zeros and
+use plain decimal notation), and UTC source timestamps. Render the immutable T23
+COMPLETED receipt including run, metric definition version, method, value, unit,
+evaluation ID, rule/revision, approved Planning target revision/approval and trusted
+reading provenance. Freeze that allowed projection and hash at request admission.
+Recheck source access and exact projection at render. Reject failed, unavailable,
+wrong-facility or mismatched receipts. Output bytes exclude wall-clock generation
+time, actor name, internal storage paths and random run identifiers. Arbitrary
+templates, caller-supplied input values, scheduling, distribution, release, simulation
+and other formats are outside this implementation scope.
+
+Reporting owns report request, eligibility, run state, frozen projection and output
+receipt. Analytics owns the metric and its input eligibility. Workflow owns the human
+decision. Identity owns current authority and Topology owns facility identity. Documents
+owns managed version, independent custodian acceptance and binary content. Each source
+owner exposes a narrow application contract consumed through Reporting's outbound
+adapter. Reuse existing Reporting request, parameter, run and output records and the
+HMR-013/048/057/093 guards. A new Reporting-owned lifecycle receipt extends them and
+pins exact external references without cross-owner foreign keys.
+
+**Owner configuration.** Synthetic fixtures supply an eligible definition/template,
+its required parameter, a `REPORT_REQUEST` / `REPORT_APPROVAL` Workflow binding,
+reviewer assignment, active Documents type/classification/link role and existing
+storage provider. Use fixed server-side definition/profile codes and resolve exact
+active owner records before use. The migration provisions permission identities only.
+No user/role grants or industry template defaults are installed. Test actors receive
+explicit current grants at both scopes for their operations. Requester renders after a
+different Workflow reviewer approves. A custodian distinct from document creator and
+uploader accepts and seals. Existing Workflow and Documents owner semantics determine
+actor eligibility; caller actor, owner, state, checksum, filename, mime or byte values
+cannot substitute for owner evidence.
+
+#### HTTP and transaction contract
+
+Base path `/api/v1/reporting/companies/{companyId}/facilities/{facilityId}`.
+Register five distinct native tuples and use globally distinctive T25 DTO/schema names.
+
+| Method and suffix | Input or output | Authority and state |
+|---|---|---|
+| `POST /report-requests` | `T25SubmitReport(requestKey, definitionId, templateVersionId, metricRunId)` → scoped request ID and frozen input lineage | `reporting:scoped-report:submit`; validate template/profile and source, store SUBMITTED and parameter in one transaction; 201 on new, 200 on exact replay. |
+| `POST /report-requests/{requestId}/render` | `T25RenderReport(requestKey, workflowInstanceId, workflowActionId)` → run ID, state, typed failure or draft handoff | `reporting:scoped-report:render` and originating actor; validate one exact independent Workflow approval, current preflight and T24 create/write capacity. Synchronous bounded render. The exact-payload retry returns the same outcome. |
+| `GET /report-runs/{runId}` | T25 state, exact template and source lineage, safe failure code or authorized publication details | `reporting:scoped-report:read` with current company and FACILITY authorization before lookup. |
+| `POST /report-runs/{runId}/seal` | `T25SealReport(requestKey)` → exact accepted output and hash | `reporting:scoped-report:seal` plus T24 accept and read. The server accepts the recorded draft only. Independent T24 custodian and same transaction with report output/terminal update. |
+| `GET /report-runs/{runId}/content` | Exact `application/json` attachment, length and checksum from sealed receipt | `reporting:scoped-report:read` and T24 current read. Verify exact document/version/acceptance, full bounded binary length and SHA-256 before response. |
+
+Use Identity current native LOCAL actor, direct paired CUSTOM
+`reporting-company:{companyId}` and FACILITY permits, policy PERMIT at both scopes,
+and current Topology ownership. Apply scoped authority before protected existence,
+metadata or bytes. Preserve the existing denied/missing resource convention, return
+400 for malformed syntax, and use 409 for authorized replay payload conflicts and
+invalid state transitions. A failed or unsealed run has no downloadable Report output.
+No caller-supplied current-version fallback and no partial bytes on integrity failure.
+After acceptance a later legitimate T24 supersession retains exact historical content
+for the original report when its accepted reference remains eligible.
+
+Use a short admission transaction to lock the scoped request, validate exact active
+template/parameter/source and the Workflow action bound to its terminal instance,
+mark the legacy request APPROVED with that instance, then insert a QUEUED run through
+existing physical queue guards and bind the immutable action once. Persist RUNNING
+while a separate bounded render transaction executes. Within that transaction, lock
+the receipt, recheck current authorization and source, render deterministic bytes
+(max 64 KiB for this profile), and create/upload one managed T24 DRAFT. Commit the
+draft reference with the RENDERED lifecycle phase (legacy run stays RUNNING). For
+recognized render/storage failure, roll back draft metadata and use a separate
+short authorized transaction with a state compare to retain a terminal FAILED
+code for the same run. Never record FAILED for a denied admission or substitute a
+new run after replay. If the process stops before the render transaction commits,
+the same request key may resume the same queued/running receipt under row
+serialization and fresh authority. Committed renders, failed runs and sealed runs
+replay without writing a second artifact. Track unknown storage outcomes through
+existing Documents owner reconciliation.
+
+At seal, use the exact stored draft/version/hash and independent native custodian.
+Call the T24 acceptance operation and finish the existing output artifact and run
+atomically. Store one `PRIMARY_REPORT` JSON output only on COMPLETED, with the
+T24 acceptance ID, version and immutable checksum/length. Use row locks, uniqueness
+and deferred owner consistency checks so duplicate or conflicting actions, stale
+states, failures and rollback cannot manufacture a second success. Validate eligible
+sealed content afresh with bounded verified bytes. Generic Reporting queue/artifact
+aliases cannot operate on T25-owned request/run identities. For generated T24
+documents, generic Documents pages omit managed output rows before pagination/count,
+and direct aliases require current Reporting read in addition to normal Documents
+authority. A marker in the Documents owner schema limits draft mutation and acceptance
+to the Reporting owner contract using the existing transaction-bound guard pattern.
+Preserve ordinary T24 document behavior. Record requester/reviewer/custodian, exact
+scope, receipt IDs, template hash, source hash, Workflow action/instance and output
+acceptance in durable evidence.
+
+#### Exact future file allowlist
+
+
+This is the bounded implementation ledger at source SHA `720fa4a7d87922f05b5c796b7e492b75db1640d9`.
+The migration version, path presence and fixture compatibility must be checked again
+at the execution lease. Other paths require an explicit scope update.
+
+**CREATE (27)**
+
+| # | Exact repository path | Required work |
+|---|---|---|
+| 1 | `src/main/java/dz/sh/hidra/modules/reporting/domain/model/ScopedReportRun.java` | Pure Java scoped lifecycle and immutable admission/render/seal facts. Map RENDERED to RUNNING for the existing run row and reject illegal state, replay and actor combinations. |
+| 2 | `src/main/java/dz/sh/hidra/modules/reporting/domain/service/AbsoluteDeviationReportJsonV1.java` | Pure Java fixed-profile deterministic JSON encoder for the admitted typed projection. Enforce canonical escaping, decimal/time rules, size and byte checksum. |
+| 3 | `src/main/java/dz/sh/hidra/modules/reporting/application/port/in/ScopedReportUseCase.java` | Five typed commands/queries and Reporting-owned views with safe failure codes, exact lineage and bounded verified content. |
+| 4 | `src/main/java/dz/sh/hidra/modules/reporting/application/port/out/ScopedReportRepositoryPort.java` | Scoped request/replay lookups, template lock and typed parameter, base request/run/artifact writes, report receipt phase compare and exact projections. |
+| 5 | `src/main/java/dz/sh/hidra/modules/reporting/application/port/out/ScopedReportOwnerPort.java` | Narrow Reporting-owned authority, metric snapshot, bound approval and Documents draft/seal/content DTOs. Owners' types stay outside the application core. |
+| 6 | `src/main/java/dz/sh/hidra/modules/reporting/application/service/ScopedReportApplicationService.java` | Coordinate scope, owner calls and phase transitions. Use explicit transaction boundaries for admission, render and failed-state persistence. Recheck rights before protected reads and replay. |
+| 7 | `src/main/java/dz/sh/hidra/modules/reporting/api/rest/request/ScopedReportRequests.java` | Distinct T25SubmitReport/T25RenderReport/T25SealReport schema names and bounded input validation. |
+| 8 | `src/main/java/dz/sh/hidra/modules/reporting/api/rest/response/ScopedReportResponses.java` | Distinct T25-prefixed request/run/receipt response schemas. Expose safe status and exact lineage only. |
+| 9 | `src/main/java/dz/sh/hidra/modules/reporting/api/rest/mapper/ScopedReportRestMapper.java` | Map scoped commands and views to HTTP without owner or persistence types. Supply safe fixed content headers. |
+| 10 | `src/main/java/dz/sh/hidra/modules/reporting/api/rest/controller/ScopedReportsController.java` | Five native Reporting tuples, precise Java parameter order, correct HTTP statuses and OpenAPI operation IDs. Bounded binary response without partial integrity failures. |
+| 11 | `src/main/java/dz/sh/hidra/modules/reporting/infrastructure/integration/ScopedReportOwnerAccessAdapter.java` | Only Reporting adapter importing the five admitted owner contracts. Enforce current native company/FACILITY and ownership before protected work, map typed owner evidence. |
+| 12 | `src/main/java/dz/sh/hidra/modules/reporting/infrastructure/persistence/adapter/JdbcScopedReportRepositoryAdapter.java` | Reporting-only scoped SQL for template lock, request/parameter/run/artifact persistence, atomic replay and immutable receipt. Implement protected legacy-operation checks using Reporting-owned keys. |
+| 13 | `src/main/java/dz/sh/hidra/modules/analytics/application/contract/reporting/ReportingDeviationMetricContract.java` | Exact retained T23 report input contract including definition version, value/unit and approved source lineage. |
+| 14 | `src/main/java/dz/sh/hidra/modules/analytics/application/service/ReportingDeviationMetricQueryService.java` | MANDATORY wrapper over existing DeviationMetricRunUseCase.read. Return only completed compatible scope and exact approved source fields. |
+| 15 | `src/main/java/dz/sh/hidra/modules/identity/application/contract/reporting/ScopedReportAuthorizationContract.java` | Operation-specific current native authority and actor result. Reporting and the Docs managed-output bridge have distinct allowed consumers. |
+| 16 | `src/main/java/dz/sh/hidra/modules/identity/application/service/ScopedReportAuthorizationQueryService.java` | Paired explicit current permits and policy evaluation for submit/render/read/seal. Derive actor from native session and preserve existing owner locking/fence conventions. |
+| 17 | `src/main/java/dz/sh/hidra/modules/workflow/application/contract/reporting/ScopedReportApprovalContract.java` | Exact action/instance approval evidence interface with reviewer, acted-at and definition lineage. |
+| 18 | `src/main/java/dz/sh/hidra/modules/workflow/application/service/ScopedReportApprovalQueryService.java` | Resolve completed REPORT_REQUEST/REPORT_APPROVAL instance, exact action/target, APPROVE and distinct reviewer via existing Workflow owner repositories/configuration. Lock/recheck owner evidence in the consuming transaction. |
+| 19 | `src/main/java/dz/sh/hidra/modules/documents/application/contract/reporting/ScopedReportDocumentContract.java` | Owner-only typed draft, seal and exact-content operations with expected report/output identity, SHA-256, acceptance/version, length and actor facts. |
+| 20 | `src/main/java/dz/sh/hidra/modules/documents/application/service/ScopedReportDocumentService.java` | Use existing T24 create, upload, independent acceptance and verified content within a mandatory caller transaction. Bind the managed marker between create and upload, then use scoped transaction-local custody during upload/seal. |
+| 21 | `src/main/java/dz/sh/hidra/modules/documents/application/port/out/ScopedReportDocumentMarkerPort.java` | Documents-owned managed-output marker identity, lookup/lock and seal facts for guarding direct access and owner operations. |
+| 22 | `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/adapter/JdbcScopedReportDocumentMarkerAdapter.java` | Persist/read the marker in Documents tables using exact document/run/version, scope and acceptance identities. No direct writes to Reporting tables. |
+| 23 | `src/main/resources/db/migration/V20261118_003__t25_scoped_report_rendering.sql` | Reserve next free version at audited HEAD. Add Reporting lifecycle receipt and Documents managed-output marker, exact local FKs, typed state checks, uniqueness, immutable evidence and deferred consistency. Insert four Reporting permission catalog entries without grants. Keep external references scalar. |
+| 24 | `src/test/java/dz/sh/hidra/modules/reporting/domain/service/AbsoluteDeviationReportJsonV1Test.java` | Fixed UTF-8 bytes and digest from precise decimals, timestamps and escaped strings. Prove identical bytes across retries and enforce size/field bounds. |
+| 25 | `src/test/java/dz/sh/hidra/qualification/Gz2ScopedReportNativeHttpPostgresIntegrationTest.java` | Signed synthetic T23 → independent Workflow approval → render → T24 independent seal → byte/hash/lineage restart read; include baseline approval and source denials, replay, scope/revocation, failure and concurrency/rollback cases on PostgreSQL 16. |
+| 26 | `src/main/java/dz/sh/hidra/modules/topology/application/contract/reporting/ReportingFacilityOwnershipContract.java` | Exact T25 owner contract for current active facility and owning company. Return only typed scope facts through a mandatory transaction. |
+| 27 | `src/main/java/dz/sh/hidra/modules/topology/application/service/ReportingFacilityOwnershipQueryService.java` | Use the existing Topology-owned ControlledDocumentFacilityOwnershipContract provider internally to reuse its active facility and locked owner proof. Export only the T25 reporting contract. |
+
+**UPDATE (16)**
+
+| # | Exact repository path | Required work |
+|---|---|---|
+| 1 | `src/main/java/dz/sh/hidra/modules/reporting/application/service/ReportingApplicationService.java` | Deny new T25 identities through existing legacy queue and artifact metadata paths; preserve ordinary legacy definitions and requests. |
+| 2 | `src/main/java/dz/sh/hidra/modules/documents/application/service/ControlledDocumentAccessService.java` | Apply managed-output additional current authority to by-document/version/storage and bound paths. Permit guarded internal draft/accept operations only through exact transaction-bound managed marker. Keep existing trusted upload behavior. |
+| 3 | `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/adapter/JdbcControlledDocumentRepositoryAdapter.java` | Exclude managed artifact documents in both generic T24 discovery count and page SQL before pagination. Preserve existing detail/version/link behavior behind owner access. |
+| 4 | `src/main/java/dz/sh/hidra/modules/documents/infrastructure/integration/ControlledDocumentOwnerAccessAdapter.java` | Bridge only the exact Identity Reporting read check for managed content after Documents authorization. Preserve facility owner checks. |
+| 5 | `src/main/java/dz/sh/hidra/modules/documents/application/port/out/ControlledDocumentAuthorizationPort.java` | Add narrow managed-output read check to allow Documents application code to stay independent of Identity adapter types. |
+| 6 | `src/main/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistry.java` | Register exactly five handler/verb/pattern/signature tuples. Retain existing 137 tuples and raise expected count to 142. |
+| 7 | `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java` | Add five exact tuples, mock ScopedReportUseCase only for standalone handler verification, preserve verb/sibling and denial assertions. |
+| 8 | `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistryTest.java` | Update exact route count and assert five new exact match tuples without relaxing matching. |
+| 9 | `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteStartupValidatorTest.java` | Assert startup mapping for the complete 142 registry and retain denial of mismatches. |
+| 10 | `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java` | Allow exactly five imports through Reporting's bridge, plus only the scoped Identity contract through the existing Documents owner access adapter. Reject lookalikes and private cross-owner imports; verify transactional proxyability. |
+| 11 | `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java` | Mirror exact consumer/type boundaries for source analysis, with forbidden sibling/private import cases. |
+| 12 | `.github/ci-test-inventory.json` | Register new test cases, exact Gz2SignedWorkflowFixture support dependency and updated hashes for the modified registration and architecture tests. Recompute reviewed 14-shard selection without dropping suites. |
+| 13 | `.github/database-dictionary-ownership.json` | Map public.hidra_reporting_t25_run_receipt to Reporting and public.hidra_documents_t25_report_output to Documents with migration/source links. |
+| 14 | `doc/architecture/CROSS_MODULE_CONTRACTS.md` | Register the five exact owner exports, the two authorized consumer adapters for Identity, and scope/transaction limits. |
+| 15 | `doc/modules/reporting.md` | Describe cumulative scoped JSON capability, legacy distinction and retained evidence/acceptance limits. |
+| 16 | `doc/roadmap/ROADMAP.md` | Update active T25 status when implementation begins and append actual source validation/CI evidence without erasing registration history. |
+
+**DELETE (0).** Preserve the legacy route contract, migrated history, unrelated
+tasks, project version, workflows, validators and existing tests.
+
+**Conditional generated UPDATE (3, outside the source ledger).**
+
+| Exact repository path | Evidence requirement |
+|---|---|
+| `doc/api/openapi.yaml` | Genuine compatible JSON from a source-equivalent runtime. Verify all five new tuples and distinctive T25 schema names, plus strict equality for the complete contract. |
+| `doc/database/DATA_DICTIONARY.md` | Generate from a real PostgreSQL 16 fresh migrated catalog with reviewed ownership. Validate the exact migration/JPA bundle, checksums and strict equality. |
+| `.github/documentation-validation.json` | Record checksummed generated artifacts, actual source/run/artifact provenance, counts and historic provenance. |
+
+Include these paths in one future implementation commit only if verified genuine
+candidate artifacts are available. If hosted CI is needed to produce them, retain
+the existing gates and register the separately selected same-T25 generated-evidence
+update under `docs(reporting): reconcile T25 generated contracts and physical dictionary`,
+scoped to the three generated paths and the append-only roadmap. A stale canonical
+artifact in the first CI is a reconciliation input. Never manufacture output or
+interpret generated-artifact capture as overall CI acceptance.
+
+#### T25 acceptance and publication checks
+
+1. **Primary signed journey.** Run one native LOCAL HTTP journey against a freshly
+   migrated PostgreSQL 16 instance with disjoint requester, Workflow reviewer and
+   custodian identities. Produce an exact T23 metric, submit a typed report, obtain
+   an exact bound Workflow decision, render, seal through T24 and retrieve byte-for-byte
+   JSON with the recorded SHA-256, length, Analytics version, approved source lineage,
+   Workflow action and exact T24 accepted version. Start a separate application
+   OS-JVM over the same database/storage and read the original result again. Preserve
+   original bytes after legitimate supersession and reject any “latest” substitution.
+2. **Authorization and validation.** Deny anonymous/foreign facility or company,
+   revoked paired grants, current policy denial, invalid template/parameter and
+   failed or mismatched T23 inputs, reused/wrong Workflow target or self-review,
+   same uploader/custodian, unsealed/failed output, and legacy alias attempts.
+   Check protected detail, bytes and generic Documents discovery/count behavior.
+   A corrupt/missing binary must not return part of an artifact.
+3. **Integrity.** Test exact replay, changed-payload conflict, one winner under
+   concurrent render/seal, transaction rollback after managed upload, durable
+   terminal failed render with no accepted version/output, and no legacy or
+   database-only successful state without same-scope owner evidence. Verify JDBC
+   writes against the fresh Flyway/JPA baseline and keep all historical guards.
+4. **CI and stop.** Use the existing required Java/architecture and 14 PostgreSQL
+   lanes plus runtime OpenAPI compatibility/equality, strict physical dictionary
+   equality and Full Verification Gate. Verify expected main, exact tree/paths,
+   inventory cases and publication SHA. Observe matching workflow creation,
+   queueing or startup and stop. T25 stays in progress after publication,
+   with exact-SHA CI and signed synthetic acceptance required before completion.
+
+**This roadmap-only commit:** UPDATE `doc/roadmap/ROADMAP.md`; CREATE/DELETE zero.
+Verify canonical documentation and observe exact-SHA HidraAPI Documentation Validation
+startup. The code workflow excludes this docs-only push. No source stage is selected here.

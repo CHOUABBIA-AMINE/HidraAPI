@@ -3698,3 +3698,135 @@ interpret generated-artifact capture as overall CI acceptance.
 **This roadmap-only commit:** UPDATE `doc/roadmap/ROADMAP.md`; CREATE/DELETE zero.
 Verify canonical documentation and observe exact-SHA HidraAPI Documentation Validation
 startup. The code workflow excludes this docs-only push. No source stage is selected here.
+
+
+### T17 owner-approved impact assessment and closure qualification amendment — 2026-11-18
+
+The owner authorized the bounded T17 scope amendment after confirming that the current
+signed route set cannot create the mandatory persisted impact assessment for a newly
+enrolled case. Reviewed source baseline
+`bfa91e4c73615b77b553db5732fa16c1624b686a`, parent
+`720fa4a7d87922f05b5c796b7e492b75db1640d9`, tree
+`5518d910afc3a50d1f9f187f64b1a9bd8fe488d8`.
+[Documentation Validation #1138](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44307576707)
+passed on the registration baseline. The executable tree still derives from
+[HidraAPI CI #1301](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44304247806).
+The only signed T17 case exercised there was the denial/missing-case scenario.
+Source confirms that close currently checks existence in `hidra_hse_impact_assessment`
+and that the table and JPA repository exist without a signed scoped authoring path.
+The missing assessment must be created through the client journey, without inserting
+an assessment fixture or relaxing the close requirement.
+
+**Admission and authority.** Add only
+`POST /api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases/{caseId}/impact-assessments`
+on the existing native controller. Request: `requestId`, `expectedCaseVersion`,
+`impactDomain`, `impactTypeId`, `severity`, and bounded nonblank `description`.
+Use existing HSE domain/severity enums and the HSE owner-controlled active catalog
+field policy for `CASE_IMPACT_TYPE`. This is an explicitly configured field-role
+binding, with only synthetic policy/catalog entries in qualification. Omit optional
+impact quantity, cost, regulatory and other operational fields from this first
+command. Resolve the effective actor and time on the server. Require current native
+`hse:capa:assess` and `hse:capa:read` on the registered company CUSTOM and
+FACILITY scopes, applicable current policy and eligible Topology owner before any
+protected existence check. The forward migration provisions the permission
+identity only. Use the registered Incident-backed case and its exact scope. A new
+assessment requires an OPEN or IN_PROGRESS, nonterminal enrolled case. One
+authoritative initial assessment per enrolled case is admitted in this slice.
+
+**Transaction and retention.** Under the existing case lock, first resolve the
+exact scoped replay with request key, canonical digest and actor, then compare the
+expected case history revision for a new command. Return 201 on creation and 200
+on identical replay, even after closure for a currently authorized actor. Reject
+changed replay, stale version and a second authoritative assessment with 409.
+Persist the assessment row and one `ASSESS_IMPACT` case event atomically. Event
+reference is the exact assessment ID. Include it in existing scoped history.
+Closure must resolve the exact admitted event and assessment for that case, then
+retain its ID together with the independent HSE_CASE approval and closure receipt.
+Use forward-only constraints/triggers and exact local HSE relationships for the
+new event and future scoped closures. Protect the admitted record and its lineage
+from edits/deletion and block future enrolled closure without an exact assessment
+receipt. Existing applied migrations, legacy assessment rows and legacy API
+behavior stay preserved. State guard and receipt rollout must preserve any
+pre-amendment historical rows without synthetic backfill. Existing CAPA action,
+verification, and closure rules remain required.
+
+**Qualification.** Extend the existing signed GZ2 test with native JWT and fresh
+PostgreSQL 16. Create/select reviewed T16 Incident evidence, enroll the case,
+record its impact assessment by HTTP, propose and independently approve CAPA,
+assign, upload and independently accept T24 evidence, attach exact version,
+complete, verify effective, and independently approve and execute HSE case
+closure. Verify assessment/event identity, exact document bytes and SHA-256,
+CAPA and case version/history, closure ID and Workflow provenance after a second
+OS-JVM on the same database and storage. Exercise missing assessment, stale
+revision, same key/different payload, concurrent duplicate assessment, foreign or
+revoked authority, wrong evidence or approval, self-review and atomic rollback.
+Use existing signed Workflow use paths and current owner checks. Synthetic
+prerequisite records may be built through existing fixtures, but no fixture may
+create the new impact assessment, substitute for an HSE transition under test,
+or make a private storage shortcut for the claimed user journey.
+
+The existing Documents HSE provider returns a primary FACILITY link ID in
+the field named acceptanceId. Complete the already required exact T24 evidence
+assertion by correcting that existing HSE-only provider to read the genuine
+Documents decision for the exact document/version and validate its link,
+scope, SHA-256 and length. Keep the HSE owner contract shape and T24 public
+API unchanged. Existing historical HSE evidence is not rewritten. Review any
+retained link-ID reference and preserve it as historical evidence without
+accepting it as a new decision. The signed journey asserts the distinct true
+acceptance ID, exact version and bytes. Report unexpected owner defects beyond
+this exact scope without weakening assertions or extending the ledger.
+
+**Future T17 implementation envelope.** Exact message
+`feat(hse): record scoped impact assessment before closure`.
+CREATE 2, UPDATE 23, DELETE 0.
+
+| Exact path | Change |
+|---|---|
+| `src/main/java/dz/sh/hidra/modules/hse/domain/model/HseCaseImpactAssessment.java` | Pure Java immutable assessed case, exact type, domain, severity, reason and server-derived actor/time. Validate bounded required fields and existing enum values. |
+| `src/main/resources/db/migration/V20261118_003__t17_hse_impact_assessment.sql` | Forward guards and permission catalogue. Retain existing assessment and event tables. Add exact case/assessment closure binding, case-level assessment event consistency and controlled uniqueness. |
+
+| Exact path | Change |
+|---|---|
+| `src/main/java/dz/sh/hidra/modules/hse/application/port/in/HseCapaLifecycleUseCase.java` | Add typed command and assessment receipt, including expected case revision and replay. |
+| `src/main/java/dz/sh/hidra/modules/hse/application/port/out/HseCapaLifecycleStorePort.java` | Add typed append/lookup and exact linked assessment for closure within the case lock. |
+| `src/main/java/dz/sh/hidra/modules/hse/application/service/HseCapaLifecycleApplicationService.java` | Authorize ASSESS and READ before lookup, scope and lock the enrolled case, check replay/CAS, write assessment and history, and pass exact assessment to close. |
+| `src/main/java/dz/sh/hidra/modules/hse/api/rest/controller/HseCapaLifecycleController.java` | Add signed POST for scoped case impact assessment with 201/200 mapping. |
+| `src/main/java/dz/sh/hidra/modules/hse/api/rest/request/HseCapaLifecycleRequest.java` | Add unique HseCaseImpactAssessmentRequest payload with explicit bounds and no caller-supplied actor or time. |
+| `src/main/java/dz/sh/hidra/modules/hse/api/rest/response/HseCapaLifecycleResponse.java` | Add distinctive assessment receipt DTO. Preserve existing operations and response schemas. |
+| `src/main/java/dz/sh/hidra/modules/hse/api/rest/mapper/HseCapaLifecycleRestMapper.java` | Map typed assessment command/receipt and proper revision. |
+| `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/adapter/JdbcHseCapaLifecycleStoreAdapter.java` | Lock eligible HSE catalog evidence, write assessment and immutable event in one transaction, return exact replay and persist linked closure. |
+| `src/main/java/dz/sh/hidra/modules/documents/application/service/HseControlledDocumentEvidenceQueryService.java` | Return genuine exact T24 decision identity for the HSE-only proof. Keep protected lookup and verify decision link, scope and metadata. |
+| `src/main/java/dz/sh/hidra/modules/documents/application/port/out/ControlledDocumentRepositoryPort.java` | Add owner-only exact document/version acceptance lookup. |
+| `src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/adapter/JdbcControlledDocumentRepositoryAdapter.java` | Resolve the immutable exact accepted-version decision from the existing T24 relation. Preserve all other repository paths. |
+| `src/main/java/dz/sh/hidra/modules/identity/application/service/HseCapaScopedAuthorizationQueryService.java` | Admit new assess permission through the existing current dual-scope guard. |
+| `src/main/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistry.java` | Register the exact 14th T17 handler and raise complete registry count from 137 to 138. |
+| `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistryTest.java` | Update exact count and matching assertions. |
+| `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteStartupValidatorTest.java` | Validate the complete native registry and new exact tuple. |
+| `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java` | Add exact tuple and preserve handler signatures and wrong verb/sibling denials. |
+| `src/test/java/dz/sh/hidra/modules/hse/application/service/HseCapaLifecycleApplicationServiceTest.java` | Exercise assessment authorization, invalid source/type, revision and replay, and close with exact assessment or reject. |
+| `src/test/java/dz/sh/hidra/modules/hse/infrastructure/persistence/HseCapaLifecyclePostgresIntegrationTest.java` | Verify forward Flyway migration, assessment/event/closure constraint, immutable history and rollback. |
+| `src/test/java/dz/sh/hidra/qualification/Gz2HseCapaNativeHttpPostgresIntegrationTest.java` | Retain existing negative journey and add signed full positive history, document read, close and restart, plus in-scope negatives and race coverage. |
+| `src/test/java/dz/sh/hidra/qualification/Gz2SignedWorkflowFixture.java` | Provide synthetic HSE, Workflow, document catalog, signed actor and storage setup where shared support is needed. Preserve other qualification behavior. |
+| `.github/ci-test-inventory.json` | Register exact updated cases and test/support fingerprints. Retain required report coverage and all shards. |
+| `doc/modules/hse.md` | Describe signed client assessment, scope permissions and closure evidence where implemented. |
+| `doc/roadmap/ROADMAP.md` | Append implementation and real validation evidence under T17. |
+
+Canonical generated updates are conditional on genuine runtime/captured evidence
+and limited to `doc/api/openapi.yaml`, `doc/database/DATA_DICTIONARY.md` and
+`.github/documentation-validation.json`, under the existing T17 CI-first
+policy. No new table ownership mapping is expected. The assessment uses the
+existing mapped table. If catalog output adds any new relations, scope must be
+reconciled first. Reserve migration `V20261118_003` for this T17 follow-up.
+In T25's earlier CREATE ledger, the planned migration path is superseded by
+`src/main/resources/db/migration/V20261118_004__t25_scoped_report_rendering.sql`,
+subject to fresh version verification at its execution lease. No other T25
+scope or gate changes.
+
+**This publication** changes only `doc/roadmap/ROADMAP.md`. Registered approval
+message `docs(roadmap): approve T17 scoped impact assessment follow-up`.
+Verify Documentation Validation starts on its exact SHA and stop at that
+publication boundary. Upon successful documentation validation, the next
+selected stage is the registered T17 implementation and signed qualification.
+Publish that stage with the expected main lease and confirm exact-SHA HidraAPI
+CI startup. T17 remains IN PROGRESS pending actual positive/negative signed
+evidence and successful full CI. T25 implementation remains gated.

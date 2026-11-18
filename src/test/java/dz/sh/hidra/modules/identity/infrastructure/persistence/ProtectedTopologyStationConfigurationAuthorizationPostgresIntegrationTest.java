@@ -107,6 +107,9 @@ public class ProtectedTopologyStationConfigurationAuthorizationPostgresIntegrati
                             "log_error_verbosity=terse",
                             "-c",
                             "track_commit_timestamp=on",
+                            // Keep background maintenance out of the disposable NOWAIT fixture.
+                            "-c",
+                            "autovacuum=off",
                             "-c", "max_locks_per_transaction=256",
                             "-c",
                             "log_min_error_statement=panic",
@@ -178,6 +181,7 @@ public class ProtectedTopologyStationConfigurationAuthorizationPostgresIntegrati
     private static final String T="public.hidra_identity_";
     private static final String COMPANY="synthetic-company";
     @BeforeEach void initialize() {
+        assertThat(jdbc.queryForObject("SHOW autovacuum",String.class)).isEqualTo("off");
         SecurityContextHolder.clearContext(); cleanEvidence(); flyway.validate();
         assertThat(flyway.info().pending()).isEmpty();
         when(externalDecoder.decode(anyString())).thenAnswer(i->realExternal.decode(i.getArgument(0)));

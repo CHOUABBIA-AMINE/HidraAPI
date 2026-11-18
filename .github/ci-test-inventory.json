@@ -1956,7 +1956,7 @@
       "lane": "postgres-integration",
       "owner": "hse",
       "path": "src/test/java/dz/sh/hidra/modules/hse/infrastructure/persistence/HseLifecycleSemanticPostgresIntegrationTest.java",
-      "source_sha256": "5a4fa7cc4751729c97392a678eade7c2423ddb777849784a62c41b019b0e8d5b",
+      "source_sha256": "36af1cbf891d40676baae1ac33e5a0f41733c82be180fd69638b1b4c70a5b2d3",
       "supports": []
     },
     {
@@ -3360,7 +3360,7 @@
       "lane": "postgres-integration",
       "owner": "identity",
       "path": "src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/ProtectedTopologyStationConfigurationAuthorizationPostgresIntegrationTest.java",
-      "source_sha256": "1b701f08d14d5a1fc4ea316a40eb4f025423dceed1937df4bfe77046e73599dc",
+      "source_sha256": "df6577e4e8d3689ba9d73679cacf757a1288f08fc57d8b6389fe82309eb88618",
       "supports": []
     },
     {

@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `14c6be04466e1b3c1a1ffc2ae1bea3d083d9dd8a`
+Captured source SHA: `10c2fe7adc727b30169d982fff6b1f3deb6826f5`
 PostgreSQL server: `16.16 (Debian 16.16-1.pgdg13+1)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `16b3e0e43b8bc817244bdb234a6f92b03e317fb1727dac200c74fd30b91f4e66`.
-Migrations: 225; JPA mappings: 471; catalog relations: 597; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `75cf616903b69aa3affa401734a3e932a2207172bb6f218be57ea5099c4bc37e`.
+Migrations: 226; JPA mappings: 471; catalog relations: 603; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -9150,6 +9150,7 @@ Persisted HseCorrectivePreventiveActionJpaEntity state; semantic authority remai
 - Migration mention (not inferred introduction): [V20260611_012__create_hse_tables.sql](../../src/main/resources/db/migration/V20260611_012__create_hse_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261008_016__hmr_097_hse_capa_reference_catalog_integrity.sql](../../src/main/resources/db/migration/V20261008_016__hmr_097_hse_capa_reference_catalog_integrity.sql)
+- Migration mention (not inferred introduction): [V20261118_002__t17_hse_capa_governed_lifecycle.sql](../../src/main/resources/db/migration/V20261118_002__t17_hse_capa_governed_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9182,6 +9183,8 @@ Persisted HseCorrectivePreventiveActionJpaEntity state; semantic authority remai
   - Catalog attributes: {"columns": ["hse_case_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_hse_case"}, "type": "f", "validated": true}
 - `hidra_hse_capa_pkey`: PRIMARY KEY (id)
   - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `t17_capa_consistency`: TRIGGER DEFERRABLE INITIALLY DEFERRED
+  - Catalog attributes: {"columns": [], "deferrable": true, "initially_deferred": true, "reference": null, "type": "t", "validated": true}
 
 #### Indexes
 
@@ -9213,6 +9216,12 @@ Persisted HseCorrectivePreventiveActionJpaEntity state; semantic authority remai
 - `hmr097_capa_write`: CREATE TRIGGER hmr097_capa_write BEFORE INSERT OR UPDATE ON hidra_hse_capa FOR EACH ROW EXECUTE FUNCTION hmr097_guard_capa_write()
   - Catalog attributes: {"enabled": "O", "function_identity": "public.hmr097_guard_capa_write()"}
   - Function evidence: CREATE OR REPLACE FUNCTION public.hmr097_guard_capa_write()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>DECLARE family varchar(80); mapping_active boolean; t hidra_hse_catalog_entry%ROWTYPE; fresh boolean;<br>BEGIN<br>    PERFORM 1 FROM hidra_hse_case WHERE id=NEW.hse_case_id FOR UPDATE;<br>    IF NOT FOUND THEN RAISE EXCEPTION 'HMR-097: unknown HSE case %',NEW.hse_case_id; END IF;<br>    fresh:=TG_OP='INSERT';<br>    IF TG_OP='UPDATE' THEN fresh:=NEW.action_type_id IS DISTINCT FROM OLD.action_type_id; END IF;<br>    SELECT catalog_name,active INTO family,mapping_active FROM hidra_hse_catalog_field_policy<br>        WHERE field_role='CAPA_ACTION_TYPE' FOR SHARE;<br>    IF NOT FOUND OR (fresh AND NOT mapping_active) THEN RAISE EXCEPTION 'HMR-097: explicit eligible CAPA action-type mapping required'; END IF;<br>    SELECT * INTO t FROM hidra_hse_catalog_entry WHERE id=NEW.action_type_id FOR SHARE;<br>    IF NOT FOUND OR t.catalog_name&lt;&gt;family OR (fresh AND NOT t.active) THEN<br>        RAISE EXCEPTION 'HMR-097: exact eligible CAPA action-type family required';<br>    END IF;<br>    RETURN NEW;<br>END $function$<br>
+- `t17_capa_consistency`: CREATE CONSTRAINT TRIGGER t17_capa_consistency AFTER INSERT OR UPDATE ON hidra_hse_capa DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION t17_check_case_consistency()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t17_check_case_consistency()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t17_check_case_consistency()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>DECLARE target_id varchar(80); parent record; cap record; head record;<br>BEGIN<br> IF TG_TABLE_NAME='hidra_hse_case' THEN target_id:=NEW.id;<br> ELSIF TG_TABLE_NAME='hidra_hse_t17_case_scope' THEN target_id:=NEW.case_id;<br> ELSIF TG_TABLE_NAME='hidra_hse_t17_capa_event' THEN target_id:=NEW.case_id;<br> ELSIF TG_TABLE_NAME='hidra_hse_t17_case_close_receipt' THEN target_id:=NEW.case_id;<br> ELSIF TG_TABLE_NAME='hidra_hse_t17_capa_state' THEN target_id:=NEW.case_id;<br> ELSIF TG_TABLE_NAME='hidra_hse_capa' THEN target_id:=NEW.hse_case_id;<br> ELSE RETURN NULL;<br> END IF;<br> IF target_id IS NULL OR NOT EXISTS(SELECT 1 FROM public.hidra_hse_t17_case_scope WHERE case_id=target_id)<br> THEN RETURN NULL; END IF;<br> SELECT * INTO parent FROM public.hidra_hse_case WHERE id=target_id;<br> IF NOT FOUND THEN RAISE EXCEPTION 'T17 case parent missing'; END IF;<br> IF parent.target_module&lt;&gt;'topology' OR parent.target_type_code&lt;&gt;'FACILITY'<br>    OR parent.target_id&lt;&gt;(SELECT facility_id FROM public.hidra_hse_t17_case_scope WHERE case_id=target_id)<br>    OR parent.source_type&lt;&gt;'INCIDENT_REFERENCE' OR parent.incident_reference_id&lt;&gt;<br>        (SELECT incident_id FROM public.hidra_hse_t17_case_scope WHERE case_id=target_id)<br> THEN RAISE EXCEPTION 'T17 enrolled case lost exact owner identity'; END IF;<br> IF EXISTS (SELECT 1 FROM public.hidra_hse_capa c WHERE c.hse_case_id=target_id<br>        AND NOT EXISTS(SELECT 1 FROM public.hidra_hse_t17_capa_state x<br>            WHERE x.capa_id=c.id AND x.case_id=target_id))<br> THEN RAISE EXCEPTION 'T17 enrolled case cannot contain a legacy context-free CAPA'; END IF;<br> FOR cap IN SELECT s.*,c.hse_case_id,c.status AS physical_status,c.owner_actor_id<br>    FROM public.hidra_hse_t17_capa_state s JOIN public.hidra_hse_capa c ON c.id=s.capa_id<br>    WHERE s.case_id=target_id LOOP<br>   IF cap.hse_case_id&lt;&gt;target_id OR cap.physical_status&lt;&gt;cap.status<br>      OR cap.owner_actor_id IS DISTINCT FROM cap.owner_id<br>      OR (cap.revision&lt;&gt;(SELECT count(*)-1 FROM public.hidra_hse_t17_capa_event e<br>           WHERE e.capa_id=cap.capa_id))<br>   THEN RAISE EXCEPTION 'T17 CAPA parent, head and event revision mismatch'; END IF;<br>   IF cap.status IN ('COMPLETED','VERIFIED','CLOSED') AND NOT EXISTS(<br>      SELECT 1 FROM public.hidra_hse_t17_capa_evidence e WHERE e.capa_id=cap.capa_id)<br>   THEN RAISE EXCEPTION 'T17 completion requires immutable accepted evidence'; END IF;<br>   IF cap.status IN ('VERIFIED','CLOSED') AND NOT EXISTS(<br>      SELECT 1 FROM public.hidra_hse_t17_capa_verification v<br>       WHERE v.capa_id=cap.capa_id AND v.outcome='EFFECTIVE'<br>         AND v.reviewer_id=cap.verifier_id AND v.evidence_id=cap.evidence_id<br>         AND v.reviewer_id&lt;&gt;cap.proposer_id AND v.reviewer_id&lt;&gt;cap.owner_id)<br>   THEN RAISE EXCEPTION 'T17 verified CAPA requires independent effective finding'; END IF;<br> END LOOP;<br> IF parent.status='CLOSED' THEN<br>   SELECT * INTO head FROM public.hidra_hse_t17_case_close_receipt r WHERE r.case_id=target_id;<br>   IF NOT FOUND OR NOT EXISTS(SELECT 1 FROM public.hidra_hse_closure c WHERE c.id=head.closure_id<br>        AND c.hse_case_id=target_id AND c.closed_by_actor_id=head.actor_id AND c.closed_at=head.closed_at)<br>      OR NOT EXISTS(SELECT 1 FROM public.hidra_hse_t17_capa_state WHERE case_id=target_id)<br>      OR EXISTS(SELECT 1 FROM public.hidra_hse_t17_capa_state WHERE case_id=target_id AND status&lt;&gt;'CLOSED')<br>   THEN RAISE EXCEPTION 'T17 case close requires closure receipt and terminal enrolled CAPAs'; END IF;<br> ELSIF EXISTS(SELECT 1 FROM public.hidra_hse_t17_case_close_receipt WHERE case_id=target_id) THEN<br>   RAISE EXCEPTION 'T17 closed receipt attached to open case';<br> END IF;<br> RETURN NULL;<br>END $function$<br>
+- `t17_capa_write_guard`: CREATE TRIGGER t17_capa_write_guard BEFORE INSERT OR DELETE OR UPDATE ON hidra_hse_capa FOR EACH ROW EXECUTE FUNCTION t17_guard_enrolled_capa()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t17_guard_enrolled_capa()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t17_guard_enrolled_capa()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>DECLARE caseid varchar(80);<br>BEGIN<br> caseid:=CASE WHEN TG_OP='DELETE' THEN OLD.hse_case_id ELSE NEW.hse_case_id END;<br> IF EXISTS(SELECT 1 FROM public.hidra_hse_t17_case_scope WHERE case_id=caseid) THEN<br>   IF TG_OP='DELETE' THEN RAISE EXCEPTION 'T17 enrolled HSE CAPA cannot be deleted'; END IF;<br>   IF TG_OP='UPDATE' AND ((to_jsonb(NEW)-'status'-'completed_at'-'verified_by_actor_id'-'verified_at'-'updated_at')<br>       IS DISTINCT FROM (to_jsonb(OLD)-'status'-'completed_at'-'verified_by_actor_id'-'verified_at'-'updated_at')<br>       OR NEW.status NOT IN ('PROPOSED','APPROVED','IN_PROGRESS','COMPLETED','VERIFIED','CLOSED'))<br>   THEN RAISE EXCEPTION 'T17 CAPA immutable identity or illegal terminal edit'; END IF;<br> END IF;<br> RETURN COALESCE(NEW,OLD);<br>END $function$<br>
 
 ### public.hidra_hse_case
 
@@ -9226,6 +9235,7 @@ Persisted HseCaseJpaEntity state; semantic authority remains with hse.
 - Migration mention (not inferred introduction): [V20261008_014__hmr_082_hse_case_lifecycle.sql](../../src/main/resources/db/migration/V20261008_014__hmr_082_hse_case_lifecycle.sql)
 - Migration mention (not inferred introduction): [V20261008_015__hmr_096_hse_closure_atomic_evidence.sql](../../src/main/resources/db/migration/V20261008_015__hmr_096_hse_closure_atomic_evidence.sql)
 - Migration mention (not inferred introduction): [V20261008_016__hmr_097_hse_capa_reference_catalog_integrity.sql](../../src/main/resources/db/migration/V20261008_016__hmr_097_hse_capa_reference_catalog_integrity.sql)
+- Migration mention (not inferred introduction): [V20261118_002__t17_hse_capa_governed_lifecycle.sql](../../src/main/resources/db/migration/V20261118_002__t17_hse_capa_governed_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -9272,6 +9282,8 @@ Persisted HseCaseJpaEntity state; semantic authority remains with hse.
   - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
 - `hmr082_case_consistency`: TRIGGER DEFERRABLE INITIALLY DEFERRED
   - Catalog attributes: {"columns": [], "deferrable": true, "initially_deferred": true, "reference": null, "type": "t", "validated": true}
+- `t17_case_consistency`: TRIGGER DEFERRABLE INITIALLY DEFERRED
+  - Catalog attributes: {"columns": [], "deferrable": true, "initially_deferred": true, "reference": null, "type": "t", "validated": true}
 
 #### Indexes
 
@@ -9313,6 +9325,12 @@ Persisted HseCaseJpaEntity state; semantic authority remains with hse.
 - `hmr096_case_no_truncate`: CREATE TRIGGER hmr096_case_no_truncate BEFORE TRUNCATE ON hidra_hse_case FOR EACH STATEMENT EXECUTE FUNCTION hmr096_closure_append_only()
   - Catalog attributes: {"enabled": "O", "function_identity": "public.hmr096_closure_append_only()"}
   - Function evidence: CREATE OR REPLACE FUNCTION public.hmr096_closure_append_only()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN RAISE EXCEPTION 'HMR-096: closure evidence cannot be overwritten or erased'; END $function$<br>
+- `t17_case_consistency`: CREATE CONSTRAINT TRIGGER t17_case_consistency AFTER INSERT OR UPDATE ON hidra_hse_case DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION t17_check_case_consistency()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t17_check_case_consistency()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t17_check_case_consistency()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>DECLARE target_id varchar(80); parent record; cap record; head record;<br>BEGIN<br> IF TG_TABLE_NAME='hidra_hse_case' THEN target_id:=NEW.id;<br> ELSIF TG_TABLE_NAME='hidra_hse_t17_case_scope' THEN target_id:=NEW.case_id;<br> ELSIF TG_TABLE_NAME='hidra_hse_t17_capa_event' THEN target_id:=NEW.case_id;<br> ELSIF TG_TABLE_NAME='hidra_hse_t17_case_close_receipt' THEN target_id:=NEW.case_id;<br> ELSIF TG_TABLE_NAME='hidra_hse_t17_capa_state' THEN target_id:=NEW.case_id;<br> ELSIF TG_TABLE_NAME='hidra_hse_capa' THEN target_id:=NEW.hse_case_id;<br> ELSE RETURN NULL;<br> END IF;<br> IF target_id IS NULL OR NOT EXISTS(SELECT 1 FROM public.hidra_hse_t17_case_scope WHERE case_id=target_id)<br> THEN RETURN NULL; END IF;<br> SELECT * INTO parent FROM public.hidra_hse_case WHERE id=target_id;<br> IF NOT FOUND THEN RAISE EXCEPTION 'T17 case parent missing'; END IF;<br> IF parent.target_module&lt;&gt;'topology' OR parent.target_type_code&lt;&gt;'FACILITY'<br>    OR parent.target_id&lt;&gt;(SELECT facility_id FROM public.hidra_hse_t17_case_scope WHERE case_id=target_id)<br>    OR parent.source_type&lt;&gt;'INCIDENT_REFERENCE' OR parent.incident_reference_id&lt;&gt;<br>        (SELECT incident_id FROM public.hidra_hse_t17_case_scope WHERE case_id=target_id)<br> THEN RAISE EXCEPTION 'T17 enrolled case lost exact owner identity'; END IF;<br> IF EXISTS (SELECT 1 FROM public.hidra_hse_capa c WHERE c.hse_case_id=target_id<br>        AND NOT EXISTS(SELECT 1 FROM public.hidra_hse_t17_capa_state x<br>            WHERE x.capa_id=c.id AND x.case_id=target_id))<br> THEN RAISE EXCEPTION 'T17 enrolled case cannot contain a legacy context-free CAPA'; END IF;<br> FOR cap IN SELECT s.*,c.hse_case_id,c.status AS physical_status,c.owner_actor_id<br>    FROM public.hidra_hse_t17_capa_state s JOIN public.hidra_hse_capa c ON c.id=s.capa_id<br>    WHERE s.case_id=target_id LOOP<br>   IF cap.hse_case_id&lt;&gt;target_id OR cap.physical_status&lt;&gt;cap.status<br>      OR cap.owner_actor_id IS DISTINCT FROM cap.owner_id<br>      OR (cap.revision&lt;&gt;(SELECT count(*)-1 FROM public.hidra_hse_t17_capa_event e<br>           WHERE e.capa_id=cap.capa_id))<br>   THEN RAISE EXCEPTION 'T17 CAPA parent, head and event revision mismatch'; END IF;<br>   IF cap.status IN ('COMPLETED','VERIFIED','CLOSED') AND NOT EXISTS(<br>      SELECT 1 FROM public.hidra_hse_t17_capa_evidence e WHERE e.capa_id=cap.capa_id)<br>   THEN RAISE EXCEPTION 'T17 completion requires immutable accepted evidence'; END IF;<br>   IF cap.status IN ('VERIFIED','CLOSED') AND NOT EXISTS(<br>      SELECT 1 FROM public.hidra_hse_t17_capa_verification v<br>       WHERE v.capa_id=cap.capa_id AND v.outcome='EFFECTIVE'<br>         AND v.reviewer_id=cap.verifier_id AND v.evidence_id=cap.evidence_id<br>         AND v.reviewer_id&lt;&gt;cap.proposer_id AND v.reviewer_id&lt;&gt;cap.owner_id)<br>   THEN RAISE EXCEPTION 'T17 verified CAPA requires independent effective finding'; END IF;<br> END LOOP;<br> IF parent.status='CLOSED' THEN<br>   SELECT * INTO head FROM public.hidra_hse_t17_case_close_receipt r WHERE r.case_id=target_id;<br>   IF NOT FOUND OR NOT EXISTS(SELECT 1 FROM public.hidra_hse_closure c WHERE c.id=head.closure_id<br>        AND c.hse_case_id=target_id AND c.closed_by_actor_id=head.actor_id AND c.closed_at=head.closed_at)<br>      OR NOT EXISTS(SELECT 1 FROM public.hidra_hse_t17_capa_state WHERE case_id=target_id)<br>      OR EXISTS(SELECT 1 FROM public.hidra_hse_t17_capa_state WHERE case_id=target_id AND status&lt;&gt;'CLOSED')<br>   THEN RAISE EXCEPTION 'T17 case close requires closure receipt and terminal enrolled CAPAs'; END IF;<br> ELSIF EXISTS(SELECT 1 FROM public.hidra_hse_t17_case_close_receipt WHERE case_id=target_id) THEN<br>   RAISE EXCEPTION 'T17 closed receipt attached to open case';<br> END IF;<br> RETURN NULL;<br>END $function$<br>
+- `t17_parent_write_guard`: CREATE TRIGGER t17_parent_write_guard BEFORE DELETE OR UPDATE ON hidra_hse_case FOR EACH ROW EXECUTE FUNCTION t17_guard_enrolled_parent()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t17_guard_enrolled_parent()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t17_guard_enrolled_parent()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> IF EXISTS(SELECT 1 FROM public.hidra_hse_t17_case_scope WHERE case_id=OLD.id) THEN<br>   IF TG_OP='DELETE' THEN RAISE EXCEPTION 'T17 enrolled HSE case cannot be deleted'; END IF;<br>   IF (to_jsonb(NEW)-'status'-'closed_at'-'updated_at')<br>       IS DISTINCT FROM (to_jsonb(OLD)-'status'-'closed_at'-'updated_at')<br>       OR OLD.status IN ('CLOSED','CANCELLED')<br>       OR NEW.status&lt;&gt;'CLOSED' OR NEW.closed_at IS NULL OR OLD.closed_at IS NOT NULL<br>   THEN RAISE EXCEPTION 'T17 enrolled HSE case mutation requires authoritative close'; END IF;<br> END IF;<br> RETURN COALESCE(NEW,OLD);<br>END $function$<br>
 
 ### public.hidra_hse_case_evidence_link
 
@@ -9559,6 +9577,7 @@ Persisted HseClosureJpaEntity state; semantic authority remains with hse.
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261008_014__hmr_082_hse_case_lifecycle.sql](../../src/main/resources/db/migration/V20261008_014__hmr_082_hse_case_lifecycle.sql)
 - Migration mention (not inferred introduction): [V20261008_015__hmr_096_hse_closure_atomic_evidence.sql](../../src/main/resources/db/migration/V20261008_015__hmr_096_hse_closure_atomic_evidence.sql)
+- Migration mention (not inferred introduction): [V20261118_002__t17_hse_capa_governed_lifecycle.sql](../../src/main/resources/db/migration/V20261118_002__t17_hse_capa_governed_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -10185,6 +10204,400 @@ Persisted SafetyObservationJpaEntity state; semantic authority remains with hse.
 #### Triggers
 
 None captured in this catalog category.
+
+### public.hidra_hse_t17_capa_event
+
+Owner: **hse**; relation kind: `r`.
+
+Append-only, unique command/revision HSE CAPA and case closure events with payload digest, actor, state transition, source reference and timestamp.
+
+- Evidence: [V20261118_002__t17_hse_capa_governed_lifecycle.sql](../../src/main/resources/db/migration/V20261118_002__t17_hse_capa_governed_lifecycle.sql)
+- Evidence: [JdbcHseCapaLifecycleStoreAdapter.java](../../src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/adapter/JdbcHseCapaLifecycleStoreAdapter.java)
+- Migration mention (not inferred introduction): [V20261118_002__t17_hse_capa_governed_lifecycle.sql](../../src/main/resources/db/migration/V20261118_002__t17_hse_capa_governed_lifecycle.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| case_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| capa_id | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+| request_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| command_sha256 | character(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| operation | character varying(20) | False | None; identity=; generated= | No current mapped Java column | — |
+| before_status | character varying(40) | True | None; identity=; generated= | No current mapped Java column | — |
+| after_status | character varying(40) | False | None; identity=; generated= | No current mapped Java column | — |
+| revision | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| reason_text | character varying(500) | False | None; identity=; generated= | No current mapped Java column | — |
+| reference_id | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+| occurred_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `fk_t17_event_parent_pair`: FOREIGN KEY (case_id, capa_id) REFERENCES hidra_hse_t17_capa_state(case_id, capa_id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["case_id", "capa_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["case_id", "capa_id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_hse_t17_capa_state"}, "type": "f", "validated": true}
+- `hidra_hse_t17_capa_event_actor_id_check`: CHECK (length(btrim(actor_id::text)) &gt; 0)
+  - Catalog attributes: {"columns": ["actor_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_hse_t17_capa_event_capa_id_fkey`: FOREIGN KEY (capa_id) REFERENCES hidra_hse_t17_capa_state(capa_id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["capa_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["capa_id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_hse_t17_capa_state"}, "type": "f", "validated": true}
+- `hidra_hse_t17_capa_event_capa_id_revision_key`: UNIQUE (capa_id, revision)
+  - Catalog attributes: {"columns": ["capa_id", "revision"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_hse_t17_capa_event_case_id_fkey`: FOREIGN KEY (case_id) REFERENCES hidra_hse_t17_case_scope(case_id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["case_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["case_id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_hse_t17_case_scope"}, "type": "f", "validated": true}
+- `hidra_hse_t17_capa_event_case_id_request_id_key`: UNIQUE (case_id, request_id)
+  - Catalog attributes: {"columns": ["case_id", "request_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_hse_t17_capa_event_check`: CHECK (operation::text = 'CLOSE'::text AND capa_id IS NULL AND after_status::text = 'CLOSED'::text OR operation::text &lt;&gt; 'CLOSE'::text AND capa_id IS NOT NULL)
+  - Catalog attributes: {"columns": ["operation", "capa_id", "after_status"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_hse_t17_capa_event_command_sha256_check`: CHECK (command_sha256 ~ '^[0-9a-f]{64}$'::text)
+  - Catalog attributes: {"columns": ["command_sha256"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_hse_t17_capa_event_occurred_at_check`: CHECK (isfinite(occurred_at))
+  - Catalog attributes: {"columns": ["occurred_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_hse_t17_capa_event_operation_check`: CHECK (operation::text = ANY (ARRAY['PROPOSE'::character varying, 'APPROVE'::character varying, 'ASSIGN'::character varying, 'EVIDENCE'::character varying, 'COMPLETE'::character varying, 'VERIFY'::character varying, 'FINALIZE'::character varying, 'CLOSE'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["operation"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_hse_t17_capa_event_pkey`: PRIMARY KEY (id)
+  - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_hse_t17_capa_event_reason_text_check`: CHECK (length(btrim(reason_text::text)) &gt; 0)
+  - Catalog attributes: {"columns": ["reason_text"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_hse_t17_capa_event_request_id_check`: CHECK (length(btrim(request_id::text)) &gt; 0)
+  - Catalog attributes: {"columns": ["request_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_hse_t17_capa_event_revision_check`: CHECK (revision &gt;= 0)
+  - Catalog attributes: {"columns": ["revision"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `t17_event_consistency`: TRIGGER DEFERRABLE INITIALLY DEFERRED
+  - Catalog attributes: {"columns": [], "deferrable": true, "initially_deferred": true, "reference": null, "type": "t", "validated": true}
+
+#### Indexes
+
+- `hidra_hse_t17_capa_event_capa_id_revision_key`: CREATE UNIQUE INDEX hidra_hse_t17_capa_event_capa_id_revision_key ON public.hidra_hse_t17_capa_event USING btree (capa_id, revision)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_hse_t17_capa_event_case_id_request_id_key`: CREATE UNIQUE INDEX hidra_hse_t17_capa_event_case_id_request_id_key ON public.hidra_hse_t17_capa_event USING btree (case_id, request_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_hse_t17_capa_event_pkey`: CREATE UNIQUE INDEX hidra_hse_t17_capa_event_pkey ON public.hidra_hse_t17_capa_event USING btree (id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `ix_t17_history`: CREATE INDEX ix_t17_history ON public.hidra_hse_t17_capa_event USING btree (case_id, occurred_at, id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+
+#### Triggers
+
+- `t17_event_consistency`: CREATE CONSTRAINT TRIGGER t17_event_consistency AFTER INSERT ON hidra_hse_t17_capa_event DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION t17_check_case_consistency()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t17_check_case_consistency()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t17_check_case_consistency()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>DECLARE target_id varchar(80); parent record; cap record; head record;<br>BEGIN<br> IF TG_TABLE_NAME='hidra_hse_case' THEN target_id:=NEW.id;<br> ELSIF TG_TABLE_NAME='hidra_hse_t17_case_scope' THEN target_id:=NEW.case_id;<br> ELSIF TG_TABLE_NAME='hidra_hse_t17_capa_event' THEN target_id:=NEW.case_id;<br> ELSIF TG_TABLE_NAME='hidra_hse_t17_case_close_receipt' THEN target_id:=NEW.case_id;<br> ELSIF TG_TABLE_NAME='hidra_hse_t17_capa_state' THEN target_id:=NEW.case_id;<br> ELSIF TG_TABLE_NAME='hidra_hse_capa' THEN target_id:=NEW.hse_case_id;<br> ELSE RETURN NULL;<br> END IF;<br> IF target_id IS NULL OR NOT EXISTS(SELECT 1 FROM public.hidra_hse_t17_case_scope WHERE case_id=target_id)<br> THEN RETURN NULL; END IF;<br> SELECT * INTO parent FROM public.hidra_hse_case WHERE id=target_id;<br> IF NOT FOUND THEN RAISE EXCEPTION 'T17 case parent missing'; END IF;<br> IF parent.target_module&lt;&gt;'topology' OR parent.target_type_code&lt;&gt;'FACILITY'<br>    OR parent.target_id&lt;&gt;(SELECT facility_id FROM public.hidra_hse_t17_case_scope WHERE case_id=target_id)<br>    OR parent.source_type&lt;&gt;'INCIDENT_REFERENCE' OR parent.incident_reference_id&lt;&gt;<br>        (SELECT incident_id FROM public.hidra_hse_t17_case_scope WHERE case_id=target_id)<br> THEN RAISE EXCEPTION 'T17 enrolled case lost exact owner identity'; END IF;<br> IF EXISTS (SELECT 1 FROM public.hidra_hse_capa c WHERE c.hse_case_id=target_id<br>        AND NOT EXISTS(SELECT 1 FROM public.hidra_hse_t17_capa_state x<br>            WHERE x.capa_id=c.id AND x.case_id=target_id))<br> THEN RAISE EXCEPTION 'T17 enrolled case cannot contain a legacy context-free CAPA'; END IF;<br> FOR cap IN SELECT s.*,c.hse_case_id,c.status AS physical_status,c.owner_actor_id<br>    FROM public.hidra_hse_t17_capa_state s JOIN public.hidra_hse_capa c ON c.id=s.capa_id<br>    WHERE s.case_id=target_id LOOP<br>   IF cap.hse_case_id&lt;&gt;target_id OR cap.physical_status&lt;&gt;cap.status<br>      OR cap.owner_actor_id IS DISTINCT FROM cap.owner_id<br>      OR (cap.revision&lt;&gt;(SELECT count(*)-1 FROM public.hidra_hse_t17_capa_event e<br>           WHERE e.capa_id=cap.capa_id))<br>   THEN RAISE EXCEPTION 'T17 CAPA parent, head and event revision mismatch'; END IF;<br>   IF cap.status IN ('COMPLETED','VERIFIED','CLOSED') AND NOT EXISTS(<br>      SELECT 1 FROM public.hidra_hse_t17_capa_evidence e WHERE e.capa_id=cap.capa_id)<br>   THEN RAISE EXCEPTION 'T17 completion requires immutable accepted evidence'; END IF;<br>   IF cap.status IN ('VERIFIED','CLOSED') AND NOT EXISTS(<br>      SELECT 1 FROM public.hidra_hse_t17_capa_verification v<br>       WHERE v.capa_id=cap.capa_id AND v.outcome='EFFECTIVE'<br>         AND v.reviewer_id=cap.verifier_id AND v.evidence_id=cap.evidence_id<br>         AND v.reviewer_id&lt;&gt;cap.proposer_id AND v.reviewer_id&lt;&gt;cap.owner_id)<br>   THEN RAISE EXCEPTION 'T17 verified CAPA requires independent effective finding'; END IF;<br> END LOOP;<br> IF parent.status='CLOSED' THEN<br>   SELECT * INTO head FROM public.hidra_hse_t17_case_close_receipt r WHERE r.case_id=target_id;<br>   IF NOT FOUND OR NOT EXISTS(SELECT 1 FROM public.hidra_hse_closure c WHERE c.id=head.closure_id<br>        AND c.hse_case_id=target_id AND c.closed_by_actor_id=head.actor_id AND c.closed_at=head.closed_at)<br>      OR NOT EXISTS(SELECT 1 FROM public.hidra_hse_t17_capa_state WHERE case_id=target_id)<br>      OR EXISTS(SELECT 1 FROM public.hidra_hse_t17_capa_state WHERE case_id=target_id AND status&lt;&gt;'CLOSED')<br>   THEN RAISE EXCEPTION 'T17 case close requires closure receipt and terminal enrolled CAPAs'; END IF;<br> ELSIF EXISTS(SELECT 1 FROM public.hidra_hse_t17_case_close_receipt WHERE case_id=target_id) THEN<br>   RAISE EXCEPTION 'T17 closed receipt attached to open case';<br> END IF;<br> RETURN NULL;<br>END $function$<br>
+- `t17_event_immutable`: CREATE TRIGGER t17_event_immutable BEFORE DELETE OR UPDATE ON hidra_hse_t17_capa_event FOR EACH ROW EXECUTE FUNCTION t17_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t17_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t17_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T17 retained HSE evidence is append-only';<br>END $function$<br>
+- `t17_event_no_truncate`: CREATE TRIGGER t17_event_no_truncate BEFORE TRUNCATE ON hidra_hse_t17_capa_event FOR EACH STATEMENT EXECUTE FUNCTION t17_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t17_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t17_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T17 retained HSE evidence is append-only';<br>END $function$<br>
+
+### public.hidra_hse_t17_capa_evidence
+
+Owner: **hse**; relation kind: `r`.
+
+Immutable HSE binding to accepted T24 Documents version, link/decision reference, exact checksum/content length and company/FACILITY snapshot; no Document FK.
+
+- Evidence: [V20261118_002__t17_hse_capa_governed_lifecycle.sql](../../src/main/resources/db/migration/V20261118_002__t17_hse_capa_governed_lifecycle.sql)
+- Evidence: [JdbcHseCapaLifecycleStoreAdapter.java](../../src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/adapter/JdbcHseCapaLifecycleStoreAdapter.java)
+- Migration mention (not inferred introduction): [V20261118_002__t17_hse_capa_governed_lifecycle.sql](../../src/main/resources/db/migration/V20261118_002__t17_hse_capa_governed_lifecycle.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| capa_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| document_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| version_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| acceptance_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| checksum_sha256 | character(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| content_length | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| company_id | character varying(120) | False | None; identity=; generated= | No current mapped Java column | — |
+| facility_id | character varying(120) | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| attached_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_hse_t17_capa_evidence_attached_at_check`: CHECK (isfinite(attached_at))
+  - Catalog attributes: {"columns": ["attached_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_hse_t17_capa_evidence_capa_id_document_id_version_id__key`: UNIQUE (capa_id, document_id, version_id, acceptance_id)
+  - Catalog attributes: {"columns": ["capa_id", "document_id", "version_id", "acceptance_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_hse_t17_capa_evidence_capa_id_fkey`: FOREIGN KEY (capa_id) REFERENCES hidra_hse_t17_capa_state(capa_id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["capa_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["capa_id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_hse_t17_capa_state"}, "type": "f", "validated": true}
+- `hidra_hse_t17_capa_evidence_checksum_sha256_check`: CHECK (checksum_sha256 ~ '^[0-9a-f]{64}$'::text)
+  - Catalog attributes: {"columns": ["checksum_sha256"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_hse_t17_capa_evidence_content_length_check`: CHECK (content_length &gt;= 0)
+  - Catalog attributes: {"columns": ["content_length"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_hse_t17_capa_evidence_id_capa_id_key`: UNIQUE (id, capa_id)
+  - Catalog attributes: {"columns": ["id", "capa_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_hse_t17_capa_evidence_pkey`: PRIMARY KEY (id)
+  - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+
+#### Indexes
+
+- `hidra_hse_t17_capa_evidence_capa_id_document_id_version_id__key`: CREATE UNIQUE INDEX hidra_hse_t17_capa_evidence_capa_id_document_id_version_id__key ON public.hidra_hse_t17_capa_evidence USING btree (capa_id, document_id, version_id, acceptance_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_hse_t17_capa_evidence_id_capa_id_key`: CREATE UNIQUE INDEX hidra_hse_t17_capa_evidence_id_capa_id_key ON public.hidra_hse_t17_capa_evidence USING btree (id, capa_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_hse_t17_capa_evidence_pkey`: CREATE UNIQUE INDEX hidra_hse_t17_capa_evidence_pkey ON public.hidra_hse_t17_capa_evidence USING btree (id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `t17_evidence_immutable`: CREATE TRIGGER t17_evidence_immutable BEFORE DELETE OR UPDATE ON hidra_hse_t17_capa_evidence FOR EACH ROW EXECUTE FUNCTION t17_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t17_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t17_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T17 retained HSE evidence is append-only';<br>END $function$<br>
+- `t17_evidence_no_truncate`: CREATE TRIGGER t17_evidence_no_truncate BEFORE TRUNCATE ON hidra_hse_t17_capa_evidence FOR EACH STATEMENT EXECUTE FUNCTION t17_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t17_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t17_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T17 retained HSE evidence is append-only';<br>END $function$<br>
+
+### public.hidra_hse_t17_capa_state
+
+Owner: **hse**; relation kind: `r`.
+
+HSE-owned locked CAPA revision and status projection with proposer, owner, evidence and independent verifier IDs, paired to its enrolled case.
+
+- Evidence: [V20261118_002__t17_hse_capa_governed_lifecycle.sql](../../src/main/resources/db/migration/V20261118_002__t17_hse_capa_governed_lifecycle.sql)
+- Evidence: [JdbcHseCapaLifecycleStoreAdapter.java](../../src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/adapter/JdbcHseCapaLifecycleStoreAdapter.java)
+- Migration mention (not inferred introduction): [V20261118_002__t17_hse_capa_governed_lifecycle.sql](../../src/main/resources/db/migration/V20261118_002__t17_hse_capa_governed_lifecycle.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| capa_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| case_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| status | character varying(40) | False | None; identity=; generated= | No current mapped Java column | — |
+| revision | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| proposer_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| owner_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| verifier_id | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+| evidence_id | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+| updated_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_hse_t17_capa_state_capa_id_fkey`: FOREIGN KEY (capa_id) REFERENCES hidra_hse_capa(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["capa_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_hse_capa"}, "type": "f", "validated": true}
+- `hidra_hse_t17_capa_state_case_id_capa_id_key`: UNIQUE (case_id, capa_id)
+  - Catalog attributes: {"columns": ["case_id", "capa_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_hse_t17_capa_state_case_id_fkey`: FOREIGN KEY (case_id) REFERENCES hidra_hse_t17_case_scope(case_id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["case_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["case_id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_hse_t17_case_scope"}, "type": "f", "validated": true}
+- `hidra_hse_t17_capa_state_check`: CHECK ((status::text &lt;&gt; ALL (ARRAY['VERIFIED'::character varying, 'CLOSED'::character varying]::text[])) OR verifier_id IS NOT NULL AND evidence_id IS NOT NULL)
+  - Catalog attributes: {"columns": ["status", "verifier_id", "evidence_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_hse_t17_capa_state_owner_id_check`: CHECK (length(btrim(owner_id::text)) &gt; 0)
+  - Catalog attributes: {"columns": ["owner_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_hse_t17_capa_state_pkey`: PRIMARY KEY (capa_id)
+  - Catalog attributes: {"columns": ["capa_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_hse_t17_capa_state_proposer_id_check`: CHECK (length(btrim(proposer_id::text)) &gt; 0)
+  - Catalog attributes: {"columns": ["proposer_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_hse_t17_capa_state_revision_check`: CHECK (revision &gt;= 0)
+  - Catalog attributes: {"columns": ["revision"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_hse_t17_capa_state_status_check`: CHECK (status::text = ANY (ARRAY['PROPOSED'::character varying, 'APPROVED'::character varying, 'IN_PROGRESS'::character varying, 'COMPLETED'::character varying, 'VERIFIED'::character varying, 'CLOSED'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["status"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_hse_t17_capa_state_updated_at_check`: CHECK (isfinite(updated_at))
+  - Catalog attributes: {"columns": ["updated_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `t17_state_consistency`: TRIGGER DEFERRABLE INITIALLY DEFERRED
+  - Catalog attributes: {"columns": [], "deferrable": true, "initially_deferred": true, "reference": null, "type": "t", "validated": true}
+
+#### Indexes
+
+- `hidra_hse_t17_capa_state_case_id_capa_id_key`: CREATE UNIQUE INDEX hidra_hse_t17_capa_state_case_id_capa_id_key ON public.hidra_hse_t17_capa_state USING btree (case_id, capa_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_hse_t17_capa_state_pkey`: CREATE UNIQUE INDEX hidra_hse_t17_capa_state_pkey ON public.hidra_hse_t17_capa_state USING btree (capa_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `ix_t17_capa_case`: CREATE INDEX ix_t17_capa_case ON public.hidra_hse_t17_capa_state USING btree (case_id, capa_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+
+#### Triggers
+
+- `t17_state_consistency`: CREATE CONSTRAINT TRIGGER t17_state_consistency AFTER INSERT OR UPDATE ON hidra_hse_t17_capa_state DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION t17_check_case_consistency()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t17_check_case_consistency()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t17_check_case_consistency()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>DECLARE target_id varchar(80); parent record; cap record; head record;<br>BEGIN<br> IF TG_TABLE_NAME='hidra_hse_case' THEN target_id:=NEW.id;<br> ELSIF TG_TABLE_NAME='hidra_hse_t17_case_scope' THEN target_id:=NEW.case_id;<br> ELSIF TG_TABLE_NAME='hidra_hse_t17_capa_event' THEN target_id:=NEW.case_id;<br> ELSIF TG_TABLE_NAME='hidra_hse_t17_case_close_receipt' THEN target_id:=NEW.case_id;<br> ELSIF TG_TABLE_NAME='hidra_hse_t17_capa_state' THEN target_id:=NEW.case_id;<br> ELSIF TG_TABLE_NAME='hidra_hse_capa' THEN target_id:=NEW.hse_case_id;<br> ELSE RETURN NULL;<br> END IF;<br> IF target_id IS NULL OR NOT EXISTS(SELECT 1 FROM public.hidra_hse_t17_case_scope WHERE case_id=target_id)<br> THEN RETURN NULL; END IF;<br> SELECT * INTO parent FROM public.hidra_hse_case WHERE id=target_id;<br> IF NOT FOUND THEN RAISE EXCEPTION 'T17 case parent missing'; END IF;<br> IF parent.target_module&lt;&gt;'topology' OR parent.target_type_code&lt;&gt;'FACILITY'<br>    OR parent.target_id&lt;&gt;(SELECT facility_id FROM public.hidra_hse_t17_case_scope WHERE case_id=target_id)<br>    OR parent.source_type&lt;&gt;'INCIDENT_REFERENCE' OR parent.incident_reference_id&lt;&gt;<br>        (SELECT incident_id FROM public.hidra_hse_t17_case_scope WHERE case_id=target_id)<br> THEN RAISE EXCEPTION 'T17 enrolled case lost exact owner identity'; END IF;<br> IF EXISTS (SELECT 1 FROM public.hidra_hse_capa c WHERE c.hse_case_id=target_id<br>        AND NOT EXISTS(SELECT 1 FROM public.hidra_hse_t17_capa_state x<br>            WHERE x.capa_id=c.id AND x.case_id=target_id))<br> THEN RAISE EXCEPTION 'T17 enrolled case cannot contain a legacy context-free CAPA'; END IF;<br> FOR cap IN SELECT s.*,c.hse_case_id,c.status AS physical_status,c.owner_actor_id<br>    FROM public.hidra_hse_t17_capa_state s JOIN public.hidra_hse_capa c ON c.id=s.capa_id<br>    WHERE s.case_id=target_id LOOP<br>   IF cap.hse_case_id&lt;&gt;target_id OR cap.physical_status&lt;&gt;cap.status<br>      OR cap.owner_actor_id IS DISTINCT FROM cap.owner_id<br>      OR (cap.revision&lt;&gt;(SELECT count(*)-1 FROM public.hidra_hse_t17_capa_event e<br>           WHERE e.capa_id=cap.capa_id))<br>   THEN RAISE EXCEPTION 'T17 CAPA parent, head and event revision mismatch'; END IF;<br>   IF cap.status IN ('COMPLETED','VERIFIED','CLOSED') AND NOT EXISTS(<br>      SELECT 1 FROM public.hidra_hse_t17_capa_evidence e WHERE e.capa_id=cap.capa_id)<br>   THEN RAISE EXCEPTION 'T17 completion requires immutable accepted evidence'; END IF;<br>   IF cap.status IN ('VERIFIED','CLOSED') AND NOT EXISTS(<br>      SELECT 1 FROM public.hidra_hse_t17_capa_verification v<br>       WHERE v.capa_id=cap.capa_id AND v.outcome='EFFECTIVE'<br>         AND v.reviewer_id=cap.verifier_id AND v.evidence_id=cap.evidence_id<br>         AND v.reviewer_id&lt;&gt;cap.proposer_id AND v.reviewer_id&lt;&gt;cap.owner_id)<br>   THEN RAISE EXCEPTION 'T17 verified CAPA requires independent effective finding'; END IF;<br> END LOOP;<br> IF parent.status='CLOSED' THEN<br>   SELECT * INTO head FROM public.hidra_hse_t17_case_close_receipt r WHERE r.case_id=target_id;<br>   IF NOT FOUND OR NOT EXISTS(SELECT 1 FROM public.hidra_hse_closure c WHERE c.id=head.closure_id<br>        AND c.hse_case_id=target_id AND c.closed_by_actor_id=head.actor_id AND c.closed_at=head.closed_at)<br>      OR NOT EXISTS(SELECT 1 FROM public.hidra_hse_t17_capa_state WHERE case_id=target_id)<br>      OR EXISTS(SELECT 1 FROM public.hidra_hse_t17_capa_state WHERE case_id=target_id AND status&lt;&gt;'CLOSED')<br>   THEN RAISE EXCEPTION 'T17 case close requires closure receipt and terminal enrolled CAPAs'; END IF;<br> ELSIF EXISTS(SELECT 1 FROM public.hidra_hse_t17_case_close_receipt WHERE case_id=target_id) THEN<br>   RAISE EXCEPTION 'T17 closed receipt attached to open case';<br> END IF;<br> RETURN NULL;<br>END $function$<br>
+- `t17_state_no_truncate`: CREATE TRIGGER t17_state_no_truncate BEFORE TRUNCATE ON hidra_hse_t17_capa_state FOR EACH STATEMENT EXECUTE FUNCTION t17_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t17_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t17_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T17 retained HSE evidence is append-only';<br>END $function$<br>
+
+### public.hidra_hse_t17_capa_verification
+
+Owner: **hse**; relation kind: `r`.
+
+Immutable independent HSE EFFECTIVE/INEFFECTIVE/INDETERMINATE effectiveness finding and source evidence/reviewer/time.
+
+- Evidence: [V20261118_002__t17_hse_capa_governed_lifecycle.sql](../../src/main/resources/db/migration/V20261118_002__t17_hse_capa_governed_lifecycle.sql)
+- Evidence: [JdbcHseCapaLifecycleStoreAdapter.java](../../src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/adapter/JdbcHseCapaLifecycleStoreAdapter.java)
+- Migration mention (not inferred introduction): [V20261118_002__t17_hse_capa_governed_lifecycle.sql](../../src/main/resources/db/migration/V20261118_002__t17_hse_capa_governed_lifecycle.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| capa_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| evidence_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| outcome | character varying(20) | False | None; identity=; generated= | No current mapped Java column | — |
+| reason_text | character varying(500) | False | None; identity=; generated= | No current mapped Java column | — |
+| reviewer_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| verified_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `fk_t17_verification_same_capa`: FOREIGN KEY (evidence_id, capa_id) REFERENCES hidra_hse_t17_capa_evidence(id, capa_id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["evidence_id", "capa_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id", "capa_id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_hse_t17_capa_evidence"}, "type": "f", "validated": true}
+- `hidra_hse_t17_capa_verification_capa_id_fkey`: FOREIGN KEY (capa_id) REFERENCES hidra_hse_t17_capa_state(capa_id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["capa_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["capa_id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_hse_t17_capa_state"}, "type": "f", "validated": true}
+- `hidra_hse_t17_capa_verification_evidence_id_fkey`: FOREIGN KEY (evidence_id) REFERENCES hidra_hse_t17_capa_evidence(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["evidence_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_hse_t17_capa_evidence"}, "type": "f", "validated": true}
+- `hidra_hse_t17_capa_verification_id_capa_id_key`: UNIQUE (id, capa_id)
+  - Catalog attributes: {"columns": ["id", "capa_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_hse_t17_capa_verification_outcome_check`: CHECK (outcome::text = ANY (ARRAY['EFFECTIVE'::character varying, 'INEFFECTIVE'::character varying, 'INDETERMINATE'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["outcome"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_hse_t17_capa_verification_pkey`: PRIMARY KEY (id)
+  - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_hse_t17_capa_verification_reason_text_check`: CHECK (length(btrim(reason_text::text)) &gt; 0)
+  - Catalog attributes: {"columns": ["reason_text"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_hse_t17_capa_verification_reviewer_id_check`: CHECK (length(btrim(reviewer_id::text)) &gt; 0)
+  - Catalog attributes: {"columns": ["reviewer_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_hse_t17_capa_verification_verified_at_check`: CHECK (isfinite(verified_at))
+  - Catalog attributes: {"columns": ["verified_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_hse_t17_capa_verification_id_capa_id_key`: CREATE UNIQUE INDEX hidra_hse_t17_capa_verification_id_capa_id_key ON public.hidra_hse_t17_capa_verification USING btree (id, capa_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_hse_t17_capa_verification_pkey`: CREATE UNIQUE INDEX hidra_hse_t17_capa_verification_pkey ON public.hidra_hse_t17_capa_verification USING btree (id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `ix_t17_verification_capa`: CREATE INDEX ix_t17_verification_capa ON public.hidra_hse_t17_capa_verification USING btree (capa_id, verified_at, id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+
+#### Triggers
+
+- `t17_verification_immutable`: CREATE TRIGGER t17_verification_immutable BEFORE DELETE OR UPDATE ON hidra_hse_t17_capa_verification FOR EACH ROW EXECUTE FUNCTION t17_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t17_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t17_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T17 retained HSE evidence is append-only';<br>END $function$<br>
+- `t17_verification_no_truncate`: CREATE TRIGGER t17_verification_no_truncate BEFORE TRUNCATE ON hidra_hse_t17_capa_verification FOR EACH STATEMENT EXECUTE FUNCTION t17_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t17_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t17_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T17 retained HSE evidence is append-only';<br>END $function$<br>
+
+### public.hidra_hse_t17_case_close_receipt
+
+Owner: **hse**; relation kind: `r`.
+
+Immutable HSE closure receipt associating actual HSE closure, target-specific independent Workflow action/digest and closing actor/time; Workflow ID remains scalar.
+
+- Evidence: [V20261118_002__t17_hse_capa_governed_lifecycle.sql](../../src/main/resources/db/migration/V20261118_002__t17_hse_capa_governed_lifecycle.sql)
+- Evidence: [JdbcHseCapaLifecycleStoreAdapter.java](../../src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/adapter/JdbcHseCapaLifecycleStoreAdapter.java)
+- Migration mention (not inferred introduction): [V20261118_002__t17_hse_capa_governed_lifecycle.sql](../../src/main/resources/db/migration/V20261118_002__t17_hse_capa_governed_lifecycle.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| case_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| closure_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| workflow_action_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| workflow_instance_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| workflow_digest | character(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| closed_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_hse_t17_case_close_receipt_actor_id_check`: CHECK (length(btrim(actor_id::text)) &gt; 0)
+  - Catalog attributes: {"columns": ["actor_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_hse_t17_case_close_receipt_case_id_fkey`: FOREIGN KEY (case_id) REFERENCES hidra_hse_t17_case_scope(case_id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["case_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["case_id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_hse_t17_case_scope"}, "type": "f", "validated": true}
+- `hidra_hse_t17_case_close_receipt_closed_at_check`: CHECK (isfinite(closed_at))
+  - Catalog attributes: {"columns": ["closed_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_hse_t17_case_close_receipt_closure_id_fkey`: FOREIGN KEY (closure_id) REFERENCES hidra_hse_closure(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["closure_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_hse_closure"}, "type": "f", "validated": true}
+- `hidra_hse_t17_case_close_receipt_closure_id_key`: UNIQUE (closure_id)
+  - Catalog attributes: {"columns": ["closure_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_hse_t17_case_close_receipt_pkey`: PRIMARY KEY (case_id)
+  - Catalog attributes: {"columns": ["case_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_hse_t17_case_close_receipt_workflow_action_id_key`: UNIQUE (workflow_action_id)
+  - Catalog attributes: {"columns": ["workflow_action_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_hse_t17_case_close_receipt_workflow_digest_check`: CHECK (workflow_digest ~ '^[0-9a-f]{64}$'::text)
+  - Catalog attributes: {"columns": ["workflow_digest"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `t17_receipt_consistency`: TRIGGER DEFERRABLE INITIALLY DEFERRED
+  - Catalog attributes: {"columns": [], "deferrable": true, "initially_deferred": true, "reference": null, "type": "t", "validated": true}
+
+#### Indexes
+
+- `hidra_hse_t17_case_close_receipt_closure_id_key`: CREATE UNIQUE INDEX hidra_hse_t17_case_close_receipt_closure_id_key ON public.hidra_hse_t17_case_close_receipt USING btree (closure_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_hse_t17_case_close_receipt_pkey`: CREATE UNIQUE INDEX hidra_hse_t17_case_close_receipt_pkey ON public.hidra_hse_t17_case_close_receipt USING btree (case_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `hidra_hse_t17_case_close_receipt_workflow_action_id_key`: CREATE UNIQUE INDEX hidra_hse_t17_case_close_receipt_workflow_action_id_key ON public.hidra_hse_t17_case_close_receipt USING btree (workflow_action_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `t17_close_immutable`: CREATE TRIGGER t17_close_immutable BEFORE DELETE OR UPDATE ON hidra_hse_t17_case_close_receipt FOR EACH ROW EXECUTE FUNCTION t17_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t17_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t17_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T17 retained HSE evidence is append-only';<br>END $function$<br>
+- `t17_receipt_consistency`: CREATE CONSTRAINT TRIGGER t17_receipt_consistency AFTER INSERT ON hidra_hse_t17_case_close_receipt DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION t17_check_case_consistency()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t17_check_case_consistency()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t17_check_case_consistency()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>DECLARE target_id varchar(80); parent record; cap record; head record;<br>BEGIN<br> IF TG_TABLE_NAME='hidra_hse_case' THEN target_id:=NEW.id;<br> ELSIF TG_TABLE_NAME='hidra_hse_t17_case_scope' THEN target_id:=NEW.case_id;<br> ELSIF TG_TABLE_NAME='hidra_hse_t17_capa_event' THEN target_id:=NEW.case_id;<br> ELSIF TG_TABLE_NAME='hidra_hse_t17_case_close_receipt' THEN target_id:=NEW.case_id;<br> ELSIF TG_TABLE_NAME='hidra_hse_t17_capa_state' THEN target_id:=NEW.case_id;<br> ELSIF TG_TABLE_NAME='hidra_hse_capa' THEN target_id:=NEW.hse_case_id;<br> ELSE RETURN NULL;<br> END IF;<br> IF target_id IS NULL OR NOT EXISTS(SELECT 1 FROM public.hidra_hse_t17_case_scope WHERE case_id=target_id)<br> THEN RETURN NULL; END IF;<br> SELECT * INTO parent FROM public.hidra_hse_case WHERE id=target_id;<br> IF NOT FOUND THEN RAISE EXCEPTION 'T17 case parent missing'; END IF;<br> IF parent.target_module&lt;&gt;'topology' OR parent.target_type_code&lt;&gt;'FACILITY'<br>    OR parent.target_id&lt;&gt;(SELECT facility_id FROM public.hidra_hse_t17_case_scope WHERE case_id=target_id)<br>    OR parent.source_type&lt;&gt;'INCIDENT_REFERENCE' OR parent.incident_reference_id&lt;&gt;<br>        (SELECT incident_id FROM public.hidra_hse_t17_case_scope WHERE case_id=target_id)<br> THEN RAISE EXCEPTION 'T17 enrolled case lost exact owner identity'; END IF;<br> IF EXISTS (SELECT 1 FROM public.hidra_hse_capa c WHERE c.hse_case_id=target_id<br>        AND NOT EXISTS(SELECT 1 FROM public.hidra_hse_t17_capa_state x<br>            WHERE x.capa_id=c.id AND x.case_id=target_id))<br> THEN RAISE EXCEPTION 'T17 enrolled case cannot contain a legacy context-free CAPA'; END IF;<br> FOR cap IN SELECT s.*,c.hse_case_id,c.status AS physical_status,c.owner_actor_id<br>    FROM public.hidra_hse_t17_capa_state s JOIN public.hidra_hse_capa c ON c.id=s.capa_id<br>    WHERE s.case_id=target_id LOOP<br>   IF cap.hse_case_id&lt;&gt;target_id OR cap.physical_status&lt;&gt;cap.status<br>      OR cap.owner_actor_id IS DISTINCT FROM cap.owner_id<br>      OR (cap.revision&lt;&gt;(SELECT count(*)-1 FROM public.hidra_hse_t17_capa_event e<br>           WHERE e.capa_id=cap.capa_id))<br>   THEN RAISE EXCEPTION 'T17 CAPA parent, head and event revision mismatch'; END IF;<br>   IF cap.status IN ('COMPLETED','VERIFIED','CLOSED') AND NOT EXISTS(<br>      SELECT 1 FROM public.hidra_hse_t17_capa_evidence e WHERE e.capa_id=cap.capa_id)<br>   THEN RAISE EXCEPTION 'T17 completion requires immutable accepted evidence'; END IF;<br>   IF cap.status IN ('VERIFIED','CLOSED') AND NOT EXISTS(<br>      SELECT 1 FROM public.hidra_hse_t17_capa_verification v<br>       WHERE v.capa_id=cap.capa_id AND v.outcome='EFFECTIVE'<br>         AND v.reviewer_id=cap.verifier_id AND v.evidence_id=cap.evidence_id<br>         AND v.reviewer_id&lt;&gt;cap.proposer_id AND v.reviewer_id&lt;&gt;cap.owner_id)<br>   THEN RAISE EXCEPTION 'T17 verified CAPA requires independent effective finding'; END IF;<br> END LOOP;<br> IF parent.status='CLOSED' THEN<br>   SELECT * INTO head FROM public.hidra_hse_t17_case_close_receipt r WHERE r.case_id=target_id;<br>   IF NOT FOUND OR NOT EXISTS(SELECT 1 FROM public.hidra_hse_closure c WHERE c.id=head.closure_id<br>        AND c.hse_case_id=target_id AND c.closed_by_actor_id=head.actor_id AND c.closed_at=head.closed_at)<br>      OR NOT EXISTS(SELECT 1 FROM public.hidra_hse_t17_capa_state WHERE case_id=target_id)<br>      OR EXISTS(SELECT 1 FROM public.hidra_hse_t17_capa_state WHERE case_id=target_id AND status&lt;&gt;'CLOSED')<br>   THEN RAISE EXCEPTION 'T17 case close requires closure receipt and terminal enrolled CAPAs'; END IF;<br> ELSIF EXISTS(SELECT 1 FROM public.hidra_hse_t17_case_close_receipt WHERE case_id=target_id) THEN<br>   RAISE EXCEPTION 'T17 closed receipt attached to open case';<br> END IF;<br> RETURN NULL;<br>END $function$<br>
+- `t17_receipt_no_truncate`: CREATE TRIGGER t17_receipt_no_truncate BEFORE TRUNCATE ON hidra_hse_t17_case_close_receipt FOR EACH STATEMENT EXECUTE FUNCTION t17_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t17_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t17_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T17 retained HSE evidence is append-only';<br>END $function$<br>
+
+### public.hidra_hse_t17_case_scope
+
+Owner: **hse**; relation kind: `r`.
+
+Immutable HSE-owned enrolled case company/FACILITY/approved Incident source binding with exact request digest, actor and creation timestamp; source owners remain scalar.
+
+- Evidence: [V20261118_002__t17_hse_capa_governed_lifecycle.sql](../../src/main/resources/db/migration/V20261118_002__t17_hse_capa_governed_lifecycle.sql)
+- Evidence: [JdbcHseCapaLifecycleStoreAdapter.java](../../src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/adapter/JdbcHseCapaLifecycleStoreAdapter.java)
+- Migration mention (not inferred introduction): [V20261118_002__t17_hse_capa_governed_lifecycle.sql](../../src/main/resources/db/migration/V20261118_002__t17_hse_capa_governed_lifecycle.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| case_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| company_id | character varying(120) | False | None; identity=; generated= | No current mapped Java column | — |
+| facility_id | character varying(120) | False | None; identity=; generated= | No current mapped Java column | — |
+| incident_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| create_request_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| create_digest | character(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| created_by_actor_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| created_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_hse_t17_case_scope_case_id_fkey`: FOREIGN KEY (case_id) REFERENCES hidra_hse_case(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["case_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_hse_case"}, "type": "f", "validated": true}
+- `hidra_hse_t17_case_scope_company_id_check`: CHECK (length(btrim(company_id::text)) &gt; 0)
+  - Catalog attributes: {"columns": ["company_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_hse_t17_case_scope_company_id_facility_id_create_requ_key`: UNIQUE (company_id, facility_id, create_request_id)
+  - Catalog attributes: {"columns": ["company_id", "facility_id", "create_request_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_hse_t17_case_scope_create_digest_check`: CHECK (create_digest ~ '^[0-9a-f]{64}$'::text)
+  - Catalog attributes: {"columns": ["create_digest"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_hse_t17_case_scope_create_request_id_check`: CHECK (length(btrim(create_request_id::text)) &gt; 0)
+  - Catalog attributes: {"columns": ["create_request_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_hse_t17_case_scope_created_at_check`: CHECK (isfinite(created_at))
+  - Catalog attributes: {"columns": ["created_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_hse_t17_case_scope_created_by_actor_id_check`: CHECK (length(btrim(created_by_actor_id::text)) &gt; 0)
+  - Catalog attributes: {"columns": ["created_by_actor_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_hse_t17_case_scope_facility_id_check`: CHECK (length(btrim(facility_id::text)) &gt; 0)
+  - Catalog attributes: {"columns": ["facility_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_hse_t17_case_scope_incident_id_check`: CHECK (length(btrim(incident_id::text)) &gt; 0)
+  - Catalog attributes: {"columns": ["incident_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_hse_t17_case_scope_pkey`: PRIMARY KEY (case_id)
+  - Catalog attributes: {"columns": ["case_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `t17_scope_consistency`: TRIGGER DEFERRABLE INITIALLY DEFERRED
+  - Catalog attributes: {"columns": [], "deferrable": true, "initially_deferred": true, "reference": null, "type": "t", "validated": true}
+
+#### Indexes
+
+- `hidra_hse_t17_case_scope_company_id_facility_id_create_requ_key`: CREATE UNIQUE INDEX hidra_hse_t17_case_scope_company_id_facility_id_create_requ_key ON public.hidra_hse_t17_case_scope USING btree (company_id, facility_id, create_request_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_hse_t17_case_scope_pkey`: CREATE UNIQUE INDEX hidra_hse_t17_case_scope_pkey ON public.hidra_hse_t17_case_scope USING btree (case_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `ix_t17_scope_company_asset`: CREATE INDEX ix_t17_scope_company_asset ON public.hidra_hse_t17_case_scope USING btree (company_id, facility_id, case_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+
+#### Triggers
+
+- `t17_scope_consistency`: CREATE CONSTRAINT TRIGGER t17_scope_consistency AFTER INSERT ON hidra_hse_t17_case_scope DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION t17_check_case_consistency()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t17_check_case_consistency()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t17_check_case_consistency()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>DECLARE target_id varchar(80); parent record; cap record; head record;<br>BEGIN<br> IF TG_TABLE_NAME='hidra_hse_case' THEN target_id:=NEW.id;<br> ELSIF TG_TABLE_NAME='hidra_hse_t17_case_scope' THEN target_id:=NEW.case_id;<br> ELSIF TG_TABLE_NAME='hidra_hse_t17_capa_event' THEN target_id:=NEW.case_id;<br> ELSIF TG_TABLE_NAME='hidra_hse_t17_case_close_receipt' THEN target_id:=NEW.case_id;<br> ELSIF TG_TABLE_NAME='hidra_hse_t17_capa_state' THEN target_id:=NEW.case_id;<br> ELSIF TG_TABLE_NAME='hidra_hse_capa' THEN target_id:=NEW.hse_case_id;<br> ELSE RETURN NULL;<br> END IF;<br> IF target_id IS NULL OR NOT EXISTS(SELECT 1 FROM public.hidra_hse_t17_case_scope WHERE case_id=target_id)<br> THEN RETURN NULL; END IF;<br> SELECT * INTO parent FROM public.hidra_hse_case WHERE id=target_id;<br> IF NOT FOUND THEN RAISE EXCEPTION 'T17 case parent missing'; END IF;<br> IF parent.target_module&lt;&gt;'topology' OR parent.target_type_code&lt;&gt;'FACILITY'<br>    OR parent.target_id&lt;&gt;(SELECT facility_id FROM public.hidra_hse_t17_case_scope WHERE case_id=target_id)<br>    OR parent.source_type&lt;&gt;'INCIDENT_REFERENCE' OR parent.incident_reference_id&lt;&gt;<br>        (SELECT incident_id FROM public.hidra_hse_t17_case_scope WHERE case_id=target_id)<br> THEN RAISE EXCEPTION 'T17 enrolled case lost exact owner identity'; END IF;<br> IF EXISTS (SELECT 1 FROM public.hidra_hse_capa c WHERE c.hse_case_id=target_id<br>        AND NOT EXISTS(SELECT 1 FROM public.hidra_hse_t17_capa_state x<br>            WHERE x.capa_id=c.id AND x.case_id=target_id))<br> THEN RAISE EXCEPTION 'T17 enrolled case cannot contain a legacy context-free CAPA'; END IF;<br> FOR cap IN SELECT s.*,c.hse_case_id,c.status AS physical_status,c.owner_actor_id<br>    FROM public.hidra_hse_t17_capa_state s JOIN public.hidra_hse_capa c ON c.id=s.capa_id<br>    WHERE s.case_id=target_id LOOP<br>   IF cap.hse_case_id&lt;&gt;target_id OR cap.physical_status&lt;&gt;cap.status<br>      OR cap.owner_actor_id IS DISTINCT FROM cap.owner_id<br>      OR (cap.revision&lt;&gt;(SELECT count(*)-1 FROM public.hidra_hse_t17_capa_event e<br>           WHERE e.capa_id=cap.capa_id))<br>   THEN RAISE EXCEPTION 'T17 CAPA parent, head and event revision mismatch'; END IF;<br>   IF cap.status IN ('COMPLETED','VERIFIED','CLOSED') AND NOT EXISTS(<br>      SELECT 1 FROM public.hidra_hse_t17_capa_evidence e WHERE e.capa_id=cap.capa_id)<br>   THEN RAISE EXCEPTION 'T17 completion requires immutable accepted evidence'; END IF;<br>   IF cap.status IN ('VERIFIED','CLOSED') AND NOT EXISTS(<br>      SELECT 1 FROM public.hidra_hse_t17_capa_verification v<br>       WHERE v.capa_id=cap.capa_id AND v.outcome='EFFECTIVE'<br>         AND v.reviewer_id=cap.verifier_id AND v.evidence_id=cap.evidence_id<br>         AND v.reviewer_id&lt;&gt;cap.proposer_id AND v.reviewer_id&lt;&gt;cap.owner_id)<br>   THEN RAISE EXCEPTION 'T17 verified CAPA requires independent effective finding'; END IF;<br> END LOOP;<br> IF parent.status='CLOSED' THEN<br>   SELECT * INTO head FROM public.hidra_hse_t17_case_close_receipt r WHERE r.case_id=target_id;<br>   IF NOT FOUND OR NOT EXISTS(SELECT 1 FROM public.hidra_hse_closure c WHERE c.id=head.closure_id<br>        AND c.hse_case_id=target_id AND c.closed_by_actor_id=head.actor_id AND c.closed_at=head.closed_at)<br>      OR NOT EXISTS(SELECT 1 FROM public.hidra_hse_t17_capa_state WHERE case_id=target_id)<br>      OR EXISTS(SELECT 1 FROM public.hidra_hse_t17_capa_state WHERE case_id=target_id AND status&lt;&gt;'CLOSED')<br>   THEN RAISE EXCEPTION 'T17 case close requires closure receipt and terminal enrolled CAPAs'; END IF;<br> ELSIF EXISTS(SELECT 1 FROM public.hidra_hse_t17_case_close_receipt WHERE case_id=target_id) THEN<br>   RAISE EXCEPTION 'T17 closed receipt attached to open case';<br> END IF;<br> RETURN NULL;<br>END $function$<br>
+- `t17_scope_immutable`: CREATE TRIGGER t17_scope_immutable BEFORE DELETE OR UPDATE ON hidra_hse_t17_case_scope FOR EACH ROW EXECUTE FUNCTION t17_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t17_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t17_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T17 retained HSE evidence is append-only';<br>END $function$<br>
+- `t17_scope_no_truncate`: CREATE TRIGGER t17_scope_no_truncate BEFORE TRUNCATE ON hidra_hse_t17_case_scope FOR EACH STATEMENT EXECUTE FUNCTION t17_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t17_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t17_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T17 retained HSE evidence is append-only';<br>END $function$<br>
 
 ### public.hidra_identity_attribute_definition
 
@@ -11614,6 +12027,7 @@ Persisted PermissionJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261117_002__t22_risk_assessment_governance_receipts.sql](../../src/main/resources/db/migration/V20261117_002__t22_risk_assessment_governance_receipts.sql)
 - Migration mention (not inferred introduction): [V20261117_003__t23_analytics_deviation_metric_receipts.sql](../../src/main/resources/db/migration/V20261117_003__t23_analytics_deviation_metric_receipts.sql)
 - Migration mention (not inferred introduction): [V20261117_005__t24_controlled_document_history.sql](../../src/main/resources/db/migration/V20261117_005__t24_controlled_document_history.sql)
+- Migration mention (not inferred introduction): [V20261118_002__t17_hse_capa_governed_lifecycle.sql](../../src/main/resources/db/migration/V20261118_002__t17_hse_capa_governed_lifecycle.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|

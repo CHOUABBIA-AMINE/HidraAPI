@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `bf4fb3f66049a4aabed9d227452de29db5c580ca`
+Captured source SHA: `14c6be04466e1b3c1a1ffc2ae1bea3d083d9dd8a`
 PostgreSQL server: `16.16 (Debian 16.16-1.pgdg13+1)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `4d061874addc3045db2f532a9f9e6b1d22187cf18ff58c4890c2cefbd9287e88`.
-Migrations: 223; JPA mappings: 471; catalog relations: 595; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `16b3e0e43b8bc817244bdb234a6f92b03e317fb1727dac200c74fd30b91f4e66`.
+Migrations: 225; JPA mappings: 471; catalog relations: 597; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -8438,6 +8438,163 @@ Persisted DocumentCatalogTranslationJpaEntity state; semantic authority remains 
 
 None captured in this catalog category.
 
+### public.hidra_documents_controlled_decision
+
+Owner: **documents**; relation kind: `r`.
+
+Documents-owned append-only version-specific independent custodian acceptance/supersession receipt preserving exact SHA-256, size, source actor and immutable Topology facility target link lineage.
+
+- Evidence: [V20261117_005__t24_controlled_document_history.sql](../../src/main/resources/db/migration/V20261117_005__t24_controlled_document_history.sql)
+- Evidence: [JdbcControlledDocumentRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/adapter/JdbcControlledDocumentRepositoryAdapter.java)
+- Migration mention (not inferred introduction): [V20261117_005__t24_controlled_document_history.sql](../../src/main/resources/db/migration/V20261117_005__t24_controlled_document_history.sql)
+- Migration mention (not inferred introduction): [V20261118_001__t24_consistency_decision_alias.sql](../../src/main/resources/db/migration/V20261118_001__t24_consistency_decision_alias.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| document_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| version_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| previous_version_id | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+| request_id | character varying(120) | False | None; identity=; generated= | No current mapped Java column | — |
+| payload_digest | character(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| reason | character varying(500) | False | None; identity=; generated= | No current mapped Java column | — |
+| action | character varying(20) | False | None; identity=; generated= | No current mapped Java column | — |
+| checksum_sha256 | character(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| content_length | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| company_id | character varying(120) | False | None; identity=; generated= | No current mapped Java column | — |
+| facility_id | character varying(120) | False | None; identity=; generated= | No current mapped Java column | — |
+| link_role_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| link_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| decided_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `ck_t24_decision_transition`: CHECK (action::text = 'ACCEPT'::text AND previous_version_id IS NULL OR action::text = 'SUPERSEDE'::text AND previous_version_id IS NOT NULL)
+  - Catalog attributes: {"columns": ["action", "previous_version_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `fk_t24_decision_current_parent`: FOREIGN KEY (document_id, version_id) REFERENCES hidra_documents_document_version(document_id, id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["document_id", "version_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["document_id", "id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_documents_document_version"}, "type": "f", "validated": true}
+- `fk_t24_decision_previous_parent`: FOREIGN KEY (document_id, previous_version_id) REFERENCES hidra_documents_document_version(document_id, id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["document_id", "previous_version_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["document_id", "id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_documents_document_version"}, "type": "f", "validated": true}
+- `hidra_documents_controlled_decision_action_check`: CHECK (action::text = ANY (ARRAY['ACCEPT'::character varying, 'SUPERSEDE'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["action"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_documents_controlled_decision_actor_id_check`: CHECK (length(TRIM(BOTH FROM actor_id)) &gt; 0)
+  - Catalog attributes: {"columns": ["actor_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_documents_controlled_decision_checksum_sha256_check`: CHECK (checksum_sha256 ~ '^[0-9a-f]{64}$'::text)
+  - Catalog attributes: {"columns": ["checksum_sha256"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_documents_controlled_decision_content_length_check`: CHECK (content_length &gt;= 0)
+  - Catalog attributes: {"columns": ["content_length"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_documents_controlled_decision_document_id_fkey`: FOREIGN KEY (document_id) REFERENCES hidra_documents_controlled_scope(document_id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["document_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["document_id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_documents_controlled_scope"}, "type": "f", "validated": true}
+- `hidra_documents_controlled_decision_link_id_fkey`: FOREIGN KEY (link_id) REFERENCES hidra_documents_target_link(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["link_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_documents_target_link"}, "type": "f", "validated": true}
+- `hidra_documents_controlled_decision_link_id_key`: UNIQUE (link_id)
+  - Catalog attributes: {"columns": ["link_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_documents_controlled_decision_payload_digest_check`: CHECK (payload_digest ~ '^[0-9a-f]{64}$'::text)
+  - Catalog attributes: {"columns": ["payload_digest"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_documents_controlled_decision_pkey`: PRIMARY KEY (id)
+  - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_documents_controlled_decision_reason_check`: CHECK (length(TRIM(BOTH FROM reason)) &gt; 0)
+  - Catalog attributes: {"columns": ["reason"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_documents_controlled_decision_request_id_check`: CHECK (length(TRIM(BOTH FROM request_id)) &gt; 0)
+  - Catalog attributes: {"columns": ["request_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `tr_t24_decision_consistency`: TRIGGER DEFERRABLE INITIALLY DEFERRED
+  - Catalog attributes: {"columns": [], "deferrable": true, "initially_deferred": true, "reference": null, "type": "t", "validated": true}
+- `uq_t24_decision_previous`: UNIQUE (previous_version_id)
+  - Catalog attributes: {"columns": ["previous_version_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `uq_t24_decision_request`: UNIQUE (document_id, request_id)
+  - Catalog attributes: {"columns": ["document_id", "request_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `uq_t24_decision_version`: UNIQUE (version_id)
+  - Catalog attributes: {"columns": ["version_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+
+#### Indexes
+
+- `hidra_documents_controlled_decision_link_id_key`: CREATE UNIQUE INDEX hidra_documents_controlled_decision_link_id_key ON public.hidra_documents_controlled_decision USING btree (link_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_documents_controlled_decision_pkey`: CREATE UNIQUE INDEX hidra_documents_controlled_decision_pkey ON public.hidra_documents_controlled_decision USING btree (id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `ix_t24_decision_history`: CREATE INDEX ix_t24_decision_history ON public.hidra_documents_controlled_decision USING btree (document_id, decided_at, id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+- `uq_t24_decision_previous`: CREATE UNIQUE INDEX uq_t24_decision_previous ON public.hidra_documents_controlled_decision USING btree (previous_version_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `uq_t24_decision_request`: CREATE UNIQUE INDEX uq_t24_decision_request ON public.hidra_documents_controlled_decision USING btree (document_id, request_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `uq_t24_decision_version`: CREATE UNIQUE INDEX uq_t24_decision_version ON public.hidra_documents_controlled_decision USING btree (version_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `tr_t24_decision_consistency`: CREATE CONSTRAINT TRIGGER tr_t24_decision_consistency AFTER INSERT ON hidra_documents_controlled_decision DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION hidra_documents_t24_consistency()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_documents_t24_consistency()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_documents_t24_consistency()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>DECLARE docid varchar(80);<br>DECLARE d record;<br>DECLARE s record;<br>DECLARE receipt record;<br>DECLARE v record;<br>DECLARE l record;<br>DECLARE oldv record;<br>BEGIN<br>    IF TG_TABLE_NAME='hidra_documents_document' THEN docid=NEW.id;<br>    ELSE docid=NEW.document_id; END IF;<br>    SELECT * INTO s FROM public.hidra_documents_controlled_scope WHERE document_id=docid;<br>    IF NOT FOUND THEN RETURN NULL; END IF;<br>    SELECT * INTO d FROM public.hidra_documents_document WHERE id=docid;<br>    IF NOT FOUND OR d.owner_module&lt;&gt;'topology' OR d.owner_target_type_code&lt;&gt;'FACILITY'<br>       OR d.owner_target_id&lt;&gt;s.facility_id OR d.created_by_actor_id&lt;&gt;s.created_by_actor_id<br>    THEN RAISE EXCEPTION 'T24 enrolled scope owner identity mismatch'; END IF;<br>    IF d.current_version_id IS NULL THEN<br>        IF d.status&lt;&gt;'DRAFT' OR EXISTS (SELECT 1 FROM public.hidra_documents_controlled_decision<br>                    WHERE document_id=docid)<br>        THEN RAISE EXCEPTION 'T24 invalid controlled draft head'; END IF;<br>    ELSE<br>        IF (SELECT count(*) FROM public.hidra_documents_document_version<br>                WHERE document_id=docid AND version_status='CURRENT')&lt;&gt;1<br>           OR (SELECT count(*) FROM public.hidra_documents_controlled_decision<br>                WHERE document_id=docid AND previous_version_id IS NULL)&lt;&gt;1<br>        THEN RAISE EXCEPTION 'T24 precisely one accepted current and initial decision required'; END IF;<br>        SELECT * INTO v FROM public.hidra_documents_document_version WHERE id=d.current_version_id<br>            AND document_id=docid;<br>        IF NOT FOUND OR d.status&lt;&gt;'ACTIVE' OR v.version_status&lt;&gt;'CURRENT'<br>           OR NOT EXISTS (SELECT 1 FROM public.hidra_documents_controlled_decision<br>                         WHERE version_id=v.id AND document_id=docid)<br>        THEN RAISE EXCEPTION 'T24 controlled current pointer has no sealed decision'; END IF;<br>    END IF;<br>    FOR receipt IN SELECT * FROM public.hidra_documents_controlled_decision WHERE document_id=docid LOOP<br>        SELECT * INTO v FROM public.hidra_documents_document_version WHERE id=receipt.version_id<br>            AND document_id=docid;<br>        SELECT * INTO l FROM public.hidra_documents_target_link WHERE id=receipt.link_id<br>            AND document_id=docid AND document_version_id=receipt.version_id;<br>        IF NOT FOUND OR v.id IS NULL<br>           OR l.target_module&lt;&gt;'topology' OR l.target_type_code&lt;&gt;'FACILITY'<br>           OR l.target_id&lt;&gt;s.facility_id OR NOT l.primary_link OR NOT l.active<br>           OR l.link_role_id&lt;&gt;receipt.link_role_id<br>           OR l.linked_by_actor_id&lt;&gt;receipt.actor_id<br>           OR receipt.company_id&lt;&gt;s.company_id OR receipt.facility_id&lt;&gt;s.facility_id<br>           OR receipt.actor_id IN (d.created_by_actor_id,v.uploaded_by_actor_id)<br>           OR receipt.content_length&lt;&gt;v.file_size_bytes<br>           OR receipt.checksum_sha256&lt;&gt;lower(v.checksum_value)<br>           OR v.checksum_algorithm&lt;&gt;'SHA-256'<br>        THEN RAISE EXCEPTION 'T24 controlled decision lineage invalid'; END IF;<br>        IF receipt.previous_version_id IS NULL THEN<br>            IF receipt.action&lt;&gt;'ACCEPT' THEN RAISE EXCEPTION 'T24 initial decision mismatch'; END IF;<br>        ELSE<br>            SELECT * INTO oldv FROM public.hidra_documents_document_version<br>                 WHERE id=receipt.previous_version_id AND document_id=docid;<br>            IF NOT FOUND OR oldv.version_status&lt;&gt;'SUPERSEDED'<br>               OR oldv.superseded_by_version_id&lt;&gt;receipt.version_id<br>               OR oldv.version_number&gt;=v.version_number<br>            THEN RAISE EXCEPTION 'T24 predecessor lineage invalid'; END IF;<br>        END IF;<br>    END LOOP;<br>    IF EXISTS (SELECT 1 FROM public.hidra_documents_document_version ver<br>        WHERE ver.document_id=docid AND ver.version_status IN ('CURRENT','SUPERSEDED')<br>          AND NOT EXISTS (SELECT 1 FROM public.hidra_documents_controlled_decision decision_row<br>            WHERE decision_row.document_id=docid AND decision_row.version_id=ver.id))<br>    THEN RAISE EXCEPTION 'T24 accepted version without immutable receipt'; END IF;<br>    RETURN NULL;<br>END;<br>$function$<br>
+- `tr_t24_decision_immutable`: CREATE TRIGGER tr_t24_decision_immutable BEFORE DELETE OR UPDATE ON hidra_documents_controlled_decision FOR EACH ROW EXECUTE FUNCTION hidra_documents_t24_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_documents_t24_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_documents_t24_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'T24 immutable controlled Documents evidence';<br>END;<br>$function$<br>
+- `tr_t24_decision_no_truncate`: CREATE TRIGGER tr_t24_decision_no_truncate BEFORE TRUNCATE ON hidra_documents_controlled_decision FOR EACH STATEMENT EXECUTE FUNCTION hidra_documents_t24_no_truncate()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_documents_t24_no_truncate()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_documents_t24_no_truncate()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    IF EXISTS(SELECT 1 FROM public.hidra_documents_controlled_scope)<br>    THEN RAISE EXCEPTION 'T24 controlled historical Documents prohibit truncate'; END IF;<br>    RETURN NULL;<br>END;<br>$function$<br>
+
+### public.hidra_documents_controlled_scope
+
+Owner: **documents**; relation kind: `r`.
+
+Immutable Documents-owned enrolled FACILITY company binding, non-transferable create replay key and source actor provenance; no foreign Topology aggregate ownership.
+
+- Evidence: [V20261117_005__t24_controlled_document_history.sql](../../src/main/resources/db/migration/V20261117_005__t24_controlled_document_history.sql)
+- Evidence: [JdbcControlledDocumentRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/adapter/JdbcControlledDocumentRepositoryAdapter.java)
+- Migration mention (not inferred introduction): [V20261117_005__t24_controlled_document_history.sql](../../src/main/resources/db/migration/V20261117_005__t24_controlled_document_history.sql)
+- Migration mention (not inferred introduction): [V20261118_001__t24_consistency_decision_alias.sql](../../src/main/resources/db/migration/V20261118_001__t24_consistency_decision_alias.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| document_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| company_id | character varying(120) | False | None; identity=; generated= | No current mapped Java column | — |
+| facility_id | character varying(120) | False | None; identity=; generated= | No current mapped Java column | — |
+| create_request_id | character varying(120) | False | None; identity=; generated= | No current mapped Java column | — |
+| payload_digest | character(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| created_by_actor_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| created_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_documents_controlled_scope_company_id_check`: CHECK (length(TRIM(BOTH FROM company_id)) &gt; 0)
+  - Catalog attributes: {"columns": ["company_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_documents_controlled_scope_create_request_id_check`: CHECK (length(TRIM(BOTH FROM create_request_id)) &gt; 0)
+  - Catalog attributes: {"columns": ["create_request_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_documents_controlled_scope_document_id_fkey`: FOREIGN KEY (document_id) REFERENCES hidra_documents_document(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["document_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_documents_document"}, "type": "f", "validated": true}
+- `hidra_documents_controlled_scope_facility_id_check`: CHECK (length(TRIM(BOTH FROM facility_id)) &gt; 0)
+  - Catalog attributes: {"columns": ["facility_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_documents_controlled_scope_payload_digest_check`: CHECK (payload_digest ~ '^[0-9a-f]{64}$'::text)
+  - Catalog attributes: {"columns": ["payload_digest"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_documents_controlled_scope_pkey`: PRIMARY KEY (document_id)
+  - Catalog attributes: {"columns": ["document_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `tr_t24_scope_consistency`: TRIGGER DEFERRABLE INITIALLY DEFERRED
+  - Catalog attributes: {"columns": [], "deferrable": true, "initially_deferred": true, "reference": null, "type": "t", "validated": true}
+- `uq_t24_scope_create`: UNIQUE (company_id, facility_id, create_request_id)
+  - Catalog attributes: {"columns": ["company_id", "facility_id", "create_request_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+
+#### Indexes
+
+- `hidra_documents_controlled_scope_pkey`: CREATE UNIQUE INDEX hidra_documents_controlled_scope_pkey ON public.hidra_documents_controlled_scope USING btree (document_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `ix_t24_scope_facility`: CREATE INDEX ix_t24_scope_facility ON public.hidra_documents_controlled_scope USING btree (company_id, facility_id, document_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+- `uq_t24_scope_create`: CREATE UNIQUE INDEX uq_t24_scope_create ON public.hidra_documents_controlled_scope USING btree (company_id, facility_id, create_request_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `tr_t24_scope_consistency`: CREATE CONSTRAINT TRIGGER tr_t24_scope_consistency AFTER INSERT ON hidra_documents_controlled_scope DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION hidra_documents_t24_consistency()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_documents_t24_consistency()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_documents_t24_consistency()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>DECLARE docid varchar(80);<br>DECLARE d record;<br>DECLARE s record;<br>DECLARE receipt record;<br>DECLARE v record;<br>DECLARE l record;<br>DECLARE oldv record;<br>BEGIN<br>    IF TG_TABLE_NAME='hidra_documents_document' THEN docid=NEW.id;<br>    ELSE docid=NEW.document_id; END IF;<br>    SELECT * INTO s FROM public.hidra_documents_controlled_scope WHERE document_id=docid;<br>    IF NOT FOUND THEN RETURN NULL; END IF;<br>    SELECT * INTO d FROM public.hidra_documents_document WHERE id=docid;<br>    IF NOT FOUND OR d.owner_module&lt;&gt;'topology' OR d.owner_target_type_code&lt;&gt;'FACILITY'<br>       OR d.owner_target_id&lt;&gt;s.facility_id OR d.created_by_actor_id&lt;&gt;s.created_by_actor_id<br>    THEN RAISE EXCEPTION 'T24 enrolled scope owner identity mismatch'; END IF;<br>    IF d.current_version_id IS NULL THEN<br>        IF d.status&lt;&gt;'DRAFT' OR EXISTS (SELECT 1 FROM public.hidra_documents_controlled_decision<br>                    WHERE document_id=docid)<br>        THEN RAISE EXCEPTION 'T24 invalid controlled draft head'; END IF;<br>    ELSE<br>        IF (SELECT count(*) FROM public.hidra_documents_document_version<br>                WHERE document_id=docid AND version_status='CURRENT')&lt;&gt;1<br>           OR (SELECT count(*) FROM public.hidra_documents_controlled_decision<br>                WHERE document_id=docid AND previous_version_id IS NULL)&lt;&gt;1<br>        THEN RAISE EXCEPTION 'T24 precisely one accepted current and initial decision required'; END IF;<br>        SELECT * INTO v FROM public.hidra_documents_document_version WHERE id=d.current_version_id<br>            AND document_id=docid;<br>        IF NOT FOUND OR d.status&lt;&gt;'ACTIVE' OR v.version_status&lt;&gt;'CURRENT'<br>           OR NOT EXISTS (SELECT 1 FROM public.hidra_documents_controlled_decision<br>                         WHERE version_id=v.id AND document_id=docid)<br>        THEN RAISE EXCEPTION 'T24 controlled current pointer has no sealed decision'; END IF;<br>    END IF;<br>    FOR receipt IN SELECT * FROM public.hidra_documents_controlled_decision WHERE document_id=docid LOOP<br>        SELECT * INTO v FROM public.hidra_documents_document_version WHERE id=receipt.version_id<br>            AND document_id=docid;<br>        SELECT * INTO l FROM public.hidra_documents_target_link WHERE id=receipt.link_id<br>            AND document_id=docid AND document_version_id=receipt.version_id;<br>        IF NOT FOUND OR v.id IS NULL<br>           OR l.target_module&lt;&gt;'topology' OR l.target_type_code&lt;&gt;'FACILITY'<br>           OR l.target_id&lt;&gt;s.facility_id OR NOT l.primary_link OR NOT l.active<br>           OR l.link_role_id&lt;&gt;receipt.link_role_id<br>           OR l.linked_by_actor_id&lt;&gt;receipt.actor_id<br>           OR receipt.company_id&lt;&gt;s.company_id OR receipt.facility_id&lt;&gt;s.facility_id<br>           OR receipt.actor_id IN (d.created_by_actor_id,v.uploaded_by_actor_id)<br>           OR receipt.content_length&lt;&gt;v.file_size_bytes<br>           OR receipt.checksum_sha256&lt;&gt;lower(v.checksum_value)<br>           OR v.checksum_algorithm&lt;&gt;'SHA-256'<br>        THEN RAISE EXCEPTION 'T24 controlled decision lineage invalid'; END IF;<br>        IF receipt.previous_version_id IS NULL THEN<br>            IF receipt.action&lt;&gt;'ACCEPT' THEN RAISE EXCEPTION 'T24 initial decision mismatch'; END IF;<br>        ELSE<br>            SELECT * INTO oldv FROM public.hidra_documents_document_version<br>                 WHERE id=receipt.previous_version_id AND document_id=docid;<br>            IF NOT FOUND OR oldv.version_status&lt;&gt;'SUPERSEDED'<br>               OR oldv.superseded_by_version_id&lt;&gt;receipt.version_id<br>               OR oldv.version_number&gt;=v.version_number<br>            THEN RAISE EXCEPTION 'T24 predecessor lineage invalid'; END IF;<br>        END IF;<br>    END LOOP;<br>    IF EXISTS (SELECT 1 FROM public.hidra_documents_document_version ver<br>        WHERE ver.document_id=docid AND ver.version_status IN ('CURRENT','SUPERSEDED')<br>          AND NOT EXISTS (SELECT 1 FROM public.hidra_documents_controlled_decision decision_row<br>            WHERE decision_row.document_id=docid AND decision_row.version_id=ver.id))<br>    THEN RAISE EXCEPTION 'T24 accepted version without immutable receipt'; END IF;<br>    RETURN NULL;<br>END;<br>$function$<br>
+- `tr_t24_scope_immutable`: CREATE TRIGGER tr_t24_scope_immutable BEFORE DELETE OR UPDATE ON hidra_documents_controlled_scope FOR EACH ROW EXECUTE FUNCTION hidra_documents_t24_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_documents_t24_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_documents_t24_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'T24 immutable controlled Documents evidence';<br>END;<br>$function$<br>
+- `tr_t24_scope_no_truncate`: CREATE TRIGGER tr_t24_scope_no_truncate BEFORE TRUNCATE ON hidra_documents_controlled_scope FOR EACH STATEMENT EXECUTE FUNCTION hidra_documents_t24_no_truncate()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_documents_t24_no_truncate()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_documents_t24_no_truncate()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    IF EXISTS(SELECT 1 FROM public.hidra_documents_controlled_scope)<br>    THEN RAISE EXCEPTION 'T24 controlled historical Documents prohibit truncate'; END IF;<br>    RETURN NULL;<br>END;<br>$function$<br>
+
 ### public.hidra_documents_document
 
 Owner: **documents**; relation kind: `r`.
@@ -8448,6 +8605,8 @@ Persisted DocumentJpaEntity state; semantic authority remains with documents.
 - Migration mention (not inferred introduction): [V20260611_018__create_documents_tables.sql](../../src/main/resources/db/migration/V20260611_018__create_documents_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_002__enforce_same_module_reference_integrity_b.sql](../../src/main/resources/db/migration/V20260929_002__enforce_same_module_reference_integrity_b.sql)
 - Migration mention (not inferred introduction): [V20261007_003__hmr_067_documents_document.sql](../../src/main/resources/db/migration/V20261007_003__hmr_067_documents_document.sql)
+- Migration mention (not inferred introduction): [V20261117_005__t24_controlled_document_history.sql](../../src/main/resources/db/migration/V20261117_005__t24_controlled_document_history.sql)
+- Migration mention (not inferred introduction): [V20261118_001__t24_consistency_decision_alias.sql](../../src/main/resources/db/migration/V20261118_001__t24_consistency_decision_alias.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8491,6 +8650,8 @@ Persisted DocumentJpaEntity state; semantic authority remains with documents.
   - Catalog attributes: {"columns": ["document_type_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_documents_catalog_entry"}, "type": "f", "validated": true}
 - `hidra_documents_document_pkey`: PRIMARY KEY (id)
   - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `tr_t24_document_consistency`: TRIGGER DEFERRABLE INITIALLY DEFERRED
+  - Catalog attributes: {"columns": [], "deferrable": true, "initially_deferred": true, "reference": null, "type": "t", "validated": true}
 - `uq_hmr067_document_code`: UNIQUE (code)
   - Catalog attributes: {"columns": ["code"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
 
@@ -8526,6 +8687,15 @@ Persisted DocumentJpaEntity state; semantic authority remains with documents.
 - `tr_hmr067_document_catalog`: CREATE TRIGGER tr_hmr067_document_catalog BEFORE INSERT OR UPDATE ON hidra_documents_document FOR EACH ROW EXECUTE FUNCTION hmr067_document_catalog_guard()
   - Catalog attributes: {"enabled": "O", "function_identity": "public.hmr067_document_catalog_guard()"}
   - Function evidence: CREATE OR REPLACE FUNCTION public.hmr067_document_catalog_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    PERFORM hmr067_require_catalog(NEW.document_type_id,'DOCUMENT_TYPE');<br>    PERFORM hmr067_require_catalog(NEW.classification_id,'DOCUMENT_CLASSIFICATION');<br>    IF NEW.document_category_id IS NOT NULL THEN PERFORM hmr067_require_catalog(NEW.document_category_id,'DOCUMENT_CATEGORY'); END IF;<br>    RETURN NEW;<br>END $function$<br>
+- `tr_t24_document_consistency`: CREATE CONSTRAINT TRIGGER tr_t24_document_consistency AFTER UPDATE ON hidra_documents_document DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION hidra_documents_t24_consistency()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_documents_t24_consistency()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_documents_t24_consistency()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>DECLARE docid varchar(80);<br>DECLARE d record;<br>DECLARE s record;<br>DECLARE receipt record;<br>DECLARE v record;<br>DECLARE l record;<br>DECLARE oldv record;<br>BEGIN<br>    IF TG_TABLE_NAME='hidra_documents_document' THEN docid=NEW.id;<br>    ELSE docid=NEW.document_id; END IF;<br>    SELECT * INTO s FROM public.hidra_documents_controlled_scope WHERE document_id=docid;<br>    IF NOT FOUND THEN RETURN NULL; END IF;<br>    SELECT * INTO d FROM public.hidra_documents_document WHERE id=docid;<br>    IF NOT FOUND OR d.owner_module&lt;&gt;'topology' OR d.owner_target_type_code&lt;&gt;'FACILITY'<br>       OR d.owner_target_id&lt;&gt;s.facility_id OR d.created_by_actor_id&lt;&gt;s.created_by_actor_id<br>    THEN RAISE EXCEPTION 'T24 enrolled scope owner identity mismatch'; END IF;<br>    IF d.current_version_id IS NULL THEN<br>        IF d.status&lt;&gt;'DRAFT' OR EXISTS (SELECT 1 FROM public.hidra_documents_controlled_decision<br>                    WHERE document_id=docid)<br>        THEN RAISE EXCEPTION 'T24 invalid controlled draft head'; END IF;<br>    ELSE<br>        IF (SELECT count(*) FROM public.hidra_documents_document_version<br>                WHERE document_id=docid AND version_status='CURRENT')&lt;&gt;1<br>           OR (SELECT count(*) FROM public.hidra_documents_controlled_decision<br>                WHERE document_id=docid AND previous_version_id IS NULL)&lt;&gt;1<br>        THEN RAISE EXCEPTION 'T24 precisely one accepted current and initial decision required'; END IF;<br>        SELECT * INTO v FROM public.hidra_documents_document_version WHERE id=d.current_version_id<br>            AND document_id=docid;<br>        IF NOT FOUND OR d.status&lt;&gt;'ACTIVE' OR v.version_status&lt;&gt;'CURRENT'<br>           OR NOT EXISTS (SELECT 1 FROM public.hidra_documents_controlled_decision<br>                         WHERE version_id=v.id AND document_id=docid)<br>        THEN RAISE EXCEPTION 'T24 controlled current pointer has no sealed decision'; END IF;<br>    END IF;<br>    FOR receipt IN SELECT * FROM public.hidra_documents_controlled_decision WHERE document_id=docid LOOP<br>        SELECT * INTO v FROM public.hidra_documents_document_version WHERE id=receipt.version_id<br>            AND document_id=docid;<br>        SELECT * INTO l FROM public.hidra_documents_target_link WHERE id=receipt.link_id<br>            AND document_id=docid AND document_version_id=receipt.version_id;<br>        IF NOT FOUND OR v.id IS NULL<br>           OR l.target_module&lt;&gt;'topology' OR l.target_type_code&lt;&gt;'FACILITY'<br>           OR l.target_id&lt;&gt;s.facility_id OR NOT l.primary_link OR NOT l.active<br>           OR l.link_role_id&lt;&gt;receipt.link_role_id<br>           OR l.linked_by_actor_id&lt;&gt;receipt.actor_id<br>           OR receipt.company_id&lt;&gt;s.company_id OR receipt.facility_id&lt;&gt;s.facility_id<br>           OR receipt.actor_id IN (d.created_by_actor_id,v.uploaded_by_actor_id)<br>           OR receipt.content_length&lt;&gt;v.file_size_bytes<br>           OR receipt.checksum_sha256&lt;&gt;lower(v.checksum_value)<br>           OR v.checksum_algorithm&lt;&gt;'SHA-256'<br>        THEN RAISE EXCEPTION 'T24 controlled decision lineage invalid'; END IF;<br>        IF receipt.previous_version_id IS NULL THEN<br>            IF receipt.action&lt;&gt;'ACCEPT' THEN RAISE EXCEPTION 'T24 initial decision mismatch'; END IF;<br>        ELSE<br>            SELECT * INTO oldv FROM public.hidra_documents_document_version<br>                 WHERE id=receipt.previous_version_id AND document_id=docid;<br>            IF NOT FOUND OR oldv.version_status&lt;&gt;'SUPERSEDED'<br>               OR oldv.superseded_by_version_id&lt;&gt;receipt.version_id<br>               OR oldv.version_number&gt;=v.version_number<br>            THEN RAISE EXCEPTION 'T24 predecessor lineage invalid'; END IF;<br>        END IF;<br>    END LOOP;<br>    IF EXISTS (SELECT 1 FROM public.hidra_documents_document_version ver<br>        WHERE ver.document_id=docid AND ver.version_status IN ('CURRENT','SUPERSEDED')<br>          AND NOT EXISTS (SELECT 1 FROM public.hidra_documents_controlled_decision decision_row<br>            WHERE decision_row.document_id=docid AND decision_row.version_id=ver.id))<br>    THEN RAISE EXCEPTION 'T24 accepted version without immutable receipt'; END IF;<br>    RETURN NULL;<br>END;<br>$function$<br>
+- `tr_t24_document_no_truncate`: CREATE TRIGGER tr_t24_document_no_truncate BEFORE TRUNCATE ON hidra_documents_document FOR EACH STATEMENT EXECUTE FUNCTION hidra_documents_t24_no_truncate()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_documents_t24_no_truncate()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_documents_t24_no_truncate()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    IF EXISTS(SELECT 1 FROM public.hidra_documents_controlled_scope)<br>    THEN RAISE EXCEPTION 'T24 controlled historical Documents prohibit truncate'; END IF;<br>    RETURN NULL;<br>END;<br>$function$<br>
+- `tr_t24_parent_guard`: CREATE TRIGGER tr_t24_parent_guard BEFORE DELETE OR UPDATE ON hidra_documents_document FOR EACH ROW EXECUTE FUNCTION hidra_documents_t24_parent_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_documents_t24_parent_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_documents_t24_parent_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>DECLARE enrolled boolean;<br>BEGIN<br>    SELECT EXISTS (SELECT 1 FROM public.hidra_documents_controlled_scope WHERE document_id=OLD.id) INTO enrolled;<br>    IF NOT enrolled THEN RETURN COALESCE(NEW,OLD); END IF;<br>    IF TG_OP='DELETE' THEN RAISE EXCEPTION 'T24 enrolled document delete forbidden'; END IF;<br>    IF NOT ((OLD.status='DRAFT' AND OLD.current_version_id IS NULL<br>               AND NEW.status='ACTIVE' AND NEW.current_version_id IS NOT NULL)<br>            OR (OLD.status='ACTIVE' AND OLD.current_version_id IS NOT NULL<br>               AND NEW.status='ACTIVE' AND NEW.current_version_id IS DISTINCT FROM OLD.current_version_id<br>               AND NEW.current_version_id IS NOT NULL))<br>       OR (to_jsonb(NEW)-'status'-'current_version_id'-'updated_at')<br>           IS DISTINCT FROM (to_jsonb(OLD)-'status'-'current_version_id'-'updated_at')<br>    THEN RAISE EXCEPTION 'T24 enrolled document may only advance its current pointer'; END IF;<br>    RETURN NEW;<br>END;<br>$function$<br>
 
 ### public.hidra_documents_document_version
 
@@ -8539,6 +8709,8 @@ Persisted DocumentVersionJpaEntity state; semantic authority remains with docume
 - Migration mention (not inferred introduction): [V20261007_003__hmr_067_documents_document.sql](../../src/main/resources/db/migration/V20261007_003__hmr_067_documents_document.sql)
 - Migration mention (not inferred introduction): [V20261007_004__hmr_068_documents_document_version.sql](../../src/main/resources/db/migration/V20261007_004__hmr_068_documents_document_version.sql)
 - Migration mention (not inferred introduction): [V20261007_005__hmr_084_documents_document_target_link.sql](../../src/main/resources/db/migration/V20261007_005__hmr_084_documents_document_target_link.sql)
+- Migration mention (not inferred introduction): [V20261117_005__t24_controlled_document_history.sql](../../src/main/resources/db/migration/V20261117_005__t24_controlled_document_history.sql)
+- Migration mention (not inferred introduction): [V20261118_001__t24_consistency_decision_alias.sql](../../src/main/resources/db/migration/V20261118_001__t24_consistency_decision_alias.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8593,6 +8765,8 @@ Persisted DocumentVersionJpaEntity state; semantic authority remains with docume
   - Catalog attributes: {"columns": ["storage_object_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_documents_storage_object"}, "type": "f", "validated": true}
 - `hidra_documents_document_version_pkey`: PRIMARY KEY (id)
   - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `tr_t24_version_consistency`: TRIGGER DEFERRABLE INITIALLY DEFERRED
+  - Catalog attributes: {"columns": [], "deferrable": true, "initially_deferred": true, "reference": null, "type": "t", "validated": true}
 - `uq_hmr067_version_parent`: UNIQUE (document_id, id)
   - Catalog attributes: {"columns": ["document_id", "id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
 - `uq_hmr068_document_number`: UNIQUE (document_id, version_number)
@@ -8616,10 +8790,20 @@ Persisted DocumentVersionJpaEntity state; semantic authority remains with docume
   - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
 - `uq_hmr068_document_number`: CREATE UNIQUE INDEX uq_hmr068_document_number ON public.hidra_documents_document_version USING btree (document_id, version_number)
   - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `uq_t24_version_parent_id`: CREATE UNIQUE INDEX uq_t24_version_parent_id ON public.hidra_documents_document_version USING btree (document_id, id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
 
 #### Triggers
 
-None captured in this catalog category.
+- `tr_t24_version_consistency`: CREATE CONSTRAINT TRIGGER tr_t24_version_consistency AFTER INSERT OR UPDATE ON hidra_documents_document_version DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION hidra_documents_t24_consistency()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_documents_t24_consistency()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_documents_t24_consistency()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>DECLARE docid varchar(80);<br>DECLARE d record;<br>DECLARE s record;<br>DECLARE receipt record;<br>DECLARE v record;<br>DECLARE l record;<br>DECLARE oldv record;<br>BEGIN<br>    IF TG_TABLE_NAME='hidra_documents_document' THEN docid=NEW.id;<br>    ELSE docid=NEW.document_id; END IF;<br>    SELECT * INTO s FROM public.hidra_documents_controlled_scope WHERE document_id=docid;<br>    IF NOT FOUND THEN RETURN NULL; END IF;<br>    SELECT * INTO d FROM public.hidra_documents_document WHERE id=docid;<br>    IF NOT FOUND OR d.owner_module&lt;&gt;'topology' OR d.owner_target_type_code&lt;&gt;'FACILITY'<br>       OR d.owner_target_id&lt;&gt;s.facility_id OR d.created_by_actor_id&lt;&gt;s.created_by_actor_id<br>    THEN RAISE EXCEPTION 'T24 enrolled scope owner identity mismatch'; END IF;<br>    IF d.current_version_id IS NULL THEN<br>        IF d.status&lt;&gt;'DRAFT' OR EXISTS (SELECT 1 FROM public.hidra_documents_controlled_decision<br>                    WHERE document_id=docid)<br>        THEN RAISE EXCEPTION 'T24 invalid controlled draft head'; END IF;<br>    ELSE<br>        IF (SELECT count(*) FROM public.hidra_documents_document_version<br>                WHERE document_id=docid AND version_status='CURRENT')&lt;&gt;1<br>           OR (SELECT count(*) FROM public.hidra_documents_controlled_decision<br>                WHERE document_id=docid AND previous_version_id IS NULL)&lt;&gt;1<br>        THEN RAISE EXCEPTION 'T24 precisely one accepted current and initial decision required'; END IF;<br>        SELECT * INTO v FROM public.hidra_documents_document_version WHERE id=d.current_version_id<br>            AND document_id=docid;<br>        IF NOT FOUND OR d.status&lt;&gt;'ACTIVE' OR v.version_status&lt;&gt;'CURRENT'<br>           OR NOT EXISTS (SELECT 1 FROM public.hidra_documents_controlled_decision<br>                         WHERE version_id=v.id AND document_id=docid)<br>        THEN RAISE EXCEPTION 'T24 controlled current pointer has no sealed decision'; END IF;<br>    END IF;<br>    FOR receipt IN SELECT * FROM public.hidra_documents_controlled_decision WHERE document_id=docid LOOP<br>        SELECT * INTO v FROM public.hidra_documents_document_version WHERE id=receipt.version_id<br>            AND document_id=docid;<br>        SELECT * INTO l FROM public.hidra_documents_target_link WHERE id=receipt.link_id<br>            AND document_id=docid AND document_version_id=receipt.version_id;<br>        IF NOT FOUND OR v.id IS NULL<br>           OR l.target_module&lt;&gt;'topology' OR l.target_type_code&lt;&gt;'FACILITY'<br>           OR l.target_id&lt;&gt;s.facility_id OR NOT l.primary_link OR NOT l.active<br>           OR l.link_role_id&lt;&gt;receipt.link_role_id<br>           OR l.linked_by_actor_id&lt;&gt;receipt.actor_id<br>           OR receipt.company_id&lt;&gt;s.company_id OR receipt.facility_id&lt;&gt;s.facility_id<br>           OR receipt.actor_id IN (d.created_by_actor_id,v.uploaded_by_actor_id)<br>           OR receipt.content_length&lt;&gt;v.file_size_bytes<br>           OR receipt.checksum_sha256&lt;&gt;lower(v.checksum_value)<br>           OR v.checksum_algorithm&lt;&gt;'SHA-256'<br>        THEN RAISE EXCEPTION 'T24 controlled decision lineage invalid'; END IF;<br>        IF receipt.previous_version_id IS NULL THEN<br>            IF receipt.action&lt;&gt;'ACCEPT' THEN RAISE EXCEPTION 'T24 initial decision mismatch'; END IF;<br>        ELSE<br>            SELECT * INTO oldv FROM public.hidra_documents_document_version<br>                 WHERE id=receipt.previous_version_id AND document_id=docid;<br>            IF NOT FOUND OR oldv.version_status&lt;&gt;'SUPERSEDED'<br>               OR oldv.superseded_by_version_id&lt;&gt;receipt.version_id<br>               OR oldv.version_number&gt;=v.version_number<br>            THEN RAISE EXCEPTION 'T24 predecessor lineage invalid'; END IF;<br>        END IF;<br>    END LOOP;<br>    IF EXISTS (SELECT 1 FROM public.hidra_documents_document_version ver<br>        WHERE ver.document_id=docid AND ver.version_status IN ('CURRENT','SUPERSEDED')<br>          AND NOT EXISTS (SELECT 1 FROM public.hidra_documents_controlled_decision decision_row<br>            WHERE decision_row.document_id=docid AND decision_row.version_id=ver.id))<br>    THEN RAISE EXCEPTION 'T24 accepted version without immutable receipt'; END IF;<br>    RETURN NULL;<br>END;<br>$function$<br>
+- `tr_t24_version_guard`: CREATE TRIGGER tr_t24_version_guard BEFORE DELETE OR UPDATE ON hidra_documents_document_version FOR EACH ROW EXECUTE FUNCTION hidra_documents_t24_version_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_documents_t24_version_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_documents_t24_version_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>DECLARE enrolled boolean;<br>BEGIN<br>    SELECT EXISTS (SELECT 1 FROM public.hidra_documents_controlled_scope WHERE document_id=OLD.document_id) INTO enrolled;<br>    IF NOT enrolled THEN RETURN COALESCE(NEW,OLD); END IF;<br>    IF TG_OP='DELETE' THEN RAISE EXCEPTION 'T24 enrolled version delete forbidden'; END IF;<br>    IF (to_jsonb(NEW)-'version_status'-'superseded_by_version_id')<br>            IS DISTINCT FROM (to_jsonb(OLD)-'version_status'-'superseded_by_version_id')<br>      OR NOT ((OLD.version_status='DRAFT' AND NEW.version_status='CURRENT'<br>                AND OLD.superseded_by_version_id IS NULL AND NEW.superseded_by_version_id IS NULL)<br>              OR (OLD.version_status='CURRENT' AND NEW.version_status='SUPERSEDED'<br>                AND OLD.superseded_by_version_id IS NULL AND NEW.superseded_by_version_id IS NOT NULL))<br>    THEN RAISE EXCEPTION 'T24 controlled version metadata and transitions are frozen'; END IF;<br>    RETURN NEW;<br>END;<br>$function$<br>
+- `tr_t24_version_no_truncate`: CREATE TRIGGER tr_t24_version_no_truncate BEFORE TRUNCATE ON hidra_documents_document_version FOR EACH STATEMENT EXECUTE FUNCTION hidra_documents_t24_no_truncate()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_documents_t24_no_truncate()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_documents_t24_no_truncate()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    IF EXISTS(SELECT 1 FROM public.hidra_documents_controlled_scope)<br>    THEN RAISE EXCEPTION 'T24 controlled historical Documents prohibit truncate'; END IF;<br>    RETURN NULL;<br>END;<br>$function$<br>
 
 ### public.hidra_documents_external_reference
 
@@ -8829,6 +9013,7 @@ Persisted DocumentStorageObjectJpaEntity state; semantic authority remains with 
 - Migration mention (not inferred introduction): [V20260611_018__create_documents_tables.sql](../../src/main/resources/db/migration/V20260611_018__create_documents_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_002__enforce_same_module_reference_integrity_b.sql](../../src/main/resources/db/migration/V20260929_002__enforce_same_module_reference_integrity_b.sql)
 - Migration mention (not inferred introduction): [V20261004_008__hmr_008_documents_document_storage_object.sql](../../src/main/resources/db/migration/V20261004_008__hmr_008_documents_document_storage_object.sql)
+- Migration mention (not inferred introduction): [V20261117_005__t24_controlled_document_history.sql](../../src/main/resources/db/migration/V20261117_005__t24_controlled_document_history.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8871,7 +9056,12 @@ Persisted DocumentStorageObjectJpaEntity state; semantic authority remains with 
 
 #### Triggers
 
-None captured in this catalog category.
+- `tr_t24_storage_guard`: CREATE TRIGGER tr_t24_storage_guard BEFORE DELETE OR UPDATE ON hidra_documents_storage_object FOR EACH ROW EXECUTE FUNCTION hidra_documents_t24_storage_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_documents_t24_storage_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_documents_t24_storage_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    IF EXISTS (SELECT 1 FROM public.hidra_documents_document_version v<br>       JOIN public.hidra_documents_controlled_scope s ON s.document_id=v.document_id<br>       WHERE v.storage_object_id=OLD.id)<br>    THEN RAISE EXCEPTION 'T24 controlled storage metadata immutable'; END IF;<br>    RETURN COALESCE(NEW,OLD);<br>END;<br>$function$<br>
+- `tr_t24_storage_no_truncate`: CREATE TRIGGER tr_t24_storage_no_truncate BEFORE TRUNCATE ON hidra_documents_storage_object FOR EACH STATEMENT EXECUTE FUNCTION hidra_documents_t24_no_truncate()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_documents_t24_no_truncate()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_documents_t24_no_truncate()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    IF EXISTS(SELECT 1 FROM public.hidra_documents_controlled_scope)<br>    THEN RAISE EXCEPTION 'T24 controlled historical Documents prohibit truncate'; END IF;<br>    RETURN NULL;<br>END;<br>$function$<br>
 
 ### public.hidra_documents_target_link
 
@@ -8883,6 +9073,8 @@ Persisted DocumentTargetLinkJpaEntity state; semantic authority remains with doc
 - Migration mention (not inferred introduction): [V20260611_018__create_documents_tables.sql](../../src/main/resources/db/migration/V20260611_018__create_documents_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_002__enforce_same_module_reference_integrity_b.sql](../../src/main/resources/db/migration/V20260929_002__enforce_same_module_reference_integrity_b.sql)
 - Migration mention (not inferred introduction): [V20261007_005__hmr_084_documents_document_target_link.sql](../../src/main/resources/db/migration/V20261007_005__hmr_084_documents_document_target_link.sql)
+- Migration mention (not inferred introduction): [V20261117_005__t24_controlled_document_history.sql](../../src/main/resources/db/migration/V20261117_005__t24_controlled_document_history.sql)
+- Migration mention (not inferred introduction): [V20261118_001__t24_consistency_decision_alias.sql](../../src/main/resources/db/migration/V20261118_001__t24_consistency_decision_alias.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -8913,6 +9105,8 @@ Persisted DocumentTargetLinkJpaEntity state; semantic authority remains with doc
   - Catalog attributes: {"columns": ["link_role_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_documents_catalog_entry"}, "type": "f", "validated": true}
 - `hidra_documents_target_link_pkey`: PRIMARY KEY (id)
   - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `tr_t24_link_consistency`: TRIGGER DEFERRABLE INITIALLY DEFERRED
+  - Catalog attributes: {"columns": [], "deferrable": true, "initially_deferred": true, "reference": null, "type": "t", "validated": true}
 
 #### Indexes
 
@@ -8936,6 +9130,15 @@ Persisted DocumentTargetLinkJpaEntity state; semantic authority remains with doc
 - `tr_hmr084_link_catalog`: CREATE TRIGGER tr_hmr084_link_catalog BEFORE INSERT OR UPDATE ON hidra_documents_target_link FOR EACH ROW EXECUTE FUNCTION hmr084_link_catalog_guard()
   - Catalog attributes: {"enabled": "O", "function_identity": "public.hmr084_link_catalog_guard()"}
   - Function evidence: CREATE OR REPLACE FUNCTION public.hmr084_link_catalog_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    PERFORM hmr067_require_catalog(NEW.link_role_id,'DOCUMENT_LINK_ROLE');RETURN NEW;<br>END $function$<br>
+- `tr_t24_link_consistency`: CREATE CONSTRAINT TRIGGER tr_t24_link_consistency AFTER INSERT ON hidra_documents_target_link DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION hidra_documents_t24_consistency()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_documents_t24_consistency()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_documents_t24_consistency()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>DECLARE docid varchar(80);<br>DECLARE d record;<br>DECLARE s record;<br>DECLARE receipt record;<br>DECLARE v record;<br>DECLARE l record;<br>DECLARE oldv record;<br>BEGIN<br>    IF TG_TABLE_NAME='hidra_documents_document' THEN docid=NEW.id;<br>    ELSE docid=NEW.document_id; END IF;<br>    SELECT * INTO s FROM public.hidra_documents_controlled_scope WHERE document_id=docid;<br>    IF NOT FOUND THEN RETURN NULL; END IF;<br>    SELECT * INTO d FROM public.hidra_documents_document WHERE id=docid;<br>    IF NOT FOUND OR d.owner_module&lt;&gt;'topology' OR d.owner_target_type_code&lt;&gt;'FACILITY'<br>       OR d.owner_target_id&lt;&gt;s.facility_id OR d.created_by_actor_id&lt;&gt;s.created_by_actor_id<br>    THEN RAISE EXCEPTION 'T24 enrolled scope owner identity mismatch'; END IF;<br>    IF d.current_version_id IS NULL THEN<br>        IF d.status&lt;&gt;'DRAFT' OR EXISTS (SELECT 1 FROM public.hidra_documents_controlled_decision<br>                    WHERE document_id=docid)<br>        THEN RAISE EXCEPTION 'T24 invalid controlled draft head'; END IF;<br>    ELSE<br>        IF (SELECT count(*) FROM public.hidra_documents_document_version<br>                WHERE document_id=docid AND version_status='CURRENT')&lt;&gt;1<br>           OR (SELECT count(*) FROM public.hidra_documents_controlled_decision<br>                WHERE document_id=docid AND previous_version_id IS NULL)&lt;&gt;1<br>        THEN RAISE EXCEPTION 'T24 precisely one accepted current and initial decision required'; END IF;<br>        SELECT * INTO v FROM public.hidra_documents_document_version WHERE id=d.current_version_id<br>            AND document_id=docid;<br>        IF NOT FOUND OR d.status&lt;&gt;'ACTIVE' OR v.version_status&lt;&gt;'CURRENT'<br>           OR NOT EXISTS (SELECT 1 FROM public.hidra_documents_controlled_decision<br>                         WHERE version_id=v.id AND document_id=docid)<br>        THEN RAISE EXCEPTION 'T24 controlled current pointer has no sealed decision'; END IF;<br>    END IF;<br>    FOR receipt IN SELECT * FROM public.hidra_documents_controlled_decision WHERE document_id=docid LOOP<br>        SELECT * INTO v FROM public.hidra_documents_document_version WHERE id=receipt.version_id<br>            AND document_id=docid;<br>        SELECT * INTO l FROM public.hidra_documents_target_link WHERE id=receipt.link_id<br>            AND document_id=docid AND document_version_id=receipt.version_id;<br>        IF NOT FOUND OR v.id IS NULL<br>           OR l.target_module&lt;&gt;'topology' OR l.target_type_code&lt;&gt;'FACILITY'<br>           OR l.target_id&lt;&gt;s.facility_id OR NOT l.primary_link OR NOT l.active<br>           OR l.link_role_id&lt;&gt;receipt.link_role_id<br>           OR l.linked_by_actor_id&lt;&gt;receipt.actor_id<br>           OR receipt.company_id&lt;&gt;s.company_id OR receipt.facility_id&lt;&gt;s.facility_id<br>           OR receipt.actor_id IN (d.created_by_actor_id,v.uploaded_by_actor_id)<br>           OR receipt.content_length&lt;&gt;v.file_size_bytes<br>           OR receipt.checksum_sha256&lt;&gt;lower(v.checksum_value)<br>           OR v.checksum_algorithm&lt;&gt;'SHA-256'<br>        THEN RAISE EXCEPTION 'T24 controlled decision lineage invalid'; END IF;<br>        IF receipt.previous_version_id IS NULL THEN<br>            IF receipt.action&lt;&gt;'ACCEPT' THEN RAISE EXCEPTION 'T24 initial decision mismatch'; END IF;<br>        ELSE<br>            SELECT * INTO oldv FROM public.hidra_documents_document_version<br>                 WHERE id=receipt.previous_version_id AND document_id=docid;<br>            IF NOT FOUND OR oldv.version_status&lt;&gt;'SUPERSEDED'<br>               OR oldv.superseded_by_version_id&lt;&gt;receipt.version_id<br>               OR oldv.version_number&gt;=v.version_number<br>            THEN RAISE EXCEPTION 'T24 predecessor lineage invalid'; END IF;<br>        END IF;<br>    END LOOP;<br>    IF EXISTS (SELECT 1 FROM public.hidra_documents_document_version ver<br>        WHERE ver.document_id=docid AND ver.version_status IN ('CURRENT','SUPERSEDED')<br>          AND NOT EXISTS (SELECT 1 FROM public.hidra_documents_controlled_decision decision_row<br>            WHERE decision_row.document_id=docid AND decision_row.version_id=ver.id))<br>    THEN RAISE EXCEPTION 'T24 accepted version without immutable receipt'; END IF;<br>    RETURN NULL;<br>END;<br>$function$<br>
+- `tr_t24_link_guard`: CREATE TRIGGER tr_t24_link_guard BEFORE INSERT OR DELETE OR UPDATE ON hidra_documents_target_link FOR EACH ROW EXECUTE FUNCTION hidra_documents_t24_link_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_documents_t24_link_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_documents_t24_link_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>DECLARE s record;<br>BEGIN<br>    SELECT * INTO s FROM public.hidra_documents_controlled_scope<br>        WHERE document_id=CASE WHEN TG_OP='DELETE' THEN OLD.document_id ELSE NEW.document_id END;<br>    IF NOT FOUND THEN RETURN COALESCE(NEW,OLD); END IF;<br>    IF TG_OP &lt;&gt; 'INSERT' THEN RAISE EXCEPTION 'T24 controlled target evidence immutable'; END IF;<br>    IF NEW.target_module &lt;&gt; 'topology' OR NEW.target_type_code &lt;&gt; 'FACILITY'<br>       OR NEW.target_id &lt;&gt; s.facility_id OR NEW.document_version_id IS NULL<br>       OR NOT NEW.active OR NEW.unlinked_at IS NOT NULL<br>       OR NOT EXISTS (SELECT 1 FROM public.hidra_documents_document_version v<br>                JOIN public.hidra_documents_document d ON d.id=v.document_id<br>                WHERE v.document_id=NEW.document_id AND v.id=NEW.document_version_id<br>                  AND v.version_status='CURRENT' AND d.current_version_id=v.id)<br>    THEN RAISE EXCEPTION 'T24 target link must bind exact facility and version'; END IF;<br>    RETURN NEW;<br>END;<br>$function$<br>
+- `tr_t24_link_no_truncate`: CREATE TRIGGER tr_t24_link_no_truncate BEFORE TRUNCATE ON hidra_documents_target_link FOR EACH STATEMENT EXECUTE FUNCTION hidra_documents_t24_no_truncate()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_documents_t24_no_truncate()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_documents_t24_no_truncate()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    IF EXISTS(SELECT 1 FROM public.hidra_documents_controlled_scope)<br>    THEN RAISE EXCEPTION 'T24 controlled historical Documents prohibit truncate'; END IF;<br>    RETURN NULL;<br>END;<br>$function$<br>
 
 ### public.hidra_hse_capa
 
@@ -11410,6 +11613,7 @@ Persisted PermissionJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261117_001__t21_custody_transfer_lifecycle.sql](../../src/main/resources/db/migration/V20261117_001__t21_custody_transfer_lifecycle.sql)
 - Migration mention (not inferred introduction): [V20261117_002__t22_risk_assessment_governance_receipts.sql](../../src/main/resources/db/migration/V20261117_002__t22_risk_assessment_governance_receipts.sql)
 - Migration mention (not inferred introduction): [V20261117_003__t23_analytics_deviation_metric_receipts.sql](../../src/main/resources/db/migration/V20261117_003__t23_analytics_deviation_metric_receipts.sql)
+- Migration mention (not inferred introduction): [V20261117_005__t24_controlled_document_history.sql](../../src/main/resources/db/migration/V20261117_005__t24_controlled_document_history.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|

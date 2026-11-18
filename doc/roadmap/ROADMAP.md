@@ -2968,3 +2968,54 @@ blobs, publish to the existing `main` with expected-head guard,
 confirm both new exact-SHA workflows queued/started, and STOP.
 Local Maven/PostgreSQL execution, CI success, engineering acceptance,
 T17/T25 selection and deployment are not claimed.
+
+### T24 CI #1293 generated OpenAPI and physical dictionary reconciliation — 2026-11-18
+
+**T24 remains IN PROGRESS; this is the previously registered documentation
+reconciliation stage, not a new implementation task or acceptance claim.**
+[HidraAPI CI #1293](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44237345230)
+completed FAILURE on exact source `14c6be04466e1b3c1a1ffc2ae1bea3d083d9dd8a`, parent
+`bf5b468dccd9903bd2d049748730733e9be78ddf` and tree
+`aa8fb84b512207c2d46379b7bc3599dd2ec8554f`.
+All fourteen PostgreSQL integration shards (including the T24 GZ2 Documents
+shard 9), Java 21 unit/architecture and static validation passed.
+The API contract lane successfully generated a source-stamped runtime OpenAPI
+artifact, migrated the PostgreSQL 16.16 schema, captured its dictionary and
+passed runtime backward compatibility. It failed only its strict canonical
+OpenAPI snapshot comparison; strict dictionary equality was skipped.
+The downstream Full Verification Gate consequently failed. A captured
+dictionary does not establish its strict repository comparison as passed.
+
+This reserved stage uses **only** `doc/api/openapi.yaml`,
+`doc/database/DATA_DICTIONARY.md`,
+`.github/documentation-validation.json` and this append-only active
+roadmap. The actual source-SHA OpenAPI artifact is
+[14398830150](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44237345230/artifacts/14398830150),
+ZIP SHA-256 `d85965988a2b096b9be2e55167b94c48f0adcce893d71c73c64c264436e14fdb`,
+generated JSON SHA-256 `8b9f086ec219c18f6c5243e58241059ea39f2eff86c80d816cc5aa94f138a0e2`.
+Its canonically sorted snapshot SHA-256 is
+`02efaa237bb3b83adbab841142603ba682e333815fc557f32aee2f2089f5cc32`;
+it contains 433 paths, 477 operations and 516 schemas. Relative to
+the T23 canonical snapshot, precisely eight scoped Documents paths,
+nine operations and eleven generated schemas were added; existing
+path and schema definitions were preserved.
+
+The real migrated [database artifact 14397534731](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44237345230/artifacts/14397534731)
+has ZIP SHA-256 `2127a1e232d97ee86a432b5575bbc0c38716ce31eeeeea8315e8a1c93482d3b7`;
+its `DATA_DICTIONARY.md` member SHA-256 is
+`0f1e53ef5746726f9d0712280b55b6ac7f25a0f64b584b0c240f0fd92ddb0cb9`.
+The fresh synthetic catalog records 225 migrations, 471 JPA mappings,
+597 relations and zero unresolved owners. No existing migration, schema
+constraint, security boundary, REST behavior, CI validator or test was
+weakened. Generation-step success and exact source provenance are explicitly
+distinguished from the failed overall CI.
+
+The exact registered reconciliation commit message is
+`docs(documents): reconcile T24 generated contracts and physical dictionary`.
+Pre-publication artifact hash/shape review is not a PostgreSQL, Maven
+or full-CI result. After guarded direct-`main` publication, observe
+the successor SHA's HidraAPI CI and Documentation Validation queue/start
+and STOP. Require both strict equalities, all signed/raw tests and the
+Full Verification Gate before T24 software acceptance. T17/T25,
+engineering/site qualification, simulation, release and deployment
+remain unselected.

@@ -28,7 +28,7 @@ public final class HseCapaLifecycleResponse {
     }
     public record ScopedHseCapaView(String id,String caseId,String actionNumber,String title,String status,
             long version,String proposerId,String ownerId,String verifierId,String evidenceId){
-        public static ScopedHseCapaView from(HseCapaLifecycleUseCase.ScopedHseCapaView x){
+        public static ScopedHseCapaView from(HseCapaLifecycleUseCase.CapaView x){
             return new ScopedHseCapaView(x.id(),x.caseId(),x.actionNumber(),x.title(),x.status(),
                     x.version(),x.proposerId(),x.ownerId(),x.verifierId(),x.evidenceId());
         }

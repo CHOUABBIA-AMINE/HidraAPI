@@ -5,7 +5,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  * @Name        : JdbcControlledDocumentRepositoryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-17
+ * @UpdatedOn   : 2026-11-18
  * @Type        : Class
  * @Layer       : Infrastructure
  * @Module      : documents
@@ -129,13 +129,21 @@ public class JdbcControlledDocumentRepositoryAdapter implements ControlledDocume
                 "LEFT JOIN "+VERSION+" v ON v.id=d.current_version_id ";
     }
     @Override public Page<DocumentView> discover(String company,String facility,int page,int size,String code){
-        String fragment=" WHERE s.company_id=? AND s.facility_id=? AND (? IS NULL OR d.code LIKE ?)";
-        String pattern=code==null||code.isBlank()?null:code.trim()+"%";
+        // Keep both owner predicates mandatory. PostgreSQL cannot type a bare null
+        // JDBC parameter in "? IS NULL"; bind the optional prefix only when present.
+        String fragment=" WHERE s.company_id=? AND s.facility_id=?";
+        var args=new java.util.ArrayList<Object>(List.of(company,facility));
+        if(code!=null&&!code.isBlank()){
+            fragment+=" AND d.code LIKE ?";
+            args.add(code.trim()+"%");
+        }
         long total=jdbc.queryForObject("SELECT count(*) FROM "+DOCUMENT+
                 " d JOIN "+SCOPE+" s ON s.document_id=d.id"+fragment,
-                Long.class,company,facility,pattern,pattern);
+                Long.class,args.toArray());
+        args.add(size);
+        args.add(page*size);
         var items=jdbc.query(projection()+fragment+" ORDER BY d.code,d.id LIMIT ? OFFSET ?",
-                JdbcControlledDocumentRepositoryAdapter::document,company,facility,pattern,pattern,size,page*size);
+                JdbcControlledDocumentRepositoryAdapter::document,args.toArray());
         return new Page<>(items,total,page,size);
     }
     @Override public Optional<DocumentView> detail(String documentId){

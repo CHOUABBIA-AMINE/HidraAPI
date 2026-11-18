@@ -5,7 +5,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  * @Name        : Gz2ControlledDocumentsNativeHttpPostgresIntegrationTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-17
+ * @UpdatedOn   : 2026-11-18
  * @Type        : Class
  * @Layer       : Test
  * @Module      : qualification
@@ -103,6 +103,12 @@ class Gz2ControlledDocumentsNativeHttpPostgresIntegrationTest {
                 String route=base(f)+"/"+doc;
                 assertEquals(doc,required(runtime.get(route,reader),"id"));
                 assertEquals(1,runtime.get(base(f)+"?page=0&size=5",reader).path("total").asInt());
+                assertEquals(1,runtime.get(base(f)+"?page=0&size=5&code=GZ2-DOC-",
+                        reader).path("total").asInt(),"Prefix-filtered count must retain scoped evidence.");
+                assertEquals(0,runtime.get(base(f)+"?page=0&size=5&code=NO-MATCH-",
+                        reader).path("total").asInt(),"A missing prefix discloses no records.");
+                assertEquals(1,runtime.get(base(f)+"?page=0&size=5&code=",
+                        reader).path("total").asInt(),"Blank code remains an unfiltered scoped query.");
                 String foreign=runtime.login(f.foreign),wrong=runtime.login(f.wrongAsset);
                 deny(runtime.send("GET",route,foreign,null).statusCode());
                 deny(runtime.send("GET",base(f)+"?page=0&size=5",foreign,null).statusCode());

@@ -2851,3 +2851,61 @@ sources and this append-only roadmap entry), then verify that both
 exact-SHA HidraAPI CI and Documentation Validation workflows are queued
 or started and STOP. Local Maven/PostgreSQL execution is not proven.
 No T17/T25, simulation, release, production or IT/OT action is selected.
+
+
+### T24 CI #1291 scoped discovery SQL parameter repair — 2026-11-18
+
+**T24 stays IN PROGRESS and is not CI or engineering accepted.**
+[CI #1291](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44233796429)
+failed on exact main `fc65d7f5945120e6766abef94145cc631f4360db`.
+Java 21 unit/architecture, static validation, and thirteen of fourteen
+PostgreSQL integration shards passed. The signed PostgreSQL shard 9
+`Gz2ControlledDocumentsNativeHttpPostgresIntegrationTest` progressed
+past initial HTTP 201 controlled-document creation, request replay and
+authorized GET document detail after earlier repairs, but failed
+at its **unfiltered scoped discovery** query (test line 105)
+with HTTP 500 instead of 200. The runtime exception identifies
+`JdbcControlledDocumentRepositoryAdapter.discover` count SQL:
+`WHERE s.company_id=? AND s.facility_id=? AND (? IS NULL OR d.code LIKE ?)`.
+When the optional `code` is absent, both JDBC pattern arguments are
+null; PostgreSQL cannot infer a parameter type for a bare
+`? IS NULL` test. This is a T24 adapter SQL-bind defect,
+not a schema, security, readiness or test-inventory failure.
+
+This repair changes **only** the exact registered T24 Documents JDBC adapter
+`src/main/java/dz/sh/hidra/modules/documents/infrastructure/persistence/adapter/JdbcControlledDocumentRepositoryAdapter.java`
+to construct an optional `AND d.code LIKE ?` predicate and add its
+bound prefix parameter only for nonblank input. The **mandatory**
+company and facility predicates remain in both count and page SQL,
+with unchanged stable `ORDER BY d.code,d.id`, page bounds,
+owner checks and data projections. No interpolated user SQL, generic
+unscoped reads or removal of current authorization is permitted.
+
+It also strengthens the *existing*, originally registered signed
+`src/test/java/dz/sh/hidra/qualification/Gz2ControlledDocumentsNativeHttpPostgresIntegrationTest.java`
+without removing or relaxing existing checks: verifies unfiltered
+count, a matching prefix, a nonmatching prefix and a blank code filter
+in the same company/facility-scoped native API before foreign-scope
+denials. The exact test SHA-256 is refreshed in
+`.github/ci-test-inventory.json`; all 600 registered classes and
+required cases remain intact. This evidence paragraph is appended
+to `doc/roadmap/ROADMAP.md`. Those are the only four file changes.
+No migration, endpoint, permission, workflow or existing test removal
+is authorized or performed here.
+
+[Documentation Validation #1126](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44233796050)
+passed on that SHA; API backward compatibility passed but canonical
+runtime OpenAPI snapshot equality remains failed for T24. The
+separately registered `docs(documents): reconcile T24 generated
+contracts and physical dictionary` stage must reconcile generated
+evidence after code behavior passes. The Full Verification Gate is
+failed downstream and may not be bypassed. No PostgreSQL/Maven local
+execution is claimed; the new exact-SHA CI must prove the repair,
+all permission and GZ2 cases, remaining shards and contracts.
+
+Use the existing registered exact implementation message
+`feat(documents): discover and supersede controlled document versions`,
+verify exact parent/tree and four-file diff, and publish directly to
+existing `main` with expected-head guard. Once exact-SHA HidraAPI CI
+and Documentation Validation are queued or started, STOP for feedback.
+T17/T25 and deployment are not selected.

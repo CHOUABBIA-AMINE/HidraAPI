@@ -7,7 +7,7 @@
  *
  * @Name        : AuditDocumentReferenceQueryService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-07
+ * @UpdatedOn   : 2026-11-18
  *
  * @Type        : Class
  * @Layer       : Application
@@ -28,7 +28,9 @@ public class AuditDocumentReferenceQueryService implements AuditDocumentReferenc
     public AuditDocumentReferenceQueryService(DocumentRepositoryPort repository,ControlledDocumentAccessService controlled) {
         this.repository=java.util.Objects.requireNonNull(repository);this.controlled=java.util.Objects.requireNonNull(controlled);
     }
-    @org.springframework.transaction.annotation.Transactional(readOnly=true)
+    // Enrolled-reference authorization locks current grants before existence disclosure;
+    // a read-only transaction would reject SELECT FOR SHARE in PostgreSQL.
+    @org.springframework.transaction.annotation.Transactional
     public boolean exists(String id) {
         if(id==null || id.isBlank())return false;
         controlled.forDocument(id.trim(),"documents:controlled:read");

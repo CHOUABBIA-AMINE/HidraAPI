@@ -7,7 +7,7 @@
  *
  * @Name        : ReportingDocumentReferenceQueryService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-07
+ * @UpdatedOn   : 2026-11-18
  *
  * @Type        : Class
  * @Layer       : Application
@@ -33,13 +33,15 @@ public class ReportingDocumentReferenceQueryService implements ReportingDocument
         this.documents=Objects.requireNonNull(documents);this.storage=Objects.requireNonNull(storage);
         this.controlled=Objects.requireNonNull(controlled);
     }
-    @org.springframework.transaction.annotation.Transactional(readOnly=true)
+    // Both enrolled reference checks lock current grants before disclosing existence.
+    // A read-only PostgreSQL transaction cannot execute their SELECT FOR SHARE.
+    @org.springframework.transaction.annotation.Transactional
     public boolean documentExists(String id){
         if(id==null||id.isBlank())return false;
         controlled.forDocument(id.trim(),"documents:controlled:read");
         return documents.findById(id.trim()).isPresent();
     }
-    @org.springframework.transaction.annotation.Transactional(readOnly=true)
+    @org.springframework.transaction.annotation.Transactional
     public boolean storageObjectExists(String id){
         if(id==null||id.isBlank())return false;
         controlled.forStorage(id.trim(),"documents:controlled:read");

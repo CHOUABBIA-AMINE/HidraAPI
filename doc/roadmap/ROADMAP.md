@@ -2789,3 +2789,65 @@ exact-SHA CI. The commit must be checked for precise file scope and
 published guarded to existing `main`; confirm new HidraAPI CI and
 Documentation Validation workflow queue/start then STOP. No T24 CI pass,
 engineering acceptance, T17/T25 stage advancement or deployment is implied.
+
+
+### T24 CI #1290 direct-grant read-lock transaction repair — 2026-11-18
+
+**T24 IN PROGRESS, not engineering/CI accepted.** [CI #1290](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44232264149)
+failed on exact main `0876df57898ba86daf5efa19fbfebf9bac77c456`.
+The forward-only correction `V20261118_001` allowed the signed GZ2
+controlled-document POST and exact replay to pass the previously blocked
+transaction-commit phase. PostgreSQL shard 9 now fails at the subsequent
+authorized `GET B/{documentId}` (test line 104) with HTTP 500 versus
+200: PostgreSQL SQLSTATE 25006,
+`cannot execute SELECT FOR SHARE in a read-only transaction`.
+The actual SQL selects `hidra_identity_user_permission_grant` with
+`PESSIMISTIC_READ` during current scoped access. This is **not** an
+authentication bypass or a reason to remove grant locks. The registered
+T24 acceptance envelope explicitly says: `Never perform SELECT FOR
+UPDATE/SHARE inside a read-only transaction.`
+
+The bounded repair changes only transaction modes at enrolled Documents
+read/use-case entry points that invoke the current-grant lock:
+five `ControlledDocumentsApplicationService` native reads (discovery,
+detail, versions, links, content), the
+`DocumentContentTransferService.downloadDocumentVersionContent` legacy
+guarded content entry point,
+`AuditDocumentReferenceQueryService.exists`, and
+`ReportingDocumentReferenceQueryService.documentExists` and
+`storageObjectExists`. The four paths were present in the accepted
+T24 registered CREATE/UPDATE envelope. Each remains
+`@Transactional` (read-write rather than `readOnly=true`) to allow
+PostgreSQL's existing current-authorization `SELECT FOR SHARE` to run
+within the same request/use-case transaction. No source authorization
+predicate, direct-grant lock, owner check, deny precedence, principal
+scope, bytes validation, decision lineage, response or route changes.
+The existing negative denial, revocation, concurrent supersession and
+signed GZ2 tests are retained unchanged. Existing Java headers receive
+only an accurate UpdatedOn date and brief lock/transaction rationale.
+No test inventory refresh is necessary because no test source changed.
+No additional migration or generated contract edit belongs to this
+repair.
+
+Separately, PostgreSQL shard 1 failed before any Maven test because
+the wrapper's `wget` could not fetch Apache Maven 3.9.11 from
+`repo.maven.apache.org`; missing raw Surefire evidence is downstream.
+It is **not** a source test failure and does **not** authorize reducing
+the mandatory shard/test inventory or bypassing the Full Verification
+Gate. Twelve other PostgreSQL shards, Java 21 unit/architecture and
+static validation passed. The [Documentation Validation #1125](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44232264202)
+passed. Runtime OpenAPI canonical snapshot equality remains an
+independent failed gate (backward compatibility passed), awaiting only
+the separately registered
+`docs(documents): reconcile T24 generated contracts and physical dictionary`
+stage after source repair. The Full Verification Gate failed; T24 must
+not be marked complete.
+
+This `Fail` source repair uses the registered commit message
+`feat(documents): discover and supersede controlled document versions`.
+Publish to existing `main` with an exact-head guard, verify parent,
+tree, blobs and only the five intended changed paths (four service
+sources and this append-only roadmap entry), then verify that both
+exact-SHA HidraAPI CI and Documentation Validation workflows are queued
+or started and STOP. Local Maven/PostgreSQL execution is not proven.
+No T17/T25, simulation, release, production or IT/OT action is selected.

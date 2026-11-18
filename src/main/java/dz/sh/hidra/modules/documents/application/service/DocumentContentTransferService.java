@@ -7,7 +7,7 @@
  *
  * @Name        : DocumentContentTransferService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-07
+ * @UpdatedOn   : 2026-11-18
  *
  * @Type        : Class
  * @Layer       : Application
@@ -173,7 +173,9 @@ public class DocumentContentTransferService implements UploadDocumentBinaryVersi
     }
 
     @Override
-    @Transactional(readOnly=true)
+    // Enrolled version reads acquire a current-grant share lock before exposing bytes.
+    // PostgreSQL cannot acquire that lock in a read-only transaction.
+    @Transactional
     public DocumentVersionContentDto downloadDocumentVersionContent(String versionId) {
         String normalizedVersionId = requireText(versionId, "Document version id must not be blank.");
         boolean protectedVersion=controlled.forVersion(normalizedVersionId,"documents:controlled:read").isPresent();

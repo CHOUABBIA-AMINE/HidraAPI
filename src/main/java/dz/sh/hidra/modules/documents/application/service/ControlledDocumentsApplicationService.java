@@ -5,7 +5,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  * @Name        : ControlledDocumentsApplicationService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-17
+ * @UpdatedOn   : 2026-11-18
  * @Type        : Class
  * @Layer       : Application
  * @Module      : documents
@@ -98,23 +98,25 @@ public class ControlledDocumentsApplicationService implements ControlledDocument
         return new CreateResult(repository.detail(doc.id())
                 .orElseThrow(ControlledDocumentsApplicationService::hidden),false);
     }
-    @Override @Transactional(readOnly=true)
+    // Current direct grants are locked with PESSIMISTIC_READ; these read operations
+    // require a read-write database transaction even though they do not mutate documents.
+    @Override @Transactional
     public Page<DocumentView> discover(String company,String facility,int page,int size,String code){
         requirePage(page,size);authorize(company,facility,"documents:controlled:read");
         return repository.discover(company,facility,page,size,code);
     }
-    @Override @Transactional(readOnly=true)
+    @Override @Transactional
     public DocumentView detail(String company,String facility,String documentId){
         access.requireBound(documentId,company,facility,"documents:controlled:read");
         return repository.detail(documentId).orElseThrow(ControlledDocumentsApplicationService::hidden);
     }
-    @Override @Transactional(readOnly=true)
+    @Override @Transactional
     public Page<VersionView> versions(String company,String facility,String documentId,int page,int size){
         requirePage(page,size);
         access.requireBound(documentId,company,facility,"documents:controlled:read");
         return repository.versions(documentId,page,size);
     }
-    @Override @Transactional(readOnly=true)
+    @Override @Transactional
     public Page<LinkView> links(String company,String facility,String documentId,int page,int size){
         requirePage(page,size);
         access.requireBound(documentId,company,facility,"documents:controlled:read");
@@ -128,7 +130,8 @@ public class ControlledDocumentsApplicationService implements ControlledDocument
                 ||!authorization.currentLocalActor().equals(command.uploadedByActorId()))throw hidden();
         return binaryUpload.uploadDocumentBinaryVersion(command);
     }
-    @Override @Transactional(readOnly=true)
+    // Protected content reads recheck the same locked direct grants before byte delivery.
+    @Override @Transactional
     public DocumentVersionContentDto content(String company,String facility,String documentId,String versionId){
         access.requireBound(documentId,company,facility,"documents:controlled:read");
         var version=versions.findById(versionId)

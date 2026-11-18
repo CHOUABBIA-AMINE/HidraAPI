@@ -66,6 +66,12 @@ class HseCapaLifecycleApplicationServiceTest {
                 "facility","company","F","Facility")));
         when(store.scope("case")).thenReturn(Optional.of(new HseCapaLifecycleStorePort.Scope(
                 "case","company","facility","incident","old","digest","actor",java.time.Instant.now())));
+        // A reviewed T16 Incident is a mandatory independent prerequisite.
+        // The negative test must reach the closed-case invariant, not fail
+        // earlier on missing authoritative Incident evidence.
+        when(incident.reviewed("incident","company","facility")).thenReturn(Optional.of(
+                new HseCapaIncidentPort.Source("incident","INC-GZ2","Reviewed incident",
+                        "company","facility","independent-reviewer","review-1")));
         when(store.caseView("case")).thenReturn(new HseCapaLifecycleUseCase.CaseView(
                 "case","company","facility","incident","NO","Title","CLOSED","actor",
                 java.time.Instant.now(),"closure"));

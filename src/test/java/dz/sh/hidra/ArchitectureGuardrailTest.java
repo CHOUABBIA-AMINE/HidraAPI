@@ -1161,8 +1161,12 @@ class ArchitectureGuardrailTest {
         if (sourceModule == null || targetModule == null || sourceModule.equals(targetModule)) {
             return false;
         }
-        if(isT17OwnerContract(targetClassName))
-            return !isT17OwnerExport(sourceClassName,targetClassName);
+        // Deny lookalike siblings too: only exact owner root and nested exports
+        // may cross into HSE's single approved adapter. Generic package exports
+        // must not grant access to a similarly prefixed foreign type.
+        for(String root:T17_OWNER_ROOTS)
+            if(targetClassName.startsWith(root))
+                return !isT17OwnerExport(sourceClassName,targetClassName);
         for(String root:java.util.Set.of(
                 "dz.sh.hidra.modules.identity.application.contract.documents.ControlledDocumentScopedAuthorizationContract",
                 "dz.sh.hidra.modules.topology.application.contract.documents.ControlledDocumentFacilityOwnershipContract"))

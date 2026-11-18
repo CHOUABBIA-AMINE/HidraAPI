@@ -190,7 +190,7 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
             Class<?> t17=Class.forName(t17Root+"controller.HseCapaLifecycleController");
             Class<?> t17Enroll=Class.forName(t17Root+"request.HseCapaLifecycleRequest$Enroll");
             Class<?> t17Propose=Class.forName(t17Root+"request.HseCapaLifecycleRequest$Propose");
-            Class<?> t17Action=Class.forName(t17Root+"request.HseCapaLifecycleRequest$Action");
+            Class<?> t17Action=Class.forName(t17Root+"request.HseCapaLifecycleRequest$ScopedHseCapaAction");
             String t17Base="/api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases";
             return List.of(
                 new Route(t17,t17.getDeclaredMethod("enroll",String.class,String.class,t17Enroll),

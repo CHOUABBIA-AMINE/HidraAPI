@@ -35,4 +35,9 @@ public interface HseCaseRepositoryPort {
     List<HseCase> findAll(int page, int size);
 
     long count();
+
+    /** Only the HSE owner can establish T17 enrollment; existing test adapters remain legacy. */
+    default void flush() { throw new UnsupportedOperationException("HSE case flush required."); }
+
+    default boolean enrolled(String caseId) { return false; }
 }

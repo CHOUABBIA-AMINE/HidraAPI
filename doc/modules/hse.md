@@ -146,3 +146,11 @@ The linked decisions carry the precise per-subject exceptions and source/test/mi
 | HseCase | [HMSR-096 reconciled rule](../domain/SEMANTIC_DECISIONS.md#hse-hsecase) |
 | HseClosure | [HMSR-113 reconciled rule](../domain/SEMANTIC_DECISIONS.md#hse-hseclosure) |
 | HseCorrectivePreventiveAction | [HMSR-114 reconciled rule](../domain/SEMANTIC_DECISIONS.md#hse-hsecorrectivepreventiveaction) |
+
+## T17 enrolled GZ2 CAPA lifecycle — 2026-11-18 source handoff
+
+Registered source implementation introduces HSE-owned enrolled company/FACILITY case scope, immutable source/command receipts, accepted T24 version evidence and human effectiveness findings while preserving un-enrolled HMR-082/096/097 semantics. The signed native contract contains 13 company/FACILITY-scoped endpoints for reviewed Incident enrollment, case/CAPA list/detail, proposal, Workflow-backed approval, owner assignment, accepted evidence attachment, completion, independent verification, case closure and history.
+
+HSE owns six forward-only non-JPA PostgreSQL tables in `V20261118_002__t17_hse_capa_governed_lifecycle.sql`. The owner-access bridge uses five exact Identity/Topology/Incident/Documents/Workflow scalar contracts. Captured hashes/bytes and review evidence are historical, not permanent bypasses: current owner permissions and facility binding are rechecked before protected reads, replays and writes. Unenrolled HSE rows remain on the legacy paths, while T17-enrolled rows must not appear in unscoped list/count/detail or bypass new closure rules.
+
+**Delivery state:** implementation submitted for exact-SHA CI-first validation; staged code has not been demonstrated to pass Maven, PostgreSQL, runtime OpenAPI, strict physical dictionary, the GZ2 positive journey or operational HSE acceptance. In particular, closure requires a persisted HSE impact assessment, not a caller-provided boolean or a substitute Incident review snapshot. Outstanding gates must be reported as such.

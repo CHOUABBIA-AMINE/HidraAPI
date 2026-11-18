@@ -470,6 +470,7 @@ class ArchitectureGuardrailTest {
                 if (isMonitoringRuleOwnerExport(source.getName(),target.getName())) continue;
                 // Only the two T24 Documents owner contracts may be consumed by this exact adapter.
                 if (t24DocumentOwnerExport(source.getName(),target.getName())) continue;
+                if (isT17OwnerExport(source.getName(),target.getName())) continue;
 
                 violations.add(source.getName() + " -> " + target.getName());
             }
@@ -1113,6 +1114,43 @@ class ArchitectureGuardrailTest {
         }
     }
 
+    private static final String T17_HSE_ADAPTER =
+            "dz.sh.hidra.modules.hse.infrastructure.integration.HseCapaOwnerAccessAdapter";
+    private static final Set<String> T17_OWNER_ROOTS = Set.of(
+            "dz.sh.hidra.modules.identity.application.contract.hse.HseCapaScopedAuthorizationContract",
+            "dz.sh.hidra.modules.topology.application.contract.hse.HseFacilityOwnershipContract",
+            "dz.sh.hidra.modules.incident.application.contract.hse.HseIncidentSourceContract",
+            "dz.sh.hidra.modules.documents.application.contract.hse.HseControlledDocumentEvidenceContract",
+            "dz.sh.hidra.modules.workflow.application.contract.hse.HseCapaDecisionContract");
+    private static boolean isT17OwnerContract(String target) {
+        return T17_OWNER_ROOTS.stream().anyMatch(root ->
+                target.equals(root)||target.startsWith(root+"$"));
+    }
+    private static boolean isT17OwnerExport(String source,String target) {
+        return T17_HSE_ADAPTER.equals(source) && isT17OwnerContract(target);
+    }
+    @Test void t17OwnerEvidenceImportsAreExactAndProxyable() {
+        for(String root:T17_OWNER_ROOTS) {
+            assertTrue(isT17OwnerExport(T17_HSE_ADAPTER,root));
+            assertTrue(isT17OwnerExport(T17_HSE_ADAPTER,root+"$Evidence"));
+            assertFalse(isT17OwnerExport(T17_HSE_ADAPTER+"Sibling",root));
+            assertFalse(isT17OwnerExport(T17_HSE_ADAPTER,root+"Sibling"));
+            assertTrue(isForbiddenCrossModuleDependency(T17_HSE_ADAPTER+"Sibling",root));
+            assertTrue(isForbiddenCrossModuleDependency(T17_HSE_ADAPTER,root+"Sibling"));
+            assertFalse(isForbiddenCrossModuleDependency(T17_HSE_ADAPTER,root));
+        }
+        for(Class<?> type:java.util.List.of(
+                dz.sh.hidra.modules.hse.application.service.HseCapaLifecycleApplicationService.class,
+                dz.sh.hidra.modules.hse.infrastructure.persistence.adapter.JdbcHseCapaLifecycleStoreAdapter.class,
+                dz.sh.hidra.modules.identity.application.service.HseCapaScopedAuthorizationQueryService.class,
+                dz.sh.hidra.modules.topology.application.service.HseFacilityOwnershipQueryService.class,
+                dz.sh.hidra.modules.incident.application.service.HseIncidentSourceQueryService.class,
+                dz.sh.hidra.modules.documents.application.service.HseControlledDocumentEvidenceQueryService.class,
+                dz.sh.hidra.modules.workflow.application.service.HseCapaDecisionQueryService.class))
+            assertFalse(java.lang.reflect.Modifier.isFinal(type.getModifiers()),
+                    "T17 transactional bean must be Spring proxyable: "+type.getName());
+    }
+
     private static boolean isForbiddenCrossModuleDependency(
             String sourceClassName, String targetClassName) {
         String sourcePackage = packageName(sourceClassName);
@@ -1123,6 +1161,8 @@ class ArchitectureGuardrailTest {
         if (sourceModule == null || targetModule == null || sourceModule.equals(targetModule)) {
             return false;
         }
+        if(isT17OwnerContract(targetClassName))
+            return !isT17OwnerExport(sourceClassName,targetClassName);
         for(String root:java.util.Set.of(
                 "dz.sh.hidra.modules.identity.application.contract.documents.ControlledDocumentScopedAuthorizationContract",
                 "dz.sh.hidra.modules.topology.application.contract.documents.ControlledDocumentFacilityOwnershipContract"))

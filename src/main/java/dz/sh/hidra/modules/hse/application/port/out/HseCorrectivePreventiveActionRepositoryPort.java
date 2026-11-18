@@ -32,4 +32,8 @@ public interface HseCorrectivePreventiveActionRepositoryPort {
     List<HseCorrectivePreventiveAction> findAll(int page, int size);
 
     long count();
+
+    default void flush() { throw new UnsupportedOperationException("HSE CAPA flush required."); }
+
+    default boolean enrolled(String capaId) { return false; }
 }

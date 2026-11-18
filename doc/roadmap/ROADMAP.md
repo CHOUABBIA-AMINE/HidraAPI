@@ -3362,3 +3362,11 @@ expected-head guard; verify changed paths, parent/tree/blobs/message.
 Confirm applicable exact-SHA CI was created/queued or started, then
 STOP. T25 and other pending tasks, P3, release/deployment and
 industrial/SITE acceptance are not selected.
+
+### T17 source implementation delivery selected — 2026-11-18
+
+The owner explicitly selected `Next — start HidraAPI T17 implementation`, then `continue`; **only T17** is in this delivery. The registered source message is `feat(hse): verify and close scoped corrective actions`. The expected pre-implementation main is `c52276b95c56c37b9dc09b4760af870ba513b519`. This append-only note does not change task order, T24 acceptance, or authorize T25.
+
+Source changes include the registered HSE inbound/outbound ports, pure Java transition guard, 13 registered native operations, five narrow owner contracts/bridge, forward-only `V20261118_002` with six HSE relations and physical consistency safeguards, legacy T17-enrolled read/write exclusions, and synthetic tests/inventory metadata. **CI-FIRST, NOT VERIFIED/COMPLETED:** GitHub exact-SHA workflows, actual fresh PostgreSQL constraints, full signed T17 GZ2 positive lifecycle, source inventory validator, strict OpenAPI/dictionary generation and full verification gate remain unobserved here. No local Maven/Docker or source-equivalent generated physical catalog was available in this execution environment. The implementation SHA is the Git commit containing this note, discoverable directly from the commit link and `main` history; it cannot be self-referential inside its own content.
+
+Keep the existing `doc/api/openapi.yaml`, `doc/database/DATA_DICTIONARY.md` and `.github/documentation-validation.json` untouched until genuine source-SHA runtime OpenAPI and fresh migrated PostgreSQL catalog are available. If CI requires reconciliation, use the conditionally registered **same-T17** generated-artifact documentation stage only upon new explicit selection. No fabricated schemas, CI pass, release or deployment is implied.

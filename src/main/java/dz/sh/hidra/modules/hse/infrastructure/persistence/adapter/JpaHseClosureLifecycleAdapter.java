@@ -52,6 +52,8 @@ public class JpaHseClosureLifecycleAdapter implements HseClosureLifecyclePort {
     public HseClosure close(HseClosure requested) {
         Objects.requireNonNull(requested);
         var parent=cases.findByIdForUpdate(requested.hseCaseId()).map(HsePersistenceMapper::toDomain).orElse(null);
+        if(cases.existsEnrolled(requested.hseCaseId()))
+            throw new java.util.NoSuchElementException("Enrolled HSE closure requires exact native authority.");
         new HseCaseClosureGuard().ensureCanClose(parent,requested.impactAssessed(),requested.capaCompleted(),requested.evidenceReviewed());
         Instant at=Instant.now().truncatedTo(ChronoUnit.MICROS);
         var actor=actors.currentActor(at);

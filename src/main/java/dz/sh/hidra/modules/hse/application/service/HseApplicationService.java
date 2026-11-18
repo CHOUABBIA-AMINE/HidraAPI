@@ -109,6 +109,8 @@ public class HseApplicationService implements OpenHseCaseUseCase, CreateHseCapaU
         Objects.requireNonNull(command, "Create HSE CAPA command must not be null.");
         var parent=hseCaseRepositoryPort.findByIdForUpdate(command.hseCaseId()).orElseThrow(() -> new IllegalArgumentException("Known owning HSE case required."));
         if(!command.hseCaseId().equals(parent.id())) throw new IllegalArgumentException("Exact owning HSE case required.");
+        if(hseCaseRepositoryPort.enrolled(parent.id()))
+            throw new java.util.NoSuchElementException("Scoped enrolled HSE CAPA requires native authorization.");
         // Current HSE policy does not restrict CAPA creation to a parent-status subset.
         Instant now = Instant.now();
         HseCorrectivePreventiveAction action = new HseCorrectivePreventiveAction(
@@ -141,6 +143,8 @@ public class HseApplicationService implements OpenHseCaseUseCase, CreateHseCapaU
     public String closeHseCase(CloseHseCaseCommand command) {
         Objects.requireNonNull(command, "Close HSE case command must not be null.");
         var parent=hseCaseRepositoryPort.findByIdForUpdate(command.hseCaseId()).orElse(null);
+        if(hseCaseRepositoryPort.enrolled(command.hseCaseId()))
+            throw new java.util.NoSuchElementException("Scoped enrolled HSE closure requires native authorization.");
         new dz.sh.hidra.modules.hse.domain.service.HseCaseClosureGuard().ensureCanClose(parent,
                 command.impactAssessed(),command.capaCompleted(),command.evidenceReviewed());
         HseClosure closure = new HseClosure(

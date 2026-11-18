@@ -55,6 +55,8 @@ public class HseQueryApplicationService implements HseQueryUseCase {
     @Override
     public HseCaseView hseCase(String id) {
         String normalizedId = requireId(id, "case");
+        if(caseRepositoryPort.enrolled(normalizedId))
+            throw new java.util.NoSuchElementException("Protected HSE case unavailable.");
         return caseRepositoryPort.findById(normalizedId)
                 .map(this::toCaseView)
                 .orElseThrow(() -> new IllegalArgumentException("Unknown HSE case: " + id));
@@ -72,6 +74,8 @@ public class HseQueryApplicationService implements HseQueryUseCase {
     @Override
     public CapaView capa(String id) {
         String normalizedId = requireId(id, "CAPA");
+        if(capaRepositoryPort.enrolled(normalizedId))
+            throw new java.util.NoSuchElementException("Protected HSE CAPA unavailable.");
         return capaRepositoryPort.findById(normalizedId)
                 .map(this::toCapaView)
                 .orElseThrow(() -> new IllegalArgumentException("Unknown HSE CAPA: " + id));

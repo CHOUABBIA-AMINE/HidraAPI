@@ -32,4 +32,30 @@ public interface HseCorrectivePreventiveActionJpaRepository extends JpaRepositor
     @org.springframework.data.jpa.repository.Query("select c from HseCorrectivePreventiveActionJpaEntity c where c.id = :id")
     java.util.Optional<HseCorrectivePreventiveActionJpaEntity> findByIdForUpdate(@org.springframework.data.repository.query.Param("id") String id);
 
+    @org.springframework.data.jpa.repository.Query(value =
+      "SELECT c.* FROM hidra_hse_capa c WHERE c.id=:id AND NOT EXISTS "+
+      "(SELECT 1 FROM hidra_hse_t17_case_scope s WHERE s.case_id=c.hse_case_id)",
+      nativeQuery=true)
+    java.util.Optional<HseCorrectivePreventiveActionJpaEntity> findLegacyById(
+      @org.springframework.data.repository.query.Param("id") String id);
+
+    @org.springframework.data.jpa.repository.Query(value =
+      "SELECT c.* FROM hidra_hse_capa c WHERE NOT EXISTS "+
+      "(SELECT 1 FROM hidra_hse_t17_case_scope s WHERE s.case_id=c.hse_case_id) "+
+      "ORDER BY c.updated_at DESC,c.id ASC",
+      countQuery="SELECT count(*) FROM hidra_hse_capa c WHERE NOT EXISTS "+
+      "(SELECT 1 FROM hidra_hse_t17_case_scope s WHERE s.case_id=c.hse_case_id)",nativeQuery=true)
+    org.springframework.data.domain.Page<HseCorrectivePreventiveActionJpaEntity> findAllLegacy(
+       org.springframework.data.domain.Pageable pageable);
+
+    @org.springframework.data.jpa.repository.Query(value =
+      "SELECT count(*) FROM hidra_hse_capa c WHERE NOT EXISTS "+
+      "(SELECT 1 FROM hidra_hse_t17_case_scope s WHERE s.case_id=c.hse_case_id)",nativeQuery=true)
+    long countLegacy();
+
+    @org.springframework.data.jpa.repository.Query(value =
+      "SELECT EXISTS(SELECT 1 FROM hidra_hse_capa c JOIN "+
+      "hidra_hse_t17_case_scope s ON s.case_id=c.hse_case_id WHERE c.id=:id)",nativeQuery=true)
+    boolean existsEnrolled(@org.springframework.data.repository.query.Param("id") String id);
+
 }

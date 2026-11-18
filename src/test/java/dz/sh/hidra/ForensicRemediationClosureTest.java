@@ -120,6 +120,32 @@ class ForensicRemediationClosureTest {
             "dz.sh.hidra.modules.assets.application.contract.hse"
     );
 
+    private static final String T17_HSE_ADAPTER =
+            "dz.sh.hidra.modules.hse.infrastructure.integration.HseCapaOwnerAccessAdapter";
+    private static final Set<String> T17_OWNER_ROOTS = Set.of(
+            "dz.sh.hidra.modules.identity.application.contract.hse.HseCapaScopedAuthorizationContract",
+            "dz.sh.hidra.modules.topology.application.contract.hse.HseFacilityOwnershipContract",
+            "dz.sh.hidra.modules.incident.application.contract.hse.HseIncidentSourceContract",
+            "dz.sh.hidra.modules.documents.application.contract.hse.HseControlledDocumentEvidenceContract",
+            "dz.sh.hidra.modules.workflow.application.contract.hse.HseCapaDecisionContract");
+    private static boolean isT17OwnerContract(String imported){
+        return T17_OWNER_ROOTS.stream().anyMatch(root->
+                imported.equals(root)||imported.startsWith(root+"$"));
+    }
+    private static boolean isT17OwnerExport(String source,String imported){
+        return T17_HSE_ADAPTER.equals(source)&&isT17OwnerContract(imported);
+    }
+    @Test void t17SoleOwnerConsumerAdmitsOnlyRegisteredScalarExports(){
+        for(String root:T17_OWNER_ROOTS) {
+            assertTrue(isT17OwnerExport(T17_HSE_ADAPTER,root));
+            assertTrue(isT17OwnerExport(T17_HSE_ADAPTER,root+"$Evidence"));
+            assertFalse(isT17OwnerExport(T17_HSE_ADAPTER+"Sibling",root));
+            assertFalse(isT17OwnerExport(T17_HSE_ADAPTER,root+"Sibling"));
+            assertFalse(isT17OwnerExport(T17_HSE_ADAPTER,
+                    root.replace(".application.contract.hse.",".infrastructure.persistence.")));
+        }
+    }
+
     private static boolean t24DocumentOwnerExport(String source,String target) {
         final String owner="dz.sh.hidra.modules.documents.infrastructure.integration.ControlledDocumentOwnerAccessAdapter";
         return source.equals(owner) && java.util.Set.of(
@@ -330,6 +356,11 @@ class ForensicRemediationClosureTest {
                 if (!isPrivate(importedPackage)) {
                     continue;
                 }
+                if(isT17OwnerContract(imported)) {
+                    if(!isT17OwnerExport(source.fqcn(),imported))
+                        violations.add(source.fqcn()+" -> unauthorized T17 owner "+imported);
+                    continue;
+                }
                 if (isT14ProtectedOwnerType(imported) && !isT14OwnerExport(source.fqcn(),imported)) {
                     violations.add(source.fqcn()+" -> "+imported);
                     continue;
@@ -387,6 +418,7 @@ class ForensicRemediationClosureTest {
                 if (isPlanningReviewerExport(source.fqcn(), imported)) continue;
                 if (t22RiskOwnerExport(source.fqcn(), imported)) continue;
                 if (t24DocumentOwnerExport(source.fqcn(), imported)) continue;
+                if (isT17OwnerExport(source.fqcn(), imported)) continue;
                 if (t23AnalyticsOwnerExport(source.fqcn(), imported)) continue;
                 violations.add(source.fqcn() + " -> " + imported);
             }

@@ -186,7 +186,39 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
             Class<?> t24Supersede=Class.forName(t24Pkg+"request.ControlledDocumentRequests$Supersede");
             Class<?> t24Binary=Class.forName(t24Pkg+"request.UploadDocumentBinaryVersionRequest");
             Class<?> t24Multipart=Class.forName("org.springframework.web.multipart.MultipartFile");
+            final String t17Root="dz.sh.hidra.modules.hse.api.rest.";
+            Class<?> t17=Class.forName(t17Root+"controller.HseCapaLifecycleController");
+            Class<?> t17Enroll=Class.forName(t17Root+"request.HseCapaLifecycleRequest$Enroll");
+            Class<?> t17Propose=Class.forName(t17Root+"request.HseCapaLifecycleRequest$Propose");
+            Class<?> t17Action=Class.forName(t17Root+"request.HseCapaLifecycleRequest$Action");
+            String t17Base="/api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases";
             return List.of(
+                new Route(t17,t17.getDeclaredMethod("enroll",String.class,String.class,t17Enroll),
+                    "POST",t17Base+"/from-incident"),
+                new Route(t17,t17.getDeclaredMethod("cases",String.class,String.class,int.class,int.class),
+                    "GET",t17Base),
+                new Route(t17,t17.getDeclaredMethod("caseDetail",String.class,String.class,String.class),
+                    "GET",t17Base+"/{caseId}"),
+                new Route(t17,t17.getDeclaredMethod("propose",String.class,String.class,String.class,t17Propose),
+                    "POST",t17Base+"/{caseId}/capas"),
+                new Route(t17,t17.getDeclaredMethod("capas",String.class,String.class,String.class,int.class,int.class),
+                    "GET",t17Base+"/{caseId}/capas"),
+                new Route(t17,t17.getDeclaredMethod("capaDetail",String.class,String.class,String.class,String.class),
+                    "GET",t17Base+"/{caseId}/capas/{capaId}"),
+                new Route(t17,t17.getDeclaredMethod("approve",String.class,String.class,String.class,String.class,t17Action),
+                    "POST",t17Base+"/{caseId}/capas/{capaId}/approve"),
+                new Route(t17,t17.getDeclaredMethod("assign",String.class,String.class,String.class,String.class,t17Action),
+                    "POST",t17Base+"/{caseId}/capas/{capaId}/assign"),
+                new Route(t17,t17.getDeclaredMethod("evidence",String.class,String.class,String.class,String.class,t17Action),
+                    "POST",t17Base+"/{caseId}/capas/{capaId}/evidence"),
+                new Route(t17,t17.getDeclaredMethod("complete",String.class,String.class,String.class,String.class,t17Action),
+                    "POST",t17Base+"/{caseId}/capas/{capaId}/complete"),
+                new Route(t17,t17.getDeclaredMethod("verify",String.class,String.class,String.class,String.class,t17Action),
+                    "POST",t17Base+"/{caseId}/capas/{capaId}/verify"),
+                new Route(t17,t17.getDeclaredMethod("close",String.class,String.class,String.class,t17Action),
+                    "POST",t17Base+"/{caseId}/close"),
+                new Route(t17,t17.getDeclaredMethod("history",String.class,String.class,String.class,int.class,int.class),
+                    "GET",t17Base+"/{caseId}/history"),
                 new Route(t24,t24.getDeclaredMethod("create",String.class,String.class,t24Create),
                     "POST",t24Base),
                 new Route(t24,t24.getDeclaredMethod("discover",String.class,String.class,Integer.class,Integer.class,String.class),

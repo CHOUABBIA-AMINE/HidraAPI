@@ -27,6 +27,14 @@ import dz.sh.hidra.modules.hse.domain.model.HseCase;
  */
 public class HseCaseClosureGuard {
 
+    /** Scoped T17 closure additionally requires persisted owner-derived facts. */
+    public void ensureGovernedClose(HseCase parent, boolean allEffective,
+            boolean verifiedDocumentation, boolean independentDecision) {
+        if(parent==null || parent.closedLifecycle() || !allEffective ||
+                !verifiedDocumentation || !independentDecision)
+            throw new HseBoundaryViolationException("Authoritative enrolled HSE closure evidence missing.");
+    }
+
     public void ensureCanClose(HseCase hseCase, boolean impactAssessed, boolean capaCompleted, boolean evidenceReviewed) {
         if (hseCase == null) {
             throw new HseBoundaryViolationException("HSE case must not be null.");

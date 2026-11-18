@@ -54,13 +54,15 @@ public class JpaHseCaseRepositoryAdapter implements HseCaseRepositoryPort {
             throw new IllegalArgumentException("Recorded closed lifecycle cannot be changed.");
         if(model.status()!=dz.sh.hidra.modules.hse.domain.value.HseCaseStatus.CLOSED && model.closedAt()!=null)
             throw new IllegalArgumentException("Nonclosed case cannot carry closure time.");
+        if(old!=null && repository.existsEnrolled(model.id()))
+            throw new java.util.NoSuchElementException("Enrolled HSE cases require scoped operation.");
         references.validate(model,old);
         return HsePersistenceMapper.toDomain(repository.save(HsePersistenceMapper.toEntity(model)));
     }
 
     @Override
     public Optional<HseCase> findById(String id) {
-        return repository.findById(id).map(HsePersistenceMapper::toDomain);
+        return repository.findLegacyById(id).map(HsePersistenceMapper::toDomain);
     }
 
     @Override
@@ -70,12 +72,17 @@ public class JpaHseCaseRepositoryAdapter implements HseCaseRepositoryPort {
 
     @Override
     public List<HseCase> findAll(int page, int size) {
-        return repository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "updatedAt")))
+        return repository.findAllLegacy(PageRequest.of(page, size))
                 .stream().map(HsePersistenceMapper::toDomain).toList();
     }
 
     @Override
     public long count() {
-        return repository.count();
+        return repository.countLegacy();
     }
+    @Override
+    @org.springframework.transaction.annotation.Transactional
+    public void flush() { repository.flush(); }
+    @Override
+    public boolean enrolled(String id) { return repository.existsEnrolled(id); }
 }

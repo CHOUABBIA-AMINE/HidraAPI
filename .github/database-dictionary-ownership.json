@@ -275,6 +275,54 @@
     "owner": "hse",
     "purpose": "HSE-owned field-role to approved catalog-family metadata, intentionally unseeded by its migration."
   },
+  "public.hidra_hse_t17_capa_event": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261118_002__t17_hse_capa_governed_lifecycle.sql",
+      "src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/adapter/JdbcHseCapaLifecycleStoreAdapter.java"
+    ],
+    "owner": "hse",
+    "purpose": "Append-only, unique command/revision HSE CAPA and case closure events with payload digest, actor, state transition, source reference and timestamp."
+  },
+  "public.hidra_hse_t17_capa_evidence": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261118_002__t17_hse_capa_governed_lifecycle.sql",
+      "src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/adapter/JdbcHseCapaLifecycleStoreAdapter.java"
+    ],
+    "owner": "hse",
+    "purpose": "Immutable HSE binding to accepted T24 Documents version, link/decision reference, exact checksum/content length and company/FACILITY snapshot; no Document FK."
+  },
+  "public.hidra_hse_t17_capa_state": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261118_002__t17_hse_capa_governed_lifecycle.sql",
+      "src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/adapter/JdbcHseCapaLifecycleStoreAdapter.java"
+    ],
+    "owner": "hse",
+    "purpose": "HSE-owned locked CAPA revision and status projection with proposer, owner, evidence and independent verifier IDs, paired to its enrolled case."
+  },
+  "public.hidra_hse_t17_capa_verification": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261118_002__t17_hse_capa_governed_lifecycle.sql",
+      "src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/adapter/JdbcHseCapaLifecycleStoreAdapter.java"
+    ],
+    "owner": "hse",
+    "purpose": "Immutable independent HSE EFFECTIVE/INEFFECTIVE/INDETERMINATE effectiveness finding and source evidence/reviewer/time."
+  },
+  "public.hidra_hse_t17_case_close_receipt": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261118_002__t17_hse_capa_governed_lifecycle.sql",
+      "src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/adapter/JdbcHseCapaLifecycleStoreAdapter.java"
+    ],
+    "owner": "hse",
+    "purpose": "Immutable HSE closure receipt associating actual HSE closure, target-specific independent Workflow action/digest and closing actor/time; Workflow ID remains scalar."
+  },
+  "public.hidra_hse_t17_case_scope": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261118_002__t17_hse_capa_governed_lifecycle.sql",
+      "src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/adapter/JdbcHseCapaLifecycleStoreAdapter.java"
+    ],
+    "owner": "hse",
+    "purpose": "Immutable HSE-owned enrolled case company/FACILITY/approved Incident source binding with exact request digest, actor and creation timestamp; source owners remain scalar."
+  },
   "public.hidra_identity_bound_source_claim_evidence": {
     "evidence": [
       "src/main/java/dz/sh/hidra/modules/identity/domain/value/BoundSourceClaimEvidence.java",

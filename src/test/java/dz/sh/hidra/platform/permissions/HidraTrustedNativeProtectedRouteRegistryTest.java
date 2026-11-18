@@ -66,6 +66,18 @@ class HidraTrustedNativeProtectedRouteRegistryTest {
     }
 
 
+    @Test void t17RegistersExactlyThirteenScopedNativeHseTuples() {
+        var routes=new HidraTrustedNativeProtectedRouteRegistry().candidates().stream()
+            .filter(x->x.controller().getSimpleName().equals("HseCapaLifecycleController")).toList();
+        assertEquals(13,routes.size());
+        assertEquals(5,routes.stream().filter(x->x.verb().equals("GET")).count());
+        assertEquals(8,routes.stream().filter(x->x.verb().equals("POST")).count());
+        assertEquals(13,routes.stream().map(x->x.verb()+" "+x.pattern()).distinct().count());
+        assertTrue(routes.stream().allMatch(x->x.method()
+                .isAnnotationPresent(NativeProtectedOperation.class)));
+        assertTrue(routes.stream().allMatch(x->x.pattern().startsWith(
+                "/api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases")));
+    }
     @Test void t16ReviewerRoutesAreExactlyFourteenNativeCompiledTuples() {
         var routes=new HidraTrustedNativeProtectedRouteRegistry().candidates().stream()
                 .filter(v->java.util.Set.of("IncidentInvestigationController","LeakInvestigationController")
@@ -133,7 +145,7 @@ class HidraTrustedNativeProtectedRouteRegistryTest {
 
     @Test void baselineRoutesDeclareOnlyFiveExactCompiledTuples(){
         var registry=new HidraTrustedNativeProtectedRouteRegistry();
-        assertEquals(124,registry.candidates().size());
+        assertEquals(137,registry.candidates().size());
         var rows=registry.candidates().stream().filter(r->r.controller().getSimpleName().equals("EngineeringBaselineDraftController")).toList();
         assertEquals(5,rows.size());
         assertEquals(java.util.Set.of("POST /api/v1/topology/engineering-baselines","PUT /api/v1/topology/engineering-baselines/{manifestId}",

@@ -90,6 +90,20 @@ class HseQueryApplicationServiceTest {
         assertThrows(IllegalArgumentException.class, () -> service.hseCase("missing"));
     }
 
+    @Test
+    void enrolledCaseAndCapaCannotBeResolvedByLegacyUnscopedDetail() {
+        when(caseRepository.enrolled("private-case")).thenReturn(true);
+        when(capaRepository.enrolled("private-capa")).thenReturn(true);
+        assertThrows(java.util.NoSuchElementException.class,
+                ()->service.hseCase("private-case"));
+        assertThrows(java.util.NoSuchElementException.class,
+                ()->service.capa("private-capa"));
+        org.mockito.Mockito.verify(caseRepository,org.mockito.Mockito.never())
+                .findById("private-case");
+        org.mockito.Mockito.verify(capaRepository,org.mockito.Mockito.never())
+                .findById("private-capa");
+    }
+
     private HseCase caseModel() {
         Instant now = Instant.parse("2026-09-11T10:00:00Z");
         return new HseCase(

@@ -3830,3 +3830,40 @@ selected stage is the registered T17 implementation and signed qualification.
 Publish that stage with the expected main lease and confirm exact-SHA HidraAPI
 CI startup. T17 remains IN PROGRESS pending actual positive/negative signed
 evidence and successful full CI. T25 implementation remains gated.
+
+
+#### T17 assessment and signed Workflow implementation
+
+The owner separately authorized the scoped HSE Workflow resolver and its authorization
+coverage after the missing signed approval path was diagnosed. The following exact
+paths extend the approved ledger for this single T17 implementation. CREATE one
+and UPDATE six in addition to the previously registered paths. No files are deleted.
+
+| Exact path | Operation and purpose |
+|---|---|
+| `src/main/java/dz/sh/hidra/modules/hse/infrastructure/integration/HseWorkflowTargetLookup.java` | CREATE HSE-owned exact case/CAPA resolution, current scope and Incident/Topology admission, retained read and independent reviewer checks. |
+| `src/main/java/dz/sh/hidra/modules/workflow/application/contract/target/WorkflowOwnedTargetLookup.java` | UPDATE shared exact HSE type and approval-family selectors. |
+| `src/main/java/dz/sh/hidra/modules/workflow/application/service/WorkflowExecutionOwnership.java` | UPDATE recheck current HSE target on task or decision mutation, then delegate owner reviewer admission. |
+| `src/main/java/dz/sh/hidra/modules/workflow/application/service/WorkflowApplicationService.java` | UPDATE admission to require the exact HSE type/purpose at start. |
+| `src/main/java/dz/sh/hidra/modules/workflow/application/service/WorkflowTransitionApplicationService.java` | UPDATE require an independent eligible human with current HSE reviewer authority before decisions. |
+| `src/main/java/dz/sh/hidra/modules/workflow/infrastructure/query/JpaWorkflowQueryAdapter.java` | UPDATE each protected HSE instance/task/history access to recheck HSE owner admission before disclosure. |
+| `src/main/java/dz/sh/hidra/modules/workflow/application/service/HseCapaDecisionQueryService.java` | UPDATE require exact terminal approval, action-task-instance lineage and registered HSE purpose. |
+
+Existing scoped fixture and qualification paths cover foreign and revoked Workflow
+authority, the signed assessment and CAPA-to-closure flow, exact accepted Documents
+bytes and decision ID, stale and conflicting commands, concurrent assessment replay,
+closure rollback, and historical reads after a separate application JVM. The source
+prerequisite is a synthetic reviewed T16 Incident/Alarm/Monitoring chain. The test
+records the T17 impact assessment, CAPA, approvals, and closure through signed HTTP.
+The assessment migration is forward-only and leaves existing migration history intact.
+Existing T24/HSE historical rows are not rewritten by the exact decision lookup.
+
+The source lease was `bcd453619484b540732a4d4400d73edf7f1bad96` with
+[Documentation Validation #1139](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44308726833)
+passing. Local source inventory, scope ledger, documentation and offline committed
+OpenAPI validators, and diff whitespace checks passed. Local Maven cannot resolve
+Spring Boot parent 4.1.1 from Central and no Docker/PostgreSQL validation is available
+locally. Exact-SHA CI remains required. The committed canonical artifacts predate this
+new route and migration. Reconcile them only from genuine runtime and migrated
+catalog artifacts following existing owner rules. T17 stays IN PROGRESS. T25 remains
+gated by exact CI and signed T17 qualification acceptance.

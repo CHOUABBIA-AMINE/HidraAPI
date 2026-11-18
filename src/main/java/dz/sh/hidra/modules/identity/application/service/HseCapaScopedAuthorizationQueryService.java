@@ -28,7 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class HseCapaScopedAuthorizationQueryService implements HseCapaScopedAuthorizationContract {
     private static final Set<String> PERMISSIONS=Set.of("hse:capa:create","hse:capa:read",
-            "hse:capa:execute","hse:capa:review","hse:capa:close");
+            "hse:capa:execute","hse:capa:review","hse:capa:close","hse:capa:assess");
     private final TelemetryNativeLocalActorPort local;
     private final HseActorContract eligible;
     private final IncidentExplicitGrantEvidencePort direct;

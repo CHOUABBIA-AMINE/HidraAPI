@@ -74,6 +74,11 @@ public class JdbcHseCapaLifecycleStoreAdapter implements HseCapaLifecycleStorePo
                 .stream().findFirst();
     }
     @Override @Transactional(propagation=Propagation.MANDATORY)
+    public Optional<Scope> scopeByCapa(String capaId) {
+        return jdbc.query("SELECT s.* FROM "+H+" c JOIN "+S+" s ON s.case_id=c.case_id WHERE c.capa_id=?",
+                (r,n) -> scope(r), capaId).stream().findFirst();
+    }
+    @Override @Transactional(propagation=Propagation.MANDATORY)
     public void lockCase(String caseId){
         List<String> locked=jdbc.query("SELECT id FROM public.hidra_hse_case WHERE id=? FOR UPDATE",
                 (r,n)->r.getString(1),caseId);
@@ -250,14 +255,42 @@ public class JdbcHseCapaLifecycleStoreAdapter implements HseCapaLifecycleStorePo
             (r,n)->verification(r),capaId);
     }
     @Override @Transactional(propagation=Propagation.MANDATORY)
-    public boolean impactAssessed(String caseId){
-        return jdbc.queryForObject("SELECT EXISTS(SELECT 1 FROM public.hidra_hse_impact_assessment "+
-                "WHERE hse_case_id=?)",Boolean.class,caseId);
+    public Optional<String> admittedAssessment(String caseId) {
+        return jdbc.query("""
+                SELECT a.id FROM public.hidra_hse_t17_capa_event e
+                JOIN public.hidra_hse_impact_assessment a
+                  ON a.hse_case_id=e.case_id AND a.id=e.reference_id
+                WHERE e.case_id=? AND e.operation='ASSESS_IMPACT'
+                """, (r,n) -> r.getString(1), caseId).stream().findFirst();
+    }
+    @Override @Transactional(propagation=Propagation.MANDATORY)
+    public void recordAssessment(HseCaseImpactAssessment assessment, String status, long revision,
+                                 String requestId, String digest) {
+        if (jdbc.query("""
+                SELECT t.id FROM public.hidra_hse_catalog_field_policy p
+                JOIN public.hidra_hse_catalog_entry t ON t.catalog_name=p.catalog_name
+                WHERE p.field_role='CASE_IMPACT_TYPE' AND p.active AND t.active AND t.id=?
+                FOR SHARE OF p,t
+                """, (r,n) -> r.getString(1), assessment.typeId()).isEmpty()) {
+            throw new IllegalArgumentException("Eligible HSE case impact type required.");
+        }
+        var at = assessment.at().truncatedTo(ChronoUnit.MICROS);
+        var timestamp = Timestamp.from(at);
+        jdbc.update("""
+                INSERT INTO public.hidra_hse_impact_assessment
+                    (id,hse_case_id,impact_domain,impact_type_id,severity,description,
+                     assessed_by_actor_id,assessed_at,created_at,updated_at)
+                VALUES (?,?,?,?,?,?,?,?,?,?)
+                """, assessment.id(), assessment.caseId(), assessment.domain().name(),
+                assessment.typeId(), assessment.severity().name(), assessment.description(),
+                assessment.actorId(), timestamp, timestamp, timestamp);
+        append(new Receipt(id(), assessment.caseId(), null, requestId, digest, assessment.actorId(),
+                "ASSESS_IMPACT", status, status, revision, assessment.id(), at), assessment.description());
     }
     @Override @Transactional(propagation=Propagation.MANDATORY)
     public String closeCase(String caseId,String actorId,String displayName,String reason,
             HseCapaWorkflowPort.Decision decision,String requestId,String digest,
-            long expectedVersion,Instant now){
+            long expectedVersion,String assessmentId,Instant now){
         long count=jdbc.queryForObject("SELECT count(*) FROM "+E+" WHERE case_id=?",Long.class,caseId);
         if(count!=expectedVersion)throw conflict();
         var rows=states(caseId);
@@ -294,8 +327,8 @@ public class JdbcHseCapaLifecycleStoreAdapter implements HseCapaLifecycleStorePo
         jdbc.update("UPDATE public.hidra_hse_case SET status='CLOSED',closed_at=?,"+
             "updated_at=? WHERE id=?",at,at,caseId);
         jdbc.update("INSERT INTO "+C+"(case_id,closure_id,workflow_action_id,workflow_instance_id,"+
-                "workflow_digest,actor_id,closed_at) VALUES(?,?,?,?,?,?,?)",
-                caseId,closureId,decision.actionId(),decision.instanceId(),decision.digest(),actorId,at);
+                "workflow_digest,actor_id,closed_at,assessment_id) VALUES(?,?,?,?,?,?,?,?)",
+                caseId,closureId,decision.actionId(),decision.instanceId(),decision.digest(),actorId,at,assessmentId);
         append(new Receipt(id(),caseId,null,requestId,digest,actorId,"CLOSE",old,"CLOSED",
                 expectedVersion+rows.size()+1,closureId,now),reason);
         return closureId;

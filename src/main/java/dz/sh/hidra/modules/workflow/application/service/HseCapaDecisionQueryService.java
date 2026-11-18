@@ -30,9 +30,13 @@ public class HseCapaDecisionQueryService implements HseCapaDecisionContract {
     private final WorkflowActionRepositoryPort actions;
     private final WorkflowInstanceRepositoryPort instances;
     private final HseWorkflowReferenceContract bindings;
+    private final WorkflowConfigurationPort configuration;
+    private final WorkflowTaskRepositoryPort tasks;
     public HseCapaDecisionQueryService(WorkflowActionRepositoryPort actions,
-            WorkflowInstanceRepositoryPort instances,HseWorkflowReferenceContract bindings){
+            WorkflowInstanceRepositoryPort instances,HseWorkflowReferenceContract bindings,
+            WorkflowConfigurationPort configuration,WorkflowTaskRepositoryPort tasks){
         this.actions=actions;this.instances=instances;this.bindings=bindings;
+        this.configuration=configuration;this.tasks=tasks;
     }
     @Override @Transactional(propagation=Propagation.MANDATORY)
     public Optional<Decision> approved(String actionId,String type,String targetId){
@@ -44,7 +48,14 @@ public class HseCapaDecisionQueryService implements HseCapaDecisionContract {
                 ||action.taskId()==null||action.actorId()==null)return Optional.empty();
         var instance=instances.findById(action.instanceId()).orElse(null);
         if(instance==null||!"hse".equals(instance.targetModule())
+                || instance.status() != dz.sh.hidra.modules.workflow.domain.value.WorkflowInstanceStatus.COMPLETED
+                || !action.actedAt().equals(instance.completedAt())
                 ||!targetId.equals(instance.targetId()))return Optional.empty();
+        var task=tasks.findById(action.taskId()).orElse(null);
+        var purpose=configuration.requireActiveCatalog(instance.workflowPurposeId(),"WORKFLOW_PURPOSE");
+        if(task==null||!instance.id().equals(task.instanceId())||purpose==null||!purpose.active()
+                ||!dz.sh.hidra.modules.workflow.application.contract.target.WorkflowOwnedTargetLookup
+                        .hseApproval(type,purpose.code()))return Optional.empty();
         boolean bound="HSE_CASE".equals(type)
                 ? bindings.caseMatches(instance.id(),targetId)
                 : bindings.taskMatches(action.taskId(),null,targetId);

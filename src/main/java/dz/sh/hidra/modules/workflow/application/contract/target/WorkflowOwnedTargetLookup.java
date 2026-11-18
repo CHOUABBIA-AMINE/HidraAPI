@@ -25,6 +25,14 @@ public interface WorkflowOwnedTargetLookup {
     String BASELINE_TARGET = "ENGINEERING_BASELINE_REVISION";
     String BASELINE_PURPOSE = "ENGINEERING_BASELINE_APPROVAL";
 
+    static boolean hseTarget(String type) {
+        return "HSE_CASE".equals(type) || "HSE_CAPA".equals(type);
+    }
+
+    static boolean hseApproval(String type, String purpose) {
+        return hseTarget(type) && (type + "_APPROVAL").equals(purpose);
+    }
+
     default boolean protectedReviewAllowed(String type, String digest, String locator) {
         return false;
     }

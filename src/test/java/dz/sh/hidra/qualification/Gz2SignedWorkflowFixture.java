@@ -242,6 +242,110 @@ class Gz2SignedWorkflowFixture {
                 """, id(), actor, scope, reference, code);
     }
 
+    void grantScopedHse(String actor, String... commands) {
+        for (String command : commands) {
+            String permission = "hse:capa:" + command;
+            permit(actor, permission, "HSE_CAPA", "CUSTOM", "documents-company:" + company);
+            permit(actor, permission, "HSE_CAPA", "FACILITY", asset);
+        }
+    }
+
+    // A reviewed synthetic T16 prerequisite. The signed HSE test must still pass the real
+    // Incident, Alarm, Monitoring and Topology owner checks on the retained chain.
+    String seedReviewedHseIncident() {
+        String rule = id(), point = id(), evaluation = id(), target = id(), approval = id();
+        String trusted = id(), alarm = id(), incident = id();
+        String alarmType = catalog("alarm", "ALARM_TYPE", "GZ2_T17_SOURCE");
+        String alarmSeverity = catalog("alarm", "ALARM_SEVERITY", "GZ2_T17_SEVERITY");
+        String classification = catalog("incident", "INCIDENT_CLASSIFICATION", "GZ2_T17_SOURCE");
+        String incidentSeverity = catalog("incident", "INCIDENT_SEVERITY", "GZ2_T17_SEVERITY");
+        String resolution = catalog("incident", "RESOLUTION_TYPE", "GZ2_T17_RESOLUTION");
+        var at = sql.queryForObject("SELECT now()", java.sql.Timestamp.class);
+        sql.update("""
+                INSERT INTO hidra_monitoring_rule
+                    (id,code,name_fr,rule_type,status,created_at,updated_at)
+                VALUES (?,?,'Synthetic T17 source','PLAN_COMPARISON','ACTIVE',now(),now())
+                """, rule, rule);
+        sql.update("""
+                INSERT INTO hidra_monitoring_rule_scope
+                    (rule_id,company_party_id,asset_type,asset_id,created_by_actor_id,created_at)
+                VALUES (?,?,'FACILITY',?,?,now())
+                """, rule, company, asset, operator);
+        sql.update("INSERT INTO hidra_monitoring_rule_head(rule_id) VALUES (?)", rule);
+        sql.update("""
+                INSERT INTO hidra_monitoring_rule_revision
+                    (rule_id,revision,company_party_id,asset_type,asset_id,telemetry_point_id,rule_type,
+                     unit_id,evidence_policy_code,valid_from,valid_to,created_by_actor_id,created_at)
+                VALUES (?,1,?,'FACILITY',?,?,'PLAN_COMPARISON',?,'GZ2_T17_SYNTHETIC',
+                        now()-interval '1 hour',now()+interval '1 hour',?,now())
+                """, rule, company, asset, point, pressureUnit, operator);
+        sql.update("""
+                INSERT INTO hidra_monitoring_rule_activation
+                    (rule_id,revision,effective_from,effective_until,activated_by_actor_id,activated_at)
+                SELECT rule_id,revision,valid_from,valid_to,?,now() FROM hidra_monitoring_rule_revision WHERE rule_id=?
+                """, operator, rule);
+        sql.update("""
+                INSERT INTO hidra_monitoring_evaluation_freshness_policy
+                    (rule_id,rule_revision,maximum_age_seconds) VALUES (?,1,3600)
+                """, rule);
+        sql.update("""
+                INSERT INTO hidra_monitoring_authoritative_evaluation
+                    (id,rule_id,rule_revision,requested_target_id,requested_reading_id,evaluated_at,
+                     recorded_at,actor_id,unit_id,outcome,target_id,target_revision_id,approval_id,
+                     approved_at,expected_value,trusted_reading_id,raw_reading_id,assessment_id,
+                     binding_id,quality_code_id,trust_level,observed_at,trusted_at,actual_value,policy_revision)
+                VALUES (?,?,1,?,?,?,?,?,?,'COMPUTED',?,?,?,?,70,?,?,?,?,?,'HIGH',?,?,75,1)
+                """, evaluation, rule, target, trusted, at, at, operator, pressureUnit, target,
+                id(), approval, at, trusted, id(), id(), id(), id(), at, at);
+        sql.update("""
+                INSERT INTO hidra_alarm
+                    (id,alarm_number,alarm_type_id,severity_id,title_fr,source_type,monitoring_evaluation_id,
+                     topology_asset_type_code,topology_asset_id,topology_asset_code,current_state,
+                     raised_at,last_updated_at,created_at,updated_at)
+                VALUES (?,?,?,?,'Synthetic GZ2 alarm','MANUAL',?,'FACILITY',?,'GZ2','ACTIVE',?,?,?,?)
+                """, alarm, alarm, alarmType, alarmSeverity, evaluation, asset, at, at, at, at);
+        sql.update("""
+                INSERT INTO hidra_alarm_evaluation_trigger
+                    (evaluation_id,alarm_id,rule_id,rule_revision,company_party_id,asset_type,asset_id,
+                     unit_id,target_id,approval_id,trusted_reading_id,evaluated_at,alarm_type_id,
+                     severity_id,title_fr,actor_id,created_at)
+                VALUES (?,?,?,1,?,'FACILITY',?,?,?,?,?,?,?,?,'Synthetic GZ2 alarm',?,?)
+                """, evaluation, alarm, rule, company, asset, pressureUnit, target, approval, trusted,
+                at, alarmType, alarmSeverity, operator, at);
+        sql.update("""
+                INSERT INTO hidra_alarm_evidence_link
+                    (id,alarm_id,evidence_type,evidence_reference_id,created_at)
+                VALUES (?,?,'MONITORING_EVALUATION',?,?)
+                """, id(), alarm, evaluation, at);
+        sql.update("""
+                INSERT INTO hidra_incident
+                    (id,incident_number,title,classification_id,severity_id,status,source_type,source_reference_id,
+                     detected_at,reported_at,topology_asset_type_code,topology_asset_id,topology_asset_code,
+                     current_escalation_level,created_by_actor_id,created_by_actor_name_snapshot,created_at,updated_at)
+                VALUES (?,?,'Synthetic reviewed GZ2 incident',?,?,'OPEN','ALARM',?,?,?,'FACILITY',?,'GZ2',0,
+                        ?,'Synthetic investigator',?,?)
+                """, incident, incident, classification, incidentSeverity, alarm, at, at, asset, operator, at, at);
+        sql.update("""
+                INSERT INTO hidra_incident_evaluation_case
+                    (evaluation_id,incident_id,company_id,asset_type,asset_id,classification_id,severity_id,
+                     title_fr,reason,actor_id,created_at)
+                VALUES (?,?,?,'FACILITY',?,?,?,'Synthetic reviewed GZ2 incident','Synthetic prerequisite',?,?)
+                """, evaluation, incident, company, asset, classification, incidentSeverity, operator, at);
+        sql.update("""
+                INSERT INTO hidra_incident_escalated_source
+                    (source_type,source_id,evaluation_id,incident_id,actor_id,reason,escalated_at)
+                VALUES ('ALARM',?,?,?,?,'Synthetic prerequisite',?)
+                """, alarm, evaluation, incident, operator, at);
+        sql.update("UPDATE hidra_incident SET status='RESOLVED',resolved_at=? WHERE id=?", at, incident);
+        sql.update("""
+                INSERT INTO hidra_incident_investigation
+                    (incident_id,state,version,investigator_id,submitted_by_id,reviewed_by_id,resolution_type_id,
+                     resolution_summary,has_evidence,has_action,updated_at)
+                VALUES (?,'APPROVED',5,?,?,?,?,'Synthetic reviewed prerequisite',true,true,?)
+                """, incident, operator, operator, reviewer, resolution, at);
+        return incident;
+    }
+
     void global(String actor, String... codes) {
         for (String code : codes) {
             permit(actor, code, "ROUTE", "GLOBAL", null);

@@ -15,9 +15,17 @@
 package dz.sh.hidra.modules.hse.api.rest.request;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import dz.sh.hidra.modules.hse.domain.value.HseImpactDomain;
+import dz.sh.hidra.modules.hse.domain.value.HseImpactSeverity;
 import jakarta.validation.constraints.PositiveOrZero;
 public final class HseCapaLifecycleRequest {
     private HseCapaLifecycleRequest(){}
+    public record HseCaseImpactAssessmentRequest(@NotBlank @Size(max=80) String requestId,
+            @NotNull @PositiveOrZero Long expectedCaseVersion, @NotNull HseImpactDomain impactDomain,
+            @NotBlank @Size(max=80) String impactTypeId, @NotNull HseImpactSeverity severity,
+            @NotBlank @Size(max=500) String description){}
     public record Enroll(@NotBlank String requestId,@NotBlank String incidentId,
             @NotBlank String caseNumber,@NotBlank String title,String description,
             @NotBlank String caseTypeId,@NotBlank String severityId){}

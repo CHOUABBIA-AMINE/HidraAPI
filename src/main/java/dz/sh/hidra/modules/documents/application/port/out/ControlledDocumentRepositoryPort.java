@@ -34,5 +34,6 @@ public interface ControlledDocumentRepositoryPort {
     Page<LinkView> links(String documentId,int page,int size);
     void lockDocument(String documentId);
     Optional<ControlledDocumentDecision> decision(String documentId,String requestId);
+    Optional<ControlledDocumentDecision> acceptedVersion(String documentId, String versionId);
     void accept(ControlledDocumentDecision decision,String targetCode,String targetLabel);
 }

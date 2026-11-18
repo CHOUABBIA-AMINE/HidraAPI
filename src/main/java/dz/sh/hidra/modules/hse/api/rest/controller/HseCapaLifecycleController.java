@@ -32,6 +32,18 @@ import org.springframework.web.bind.annotation.*;
 public final class HseCapaLifecycleController {
     private final HseCapaLifecycleUseCase service;
     public HseCapaLifecycleController(HseCapaLifecycleUseCase service){this.service=service;}
+    @NativeProtectedOperation
+    @Operation(operationId="recordScopedHseCaseImpactAssessment")
+    @PostMapping("/{caseId}/impact-assessments")
+    public ResponseEntity<HseCapaLifecycleResponse.HseCaseImpactAssessmentReceipt> assessImpact(
+            @PathVariable String companyId, @PathVariable String facilityId, @PathVariable String caseId,
+            @Valid @RequestBody HseCapaLifecycleRequest.HseCaseImpactAssessmentRequest request) {
+        var result = service.assessImpact(companyId, facilityId, caseId,
+                HseCapaLifecycleRestMapper.impact(request));
+        return ResponseEntity.status(result.replayed() ? HttpStatus.OK : HttpStatus.CREATED)
+                .body(HseCapaLifecycleRestMapper.impact(result));
+    }
+
     @NativeProtectedOperation @Operation(operationId="enrollIncidentHseCase")
     @PostMapping("/from-incident")
     public ResponseEntity<HseCapaLifecycleResponse.CaseReceipt> enroll(@PathVariable String companyId,

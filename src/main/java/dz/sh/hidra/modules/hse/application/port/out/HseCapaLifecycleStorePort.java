@@ -18,6 +18,7 @@ import dz.sh.hidra.modules.hse.application.port.in.HseCapaLifecycleUseCase.*;
 import dz.sh.hidra.modules.hse.domain.model.HseCapaEvidence;
 import dz.sh.hidra.modules.hse.domain.model.HseCapaVerification;
 import dz.sh.hidra.modules.hse.domain.value.CapaStatus;
+import dz.sh.hidra.modules.hse.domain.model.HseCaseImpactAssessment;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +34,7 @@ public interface HseCapaLifecycleStorePort {
     Optional<Scope> created(String company,String facility,String requestId);
     void bind(Scope scope);
     Optional<Scope> scope(String caseId);
+    Optional<Scope> scopeByCapa(String capaId);
     void lockCase(String caseId);
     Page<CaseView> cases(String company,String facility,int page,int size);
     CaseView caseView(String caseId);
@@ -52,9 +54,11 @@ public interface HseCapaLifecycleStorePort {
     void verify(HseCapaVerification finding);
     List<HseCapaVerification> verification(String capaId);
     List<State> states(String caseId);
-    boolean impactAssessed(String caseId);
+    Optional<String> admittedAssessment(String caseId);
+    void recordAssessment(HseCaseImpactAssessment assessment, String status, long revision,
+                          String requestId, String digest);
     String closeCase(String caseId,String actorId,String actorDisplay,String reason,
                      HseCapaWorkflowPort.Decision decision,String requestId,String digest,
-                     long expectedVersion,Instant at);
+                     long expectedVersion, String assessmentId, Instant at);
     Page<EventView> history(String caseId,int page,int size);
 }

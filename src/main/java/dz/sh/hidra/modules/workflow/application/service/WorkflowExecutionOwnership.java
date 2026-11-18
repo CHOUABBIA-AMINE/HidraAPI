@@ -98,6 +98,16 @@ public class WorkflowExecutionOwnership {
     /** Refresh native Topology rights at every Workflow operation. */
     public void requireProtectedCurrentTarget(dz.sh.hidra.modules.workflow.domain.model.WorkflowInstance instance,
             dz.sh.hidra.modules.workflow.application.port.out.WorkflowConfigurationPort configuration) {
+        if ("hse".equals(instance.targetModule())) {
+            var type = configuration.requireActiveCatalog(instance.targetTypeId(), "WORKFLOW_TARGET_TYPE");
+            var purpose = configuration.requireActiveCatalog(instance.workflowPurposeId(), "WORKFLOW_PURPOSE");
+            if (!WorkflowOwnedTargetLookup.hseApproval(type.code(), purpose.code())
+                    || !configuration.activeBinding(instance.definitionId(), "hse",
+                            instance.targetTypeId(), instance.workflowPurposeId()))
+                throw denied("Workflow target unavailable.");
+            requireTarget("hse", type.code(), instance.targetId());
+            return;
+        }
         if (!"topology".equals(instance.targetModule())) return;
         var type=configuration.requireActiveCatalog(instance.targetTypeId(),"WORKFLOW_TARGET_TYPE");
         boolean baseline = WorkflowOwnedTargetLookup.BASELINE_TARGET.equals(type.code());
@@ -109,6 +119,12 @@ public class WorkflowExecutionOwnership {
             throw denied("Topology Workflow target unavailable.");
         requireTarget(instance.targetModule(),type.code(),instance.targetId(),instance.targetCodeSnapshot());
     }
+    public boolean hseReviewerAllowed(String type, String targetId) {
+        var owners = targets.stream().filter(t -> "hse".equals(t.module())
+                && t.targetTypeCodes().contains(type)).toList();
+        return owners.size() == 1 && owners.getFirst().protectedReviewAllowed(type, targetId, null);
+    }
+
     public boolean baselineReviewerAllowed(dz.sh.hidra.modules.workflow.domain.model.WorkflowInstance instance) {
         var owners = targets.stream().filter(t -> "topology".equals(t.module())
                 && t.targetTypeCodes().contains(WorkflowOwnedTargetLookup.BASELINE_TARGET)).toList();

@@ -14,6 +14,8 @@
  */
 package dz.sh.hidra.modules.hse.application.port.in;
 
+import dz.sh.hidra.modules.hse.domain.value.HseImpactDomain;
+import dz.sh.hidra.modules.hse.domain.value.HseImpactSeverity;
 import java.time.Instant;
 import java.util.List;
 public interface HseCapaLifecycleUseCase {
@@ -21,6 +23,10 @@ public interface HseCapaLifecycleUseCase {
                   String description,String caseTypeId,String severityId){}
     record Propose(String requestId,long expectedCaseVersion,String actionNumber,String actionTypeId,String title,
                    String description,String ownerActorId){}
+    record AssessImpact(String requestId, long expectedCaseVersion, HseImpactDomain impactDomain,
+                        String impactTypeId, HseImpactSeverity severity, String description){}
+    record ImpactReceipt(String assessmentId, String caseId, long caseVersion, boolean replayed){}
+    ImpactReceipt assessImpact(String company, String facility, String caseId, AssessImpact input);
     record Action(String requestId,long expectedVersion,String reason,String referenceId,
                   String supportingId,String finding){}
     record CaseView(String id,String companyId,String facilityId,String incidentId,

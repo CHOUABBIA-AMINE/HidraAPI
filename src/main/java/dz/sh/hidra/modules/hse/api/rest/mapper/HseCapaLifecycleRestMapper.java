@@ -19,6 +19,18 @@ import dz.sh.hidra.modules.hse.api.rest.response.HseCapaLifecycleResponse;
 import dz.sh.hidra.modules.hse.application.port.in.HseCapaLifecycleUseCase;
 public final class HseCapaLifecycleRestMapper {
     private HseCapaLifecycleRestMapper(){}
+    public static HseCapaLifecycleUseCase.AssessImpact impact(
+            HseCapaLifecycleRequest.HseCaseImpactAssessmentRequest request) {
+        return new HseCapaLifecycleUseCase.AssessImpact(request.requestId(), request.expectedCaseVersion(),
+                request.impactDomain(), request.impactTypeId(), request.severity(), request.description());
+    }
+
+    public static HseCapaLifecycleResponse.HseCaseImpactAssessmentReceipt impact(
+            HseCapaLifecycleUseCase.ImpactReceipt receipt) {
+        return new HseCapaLifecycleResponse.HseCaseImpactAssessmentReceipt(receipt.assessmentId(),
+                receipt.caseId(), receipt.caseVersion(), receipt.replayed());
+    }
+
     public static HseCapaLifecycleUseCase.Enroll enroll(HseCapaLifecycleRequest.Enroll r){
         return new HseCapaLifecycleUseCase.Enroll(r.requestId(),r.incidentId(),
                 r.caseNumber(),r.title(),r.description(),r.caseTypeId(),r.severityId());

@@ -1865,7 +1865,7 @@
       "lane": "unit-architecture",
       "owner": "hse",
       "path": "src/test/java/dz/sh/hidra/modules/hse/application/service/HseCapaLifecycleApplicationServiceTest.java",
-      "source_sha256": "05e7350c16071f5aaab5aebad62aabbd1484677cb0e109942e19c9d1f27cdc5d",
+      "source_sha256": "59aabb480aaf24724bf0bdf1b3816c0f57649349d9309c62abb9fd29a7602ef0",
       "supports": []
     },
     {
@@ -1930,7 +1930,7 @@
       "lane": "postgres-integration",
       "owner": "hse",
       "path": "src/test/java/dz/sh/hidra/modules/hse/infrastructure/persistence/HseCapaLifecyclePostgresIntegrationTest.java",
-      "source_sha256": "4d34b3e6e20a014f449f292b46a6a5362d156358073e4e638a3a7494f3dc58aa",
+      "source_sha256": "aeb7f127cdf519c34124a378ef4cb49846801cbfbd5fdb0854759155e9c44992",
       "supports": []
     },
     {
@@ -11919,7 +11919,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java",
-      "source_sha256": "be969a297d6e29b8038de8d39ae9b0221c116f0ae22507f369fe3b19069a1f00",
+      "source_sha256": "e6d6fa6c09aea36ca99db7eb49c8315bcce41e86c1db74131c2f0879ba970ff2",
       "supports": []
     },
     {
@@ -11951,7 +11951,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistryTest.java",
-      "source_sha256": "a82fa886ccb5c5829255ad2079afec9f06ff483552289088ef1a014dbfcba25f",
+      "source_sha256": "b6faebe52a4eb25fe4ef79dfa357a900e819af69971d806260c371f60be2191a",
       "supports": []
     },
     {
@@ -11971,7 +11971,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteStartupValidatorTest.java",
-      "source_sha256": "967879c3e0c8e09ee612799e41bc6d5972e4c80c32723350c47ea2e79355065b",
+      "source_sha256": "0da39f828796487747772bc4548cd76ccde7fdbfd83e6f605e6d294eca4b71c4",
       "supports": []
     },
     {
@@ -12302,7 +12302,8 @@
     {
       "baseline_seconds": 0,
       "cases": [
-        "signedCompanyAndFacilityReadsConcealNonexistentCasesAndRejectWrongScope"
+        "signedCompanyAndFacilityReadsConcealNonexistentCasesAndRejectWrongScope",
+        "signedImpactAssessmentAndApprovedClosureSurviveRestart"
       ],
       "class": "dz.sh.hidra.qualification.Gz2HseCapaNativeHttpPostgresIntegrationTest",
       "dependency_reason": "T17 registered fresh PostgreSQL 16 and signed native synthetic GZ2 proof; local Docker unavailable; hosted exact-SHA CI required.",
@@ -12310,7 +12311,7 @@
       "lane": "postgres-integration",
       "owner": "qualification",
       "path": "src/test/java/dz/sh/hidra/qualification/Gz2HseCapaNativeHttpPostgresIntegrationTest.java",
-      "source_sha256": "5305766b6b194201bd7f1b4c644b7525717395c5c6044ec09ef98acb63488467",
+      "source_sha256": "f6b0db3ca39f4422fa2593af97c5c13ec93106fbb7545112199a86a2fc660071",
       "supports": []
     },
     {
@@ -14562,7 +14563,7 @@
     {
       "class": "dz.sh.hidra.qualification.Gz2SignedWorkflowFixture",
       "path": "src/test/java/dz/sh/hidra/qualification/Gz2SignedWorkflowFixture.java",
-      "source_sha256": "899672a63a92f199fa31f6b7873d7429031f66a55ed1c5af4b8925f36b9f11ab",
+      "source_sha256": "7f17ecae16f91856ceed16161fc75d3bfde7918a74b97e402521c2918d9c1eab",
       "supports": []
     },
     {

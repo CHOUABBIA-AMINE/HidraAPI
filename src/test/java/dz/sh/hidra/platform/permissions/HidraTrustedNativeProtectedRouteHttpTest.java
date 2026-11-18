@@ -163,7 +163,7 @@ class HidraTrustedNativeProtectedRouteHttpTest {
    var resolver = org.mockito.Mockito.mock(HidraEffectivePermissionResolver.class);
    authenticated();
    var registry = new HidraTrustedNativeProtectedRouteRegistry();
-   assertEquals(137,registry.candidates().size());
+   assertEquals(138,registry.candidates().size());
    var mvc = mvc(owner, new UntrustedController(), resolver,registry);
    assertThrows(Exception.class, () ->
       mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(TRUSTED)));
@@ -172,9 +172,10 @@ class HidraTrustedNativeProtectedRouteHttpTest {
  @Test void realManufacturerTupleRegistryRejectsWrongVerbAndSiblingPattern() throws Exception {
    var registry=new HidraTrustedNativeProtectedRouteRegistry();
    var routes=registry.candidates();
-   assertEquals(137,routes.size());
+   assertEquals(138,routes.size());
    var expected=java.util.Set.of(
      "POST /api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases/from-incident",
+     "POST /api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases/{caseId}/impact-assessments",
      "GET /api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases",
      "GET /api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases/{caseId}",
      "POST /api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases/{caseId}/capas",

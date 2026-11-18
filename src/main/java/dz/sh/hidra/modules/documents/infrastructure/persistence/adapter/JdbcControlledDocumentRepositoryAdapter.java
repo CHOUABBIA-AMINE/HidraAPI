@@ -181,6 +181,16 @@ public class JdbcControlledDocumentRepositoryAdapter implements ControlledDocume
                 .stream().findFirst();
     }
     @Override @Transactional(propagation=Propagation.MANDATORY)
+    public Optional<ControlledDocumentDecision> acceptedVersion(String documentId, String versionId) {
+        return jdbc.query("SELECT d.* FROM "+DECISION+" d JOIN "+LINK+" l ON l.id=d.link_id"
+                        +" AND l.document_id=d.document_id AND l.document_version_id=d.version_id"
+                        +" AND l.target_module='topology' AND l.target_type_code='FACILITY'"
+                        +" AND l.target_id=d.facility_id AND l.primary_link AND l.active"
+                        +" WHERE d.document_id=? AND d.version_id=?",
+                JdbcControlledDocumentRepositoryAdapter::decision, documentId, versionId)
+                .stream().findFirst();
+    }
+    @Override @Transactional(propagation=Propagation.MANDATORY)
     public void accept(ControlledDocumentDecision receipt,String code,String label){
         em.flush();
         String documentId=receipt.documentId(),newVersion=receipt.versionId();

@@ -19,6 +19,8 @@ import java.time.Instant;
 import java.util.List;
 public final class HseCapaLifecycleResponse {
     private HseCapaLifecycleResponse(){}
+    public record HseCaseImpactAssessmentReceipt(String assessmentId, String caseId,
+            long caseVersion, boolean replayed){}
     public record CaseView(String id,String companyId,String facilityId,String incidentId,
             String caseNumber,String title,String status,String createdBy,Instant createdAt,String closureId){
         public static CaseView from(HseCapaLifecycleUseCase.CaseView x){

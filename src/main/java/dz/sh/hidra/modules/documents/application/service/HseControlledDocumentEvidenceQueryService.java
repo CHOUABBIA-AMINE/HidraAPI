@@ -15,7 +15,6 @@
 package dz.sh.hidra.modules.documents.application.service;
 
 import dz.sh.hidra.modules.documents.application.contract.hse.HseControlledDocumentEvidenceContract;
-import dz.sh.hidra.modules.documents.application.port.in.ControlledDocumentsUseCase;
 import dz.sh.hidra.modules.documents.application.port.out.*;
 import dz.sh.hidra.modules.documents.domain.value.DocumentVersionStatus;
 import java.util.Optional;
@@ -25,12 +24,13 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 @Service
 public class HseControlledDocumentEvidenceQueryService implements HseControlledDocumentEvidenceContract {
-    private final ControlledDocumentsUseCase controlled;
     private final DocumentVersionRepositoryPort versions;
+    private final ControlledDocumentRepositoryPort decisions;
     private final ControlledDocumentAccessService access;
-    public HseControlledDocumentEvidenceQueryService(ControlledDocumentsUseCase controlled,
-            DocumentVersionRepositoryPort versions,ControlledDocumentAccessService access){
-        this.controlled=controlled;this.versions=versions;this.access=access;
+    public HseControlledDocumentEvidenceQueryService(
+            DocumentVersionRepositoryPort versions,ControlledDocumentAccessService access,
+            ControlledDocumentRepositoryPort decisions){
+        this.versions=versions;this.access=access;this.decisions=decisions;
     }
     @Override @Transactional(propagation=Propagation.MANDATORY)
     public Optional<Evidence> accepted(String company,String facility,String document,String version){
@@ -43,14 +43,12 @@ public class HseControlledDocumentEvidenceQueryService implements HseControlledD
                 ||source.fileSizeBytes()<0||source.checksumValue()==null
                 ||!source.checksumValue().matches("(?i)[a-f0-9]{64}"))
             return Optional.empty();
-        // T24's deferred database consistency requires an accepted decision for each
-        // CURRENT/SUPERSEDED version and an immutable, exact FACILITY target link.
-        var links=controlled.links(company,facility,document,0,100);
-        var link=links.items().stream().filter(l->version.equals(l.versionId())
-                &&"topology".equals(l.targetModule())&&"FACILITY".equals(l.targetType())
-                &&facility.equals(l.targetId())).findFirst().orElse(null);
-        if(link==null||!link.primary())return Optional.empty();
-        return Optional.of(new Evidence(document,version,link.id(),source.checksumValue().toLowerCase(),
-                source.fileSizeBytes(),company,facility));
+        var decision = decisions.acceptedVersion(document, version).orElse(null);
+        if (decision == null || !company.equals(decision.companyId())
+                || !facility.equals(decision.facilityId())
+                || !source.checksumValue().equalsIgnoreCase(decision.checksumSha256())
+                || source.fileSizeBytes() != decision.contentLength()) return Optional.empty();
+        return Optional.of(new Evidence(document, version, decision.id(), decision.checksumSha256(),
+                decision.contentLength(), company, facility));
     }
 }

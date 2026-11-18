@@ -379,6 +379,21 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase, Manufactur
             catch(RuntimeException denied){throw new NoSuchElementException("Workflow target unavailable.");}
             return;
         }
+        if ("hse".equals(instance.targetModule())) {
+            var type = entityManager.find(WorkflowCatalogEntryJpaEntity.class, instance.targetTypeId());
+            if (type == null || !type.active() || !"WORKFLOW_TARGET_TYPE".equals(type.catalogName())
+                    || !WorkflowOwnedTargetLookup.hseTarget(type.code()))
+                throw new NoSuchElementException("Workflow target unavailable.");
+            var owners = targetOwners.stream().filter(o -> "hse".equals(o.module())
+                    && o.targetTypeCodes().contains(type.code())).toList();
+            try {
+                if (owners.size() == 1 && owners.getFirst().protectedReadAllowed(type.code(), instance.targetId(), access))
+                    return;
+            } catch (SecurityException | NoSuchElementException | AccessDeniedException unavailable) {
+                throw new NoSuchElementException("Workflow target unavailable.");
+            }
+            throw new NoSuchElementException("Workflow target unavailable.");
+        }
         boolean topology="topology".equals(instance.targetModule());
         boolean simulation="simulation".equals(instance.targetModule());
         boolean planning="planning".equals(instance.targetModule());

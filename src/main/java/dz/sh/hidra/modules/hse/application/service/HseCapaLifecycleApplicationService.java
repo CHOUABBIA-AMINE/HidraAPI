@@ -36,7 +36,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class HseCapaLifecycleApplicationService implements HseCapaLifecycleUseCase {
     private static final String CREATE="hse:capa:create", READ="hse:capa:read",
-            EXECUTE="hse:capa:execute", REVIEW="hse:capa:review", CLOSE="hse:capa:close";
+            EXECUTE="hse:capa:execute", REVIEW="hse:capa:review", CLOSE="hse:capa:close",
+            ASSESS="hse:capa:assess";
     private final HseCapaAuthorityPort authority;
     private final HseCapaFacilityPort topology;
     private final HseCapaIncidentPort incidents;
@@ -241,6 +242,39 @@ public class HseCapaLifecycleApplicationService implements HseCapaLifecycleUseCa
         return new CapaResult(store.capaView(caseId,capaId),false);
     }
     @Override @Transactional
+    public ImpactReceipt assessImpact(String company, String facility, String caseId, AssessImpact command) {
+        var actor = current(ASSESS, company, facility);
+        current(READ, company, facility);
+        bound(caseId, company, facility);
+        Objects.requireNonNull(command);
+        String key = text(command.requestId(), 80);
+        String description = text(command.description(), 500);
+        String type = text(command.impactTypeId(), 80);
+        var domain = Objects.requireNonNull(command.impactDomain());
+        var severity = Objects.requireNonNull(command.severity());
+        long expected = command.expectedCaseVersion();
+        if (expected < 0) throw new IllegalArgumentException("Negative HSE case revision.");
+        String hash = digest("ASSESS_IMPACT", company, facility, caseId, key, Long.toString(expected),
+                domain.name(), type, severity.name(), description, actor.id());
+        store.lockCase(caseId);
+        var replay = store.replay(caseId, key);
+        if (replay.isPresent()) {
+            var prior = replay.orElseThrow();
+            if (!"ASSESS_IMPACT".equals(prior.operation()) || !hash.equals(prior.digest())
+                    || !actor.id().equals(prior.actorId())) throw conflict();
+            return new ImpactReceipt(prior.referenceId(), caseId, prior.version(), true);
+        }
+        String status = store.caseView(caseId).status();
+        if (!List.of("OPEN", "IN_PROGRESS").contains(status)
+                || store.history(caseId, 0, 1).total() != expected
+                || store.admittedAssessment(caseId).isPresent()) throw conflict();
+        var assessment = new HseCaseImpactAssessment(HseId.newId().value(), caseId, domain,
+                type, severity, description, actor.id(), Instant.now());
+        store.recordAssessment(assessment, status, expected + 1, key, hash);
+        return new ImpactReceipt(assessment.id(), caseId, expected + 1, false);
+    }
+
+    @Override @Transactional
     public CaseResult close(String company,String facility,String caseId,Action command){
         Objects.requireNonNull(command,"HSE case closure required.");
         var actor=current(CLOSE,company,facility);
@@ -259,6 +293,8 @@ public class HseCapaLifecycleApplicationService implements HseCapaLifecycleUseCa
             return new CaseResult(store.caseView(caseId),true);
         }
         if(store.history(caseId,0,1).total()!=command.expectedVersion())throw conflict();
+        String assessmentId = store.admittedAssessment(caseId)
+                .orElseThrow(HseCapaLifecycleApplicationService::conflict);
         var states=store.states(caseId);
         boolean allAccepted=!states.isEmpty();
         for(var item:states){
@@ -282,9 +318,9 @@ public class HseCapaLifecycleApplicationService implements HseCapaLifecycleUseCa
                 ||states.stream().anyMatch(s->decision.approverId().equals(s.ownerId())))
             throw new SecurityException("Independent HSE case closure review required.");
         guard.mayCloseCase(states.stream().map(HseCapaLifecycleStorePort.State::status).toList(),
-                allAccepted,store.impactAssessed(caseId),decision.digest()!=null);
+                allAccepted,true,decision.digest()!=null);
         store.closeCase(caseId,actor.id(),actor.displayName(),reason,decision,key,digest,
-                command.expectedVersion(),Instant.now());
+                command.expectedVersion(),assessmentId,Instant.now());
         return new CaseResult(store.caseView(caseId),false);
     }
     @Override @Transactional

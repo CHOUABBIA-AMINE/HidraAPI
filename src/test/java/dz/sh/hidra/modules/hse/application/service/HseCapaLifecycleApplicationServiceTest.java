@@ -37,6 +37,10 @@ class HseCapaLifecycleApplicationServiceTest {
         assertThrows(SecurityException.class,()->handler.cases("company","facility",0,25));
         assertThrows(SecurityException.class,()->handler.caseDetail("company","facility","protected-case"));
         assertThrows(SecurityException.class,()->handler.history("company","facility","protected-case",0,25));
+        assertThrows(SecurityException.class, () -> handler.assessImpact("company", "facility", "protected-case",
+                new HseCapaLifecycleUseCase.AssessImpact("request", 0,
+                        dz.sh.hidra.modules.hse.domain.value.HseImpactDomain.OPERATIONS,
+                        "type", dz.sh.hidra.modules.hse.domain.value.HseImpactSeverity.LOW, "Synthetic assessment")));
         verifyNoInteractions(store,facility,incident,documents,workflow,cases,capas);
     }
     @Test void wrongFacilityCannotResolveScopedExistence(){

@@ -253,6 +253,14 @@ public class WorkflowTransitionApplicationService implements ExecuteWorkflowTran
                                 && actor.displayName().equals(h.displayName())).isEmpty())
                 throw new WorkflowTransitionDeniedException("Independent eligible human Topology reviewer required.");
         }
+        if ("hse".equals(instance.targetModule())
+                && (transition.decision() == WorkflowDecision.APPROVE
+                    || transition.decision() == WorkflowDecision.REJECT)) {
+            var type = configuration.requireActiveCatalog(instance.targetTypeId(), "WORKFLOW_TARGET_TYPE");
+            if (!eligibleIndependentHumanReviewer(actor.id(), instance.startedByActorId())
+                    || !ownership.hseReviewerAllowed(type.code(), instance.targetId()))
+                throw new WorkflowTransitionDeniedException("Independent scoped HSE reviewer required.");
+        }
         long sequence = actionRepository.nextSequence(instance.id());
         String actionId = WorkflowId.newId().value();
         WorkflowAction action = actionRepository.save(new WorkflowAction(

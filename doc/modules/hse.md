@@ -154,3 +154,11 @@ Registered source implementation introduces HSE-owned enrolled company/FACILITY 
 HSE owns six forward-only non-JPA PostgreSQL tables in `V20261118_002__t17_hse_capa_governed_lifecycle.sql`. The owner-access bridge uses five exact Identity/Topology/Incident/Documents/Workflow scalar contracts. Captured hashes/bytes and review evidence are historical, not permanent bypasses: current owner permissions and facility binding are rechecked before protected reads, replays and writes. Unenrolled HSE rows remain on the legacy paths, while T17-enrolled rows must not appear in unscoped list/count/detail or bypass new closure rules.
 
 **Delivery state:** implementation submitted for exact-SHA CI-first validation; staged code has not been demonstrated to pass Maven, PostgreSQL, runtime OpenAPI, strict physical dictionary, the GZ2 positive journey or operational HSE acceptance. In particular, closure requires a persisted HSE impact assessment, not a caller-provided boolean or a substitute Incident review snapshot. Outstanding gates must be reported as such.
+
+The scoped impact assessment command records an eligible HSE catalog type, severity and
+reason against the exact enrolled case and current actor. It checks the case revision,
+returns the original receipt for exact replay, and retains its assessment event in
+scoped history. The scoped closure receipt binds the admitted assessment ID.
+Signed HSE Case and CAPA Workflow approvals resolve the exact enrolled owner
+target. Workflow reads and mutations recheck live access. Decisions require
+an independent eligible human with the current HSE reviewer grant.

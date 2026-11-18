@@ -43,7 +43,11 @@ class HseCapaLifecyclePostgresIntegrationTest {
             }
             assertEquals(1L,db.queryForObject("SELECT count(*) FROM flyway_schema_history WHERE script=? AND success",
                     Long.class,"V20261118_002__t17_hse_capa_governed_lifecycle.sql"));
-            assertEquals(5L,db.queryForObject("SELECT count(*) FROM hidra_identity_permission "+
+            assertEquals(1L, db.queryForObject("SELECT count(*) FROM flyway_schema_history WHERE script=? AND success",
+                    Long.class, "V20261118_003__t17_hse_impact_assessment.sql"));
+            assertEquals(1L, db.queryForObject("SELECT count(*) FROM pg_constraint WHERE conname=?",
+                    Long.class, "fk_t17_close_scoped_assessment"));
+            assertEquals(6L,db.queryForObject("SELECT count(*) FROM hidra_identity_permission "+
                     "WHERE code LIKE 'hse:capa:%'",Long.class));
             assertEquals(0L,db.queryForObject("SELECT count(*) FROM hidra_identity_user_permission_grant g "+
                     "JOIN hidra_identity_permission p ON p.id=g.permission_id WHERE p.code LIKE 'hse:capa:%'",

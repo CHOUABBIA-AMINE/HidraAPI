@@ -26,10 +26,10 @@ public final class HseCapaLifecycleResponse {
                     x.caseNumber(),x.title(),x.status(),x.createdBy(),x.createdAt(),x.closureId());
         }
     }
-    public record CapaView(String id,String caseId,String actionNumber,String title,String status,
+    public record ScopedHseCapaView(String id,String caseId,String actionNumber,String title,String status,
             long version,String proposerId,String ownerId,String verifierId,String evidenceId){
-        public static CapaView from(HseCapaLifecycleUseCase.CapaView x){
-            return new CapaView(x.id(),x.caseId(),x.actionNumber(),x.title(),x.status(),
+        public static ScopedHseCapaView from(HseCapaLifecycleUseCase.ScopedHseCapaView x){
+            return new ScopedHseCapaView(x.id(),x.caseId(),x.actionNumber(),x.title(),x.status(),
                     x.version(),x.proposerId(),x.ownerId(),x.verifierId(),x.evidenceId());
         }
     }
@@ -40,15 +40,15 @@ public final class HseCapaLifecycleResponse {
                     x.afterState(),x.version(),x.actorId(),x.reason(),x.referenceId(),x.at());
         }
     }
-    public record Page<T>(List<T> items,long total,int page,int size){}
+    public record ScopedHsePage<T>(List<T> items,long total,int page,int size){}
     public record CaseReceipt(CaseView value,boolean replayed){
         public static CaseReceipt from(HseCapaLifecycleUseCase.CaseResult x){
             return new CaseReceipt(CaseView.from(x.value()),x.replayed());
         }
     }
-    public record CapaReceipt(CapaView value,boolean replayed){
+    public record CapaReceipt(ScopedHseCapaView value,boolean replayed){
         public static CapaReceipt from(HseCapaLifecycleUseCase.CapaResult x){
-            return new CapaReceipt(CapaView.from(x.value()),x.replayed());
+            return new CapaReceipt(ScopedHseCapaView.from(x.value()),x.replayed());
         }
     }
 }

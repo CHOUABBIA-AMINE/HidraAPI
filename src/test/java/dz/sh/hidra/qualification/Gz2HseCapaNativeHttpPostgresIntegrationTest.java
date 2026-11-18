@@ -38,7 +38,7 @@ class Gz2HseCapaNativeHttpPostgresIntegrationTest {
             f.permit(f.foreign,"hse:capa:read","HSE_CAPA","FACILITY",f.asset);
             String missing=Gz2SignedWorkflowFixture.id();
             try(var runtime=f.start()){
-                var author=runtime.login(f.author),foreign=runtime.login(f.foreign);
+                String author=runtime.login(f.author), foreign=runtime.login(f.foreign);
                 denied(runtime.send("GET",route(f)+"/"+missing,author,null).statusCode());
                 denied(runtime.send("GET",route(f)+"/"+missing,foreign,null).statusCode());
                 denied(runtime.send("GET",route(f),foreign,null).statusCode());

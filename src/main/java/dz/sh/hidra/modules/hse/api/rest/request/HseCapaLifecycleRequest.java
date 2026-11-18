@@ -25,6 +25,6 @@ public final class HseCapaLifecycleRequest {
             @NotBlank String actionNumber,
             @NotBlank String actionTypeId,@NotBlank String title,String description,
             @NotBlank String ownerActorId){}
-    public record Action(@NotBlank String requestId,@PositiveOrZero long expectedVersion,
+    public record ScopedHseCapaAction(@NotBlank String requestId,@PositiveOrZero long expectedVersion,
             @NotBlank String reason,String referenceId,String supportingId,String finding){}
 }

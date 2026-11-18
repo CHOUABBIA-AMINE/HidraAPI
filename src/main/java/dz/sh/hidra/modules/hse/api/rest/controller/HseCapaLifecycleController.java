@@ -42,7 +42,7 @@ public final class HseCapaLifecycleController {
     }
     @NativeProtectedOperation @Operation(operationId="discoverScopedHseCases")
     @GetMapping
-    public HseCapaLifecycleResponse.Page<HseCapaLifecycleResponse.CaseView> cases(
+    public HseCapaLifecycleResponse.ScopedHsePage<HseCapaLifecycleResponse.CaseView> cases(
             @PathVariable String companyId,@PathVariable String facilityId,
             @RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="25") int size){
         return HseCapaLifecycleRestMapper.cases(service.cases(companyId,facilityId,page,size));
@@ -65,7 +65,7 @@ public final class HseCapaLifecycleController {
     }
     @NativeProtectedOperation @Operation(operationId="listScopedHseCapas")
     @GetMapping("/{caseId}/capas")
-    public HseCapaLifecycleResponse.Page<HseCapaLifecycleResponse.CapaView> capas(
+    public HseCapaLifecycleResponse.ScopedHsePage<HseCapaLifecycleResponse.ScopedHseCapaView> capas(
             @PathVariable String companyId,@PathVariable String facilityId,
             @PathVariable String caseId,@RequestParam(defaultValue="0") int page,
             @RequestParam(defaultValue="25") int size){
@@ -73,16 +73,16 @@ public final class HseCapaLifecycleController {
     }
     @NativeProtectedOperation @Operation(operationId="readScopedHseCapa")
     @GetMapping("/{caseId}/capas/{capaId}")
-    public HseCapaLifecycleResponse.CapaView capaDetail(@PathVariable String companyId,
+    public HseCapaLifecycleResponse.ScopedHseCapaView capaDetail(@PathVariable String companyId,
             @PathVariable String facilityId,@PathVariable String caseId,@PathVariable String capaId){
-        return HseCapaLifecycleResponse.CapaView.from(
+        return HseCapaLifecycleResponse.ScopedHseCapaView.from(
                 service.capaDetail(companyId,facilityId,caseId,capaId));
     }
     @NativeProtectedOperation @Operation(operationId="approveScopedHseCapa")
     @PostMapping("/{caseId}/capas/{capaId}/approve")
     public HseCapaLifecycleResponse.CapaReceipt approve(@PathVariable String companyId,
             @PathVariable String facilityId,@PathVariable String caseId,@PathVariable String capaId,
-            @Valid @RequestBody HseCapaLifecycleRequest.Action r){
+            @Valid @RequestBody HseCapaLifecycleRequest.ScopedHseCapaAction r){
         return HseCapaLifecycleResponse.CapaReceipt.from(service.approve(
                 companyId,facilityId,caseId,capaId,HseCapaLifecycleRestMapper.action(r)));
     }
@@ -90,7 +90,7 @@ public final class HseCapaLifecycleController {
     @PostMapping("/{caseId}/capas/{capaId}/assign")
     public HseCapaLifecycleResponse.CapaReceipt assign(@PathVariable String companyId,
             @PathVariable String facilityId,@PathVariable String caseId,@PathVariable String capaId,
-            @Valid @RequestBody HseCapaLifecycleRequest.Action r){
+            @Valid @RequestBody HseCapaLifecycleRequest.ScopedHseCapaAction r){
         return HseCapaLifecycleResponse.CapaReceipt.from(service.assign(
                 companyId,facilityId,caseId,capaId,HseCapaLifecycleRestMapper.action(r)));
     }
@@ -98,7 +98,7 @@ public final class HseCapaLifecycleController {
     @PostMapping("/{caseId}/capas/{capaId}/evidence")
     public HseCapaLifecycleResponse.CapaReceipt evidence(@PathVariable String companyId,
             @PathVariable String facilityId,@PathVariable String caseId,@PathVariable String capaId,
-            @Valid @RequestBody HseCapaLifecycleRequest.Action r){
+            @Valid @RequestBody HseCapaLifecycleRequest.ScopedHseCapaAction r){
         return HseCapaLifecycleResponse.CapaReceipt.from(service.evidence(
                 companyId,facilityId,caseId,capaId,HseCapaLifecycleRestMapper.action(r)));
     }
@@ -106,7 +106,7 @@ public final class HseCapaLifecycleController {
     @PostMapping("/{caseId}/capas/{capaId}/complete")
     public HseCapaLifecycleResponse.CapaReceipt complete(@PathVariable String companyId,
             @PathVariable String facilityId,@PathVariable String caseId,@PathVariable String capaId,
-            @Valid @RequestBody HseCapaLifecycleRequest.Action r){
+            @Valid @RequestBody HseCapaLifecycleRequest.ScopedHseCapaAction r){
         return HseCapaLifecycleResponse.CapaReceipt.from(service.complete(
                 companyId,facilityId,caseId,capaId,HseCapaLifecycleRestMapper.action(r)));
     }
@@ -114,7 +114,7 @@ public final class HseCapaLifecycleController {
     @PostMapping("/{caseId}/capas/{capaId}/verify")
     public HseCapaLifecycleResponse.CapaReceipt verify(@PathVariable String companyId,
             @PathVariable String facilityId,@PathVariable String caseId,@PathVariable String capaId,
-            @Valid @RequestBody HseCapaLifecycleRequest.Action r){
+            @Valid @RequestBody HseCapaLifecycleRequest.ScopedHseCapaAction r){
         return HseCapaLifecycleResponse.CapaReceipt.from(service.verify(
                 companyId,facilityId,caseId,capaId,HseCapaLifecycleRestMapper.action(r)));
     }
@@ -122,13 +122,13 @@ public final class HseCapaLifecycleController {
     @PostMapping("/{caseId}/close")
     public HseCapaLifecycleResponse.CaseReceipt close(@PathVariable String companyId,
             @PathVariable String facilityId,@PathVariable String caseId,
-            @Valid @RequestBody HseCapaLifecycleRequest.Action r){
+            @Valid @RequestBody HseCapaLifecycleRequest.ScopedHseCapaAction r){
         return HseCapaLifecycleResponse.CaseReceipt.from(service.close(
                 companyId,facilityId,caseId,HseCapaLifecycleRestMapper.action(r)));
     }
     @NativeProtectedOperation @Operation(operationId="readScopedHseCaseHistory")
     @GetMapping("/{caseId}/history")
-    public HseCapaLifecycleResponse.Page<HseCapaLifecycleResponse.EventView> history(
+    public HseCapaLifecycleResponse.ScopedHsePage<HseCapaLifecycleResponse.EventView> history(
             @PathVariable String companyId,@PathVariable String facilityId,@PathVariable String caseId,
             @RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="25") int size){
         return HseCapaLifecycleRestMapper.events(service.history(companyId,facilityId,caseId,page,size));

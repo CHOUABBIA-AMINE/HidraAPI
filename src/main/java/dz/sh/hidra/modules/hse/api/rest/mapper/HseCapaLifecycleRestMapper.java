@@ -27,25 +27,25 @@ public final class HseCapaLifecycleRestMapper {
         return new HseCapaLifecycleUseCase.Propose(r.requestId(),r.expectedCaseVersion(),r.actionNumber(),
                 r.actionTypeId(),r.title(),r.description(),r.ownerActorId());
     }
-    public static HseCapaLifecycleUseCase.Action action(HseCapaLifecycleRequest.Action r){
+    public static HseCapaLifecycleUseCase.Action action(HseCapaLifecycleRequest.ScopedHseCapaAction r){
         return new HseCapaLifecycleUseCase.Action(r.requestId(),r.expectedVersion(),
                 r.reason(),r.referenceId(),r.supportingId(),r.finding());
     }
-    public static HseCapaLifecycleResponse.Page<HseCapaLifecycleResponse.CaseView> cases(
+    public static HseCapaLifecycleResponse.ScopedHsePage<HseCapaLifecycleResponse.CaseView> cases(
             HseCapaLifecycleUseCase.Page<HseCapaLifecycleUseCase.CaseView> page){
-        return new HseCapaLifecycleResponse.Page<>(
+        return new HseCapaLifecycleResponse.ScopedHsePage<>(
                 page.items().stream().map(HseCapaLifecycleResponse.CaseView::from).toList(),
                 page.total(),page.page(),page.size());
     }
-    public static HseCapaLifecycleResponse.Page<HseCapaLifecycleResponse.CapaView> capas(
+    public static HseCapaLifecycleResponse.ScopedHsePage<HseCapaLifecycleResponse.ScopedHseCapaView> capas(
             HseCapaLifecycleUseCase.Page<HseCapaLifecycleUseCase.CapaView> page){
-        return new HseCapaLifecycleResponse.Page<>(
-                page.items().stream().map(HseCapaLifecycleResponse.CapaView::from).toList(),
+        return new HseCapaLifecycleResponse.ScopedHsePage<>(
+                page.items().stream().map(HseCapaLifecycleResponse.ScopedHseCapaView::from).toList(),
                 page.total(),page.page(),page.size());
     }
-    public static HseCapaLifecycleResponse.Page<HseCapaLifecycleResponse.EventView> events(
+    public static HseCapaLifecycleResponse.ScopedHsePage<HseCapaLifecycleResponse.EventView> events(
             HseCapaLifecycleUseCase.Page<HseCapaLifecycleUseCase.EventView> page){
-        return new HseCapaLifecycleResponse.Page<>(
+        return new HseCapaLifecycleResponse.ScopedHsePage<>(
                 page.items().stream().map(HseCapaLifecycleResponse.EventView::from).toList(),
                 page.total(),page.page(),page.size());
     }

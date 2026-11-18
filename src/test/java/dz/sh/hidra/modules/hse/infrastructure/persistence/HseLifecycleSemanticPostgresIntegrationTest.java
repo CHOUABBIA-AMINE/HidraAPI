@@ -48,7 +48,7 @@ class HseLifecycleSemanticPostgresIntegrationTest {
     Connection connection() throws SQLException {return DriverManager.getConnection(POSTGRES.getJdbcUrl(),POSTGRES.getUsername(),POSTGRES.getPassword());}
     void sql(String text) throws SQLException {try(var c=connection();var s=c.createStatement()) {s.execute(text);}}
     void file(String name) throws Exception {try(var c=connection()) {c.setAutoCommit(false);try(var s=c.createStatement()) {s.execute(Files.readString(Path.of("src/main/resources/db/migration",name)));c.commit();}catch(Exception e) {c.rollback();throw e;}}}
-    @BeforeEach void baseline() throws Exception {sql("DROP SCHEMA public CASCADE;CREATE SCHEMA public");file("V20260611_012__create_hse_tables.sql");}
+    @BeforeEach void baseline() throws Exception {sql("DROP SCHEMA public CASCADE;CREATE SCHEMA public");file("V20260611_001__create_identity_tables.sql");file("V20260611_012__create_hse_tables.sql");}
     void migrate() throws Exception {file("V20261008_014__hmr_082_hse_case_lifecycle.sql");file("V20261008_015__hmr_096_hse_closure_atomic_evidence.sql");}
     void parent() throws SQLException {sql("INSERT INTO hidra_hse_case(id,case_number,title,case_type_id,severity_id,status,source_type,reported_at,created_at,updated_at) VALUES('case','CASE','Title','type','severity','OPEN','MANUAL',now(),now(),now())");}
     @Test void genericClosedInsertAndStandaloneClosureCannotCommit() throws Exception {
@@ -71,7 +71,11 @@ class HseLifecycleSemanticPostgresIntegrationTest {
         final LocalContainerEntityManagerFactoryBean factory=new LocalContainerEntityManagerFactoryBean();
         final HseClosureRepositoryPort port;
         final TransactionTemplate transaction;
-        RuntimeFixture() {
+        RuntimeFixture() throws Exception {
+            // Apply the real HMR-097 and T17 migrations in version order before
+            // exercising the legacy adapter; do not fake or bypass enrolled scope.
+            capaMigration();
+            file("V20261118_002__t17_hse_capa_governed_lifecycle.sql");
             factory.setDataSource(new DriverManagerDataSource(POSTGRES.getJdbcUrl(),POSTGRES.getUsername(),POSTGRES.getPassword()));
             factory.setPackagesToScan("dz.sh.hidra.modules.hse.infrastructure.persistence.entity");factory.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
             factory.setJpaPropertyMap(Map.of("hibernate.hbm2ddl.auto","none"));factory.afterPropertiesSet();

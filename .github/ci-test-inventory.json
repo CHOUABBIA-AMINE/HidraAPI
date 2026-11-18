@@ -1956,7 +1956,7 @@
       "lane": "postgres-integration",
       "owner": "hse",
       "path": "src/test/java/dz/sh/hidra/modules/hse/infrastructure/persistence/HseLifecycleSemanticPostgresIntegrationTest.java",
-      "source_sha256": "9862aa8465d2db42faccf13ce65556120d313cb1a9c8f0639c5a305850a96ca3",
+      "source_sha256": "5a4fa7cc4751729c97392a678eade7c2423ddb777849784a62c41b019b0e8d5b",
       "supports": []
     },
     {
@@ -11919,7 +11919,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java",
-      "source_sha256": "937d2e830b1a330f54a4180c14e858781f3d06e00d42992f898cfcac45dc6d61",
+      "source_sha256": "654960b853ef49c6b615cd35056c44deb8fce488582f8d87bf37e7c7403e6a88",
       "supports": []
     },
     {
@@ -11971,7 +11971,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteStartupValidatorTest.java",
-      "source_sha256": "4625d432ed3ae017326f79abdc438e3892aa1d1c85ca05cb050dd8b5f1ba19ff",
+      "source_sha256": "967879c3e0c8e09ee612799e41bc6d5972e4c80c32723350c47ea2e79355065b",
       "supports": []
     },
     {

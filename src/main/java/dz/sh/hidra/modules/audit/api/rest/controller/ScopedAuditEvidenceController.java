@@ -20,7 +20,6 @@
 package dz.sh.hidra.modules.audit.api.rest.controller;
 
 import dz.sh.hidra.modules.audit.api.rest.request.ScopedAuditEvidenceRequests.T28CreateAuditExport;
-import dz.sh.hidra.modules.audit.api.rest.response.ScopedAuditEvidenceResponses;
 import dz.sh.hidra.modules.audit.api.rest.response.ScopedAuditEvidenceResponses.*;
 import dz.sh.hidra.modules.audit.application.port.in.ScopedAuditEvidenceUseCase;
 import dz.sh.hidra.modules.audit.domain.model.ScopedAuditEvidence;
@@ -54,7 +53,7 @@ public final class ScopedAuditEvidenceController {
             @RequestParam(required=false) Integer limit,@RequestParam(required=false) String cursor) {
         var page=audit.search(new Scope(companyId,facilityId),new Window(eventType,from,to),limit,cursor);
         return new T28AuditEventPage(page.items().stream()
-                .map(ScopedAuditEvidenceResponses::item).toList(),page.nextCursor());
+                .map(ScopedAuditEvidenceController::eventDto).toList(),page.nextCursor());
     }
     @PostMapping("/exports")
     @NativeProtectedOperation @Operation(operationId="createT28AuditExport")
@@ -65,13 +64,13 @@ public final class ScopedAuditEvidenceController {
                 new Window(request.eventType(),request.from(),request.to()),
                 request.requestKey(),request.purpose()));
         return ResponseEntity.status(result.created()?HttpStatus.CREATED:HttpStatus.OK)
-                .cacheControl(CacheControl.noStore()).body(ScopedAuditEvidenceResponses.manifest(result.manifest()));
+                .cacheControl(CacheControl.noStore()).body(manifestDto(result.manifest()));
     }
     @GetMapping("/exports/{exportId}")
     @NativeProtectedOperation @Operation(operationId="readT28AuditExportManifest")
     public T28AuditExportManifest exportManifest(@PathVariable String companyId,
             @PathVariable String facilityId,@PathVariable UUID exportId) {
-        return ScopedAuditEvidenceResponses.manifest(
+        return manifestDto(
                 audit.exportManifest(new Scope(companyId,facilityId),exportId));
     }
     @GetMapping("/exports/{exportId}/content")
@@ -89,6 +88,17 @@ public final class ScopedAuditEvidenceController {
                 .header(HttpHeaders.CONTENT_DISPOSITION,
                         "attachment; filename=\"gz2-audit-"+exportId+".json\"")
                 .header("Content-Digest","sha-256=:"+digest+":").body(bytes);
+    }
+    /** Convert application/domain values at the REST boundary, never inside wire DTOs. */
+    private static T28AuditEvent eventDto(Event event) {
+        return new T28AuditEvent(event.eventId(),event.eventType(),event.operation(),
+                event.targetId(),event.workflowActionId(),event.occurredAt());
+    }
+    private static T28AuditExportManifest manifestDto(Manifest manifest) {
+        return new T28AuditExportManifest(manifest.id(),"COMPLETED",manifest.format(),
+                manifest.purpose(),manifest.scope().companyId(),manifest.scope().facilityId(),
+                manifest.window().eventType(),manifest.window().from(),manifest.window().to(),
+                manifest.eventCount(),manifest.byteLength(),manifest.sha256(),manifest.completedAt());
     }
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Map<String,String>> invalid(IllegalArgumentException error) {

@@ -338,7 +338,8 @@ class Gz2RiskAssessmentGovernanceNativeHttpPostgresIntegrationTest {
                 var secondDownload=runtime.send("GET",auditPath+"/exports/"+exportId+"/content",reader,null);
                 assertEquals(200,secondDownload.statusCode());
                 assertEquals(download.body(),secondDownload.body());
-                assertEquals(3L,f.sql.queryForObject("""
+                // Exactly two successful downloads above must each commit one ALLOW receipt.
+                assertEquals(2L,f.sql.queryForObject("""
                     SELECT count(*) FROM hidra_audit_t28_access_receipt
                     WHERE actor_id=? AND action='DOWNLOAD' AND outcome='ALLOW' AND export_id=?::uuid
                     """,Long.class,f.reader,exportId));

@@ -5061,3 +5061,63 @@ failure must be diagnosed separately; it must not be marked passing.
 architecture/security, backward-compatible generated OpenAPI and
 strict physical dictionary gates remain obligatory before COMPLETED.
 T29 remains PLANNED and unselected.
+
+### T28 CI #1315 failures and bounded architecture/A17 repair — 2026-11-19
+
+[HidraAPI CI #1315](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44524376457),
+attempt 1, finished **FAILURE** on the first same-task Spring proxy repair
+`8676dd2a5549d9f70e0d1773063b425770e23179`. Startup, generated
+OpenAPI capture, backward compatibility, migrated PostgreSQL catalog and
+twelve of the fourteen PostgreSQL shards passed; static validation passed.
+The previously confirmed CGLIB/final-class startup fault did not recur.
+
+**Unit/architecture defect:** 2,627 cases ran, with one failure:
+`ForensicRemediationClosureTest.directWireDomainRepresentationLeakageRemainsAbsent`
+(HRA-102). The new `ScopedAuditEvidenceResponses` REST response contract
+imports Audit `ScopedAuditEvidence` and exposes domain-valued static
+mapping functions. Fix the existing T28 files by keeping the response
+contract as transport-only records and placing the explicit translation
+in the T28 REST controller. Do not relax HRA-102 or alter the DTO shape.
+
+**Signed A17 defect:** PostgreSQL shard 2 ran 147 cases, one failed in
+`Gz2RiskAssessmentGovernanceNativeHttpPostgresIntegrationTest` at line
+341: expected three successful DOWNLOAD receipts; SQL returned two.
+Only two allowed download requests precede the assertion (initial and
+byte-for-byte replay); the test's count was wrong. Require exactly two
+durable `DOWNLOAD/ALLOW` receipts for the scoped export, without
+removing the subsequent receipt-insert fault injection, frozen-byte
+integrity, denied-download evidence or mutation guards. Refresh the
+changed test source fingerprint in `.github/ci-test-inventory.json`.
+
+**CI environment failure:** PostgreSQL shard 3 failed fetching Maven
+Wrapper 3.9.11 before executing tests. This is a dependency-download
+failure, not a signed scenario failure; retain the lane and retry it in
+the next ordinary exact-SHA workflow. Do not weaken cache, inventory
+or coverage requirements.
+
+**Canonical reconciliation still pending:** The API contract lane
+generated and published [runtime OpenAPI artifact
+14529637839](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44524376457/artifacts/14529637839)
+and [fresh-schema dictionary artifact
+14529233336](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44524376457/artifacts/14529233336),
+and passed backward compatibility. The original full API job failed
+strict OpenAPI snapshot equality (459/504/541 canonical versus
+463/508/545 runtime paths/operations/schemas); strict dictionary equality
+was skipped. ZIP SHA-256 values independently verified:
+`799317b83326d91e31937e06320ddf96b5bb469fd40892fe3f230711f4942175`
+(OpenAPI) and
+`441b1afcd9699642c601cf80154d58be876f5c6659083a8e786f07b605e860de`
+(dictionary). The sole registered same-T28 documentation reconciliation
+remains a separately named `docs(audit): reconcile T28 generated contracts
+and physical dictionary` commit, using those genuine artifacts or a
+replacement exact-source-SHA capture; it must not claim equality before
+the canonical files are actually refreshed and the full CI passes.
+
+**Repair file scope:** exactly the existing T28
+`ScopedAuditEvidenceResponses.java`,
+`ScopedAuditEvidenceController.java`,
+`Gz2RiskAssessmentGovernanceNativeHttpPostgresIntegrationTest.java`,
+`.github/ci-test-inventory.json`, and this append-only roadmap.
+Retain the original `feat(audit): search and export scoped governed evidence`
+implementation message and T28 source invariants. T28 remains **IN
+PROGRESS**, not completed. T29 remains PLANNED and unselected.

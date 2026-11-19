@@ -27,6 +27,37 @@ import dz.sh.hidra.modules.workflow.domain.value.WorkflowDecision;
  */
 public class WorkflowDecisionGuard {
 
+    /**
+     * One structural predicate for executable configured transitions and advisory previews.
+     * A delegation row or allowDelegation flag is not an authority grant.
+     */
+    public boolean supportedConfiguredTransition(WorkflowDecision decision, String transitionDefinitionId,
+            String fromStepId, String toStepId, String condition, String callback,
+            String instanceDefinitionId, String currentStepId,
+            String sourceStepDefinitionId, String targetStepDefinitionId) {
+        return decision != null && decision != WorkflowDecision.COMMENT
+                && decision != WorkflowDecision.DELEGATE
+                && instanceDefinitionId != null
+                && instanceDefinitionId.equals(transitionDefinitionId)
+                && instanceDefinitionId.equals(sourceStepDefinitionId)
+                && instanceDefinitionId.equals(targetStepDefinitionId)
+                && currentStepId != null && currentStepId.equals(fromStepId)
+                && toStepId != null && !toStepId.equals(fromStepId)
+                && (condition == null || condition.isBlank())
+                && (callback == null || callback.isBlank());
+    }
+
+    public void ensureSupportedConfiguredTransition(WorkflowDecision decision, String transitionDefinitionId,
+            String fromStepId, String toStepId, String condition, String callback,
+            String instanceDefinitionId, String currentStepId,
+            String sourceStepDefinitionId, String targetStepDefinitionId) {
+        if (!supportedConfiguredTransition(decision, transitionDefinitionId, fromStepId, toStepId,
+                condition, callback, instanceDefinitionId, currentStepId,
+                sourceStepDefinitionId, targetStepDefinitionId)) {
+            throw new WorkflowBoundaryViolationException("Configured Workflow transition is not executable.");
+        }
+    }
+
     public void ensureReasonAndCommentRules(WorkflowDecision decision, String reasonId, String commentText) {
         if (decision == null) {
             throw new WorkflowBoundaryViolationException("Workflow decision must not be null.");

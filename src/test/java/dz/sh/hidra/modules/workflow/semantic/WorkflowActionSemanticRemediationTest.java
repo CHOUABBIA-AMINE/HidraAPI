@@ -74,4 +74,17 @@ class WorkflowActionSemanticRemediationTest {
         assertThrows(RuntimeException.class,()->service.execute(new ExecuteWorkflowTransitionCommand("task","transition",f.at,null,null,null,null,"actor","forged","forged",Set.of("*"))));
         assertNull(f.savedAction);
     }
+    @Test void configuredDecisionPredicateNeverGrantsDelegationOrForeignGraph() {
+        var guard = new dz.sh.hidra.modules.workflow.domain.service.WorkflowDecisionGuard();
+        assertTrue(guard.supportedConfiguredTransition(WorkflowDecision.APPROVE,
+                "def", "first", "last", null, null, "def", "first", "def", "def"));
+        for (WorkflowDecision decision : List.of(WorkflowDecision.COMMENT, WorkflowDecision.DELEGATE)) {
+            assertFalse(guard.supportedConfiguredTransition(decision,
+                    "def", "first", "last", null, null, "def", "first", "def", "def"));
+        }
+        assertFalse(guard.supportedConfiguredTransition(WorkflowDecision.APPROVE,
+                "other", "first", "last", null, null, "def", "first", "def", "def"));
+        assertFalse(guard.supportedConfiguredTransition(WorkflowDecision.APPROVE,
+                "def", "first", "last", "unsupported", null, "def", "first", "def", "def"));
+    }
 }

@@ -27,6 +27,8 @@ import dz.sh.hidra.modules.workflow.infrastructure.persistence.entity.WorkflowTa
 import dz.sh.hidra.modules.workflow.infrastructure.persistence.entity.WorkflowTransitionJpaEntity;
 import jakarta.persistence.EntityManager;
 import dz.sh.hidra.modules.workflow.application.service.WorkflowExecutionOwnership;
+import dz.sh.hidra.modules.workflow.application.port.out.WorkflowConfigurationPort;
+import dz.sh.hidra.modules.workflow.domain.service.WorkflowDecisionGuard;
 import dz.sh.hidra.modules.workflow.application.service.RevisionApprovalEvidenceQueryService.ManufacturerWorkflowFencePort;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Propagation;
@@ -62,6 +64,13 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase, Manufactur
     private final WorkflowExecutionOwnership ownership;
     private final List<WorkflowOwnedTargetLookup> targetOwners;
     private final WorkflowFoundationReadAuthorizationPort readAuthorization;
+    private final WorkflowDecisionGuard decisionGuard = new WorkflowDecisionGuard();
+    private WorkflowConfigurationPort currentConfiguration;
+
+    @org.springframework.beans.factory.annotation.Autowired
+    public void currentWorkflowConfiguration(WorkflowConfigurationPort configuration) {
+        this.currentConfiguration = Objects.requireNonNull(configuration);
+    }
 
     /** Legacy internal-contract fixture constructor: never grants public read access. */
     public JpaWorkflowQueryAdapter(EntityManager entityManager, WorkflowExecutionOwnership ownership,
@@ -203,10 +212,16 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase, Manufactur
         }
         requireProtectedRead(instance, WorkflowOwnedTargetLookup.ProtectedRead.REVISION);
         boolean assigned = belongsToActiveActor(task, actorReference);
+        var source = entityManager.find(WorkflowStepJpaEntity.class, task.stepId());
         boolean actionable = ACTIONABLE_TASK_STATES.contains(String.valueOf(task.status()))
                 && task.completedAt() == null
                 && NON_TERMINAL_INSTANCE_STATES.contains(String.valueOf(instance.status()))
-                && Objects.equals(instance.currentStepId(), task.stepId());
+                && Objects.equals(instance.currentStepId(), task.stepId())
+                && source != null && instance.definitionId().equals(source.definitionId())
+                && currentConfiguration != null
+                && currentConfiguration.currentInstanceConfiguration(instance.definitionId(),
+                    instance.definitionVersion(), instance.targetModule(), instance.targetTypeId(),
+                    instance.workflowPurposeId());
         Set<String> permissions = effectivePermissions == null ? Set.of() : effectivePermissions;
         return entityManager.createQuery(
                         "select e from WorkflowTransitionJpaEntity e where e.definitionId = :definition and e.fromStepId = :step order by e.id",
@@ -215,7 +230,8 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase, Manufactur
                 .setParameter("definition", instance.definitionId())
                 .setParameter("step", task.stepId())
                 .getResultList().stream()
-                .map(transition -> actionView(transition, assigned && actionable, permissions))
+                .map(transition -> actionView(transition, assigned && actionable, permissions,
+                        instance.definitionId(), task.stepId(), source == null ? null : source.definitionId()))
                 .toList();
     }
 
@@ -284,7 +300,7 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase, Manufactur
                 .map(a -> new AvailableActionView(a.transitionId(), a.decision(), a.fromStepId(),
                         a.toStepId(), a.reasonRequired(), a.commentRequired(), a.requiredPermissionCode(),
                         a.targetModuleCallback(),
-                        a.permitted() && !"COMMENT".equals(a.decision())
+                        a.permitted() && !"planning".equals(instance.targetModule())
                                 && !Objects.equals(a.fromStepId(), a.toStepId())
                                 && !("topology".equals(instance.targetModule())
                                     && actorReference.equals(instance.startedByActorId()))
@@ -465,15 +481,20 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase, Manufactur
         };
     }
 
-    private AvailableActionView actionView(WorkflowTransitionJpaEntity transition, boolean executableContext, Set<String> effectivePermissions) {
+    private AvailableActionView actionView(WorkflowTransitionJpaEntity transition, boolean executableContext,
+            Set<String> effectivePermissions, String definitionId, String stepId, String sourceDefinitionId) {
         String requiredPermission = transition.requiredPermissionCode();
         boolean permissionSatisfied = effectivePermissions.contains(ALL_PERMISSIONS)
                 || requiredPermission == null
                 || requiredPermission.isBlank()
                 || effectivePermissions.contains(requiredPermission);
-        boolean executionMechanismAvailable = (transition.conditionExpression() == null || transition.conditionExpression().isBlank())
-                && (transition.targetModuleCallback() == null || transition.targetModuleCallback().isBlank());
-        boolean permitted = executableContext && permissionSatisfied && executionMechanismAvailable;
+        var destination = entityManager.find(WorkflowStepJpaEntity.class, transition.toStepId());
+        boolean supported = decisionGuard.supportedConfiguredTransition(transition.decision(),
+                transition.definitionId(), transition.fromStepId(), transition.toStepId(),
+                transition.conditionExpression(), transition.targetModuleCallback(),
+                definitionId, stepId, sourceDefinitionId,
+                destination == null ? null : destination.definitionId());
+        boolean permitted = executableContext && permissionSatisfied && supported;
         return new AvailableActionView(
                 transition.id(), String.valueOf(transition.decision()), transition.fromStepId(), transition.toStepId(),
                 transition.reasonRequired(), transition.commentRequired(), requiredPermission,

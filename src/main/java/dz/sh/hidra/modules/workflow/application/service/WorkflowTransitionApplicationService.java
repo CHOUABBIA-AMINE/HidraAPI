@@ -25,7 +25,6 @@ import dz.sh.hidra.modules.workflow.application.dto.WorkflowTransitionExecutionD
 import dz.sh.hidra.modules.workflow.application.port.in.ExecuteWorkflowTransitionUseCase;
 import dz.sh.hidra.modules.workflow.application.port.out.WorkflowActionRepositoryPort;
 import dz.sh.hidra.modules.workflow.application.port.out.WorkflowInstanceRepositoryPort;
-import dz.sh.hidra.modules.workflow.application.port.out.WorkflowDefinitionRepositoryPort;
 import dz.sh.hidra.modules.workflow.application.port.out.WorkflowStateHistoryRepositoryPort;
 import dz.sh.hidra.modules.workflow.application.port.out.WorkflowStepAssignmentRuleRepositoryPort;
 import dz.sh.hidra.modules.workflow.application.port.out.WorkflowStepRepositoryPort;
@@ -75,13 +74,6 @@ public class WorkflowTransitionApplicationService implements ExecuteWorkflowTran
     public void governedRiskAuthority(dz.sh.hidra.modules.risk.application.contract.workflow.RiskAssessmentWorkflowAuthorityContract risk) {
         this.riskAuthority=Objects.requireNonNull(risk);
     }
-    private WorkflowDefinitionRepositoryPort currentDefinitions;
-
-    @org.springframework.beans.factory.annotation.Autowired
-    public void currentPlanningDefinitions(WorkflowDefinitionRepositoryPort definitions) {
-        this.currentDefinitions = Objects.requireNonNull(definitions);
-    }
-
     @org.springframework.beans.factory.annotation.Autowired
     public void planningApprovalAuthority(PlanningRevisionWorkflowAuthorityContract authority) {
         this.planningAuthority = Objects.requireNonNull(authority);
@@ -154,24 +146,40 @@ public class WorkflowTransitionApplicationService implements ExecuteWorkflowTran
             ExecuteWorkflowTransitionCommand command, boolean planningEntry) {
         Objects.requireNonNull(command, "ExecuteWorkflowTransitionCommand must not be null.");
 
+        var actor = ownership.requireCurrentActor(command.actorId());
         WorkflowTask task = taskRepository.findByIdForUpdate(command.taskId())
-                .orElseThrow(() -> new NoSuchElementException("Unknown workflow task: " + command.taskId()));
+                .orElseThrow(() -> new NoSuchElementException("Workflow task unavailable."));
+        var sourceStep = stepRepository.findById(task.stepId())
+                .orElseThrow(() -> new WorkflowTransitionDeniedException("Workflow task unavailable."));
+        // No task-state, version, or assignment metadata is disclosed to an ineligible actor.
+        // Check current actor membership independent of the task's terminal state:
+        // a legitimately assigned reviewer still receives the controlled terminal conflict.
+        boolean actorAssigned = (task.assignedActorId() == null
+                    || task.assignedActorId().equals(actor.id()))
+                && (task.claimedByActorId() == null || task.claimedByActorId().equals(actor.id()))
+                && (task.assignedOrganizationUnitId() == null
+                    || ownership.member(actor, task.assignedOrganizationUnitId()))
+                && (task.assignedActorId() != null
+                    || (task.assignedOrganizationUnitId() != null && sourceStep.allowClaim()));
+        if (!actorAssigned || (task.openTask()
+                && !ownership.canExecute(task, actor.id(), sourceStep.allowClaim()))) {
+            throw new WorkflowTransitionDeniedException("Workflow task unavailable.");
+        }
+        ownership.validateAssignment(task, configuration);
+        WorkflowInstance instance = instanceRepository.findByIdForUpdate(task.instanceId())
+                .orElseThrow(() -> new NoSuchElementException("Workflow task unavailable."));
+        ownership.requireProtectedCurrentTarget(instance, configuration);
+        if (!configuration.lockCurrentInstanceConfiguration(instance.definitionId(),
+                instance.definitionVersion(), instance.targetModule(), instance.targetTypeId(),
+                instance.workflowPurposeId())) {
+            throw new WorkflowTransitionDeniedException("Workflow configuration unavailable.");
+        }
         if (!command.expectedTaskUpdatedAt().equals(task.updatedAt())) {
             throw new WorkflowTransitionConflictException("Workflow task changed after it was loaded. Refresh available actions before retrying.");
         }
         if (!task.openTask()) {
             throw new WorkflowTransitionConflictException("Workflow task is already completed or is not actionable: " + task.id());
         }
-        var actor=ownership.requireCurrentActor(command.actorId());
-        var sourceStep=stepRepository.findById(task.stepId()).orElseThrow(()->new WorkflowBoundaryViolationException("Unknown current Workflow step."));
-        ownership.validateAssignment(task,configuration);
-        if (!ownership.canExecute(task, actor.id(), sourceStep.allowClaim())) {
-            throw new WorkflowTransitionDeniedException("Authenticated actor is not assigned or entitled to execute this workflow task.");
-        }
-
-        WorkflowInstance instance = instanceRepository.findByIdForUpdate(task.instanceId())
-                .orElseThrow(() -> new NoSuchElementException("Unknown workflow instance: " + task.instanceId()));
-        ownership.requireProtectedCurrentTarget(instance,configuration);
         if ("planning".equals(instance.targetModule())) {
             if (!planningEntry || planningAuthority == null) {
                 throw new WorkflowTransitionDeniedException(
@@ -179,12 +187,8 @@ public class WorkflowTransitionApplicationService implements ExecuteWorkflowTran
             }
             var planningType = configuration.requireActiveCatalog(instance.targetTypeId(), "WORKFLOW_TARGET_TYPE");
             var planningPurpose = configuration.requireActiveCatalog(instance.workflowPurposeId(), "WORKFLOW_PURPOSE");
-            if (currentDefinitions == null || currentDefinitions.findById(instance.definitionId())
-                    .filter(d -> d.canStartInstance() && d.version() == instance.definitionVersion()).isEmpty()
-                    || !"PLAN_REVISION".equals(planningType.code())
+            if (!"PLAN_REVISION".equals(planningType.code())
                     || !"PLAN_REVISION_APPROVAL".equals(planningPurpose.code())
-                    || !configuration.activeBinding(instance.definitionId(), instance.targetModule(),
-                            instance.targetTypeId(), instance.workflowPurposeId())
                     || !eligibleIndependentHumanReviewer(actor.id(), instance.startedByActorId())) {
                 throw new WorkflowTransitionDeniedException("An independent, configured Planning reviewer is required.");
             }
@@ -201,7 +205,7 @@ public class WorkflowTransitionApplicationService implements ExecuteWorkflowTran
         WorkflowTransition transition = transitionRepository.findById(command.transitionId())
                 .orElseThrow(() -> new NoSuchElementException("Unknown workflow transition: " + command.transitionId()));
 
-        validateTransition(instance, task, transition, command);
+        WorkflowStep targetStep = validateTransition(instance, task, sourceStep, transition, command);
         if("risk".equals(instance.targetModule())&&riskAuthority!=null
                 &&riskAuthority.governed(instance.targetId())) {
             riskAuthority.requireReview(instance.targetId(),actor.id());
@@ -293,11 +297,6 @@ public class WorkflowTransitionApplicationService implements ExecuteWorkflowTran
         ));
 
         WorkflowTask completedTask = taskRepository.save(completeTask(task, transition.decision(), command.actorId(), now));
-        WorkflowStep targetStep = stepRepository.findById(transition.toStepId())
-                .orElseThrow(() -> new NoSuchElementException("Unknown workflow target step: " + transition.toStepId()));
-        if (!Objects.equals(targetStep.definitionId(), instance.definitionId())) {
-            throw new WorkflowBoundaryViolationException("Workflow target step does not belong to the running definition.");
-        }
 
         boolean terminal = transition.decision() == WorkflowDecision.CANCEL
                 || !transitionRepository.existsFromStep(instance.definitionId(), targetStep.id());
@@ -350,39 +349,27 @@ public class WorkflowTransitionApplicationService implements ExecuteWorkflowTran
         );
     }
 
-    private void validateTransition(
-            WorkflowInstance instance,
-            WorkflowTask task,
-            WorkflowTransition transition,
-            ExecuteWorkflowTransitionCommand command
-    ) {
-        if (!Objects.equals(transition.definitionId(), instance.definitionId())
-                || !Objects.equals(transition.fromStepId(), task.stepId())) {
-            throw new WorkflowBoundaryViolationException("Workflow transition is not available from the current task step.");
-        }
-        if (Objects.equals(transition.fromStepId(), transition.toStepId())) {
-            throw new WorkflowBoundaryViolationException("Workflow transition must advance to a different step.");
-        }
-        if (transition.decision() == WorkflowDecision.COMMENT) {
-            throw new WorkflowBoundaryViolationException("COMMENT is not a state-advancing transition. Use workflow comment semantics instead.");
-        }
-        if (transition.conditionExpression() != null) {
-            throw new WorkflowBoundaryViolationException("Conditional workflow transition execution is not available until a condition evaluator is configured.");
-        }
-        if (transition.targetModuleCallback() != null) {
-            throw new WorkflowBoundaryViolationException("Workflow target-module callback execution is not available for this transition.");
-        }
+    private WorkflowStep validateTransition(
+            WorkflowInstance instance, WorkflowTask task, WorkflowStep sourceStep,
+            WorkflowTransition transition, ExecuteWorkflowTransitionCommand command) {
         if (!ownership.permitted(command.actorId(), transition.requiredPermissionCode(), instance.id())) {
             throw new WorkflowTransitionDeniedException("Authenticated actor lacks the permission required by this workflow transition.");
         }
+        WorkflowStep destination = stepRepository.findById(transition.toStepId())
+                .orElseThrow(() -> new WorkflowBoundaryViolationException("Configured Workflow destination unavailable."));
+        decisionGuard.ensureSupportedConfiguredTransition(transition.decision(), transition.definitionId(),
+                transition.fromStepId(), transition.toStepId(), transition.conditionExpression(),
+                transition.targetModuleCallback(), instance.definitionId(), task.stepId(),
+                sourceStep.definitionId(), destination.definitionId());
         decisionGuard.ensureReasonAndCommentRules(transition.decision(), command.reasonId(), command.commentText());
-        if(command.reasonId()!=null) configuration.requireActiveCatalog(command.reasonId(),"WORKFLOW_REASON");
-        if (transition.reasonRequired() && command.reasonId() == null) {
+        if (command.reasonId() != null) configuration.requireActiveCatalog(command.reasonId(), "WORKFLOW_REASON");
+        if (transition.reasonRequired() && (command.reasonId() == null || command.reasonId().isBlank())) {
             throw new WorkflowBoundaryViolationException("Workflow transition requires a reason.");
         }
-        if (transition.commentRequired() && command.commentText() == null) {
+        if (transition.commentRequired() && (command.commentText() == null || command.commentText().isBlank())) {
             throw new WorkflowBoundaryViolationException("Workflow transition requires a comment.");
         }
+        return destination;
     }
 
     private WorkflowTask createNextTask(WorkflowInstance instance, WorkflowStep targetStep, Instant now) {

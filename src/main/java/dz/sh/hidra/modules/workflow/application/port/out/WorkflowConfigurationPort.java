@@ -23,4 +23,12 @@ public interface WorkflowConfigurationPort {
     record Catalog(String id,String family,String code,boolean active) {}
     Catalog requireActiveCatalog(String id,String family);
     boolean activeBinding(String definitionId,String module,String targetTypeId,String purposeId);
+
+    /** Unlocked current eligibility for authorized advisory reads; never grants authority. */
+    boolean currentInstanceConfiguration(String definitionId, int version,
+            String module, String targetTypeId, String purposeId);
+
+    /** Command-time current eligibility under Workflow-owned transaction-held shared row locks. */
+    boolean lockCurrentInstanceConfiguration(String definitionId, int version,
+            String module, String targetTypeId, String purposeId);
 }

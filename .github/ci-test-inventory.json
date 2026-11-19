@@ -11298,7 +11298,9 @@
       "cases": [
         "completesInstanceWhenTargetStepIsTerminal",
         "executesPermittedTransitionAndCreatesNextTask",
+        "foreignGraphAndDelegationCannotCreateActionOrHistory",
         "genericWorkflowTransitionCannotBypassPlanningReviewerDecision",
+        "inactiveOrWrongVersionConfigurationDeniesBeforeEvidence",
         "publicationApprovalAcceptsOnlyActualMatchingHumanActor",
         "publicationApprovalRejectsNonhumanBeforeMutation",
         "rejectsActorWhoDoesNotOwnTask",
@@ -11306,7 +11308,9 @@
         "rejectsStaleTaskVersionBeforeMutation",
         "topologyApprovalAllowsOnlyNativeMatchingHumanAndConfiguredPurpose",
         "topologyApprovalRejectsAbsentHumanBeforeAnyDecisionMutation",
-        "topologyApprovalRejectsMismatchedHumanIdentityBeforeMutation"
+        "topologyApprovalRejectsMismatchedHumanIdentityBeforeMutation",
+        "unauthorizedStaleTaskCannotDiscloseCasOrTerminalState",
+        "unsupportedConditionAndCallbackCannotBecomeDecisions"
       ],
       "class": "dz.sh.hidra.modules.workflow.application.service.WorkflowTransitionApplicationServiceTest",
       "dependency_reason": "Candidate included; mocks/JVM/files, no external service",
@@ -11314,7 +11318,7 @@
       "lane": "unit-architecture",
       "owner": "workflow",
       "path": "src/test/java/dz/sh/hidra/modules/workflow/application/service/WorkflowTransitionApplicationServiceTest.java",
-      "source_sha256": "1ef6a1eac0462fd1de0504fad84c4d98318c1a55248667e9fd23a637d75511a8",
+      "source_sha256": "cdfeadc7da6e951d2ad42b2e700c5b59e143a65b9b0d31a872e4c50fea96eec7",
       "supports": []
     },
     {
@@ -11554,6 +11558,7 @@
       "cases": [
         "callerWildcardCannotBypassLiveTransitionPermission",
         "commentUsesServerSequenceTimeAndCanonicalActor",
+        "configuredDecisionPredicateNeverGrantsDelegationOrForeignGraph",
         "genericEndpointCannotProduceDecisionOrLifecycleEvidence",
         "mandatoryActorEvidenceAndConditionalDecisionEvidenceFailFast",
         "suppliedTaskMustExistAndBelongToInstance"
@@ -11564,7 +11569,7 @@
       "lane": "unit-architecture",
       "owner": "workflow",
       "path": "src/test/java/dz/sh/hidra/modules/workflow/semantic/WorkflowActionSemanticRemediationTest.java",
-      "source_sha256": "d51d3a9d60296d9344eceb81ef689573ae4087d7800f5080fba26a20b97f06cd",
+      "source_sha256": "cb99a5b6fda23f7a65d6343d58f7bb585e2fd2f8a0821c23e10f18719e46adc4",
       "supports": []
     },
     {
@@ -11614,6 +11619,7 @@
       "cases": [
         "absentTargetDeniedWithoutSavingInstance",
         "callerCannotImpersonateStarter",
+        "currentInstanceFixtureRejectsRetiredBindingAndWrongRevision",
         "currentStepMustBelongToDefinition",
         "inactiveActorCannotStart",
         "missingAndAmbiguousTargetOwnersDenyStart",
@@ -11627,7 +11633,7 @@
       "lane": "unit-architecture",
       "owner": "workflow",
       "path": "src/test/java/dz/sh/hidra/modules/workflow/semantic/WorkflowInstanceSemanticRemediationTest.java",
-      "source_sha256": "d2b0cf73db52210ff1f9c103afe77976b5ce3a0cc7eb24ba531c735d244bd51f",
+      "source_sha256": "5f8f935a62d47f23fe4866bc51205ef4332419a4a1d8e94d23d86a90c5348b43",
       "supports": []
     },
     {
@@ -12429,12 +12435,12 @@
         "signedApprovedReportRetainsExactAcceptedBytesAcrossRestart"
       ],
       "class": "dz.sh.hidra.qualification.Gz2ScopedReportNativeHttpPostgresIntegrationTest",
-      "dependency_reason": "T25 signed GZ2 client journey extended with T27 real Workflow-to-Notification transactional task publication, rollback, scoped recipient/acknowledgement, pagination and restart.",
+      "dependency_reason": "T25 signed GZ2 client journey extended with T27 real Workflow-to-Notification transactional task publication, rollback, scoped recipient/acknowledgement, pagination and restart. T30 A18 extends signed Reporting/Workflow journey with graph denial, binding withdrawal, revoked grant, stale CAS, one-winner replay and persisted state/history checks.",
       "fast": false,
       "lane": "postgres-integration",
       "owner": "qualification",
       "path": "src/test/java/dz/sh/hidra/qualification/Gz2ScopedReportNativeHttpPostgresIntegrationTest.java",
-      "source_sha256": "9cc9fb1fa37c77630150a5a3b53875855ad1591b21bb669cc0f1b09ca4ddf385",
+      "source_sha256": "91eb4f91389b8336d77ad387d70108471b5e600ecfd10015b0aecd357d86c772",
       "supports": []
     },
     {

@@ -77,6 +77,17 @@ class WorkflowInstanceSemanticRemediationTest {
         var f=new WorkflowSemanticFixtures();f.targetEligible=false;
         assertThrows(RuntimeException.class,()->f.service().startWorkflowInstance(f.start()));assertNull(f.savedInstance);
     }
+    @Test void currentInstanceFixtureRejectsRetiredBindingAndWrongRevision() {
+        var f=new WorkflowSemanticFixtures();
+        var config=f.configuration();
+        assertTrue(config.currentInstanceConfiguration("def",1,"planning","type","purpose"));
+        f.binding=false;
+        assertFalse(config.lockCurrentInstanceConfiguration("def",1,"planning","type","purpose"));
+        f.binding=true;
+        assertFalse(config.currentInstanceConfiguration("def",2,"planning","type","purpose"));
+        f.definitionStatus=WorkflowDefinitionStatus.RETIRED;
+        assertFalse(config.currentInstanceConfiguration("def",1,"planning","type","purpose"));
+    }
 }
 
 class WorkflowSemanticFixtures {
@@ -118,6 +129,15 @@ class WorkflowSemanticFixtures {
     WorkflowConfigurationPort configuration(){return new WorkflowConfigurationPort(){
         public Catalog requireActiveCatalog(String id,String family){var c=catalogs.get(id);if(c==null || !c.active() || !family.equals(c.family())) throw new IllegalArgumentException("Invalid catalog");return c;}
         public boolean activeBinding(String def,String module,String type,String purpose){return binding;}
+        public boolean currentInstanceConfiguration(String def,int revision,String module,String type,String purpose){
+            return binding && "def".equals(def) && revision==1
+                    && definitionStatus==WorkflowDefinitionStatus.ACTIVE
+                    && "planning".equals(module)
+                    && catalogs.containsKey(type) && catalogs.containsKey(purpose);
+        }
+        public boolean lockCurrentInstanceConfiguration(String def,int revision,String module,String type,String purpose){
+            return currentInstanceConfiguration(def,revision,module,type,purpose);
+        }
     };}
     @SuppressWarnings("unchecked") static <T>T port(Class<T> type,java.util.function.BiFunction<String,Object[],Object> calls){
         return (T)Proxy.newProxyInstance(type.getClassLoader(),new Class<?>[]{type},(p,m,a)->calls.apply(m.getName(),a));

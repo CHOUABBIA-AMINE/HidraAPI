@@ -91,6 +91,8 @@ class WorkflowTransitionApplicationServiceTest {
         org.mockito.Mockito.lenient().when(stepRepository.findById("step-1")).thenReturn(Optional.of(new WorkflowStep(
             "step-1","def-1","REVIEW",null,"Review",null,1,true,null,null,null,true,false,false,TASK_UPDATED_AT,TASK_UPDATED_AT)));
         org.mockito.Mockito.lenient().when(ownership.permitted(any(),any(),any())).thenReturn(true);
+        org.mockito.Mockito.lenient().when(configuration.lockCurrentInstanceConfiguration(
+                any(), org.mockito.ArgumentMatchers.anyInt(), any(), any(), any())).thenReturn(true);
         service = new WorkflowTransitionApplicationService(
                 taskRepository,
                 instanceRepository,
@@ -161,6 +163,7 @@ class WorkflowTransitionApplicationServiceTest {
     void rejectsStaleTaskVersionBeforeMutation() {
         WorkflowTask task = task();
         when(taskRepository.findByIdForUpdate("task-1")).thenReturn(Optional.of(task));
+        when(instanceRepository.findByIdForUpdate("instance-1")).thenReturn(Optional.of(instance()));
 
         ExecuteWorkflowTransitionCommand stale = new ExecuteWorkflowTransitionCommand(
                 "task-1", "transition-1", TASK_UPDATED_AT.minusSeconds(1), null, null, null,
@@ -168,14 +171,12 @@ class WorkflowTransitionApplicationServiceTest {
         );
 
         assertThrows(WorkflowTransitionConflictException.class, () -> service.execute(stale));
-        verify(instanceRepository, never()).findByIdForUpdate(any());
+        verify(instanceRepository).findByIdForUpdate("instance-1");
         verify(actionRepository, never()).save(any());
     }
 
     @Test
     void rejectsActorWhoDoesNotOwnTask() {
-        when(taskRepository.findByIdForUpdate("task-1")).thenReturn(Optional.of(task()));
-
         assertThrows(
                 WorkflowTransitionDeniedException.class,
                 () -> service.execute(command("actor-other", "mallory", Set.of("workflow:approve:execute")))
@@ -204,16 +205,16 @@ class WorkflowTransitionApplicationServiceTest {
                 "step-2", "def-1", "FINAL_REVIEW", null, "Validation finale", "Final review", 2,
                 true, "APPROVAL", "rule-2", null, false, false, false, TASK_UPDATED_AT, TASK_UPDATED_AT
         );
-        when(taskRepository.findByIdForUpdate("task-1")).thenReturn(Optional.of(task));
-        when(instanceRepository.findByIdForUpdate("instance-1")).thenReturn(Optional.of(instance));
-        when(transitionRepository.findById("transition-1")).thenReturn(Optional.of(transition));
-        when(actionRepository.nextSequence("instance-1")).thenReturn(4L);
-        when(actionRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
-        when(taskRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
-        when(instanceRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
-        when(stateHistoryRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
-        when(stepRepository.findById("step-2")).thenReturn(Optional.of(targetStep));
-        when(transitionRepository.existsFromStep("def-1", "step-2")).thenReturn(graphContinues);
+        org.mockito.Mockito.lenient().when(taskRepository.findByIdForUpdate("task-1")).thenReturn(Optional.of(task));
+        org.mockito.Mockito.lenient().when(instanceRepository.findByIdForUpdate("instance-1")).thenReturn(Optional.of(instance));
+        org.mockito.Mockito.lenient().when(transitionRepository.findById("transition-1")).thenReturn(Optional.of(transition));
+        org.mockito.Mockito.lenient().when(actionRepository.nextSequence("instance-1")).thenReturn(4L);
+        org.mockito.Mockito.lenient().when(actionRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        org.mockito.Mockito.lenient().when(taskRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        org.mockito.Mockito.lenient().when(instanceRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        org.mockito.Mockito.lenient().when(stateHistoryRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        org.mockito.Mockito.lenient().when(stepRepository.findById("step-2")).thenReturn(Optional.of(targetStep));
+        org.mockito.Mockito.lenient().when(transitionRepository.existsFromStep("def-1", "step-2")).thenReturn(graphContinues);
     }
 
     private ExecuteWorkflowTransitionCommand command(String actorId, String actorUsername, Set<String> permissions) {
@@ -326,4 +327,63 @@ class WorkflowTransitionApplicationServiceTest {
         verify(actionRepository).save(any(WorkflowAction.class));
     }
 
+    @Test
+    void unauthorizedStaleTaskCannotDiscloseCasOrTerminalState() {
+        when(taskRepository.findByIdForUpdate("task-1")).thenReturn(Optional.of(task()));
+        when(ownership.canExecute(any(), any(), org.mockito.ArgumentMatchers.anyBoolean())).thenReturn(false);
+        var stale = new ExecuteWorkflowTransitionCommand(
+                "task-1", "transition-1", TASK_UPDATED_AT.minusSeconds(5),
+                null, null, null, "corr-1", "actor-1", "alice", "Alice", Set.of());
+        assertThrows(WorkflowTransitionDeniedException.class, () -> service.execute(stale));
+        verify(instanceRepository, never()).findByIdForUpdate(any());
+        verify(actionRepository, never()).save(any());
+    }
+
+    @Test
+    void inactiveOrWrongVersionConfigurationDeniesBeforeEvidence() {
+        stubCommon(true);
+        when(configuration.lockCurrentInstanceConfiguration(any(),
+                org.mockito.ArgumentMatchers.anyInt(), any(), any(), any())).thenReturn(false);
+        assertThrows(WorkflowTransitionDeniedException.class,
+                () -> service.execute(command("actor-1", "alice", Set.of())));
+        verify(actionRepository, never()).save(any());
+        verify(stateHistoryRepository, never()).save(any());
+        verify(taskRepository, never()).save(any());
+    }
+
+    @Test
+    void foreignGraphAndDelegationCannotCreateActionOrHistory() {
+        stubCommon(true);
+        var foreign = new WorkflowTransition("transition-1", "foreign-definition",
+                "step-1", "step-2", WorkflowDecision.APPROVE, false, false,
+                null, "workflow:approve:execute", null, TASK_UPDATED_AT, TASK_UPDATED_AT);
+        when(transitionRepository.findById("transition-1")).thenReturn(Optional.of(foreign));
+        assertThrows(dz.sh.hidra.modules.workflow.domain.exception.WorkflowBoundaryViolationException.class,
+                () -> service.execute(command("actor-1", "alice", Set.of())));
+        var delegate = new WorkflowTransition("transition-1", "def-1",
+                "step-1", "step-2", WorkflowDecision.DELEGATE, false, false,
+                null, "workflow:approve:execute", null, TASK_UPDATED_AT, TASK_UPDATED_AT);
+        when(transitionRepository.findById("transition-1")).thenReturn(Optional.of(delegate));
+        assertThrows(dz.sh.hidra.modules.workflow.domain.exception.WorkflowBoundaryViolationException.class,
+                () -> service.execute(command("actor-1", "alice", Set.of())));
+        verify(actionRepository, never()).save(any());
+        verify(stateHistoryRepository, never()).save(any());
+    }
+
+    @Test
+    void unsupportedConditionAndCallbackCannotBecomeDecisions() {
+        stubCommon(true);
+        for (String[] unsupported : List.of(
+                new String[]{"unconfigured_expression", null},
+                new String[]{null, "unconfigured_callback"})) {
+            var transition = new WorkflowTransition("transition-1", "def-1",
+                    "step-1", "step-2", WorkflowDecision.APPROVE, false, false,
+                    unsupported[0], "workflow:approve:execute", unsupported[1],
+                    TASK_UPDATED_AT, TASK_UPDATED_AT);
+            when(transitionRepository.findById("transition-1")).thenReturn(Optional.of(transition));
+            assertThrows(dz.sh.hidra.modules.workflow.domain.exception.WorkflowBoundaryViolationException.class,
+                    () -> service.execute(command("actor-1", "alice", Set.of())));
+        }
+        verify(actionRepository, never()).save(any());
+    }
 }

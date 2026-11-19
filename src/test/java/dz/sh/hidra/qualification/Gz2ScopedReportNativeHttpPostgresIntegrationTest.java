@@ -304,6 +304,57 @@ class Gz2ScopedReportNativeHttpPostgresIntegrationTest {
         String task=text(r.json("POST",base+"/tasks",author,create,200),"id");
         String path=base+"/tasks/"+task;
         deny(r.send("GET",path,foreign,null).statusCode());
+        var originalTask=r.get(path,reviewer);
+        var attempted=Map.of("correlationId",id(),
+                "expectedTaskUpdatedAt",text(originalTask,"updatedAt"));
+        if (first) {
+            // T30 / A18: same target family, but a distinct definition graph is never executable.
+            var foreignGraph=f.review("reporting","REPORT_REQUEST","REPORT_APPROVAL",false);
+            assertTrue(r.send("POST",path+"/transitions/"+foreignGraph.transition()+"/execute",
+                    reviewer,attempted).statusCode()>=400);
+            deny(r.send("POST",path+"/transitions/"+review.transition()+"/execute",
+                    foreign,Map.of("correlationId",id(),
+                            "expectedTaskUpdatedAt","2025-01-01T00:00:00Z")).statusCode());
+            deny(r.send("GET",base+"/instances/"+instance+"/timeline",foreign,null).statusCode());
+            deny(r.send("POST",path+"/transitions/"+review.transition()+"/execute",
+                    author,attempted).statusCode());
+            // Withdraw the exact binding: previews cannot promote a now-inactive approval.
+            assertEquals(1,f.sql.update("UPDATE hidra_workflow_definition_target_binding "
+                    +"SET active=false WHERE definition_id=?",review.definition()));
+            var preview=r.get(path+"/available-actions",reviewer);
+            assertEquals(1,preview.size());
+            assertFalse(preview.get(0).path("permitted").asBoolean());
+            assertTrue(r.send("POST",path+"/transitions/"+review.transition()+"/execute",
+                    reviewer,attempted).statusCode()>=400);
+            assertEquals(1,f.sql.update("UPDATE hidra_workflow_definition_target_binding "
+                    +"SET active=true WHERE definition_id=?",review.definition()));
+            // Revalidate current server-side authority even while a preexisting JWT is valid.
+            assertEquals(1,f.sql.update("""
+                    UPDATE hidra_identity_user_permission_grant SET valid_to=now()-interval '1 second'
+                    WHERE user_id=? AND scope_type='GLOBAL' AND status='ACTIVE'
+                      AND permission_id=(SELECT id FROM hidra_identity_permission
+                                          WHERE code='workflow:tasks:execute')
+                    """,f.reviewer));
+            deny(r.send("POST",path+"/transitions/"+review.transition()+"/execute",
+                    reviewer,attempted).statusCode());
+            assertEquals(1,f.sql.update("""
+                    UPDATE hidra_identity_user_permission_grant SET valid_to=now()+interval '2 hours'
+                    WHERE user_id=? AND scope_type='GLOBAL' AND status='ACTIVE'
+                      AND permission_id=(SELECT id FROM hidra_identity_permission
+                                          WHERE code='workflow:tasks:execute')
+                    """,f.reviewer));
+            // Fully authorized stale CAS still fails without a decision side-effect.
+            assertTrue(r.send("POST",path+"/transitions/"+review.transition()+"/execute",
+                    reviewer,Map.of("correlationId",id(),
+                            "expectedTaskUpdatedAt","2025-01-01T00:00:00Z")).statusCode()>=400);
+            assertEquals(0,f.sql.queryForObject(
+                    "SELECT count(*) FROM hidra_workflow_action WHERE instance_id=?",
+                    Integer.class,instance));
+            assertEquals(0,f.sql.queryForObject(
+                    "SELECT count(*) FROM hidra_workflow_state_history WHERE instance_id=?",
+                    Integer.class,instance));
+            assertEquals(originalTask,r.get(path,reviewer));
+        }
         var page=r.get(inbox,reviewer);
         var items=page.path("items");
         assertEquals(first?1:2,items.size());
@@ -379,7 +430,37 @@ class Gz2ScopedReportNativeHttpPostgresIntegrationTest {
         assertThrows(org.springframework.dao.DataAccessException.class,()->
                 f.sql.update("DELETE FROM public.hidra_notification_t27_inbox_acknowledgement WHERE notification_id=?",id));
         var command=Map.of("correlationId",id(),"expectedTaskUpdatedAt",text(beforeTask,"updatedAt"));
-        var decision=r.json("POST",path+"/transitions/"+review.transition()+"/execute",reviewer,command,200);
+        JsonNode decision;
+        if (first) {
+            // Exact identical current task/CAS in two signed native requests: only one may commit.
+            var endpoint=path+"/transitions/"+review.transition()+"/execute";
+            try (var racers=java.util.concurrent.Executors.newFixedThreadPool(2)) {
+                var one=racers.submit(()->r.send("POST",endpoint,reviewer,command));
+                var two=racers.submit(()->r.send("POST",endpoint,reviewer,command));
+                var left=one.get(45,java.util.concurrent.TimeUnit.SECONDS);
+                var right=two.get(45,java.util.concurrent.TimeUnit.SECONDS);
+                assertTrue((left.statusCode()==200 && right.statusCode()>=400)
+                        || (right.statusCode()==200 && left.statusCode()>=400),
+                        "Exactly one current Workflow decision may commit");
+                var success=left.statusCode()==200?left:right;
+                decision=new ObjectMapper().readTree(success.body());
+            }
+            assertEquals(1,f.sql.queryForObject(
+                    "SELECT count(*) FROM hidra_workflow_action WHERE instance_id=?",
+                    Integer.class,instance));
+            assertEquals(1,f.sql.queryForObject(
+                    "SELECT count(*) FROM hidra_workflow_state_history WHERE instance_id=?",
+                    Integer.class,instance));
+            assertEquals("APPROVED",f.sql.queryForObject(
+                    "SELECT status FROM hidra_workflow_task WHERE id=?",String.class,task));
+            assertEquals("COMPLETED",f.sql.queryForObject(
+                    "SELECT status FROM hidra_workflow_instance WHERE id=?",String.class,instance));
+            assertEquals(text(decision,"actionId"),f.sql.queryForObject(
+                    "SELECT action_id FROM hidra_workflow_state_history WHERE instance_id=?",
+                    String.class,instance));
+        } else {
+            decision=r.json("POST",path+"/transitions/"+review.transition()+"/execute",reviewer,command,200);
+        }
         assertEquals("APPROVE",text(decision,"decision"));
         return new Approval(instance,text(decision,"actionId"),id,acknowledged);
     }

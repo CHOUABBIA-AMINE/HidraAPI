@@ -5543,3 +5543,34 @@ dictionary equality. Record that run, gate and enrolled case evidence in
 this roadmap and mark T30 COMPLETED. No manual test, separately produced
 evidence, second acceptance workflow or owner sign-off is required.
 Engineering, SITE, operational and release qualification are separate.
+
+### T30 bounded source delivery — 2026-11-19
+
+The selected T30 implementation is confined to the registered twelve-file
+ledger and uses the registered source message
+`fix(workflow): enforce current authority for configured decisions`.
+It sequences current actor, eligible assignment and protected target
+authority before CAS/terminal diagnosis, retains task/instance locks,
+and holds Workflow definition, active catalog and exact binding shared
+row locks until transaction completion. Unsupported configured graphs,
+COMMENT, DELEGATE, unresolved conditions/callbacks and wrong-current
+configuration cannot write action or history evidence. Read previews
+use the same structural predicate without command locks; generic
+Planning transitions remain owner-only. Existing owner publication
+and external contracts are unchanged.
+
+The enrolled synthetic signed Reporting A18 scenario now probes a
+foreign transition graph, unauthorized/wrong-scope and self-review,
+withdrawn binding and preview, revoked current grant on an extant JWT,
+stale CAS, concurrent exact replay and persisted terminal action/history.
+All earlier T25/T27 owner and restart evidence remains enrolled; focused
+unit/semantic cases and inventory fingerprints are refreshed.
+
+**Status: T30 IN PROGRESS / IMPLEMENTED — exact source CI pending.**
+No source-only or synthetic test claim substitutes for the single
+successful exact-SHA Full Verification Gate, including all fourteen
+PostgreSQL shards, static/architecture, generated OpenAPI and strict
+dictionary equality. On verified success, close T30 in the roadmap.
+T31 remains PLANNED and is not selected. Engineering, SITE and
+operational acceptance remain independent.
+

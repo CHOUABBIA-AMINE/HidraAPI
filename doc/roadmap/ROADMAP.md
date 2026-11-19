@@ -120,8 +120,8 @@ A task includes its required authorization, REST contract, persistence, failure 
 | **T25 · Render and download an authorized report** | Reporting with Documents and Workflow | T24 and an eligible approved report input, such as T23 | Admit template and parameters, render a durable artifact and expose run status and scoped byte retrieval. | Downloaded bytes match the stored hash and exact input version. Failed rendering cannot produce a downloadable success. **FG-12 / A12.** | COMPLETED |
 | **T26 · Execute and replay a governed synthetic exchange** | Integration with receiving owner | Supported synthetic mapping and receiving contract | Expose mapping version, job/attempt/result, dead letter and privileged replay for one exchange. | Simulated transient failure and authorized replay yield one receiving outcome and a durable attempt history. **FG-15 / A15.** | COMPLETED |
 | **T27 · Deliver a recipient-scoped notification inbox** | Notification | One eligible business event and a supported delivery channel | Expose inbox, delivery state and recipient acknowledgement independently of business workflow state. | Intended recipient reads and acknowledges one notification. Foreign recipient cannot see it. The underlying task state is unchanged by acknowledgement. **FG-16 / A16.** | COMPLETED |
-| **T28 · Search and export scoped Audit evidence** | Audit with Identity and Documents where needed | Durable owner events and authorized export storage | Expose typed event search, export state, manifest/hash and scoped retrieval. Recheck current grant at download. | Export contains only the admitted company, asset and time window. Download after revocation is denied and access evidence is retained. **FG-17 / A17.** | IN PROGRESS |
-| **T29 · Verify typed owner read coverage** | Business resource owners with Identity | Each affected owner workflow. Check the early workflows during T15. | Verify scoped list/detail/history and pagination/count for affected workflows. Close residual read gaps within the responsible owner. | Independent clients can find completed records by business key. Unauthorized, unavailable and legitimately empty results are distinct. **FG-13 / A13.** | PLANNED |
+| **T28 · Search and export scoped Audit evidence** | Audit with Identity and Documents where needed | Durable owner events and authorized export storage | Expose typed event search, export state, manifest/hash and scoped retrieval. Recheck current grant at download. | Export contains only the admitted company, asset and time window. Download after revocation is denied and access evidence is retained. **FG-17 / A17.** | COMPLETED |
+| **T29 · Verify typed owner read coverage** | Business resource owners with Identity | Each affected owner workflow. Check the early workflows during T15. | Verify scoped list/detail/history and pagination/count for affected workflows. Close residual read gaps within the responsible owner. | Independent clients can find completed records by business key. Unauthorized, unavailable and legitimately empty results are distinct. **FG-13 / A13.** | IN PROGRESS |
 | **T30 · Verify authority for supported Workflow targets** | Workflow with participating target owners | Each supported owner workflow. Check Planning, baseline and escalation during T15. | Verify definition eligibility, exact target linkage, current/delegated authority and supported transitions. Close residual owner-specific gaps. | Wrong-target, stale, revoked and self-review cases fail where applicable. Terminal state and decision provenance remain retrievable. **FG-18 / A18.** | PLANNED |
 
 ### Increment 8 — Scenario readiness and optional configuration
@@ -5158,3 +5158,186 @@ re-evaluated by the new exact-SHA Full Verification Gate.
 **T28 remains IN PROGRESS**, not COMPLETED, pending that replacement gate.
 T29 remains PLANNED, not selected. Engineering, SITE and operational
 qualification are separate and are not inferred from synthetic software CI.
+
+### Close T28 and register T29 typed owner read coverage — 2026-11-19
+
+**T28 — COMPLETED (development software).** The final reconciled commit
+`f28e68d8107b14f8d0bfbd6bf04f9420e3448810` (parent
+`3ca97bccc11f9db0e7269bd0a083cc07085c10fc`, tree
+`8c4e11b0b5828b3b24faae6930e580ef31890592`) passed
+[HidraAPI CI #1317 attempt 2](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44535231570/attempts/2).
+The [Full Verification Gate](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44535231570/job/135610318832)
+verified 605 classes and 4,498 tests with zero failures, errors or skipped
+tests. It combined the recovered PostgreSQL shard 1 from attempt 2 with
+the passing same-run, same-SHA lane artifacts from attempt 1, including
+the API contract/dictionary lane and shard 2 containing signed A17.
+Shard 1 in attempt 1 failed while fetching Maven 3.9.11, before tests.
+The [API contract and dictionary job](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44535231570/job/135598744018)
+passed backward compatibility, strict runtime OpenAPI equality and
+strict migrated PostgreSQL dictionary equality. See the
+[combined gate artifact](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44535231570/artifacts/14537088697)
+and [Documentation Validation #1159](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44535231803).
+This closes the registered FG-17/A17 software gate. Engineering, SITE
+and release qualification have their own scopes.
+
+**T29 — IN PROGRESS, selected and registered, source implementation pending.**
+This roadmap-only publication uses
+`docs(roadmap): close T28 and register T29 envelope`. It updates the two
+status cells and appends this section. After its exact-SHA Documentation
+Validation and a refreshed main check, the next source execution uses
+`fix(hse): qualify scoped business-key read coverage`. T30 remains PLANNED.
+
+#### T29 scope and baseline evidence
+
+FG-13/A13 covers the registered synthetic client workflows through T28.
+Use each owner's published read model and client-held business locator:
+a named owner key where defined, a published revision/receipt ID or a
+parent plus result ID where that is the workflow's issued locator.
+Clients should be able to reconstruct the completed outcome and its
+admitted lineage. Counts apply to counted collections, cursor contracts
+retain cursor semantics, and bounded immutable timelines retain their
+existing retrieval model. No cross-owner search or new collection is
+implied for an operation with only an exact receipt/result read contract.
+Review exposed native routes and signed tests on the source SHA, including
+the following existing enrolled classes under
+`src/test/java/dz/sh/hidra/qualification/`. Existing owner tests and
+the integrated T15 case carry their assertions forward on the T29 SHA.
+
+| Registered workflows | Locator and read/lineage surfaces to trace | Existing signed CI source |
+|---|---|---|
+| Engineering, baseline, Planning, Telemetry, Monitoring, Alarm, Leak, Incident and linked Workflow (T15) | Scoped engineering key / immutable baseline receipt and history; plan/revision/target; point and trusted reading; rule and evaluation; alarm/candidate/case receipt and evidence or timeline. Check existing counted Incident list and foreign, wrong-asset and revoked cases. | `Gz2SignedWorkflowNativeHttpPostgresIntegrationTest.java` plus existing owner test lanes |
+| T16 Incident/Leak and T18 Integrity/Assets | Case/candidate and reviewed investigation history; finding plus approval and work-order outcome/history. | `Gz2IncidentLeakInvestigationNativeHttpPostgresIntegrationTest.java`, `Gz2IntegrityMaintenanceHandoffNativeHttpPostgresIntegrationTest.java` |
+| T17 HSE | Scoped case number and parent-scoped CAPA action number, case and CAPA details, case history, scoped pagination and total. Extend this owner as specified below. | `Gz2HseCapaNativeHttpPostgresIntegrationTest.java` |
+| T19 Planning and T20/T21 Custody | Revision-scoped nomination list and exact outcome/history; period plus measurement, reconciliation/discrepancy collections and ticket correction history. | `Gz2PlanningNominationNativeHttpPostgresIntegrationTest.java`, `Gz2CustodyMeasurementNativeHttpPostgresIntegrationTest.java`, `Gz2CustodyTransferLifecycleNativeHttpPostgresIntegrationTest.java` |
+| T22 Risk and T23 Analytics | Issued assessment and decision history; exact metric run, result/failed state and source lineage. | `Gz2RiskAssessmentGovernanceNativeHttpPostgresIntegrationTest.java`, `Gz2DeviationMetricNativeHttpPostgresIntegrationTest.java` |
+| T24 Documents and T25 Reporting | Scoped document code, version/link collections and exact content; report receipt/run, input lineage and sealed content. | `Gz2ControlledDocumentsNativeHttpPostgresIntegrationTest.java`, `Gz2ScopedReportNativeHttpPostgresIntegrationTest.java` |
+| T26 Integration, T27 Notification and T28 Audit | Exchange/mapping and attempts; recipient inbox cursor and item; Audit cursor search, exact requester manifest and retained artifact. | `Gz2SyntheticExchangeNativeHttpPostgresIntegrationTest.java`, `Gz2RiskAssessmentGovernanceNativeHttpPostgresIntegrationTest.java` (A16/A17 additions) |
+
+The confirmed residual implementation scope is HSE. The native case and CAPA
+lists currently accept only page/size. HSE case list calculates a
+company/facility total before proving current Incident access for each
+returned row. A row outside that page can therefore contribute to a total
+without going through the owner check. The legacy JPA queries exclude
+enrolled case/CAPA rows, but legacy detail currently distinguishes an
+enrolled identifier (404) from an absent valid identifier (400).
+The configurable generic Workbench uses metamodel-derived HSE entity
+resources and has no HSE prohibition in its exposure policy. Its default
+configuration is empty. Explicitly prevent generic exposure of the scoped
+case data and dependent evidence, without changing the legacy policy for
+non-enrolled records that have no reliable company/facility binding.
+No inferred scope, historical backfill, or new permission identity.
+
+#### T29 bounded contract
+
+- Extend existing `discoverScopedHseCases` at
+  `GET /api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases`
+  with optional `caseNumber`, and existing `listScopedHseCapas` at
+  `GET /api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases/{caseId}/capas`
+  with optional `actionNumber`. Use exact case-sensitive comparison after
+  the same trim/80-character bound as the write use cases. An explicitly
+  blank or oversized key is 400 after scope authorization. Preserve the
+  default page size, size cap, response DTOs, operation IDs and verbs.
+  Existing case/action numbers are not a uniqueness constraint. Return
+  all admitted exact matches in the existing deterministic order with ID
+  tie-breakers; an absent filter is the existing discovery contract.
+- Keep current HSE grants, facility ownership and reviewed Incident
+  proof as prerequisites. HSE case discovery must authorize every match
+  contributing to the count, including off-page rows, using the established
+  Incident owner contract in the same transaction. Preserve fail-closed
+  unavailable behavior if matching Incident evidence cannot be admitted;
+  emit no page or count. Unexpected persistence/owner failures remain
+  errors. Perform scope and key filtering in SQL and use a single ordered
+  candidate snapshot, processing in bounded fetch batches and retaining
+  only the requested page. Derive both count and page from that same
+  candidate set. Avoid separate count then page queries, unbounded
+  buffering and cross-module SQL. CAPA list first proves the exact parent
+  and its Incident authorization, then applies exact key and parent
+  criteria identically to data and totals in one statement snapshot,
+  including empty or out-of-range pages. Keep existing detail and history
+  projections.
+- Authorized no-match collection is 200 with empty items and zero total.
+  An authorized page beyond the last match has empty items and the valid
+  filtered total. Denied HSE scope or revoked grant uses the existing
+  scope denial; unavailable exact objects and failed Incident proof use
+  the same non-disclosing 404 contract as other unavailable HSE resources.
+  Never disclose foreign scope, protected IDs, keys, rows or totals in
+  denials. Legacy direct detail uses the same generic 404 for both an
+  enrolled and absent well-formed ID, preserving 400 for malformed input
+  and existing typed successful legacy responses.
+- Generic Workbench denies HSE persistence resources for cases, corrective
+  preventive actions, case status histories, case evidence links, impact
+  assessments and closures at configuration and runtime exposure checks.
+  Use the exact existing metamodel-derived keys and cover both Workbench
+  route aliases by their shared policy. Preserve unrelated resources.
+  HSE owns read criteria and projections; Identity and Incident retain
+  current authority and reviewed source checks through existing ports.
+
+#### T29 exact file ledger
+
+| Action | Path | Owned change |
+|---|---|---|
+| UPDATE | `src/main/java/dz/sh/hidra/modules/hse/application/port/in/HseCapaLifecycleUseCase.java` | Carry the optional case/action keys on the two typed read operations; retain existing page, view and lifecycle contracts. |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/hse/application/port/out/HseCapaLifecycleStorePort.java` | Admit ordered scoped case candidate traversal and keyed CAPA page/count; expose typed HSE projections only and document resource/transaction lifetime for case traversal. |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/hse/application/service/HseCapaLifecycleApplicationService.java` | Authorize first, validate filters/window, enforce current reviewed Incident admission for all matches before emitting case items or totals, coordinate parent-bound CAPA reads. No change to lifecycle commands. |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/hse/infrastructure/persistence/adapter/JdbcHseCapaLifecycleStoreAdapter.java` | Bind exact filters on owner-column predicates in parameterized reads; use bounded fetch size and deterministic ordering for the case traversal and a single-snapshot filtered CAPA page/count. Keep all mutation statements and other point reads intact. |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/hse/api/rest/controller/HseCapaLifecycleController.java` | Accept the two optional query parameters at the existing native handlers and use existing transport mappings and safe problem responses. |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/hse/application/service/HseQueryApplicationService.java` | Normalize unavailable legacy detail to the shared non-disclosing 404; retain the repository's legacy-only predicates and typed successful response. |
+| UPDATE | `src/main/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistry.java` | Refresh exactly two reflected signatures. Route tuples and total remain 155; preserve native authorization and all other entries. |
+| UPDATE | `src/main/java/dz/sh/hidra/platform/workbench/HidraOperationalWorkbenchExposurePolicy.java` | Reject the six protected HSE entity keys at parse and query policy checks; leave unrelated resources eligible. |
+| UPDATE | `src/test/java/dz/sh/hidra/modules/hse/application/service/HseCapaLifecycleApplicationServiceTest.java` | Prove early denial, exact filter validation, and off-page Incident-unavailable rejection before a total leaves the application. |
+| UPDATE | `src/test/java/dz/sh/hidra/modules/hse/application/service/HseQueryApplicationServiceTest.java` | Prove enrolled/absent valid ID equivalence for case and CAPA while retaining positive legacy and validation assertions. |
+| UPDATE | `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistryTest.java` | Assert both changed reflected signatures and unchanged native route tuple set. |
+| UPDATE | `src/test/java/dz/sh/hidra/platform/workbench/HidraOperationalWorkbenchExposurePolicyTest.java` | Assert all six real HSE resource keys are denied even when explicitly requested, and unrelated approved keys remain eligible. |
+| UPDATE | `src/test/java/dz/sh/hidra/qualification/Gz2HseCapaNativeHttpPostgresIntegrationTest.java` | Extend the existing enrolled tests with the signed A13 lookup and denial assertions below. Keep T17 impact, closure, and restart assertions. |
+| UPDATE | `.github/ci-test-inventory.json` | Refresh fingerprints and the HSE lane evidence description for the changed enrolled cases. Keep existing lanes and 14 shards. |
+| UPDATE | `doc/modules/hse.md` | Describe both filters, failure/empty semantics, exact case/CAPA/history chain and legacy/Workbench compatibility impact. |
+| UPDATE | `doc/roadmap/ROADMAP.md` | Append implementation scope and evidence state. Preserve the prior acceptance record. |
+
+Create/delete none. No migration, entity, wire DTO, role/grant,
+CI enforcement, external integration, or Workflow decision changes.
+The optional parameters change generated OpenAPI. The sole T29 contract
+reconciliation, when needed after hosted capture, uses
+`docs(hse): reconcile T29 owner read contract` and updates only
+`doc/api/openapi.yaml`, `.github/documentation-validation.json` and an
+append to `doc/roadmap/ROADMAP.md`. Verify genuine exact-source artifact
+identity and additive compatibility. The physical dictionary must still
+pass strict checking. A dictionary difference requires diagnosis against
+the unchanged migrations/ownership, not a speculative dictionary refresh.
+
+#### T29 single development-software acceptance gate
+
+Extend the existing signed HSE fresh-PostgreSQL case to find a completed
+T17 record by its case number, traverse its detail, locate its CAPA by
+action number and read the case history and terminal evidence. Enroll two
+distinct test cases that share a number within one authorized scope and
+two CAPAs under the appropriate parent, as needed, to verify exact IDs,
+page size one, stable order and tie-break, filtered totals, wrong-parent
+exclusion, an empty matching set, and a page beyond the end. Use a legacy
+unbound record and a same-key scope-mismatched fixture to verify scope
+and explicit-key exclusion without disclosing counts. Preserve signed
+owner commands for the completion fixture. Use no synthetic direct
+inserts as proof of authorized lifecycle admission.
+
+In that enrolled case, show wrong company/facility, revoked current JWT
+authority, an unrelated caller and unknown exact target, with no protected
+rows, totals or history. Show admitted empty and invalid-filter outcomes
+distinct from denial/unavailable. Include the off-page unreadable
+Incident case (a readable first page followed by a matching case whose
+owner read proof is unavailable) and assert that the first page cannot
+disclose the total. Show that both legacy list/count routes exclude the
+enrolled rows and the corresponding legacy detail responses match
+unknown well-formed IDs. Reuse the same T17 restart where it already
+proves durable closure/history. Keep the other owner classes enrolled,
+and map each matrix row to its concrete client locator and assertion
+path during implementation rather than counting an endpoint listing as
+proof.
+
+**Completion:** One successful exact-SHA HidraAPI CI Full Verification
+Gate on the final source-plus-canonical-contract SHA is sufficient for
+T29 software acceptance. It must include the existing owner regression
+lanes and the enrolled signed HSE/A13 assertions, static and
+unit/architecture, all 14 PostgreSQL shards, backward compatibility,
+canonical OpenAPI equality and strict dictionary equality. Record the
+exact run, gate and enrolled case artifacts, then mark T29 COMPLETED.
+There is no supplemental manual test, independent evidence package, or
+owner acceptance sign-off for this defined T29 scope. T30 follows T29.

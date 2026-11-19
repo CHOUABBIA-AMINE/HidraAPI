@@ -333,15 +333,32 @@ class Gz2ScopedReportNativeHttpPostgresIntegrationTest {
             assertEquals(1,f.sql.update("UPDATE hidra_workflow_definition_target_binding "
                     +"SET active=true WHERE definition_id=?",review.definition()));
             // Revalidate current server-side authority even while a preexisting JWT is valid.
-            assertEquals(1,f.sql.update("""
+            // The signed fixture may install more than one matching GLOBAL grant.
+            // Expire every grant and restore precisely the same number; never
+            // leave one valid grant that would mask a stale-authorization defect.
+            int matchingExecutionGrants = f.sql.queryForObject("""
+                    SELECT count(*) FROM hidra_identity_user_permission_grant
+                    WHERE user_id=? AND scope_type='GLOBAL' AND status='ACTIVE'
+                      AND permission_id=(SELECT id FROM hidra_identity_permission
+                                          WHERE code='workflow:tasks:execute')
+                    """,Integer.class,f.reviewer);
+            assertTrue(matchingExecutionGrants > 0);
+            assertEquals(matchingExecutionGrants,f.sql.update("""
                     UPDATE hidra_identity_user_permission_grant SET valid_to=now()-interval '1 second'
                     WHERE user_id=? AND scope_type='GLOBAL' AND status='ACTIVE'
                       AND permission_id=(SELECT id FROM hidra_identity_permission
                                           WHERE code='workflow:tasks:execute')
                     """,f.reviewer));
+            assertEquals(0,f.sql.queryForObject("""
+                    SELECT count(*) FROM hidra_identity_user_permission_grant
+                    WHERE user_id=? AND scope_type='GLOBAL' AND status='ACTIVE'
+                      AND valid_from<=now() AND valid_to>now()
+                      AND permission_id=(SELECT id FROM hidra_identity_permission
+                                          WHERE code='workflow:tasks:execute')
+                    """,Integer.class,f.reviewer));
             deny(r.send("POST",path+"/transitions/"+review.transition()+"/execute",
                     reviewer,attempted).statusCode());
-            assertEquals(1,f.sql.update("""
+            assertEquals(matchingExecutionGrants,f.sql.update("""
                     UPDATE hidra_identity_user_permission_grant SET valid_to=now()+interval '2 hours'
                     WHERE user_id=? AND scope_type='GLOBAL' AND status='ACTIVE'
                       AND permission_id=(SELECT id FROM hidra_identity_permission

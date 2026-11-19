@@ -5657,3 +5657,38 @@ weakened, and no generated physical data may be fabricated.
 **Status: T30 IN PROGRESS / FAILED CI — same-task source correction staged,
 strict physical dictionary reconciliation outstanding.** T31 remains
 PLANNED and not selected.
+
+
+### T30 exact-SHA CI #1322 failed-gate repair — 2026-11-19
+
+Source `865629e6e4ea242e75554cfd310cf695ae207cf7`
+[Full CI #1322](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44610507904),
+attempt 1, completed **FAILURE**. Java 21 unit/architecture,
+static validation, and 13 of 14 PostgreSQL shards were **SUCCESS**.
+The only PostgreSQL lane failure, shard 3, was the retained signed
+Reporting A18 scenario, `Gz2ScopedReportNativeHttpPostgresIntegrationTest`:
+at line 336 its fixture asserted that one current GLOBAL Workflow execute
+permission-grant row was expired, but the synthetic fixture matched two.
+That assertion failed before the retained stale-JWT denial could execute.
+The repair counts all matching existing rows, expires exactly those rows,
+asserts zero currently-valid execute grants, checks the original
+non-disclosing denial, then restores exactly the same grant count and
+retains the stale CAS and zero-side-effect requirements. No authorization
+policy, data model, new test route, or fixture permission is expanded.
+Refresh only the existing signed test's strict inventory source hash.
+
+The sole other failing lane is the **strict physical dictionary comparison**:
+the registered additive migration changes the actual Flyway/catalog
+provenance. [CI #1322 generated schema evidence](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44610507904/artifacts/14572533210)
+captures 233 migrations, 471 JPA mappings and 613 relations with no
+unresolved owners. Its `DATA_DICTIONARY.md` was directly compared
+against the earlier CI #1321 generated output; only the recorded source
+SHA line differs. The canonical `doc/database/DATA_DICTIONARY.md` still
+requires byte-exact promotion of that verified generated evidence, subject
+only to the comparator's approved source-SHA normalization. The connector
+currently rejects the >4MB Git blob upload; do not weaken the strict
+comparator, fabricate a dictionary, or claim complete CI acceptance.
+The final new-SHA Full CI verification remains mandatory.
+
+**T30 IN PROGRESS / failed-CI repair.** No T31 implementation or
+development-software sign-off.

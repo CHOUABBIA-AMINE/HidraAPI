@@ -9,7 +9,7 @@
 | Status | ACTIVE |
 | Authority | Sole task register and execution source for HidraAPI |
 | Owner adoption | 2026-11-10 |
-| Active task selection | T26 CI passed on #1308 attempt 2 and remains IN PROGRESS for the outstanding registered acceptance evidence below. T27 is selected for planning and has a registered implementation envelope. |
+| Active task selection | T26 and T27 COMPLETED for synthetic development-software acceptance. T28 is selected for planning with the registered implementation envelope below. |
 
 The task register controls scope, dependencies, status and acceptance. Existing technical policy and verified implementation evidence retain their applicability. Task status advances only with recorded evidence. The initial status for each task is PLANNED. The first candidate is T01.
 
@@ -118,8 +118,8 @@ A task includes its required authorization, REST contract, persistence, failure 
 | **T23 · Execute and retrieve a deterministic analytics metric** | Analytics with source owners | One supported metric and eligible versioned input, such as T11 | Execute the metric, persist durable run/result state and expose source lineage, units and version. | Synthetic inputs produce a predictable value after restart. Bad inputs have explicit failed/unavailable outcomes. **FG-11 / A11.** | COMPLETED |
 | **T24 · Discover and supersede controlled Documents** | Documents with target owners | Existing byte upload/download and owner target references | Expose scoped discovery, exact version/link history, acceptance and supersession where required. | An authorized client can discover and retrieve exact bytes and hash for old and current versions. Revoked users cannot download. **FG-14 / A14.** | COMPLETED |
 | **T25 · Render and download an authorized report** | Reporting with Documents and Workflow | T24 and an eligible approved report input, such as T23 | Admit template and parameters, render a durable artifact and expose run status and scoped byte retrieval. | Downloaded bytes match the stored hash and exact input version. Failed rendering cannot produce a downloadable success. **FG-12 / A12.** | COMPLETED |
-| **T26 · Execute and replay a governed synthetic exchange** | Integration with receiving owner | Supported synthetic mapping and receiving contract | Expose mapping version, job/attempt/result, dead letter and privileged replay for one exchange. | Simulated transient failure and authorized replay yield one receiving outcome and a durable attempt history. **FG-15 / A15.** | IN PROGRESS |
-| **T27 · Deliver a recipient-scoped notification inbox** | Notification | One eligible business event and a supported delivery channel | Expose inbox, delivery state and recipient acknowledgement independently of business workflow state. | Intended recipient reads and acknowledges one notification. Foreign recipient cannot see it. The underlying task state is unchanged by acknowledgement. **FG-16 / A16.** | PLANNED |
+| **T26 · Execute and replay a governed synthetic exchange** | Integration with receiving owner | Supported synthetic mapping and receiving contract | Expose mapping version, job/attempt/result, dead letter and privileged replay for one exchange. | Simulated transient failure and authorized replay yield one receiving outcome and a durable attempt history. **FG-15 / A15.** | COMPLETED |
+| **T27 · Deliver a recipient-scoped notification inbox** | Notification | One eligible business event and a supported delivery channel | Expose inbox, delivery state and recipient acknowledgement independently of business workflow state. | Intended recipient reads and acknowledges one notification. Foreign recipient cannot see it. The underlying task state is unchanged by acknowledgement. **FG-16 / A16.** | COMPLETED |
 | **T28 · Search and export scoped Audit evidence** | Audit with Identity and Documents where needed | Durable owner events and authorized export storage | Expose typed event search, export state, manifest/hash and scoped retrieval. Recheck current grant at download. | Export contains only the admitted company, asset and time window. Download after revocation is denied and access evidence is retained. **FG-17 / A17.** | PLANNED |
 | **T29 · Verify typed owner read coverage** | Business resource owners with Identity | Each affected owner workflow. Check the early workflows during T15. | Verify scoped list/detail/history and pagination/count for affected workflows. Close residual read gaps within the responsible owner. | Independent clients can find completed records by business key. Unauthorized, unavailable and legitimately empty results are distinct. **FG-13 / A13.** | PLANNED |
 | **T30 · Verify authority for supported Workflow targets** | Workflow with participating target owners | Each supported owner workflow. Check Planning, baseline and escalation during T15. | Verify definition eligibility, exact target linkage, current/delegated authority and supported transitions. Close residual owner-specific gaps. | Wrong-target, stale, revoked and self-review cases fail where applicable. Terminal state and decision provenance remain retrievable. **FG-18 / A18.** | PLANNED |
@@ -4718,3 +4718,264 @@ Local checks reproduced the canonical contract and dictionary from the hosted
 artifacts and validated documentation and the enrolled test inventory. The
 focused Maven test was blocked before execution because Maven Central DNS
 resolution prevented the Spring Boot parent POM from resolving.
+
+### T26 and T27 acceptance closure and T28 implementation envelope — 2026-11-19
+
+**T26 COMPLETED for synthetic development-software acceptance.**
+[CI #1310 attempt 1](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44490857328/attempts/1)
+and [Documentation Validation #1151](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44490857230)
+passed at `d7530bd2c9c79e3717c4f0622f3b7db0a3799db6`, parent
+`959dad14065f26e946d0941e1a0e1625810cd8a0`, tree
+`c720d8fce442fd2dcd46bd01fdd8dfb03a9ef8f6`. The
+[Full Verification Gate](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44490857328/artifacts/14512757820)
+verified 605 classes and 4,487 tests with zero failures, errors or skips
+in required lanes. The expanded signed PostgreSQL journey closed the
+earlier A15 checklist, including concurrency, scope/mapping mismatch,
+revocation, physical guards and failed restart recovery. Earlier status
+entries remain historical.
+
+**T27 COMPLETED for synthetic development-software acceptance.**
+[CI #1313 attempt 1](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44508448955/attempts/1)
+and [Documentation Validation #1154](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44508448998)
+passed at `90b60d5fa9f3b9e58a76646487341464160e8d6a`, parent
+`7353a6a8d779b44db8f68f10fdc78f937bd2a469`, tree
+`10a4430ffae21bba2dca8f0ff0a25d72738149d8`. The
+[Full Verification Gate](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44508448955/artifacts/14521582009)
+verified 605 classes and 4,492 tests with zero failures, errors or skips
+in required lanes. The signed PostgreSQL A16 journey in shard 3 covered
+source rollback, recipient isolation, pagination, concurrent idempotent
+acknowledgement, unchanged Workflow before its separate decision, restart,
+revocation and database guards. All 14 PostgreSQL shards and unit/architecture
+passed. OpenAPI backward compatibility and equality passed with 459 paths,
+504 operations and 541 schemas. The strict dictionary passed with 231 migrations,
+471 JPA mappings, 610 relations and zero unresolved owners. The optional serial
+job was skipped by workflow design. Acceptance is for synthetic development
+software. Release and operational qualification are separate.
+
+#### T28 ownership and source event
+
+**T28 — Search and export scoped Audit evidence (FG-17 / A17).**
+Deliver one end-to-end slice for T22 governed Risk approval evidence,
+using the existing `RISK_ASSESSMENT_APPROVED` Audit taxonomy, one current
+company/facility pair, one explicit time range, and one export format.
+Risk owns qualification, approval and the source scope. Audit owns scope
+bindings, scoped event reads, exported bytes, manifests and access receipts.
+Identity owns current actor and grants. Topology owns current facility-to-company
+linkage. Audit stores the bounded immutable artifact in PostgreSQL under its
+own authority. There is no Documents dependency for this slice.
+
+The existing Audit ledger does not contain an authoritative company/facility
+pair. Populate an Audit-owned, append-only binding in the original T22
+approval transaction. Extend `RiskAssessmentAuditContract.ApprovalEvidence`
+with an optional typed `ApprovalScope(companyId, facilityId)` and retain the
+old constructor for legacy callers. Only the governed Risk branch forwards
+the exact scope already established by its locked owner proof and current
+approval authorization. The legacy approval branch still appends its
+normal event without a T28 binding. The existing Audit adapter writes the
+ordinary event through `RecordAuditEventUseCase` and binds its exact flushed
+event ID using an Audit-owned port. Require an active transaction for
+scoped publication before writing the event. Failure to write either part
+rolls back Audit, Risk and the Workflow decision in that transaction.
+The binding uses an Audit-local FK to the immutable Audit event, unique
+event ID and unique Workflow action identity. Enforce event type, exact
+Risk source/target/action, matching action ID and occurred time at insertion.
+Risk scope fields are owner-provided scalars. There is no cross-owner FK,
+legacy backfill, payload parsing for scope, or public binding endpoint.
+Legacy Audit APIs and existing business actions retain their behavior.
+
+#### T28 REST, state and authorization
+
+Base path `/api/v1/audit/companies/{companyId}/facilities/{facilityId}`.
+
+| Method and path | Exact controller signature | Contract |
+|---|---|---|
+| GET `/events` | `search(String companyId, String facilityId, String eventType, Instant from, Instant to, Integer limit, String cursor)` | Operation ID `searchT28AuditEvents`. Typed event page. Default 25 and maximum 100 rows per page. |
+| POST `/exports` | `createExport(String companyId, String facilityId, T28CreateAuditExport request)` | Operation ID `createT28AuditExport`. Request contains request key, fixed purpose `GZ2_SYNTHETIC_ASSURANCE`, event type, from and to. Returns 201 on creation and 200 on exact replay with the same export and manifest. |
+| GET `/exports/{exportId}` | `exportManifest(String companyId, String facilityId, UUID exportId)` | Operation ID `readT28AuditExportManifest`. Return `COMPLETED` plus stored manifest, never bytes on this route. |
+| GET `/exports/{exportId}/content` | `download(String companyId, String facilityId, UUID exportId)` | Operation ID `downloadT28AuditExportContent`. Return exact bounded JSON bytes as an attachment after current authorization and committed access evidence. |
+
+Require the explicit event type `RISK_ASSESSMENT_APPROVED` and UTC instants
+with at most microsecond precision. Use a half-open interval `[from,to)`
+with positive duration capped at 31 days. Validate bounded nonblank owner
+identifiers, a request key of 1–80 characters and a bounded base64url,
+versioned cursor. Cursor contains only the descending `(occurredAt,eventId)`
+boundary. Apply predicates for company, facility, type and time before
+ordering, paging or export. Scan at most limit + 1 rows for search and at
+most 1,001 rows for export. An admitted scope with no events returns an
+empty page or a zero-event export. The safe event projection contains
+only event ID, event type, operation, target ID, Workflow action ID and
+occurred time. Exclude Audit payloads, access records, internal exception
+text, names, usernames, request metadata and free text.
+
+All four operations require `audit:scoped-evidence:read`. Export creation,
+manifest and content also require `audit:scoped-evidence:export`. Seed
+only the two permission identities, with no assigned grants. Recheck
+the persisted binding and current security state of the signed native
+LOCAL actor. Require current direct permits for both CUSTOM
+`audit-company:<companyId>` and FACILITY `<facilityId>` for each required
+permission, with deny precedence. Confirm the active facility's exact
+company with the existing locked Topology owner proof. Use regular
+transactions, including reads, for Identity and Topology locks. Bind
+export reads and downloads to the originating actor and exact scope.
+An authenticated caller receives the same non-disclosing 404 for unknown
+and out-of-scope export identities. Authenticate before any protected
+query. Return 400 for invalid typed inputs, 409 for a valid changed request
+under the same key, 422 for export size limits, and a safe unavailable
+response on integrity or access-evidence persistence failures. Use the
+existing platform authentication behavior for invalid or missing sessions.
+
+Create a frozen export synchronously. Serialize admission per
+`(company,facility,requester,requestKey)` with a transaction-scoped advisory
+lock and enforce the same tuple with a unique constraint. Use one
+scope-filtered SELECT for the ordered snapshot. Encode a fixed
+`GZ2_AUDIT_EVIDENCE_JSON_V1` document with stable field order, fixed UTC
+timestamp representation, UTF-8 and one final newline. Check a 1,000-row,
+262,144-byte cap. Persist the exact bytes, event count, length, SHA-256,
+normalized criteria, fixed purpose, requester, receipt ID and completion
+time atomically with successful request-access evidence. The manifest
+identifies the format, scope, criteria, byte length, digest and count.
+Exact retry returns original bytes/manifest identity even after new events
+are appended. A failed or oversized request persists no partial export.
+Download checks stored length and recomputed SHA-256 before returning
+bytes. Send `application/json`, a server-generated attachment filename,
+content length, `Content-Digest` with the base64-encoded SHA-256 and
+`Cache-Control: no-store`.
+
+For download, authenticate the native actor separately from business
+authorization in the same transaction. Represent expected scope and
+permission denial as values through the Identity/Topology bridges. Avoid
+throwing across transactional boundaries for ordinary denials. Commit an
+append-only access receipt before producing the HTTP result. Allow receipts
+carry the verified scoped export reference and current actor. For denied
+requests by valid native actors, record actor, UTC time, action, outcome
+and a digest of the normalized requested scope/export locator. Do not fetch
+or persist a protected export reference on pre-query denial. For an admitted
+lookup with no matching export, record the same denial shape. A corrupt
+artifact yields a committed integrity-failure receipt without bytes. If
+evidence cannot commit, return an unavailable error without bytes. Never
+log raw credentials, export payload, or exception content. This receipt
+records the authorization outcome of handing bytes to the HTTP layer.
+
+Use three Audit-owned relations `hidra_audit_t28_event_scope`,
+`hidra_audit_t28_export`, and `hidra_audit_t28_access_receipt` in `public`.
+Enforce scoped composite keys and local FKs, fixed value and timestamp
+constraints, byte/count limits, SHA-256 consistency, access-outcome reference
+rules, and UPDATE/DELETE/TRUNCATE guards on all three. Index
+`(company_id,facility_id,event_type,occurred_at DESC,event_id DESC)`.
+Use database constraints and same-owner checks to preserve immutable
+evidence and scope. Neither a provider, a background export worker, nor
+an operational retention/deployment policy is needed for A17.
+
+#### T28 exact implementation file ledger
+
+Lease for planning is `90b60d5fa9f3b9e58a76646487341464160e8d6a`.
+Refresh main, CI, file existence and Flyway order when selecting source work.
+Use the implementation commit message
+`feat(audit): search and export scoped governed evidence`.
+
+| Action | Exact repository path | Role and bounded change |
+|---|---|---|
+| CREATE | `src/main/java/dz/sh/hidra/modules/audit/domain/model/ScopedAuditEvidence.java` | Pure Java scope, typed event projection, half-open search window, cursor boundary, export criteria, manifest and immutable receipt values. Centralize bounds and temporal invariants. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/audit/application/port/in/ScopedAuditEvidenceUseCase.java` | Four typed operations for search, create, manifest and content. Expose bounded results and safe outcomes. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/audit/application/port/out/ScopedAuditEvidenceRepositoryPort.java` | Port for trusted event-scope bind, scoped keyset and bounded snapshot reads, requester-scoped receipt reads, idempotency lock, atomic export creation and immutable access receipt append. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/audit/application/port/out/ScopedAuditEvidenceAccessPort.java` | Current native actor resolution and operation-specific authority decision for the exact company/facility. Keep expected denial distinct from infrastructure failure. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/audit/application/port/out/AuditExportEncodingPort.java` | Encode the typed snapshot using the named V1 format. Return bounded exact bytes, length and digest without an infrastructure dependency in application/domain. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/audit/application/service/ScopedAuditEvidenceApplicationService.java` | Coordinate authorization, filtering, keyset boundaries, idempotency, export generation, validation of stored bytes, and durable request/download access evidence. Publish the HTTP outcome only after the transaction completes. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/audit/infrastructure/integration/ScopedAuditEvidenceAccessAdapter.java` | Sole Audit consumer of the two exact new Identity/Topology exports. Confirm the current facility owner. Keep ordinary business denials as values. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/audit/infrastructure/export/CanonicalAuditExportV1.java` | Deterministic streaming JSON serialization using the existing JSON library, fixed field/row order and UTC instants. Enforce byte budget during encoding. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/audit/infrastructure/persistence/adapter/JdbcScopedAuditEvidenceRepositoryAdapter.java` | Audit-only SQL. Bind flushed source events, filter and order before LIMIT, serialize idempotent creates, persist exact bytea and manifest, append decision/access evidence. Keep manifest query separate from bytea retrieval. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/audit/api/rest/controller/ScopedAuditEvidenceController.java` | Implement four exact native route signatures and operation IDs above. Explicitly validate/map requests, project responses, handle typed errors, and send JSON bytes with safe attachment metadata. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/audit/api/rest/request/ScopedAuditEvidenceRequests.java` | Define dedicated `T28CreateAuditExport` request record with concrete bounded fields. No client actor, free-form filters or scope overrides. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/audit/api/rest/response/ScopedAuditEvidenceResponses.java` | Define dedicated `T28AuditEvent`, `T28AuditEventPage` and `T28AuditExportManifest` records. Avoid persistence, raw Audit event, or decision-receipt exposure. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/application/contract/audit/ScopedAuditEvidenceAuthorizationContract.java` | Current native actor and exact Audit permission decision export only. Reject unknown permissions and preserve absence for ordinary denials. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/application/service/ScopedAuditEvidenceAuthorizationQueryService.java` | MANDATORY owner service using existing signed LOCAL actor resolution and the direct grant locking, authorization assertions and deny-precedence evaluator used by T27. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/topology/application/contract/audit/AuditFacilityOwnershipContract.java` | Export only current active facility ID and company ID. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/topology/application/service/AuditFacilityOwnershipQueryService.java` | MANDATORY owner service delegating to the existing locked active facility proof. |
+| CREATE | `src/main/resources/db/migration/V20261119_002__t28_scoped_audit_evidence.sql` | Add the three owned relations, immutable constraints, scope and keyset index, and two ungranted permission identities. Preserve legacy tables and migrations. |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/audit/application/contract/risk/RiskAssessmentAuditContract.java` | Extend existing approval evidence with optional nested typed scope and preserve the old constructor and functional interface. |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/audit/infrastructure/integration/RiskAssessmentAuditContractAdapter.java` | Append scope through the new Audit port only for scoped owner evidence, after existing event flush and inside the original owner transaction. Preserve legacy behavior and payload. |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/risk/infrastructure/persistence/adapter/JpaRiskAssessmentRepositoryAdapter.java` | Pass the existing authorized governed scope into the existing Audit contract on finalization. Preserve legacy approval, all workflow guards and source ownership. |
+| UPDATE | `src/main/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistry.java` | Admit exactly the four new controller/method/verb/path tuples, total 155. Preserve all legacy path and permission handling. |
+| UPDATE | `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistryTest.java` | Assert the four exact T28 tuples, handler signatures and total 155. |
+| UPDATE | `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java` | Add the actual T28 controller with mocked use case to the all-route owners fixture before enumeration. Check exact tuple membership plus wrong verbs, adjacent paths and legacy routes. |
+| UPDATE | `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteStartupValidatorTest.java` | Validate complete native handler inventory with all 155 tuples. |
+| UPDATE | `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java` | Allow only the two exact owner exports and declared nested types to the named Audit adapter. Preserve Risk evidence consumer restriction and check transaction/owner boundaries. |
+| UPDATE | `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java` | Mirror and apply exact source import classifications. Reject same-prefix lookalikes and direct foreign persistence dependencies. |
+| UPDATE | `src/test/java/dz/sh/hidra/modules/audit/infrastructure/integration/RiskAssessmentAuditContractAdapterTest.java` | Adapt constructor fixture, preserve legacy mappings and policy assertions, and verify exact scoped binding of the existing event receipt in the active-transaction path. |
+| UPDATE | `src/test/java/dz/sh/hidra/modules/risk/infrastructure/persistence/RiskGovernancePostgresIntegrationTest.java` | Update the existing manually wired Audit adapter fixture for the new port. Preserve real JPA rollback coverage for the legacy (unscoped) path. |
+| UPDATE | `src/test/java/dz/sh/hidra/qualification/Gz2RiskAssessmentGovernanceNativeHttpPostgresIntegrationTest.java` | Extend the existing signed T22 PostgreSQL case with the complete A17 journey below. Put repeated approval helpers and additional synthetic setup in this same file. |
+| UPDATE | `.github/ci-test-inventory.json` | Update changed-source fingerprints and enrolled case names where added, all profile projections and the existing T22 lane evidence description. Preserve the 14 shards. |
+| UPDATE | `.github/database-dictionary-ownership.json` | Record exact Audit ownership and migration/JDBC evidence for all three new public relations. |
+| UPDATE | `doc/architecture/CROSS_MODULE_CONTRACTS.md` | Register the two exact owner exports and one extended existing Risk-to-Audit evidence shape and transaction boundary. |
+| UPDATE | `doc/modules/audit.md` | Document typed purpose, data minimization, scope semantics, storage, immutability and access evidence. |
+| UPDATE | `doc/roadmap/ROADMAP.md` | Append source implementation and actual verification evidence. |
+
+Implementation totals **17 CREATE, 17 UPDATE, zero DELETE**. No changes to
+CI workflows, security gates, deprecated endpoints, or previous migrations.
+Use genuine generated outputs. If artifact generation precedes reconciliation,
+the single same-task documentation commit
+`docs(audit): reconcile T28 generated contracts and physical dictionary`
+may update exactly `doc/api/openapi.yaml`,
+`doc/database/DATA_DICTIONARY.md`, `.github/documentation-validation.json`
+and `doc/roadmap/ROADMAP.md`. Expect four added operations, three owned
+relations and dedicated DTO schemas. Verify compatibility and strict equality
+through the existing gate. A generation run can supply artifact inputs before
+that gate passes.
+
+#### T28 complete acceptance checklist and publication
+
+Use the existing signed T22 journey on a fresh fully migrated PostgreSQL 16
+database and advance it through the real owner REST approval and T28 HTTP
+entry points. The following assertions constitute the complete A17 acceptance
+scope and must run in enrolled CI.
+
+1. **Source and transaction.** Force a test-only scope-binding insert failure
+   during real final approval. Assert no committed Audit event or scope
+   binding, Risk approval or Workflow decision. Retry through the native
+   entry point and prove exact event, action, facility and company lineage.
+2. **Selection.** Produce genuine Risk approvals for the selected facility,
+   another facility of the same company, and a facility of a second company.
+   Seed additional facility configuration only in the signed fixture. Use
+   captured event timestamps to prove both half-open boundaries, inclusive
+   lower bound and exclusive upper bound. Include a legacy unbound Audit event
+   of matching type as a negative control. Assert the exact event ID sets in
+   search results and artifact bytes, pagination without duplicates or leakage,
+   and an admitted empty search/export. Cover invalid or oversized criteria.
+3. **Export integrity.** Race two exact create retries. Require one 201 and
+   one 200, one durable export ID, equal manifests and no duplicate artifact.
+   Verify changed criteria on the same key return 409. Recompute SHA-256 over
+   the exact download bytes, verify lengths, row ordering and attachment
+   headers, then reread the same bytes after a new qualifying event and one
+   application process restart. At the end of the same enrolled case, bulk-insert
+   synthetic Audit-owned event/binding rows with valid identifiers into an isolated
+   time window solely to exercise both caps. Make one window exceed 1,000 rows
+   and a separate window stay within 1,000 rows while exceeding 262,144 serialized
+   bytes. Verify 422 and no export or success receipt for either request. Do not
+   use the bulk fixtures to establish native owner-event admission.
+4. **Current authority.** Use signed read-only, other-requester, mismatched
+   company/facility and revoked callers. Assert no manifest or bytes for
+   out-of-scope or unknown exports. Revoke a facility export grant while the
+   original JWT is still valid, then assert download denial and a committed,
+   actor-bound denial receipt with no protected export reference. Preserve
+   permission-deny precedence. Assert each admitted download has a distinct
+   committed access receipt. Inject an access-evidence write failure and
+   assert no bytes leave the API, then remove the fault and verify retry.
+5. **Physical and compatibility.** Reject direct mutation of scoped bindings,
+   artifacts and access receipts, plus inconsistent scope/reference and byte
+   hash writes. Preserve the original T22 assertions and enrolled compatibility
+   coverage. The same Full Verification Gate requires static and architecture,
+   all 14 PostgreSQL shards, backward compatibility, canonical runtime OpenAPI
+   equality and strict physical dictionary equality.
+
+**Completion rule.** A successful exact-SHA Full Verification Gate on the
+final reconciled T28 commit is the single development-software acceptance
+gate. The gate must include the enrolled A17 assertions above. Once it passes,
+record its run and artifact links and mark T28 COMPLETED. No additional
+acceptance review, independently produced evidence, separate manual test,
+or owner sign-off is required to close this defined scope. A later release,
+deployment, industrial validation or SITE decision is outside T28.
+
+This roadmap-only registration changes one file in
+`docs(roadmap): close T26 and T27 and register T28 envelope`. T28 stays
+PLANNED for source execution after the registration's Documentation
+Validation and the owner's next execution instruction. T29 follows T28.

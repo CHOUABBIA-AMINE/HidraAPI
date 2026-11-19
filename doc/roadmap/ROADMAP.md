@@ -4567,3 +4567,20 @@ roadmap evidence are touched. No business behavior, schema, permission, legacy
 route, or accepted T27 envelope is changed. This is source-level test extension,
 not executed passing evidence; the full exact-SHA CI result remains required
 to close T26. Keep T26 IN PROGRESS and T27 PLANNED until that gate passes.
+
+#### T26 CI #1309 shard 8 corrective verification — 2026-11-19
+
+[HidraAPI CI #1309](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44488737292)
+failed on `959dad14065f26e946d0941e1a0e1625810cd8a0`: the
+signed T26 PostgreSQL journey in shard 8 recorded one error at line 303,
+PostgreSQL SQLSTATE `42601`, while creating the test-only post-restart
+receiver fault trigger. Its SQL incorrectly used a single dollar sign instead
+of a dollar-quote pair, unlike the initial fault fixture. The other thirteen
+PostgreSQL shards, unit/architecture, static, API/dictionary and
+Documentation Validation #1150 passed. Full Verification Gate failed downstream.
+
+The same-task T26 repair changes only both SQL fixture quote delimiters,
+updates the test's exact source identity in the approved CI inventory, and
+records this failure and remediation. There are no product-source changes,
+migrations or weakened assertions. T26 remains IN PROGRESS pending green
+exact-SHA CI; T27 remains PLANNED.

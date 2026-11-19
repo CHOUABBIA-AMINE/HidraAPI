@@ -301,8 +301,8 @@ class Gz2SyntheticExchangeNativeHttpPostgresIntegrationTest {
                 assertEquals("FAILED",restarted.get(path+"/"+failedRecoveryId,reviewer)
                         .path("status").asText());
                 f.sql.execute("""
-                        CREATE FUNCTION public.t26_test_recovery_fault() RETURNS trigger LANGUAGE plpgsql AS $
-                        BEGIN RAISE EXCEPTION 'Synthetic recovery fault' USING ERRCODE='40001'; END $;
+                        CREATE FUNCTION public.t26_test_recovery_fault() RETURNS trigger LANGUAGE plpgsql AS $$
+                        BEGIN RAISE EXCEPTION 'Synthetic recovery fault' USING ERRCODE='40001'; END $$;
                         CREATE TRIGGER t26_test_recovery_fault BEFORE INSERT ON public.hidra_documents_controlled_scope
                         FOR EACH ROW EXECUTE FUNCTION public.t26_test_recovery_fault()
                         """);

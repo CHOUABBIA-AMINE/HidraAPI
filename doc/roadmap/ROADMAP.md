@@ -122,13 +122,13 @@ A task includes its required authorization, REST contract, persistence, failure 
 | **T27 · Deliver a recipient-scoped notification inbox** | Notification | One eligible business event and a supported delivery channel | Expose inbox, delivery state and recipient acknowledgement independently of business workflow state. | Intended recipient reads and acknowledges one notification. Foreign recipient cannot see it. The underlying task state is unchanged by acknowledgement. **FG-16 / A16.** | COMPLETED |
 | **T28 · Search and export scoped Audit evidence** | Audit with Identity and Documents where needed | Durable owner events and authorized export storage | Expose typed event search, export state, manifest/hash and scoped retrieval. Recheck current grant at download. | Export contains only the admitted company, asset and time window. Download after revocation is denied and access evidence is retained. **FG-17 / A17.** | COMPLETED |
 | **T29 · Verify typed owner read coverage** | Business resource owners with Identity | Each affected owner workflow. Check the early workflows during T15. | Verify scoped list/detail/history and pagination/count for affected workflows. Close residual read gaps within the responsible owner. | Independent clients can find completed records by business key. Unauthorized, unavailable and legitimately empty results are distinct. **FG-13 / A13.** | COMPLETED |
-| **T30 · Verify authority for supported Workflow targets** | Workflow with participating target owners | Each supported owner workflow. Check Planning, baseline and escalation during T15. | Verify definition eligibility, exact target linkage, current/delegated authority and supported transitions. Close residual owner-specific gaps. | Wrong-target, stale, revoked and self-review cases fail where applicable. Terminal state and decision provenance remain retrievable. **FG-18 / A18.** | IN PROGRESS |
+| **T30 · Verify authority for supported Workflow targets** | Workflow with participating target owners | Each supported owner workflow. Check Planning, baseline and escalation during T15. | Verify definition eligibility, exact target linkage, current/delegated authority and supported transitions. Close residual owner-specific gaps. | Wrong-target, stale, revoked and self-review cases fail where applicable. Terminal state and decision provenance remain retrievable. **FG-18 / A18.** | COMPLETED |
 
 ### Increment 8 — Scenario readiness and optional configuration
 
 | Task | Owner | Depends on | Deliverable | Pass condition | Status |
 |---|---|---|---|---|---|
-| **T31 · Version and reconstruct engine-neutral scenarios** | Simulation with Topology | T07 | Expose scenario create/version/validate/read with exact baseline digest, units, boundary conditions, intended steady/transient mode and capability state. | Historical scenario reconstructs after baseline supersession. Availability and validation states do not imply computed results. **FG-19 / A19/A21.** | PLANNED |
+| **T31 · Version and reconstruct engine-neutral scenarios** | Simulation with Topology | T07 | Expose scenario create/version/validate/read with exact baseline digest, units, boundary conditions, intended steady/transient mode and capability state. | Historical scenario reconstructs after baseline supersession. Availability and validation states do not imply computed results. **FG-19 / A19/A21.** | IN PROGRESS |
 | **T32 · Preview and retire configuration with effective dating** | Configuration | Confirmed consumer need and existing configuration lifecycle | Add scoped impact preview and an effective-dated retirement action with historical reads. | Authorized client gets the correct result on both sides of the effective boundary. Earlier consumers retain the accepted configuration interpretation. **FG-20 / A20.** | PLANNED |
 
 **Deferred — FG-21.** Numerical execution, calibration and industrial integrations are outside the 32 proposed tasks. Apply A21 to delivered contracts so clients can distinguish readiness, trust, engineering qualification and computation.
@@ -5692,3 +5692,190 @@ The final new-SHA Full CI verification remains mandatory.
 
 **T30 IN PROGRESS / failed-CI repair.** No T31 implementation or
 development-software sign-off.
+
+### Close T30 and register T31 engine-neutral scenario readiness — 2026-11-19
+
+**T30 — COMPLETED (development software).** The final dictionary-only
+reconciliation `3b2811004adad9553db988ae198bda2248e49cad` (parent
+`0ac7ae984269c8e76c8fc303843c6c2ca0ce0978`, tree
+`99cdb43e4f582a428abc51e775f26b72984afebc`) passed
+[HidraAPI CI #1324 attempt 2](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44619095655/attempts/2).
+The [Full Verification Gate](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44619095655/job/135906673601)
+accepted the passing shard 3 rerun at the same SHA alongside the retained
+attempt-1 evidence. The gate verified 4,508 tests in 605 classes with zero
+failures, errors or skips, including the signed Reporting A18 lane, and
+[API contract and dictionary](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44619095655/job/135895608418)
+passed backward compatibility and both strict equalities. Retained
+[combined evidence](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44619095655/artifacts/14578325782)
+and [Documentation Validation #1168](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44618860669)
+close the registered FG-18/A18 gate. Release, engineering and SITE
+acceptance are separate.
+
+**T31 — IN PROGRESS, selected and registered, source implementation pending.**
+This roadmap-only commit uses
+`docs(roadmap): close T30 and register T31 envelope`. After exact-SHA
+Documentation Validation and a refreshed main check, the next source stage
+uses `feat(simulation): version engine-neutral scenario inputs`.
+T32 stays PLANNED and subject to a confirmed consumer need.
+
+#### T31 goal, dependencies and ownership
+
+T07 is COMPLETED and provides exact published baseline read by company,
+pipeline and receipt ID, with current scope, historical pin authorization,
+and original protected transaction verification. The existing T15 signed
+GZ2 test publishes, supersedes and reconstructs that baseline across a
+JVM restart. Reuse that journey for A19. The legacy Simulation scenario
+create path stores a model version and generic topology snapshot selector;
+run admission expects a legacy LOCKED scenario. Those contracts do not
+supply the T31 immutable baseline-pinned revision lifecycle.
+
+Simulation owns the scenario and its revisions, validation rules and
+capability truth. Topology owns the baseline receipt, epoch, manifest and
+canonical digest. Identity owns the current signed LOCAL actor and grants.
+Use synthetic gas inputs on the existing GZ2 baseline. T31 is an input
+preparation contract with declared engineering units and a versioned
+structural check. Existing simulation tables and legacy REST behavior
+remain intact. Numerical execution, network-node mapping, hydraulic
+adequacy, calibration, engine selection, results, operational actions,
+and third-party integration belong outside this stage.
+
+#### Native API and behavior
+
+Base path `/api/v1/simulation/companies/{companyId}/pipeline-systems/{pipelineSystemId}/scenarios`.
+
+| Verb and relative path | Operation ID | Behavior |
+|---|---|---|
+| POST base | `createT31Scenario` | Create revision 1 and return 201. Exact authorized replay returns 200 with the original revision. |
+| POST `/{scenarioId}/revisions` | `appendT31ScenarioRevision` | Accept a full replacement input set with required positive `expectedRevision`. Append the next immutable revision or return 409 for stale head or key conflict. Exact authorized replay returns 200, including after later revisions. |
+| GET `/{scenarioId}/revisions/{revision}` | `readT31ScenarioRevision` | Read one exact version with baseline and input provenance. An unavailable revision uses the protected 404 contract. |
+| GET `/{scenarioId}/revisions/{revision}/validation` | `validateT31ScenarioRevision` | Recompute the deterministic structural validation from exact persisted inputs and its recorded policy version, without mutating rows. Return ordered diagnostic codes and truthful capability. |
+
+The typed write input carries an exact baseline receipt UUID and lowercase
+64-character expected manifest digest, a bounded scenario name (1–120
+trimmed characters), intended mode `STEADY` or `TRANSIENT`, a request key
+(1–80 trimmed characters), and explicit boundary values. For this first
+profile use the declared slots `SUPPLY_PRESSURE` (absolute `PA` or
+`BAR_ABSOLUTE`) and `DELIVERY_MASS_FLOW` (`KG_PER_S`). These slots
+identify scenario inputs, not resolved network nodes. Store the submitted
+decimal value and unit, with bounded precision (18 digits, at most 6
+fractional digits), as well as the exact SI representation in typed reads.
+Pressure must be positive and delivery flow nonnegative. STEADY has no
+time controls. TRANSIENT uses required positive integer duration and
+step in seconds, step divides duration and there are at most 10,000
+intervals. Both declared boundary values are constant over that window.
+Malformed, mixed-mode and incompatible input returns a bounded 400
+response after route admission as applicable. Choose and freeze a
+documented canonical digest encoding and validation policy ID
+`T31_INPUT_V1`. Use locale-independent decimal normalization and bind
+mode, declared values/units, baseline reference and actual owner digest
+into the input digest. No implicit default unit or current baseline
+fallback. A valid revision reports `VALIDATED_INPUTS` and
+`numericalCapability=NOT_AVAILABLE` for both modes. It carries no
+result values, solver job or operational qualification.
+
+Require paired direct current grants for company
+(`CUSTOM simulation-company:{companyId}`) and exact `PIPELINE_SYSTEM`.
+`simulation:scenario-inputs:read` governs both reads and
+`simulation:scenario-inputs:write` is additionally required for both
+writes. Reuse Identity's signed LOCAL actor, direct-grant evidence,
+deny-precedence evaluator and original-transaction grant checks.
+The new permissions start ungranted. Establish authorized Simulation
+scope before looking up scenario history or invoking Topology. For each
+operation, use the narrow Topology export to execute its existing T07 EXACT
+read with the same principal, company/pipeline and receipt; compare the
+owner digest and never resolve `current`. Keep Topology's protected
+executor in its own original transaction, outside a Simulation
+transaction. Use the proof only for that request and only for immutable
+receipt facts. Recheck Simulation grants in the transaction that
+loads or writes the final scoped revision. For reads, obtain only the
+scoped baseline locator in the initial transaction and confirm the same
+locator on final read. These are two owner authorization decisions, with
+no claim of cross-transaction atomic revocation. No scenario write goes
+ahead after a failed Topology decision. Missing/foreign baseline,
+missing scenario/revision and denied source pins must not disclose
+existence or facts. Fail unexpected owner/database errors as service
+failures without returning protected data. Topology continues to enforce
+current historical source rights even after supersession.
+
+One Simulation-owned append-only table with `(scenario_id, revision)`
+key stores immutable scope, prior revision, exact baseline tuple, inputs,
+actor/time, policy/version, digest and replay key/fingerprint. Enforce
+positive contiguous predecessor and immutable scope using a same-owner
+predecessor FK and check, including no predecessor on revision 1. Use
+unique scoped actor/request key and revision slots to arbitrate concurrent
+commands. Preserve exact replay only for identical canonical operations,
+including target and expected revision where applicable. Re-read the
+committed winner when concurrent requests collide; different commands
+must not rewrite or silently replace history. Reject direct UPDATE,
+DELETE and TRUNCATE with immutable database guards. There is no FK to
+Topology-owned private persistence, and no new ORM entity.
+
+#### Exact implementation file ledger
+
+| Action | Exact repository path | Responsibility |
+|---|---|---|
+| CREATE | `src/main/java/dz/sh/hidra/modules/simulation/domain/model/ScenarioInputRevision.java` | Pure Java immutable scope, baseline facts and typed boundary/mode/window values, V1 validation and canonical input fingerprint. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/simulation/application/port/in/ScenarioInputRevisionUseCase.java` | Typed commands and read/validation results for four operations, including replay and protected failure semantics. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/simulation/application/port/out/ScenarioInputOwnerAccessPort.java` | Scenario-facing current read/write scope admission and exact baseline projection, with their distinct transaction expectations. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/simulation/application/port/out/ScenarioInputRevisionRepositoryPort.java` | Scoped lookup, append and replay resolution using immutable Simulation values. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/simulation/application/service/ScenarioInputRevisionApplicationService.java` | Sequence authorized locator, T07 proof and final Simulation transaction, coordinate CAS/replay and serve validation/capability without invoking a run. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/topology/application/contract/simulation/ScenarioBaselineReceiptContract.java` | Export exact verified receipt, manifest ID, epoch and digest only. No domain object, repository or raw manifest crosses the module boundary. |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/topology/application/service/EngineeringBaselinePublicationApplicationService.java` | Implement the scalar export by invoking its existing protected EXACT read and mapping the verified immutable receipt. Preserve all T06/T07 entry points and executor fences. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/application/contract/simulation/ScenarioInputAuthorizationContract.java` | Export the current native actor and bounded read/write authorization for the exact company/pipeline pair. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/application/service/ScenarioInputAuthorizationQueryService.java` | Resolve signed LOCAL actor and recheck paired current grants with deny precedence in the owning Simulation transaction. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/simulation/infrastructure/integration/ScenarioInputOwnerAccessAdapter.java` | Sole consumer of the two new owner exports. Map their scalar results and expected denials to the Simulation port. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/adapter/JdbcScenarioInputRevisionAdapter.java` | Parameterized SQL, exact projection, scoped unique-conflict/replay handling and no history mutation interface. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/simulation/api/rest/request/ScenarioInputRevisionRequests.java` | Dedicated wire records for create and append; explicit decimal/unit fields and append compare token. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/simulation/api/rest/response/ScenarioInputRevisionResponses.java` | Dedicated transport-only scenario, baseline summary, diagnostics and capability records. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/simulation/api/rest/controller/ScenarioInputRevisionController.java` | Four exact native routes and explicit DTO mapping. Use String scopes, UUID scenario ID, long revision and the dedicated create/append request records. Map protected failures without exposing stored values. |
+| CREATE | `src/main/resources/db/migration/V20261119_004__t31_scenario_input_revisions.sql` | Add only the new immutable revision relation, checks, predecessor and replay constraints/indexes, guards and two ungranted Identity permission definitions. |
+| UPDATE | `.github/database-dictionary-ownership.json` | Record the exact new Simulation-owned relation and migration/JDBC evidence paths. |
+| UPDATE | `src/main/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistry.java` | Add only the four exact handler signatures, methods and paths, taking the reviewed native inventory from 155 to 159. |
+| UPDATE | `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistryTest.java` | Prove the four tuples and total; retain existing tuple assertions. |
+| UPDATE | `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java` | Register the controller fixture and assert adjacent paths/wrong verbs retain ordinary authorization handling. |
+| UPDATE | `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteStartupValidatorTest.java` | Update the startup inventory assertion and require exact registered T31 handlers. |
+| UPDATE | `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java` | Admit only the exact two scalar contracts and their declared nested types for the sole adapter. Assert no sibling/private import or solver dependency. |
+| UPDATE | `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java` | Mirror exact owner-export boundaries and retain wire/domain separation. |
+| UPDATE | `src/test/java/dz/sh/hidra/qualification/Gz2SignedWorkflowNativeHttpPostgresIntegrationTest.java` | Extend its enrolled signed GZ2 case across the existing baseline supersession and JVM restart to prove A19/A21. |
+| UPDATE | `.github/ci-test-inventory.json` | Refresh changed fingerprints and signed case evidence description, preserving existing case enrollment and 14 shards. |
+| UPDATE | `doc/modules/simulation.md` | Document input profile, validation, security, exact baseline read and capability semantics. |
+| UPDATE | `doc/architecture/CROSS_MODULE_CONTRACTS.md` | Record the two exact producer-consumer exports and transaction boundary. |
+| UPDATE | `doc/roadmap/ROADMAP.md` | Append source implementation and exact-SHA evidence. |
+
+Delete none. Refresh the proposed migration slot against live main before
+source execution. After genuine hosted generation, the single registered
+documentation reconciliation uses
+`docs(simulation): reconcile T31 API and physical dictionary` and may
+update only `doc/api/openapi.yaml`, `doc/database/DATA_DICTIONARY.md`,
+`.github/documentation-validation.json` and an append to
+`doc/roadmap/ROADMAP.md`. Retain evidence of the original runtime capture
+and PostgreSQL catalog on its source SHA. A first pre-reconciliation
+equality failure is evidence of pending canonical files, not acceptance.
+
+#### Single T31 development-software acceptance gate
+
+Extend the existing signed T15 journey in fresh PostgreSQL without
+weakening its original assertions. Publish baseline A using its real
+owner path. Create and validate a steady revision with explicit units
+and an exact digest, reject mismatched digest, invalid units and mode
+controls, then exercise stale append, request-key conflict, exact replay
+and concurrent append against one expected revision. Prove one committed
+successor, deterministic reconstruction of both revisions and no extra
+rows from rejected calls. Publish baseline B using the existing genuine
+supersession, append a valid transient revision pinned to B, and reuse
+the existing JVM restart. Read and validate old pinned inputs against A
+and the new revision against B. Verify exact digest/epoch, values/units,
+policy version and both `NOT_AVAILABLE` responses. Assert no solver
+run or result was created. Use signed foreign and revoked callers,
+wrong pipeline, missing source rights, read-only writer denial, and
+unknown IDs to prove no protected data is returned. Check database
+predecessor/scope enforcement and rejection of destructive writes on
+the new owned table. The same full workflow verifies native route
+registry, architecture, all PostgreSQL shards, backward compatibility,
+runtime canonical OpenAPI and strict physical dictionary equality.
+
+One successful exact-SHA **HidraAPI CI Full Verification Gate on the
+final reconciled T31 SHA** is sufficient to mark T31 COMPLETED for
+registered A19/A21 development software. Record the run, signed shard
+and combined artifact. No manual test, extra evidence package or
+separate acceptance sign-off is required for that scope. FG-21 stays deferred.

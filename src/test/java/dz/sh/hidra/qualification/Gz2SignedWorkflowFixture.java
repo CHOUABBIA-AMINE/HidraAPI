@@ -91,6 +91,11 @@ class Gz2SignedWorkflowFixture {
         flyway.migrate();
         flyway.validate();
         assertEquals(0, flyway.info().pending().length);
+        // T30: configuration row locks run under a narrowly granted SECURITY DEFINER
+        // function, not application UPDATE rights on Workflow configuration tables.
+        // The disposable GZ2 runtime role was created before Flyway migration.
+        sql.execute("GRANT EXECUTE ON FUNCTION public.hidra_workflow_t30_lock_current_configuration("
+                + "text,integer,text,text,text) TO " + APP);
         restrictEngineeringRoles();
         seedScope();
         verifyRuntimeUnitLock();

@@ -5615,3 +5615,45 @@ unit/architecture, static, runtime OpenAPI and strict dictionary acceptance
 remains required unchanged. T31 stays PLANNED and unselected; engineering,
 SITE, operations and release are not accepted by green CI.
 
+### T30 CI #1321 failed-gate diagnosis and bounded fixture repair — 2026-11-19
+
+The exact source `e28531fcccb8276e77dc1d091feff6369b30d0f9`
+[HidraAPI CI #1321](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44605745368)
+completed **FAILURE** (attempt 1); [Documentation #1165](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44605745292)
+was SUCCESS. The static and runtime OpenAPI equality lanes succeeded.
+Three standalone `WorkflowTransitionApplicationServiceTest` owner-denial
+cases incorrectly lacked the already configured destination step and
+therefore got structural boundary denial before reaching native human-owner
+admission. Most signed GZ2 PostgreSQL failure cases were
+`42501 permission denied for function hidra_workflow_t30_lock_current_configuration`:
+the shared `Gz2SignedWorkflowFixture` creates its `gz2_runtime` role
+before Flyway, but did not grant the new function's intentionally
+non-public EXECUTE afterward. Separate native Topology/Manufacturer lanes
+with explicit function EXECUTE were green. The HSE case returned unexpected
+500 during the same Workflow-backed path and remains a regression assertion
+to verify on the repaired source.
+
+This same-task fix updates only the established JVM owner-denial fixture
+and `src/test/java/dz/sh/hidra/qualification/Gz2SignedWorkflowFixture.java`
+with an exact function-only runtime grant, preserving SELECT-only
+configuration access, signed authorities, original actor checks,
+database-lock requirements and all case assertions. The existing strict
+`.github/ci-test-inventory.json` fingerprints are refreshed.
+
+**Separate acceptance blocker: the canonical physical dictionary is stale
+after the approved additive T30 migration.** The CI #1321
+[database-schema artifact](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44605745368/artifacts/14568459336)
+contains the actual PostgreSQL16 generated `DATA_DICTIONARY.md`:
+233 migrations, 471 JPA mappings, 613 relations, no unresolved owner.
+It has three precise new Workflow migration mentions, updated history
+count and bundle provenance. The GitHub connector rejected staging the
+4.3 MB exact file as a Git blob (HTTP/2 body failure), so **no dictionary
+canonical equality, exact-SHA Full success or T30 acceptance is claimed**.
+The dictionary must be published byte-exact (except the expressly ignored
+captured source-SHA line) through an approved file-capable path before
+CI can pass. The strict comparator and migration history must not be
+weakened, and no generated physical data may be fabricated.
+
+**Status: T30 IN PROGRESS / FAILED CI — same-task source correction staged,
+strict physical dictionary reconciliation outstanding.** T31 remains
+PLANNED and not selected.

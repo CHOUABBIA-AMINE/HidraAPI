@@ -93,6 +93,11 @@ class WorkflowTransitionApplicationServiceTest {
         org.mockito.Mockito.lenient().when(ownership.requireUnit(any())).thenAnswer(invocation->new dz.sh.hidra.modules.organization.application.contract.workflow.WorkflowOrganizationContract.Unit(invocation.getArgument(0),"Operations"));
         org.mockito.Mockito.lenient().when(stepRepository.findById("step-1")).thenReturn(Optional.of(new WorkflowStep(
             "step-1","def-1","REVIEW",null,"Review",null,1,true,null,null,null,true,false,false,TASK_UPDATED_AT,TASK_UPDATED_AT)));
+        // Owner-denial cases must reach their owner checks after the registered
+        // destination graph is structurally validated, without inventing a new step.
+        org.mockito.Mockito.lenient().when(stepRepository.findById("step-2")).thenReturn(Optional.of(new WorkflowStep(
+            "step-2","def-1","FINAL_REVIEW",null,"Validation finale","Final review",2,
+            true,"APPROVAL","rule-2",null,false,false,false,TASK_UPDATED_AT,TASK_UPDATED_AT)));
         org.mockito.Mockito.lenient().when(ownership.permitted(any(),any(),any())).thenReturn(true);
         org.mockito.Mockito.lenient().when(configuration.lockCurrentInstanceConfiguration(
                 any(), org.mockito.ArgumentMatchers.anyInt(), any(), any(), any())).thenReturn(true);

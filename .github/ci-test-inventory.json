@@ -116,7 +116,7 @@
       "lane": "unit-architecture",
       "owner": "architecture",
       "path": "src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java",
-      "source_sha256": "b85de77c28818d3efb04ab4d8a0a084d987611d41a3b4715447cff1d4f892c49",
+      "source_sha256": "cec34fa512e7bd80bac0330c9da2b8de5501e78468827bf735f102aa676e896c",
       "supports": []
     },
     {
@@ -11959,7 +11959,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java",
-      "source_sha256": "a593a32e1b121e81d96f42e78404a84d60195b88e38d2de924650d5a255764a1",
+      "source_sha256": "d4798355d506ef7741360f3203f3e193e745a7f7b23c214e9df72925513647d7",
       "supports": []
     },
     {

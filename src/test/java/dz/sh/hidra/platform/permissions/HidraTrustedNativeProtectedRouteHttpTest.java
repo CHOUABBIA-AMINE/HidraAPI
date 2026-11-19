@@ -189,6 +189,9 @@ class HidraTrustedNativeProtectedRouteHttpTest {
    var routes=registry.candidates();
    assertEquals(151,routes.size());
    var expected=java.util.Set.of(
+     "GET /api/v1/notification/companies/{companyId}/facilities/{facilityId}/inbox",
+     "GET /api/v1/notification/companies/{companyId}/facilities/{facilityId}/inbox/{notificationId}",
+     "POST /api/v1/notification/companies/{companyId}/facilities/{facilityId}/inbox/{notificationId}/acknowledgement",
      "GET /api/v1/integration/companies/{companyId}/facilities/{facilityId}/synthetic-mappings/{profileId}",
      "POST /api/v1/integration/companies/{companyId}/facilities/{facilityId}/synthetic-exchanges",
      "GET /api/v1/integration/companies/{companyId}/facilities/{facilityId}/synthetic-exchanges/{exchangeId}",

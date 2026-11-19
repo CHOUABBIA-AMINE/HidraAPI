@@ -50,7 +50,7 @@ public class WorkflowInboxApplicationService implements WorkflowInboxUseCase,Rep
                 event.workflowTaskId(),event.assignedAt(),Instant.now().truncatedTo(ChronoUnit.MICROS),null);
         repository.deliver(item);
     }
-    @Override @Transactional(readOnly=true)
+    @Override @Transactional
     public Page list(Scope scope,Integer requestedLimit,String opaqueCursor) {
         String actor=access.require(scope,WorkflowInboxAccessPort.Action.READ);
         int limit=requestedLimit==null?DEFAULT_LIMIT:requestedLimit;
@@ -61,7 +61,7 @@ public class WorkflowInboxApplicationService implements WorkflowInboxUseCase,Rep
         List<WorkflowInboxItem> visible=more?List.copyOf(rows.subList(0,limit)):List.copyOf(rows);
         return new Page(visible,more?encode(visible.getLast()):null);
     }
-    @Override @Transactional(readOnly=true)
+    @Override @Transactional
     public WorkflowInboxItem detail(Scope scope,String notificationId) {
         String actor=access.require(scope,WorkflowInboxAccessPort.Action.READ);
         return repository.detail(scope,actor,WorkflowInboxItem.uuid(notificationId),false)

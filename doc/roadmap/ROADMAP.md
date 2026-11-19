@@ -4624,3 +4624,60 @@ and physical dictionary equality requires it, the separately registered
 `docs(notification): reconcile T27 generated contracts and physical dictionary`
 using genuine CI artifacts. T28 remains a later candidate, not authorized
 for execution.
+
+#### T27 CI #1311 observed failure and bounded repair — 2026-11-19
+
+**T26 development acceptance: COMPLETED, CI-passed.** Exact source
+`d7530bd2c9c79e3717c4f0622f3b7db0a3799db6` passed
+[Full CI #1310](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44490857328)
+and [Documentation Validation #1151](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44490857230).
+All 14 PostgreSQL shards and 4,487 tests passed with zero failures,
+errors or skips; runtime OpenAPI and reviewed physical dictionary gates passed.
+The gate is synthetic development-software proof, not industrial/SITE or
+production operational acceptance.
+
+**T27: IN PROGRESS, exact-SHA CI failed, not accepted.**
+Published `d3c12345e468d6a75fc134ecaa3e9aff9a312088` covered its
+registered 15 CREATE, 16 UPDATE, zero DELETE paths. [Full CI #1311](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44496943327)
+completed FAILURE. [Documentation Validation #1152](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44496943317)
+completed SUCCESS on that same source SHA. Actual failure inventory:
+
+- **API contract/dictionary:** Generated runtime OpenAPI differs from
+  canonical `doc/api/openapi.yaml`; exact API equality stopped before
+  strict dictionary equality. Genuine generated artifacts on CI #1311:
+  OpenAPI artifact `14515352801`, PostgreSQL 16.16 physical dictionary
+  artifact `14516011361` (231 migrations, 610 relations, 471 JPA
+  mappings, zero unresolved owners). Reconciliation must preserve
+  artifact provenance and strict equality.
+- **Java 21 unit/architecture:** 2 failures among 2,621 executed tests.
+  The historical complete route tuple expectation omitted the three
+  newly registered Notification routes; the T27 forensic source import
+  classifier failed to apply its already-declared exact consumer checks.
+  Do not weaken private-dependency or native-registration checks.
+- **PostgreSQL shard 3:** Signed T25/T27 GZ2 journey received HTTP 500
+  because its Notification read-only transaction conflicted with native
+  Identity `SELECT ... FOR SHARE` direct-grant verification (SQLSTATE
+  `25006`). The repair uses a regular transaction for both inbox
+  read handlers so those locks and live-grant checks still execute.
+- **PostgreSQL shard 7:** Fetch of Maven 3.9.11 from
+  `repo.maven.apache.org` failed *before tests*. The missing Surefire
+  reports are downstream; not evidence of failed T27 behavior.
+- **PostgreSQL shard 4 (additional failed lane):** Four existing
+  Custody publication test methods received native HTTP 503
+  `Product publication UNAVAILABLE`; logs do not yet establish
+  the underlying cause or a T27 regression. Do not alter Custody
+  protection/fence semantics without a scoped evidenced diagnosis.
+- Full Verification Gate failed downstream.
+
+The same-task T27 source repair is bounded to ordinary transactions
+for Notification list/detail, exact T27 forensic import proof, the
+full 151 native route expectation, the enrolled source fingerprints
+and this append-only roadmap note. No business migrations, source-owner
+transitions, grants, workflows, historical tests or security assertions
+are weakened.
+
+**Remaining T27 acceptance:** successful full exact-SHA CI, qualified
+shard 4 result, external Maven lane rerun, and separately registered
+`docs(notification): reconcile T27 generated contracts and physical dictionary`
+using actual CI artifacts before claiming strict API/dictionary equality.
+T27 stays IN PROGRESS; T28 remains PLANNED, not executed.

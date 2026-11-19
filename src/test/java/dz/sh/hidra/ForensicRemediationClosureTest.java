@@ -436,6 +436,11 @@ class ForensicRemediationClosureTest {
                 if (targetModule == null || sourceModule.equals(targetModule)) {
                     continue;
                 }
+                if (t27OwnerRoot(imported)) {
+                    if (!t27Export(source.fqcn(),imported))
+                        violations.add(source.fqcn()+" -> unauthorized T27 owner "+imported);
+                    continue;
+                }
                 if (T26_OWNER_ROOTS.stream().anyMatch(imported::startsWith)) {
                     if (!t26Export(source.fqcn(),imported))
                         violations.add(source.fqcn()+" -> unauthorized T26 owner "+imported);

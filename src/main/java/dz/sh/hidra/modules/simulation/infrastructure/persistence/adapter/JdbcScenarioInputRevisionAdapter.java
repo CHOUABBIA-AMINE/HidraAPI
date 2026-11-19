@@ -32,7 +32,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 
 /** No update, delete, or cross-owner table access is available through this adapter. */
 @Repository
-public final class JdbcScenarioInputRevisionAdapter implements ScenarioInputRevisionRepositoryPort {
+public class JdbcScenarioInputRevisionAdapter implements ScenarioInputRevisionRepositoryPort {
     private static final String TABLE="public.hidra_simulation_t31_scenario_input_revision";
     private static final String SCOPE="company_id=? AND pipeline_system_id=?";
     private final JdbcTemplate jdbc;

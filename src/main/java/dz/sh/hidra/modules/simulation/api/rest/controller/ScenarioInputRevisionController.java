@@ -70,7 +70,7 @@ public final class ScenarioInputRevisionController {
                 inputs(request.baselineReceiptId(),request.expectedManifestDigest(),request.name(),
                 request.mode(),request.boundaries(),request.durationSeconds(),request.stepSeconds(),request.requestKey())));
         return ResponseEntity.status(result.replay()?HttpStatus.OK:HttpStatus.CREATED)
-                .body(ScenarioInputRevisionResponses.revision(result));
+                .body(project(result));
     }
     @NativeProtectedOperation
     @PostMapping("/{scenarioId}/revisions")
@@ -84,7 +84,7 @@ public final class ScenarioInputRevisionController {
                 inputs(request.baselineReceiptId(),request.expectedManifestDigest(),request.name(),
                 request.mode(),request.boundaries(),request.durationSeconds(),request.stepSeconds(),request.requestKey())));
         return ResponseEntity.status(result.replay()?HttpStatus.OK:HttpStatus.CREATED)
-                .body(ScenarioInputRevisionResponses.revision(result));
+                .body(project(result));
     }
     @NativeProtectedOperation
     @GetMapping("/{scenarioId}/revisions/{revision}")
@@ -93,7 +93,7 @@ public final class ScenarioInputRevisionController {
             @PathVariable String companyId,@PathVariable String pipelineSystemId,
             @PathVariable UUID scenarioId,@PathVariable long revision) {
         authenticated();
-        return ScenarioInputRevisionResponses.revision(useCase.read(
+        return project(useCase.read(
                 new ScenarioInputRevisionUseCase.Read(scope(companyId,pipelineSystemId),scenarioId,revision)));
     }
     @NativeProtectedOperation
@@ -103,8 +103,27 @@ public final class ScenarioInputRevisionController {
             @PathVariable String companyId,@PathVariable String pipelineSystemId,
             @PathVariable UUID scenarioId,@PathVariable long revision) {
         authenticated();
-        return ScenarioInputRevisionResponses.validation(useCase.validate(
+        return projectValidation(useCase.validate(
                 new ScenarioInputRevisionUseCase.Read(scope(companyId,pipelineSystemId),scenarioId,revision)));
+    }
+    private static ScenarioInputRevisionResponses.Revision project(ScenarioInputRevisionUseCase.Result result) {
+        ScenarioInputRevision v=result.revision();
+        var b=v.baseline();
+        var boundaries=v.inputs().boundaries().stream().map(x->
+                new ScenarioInputRevisionResponses.Boundary(x.slot().name(),x.value(),
+                        x.unit().name(),x.si(),
+                        x.slot()==ScenarioInputRevision.Slot.SUPPLY_PRESSURE?"PA":"KG_PER_S")).toList();
+        return new ScenarioInputRevisionResponses.Revision(v.scenarioId(),v.revision(),v.expectedRevision(),
+                v.scope().companyId(),v.scope().pipelineSystemId(),v.inputs().name(),
+                v.inputs().mode().name(),
+                new ScenarioInputRevisionResponses.Baseline(b.receiptId(),b.manifestId(),b.epoch(),b.digest()),
+                boundaries,v.inputs().durationSeconds(),v.inputs().stepSeconds(),
+                v.inputs().requestKey(),v.inputDigest(),v.policyId(),
+                v.validationStatus(),v.numericalCapability(),v.recordedAt(),result.replay());
+    }
+    private static ScenarioInputRevisionResponses.Validation projectValidation(ScenarioInputRevisionUseCase.Validation v) {
+        return new ScenarioInputRevisionResponses.Validation(v.scenarioId(),v.revision(),v.inputDigest(),v.policyId(),
+                v.status(),v.numericalCapability(),List.copyOf(v.diagnostics()));
     }
     private static ResponseEntity<ProblemDetail> error(HttpStatus status,String code) {
         var body=ProblemDetail.forStatusAndDetail(status,"Scenario input request not completed");

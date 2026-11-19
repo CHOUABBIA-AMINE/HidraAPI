@@ -5922,3 +5922,30 @@ and appends this evidence record, preserving every other T31 source, test,
 migration and CI evidence identity. This is a source repair, not successful
 compiler or runtime acceptance. The final reconciled T31 CI gate remains OPEN;
 do not advance to T32.
+
+### T31 failed-CI startup and transport boundary repair — 2026-11-19
+
+The guarded T31 repair commit `c2642684ffbde0768a6c146059591880fedd5c63`
+had [HidraAPI CI #1326 attempt 1](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44629080022)
+FAILED; its exact-SHA Documentation CI #1171 passed. The first compilation
+defect was resolved, but hosted runtime startup now fails because Spring
+tries to CGLIB-proxy the `final` JDBC scenario adapter; all affected
+PostgreSQL shards consequently fail application-context startup.
+The Java/architecture job independently reports HRA-102 on a direct
+non-enum Domain import from the scenario response DTO and a frozen
+155-entry expected native-route set that lacks the four registered T31
+routes, although the actual protected route inventory has 159 entries.
+
+The owner-directed, single-task failure repair uses exact message
+`fix(simulation): restore T31 startup and transport boundaries` and changes only:
+- `src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/adapter/JdbcScenarioInputRevisionAdapter.java`: allow required Spring proxying without bypassing transactions or protected authorization
+- `src/main/java/dz/sh/hidra/modules/simulation/api/rest/response/ScenarioInputRevisionResponses.java`: transport-only records, no non-enum Domain import
+- `src/main/java/dz/sh/hidra/modules/simulation/api/rest/controller/ScenarioInputRevisionController.java`: relocate explicit domain-to-transport mapping to the controller
+- `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java`: add exactly the four genuine T31 routes to the frozen expected set, leaving negative security checks intact
+- `.github/ci-test-inventory.json`: update only that modified test's source SHA-256
+- `doc/roadmap/ROADMAP.md`: append this provenance and retain T31 IN PROGRESS
+
+No migration, numerical solver, grant-policy, registry or unrelated workflow
+changes are authorized. Source repair is not proof of startup or GZ2
+qualification. T31 remains IN PROGRESS until canonical contract/dictionary
+reconciliation and passing exact-SHA Full Verification Gate; T32 is not selected.

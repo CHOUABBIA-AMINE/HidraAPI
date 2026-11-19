@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `3ca97bccc11f9db0e7269bd0a083cc07085c10fc`
+Captured source SHA: `0ac7ae984269c8e76c8fc303843c6c2ca0ce0978`
 PostgreSQL server: `16.16 (Debian 16.16-1.pgdg13+1)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `52480a372a45d96707d338764275d38fd2098858b9b60f667c9105857a822c12`.
-Migrations: 232; JPA mappings: 471; catalog relations: 613; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `e3e2ec68d0ee7e16888af94ce6bd5ac6431813ae1c7c20eea5386fafb0a3e5e8`.
+Migrations: 233; JPA mappings: 471; catalog relations: 613; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -34668,6 +34668,7 @@ Persisted WorkflowDefinitionJpaEntity state; semantic authority remains with wor
 - Migration mention (not inferred introduction): [V20261006_014__hmr_055_workflow_instance.sql](../../src/main/resources/db/migration/V20261006_014__hmr_055_workflow_instance.sql)
 - Migration mention (not inferred introduction): [V20261006_015__hmr_061_workflow_transition.sql](../../src/main/resources/db/migration/V20261006_015__hmr_061_workflow_transition.sql)
 - Migration mention (not inferred introduction): [V20261027_005__workflow_custody_publication_policy.sql](../../src/main/resources/db/migration/V20261027_005__workflow_custody_publication_policy.sql)
+- Migration mention (not inferred introduction): [V20261119_003__t30_workflow_configuration_lock.sql](../../src/main/resources/db/migration/V20261119_003__t30_workflow_configuration_lock.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -34728,6 +34729,7 @@ Persisted WorkflowDefinitionTargetBindingJpaEntity state; semantic authority rem
 - Migration mention (not inferred introduction): [V20260611_016__create_workflow_tables.sql](../../src/main/resources/db/migration/V20260611_016__create_workflow_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_002__enforce_same_module_reference_integrity_b.sql](../../src/main/resources/db/migration/V20260929_002__enforce_same_module_reference_integrity_b.sql)
 - Migration mention (not inferred introduction): [V20261006_014__hmr_055_workflow_instance.sql](../../src/main/resources/db/migration/V20261006_014__hmr_055_workflow_instance.sql)
+- Migration mention (not inferred introduction): [V20261119_003__t30_workflow_configuration_lock.sql](../../src/main/resources/db/migration/V20261119_003__t30_workflow_configuration_lock.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -35444,6 +35446,7 @@ Persisted WorkflowCatalogEntryJpaEntity state; semantic authority remains with w
 - Migration mention (not inferred introduction): [V20261101_002__workflow_topology_characteristic_approval_catalog.sql](../../src/main/resources/db/migration/V20261101_002__workflow_topology_characteristic_approval_catalog.sql)
 - Migration mention (not inferred introduction): [V20261111_002__topology_engineering_baseline_publication.sql](../../src/main/resources/db/migration/V20261111_002__topology_engineering_baseline_publication.sql)
 - Migration mention (not inferred introduction): [V20261118_004__t25_scoped_report_rendering.sql](../../src/main/resources/db/migration/V20261118_004__t25_scoped_report_rendering.sql)
+- Migration mention (not inferred introduction): [V20261119_003__t30_workflow_configuration_lock.sql](../../src/main/resources/db/migration/V20261119_003__t30_workflow_configuration_lock.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|

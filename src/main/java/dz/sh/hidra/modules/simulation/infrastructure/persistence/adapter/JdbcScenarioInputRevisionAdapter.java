@@ -54,10 +54,12 @@ public class JdbcScenarioInputRevisionAdapter implements ScenarioInputRevisionRe
         return jdbc.query("SELECT * FROM "+TABLE+" WHERE "+SCOPE+" AND scenario_id=? AND revision=?",
                 (rs,n)->row(rs),s.companyId(),s.pipelineSystemId(),id,revision).stream().findFirst();
     }
+    // A revision is immutable: do not lock its predecessor FOR UPDATE.
+    // The (scenario_id, revision) primary key and INSERT ON CONFLICT arbitrate concurrent appends.
     @Override public Optional<ScenarioInputRevision> head(Scope s,UUID id) {
         active();
         return jdbc.query("SELECT * FROM "+TABLE+" WHERE "+SCOPE+
-                " AND scenario_id=? ORDER BY revision DESC LIMIT 1 FOR UPDATE",
+                " AND scenario_id=? ORDER BY revision DESC LIMIT 1",
                 (rs,n)->row(rs),s.companyId(),s.pipelineSystemId(),id).stream().findFirst();
     }
     @Override public Optional<ScenarioInputRevision> byRequest(Scope s,String actor,String key) {

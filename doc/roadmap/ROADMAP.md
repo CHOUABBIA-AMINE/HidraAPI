@@ -5949,3 +5949,37 @@ No migration, numerical solver, grant-policy, registry or unrelated workflow
 changes are authorized. Source repair is not proof of startup or GZ2
 qualification. T31 remains IN PROGRESS until canonical contract/dictionary
 reconciliation and passing exact-SHA Full Verification Gate; T32 is not selected.
+
+### T31 failed-CI concurrent revision arbitration repair — 2026-11-19
+
+The exact source SHA `e89189a9d09dc2b5a983e43974138ba7b429cd55`
+had [HidraAPI CI #1327 attempt 1](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44631200998)
+FAILED. Its unit/architecture lane and twelve of fourteen PostgreSQL
+integration shards passed. The signed GZ2 shard 12 reached actual T31
+scenario creation but the simultaneous two-writer append returned
+`201` and `503` rather than the required `201` and `409`
+(`Gz2SignedWorkflowNativeHttpPostgresIntegrationTest.prepareScenarioInputs`,
+line 237). This is a functional failure, not accepted race behavior.
+The API contract/dictionary job and PostgreSQL shard 11 also failed
+before verification because `wget` could not retrieve Maven 3.9.11
+from Maven Central. That independent runner dependency/network failure
+is not attributed to T31 source. Exact-SHA Documentation CI #1172 passed.
+
+The narrow T31 repair is registered as
+`fix(simulation): arbitrate T31 concurrent append by revision key`. It modifies only
+`src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/adapter/JdbcScenarioInputRevisionAdapter.java`
+and this append-only roadmap evidence. The immutable predecessor read
+no longer takes `FOR UPDATE`, eliminating unnecessary exclusive
+row-lock contention between concurrent writers. The actual database
+`(scenario_id,revision)` primary key, same-owner predecessor FK,
+`ON CONFLICT DO NOTHING` arbitration and application comparison
+still determine the winner and report a different-key conflict as
+HTTP `409`; the existing two-writer signed GZ2 test and every
+security/architecture assertion are preserved unchanged.
+
+This is a source-level concurrency hypothesis and repair, not proof
+that the next hosted test will pass. Do not waive the independent
+Maven-download failures or the required full combined gate; retry
+through the next exact-SHA CI. T31 remains IN PROGRESS pending the
+signed GZ2 check, actual runtime OpenAPI, PostgreSQL catalog and final
+reconciled green Full Verification Gate. T32 remains unselected.

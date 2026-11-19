@@ -16,7 +16,6 @@ package dz.sh.hidra.modules.simulation.domain.model;
 
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -25,7 +24,6 @@ import java.util.Comparator;
 import java.util.HexFormat;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
 
 /** An exact receipt is input provenance, not a live/topology node or executable model. */
@@ -47,7 +45,7 @@ public record ScenarioInputRevision(UUID scenarioId, long revision, long expecte
         public Baseline {
             Objects.requireNonNull(receiptId); Objects.requireNonNull(manifestId);
             if(epoch<1)throw invalid();
-            digest=digest(digest);
+            digest=ScenarioInputRevision.digest(digest);
         }
     }
     public record Boundary(Slot slot, BigDecimal value, Unit unit) {
@@ -75,7 +73,9 @@ public record ScenarioInputRevision(UUID scenarioId, long revision, long expecte
             expectedManifestDigest=digest(expectedManifestDigest);
             requestKey=identifier(requestKey,80);
             if(boundaries==null || boundaries.size()!=2)throw invalid();
-            boundaries=boundaries.stream().sorted(Comparator.comparing(Boundary::slot)).toList();
+            if(boundaries.stream().anyMatch(Objects::isNull))throw invalid();
+            boundaries=boundaries.stream().sorted(
+                Comparator.comparingInt(item->item.slot()==Slot.SUPPLY_PRESSURE?0:1)).toList();
             if(boundaries.get(0).slot()!=Slot.SUPPLY_PRESSURE
                     ||boundaries.get(1).slot()!=Slot.DELIVERY_MASS_FLOW)throw invalid();
             if(mode==Mode.STEADY) {

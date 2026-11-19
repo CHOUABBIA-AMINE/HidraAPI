@@ -5900,3 +5900,25 @@ canonical-document reconciliation is separately registered as
 `docs(simulation): reconcile T31 API and physical dictionary`, and
 T31 can become COMPLETED only after the final exact-SHA Full Verification
 Gate passes. T32 is not selected.
+
+### T31 failed-CI compilation repair — 2026-11-19
+
+The source implementation commit `2df5fc75ec06c2b7708d23c01d4a83c604940cb3`
+(`feat(simulation): version engine-neutral scenario inputs`) had
+[HidraAPI CI #1325](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44627982384)
+FAILED. The API contract and dictionary job and independent Java/PostgreSQL lanes
+failed at compilation; the source-linked log identifies
+`ScenarioInputRevision.Baseline` invoking its zero-argument accessor
+`digest()` with a String instead of explicitly calling the enclosing
+canonical digest validator. The same source also sorts the declared boundary
+slots by enum order, placing `DELIVERY_MASS_FLOW` ahead of
+`SUPPLY_PRESSURE`; without correction, structurally valid profiles would be
+rejected after compilation.
+
+The bounded, single-owner T31 CI repair is
+`fix(simulation): correct T31 digest lookup and boundary ordering`.
+It modifies only `src/main/java/dz/sh/hidra/modules/simulation/domain/model/ScenarioInputRevision.java`
+and appends this evidence record, preserving every other T31 source, test,
+migration and CI evidence identity. This is a source repair, not successful
+compiler or runtime acceptance. The final reconciled T31 CI gate remains OPEN;
+do not advance to T32.

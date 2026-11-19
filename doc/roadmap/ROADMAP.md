@@ -9,7 +9,7 @@
 | Status | ACTIVE |
 | Authority | Sole task register and execution source for HidraAPI |
 | Owner adoption | 2026-11-10 |
-| Active task selection | T25 COMPLETED for synthetic software acceptance on CI #1306 attempt 2. T26 is the next task and remains PLANNED with a registered implementation envelope. |
+| Active task selection | T26 CI passed on #1308 attempt 2 and remains IN PROGRESS for the outstanding registered acceptance evidence below. T27 is selected for planning and has a registered implementation envelope. |
 
 The task register controls scope, dependencies, status and acceptance. Existing technical policy and verified implementation evidence retain their applicability. Task status advances only with recorded evidence. The initial status for each task is PLANNED. The first candidate is T01.
 
@@ -118,7 +118,7 @@ A task includes its required authorization, REST contract, persistence, failure 
 | **T23 · Execute and retrieve a deterministic analytics metric** | Analytics with source owners | One supported metric and eligible versioned input, such as T11 | Execute the metric, persist durable run/result state and expose source lineage, units and version. | Synthetic inputs produce a predictable value after restart. Bad inputs have explicit failed/unavailable outcomes. **FG-11 / A11.** | COMPLETED |
 | **T24 · Discover and supersede controlled Documents** | Documents with target owners | Existing byte upload/download and owner target references | Expose scoped discovery, exact version/link history, acceptance and supersession where required. | An authorized client can discover and retrieve exact bytes and hash for old and current versions. Revoked users cannot download. **FG-14 / A14.** | COMPLETED |
 | **T25 · Render and download an authorized report** | Reporting with Documents and Workflow | T24 and an eligible approved report input, such as T23 | Admit template and parameters, render a durable artifact and expose run status and scoped byte retrieval. | Downloaded bytes match the stored hash and exact input version. Failed rendering cannot produce a downloadable success. **FG-12 / A12.** | COMPLETED |
-| **T26 · Execute and replay a governed synthetic exchange** | Integration with receiving owner | Supported synthetic mapping and receiving contract | Expose mapping version, job/attempt/result, dead letter and privileged replay for one exchange. | Simulated transient failure and authorized replay yield one receiving outcome and a durable attempt history. **FG-15 / A15.** | PLANNED |
+| **T26 · Execute and replay a governed synthetic exchange** | Integration with receiving owner | Supported synthetic mapping and receiving contract | Expose mapping version, job/attempt/result, dead letter and privileged replay for one exchange. | Simulated transient failure and authorized replay yield one receiving outcome and a durable attempt history. **FG-15 / A15.** | IN PROGRESS |
 | **T27 · Deliver a recipient-scoped notification inbox** | Notification | One eligible business event and a supported delivery channel | Expose inbox, delivery state and recipient acknowledgement independently of business workflow state. | Intended recipient reads and acknowledges one notification. Foreign recipient cannot see it. The underlying task state is unchanged by acknowledgement. **FG-16 / A16.** | PLANNED |
 | **T28 · Search and export scoped Audit evidence** | Audit with Identity and Documents where needed | Durable owner events and authorized export storage | Expose typed event search, export state, manifest/hash and scoped retrieval. Recheck current grant at download. | Export contains only the admitted company, asset and time window. Download after revocation is denied and access evidence is retained. **FG-17 / A17.** | PLANNED |
 | **T29 · Verify typed owner read coverage** | Business resource owners with Identity | Each affected owner workflow. Check the early workflows during T15. | Verify scoped list/detail/history and pagination/count for affected workflows. Close residual read gaps within the responsible owner. | Independent clients can find completed records by business key. Unauthorized, unavailable and legitimately empty results are distinct. **FG-13 / A13.** | PLANNED |
@@ -4335,3 +4335,221 @@ compatibility and reproduced the committed dictionary from the hosted catalog.
 Local Maven compilation was blocked by Maven Central DNS resolution. T26
 remains IN PROGRESS pending the replacement exact-SHA Full Verification Gate.
 T27 remains unselected.
+
+### T26 exact-SHA CI result and T27 implementation envelope — 2026-11-19
+
+[T26 CI #1308 attempt 2](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44471557387/attempts/2)
+and [Documentation Validation #1148](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44471557395)
+passed on `da90858e90e853ca3b056a3c572e382981f9ab77`, parent
+`ab5630d9ad973716c2b7976250a224b48ff33c91`, tree
+`0891fe961ebb93a2170fc27f157cc41433793708`.
+The [Full Verification Gate evidence](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44471557387/artifacts/14507853091)
+reports 605 test classes and 4,487 tests with zero failures, errors, or skips
+in required development lanes. GitHub lists the ZIP digest as
+`7d96d83681101dba6d280a53c7ae665c492e6087d74daabbc51915eea3f3279a`.
+PostgreSQL shards 5 and 8 passed on attempt 2 after their attempt-1 Maven
+distribution download failures. The gate verified the remaining mandatory
+lanes using attempt-1 evidence from the same run and SHA. The optional
+serial verification job was skipped by workflow design. Strict OpenAPI
+and physical dictionary equality passed with 456 paths, 501 operations,
+539 schemas, 230 migrations, 471 JPA mappings, 608 catalog relations and
+zero unresolved owners.
+
+**T26 CI-passed, core A15 proved, wider acceptance open.** The signed
+PostgreSQL journey in shard 8 demonstrates transient receiver rollback,
+a single durable receiving draft after a distinct reviewer replays, two
+native runs and retained attempt history after restart, changed-payload
+and stale replay HTTP 409, and denial to an unrelated actor. The roadmap's
+broader T26 acceptance checklist also names simultaneous same-key submit
+and competing replay, explicit revoked access, scope and mapping mismatch,
+direct SQL commit guards, and failed recovery after restart. The enrolled
+T26 journey and reviewed test inventory do not establish all of those
+cases. T26 remains IN PROGRESS pending evidence or an explicit owner
+decision reconciling that checklist. Engineering and operational acceptance
+remain separate. T27 is selected for planning. Sequence permits T27 source
+execution only after that T26 gate and successful Documentation Validation
+on this registration, followed by the owner's next execution instruction.
+
+#### T27 scope and dependencies
+
+**T27 — Deliver a recipient-scoped notification inbox (FG-16 / A16).**
+Use one event, `WORKFLOW_REPORT_REVIEW_TASK_ASSIGNED_V1`, and one channel,
+`WEB`. Workflow owns task assignment and status. Reporting owns the
+request and its company/facility locator. Notification owns inbox delivery
+and acknowledgement. Identity owns live grants and actor identity. Topology
+owns current facility-to-company linkage. The WEB delivery receipt means
+the item was durably made available in HidraAPI. The existing local async
+gateway accepts provider requests and supplies no proof of WEB delivery
+or receipt. Existing legacy Notification entities and ingress endpoints
+remain separate from this protected slice.
+
+**Source event.** Hook the existing native Workflow task creation use case
+after a validated task save. Require a current ACTIVE Workflow definition
+with code `T27_SCOPED_REPORT_APPROVAL_INBOX_V1` and matching running version,
+an exact active `reporting / REPORT_REQUEST / REPORT_APPROVAL` binding,
+and a new OPEN task directly assigned to one eligible actor other than the
+instance starter. Resolve the current step's `defaultAssignmentRuleId` through the existing
+rule repository. Require an active rule for the same definition and step
+and the same actor; resolve `DIRECT` through the active assignment-mode
+catalog. The persisted task may omit its optional assignment-mode ID,
+but a supplied mode must also resolve to DIRECT. Exclude role,
+organization pool and target owner indirection. Existing validation and configured authorization remain
+in force. Only the corresponding Reporting owner callback can translate
+the admitted target into an inbox command. Default callback denies for an
+opted-in flow with unavailable ownership resolution. Ordinary Workflow
+definitions and unselected assignment forms produce no T27 event.
+
+Use the existing Reporting owner access check in the original transaction.
+Resolve the exact T25 request and fixed scope from the Reporting repository,
+require its current SUBMITTED phase and a current authorized request
+starter, and pass only task ID, persisted audience actor, scope and the
+assignment timestamp to Notification. The callback and Notification export
+join the original transaction with MANDATORY propagation. A failed insert
+rolls back the task and inbox write together. Notification cannot call back
+into Workflow for acknowledgement. No generated events from older tasks,
+new workflow definition seeds, provider delivery, external transport,
+free-text rendering, or background dispatch enter this slice.
+
+**Notification state and persistence.** Create one immutable WEB item per
+admitted Workflow task. Event identity is the fixed event type plus the
+persisted Workflow task ID, never a client key. Duplicate internal delivery
+with the exact same scope, recipient and assignment timestamp returns the
+stable item. A conflicting replay fails the caller transaction. Reuse the
+existing domain enums for `WEB` and acknowledgement status where applicable.
+Mint a server UUID for the item. Store fixed event code, company and facility
+IDs, recipient actor ID, Workflow task ID, and assigned/delivered timestamps.
+Expose a fixed safe message code. An inbox item has `DELIVERED` delivery and
+`REQUIRED` acknowledgement until the single durable acknowledgement exists.
+That insert derives the actor from current authority; repeated or concurrent
+acknowledgements return the originally committed timestamp. It does not
+update the item, Workflow task, Workflow instance, or approval evidence.
+
+Add `public.hidra_notification_t27_inbox_item` and
+`public.hidra_notification_t27_inbox_acknowledgement`. For the item require
+nonblank, bounded owner identifiers, fixed event/channel, correct timestamp
+ordering, and unique event identity. Add a descending index on company,
+facility, recipient, delivered timestamp and UUID for keyset scans.
+Acknowledgement has one row per item and a local composite FK binding item
+ID and original recipient actor. Require the DB acknowledgement timestamp
+to be at or after delivery under that item lock. Block UPDATE, DELETE and
+TRUNCATE on both tables. Store external owner identifiers as scalars with no
+cross-owner FKs. Use PostgreSQL insert-on-conflict and a scoped reread that
+compares the original immutable fields. Unexpected persistence failures stay
+server errors.
+
+#### T27 REST and access contract
+
+Base path `/api/v1/notification/companies/{companyId}/facilities/{facilityId}`.
+
+| Operation | Exact controller method signature | Contract |
+|---|---|---|
+| GET `/inbox` | `list(String companyId, String facilityId, Integer limit, String cursor)` | Operation ID `listT27NotificationInbox`. Default 25, max 100, descending `(deliveredAt,id)`, exclusive cursor, fetch at most limit + 1. Return `items` and optional `nextCursor` with no counts. |
+| GET `/inbox/{notificationId}` | `detail(String companyId, String facilityId, String notificationId)` | Operation ID `readT27NotificationInboxItem`. Return the recipient's current delivery and acknowledgement state. |
+| POST `/inbox/{notificationId}/acknowledgement` | `acknowledge(String companyId, String facilityId, String notificationId)` | Operation ID `acknowledgeT27NotificationInboxItem`. Bodyless and idempotent. Return HTTP 200 and the same acknowledgement receipt on retry. |
+
+Use explicit DTOs with unique T27 schema names. Allow only notification UUID,
+event/message codes, WEB channel, delivery status, delivered timestamp,
+acknowledgement status and optional acknowledged timestamp. No report or
+Workflow identifiers, recipient PII, user-supplied content or provider
+references are returned. No client recipient selector, list-wide totals,
+provider diagnostics or legacy list aliases. Encode the cursor as bounded
+base64url of a versioned delivered-time/UUID tuple, validate syntax and
+precision and use it only as a SQL boundary after access checks.
+
+All routes require `notification:inbox:read`. The POST also requires
+`notification:inbox:acknowledge`. Seed only those permission identities,
+with no grants. Identity must recheck the exact signed, current native LOCAL
+session, explicit current direct permits for CUSTOM
+`notification-company:<companyId>` and FACILITY `<facilityId>`, and
+deny-precedence under the same transaction. Reuse the current Identity ports
+and evaluator. Topology must confirm current active facility ownership in
+that company. Resolve authority before any inbox query and include company,
+facility and authenticated recipient in every read, row lock and write.
+Unauthenticated callers use existing authentication errors. Authenticated
+out-of-scope or unknown item IDs share a non-disclosing not-found response.
+An authorized foreign recipient with an empty inbox sees an empty list.
+Existing report/action endpoints continue to apply their own owner and
+Workflow authority. Inbox grants confer no Workflow permissions.
+
+#### T27 exact implementation file ledger
+
+Baseline: `da90858e90e853ca3b056a3c572e382981f9ab77`. Refresh main,
+CI, migration ordering and existence checks at execution. The following
+paths define the one implementation commit
+`feat(notification): deliver recipient-scoped workflow inbox`.
+
+| Action | Exact repository path | Required change |
+|---|---|---|
+| CREATE | `src/main/java/dz/sh/hidra/modules/notification/domain/model/WorkflowInboxItem.java` | Immutable event/audience/scope/timestamp invariants and acknowledgement state projection. Use existing Notification channel and acknowledgement values. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/notification/application/port/in/WorkflowInboxUseCase.java` | Typed list, detail and idempotent acknowledgement operations with bounded cursor and safe response records. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/notification/application/port/out/WorkflowInboxRepositoryPort.java` | Exact internal event replay, scoped list/detail and locked immutable acknowledgement persistence. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/notification/application/port/out/WorkflowInboxAccessPort.java` | Resolve the current recipient using live read/ack grants and exact facility ownership. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/notification/application/contract/reporting/ReportReviewTaskInboxContract.java` | Single Reporting-consumer inbound export for a typed admitted task-assignment event. No generic publication or recipient API. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/notification/application/service/WorkflowInboxApplicationService.java` | Implement both inbound interfaces. Join the source transaction for publication. Authorize and perform recipient reads/ack within their own local transactions. Never mutate source owner state. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/notification/infrastructure/integration/WorkflowInboxAccessAdapter.java` | Sole Notification consumer of the two new owner exports. Require authorized actor and matching current facility owner. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/notification/infrastructure/persistence/adapter/JdbcWorkflowInboxRepositoryAdapter.java` | Notification-only JDBC; explicit domain mapping, bounded recipient keyset queries, atomic event and acknowledgement inserts, and scoped idempotent rereads. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/notification/api/rest/controller/WorkflowInboxController.java` | Three native controller methods and stable operation IDs above. Require the exact native registry annotations. Validate opaque bounds and explicitly map response fields. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/notification/api/rest/response/WorkflowInboxResponses.java` | Explicit records `T27InboxPage` and `T27InboxItem`. Expose only the allowlisted safe fields and server cursor. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/application/contract/notification/NotificationInboxAuthorizationContract.java` | Export only current recipient authority for the two exact Notification permission codes and supplied scope. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/identity/application/service/NotificationInboxAuthorizationQueryService.java` | MANDATORY scoped auth. Reuse the signed LOCAL actor, direct grant evidence, assertions, authorization evidence and deny-precedence evaluator used by T26. Fail closed without disclosing scope. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/topology/application/contract/notification/NotificationInboxFacilityOwnershipContract.java` | Export the current active facility ID and company ID only. No Topology entities or peer repositories. |
+| CREATE | `src/main/java/dz/sh/hidra/modules/topology/application/service/NotificationInboxFacilityOwnershipQueryService.java` | MANDATORY adapter over Topology's existing locked facility proof, following the T26 scope bridge pattern. |
+| CREATE | `src/main/resources/db/migration/V20261119_001__t27_recipient_scoped_notification_inbox.sql` | Create two Notification-owned immutable tables, exact uniqueness, timestamp/recipient fences, scan index and two ungranted permission identities. No legacy data copy or tenant configuration. |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/workflow/application/service/WorkflowApplicationService.java` | The existing native task-creation path checks the opted-in current definition and delegates exact source qualification after saving the task, inside its transaction. Preserve non-selected definition paths and response mapping. |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/workflow/application/service/WorkflowExecutionOwnership.java` | Use the existing step-assignment rule repository port and current actor resolution to match the persisted direct assignee and configured active rule, then dispatch to exactly one Reporting target owner. Preserve existing protected checks and direct constructor callers by retaining existing signatures where used. |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/workflow/application/contract/target/WorkflowOwnedTargetLookup.java` | Add a narrow default-deny callback for the opted-in report review task. Accept only task/target/actor identifiers and assignment timestamp. Preserve existing lookup implementations and methods. |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/reporting/infrastructure/integration/ScopedReportWorkflowTargetLookup.java` | Implement the callback in the original transaction. Revalidate the submitted T25 request and current authorized starter. Resolve scope from the owner row. Sole Reporting consumer of the new Notification export. |
+| UPDATE | `src/main/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistry.java` | Add exactly three handler/method/path/signature tuples, raising 148 to 151. Do not admit other Notification routes through the native exemption. |
+| UPDATE | `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistryTest.java` | Assert exact three route tuples, method signatures and total 151. |
+| UPDATE | `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java` | Assert registration and protection for intended paths and exclusion of wrong verbs, legacy/sibling paths, and aliases. |
+| UPDATE | `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteStartupValidatorTest.java` | Validate full 151-tuple native registry at startup. |
+| UPDATE | `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java` | Admit the three exact exports to their named consumers only, including declared nested types. Check the transactional source boundary and reject direct foreign persistence access and lookalike imports. |
+| UPDATE | `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java` | Mirror exact source-level consumers and export roots without widening package rules. |
+| UPDATE | `src/test/java/dz/sh/hidra/qualification/Gz2ScopedReportNativeHttpPostgresIntegrationTest.java` | Extend the existing signed T25 journey before Workflow review and after its existing restart with the A16 checks below. Use the existing fixture APIs and keep additional SQL seeding local to this test. Preserve original T25 assertions. |
+| UPDATE | `.github/ci-test-inventory.json` | Regenerate fingerprints for changed enrolled tests and document T27 coverage in the existing signed T25 PostgreSQL lane. Keep the selected test and all 14 shards. |
+| UPDATE | `.github/database-dictionary-ownership.json` | Add exact ownership records for both new public relations, with the owning migration and JDBC adapter as evidence. |
+| UPDATE | `doc/architecture/CROSS_MODULE_CONTRACTS.md` | Register exactly the new Notification, Identity and Topology exports, sole consumers, and existing Workflow callback extension. |
+| UPDATE | `doc/modules/notification.md` | Describe scope, publication authority, what WEB delivery proves, acknowledgement semantics, and existing legacy behavior. |
+| UPDATE | `doc/roadmap/ROADMAP.md` | Append implementation evidence and actual validation results. |
+
+Implementation totals **15 CREATE, 16 UPDATE, zero DELETE**. No changes to CI
+workflows, historical migrations, legacy Notification ingress, Workflow
+transition/decision rules or previously accepted contracts. Standard generated
+files are a conditional same-task follow-up. Only **UPDATE**
+`doc/api/openapi.yaml`, `doc/database/DATA_DICTIONARY.md`,
+`.github/documentation-validation.json` and `doc/roadmap/ROADMAP.md` using genuine
+runtime OpenAPI and fresh PostgreSQL artifact provenance, in the separately
+selected commit `docs(notification): reconcile T27 generated contracts and physical dictionary`.
+Review exactly three added operations and the two new physical relations,
+dedicated schemas and the strict dictionary comparison. Preserve both strict
+gates and keep T27 in progress until exact-SHA required CI is green.
+
+#### T27 acceptance and publication
+
+Extend the existing signed T25 GZ2 client journey. Opt in the synthetic report
+review definition and attach its current direct rule as the step default. Give the recipient both inbox
+permissions and a signed non-recipient the same scoped permissions to isolate
+recipient filtering. Verify no item before native task creation. Inject one
+test-only failure at the Notification insert and verify no committed task or
+inbox row from that call. Then create the authorized direct task, obtain the
+single item through the inbox, and verify the WEB delivery and REQUIRED
+acknowledgement. Create a second genuine assignment on a separate submitted
+report request for the same recipient. Check list/detail consistency and
+paginate with limit 1, including continuation without row duplication or totals. Test cross-recipient
+detail/ack, mispaired company/facility access, and read-only acknowledgement
+denial. Race two authorized acknowledgements, replay and verify one persisted
+recipient receipt and the same timestamp. Compare Workflow task status,
+updated token and action history before and after acknowledging, then prove
+the original separately authorized Workflow decision and T25 render/seal still
+work. After the existing process restart, verify the inbox receipt and deny
+the still-signed recipient after revoking an applicable Notification grant.
+Check row immutability/recipient consistency at the PostgreSQL boundary.
+Do not seed inbox rows as substitutes for the real business event.
+
+Run applicable static checks, Java 21 unit/architecture, all PostgreSQL shards,
+OpenAPI compatibility and equality, dictionary equality and Full Verification
+Gate on the published source and reconciliation SHAs as applicable. Use
+synthetic data and the fresh migration chain. This registration is only
+`docs(roadmap): record T26 CI acceptance evidence and register T27 envelope`,
+updates this roadmap alone, and leaves T27 PLANNED with the sequence gates above.
+T28 remains the next later roadmap candidate.

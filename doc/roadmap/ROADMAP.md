@@ -121,8 +121,8 @@ A task includes its required authorization, REST contract, persistence, failure 
 | **T26 · Execute and replay a governed synthetic exchange** | Integration with receiving owner | Supported synthetic mapping and receiving contract | Expose mapping version, job/attempt/result, dead letter and privileged replay for one exchange. | Simulated transient failure and authorized replay yield one receiving outcome and a durable attempt history. **FG-15 / A15.** | COMPLETED |
 | **T27 · Deliver a recipient-scoped notification inbox** | Notification | One eligible business event and a supported delivery channel | Expose inbox, delivery state and recipient acknowledgement independently of business workflow state. | Intended recipient reads and acknowledges one notification. Foreign recipient cannot see it. The underlying task state is unchanged by acknowledgement. **FG-16 / A16.** | COMPLETED |
 | **T28 · Search and export scoped Audit evidence** | Audit with Identity and Documents where needed | Durable owner events and authorized export storage | Expose typed event search, export state, manifest/hash and scoped retrieval. Recheck current grant at download. | Export contains only the admitted company, asset and time window. Download after revocation is denied and access evidence is retained. **FG-17 / A17.** | COMPLETED |
-| **T29 · Verify typed owner read coverage** | Business resource owners with Identity | Each affected owner workflow. Check the early workflows during T15. | Verify scoped list/detail/history and pagination/count for affected workflows. Close residual read gaps within the responsible owner. | Independent clients can find completed records by business key. Unauthorized, unavailable and legitimately empty results are distinct. **FG-13 / A13.** | IN PROGRESS |
-| **T30 · Verify authority for supported Workflow targets** | Workflow with participating target owners | Each supported owner workflow. Check Planning, baseline and escalation during T15. | Verify definition eligibility, exact target linkage, current/delegated authority and supported transitions. Close residual owner-specific gaps. | Wrong-target, stale, revoked and self-review cases fail where applicable. Terminal state and decision provenance remain retrievable. **FG-18 / A18.** | PLANNED |
+| **T29 · Verify typed owner read coverage** | Business resource owners with Identity | Each affected owner workflow. Check the early workflows during T15. | Verify scoped list/detail/history and pagination/count for affected workflows. Close residual read gaps within the responsible owner. | Independent clients can find completed records by business key. Unauthorized, unavailable and legitimately empty results are distinct. **FG-13 / A13.** | COMPLETED |
+| **T30 · Verify authority for supported Workflow targets** | Workflow with participating target owners | Each supported owner workflow. Check Planning, baseline and escalation during T15. | Verify definition eligibility, exact target linkage, current/delegated authority and supported transitions. Close residual owner-specific gaps. | Wrong-target, stale, revoked and self-review cases fail where applicable. Terminal state and decision provenance remain retrievable. **FG-18 / A18.** | IN PROGRESS |
 
 ### Increment 8 — Scenario readiness and optional configuration
 
@@ -5385,3 +5385,161 @@ test-inventory, CI-workflow or dictionary changes. Fresh exact-SHA full CI with
 OpenAPI equality, strict physical dictionary equality and the complete gate is
 required before T29 software acceptance. T30 is not selected, and industrial
 qualification is not inferred.
+
+### Close T29 and register T30 Workflow authority verification — 2026-11-19
+
+**T29 — COMPLETED (development software).** Source implementation
+`8e7293a61d813ecfa7e640e2077da604c86e5363` and canonical reconciliation
+`378ed4c0e9d33950431bfffa69806a54bced5ea1` passed on the latter exact SHA,
+tree `27dde28da1baac82af4a023e56a814c9ca682f82), in
+[HidraAPI CI #1319 attempt 2](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44549523725/attempts/2).
+The [Full Verification Gate](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44549523725/job/135661607264)
+verified 4,501 tests across 605 classes with zero failures, errors or skipped
+tests. It accepted the rerun of PostgreSQL shard 7 (the first attempt
+received a 503 in a Custody product publication prerequisite) and the
+successful same-run, same-SHA artifacts from attempt 1. Shard 6 includes
+the enrolled signed HSE/A13 test, and the
+[API contract and dictionary job](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44549523725/job/135658523199)
+passed compatibility and both strict equality checks. The retained
+[combined evidence](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44549523725/artifacts/14543273420)
+and [Documentation Validation #1162](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44549523869)
+close the registered FG-13/A13 gate. The passing rerun establishes gate
+success; the earlier 503's underlying cause is not established here.
+
+**T30 — IN PROGRESS, selected and registered, source implementation pending.**
+This roadmap-only commit uses
+`docs(roadmap): close T29 and register T30 envelope`.
+After its exact-SHA Documentation Validation and a refreshed main check,
+the next source execution uses
+`fix(workflow): enforce current authority for configured decisions`.
+T31 remains PLANNED. This stage concerns existing Workflow and owner
+contracts; scenario execution and numerical simulation are outside scope.
+
+#### T30 scope and source findings
+
+Workflow owns the configured definition/version, exact type/purpose binding,
+task and instance state, transition execution and immutable action/history.
+Identity and Organization retain current actor, permission and assignment
+eligibility. Target owners retain current business scope, independent
+review requirements, target identity and owner-side effects. Preserve all
+existing owner entry points and exact target admission. A child action or
+Workflow completion is not by itself an owner publication, finalization,
+case closure, accepted evidence, or OT decision.
+
+- `WorkflowApplicationService` checks ACTIVE exact definition/version and
+  binding on start. HMR-055 also checks instance writes at the database
+  boundary. `WorkflowTransitionApplicationService` explicitly rechecks the
+  full definition/version for Planning; several other families rely on
+  partial owner checks and the downstream instance write. Move the current
+  definition/version/binding check before decision writes for the existing
+  configured transition entry points, retaining the database trigger.
+- Execution currently evaluates the task version/open state before current
+  assignment and owner checks. An otherwise denied request must not
+  receive a protected task-state or CAS diagnosis. The available-actions
+  query uses assignment and permissions but does not consistently apply the
+  current definition/version and structural eligibility used for execution.
+- `DELEGATE` exists as a decision enum, task status and persisted record model.
+  The configured executor does not validate a delegate, delegation scope,
+  provenance, expiry or revocation, and has no delegated-actor admission
+  path. Refuse DELEGATE as an executable configured transition and never
+  treat a delegation row, step flag, claimant or role label as an authority
+  grant by itself. Preserve existing valid assignment and claimable
+  organization-pool semantics. A real delegation lifecycle or granting
+  delegated authority requires a separate owner contract and separate scope.
+- Existing owner protections and proof stay enrolled in exact-SHA CI.
+  Admission coverage is the supported synthetic business workflows, not
+  every catalog entry or reference-only Workflow linkage.
+
+| Target family and authority boundary | Existing proof to retain and trace |
+|---|---|
+| Planning PLAN_REVISION and scoped nomination history | `Gz2SignedWorkflowNativeHttpPostgresIntegrationTest.java`, `PlanningCompanyScopeNativeHttpPostgresIntegrationTest.java`, and `Gz2PlanningNominationNativeHttpPostgresIntegrationTest.java`. Preserve the Planning owner decision path, exact submitted revision and independent reviewer; generic execute cannot activate a plan. |
+| Topology exact baseline and installed characteristic-link reviews | `Gz2SignedWorkflowNativeHttpPostgresIntegrationTest.java`, `EngineeringBaselineDraftNativeHttpPostgresIntegrationTest.java`, `InstalledCharacteristicLinkNativeHttpPostgresIntegrationTest.java`, and `WorkflowFoundationProcessPostgresIntegrationTest.java`. Retain exact digest/locator, reviewer admission and owner publication. |
+| Incident/Leak escalation and later reviewed disposition; Integrity/Assets handoff | `Gz2SignedWorkflowNativeHttpPostgresIntegrationTest.java`, `Gz2IncidentLeakInvestigationNativeHttpPostgresIntegrationTest.java`, and `Gz2IntegrityMaintenanceHandoffNativeHttpPostgresIntegrationTest.java`. Retain the owner-managed scoped decision/timeline or typed Workflow reference where applicable; do not add generic target admission. |
+| HSE CAPA and case closure, governed Risk and scoped Reporting | `Gz2HseCapaNativeHttpPostgresIntegrationTest.java`, `Gz2RiskAssessmentGovernanceNativeHttpPostgresIntegrationTest.java`, and `Gz2ScopedReportNativeHttpPostgresIntegrationTest.java`. Preserve HSE reviewer and Incident evidence, Risk owner-only final approval, and the Reporting independent reviewer, exact request link, and T27 notification semantics. |
+| Custody ticket and protected product publication; existing engineering-input qualification | `Gz2CustodyTransferLifecycleNativeHttpPostgresIntegrationTest.java`, `CustodyProtectedProductPublicationApprovalPostgresIntegrationTest.java`, `ProductRevisionPublicationNativeHttpPostgresIntegrationTest.java`, and `ManufacturerCharacteristicNativeHttpPostgresIntegrationTest.java`. Preserve existing proof including independent human decisions or owner publication fences where applicable. No numerical engine behavior is admitted. |
+| Shared assignment, read concealment, transitions and sequencing | `WorkflowFoundationProcessPostgresIntegrationTest.java`, `WorkflowFoundationReadAuthorizationPostgresIntegrationTest.java`, and `WorkflowExecutionPostgresTest.java`. Preserve configured APPROVE/REJECT, authorized readback and PostgreSQL concurrency guards. |
+
+#### T30 implementation contract and exact file ledger
+
+Keep the existing REST routes, schemas, status/error families and transaction
+ownership. Authenticate the actor, lock task then instance as today, and
+apply authority, assignment and protected owner checks before exposing a
+stale/closed distinction. Recheck exact active definition/version and
+active target-module/type/purpose binding with current catalog families.
+Use a Workflow-owned persisted lookup with shared row locks on the
+definition, binding and relevant catalog metadata for the command in the
+original transaction. The preview uses the same predicate without the
+command locks and retains the authorized read boundary. Keep owner-specific
+decision checks, server-side permissions, HMR constraints and task CAS.
+An authorized stale or terminal request remains a controlled conflict;
+a denied request returns the established non-disclosing denial. Unknown
+and inaccessible task identifiers must not expose task data or version.
+Use a single structural eligibility rule in execution and previews for
+same-step, wrong graph, COMMENT, DELEGATE, unsupported conditions and
+callbacks. Honor existing reason/comment requirements on execution.
+An authorized preview for non-current configuration or unsupported
+decision must not advertise it as permitted. The generic preview must
+not advertise Planning owner-only execution as permitted; preserve the
+internal Planning owner view and owner command. Preview is advisory,
+and does not replace current owner command authorization or issuer proof.
+Do not add or broaden any target owner resolver or any grant.
+
+| Action | Exact path | Bounded role |
+|---|---|---|
+| UPDATE | `src/main/java/dz/sh/hidra/modules/workflow/domain/service/WorkflowDecisionGuard.java` | Share the supported configured transition predicate across preview and execution. Keep reason/comment rules and existing enum/persisted evidence vocabulary. |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/workflow/application/port/out/WorkflowConfigurationPort.java` | Add an exact current instance-configuration check for reads and an explicit locked command variant; carry only Workflow values. Retain existing discovery/start methods. |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/workflow/infrastructure/persistence/adapter/JpaWorkflowConfigurationAdapter.java` | Evaluate definition, version, binding and both active catalog families together with parameters. Retain the matching Workflow-owned rows in the existing write transaction for command evaluation, independently of the unlocked preview read. |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/workflow/application/service/WorkflowTransitionApplicationService.java` | Deny unsupported transitions and absent current configuration before writes; sequence non-disclosing authority before CAS and retain task/instance locking, owner-specific reviews and atomic evidence. Consolidate the superseded Planning-only current definition check while retaining its exact family/purpose and owner admission. |
+| UPDATE | `src/main/java/dz/sh/hidra/modules/workflow/infrastructure/query/JpaWorkflowQueryAdapter.java` | Apply the shared structural and current configuration checks to available actions. Preserve membership/protected owner reads, current authority checks and the Planning internal action view. |
+| UPDATE | `src/test/java/dz/sh/hidra/modules/workflow/application/service/WorkflowTransitionApplicationServiceTest.java` | Prove authority and non-disclosure ordering, wrong graph, unsupported decision and inactive/mismatched configuration rejection before mutation; retain authorized stale and owner-specific checks. |
+| UPDATE | `src/test/java/dz/sh/hidra/modules/workflow/semantic/WorkflowActionSemanticRemediationTest.java` | Exercise the existing semantic fixtures through the new admission preconditions, keeping all append-only and reason/comment assertions. |
+| UPDATE | `src/test/java/dz/sh/hidra/modules/workflow/semantic/WorkflowInstanceSemanticRemediationTest.java` | Extend its explicit in-memory configuration fixture for the new contract. Preserve all HMR-055 instance behavior assertions. |
+| UPDATE | `src/test/java/dz/sh/hidra/qualification/Gz2ScopedReportNativeHttpPostgresIntegrationTest.java` | Extend the existing signed native Reporting/Workflow approval journey with the registered A18 probes, persisted evidence checks and concurrent exact replay, preserving T25/T27 assertions. |
+| UPDATE | `.github/ci-test-inventory.json` | Refresh changed test fingerprints, case names where needed, and the signed case evidence description. Preserve coverage and all fourteen shards. |
+| UPDATE | `doc/modules/workflow.md` | Explain current admission, advisory previews, separate owner operations, unsupported configured delegation and terminal evidence. |
+| UPDATE | `doc/roadmap/ROADMAP.md` | Append source delivery and acceptance status without replacing historical entries. |
+
+Create/delete none. No new REST routes, permissions, Workflow definitions
+outside synthetic tests, delegation lifecycle, migration, canonical
+snapshot rewrite, or CI workflow changes. A runtime OpenAPI or strict
+dictionary difference is a regression to diagnose against the unchanged
+external contract or persistence shape.
+
+#### Single T30 software acceptance gate
+
+Reuse the enrolled signed Reporting test on fresh PostgreSQL and the real
+native routes. Start the exact eligible Reporting instance and assign its
+independent reviewer. Use a second configured graph and another target
+under the same synthetic scope to exercise wrong transition/target
+linkage: reject a foreign-graph transition on the real task and preserve
+the existing Reporting check against consuming another target's decision.
+Show that inactivating the exact active binding suppresses permission in
+available-actions and rejects execution without writing evidence, then
+restore it. Check version mismatch and unsupported configured shapes in
+the focused application tests if the database prevents the corresponding
+fixture. Configure an attempted DELEGATE in the synthetic definition when
+allowed by HMR-061 and prove no action or state change; if constrained,
+retain the database constraint and assert refusal at the closest enrolled
+application boundary. The step flag alone must confer no authority.
+
+Use signed callers to test unrelated or wrong-scope, starter/self-review
+where the target disallows it, and a revoked reviewer grant while the JWT
+is still valid. Verify that unauthorized access does not distinguish stale
+from current versions and cannot read history. With an authorized reviewer,
+prove stale CAS rejection, then race two executions of the same current
+task/transition/version. Exactly one may commit. Verify the resulting
+terminal task and instance, one decision action, one linked state-history
+entry, exact actor/target/decision/correlation, and owner readback with the
+existing restart evidence. Rejected probes must leave action and history
+counts, task state and the owner output unchanged. Retain the existing
+T15 and target-owner cases listed above, including tests of exact linkage,
+independent decisions and owner-controlled effects.
+
+**Completion:** One successful exact-SHA HidraAPI CI Full Verification
+Gate on the final T30 source commit is sufficient for development-software
+acceptance, including signed A18, existing owner regression, static,
+unit/architecture, all 14 PostgreSQL shards, canonical OpenAPI and strict
+dictionary equality. Record that run, gate and enrolled case evidence in
+this roadmap and mark T30 COMPLETED. No manual test, separately produced
+evidence, second acceptance workflow or owner sign-off is required.
+Engineering, SITE, operational and release qualification are separate.

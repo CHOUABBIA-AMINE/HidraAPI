@@ -162,3 +162,7 @@ scoped history. The scoped closure receipt binds the admitted assessment ID.
 Signed HSE Case and CAPA Workflow approvals resolve the exact enrolled owner
 target. Workflow reads and mutations recheck live access. Decisions require
 an independent eligible human with the current HSE reviewer grant.
+
+## T29 typed owner read discovery — source change awaiting exact-SHA CI
+
+The two existing signed HSE native lists now accept optional exact `caseNumber` and `actionNumber` (trimmed, nonblank, at most 80 characters; case-sensitive), without changing operation IDs, verbs, result DTOs or page limits. Duplicate business keys remain legal. Case list streams a SQL-ordered company/FACILITY candidate cursor with bounded JDBC fetch size and authorizes all matching Incident sources before exposing any page or count. Incident proof failure aborts the whole response, including when off-page. CAPA list first authorizes its exact parent and uses one SQL statement for filtered page and total; empty and beyond-end responses retain correct totals. Legacy enrolled records remain excluded from unscoped list/count/detail, and absent well-formed legacy detail IDs return the same unavailable 404 as enrolled IDs. Generic Workbench explicitly prohibits the six derived HSE resource keys, including dependent evidence and closure. No new permission family, data migration or physical/OT capability is claimed. Signed A13 and related JVM assertions remain subject to hosted CI and exact generated OpenAPI reconciliation.

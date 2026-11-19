@@ -155,6 +155,12 @@ class HidraTrustedNativeProtectedRouteRegistryTest {
                         .collect(java.util.stream.Collectors.toSet()));
         assertTrue(routes.stream().allMatch(route ->
                 route.method().isAnnotationPresent(NativeProtectedOperation.class)));
+        assertEquals(java.util.List.of(String.class,String.class,int.class,int.class,String.class),
+                java.util.Arrays.asList(routes.stream().filter(route->route.method().getName().equals("cases"))
+                        .findFirst().orElseThrow().method().getParameterTypes()));
+        assertEquals(java.util.List.of(String.class,String.class,String.class,int.class,int.class,String.class),
+                java.util.Arrays.asList(routes.stream().filter(route->route.method().getName().equals("capas"))
+                        .findFirst().orElseThrow().method().getParameterTypes()));
     }
 
     @Test void t16ReviewerRoutesAreExactlyFourteenNativeCompiledTuples() {

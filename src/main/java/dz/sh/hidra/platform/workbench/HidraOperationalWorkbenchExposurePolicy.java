@@ -39,6 +39,11 @@ import org.springframework.stereotype.Component;
 public final class HidraOperationalWorkbenchExposurePolicy {
 
     private static final String LOCAL_CREDENTIAL_RESOURCE = "identity:local-credentials";
+    /** Exact resources from Workbench's metamodel class-name mapping. */
+    private static final Set<String> PROTECTED_HSE_RESOURCES = Set.of(
+            "hse:hse-cases", "hse:hse-corrective-preventive-actions",
+            "hse:hse-case-status-histories", "hse:hse-case-evidence-links",
+            "hse:hse-impact-assessments", "hse:hse-closures");
 
     private final Map<String, Set<String>> approvedFieldsByResource;
 
@@ -118,7 +123,9 @@ public final class HidraOperationalWorkbenchExposurePolicy {
             return true;
         }
         String normalized = key.toLowerCase(Locale.ROOT);
-        return normalized.startsWith("documents:") || normalized.contains("credential") || normalized.contains("secret");
+        return PROTECTED_HSE_RESOURCES.contains(normalized)
+                || normalized.startsWith("documents:")
+                || normalized.contains("credential") || normalized.contains("secret");
     }
 
     private static boolean isProhibitedField(String fieldName) {

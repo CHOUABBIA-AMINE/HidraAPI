@@ -81,6 +81,21 @@ class HidraOperationalWorkbenchExposurePolicyTest {
     }
 
     @Test
+    void enrolledHseRowsAndDependentEvidenceCannotBeConfiguredOrQueried() {
+        var policy = new HidraOperationalWorkbenchExposurePolicy("identity/users=id,username");
+        for (String resource : java.util.List.of("hse-cases", "hse-corrective-preventive-actions",
+                "hse-case-status-histories", "hse-case-evidence-links",
+                "hse-impact-assessments", "hse-closures")) {
+            assertThat(policy.approvedFields("HSE", resource)).isEmpty();
+            assertThatThrownBy(() -> new HidraOperationalWorkbenchExposurePolicy(
+                    "hse/" + resource + "=id;identity/users=id")).isInstanceOf(IllegalArgumentException.class);
+        }
+        assertThat(policy.approvedFields("identity", "users")).isPresent();
+        assertThat(new HidraOperationalWorkbenchExposurePolicy("hse/safety-observations=id")
+                .approvedFields("hse", "safety-observations")).isPresent();
+    }
+
+    @Test
     void passwordHashAndSecretFieldsCannotBeConfigured() {
         assertThatThrownBy(() -> new HidraOperationalWorkbenchExposurePolicy(
                 "identity/users=id,passwordHash"

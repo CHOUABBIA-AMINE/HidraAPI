@@ -1865,7 +1865,9 @@
       "cases": [
         "closedCaseCannotAdmitNewCapa",
         "deniesBeforeProtectedCaseExistenceCountsOrHistory",
+        "filteredDiscoveryProvesEvenOffPageIncidentBeforeReturningTotal",
         "missingReviewedIncidentCannotStartEnrollment",
+        "validationHappensAfterCurrentScopeProofButBeforeOwnerEnumeration",
         "wrongFacilityCannotResolveScopedExistence"
       ],
       "class": "dz.sh.hidra.modules.hse.application.service.HseCapaLifecycleApplicationServiceTest",
@@ -1874,7 +1876,7 @@
       "lane": "unit-architecture",
       "owner": "hse",
       "path": "src/test/java/dz/sh/hidra/modules/hse/application/service/HseCapaLifecycleApplicationServiceTest.java",
-      "source_sha256": "59aabb480aaf24724bf0bdf1b3816c0f57649349d9309c62abb9fd29a7602ef0",
+      "source_sha256": "60c747191c26a634b50f6904c22430ece21daeebacc6a87a780be48af9501fb9",
       "supports": []
     },
     {
@@ -1891,7 +1893,7 @@
       "lane": "unit-architecture",
       "owner": "hse",
       "path": "src/test/java/dz/sh/hidra/modules/hse/application/service/HseQueryApplicationServiceTest.java",
-      "source_sha256": "805fa7f764f0d969521cfc8ef7e4635e0f4dd294b2af8447548ae75733aa7053",
+      "source_sha256": "e4e26ad4d571326eba053c04f4a1adf2d1c0f8966d88e9959e353e0da784f04f",
       "supports": []
     },
     {
@@ -11999,7 +12001,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistryTest.java",
-      "source_sha256": "f3b011f3cf2f99acc0da24a93cdce7ce4c3ff63f32c6c8269d0f63a33dc28a2e",
+      "source_sha256": "46b22f6db43ca53359f9b34c9479ba809b8e7a17d26da7b47e955ab44935b5a6",
       "supports": []
     },
     {
@@ -12243,6 +12245,7 @@
         "blankConfigurationExposesNoResources",
         "controlledDocumentsMayNeverBeExposedThroughGenericWorkbench",
         "credentialOrSecretResourceNamesCannotBeConfigured",
+        "enrolledHseRowsAndDependentEvidenceCannotBeConfiguredOrQueried",
         "localCredentialResourceCannotBeConfigured",
         "passwordHashAndSecretFieldsCannotBeConfigured"
       ],
@@ -12252,7 +12255,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/workbench/HidraOperationalWorkbenchExposurePolicyTest.java",
-      "source_sha256": "ec3fc44a459a9e4a38c15a89e154020ad6530ef3def20ea1cdc5ed90f3de39b7",
+      "source_sha256": "8795b062a473d12f307418aa105e74565e8dedc2ce51761f9947bdb9593f6645",
       "supports": []
     },
     {
@@ -12356,12 +12359,12 @@
         "signedImpactAssessmentAndApprovedClosureSurviveRestart"
       ],
       "class": "dz.sh.hidra.qualification.Gz2HseCapaNativeHttpPostgresIntegrationTest",
-      "dependency_reason": "T17 registered fresh PostgreSQL 16 and signed native synthetic GZ2 proof; local Docker unavailable; hosted exact-SHA CI required.",
+      "dependency_reason": "T29 signed HSE A13 exact case/CAPA key discovery, scoped page/count, off-page Incident denial, legacy exclusion/404, revoked-grant, and retained T17 fresh-PostgreSQL closure/restart.",
       "fast": false,
       "lane": "postgres-integration",
       "owner": "qualification",
       "path": "src/test/java/dz/sh/hidra/qualification/Gz2HseCapaNativeHttpPostgresIntegrationTest.java",
-      "source_sha256": "f6b0db3ca39f4422fa2593af97c5c13ec93106fbb7545112199a86a2fc660071",
+      "source_sha256": "f15c5e788530a78e19232b531044bf8d9d3e48273a6e0a06dfba1980401341a1",
       "supports": []
     },
     {

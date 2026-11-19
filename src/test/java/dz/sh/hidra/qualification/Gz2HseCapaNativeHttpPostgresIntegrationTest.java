@@ -63,6 +63,7 @@ class Gz2HseCapaNativeHttpPostgresIntegrationTest {
             postgres.start();
             var f = new Gz2SignedWorkflowFixture(postgres);
             String incident = f.seedReviewedHseIncident();
+            String unreadableIncident = f.seedReviewedHseIncident();
             String caseType = f.catalog("hse", "CASE_TYPE", "GZ2_T17_CASE");
             String severity = f.catalog("hse", "CASE_SEVERITY", "GZ2_T17_CASE_SEVERITY");
             String impactType = f.catalog("hse", "GZ2_T17_IMPACT", "SYNTHETIC_OPERATIONS");
@@ -83,7 +84,8 @@ class Gz2HseCapaNativeHttpPostgresIntegrationTest {
                     """);
             var capaReview = f.review("hse", "HSE_CAPA", "HSE_CAPA_APPROVAL", true);
             var caseReview = f.review("hse", "HSE_CASE", "HSE_CASE_APPROVAL", true);
-            f.global(f.author, "workflow:instances:execute", "workflow:tasks:execute");
+            f.global(f.author, "workflow:instances:execute", "workflow:tasks:execute",
+                    "hse:cases:read", "hse:capas:read");
             f.global(f.reviewer, "workflow:tasks:execute", "workflow:tasks:read");
             f.global(f.foreign, "workflow:instances:execute", "workflow:tasks:read");
             f.grantScopedHse(f.author, "create", "read", "assess", "execute", "close");
@@ -103,12 +105,13 @@ class Gz2HseCapaNativeHttpPostgresIntegrationTest {
             long originalPid;
             ClosedJourney closed;
             var command = impact(Gz2SignedWorkflowFixture.id(), 0, impactType, "Synthetic impact assessment");
+            String caseNumber = "T17-" + id();
             try (var runtime = f.start(objects, provider)) {
                 originalPid = runtime.pid();
                 String author = runtime.login(f.author);
                 var enrolled = runtime.json("POST", route(f) + "/from-incident", author, java.util.Map.of(
                         "requestId", Gz2SignedWorkflowFixture.id(), "incidentId", incident,
-                        "caseNumber", "T17-" + Gz2SignedWorkflowFixture.id(), "title", "GZ2 HSE assessment",
+                        "caseNumber", caseNumber, "title", "GZ2 HSE assessment",
                         "caseTypeId", caseType, "severityId", severity), 201);
                 String caseId = enrolled.path("value").path("id").asText();
                 assertFalse(caseId.isBlank());
@@ -154,6 +157,86 @@ class Gz2HseCapaNativeHttpPostgresIntegrationTest {
                         "UPDATE hidra_hse_impact_assessment SET description='changed' WHERE id=?", assessmentId));
                 closed = completeClosure(f, runtime, casePath, assessmentId, author, documentType,
                         classification, linkRole, capaReview, caseReview, actionType);
+                // A13: same case number is not unique within a company/FACILITY.
+                String otherId=required(runtime.json("POST",route(f)+"/from-incident",author,java.util.Map.of(
+                        "requestId",id(),"incidentId",unreadableIncident,"caseNumber",caseNumber,
+                        "title","Second synthetic case","caseTypeId",caseType,
+                        "severityId",severity),201).path("value"),"id");
+                String otherPath=route(f)+"/"+otherId;
+                var matched=runtime.get(route(f)+"?caseNumber="+caseNumber+"&page=0&size=1",author);
+                assertEquals(2,matched.path("total").asInt());
+                assertEquals(1,matched.path("items").size());
+                assertEquals(caseId,required(matched.path("items").get(0),"id"));
+                var second=runtime.get(route(f)+"?caseNumber="+caseNumber+"&page=1&size=1",author);
+                assertEquals(2,second.path("total").asInt());
+                assertEquals(otherId,required(second.path("items").get(0),"id"));
+                var beyond=runtime.get(route(f)+"?caseNumber="+caseNumber+"&page=2&size=1",author);
+                assertEquals(2,beyond.path("total").asInt());
+                assertTrue(beyond.path("items").isEmpty());
+                var noMatch=runtime.get(route(f)+"?caseNumber=NOT-FOUND&page=0&size=1",author);
+                assertEquals(0,noMatch.path("total").asInt());
+                assertTrue(noMatch.path("items").isEmpty());
+                assertEquals(400,runtime.send("GET",route(f)+"?caseNumber=%20%20",author,null).statusCode());
+                assertEquals(400,runtime.send("GET",route(f)+"?caseNumber="+"X".repeat(81),author,null).statusCode());
+                assertEquals(400,runtime.send("GET",otherPath+"/capas?actionNumber=%20%20",author,null).statusCode());
+                String priorCapaId=closed.capaPath().substring(closed.capaPath().lastIndexOf('/')+1);
+                String number=f.sql.queryForObject("SELECT action_number FROM hidra_hse_capa WHERE id=?",
+                        String.class,priorCapaId);
+                var added1=runtime.json("POST",otherPath+"/capas",author,java.util.Map.of(
+                        "requestId",id(),"expectedCaseVersion",0,"actionNumber",number,
+                        "actionTypeId",actionType,"title","Duplicate CAPA one","ownerActorId",f.author),201);
+                var added2=runtime.json("POST",otherPath+"/capas",author,java.util.Map.of(
+                        "requestId",id(),"expectedCaseVersion",1,"actionNumber",number,
+                        "actionTypeId",actionType,"title","Duplicate CAPA two","ownerActorId",f.author),201);
+                String firstCapa=required(added1.path("value"),"id");
+                String secondCapa=required(added2.path("value"),"id");
+                var selectedCapas=runtime.get(otherPath+"/capas?actionNumber="+number+"&page=0&size=1",author);
+                assertEquals(2,selectedCapas.path("total").asInt());
+                assertEquals(firstCapa,required(selectedCapas.path("items").get(0),"id"));
+                var selectedNext=runtime.get(otherPath+"/capas?actionNumber="+number+"&page=1&size=1",author);
+                assertEquals(2,selectedNext.path("total").asInt());
+                assertEquals(secondCapa,required(selectedNext.path("items").get(0),"id"));
+                var selectedBeyond=runtime.get(otherPath+"/capas?actionNumber="+number+"&page=2&size=1",author);
+                assertEquals(2,selectedBeyond.path("total").asInt());
+                assertTrue(selectedBeyond.path("items").isEmpty());
+                assertEquals(1,runtime.get(casePath+"/capas?actionNumber="+number,author).path("total").asInt());
+                assertEquals(0,runtime.get(otherPath+"/capas?actionNumber=NOT-FOUND",author).path("total").asInt());
+                denied(runtime.send("GET",route(f)+"?caseNumber="+caseNumber,
+                        runtime.login(f.foreign),null).statusCode());
+                denied(runtime.send("GET",route(f).replace(f.company,f.foreignCompany)
+                        +"?caseNumber="+caseNumber,author,null).statusCode());
+                denied(runtime.send("GET",route(f).replace(f.asset,f.secondAsset)
+                        +"?caseNumber="+caseNumber,author,null).statusCode());
+                String revokedReader=runtime.login(f.revoked);
+                f.sql.update("""
+                        UPDATE hidra_identity_user_permission_grant SET valid_to=now()-interval '1 second'
+                        WHERE user_id=? AND permission_id=(SELECT id FROM hidra_identity_permission
+                            WHERE code='hse:capa:read') AND valid_to>now()
+                        """,f.revoked);
+                denied(runtime.send("GET",route(f)+"?caseNumber="+caseNumber,revokedReader,null).statusCode());
+                // The generic legacy routes must not enumerate T17-enrolled rows or
+                // distinguish an enrolled exact ID from an unknown well-formed ID.
+                JsonNode legacyCases=runtime.get("/api/v1/hse/cases?page=0&size=20",author);
+                assertEquals(0,legacyCases.path("total").asInt());
+                assertTrue(legacyCases.path("content").isEmpty());
+                JsonNode legacyCapas=runtime.get("/api/v1/hse/capas?page=0&size=20",author);
+                assertEquals(0,legacyCapas.path("total").asInt());
+                assertTrue(legacyCapas.path("content").isEmpty());
+                var legacyCase=runtime.send("GET","/api/v1/hse/cases/"+caseId,author,null);
+                var absentCase=runtime.send("GET","/api/v1/hse/cases/"+id(),author,null);
+                assertEquals(404,legacyCase.statusCode());
+                assertEquals(legacyCase.statusCode(),absentCase.statusCode());
+                var legacyCapa=runtime.send("GET","/api/v1/hse/capas/"+priorCapaId,author,null);
+                var absentCapa=runtime.send("GET","/api/v1/hse/capas/"+id(),author,null);
+                assertEquals(404,legacyCapa.statusCode());
+                assertEquals(legacyCapa.statusCode(),absentCapa.statusCode());
+                // This second match is outside the first page. Losing its actual Incident
+                // review must fail the entire collection, including its protected total.
+                f.sql.update("UPDATE hidra_incident_investigation SET state='SUBMITTED' WHERE incident_id=?",
+                        unreadableIncident);
+                denied(runtime.send("GET",route(f)+"?caseNumber="+caseNumber+"&page=0&size=1",
+                        author,null).statusCode());
+                denied(runtime.send("GET",otherPath,author,null).statusCode());
             }
             try (var restarted = f.start(objects, provider)) {
                 assertNotEquals(originalPid, restarted.pid());

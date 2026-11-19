@@ -56,8 +56,9 @@ public final class HseCapaLifecycleController {
     @GetMapping
     public HseCapaLifecycleResponse.ScopedHsePage<HseCapaLifecycleResponse.CaseView> cases(
             @PathVariable String companyId,@PathVariable String facilityId,
-            @RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="25") int size){
-        return HseCapaLifecycleRestMapper.cases(service.cases(companyId,facilityId,page,size));
+            @RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="25") int size,
+            @RequestParam(required=false) String caseNumber){
+        return HseCapaLifecycleRestMapper.cases(service.cases(companyId,facilityId,page,size,caseNumber));
     }
     @NativeProtectedOperation @Operation(operationId="readScopedHseCase")
     @GetMapping("/{caseId}")
@@ -80,8 +81,9 @@ public final class HseCapaLifecycleController {
     public HseCapaLifecycleResponse.ScopedHsePage<HseCapaLifecycleResponse.ScopedHseCapaView> capas(
             @PathVariable String companyId,@PathVariable String facilityId,
             @PathVariable String caseId,@RequestParam(defaultValue="0") int page,
-            @RequestParam(defaultValue="25") int size){
-        return HseCapaLifecycleRestMapper.capas(service.capas(companyId,facilityId,caseId,page,size));
+            @RequestParam(defaultValue="25") int size,
+            @RequestParam(required=false) String actionNumber){
+        return HseCapaLifecycleRestMapper.capas(service.capas(companyId,facilityId,caseId,page,size,actionNumber));
     }
     @NativeProtectedOperation @Operation(operationId="readScopedHseCapa")
     @GetMapping("/{caseId}/capas/{capaId}")

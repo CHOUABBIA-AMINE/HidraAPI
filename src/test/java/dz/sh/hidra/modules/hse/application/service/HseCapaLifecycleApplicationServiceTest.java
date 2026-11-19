@@ -35,6 +35,8 @@ class HseCapaLifecycleApplicationServiceTest {
     @Test void deniesBeforeProtectedCaseExistenceCountsOrHistory(){
         when(auth.require(anyString(),anyString(),anyString())).thenThrow(new SecurityException("deny"));
         assertThrows(SecurityException.class,()->handler.cases("company","facility",0,25));
+        assertThrows(SecurityException.class,()->handler.cases("company","facility",0,25,"CASE"));
+        assertThrows(SecurityException.class,()->handler.capas("company","facility","case",0,1,"CAPA"));
         assertThrows(SecurityException.class,()->handler.caseDetail("company","facility","protected-case"));
         assertThrows(SecurityException.class,()->handler.history("company","facility","protected-case",0,25));
         assertThrows(SecurityException.class, () -> handler.assessImpact("company", "facility", "protected-case",
@@ -42,6 +44,36 @@ class HseCapaLifecycleApplicationServiceTest {
                         dz.sh.hidra.modules.hse.domain.value.HseImpactDomain.OPERATIONS,
                         "type", dz.sh.hidra.modules.hse.domain.value.HseImpactSeverity.LOW, "Synthetic assessment")));
         verifyNoInteractions(store,facility,incident,documents,workflow,cases,capas);
+    }
+    @Test void filteredDiscoveryProvesEvenOffPageIncidentBeforeReturningTotal(){
+        when(auth.require(anyString(),anyString(),anyString())).thenReturn(
+                new HseCapaAuthorityPort.Actor("actor","Actor"));
+        when(facility.active("facility")).thenReturn(Optional.of(new HseCapaFacilityPort.Facility(
+                "facility","company","F","Facility")));
+        when(incident.reviewed("incident-1","company","facility")).thenReturn(Optional.of(
+                new HseCapaIncidentPort.Source("incident-1","INC-1","Reviewed","company",
+                        "facility","reviewer","5")));
+        doAnswer(invocation->{
+            @SuppressWarnings("unchecked")
+            java.util.function.Consumer<HseCapaLifecycleUseCase.CaseView> visit=invocation.getArgument(3);
+            visit.accept(new HseCapaLifecycleUseCase.CaseView("case-1","company","facility",
+                    "incident-1","CASE","First","OPEN","actor",java.time.Instant.now(),null));
+            visit.accept(new HseCapaLifecycleUseCase.CaseView("case-2","company","facility",
+                    "incident-2","CASE","Second","OPEN","actor",java.time.Instant.now(),null));
+            return null;
+        }).when(store).visitCases(eq("company"),eq("facility"),eq("CASE"),any());
+        assertThrows(NoSuchElementException.class,()->handler.cases("company","facility",0,1," CASE "));
+        verify(incident).reviewed("incident-2","company","facility");
+        verify(store).visitCases(eq("company"),eq("facility"),eq("CASE"),any());
+    }
+    @Test void validationHappensAfterCurrentScopeProofButBeforeOwnerEnumeration(){
+        when(auth.require(anyString(),anyString(),anyString())).thenReturn(
+                new HseCapaAuthorityPort.Actor("actor","Actor"));
+        when(facility.active("facility")).thenReturn(Optional.of(new HseCapaFacilityPort.Facility(
+                "facility","company","F","Facility")));
+        assertThrows(IllegalArgumentException.class,()->handler.cases("company","facility",0,1,"  "));
+        assertThrows(IllegalArgumentException.class,()->handler.cases("company","facility",0,1,"A".repeat(81)));
+        verifyNoInteractions(store,incident);
     }
     @Test void wrongFacilityCannotResolveScopedExistence(){
         when(auth.require(anyString(),anyString(),anyString())).thenReturn(

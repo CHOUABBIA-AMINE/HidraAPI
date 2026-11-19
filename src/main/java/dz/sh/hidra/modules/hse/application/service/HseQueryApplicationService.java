@@ -59,7 +59,7 @@ public class HseQueryApplicationService implements HseQueryUseCase {
             throw new java.util.NoSuchElementException("Protected HSE case unavailable.");
         return caseRepositoryPort.findById(normalizedId)
                 .map(this::toCaseView)
-                .orElseThrow(() -> new IllegalArgumentException("Unknown HSE case: " + id));
+                .orElseThrow(() -> new java.util.NoSuchElementException("Protected HSE resource unavailable."));
     }
 
     @Override
@@ -78,7 +78,7 @@ public class HseQueryApplicationService implements HseQueryUseCase {
             throw new java.util.NoSuchElementException("Protected HSE CAPA unavailable.");
         return capaRepositoryPort.findById(normalizedId)
                 .map(this::toCapaView)
-                .orElseThrow(() -> new IllegalArgumentException("Unknown HSE CAPA: " + id));
+                .orElseThrow(() -> new java.util.NoSuchElementException("Protected HSE resource unavailable."));
     }
 
     private void validatePage(int page, int size) {

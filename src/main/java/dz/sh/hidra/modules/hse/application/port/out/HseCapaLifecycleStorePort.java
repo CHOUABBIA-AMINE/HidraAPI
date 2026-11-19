@@ -22,6 +22,7 @@ import dz.sh.hidra.modules.hse.domain.model.HseCaseImpactAssessment;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 public interface HseCapaLifecycleStorePort {
     record Scope(String caseId,String companyId,String facilityId,String incidentId,
                  String createRequestId,String createDigest,String actorId,Instant createdAt){}
@@ -36,13 +37,19 @@ public interface HseCapaLifecycleStorePort {
     Optional<Scope> scope(String caseId);
     Optional<Scope> scopeByCapa(String capaId);
     void lockCase(String caseId);
-    Page<CaseView> cases(String company,String facility,int page,int size);
+    /** Stream single-statement ordered candidates with bounded fetch size; mandatory transaction.
+     * Caller must complete source checks inside the cursor lifetime before emitting count or page. */
+    void visitCases(String company,String facility,String caseNumber,Consumer<CaseView> visitor);
     CaseView caseView(String caseId);
     void addCapa(String capaId,String caseId,String proposerId,String ownerId,String requestId,
                  String digest,String actorId,Instant at);
     void lockCapa(String capaId);
     State state(String caseId,String capaId);
-    Page<CapaView> capas(String caseId,int page,int size);
+    /** One statement produces filtered page and complete total, including out-of-range pages. */
+    Page<CapaView> capas(String caseId,int page,int size,String actionNumber);
+    default Page<CapaView> capas(String caseId,int page,int size) {
+        return capas(caseId,page,size,null);
+    }
     CapaView capaView(String caseId,String capaId);
     Optional<Receipt> replay(String caseId,String requestId);
     Receipt advance(String caseId,String capaId,String requestId,String digest,String actorId,

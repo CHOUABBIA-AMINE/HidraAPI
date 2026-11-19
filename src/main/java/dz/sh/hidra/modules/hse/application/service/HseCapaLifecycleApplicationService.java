@@ -27,6 +27,7 @@ import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.util.HexFormat;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import org.springframework.stereotype.Service;
@@ -91,13 +92,22 @@ public class HseCapaLifecycleApplicationService implements HseCapaLifecycleUseCa
         return new CaseResult(store.caseView(model.id()),false);
     }
     @Override @Transactional
-    public Page<CaseView> cases(String company,String facility,int page,int size){
-        current(READ,company,facility);page(page,size);
-        var pageOfCases=store.cases(company,facility,page,size);
-        for(var item:pageOfCases.items())
+    public Page<CaseView> cases(String company,String facility,int page,int size,String caseNumber){
+        current(READ,company,facility);
+        page(page,size);
+        String key=filter(caseNumber);
+        List<CaseView> selected=new ArrayList<>(size);
+        long first=(long)page*size;
+        long[] admitted={0};
+        // One SQL-ordered candidate snapshot. Admit even off-page Incident evidence
+        // before disclosing a requested page or its complete total.
+        store.visitCases(company,facility,key,item->{
             incidents.reviewed(item.incidentId(),company,facility)
                 .orElseThrow(HseCapaLifecycleApplicationService::hidden);
-        return pageOfCases;
+            if(admitted[0]>=first && selected.size()<size)selected.add(item);
+            admitted[0]++;
+        });
+        return new Page<>(List.copyOf(selected),admitted[0],page,size);
     }
     @Override @Transactional
     public CaseView caseDetail(String company,String facility,String id){
@@ -130,9 +140,11 @@ public class HseCapaLifecycleApplicationService implements HseCapaLifecycleUseCa
         return new CapaResult(store.capaView(caseId,capa.id()),false);
     }
     @Override @Transactional
-    public Page<CapaView> capas(String company,String facility,String caseId,int page,int size){
-        current(READ,company,facility);bound(caseId,company,facility);page(page,size);
-        return store.capas(caseId,page,size);
+    public Page<CapaView> capas(String company,String facility,String caseId,int page,int size,String actionNumber){
+        current(READ,company,facility);
+        bound(caseId,company,facility);
+        page(page,size);
+        return store.capas(caseId,page,size,filter(actionNumber));
     }
     @Override @Transactional
     public CapaView capaDetail(String company,String facility,String caseId,String capaId){
@@ -380,6 +392,13 @@ public class HseCapaLifecycleApplicationService implements HseCapaLifecycleUseCa
         if(value==null||value.isBlank()||value.length()>max||!value.equals(value.strip()))
             throw new IllegalArgumentException("Invalid bounded HSE value.");
         return value;
+    }
+    private static String filter(String key){
+        if(key==null)return null;
+        String trimmed=key.strip();
+        if(trimmed.isEmpty()||trimmed.length()>80)
+            throw new IllegalArgumentException("Invalid bounded HSE business key.");
+        return trimmed;
     }
     private static void page(int page,int size){
         if(page<0||size<1||size>100)throw new IllegalArgumentException("Invalid HSE page.");

@@ -5341,3 +5341,7 @@ canonical OpenAPI equality and strict dictionary equality. Record the
 exact run, gate and enrolled case artifacts, then mark T29 COMPLETED.
 There is no supplemental manual test, independent evidence package, or
 owner acceptance sign-off for this defined T29 scope. T30 follows T29.
+
+### T29 implementation publication — 2026-11-19
+
+The bounded source implementation uses registered `fix(hse): qualify scoped business-key read coverage`. It extends signed HSE list filters, source-authorized single-cursor case discovery, single-statement CAPA page/count, legacy unavailable normalization and six-key Workbench denials. JVM, route-registry and signed PostgreSQL regression assertions are updated; the retained T15–T28 owner lanes are unchanged. Source publication is IMPLEMENTED / CI PENDING, not development-software acceptance. After exact-head full CI and true generated contract reconciliation, record gate and implementation SHA here; mark T29 completed only on evidence. T30 remains planned.

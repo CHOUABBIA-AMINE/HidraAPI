@@ -19,12 +19,14 @@ import dz.sh.hidra.modules.hse.application.port.out.*;
 import dz.sh.hidra.modules.hse.domain.model.*;
 import dz.sh.hidra.modules.hse.domain.value.CapaStatus;
 import java.sql.ResultSet;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -101,13 +103,21 @@ public class JdbcHseCapaLifecycleStoreAdapter implements HseCapaLifecycleStorePo
                 .stream().findFirst().orElseThrow(JdbcHseCapaLifecycleStoreAdapter::hidden);
     }
     @Override @Transactional(propagation=Propagation.MANDATORY)
-    public Page<CaseView> cases(String company,String facility,int page,int size){
-        long total=jdbc.queryForObject("SELECT count(*) FROM "+S+
-                " WHERE company_id=? AND facility_id=?",Long.class,company,facility);
-        var list=jdbc.query(caseProjection()+" WHERE s.company_id=? AND s.facility_id=? "+
-                "ORDER BY s.created_at,s.case_id LIMIT ? OFFSET ?",(r,n)->caseView(r),
-                company,facility,size,(long)page*size);
-        return new Page<>(list,total,page,size);
+    public void visitCases(String company,String facility,String caseNumber,
+            java.util.function.Consumer<CaseView> visitor){
+        Objects.requireNonNull(visitor,"Scoped HSE visitor required.");
+        String sql=caseProjection()+" WHERE s.company_id=? AND s.facility_id=?"+
+                (caseNumber==null?"":" AND h.case_number=?")+
+                " ORDER BY s.created_at,s.case_id";
+        jdbc.query(connection->{
+            PreparedStatement statement=connection.prepareStatement(sql,
+                    ResultSet.TYPE_FORWARD_ONLY,ResultSet.CONCUR_READ_ONLY);
+            statement.setFetchSize(128);
+            statement.setString(1,company);
+            statement.setString(2,facility);
+            if(caseNumber!=null)statement.setString(3,caseNumber);
+            return statement;
+        },(RowCallbackHandler) row->visitor.accept(caseView(row)));
     }
     @Override @Transactional(propagation=Propagation.MANDATORY)
     public void addCapa(String capaId,String caseId,String proposer,String owner,String requestId,
@@ -148,10 +158,21 @@ public class JdbcHseCapaLifecycleStoreAdapter implements HseCapaLifecycleStorePo
     private static String capaProjection(){return "SELECT s.*,c.action_number,c.title FROM "+H+
             " s JOIN public.hidra_hse_capa c ON c.id=s.capa_id";}
     @Override @Transactional(propagation=Propagation.MANDATORY)
-    public Page<CapaView> capas(String caseId,int page,int size){
-        long total=jdbc.queryForObject("SELECT count(*) FROM "+H+" WHERE case_id=?",Long.class,caseId);
-        return new Page<>(jdbc.query(capaProjection()+" WHERE s.case_id=? ORDER BY c.created_at,c.id "+
-            "LIMIT ? OFFSET ?",(r,n)->capaView(r),caseId,size,(long)page*size),total,page,size);
+    public Page<CapaView> capas(String caseId,int page,int size,String actionNumber){
+        String sql="WITH eligible AS ("+
+                " SELECT s.*,c.action_number,c.title,c.created_at AS sort_created_at FROM "+H+
+                " s JOIN public.hidra_hse_capa c ON c.id=s.capa_id"+
+                " WHERE s.case_id=? AND (? IS NULL OR c.action_number=?)"+
+                "), tally AS (SELECT count(*) AS total FROM eligible),"+
+                " sliced AS (SELECT * FROM eligible ORDER BY sort_created_at,capa_id LIMIT ? OFFSET ?)"+
+                " SELECT tally.total,sliced.* FROM tally LEFT JOIN sliced ON TRUE";
+        List<CapaView> views=new ArrayList<>();
+        long[] total={0};
+        jdbc.query(sql,(RowCallbackHandler) row->{
+            total[0]=row.getLong("total");
+            if(row.getString("capa_id")!=null)views.add(capaView(row));
+        },caseId,actionNumber,actionNumber,size,(long)page*size);
+        return new Page<>(List.copyOf(views),total[0],page,size);
     }
     @Override @Transactional(propagation=Propagation.MANDATORY)
     public CapaView capaView(String caseId,String capaId){

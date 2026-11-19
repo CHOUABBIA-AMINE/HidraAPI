@@ -87,7 +87,10 @@ class HseQueryApplicationServiceTest {
         assertThrows(IllegalArgumentException.class, () -> service.cases(-1, 50));
         assertThrows(IllegalArgumentException.class, () -> service.capas(0, 201));
         when(caseRepository.findById("missing")).thenReturn(Optional.empty());
-        assertThrows(IllegalArgumentException.class, () -> service.hseCase("missing"));
+        assertThrows(java.util.NoSuchElementException.class, () -> service.hseCase("missing"));
+        when(capaRepository.findById("missing")).thenReturn(Optional.empty());
+        assertThrows(java.util.NoSuchElementException.class, () -> service.capa("missing"));
+        assertThrows(IllegalArgumentException.class, () -> service.hseCase(" "));
     }
 
     @Test
@@ -98,6 +101,10 @@ class HseQueryApplicationServiceTest {
                 ()->service.hseCase("private-case"));
         assertThrows(java.util.NoSuchElementException.class,
                 ()->service.capa("private-capa"));
+        assertThrows(java.util.NoSuchElementException.class,
+                ()->service.hseCase("unknown-valid"));
+        assertThrows(java.util.NoSuchElementException.class,
+                ()->service.capa("unknown-valid"));
         org.mockito.Mockito.verify(caseRepository,org.mockito.Mockito.never())
                 .findById("private-case");
         org.mockito.Mockito.verify(capaRepository,org.mockito.Mockito.never())

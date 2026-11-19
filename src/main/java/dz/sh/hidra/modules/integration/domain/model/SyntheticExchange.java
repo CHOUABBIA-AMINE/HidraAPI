@@ -29,6 +29,13 @@ public record SyntheticExchange(String id, Scope scope, String requestKey, Strin
             facilityId = bounded(facilityId,120);
         }
     }
+    /** Typed precondition and replay conflict; unexpected technical failures remain server errors. */
+    public static final class Conflict extends RuntimeException {
+        public Conflict() {
+            super("Synthetic exchange state conflict.");
+        }
+
+    }
     public enum Phase {
         CLAIMED, FAILED, SUCCEEDED, ABANDONED;
         public boolean terminal() { return this == FAILED || this == SUCCEEDED || this == ABANDONED; }
@@ -64,9 +71,9 @@ public record SyntheticExchange(String id, Scope scope, String requestKey, Strin
     }
     public void requireReplay(String newActor, int expectedAttempt) {
         if (phase != Phase.FAILED && phase != Phase.ABANDONED)
-            throw new IllegalStateException("Exchange is not replayable.");
+            throw new Conflict();
         if (latestAttempt != expectedAttempt || latestAttempt >= 2)
-            throw new IllegalStateException("Stale or exhausted exchange attempt.");
+            throw new Conflict();
         if (submitter.equals(newActor))
             throw new NoSuchElementException("Protected exchange unavailable.");
     }

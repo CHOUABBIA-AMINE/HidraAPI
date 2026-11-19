@@ -18,17 +18,28 @@ import dz.sh.hidra.modules.integration.api.rest.request.SyntheticExchangeRequest
 import dz.sh.hidra.modules.integration.api.rest.request.SyntheticExchangeRequests.T26ReplayExchange;
 import dz.sh.hidra.modules.integration.api.rest.response.SyntheticExchangeResponses;
 import dz.sh.hidra.modules.integration.application.port.in.SyntheticExchangeUseCase;
+import dz.sh.hidra.modules.integration.domain.model.SyntheticExchange;
 import dz.sh.hidra.modules.integration.domain.model.SyntheticExchange.Scope;
 import dz.sh.hidra.platform.permissions.NativeProtectedOperation;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import java.util.Objects;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/integration/companies/{companyId}/facilities/{facilityId}")
 public final class SyntheticExchangesController {
+    @ExceptionHandler(SyntheticExchange.Conflict.class)
+    public ProblemDetail onConflict(SyntheticExchange.Conflict failure) {
+        ProblemDetail response = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, failure.getMessage());
+        response.setTitle("SYNTHETIC_EXCHANGE_CONFLICT");
+        response.setProperty("code", "SYNTHETIC_EXCHANGE_CONFLICT");
+        return response;
+    }
+
     private final SyntheticExchangeUseCase exchange;
     public SyntheticExchangesController(SyntheticExchangeUseCase exchange) {
         this.exchange=Objects.requireNonNull(exchange);

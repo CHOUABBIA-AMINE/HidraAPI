@@ -249,7 +249,8 @@ public class JdbcSyntheticExchangeRepositoryAdapter implements SyntheticExchange
         if (a.ordinal()==2) {
             Attempt old=attempts(e.id()).getFirst();
             if (old.phase()==Phase.ABANDONED) return;
-            if (old.phase()!=Phase.FAILED || old.deadLetterId()==null) throw conflict();
+            if (old.phase()!=Phase.FAILED || old.deadLetterId()==null)
+                throw new IllegalStateException("Missing replayable synthetic dead letter.");
             one(jdbc.update("""
                     UPDATE public.hidra_integration_dead_letter_record
                     SET status='REPLAYED',resolved_by_actor_id=?,resolved_at=now(),
@@ -293,12 +294,12 @@ public class JdbcSyntheticExchangeRepositoryAdapter implements SyntheticExchange
               Boolean.class,run)));
     }
     private static void one(int count) {
-        if (count!=1) throw conflict();
+        if (count!=1) throw new IllegalStateException("Unexpected synthetic exchange update count.");
     }
     private static NoSuchElementException hidden() {
         return new NoSuchElementException("Protected exchange unavailable.");
     }
-    private static IllegalStateException conflict() {
-        return new IllegalStateException("Synthetic exchange state conflict.");
+    private static SyntheticExchange.Conflict conflict() {
+        return new SyntheticExchange.Conflict();
     }
 }

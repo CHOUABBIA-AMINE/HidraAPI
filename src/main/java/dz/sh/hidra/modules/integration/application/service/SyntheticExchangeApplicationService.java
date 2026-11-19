@@ -123,7 +123,7 @@ public final class SyntheticExchangeApplicationService implements SyntheticExcha
             owners.requireDraft(scope);
             var exchange=records.byId(scope,id,true).orElseThrow(SyntheticExchangeApplicationService::hidden);
             var attempts=records.attempts(exchange.id());
-            if (attempts.isEmpty()) throw conflict();
+            if (attempts.isEmpty()) throw new IllegalStateException("Missing synthetic exchange attempt.");
             Attempt latest=attempts.getLast();
             if (latest.ordinal()==2 && actor.equals(latest.actor())
                     && key.equals(latest.requestKey()) && reason.equals(latest.reason())
@@ -165,7 +165,8 @@ public final class SyntheticExchangeApplicationService implements SyntheticExcha
                 owners.requireDraft(scope);
                 var draft=owners.createDraft(scope,exchange.id(),exchange.titleFr(),
                         exchange.documentTypeId(),exchange.classificationId());
-                if (draft.documentId()==null || draft.documentId().isBlank()) throw conflict();
+                if (draft.documentId()==null || draft.documentId().isBlank())
+                    throw new IllegalStateException("Missing synthetic draft receipt.");
                 records.succeeded(exchange,latest,draft.documentId());
                 return view(records.byId(scope,exchange.id(),false).orElseThrow(),replayed);
             });
@@ -206,7 +207,7 @@ public final class SyntheticExchangeApplicationService implements SyntheticExcha
     private static NoSuchElementException hidden() {
         return new NoSuchElementException("Protected exchange unavailable.");
     }
-    private static IllegalStateException conflict() {
-        return new IllegalStateException("Synthetic exchange state conflict.");
+    private static SyntheticExchange.Conflict conflict() {
+        return new SyntheticExchange.Conflict();
     }
 }

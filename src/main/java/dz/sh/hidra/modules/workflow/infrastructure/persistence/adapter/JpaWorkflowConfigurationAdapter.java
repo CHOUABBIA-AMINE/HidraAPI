@@ -25,8 +25,6 @@ import dz.sh.hidra.modules.workflow.infrastructure.persistence.entity.WorkflowCa
 import dz.sh.hidra.modules.workflow.infrastructure.persistence.entity.WorkflowDefinitionJpaEntity;
 import dz.sh.hidra.modules.workflow.infrastructure.persistence.entity.WorkflowDefinitionTargetBindingJpaEntity;
 import dz.sh.hidra.modules.workflow.domain.value.WorkflowDefinitionStatus;
-import jakarta.persistence.LockModeType;
-import java.util.Comparator;
 import jakarta.persistence.EntityManager;
 import java.util.Objects;
 import org.springframework.stereotype.Component;
@@ -48,35 +46,46 @@ public class JpaWorkflowConfigurationAdapter implements WorkflowConfigurationPor
     @Override
     public boolean currentInstanceConfiguration(String definitionId, int version,
             String module, String type, String purpose) {
-        return eligible(definitionId, version, module, type, purpose, false);
+        return eligible(definitionId, version, module, type, purpose);
     }
 
     @Override
     public boolean lockCurrentInstanceConfiguration(String definitionId, int version,
             String module, String type, String purpose) {
-        return eligible(definitionId, version, module, type, purpose, true);
+        if (!wellFormed(definitionId, version, module, type, purpose)) return false;
+        // This native query runs through the current JPA EntityManager connection and
+        // original Workflow write transaction. The definer acquires the four shared
+        // row locks without granting the app database role UPDATE on configuration.
+        return Boolean.TRUE.equals(em.createNativeQuery(
+                "select public.hidra_workflow_t30_lock_current_configuration("
+                + "cast(:definition as text), :revision, cast(:module as text), "
+                + "cast(:type as text), cast(:purpose as text))")
+                .setParameter("definition", definitionId)
+                .setParameter("revision", version)
+                .setParameter("module", module)
+                .setParameter("type", type)
+                .setParameter("purpose", purpose)
+                .getSingleResult());
+    }
+
+    private static boolean wellFormed(String definitionId, int version, String module,
+            String type, String purpose) {
+        return definitionId != null && !definitionId.isBlank() && version >= 1
+                && module != null && !module.isBlank()
+                && type != null && !type.isBlank() && purpose != null && !purpose.isBlank();
     }
 
     private boolean eligible(String definitionId, int version, String module,
-            String type, String purpose, boolean locked) {
-        if (definitionId == null || definitionId.isBlank() || version < 1
-                || module == null || module.isBlank() || type == null || purpose == null) {
-            return false;
-        }
-        var mode = locked ? LockModeType.PESSIMISTIC_READ : LockModeType.NONE;
-        // Commands hold the definition, catalog and binding locks until transaction commit.
-        var definition = locked
-                ? em.find(WorkflowDefinitionJpaEntity.class, definitionId, mode)
-                : em.find(WorkflowDefinitionJpaEntity.class, definitionId);
+            String type, String purpose) {
+        if (!wellFormed(definitionId, version, module, type, purpose)) return false;
+        var definition = em.find(WorkflowDefinitionJpaEntity.class, definitionId);
         if (definition == null || definition.status() != WorkflowDefinitionStatus.ACTIVE
                 || definition.version() != version) return false;
-        // A fixed lock order prevents the type/purpose catalog lookup from reversing on races.
-        var ids = java.util.stream.Stream.of(type, purpose).distinct()
-                .sorted(Comparator.naturalOrder()).toList();
+        // This is advisory only. The command uses the locked database function.
+        var ids = java.util.stream.Stream.of(type, purpose).distinct().sorted().toList();
         java.util.Map<String, WorkflowCatalogEntryJpaEntity> entries = new java.util.HashMap<>();
         for (String id : ids) {
-            var entry = locked ? em.find(WorkflowCatalogEntryJpaEntity.class, id, mode)
-                    : em.find(WorkflowCatalogEntryJpaEntity.class, id);
+            var entry = em.find(WorkflowCatalogEntryJpaEntity.class, id);
             if (entry == null || !entry.active()) return false;
             entries.put(id, entry);
         }
@@ -90,7 +99,6 @@ public class JpaWorkflowConfigurationAdapter implements WorkflowConfigurationPor
                 .setParameter("definition", definitionId).setParameter("module", module)
                 .setParameter("type", type).setParameter("purpose", purpose)
                 .setMaxResults(2);
-        if (locked) matches.setLockMode(mode);
         var rows = matches.getResultList();
         return rows.size() == 1 && rows.getFirst().active();
     }

@@ -98,6 +98,9 @@ class InstalledEquipmentOperatorQualificationTest {
             admin.execute("GRANT USAGE ON SCHEMA public TO "+role);
             admin.execute("GRANT SELECT ON ALL TABLES IN SCHEMA public TO "+role);
         }
+        // T30: scoped EXECUTE-only security-definer boundary. APP retains SELECT-only
+        // access to definition/catalog/binding; no configuration UPDATE is granted.
+        admin.execute("GRANT EXECUTE ON FUNCTION public.hidra_workflow_t30_lock_current_configuration(text,integer,text,text,text) TO "+APP);
         admin.execute("GRANT CREATE ON DATABASE "+PG.getDatabaseName()+" TO "+APP);
         for(String table:admin.queryForList(
                 "SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname='public' AND tablename LIKE 'hidra_identity_%'",

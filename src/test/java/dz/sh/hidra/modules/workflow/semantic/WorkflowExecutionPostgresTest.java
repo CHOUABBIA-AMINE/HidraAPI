@@ -44,7 +44,8 @@ class WorkflowExecutionPostgresTest {
     static final Path MIGRATIONS=Path.of("src/main/resources/db/migration");
     static final List<String> FORWARD=List.of("V20261006_014__hmr_055_workflow_instance.sql",
         "V20261006_015__hmr_061_workflow_transition.sql","V20261006_016__hmr_066_workflow_task.sql",
-        "V20261006_017__hmr_081_workflow_action.sql","V20261006_018__hmr_099_workflow_state_history.sql");
+        "V20261006_017__hmr_081_workflow_action.sql","V20261006_018__hmr_099_workflow_state_history.sql",
+        "V20261119_003__t30_workflow_configuration_lock.sql");
     @BeforeAll static void factory(){
         var cfg=new Configuration().setProperty("hibernate.connection.url",POSTGRES.getJdbcUrl())
             .setProperty("hibernate.connection.username",POSTGRES.getUsername())
@@ -82,6 +83,79 @@ class WorkflowExecutionPostgresTest {
     String instance(String id,String target){return "INSERT INTO hidra_workflow_instance(id,definition_id,definition_version,workflow_purpose_id,target_module,target_type_id,target_id,status,current_step_id,started_by_actor_id,started_by_display_name_snapshot,started_at,created_at,updated_at) VALUES ('"+id+"','def',1,'purpose','planning','type','"+target+"','STARTED','step','actor','Alice',now(),now(),now())";}
     String action(String id,long sequence){return "INSERT INTO hidra_workflow_action(id,instance_id,task_id,action_type,actor_id,actor_display_name_snapshot,action_sequence,acted_at) VALUES ('"+id+"','instance','task','COMMENT','actor','Alice',"+sequence+",now())";}
     String history(String id){return "INSERT INTO hidra_workflow_state_history(id,instance_id,to_status,actor_id,actor_display_name_snapshot,changed_at) VALUES ('"+id+"','instance','COMPLETED','actor','Alice',now())";}
+
+    /**
+     * T30 least-privilege source proof on fresh PostgreSQL:
+     * SELECT-only clients must not be able to lock Workflow configuration directly.
+     * Only the explicitly granted definer entry can acquire locks in the caller's
+     * own transaction; the definer does not give UPDATE or table-ownership rights.
+     */
+    @Test void currentConfigurationFunctionGrantsOnlyLockAuthorityInOriginalTransaction() throws Exception {
+        String role="workflow_t30_restricted_reader",password="synthetic-t30-fixture-only";
+        String call="SELECT public.hidra_workflow_t30_lock_current_configuration('def',1,'planning','type','purpose')";
+        sql("CREATE ROLE "+role+" LOGIN PASSWORD '"+password+"' NOINHERIT NOSUPERUSER "
+                +"NOBYPASSRLS NOCREATEDB NOCREATEROLE NOREPLICATION");
+        sql("GRANT USAGE ON SCHEMA public TO "+role);
+        for(String table:List.of("hidra_workflow_definition","hidra_workflow_definition_target_binding",
+                "hidra_workflow_type_catalog")) {
+            sql("GRANT SELECT ON TABLE public."+table+" TO "+role);
+        }
+        try(var denied=DriverManager.getConnection(POSTGRES.getJdbcUrl(),role,password);
+                var s=denied.createStatement()) {
+            SQLException missingGrant=assertThrows(SQLException.class,()->s.executeQuery(call));
+            assertEquals("42501",missingGrant.getSQLState(),"PUBLIC must not inherit function EXECUTE");
+        }
+        sql("GRANT EXECUTE ON FUNCTION "
+                +"public.hidra_workflow_t30_lock_current_configuration(text,integer,text,text,text)"
+                +" TO "+role);
+        try(var denied=DriverManager.getConnection(POSTGRES.getJdbcUrl(),role,password);
+                var s=denied.createStatement()) {
+            SQLException directWrite=assertThrows(SQLException.class,()->s.executeUpdate(
+                    "UPDATE public.hidra_workflow_definition SET updated_at=now() WHERE id='def'"));
+            assertEquals("42501",directWrite.getSQLState(),
+                    "Function EXECUTE must not confer direct configuration UPDATE");
+        }
+        try(var original=DriverManager.getConnection(POSTGRES.getJdbcUrl(),role,password)) {
+            original.setAutoCommit(false);
+            try(var statement=original.createStatement()) {
+                try(var rs=statement.executeQuery(call)) {
+                    assertTrue(rs.next() && rs.getBoolean(1),"Exact active configuration must be lockable");
+                }
+                try(var rs=statement.executeQuery(
+                        "SELECT public.hidra_workflow_t30_lock_current_configuration('def',2,'planning','type','purpose')")) {
+                    assertTrue(rs.next() && !rs.getBoolean(1),"Mismatched definition version unavailable");
+                }
+                try(var rs=statement.executeQuery(
+                        "SELECT public.hidra_workflow_t30_lock_current_configuration('def',1,'planning','reason','purpose')")) {
+                    assertTrue(rs.next() && !rs.getBoolean(1),"Wrong target catalog family unavailable");
+                }
+                for(String blockedUpdate:List.of(
+                        "UPDATE public.hidra_workflow_definition SET updated_at=now() WHERE id='def'",
+                        "UPDATE public.hidra_workflow_type_catalog SET updated_at=now() WHERE id='type'",
+                        "UPDATE public.hidra_workflow_type_catalog SET updated_at=now() WHERE id='purpose'",
+                        "UPDATE public.hidra_workflow_definition_target_binding SET updated_at=now() WHERE id='binding'")) {
+                    try(var competing=connection()) {
+                        competing.setAutoCommit(false);
+                        try(var writer=competing.createStatement()) {
+                            writer.execute("SET LOCAL lock_timeout='250ms'");
+                            SQLException blocked=assertThrows(SQLException.class,
+                                    ()->writer.executeUpdate(blockedUpdate));
+                            assertEquals("55P03",blocked.getSQLState(),
+                                    "Transaction-held shared locks must fence config mutation");
+                        } finally {competing.rollback();}
+                    }
+                }
+            }
+            original.commit();
+        }
+        sql("UPDATE public.hidra_workflow_definition_target_binding SET active=false WHERE id='binding'");
+        try(var reader=DriverManager.getConnection(POSTGRES.getJdbcUrl(),role,password);
+                var statement=reader.createStatement();var rs=statement.executeQuery(call)) {
+            assertTrue(rs.next() && !rs.getBoolean(1),
+                    "After the original transaction ends, a withdrawn binding must fail closed");
+        }
+    }
+
     @Test void concurrentStartsAllowExactlyOneNonterminalTuple()throws Exception{
         var pool=Executors.newFixedThreadPool(2);var ready=new CountDownLatch(2);var go=new CountDownLatch(1);
         try{

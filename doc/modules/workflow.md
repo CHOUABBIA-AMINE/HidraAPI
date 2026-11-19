@@ -214,3 +214,40 @@ Custody owner business state or actuate industrial systems. No schema, new publi
 route, permission, owner resolver or delegation lifecycle is introduced.
 Synthetic evidence is pending the registered exact-SHA Full Verification Gate.
 
+## T30 approved PostgreSQL least-privilege lock correction — 2026-11-19
+
+The first T30 full CI (#1320 at `a850e45def2695aaffcd231c7ba66c7d471db21c`)
+failed a JVM assignment fixture, the signed Reporting preview cardinality assertion,
+and native Topology/Manufacturer `FOR SHARE` on Workflow definition metadata.
+That SQL needs more than ordinary SELECT privilege on PostgreSQL 16, even though
+the native runtime roles correctly have no configuration UPDATE grant.
+
+The owner approved a **bounded additive Flyway function and focused
+PostgreSQL security tests**. Migration
+`V20261119_003__t30_workflow_configuration_lock.sql` introduces the
+parameterized `public.hidra_workflow_t30_lock_current_configuration` function.
+It is `SECURITY DEFINER`, fixed to trusted schema-qualified Workflow tables
+and `pg_catalog, pg_temp` search path, restricted to the original writable
+READ COMMITTED transaction, and denies lock contention with `NOWAIT`.
+It locks the current active exact definition/version, purpose and target-type
+catalog entries, and exact active binding until the caller transaction ends.
+It accepts no actor claims, mutable SQL, callback or arbitrary table name.
+The function returns only an eligibility Boolean and does not mutate records.
+
+The migration revokes function EXECUTE from PUBLIC in the same transaction.
+A trusted migration/DDL owner with row-lock authority owns the function;
+the runtime Workflow database role requires a separately provisioned,
+explicit **EXECUTE-only** grant for the exact function signature. No table
+UPDATE grant, role switching, new REST permission or broad schema default
+privilege is authorized. Synthetic Testcontainers fixtures grant function
+EXECUTE only to their isolated application role after the migration.
+Existing owner target/actor/assignment authorization remains mandatory before
+any command invocation; direct SQL is not a replacement authorization API.
+
+The already enrolled `WorkflowExecutionPostgresTest` now tests that an
+ungranted database role cannot invoke the function, a granted SELECT-only
+role cannot UPDATE configuration, a positive call holds all relevant row
+locks against concurrent writers, and inactive binding/wrong version/family
+fail closed. The signed Reporting A18 scenario and previous owner journeys
+remain enrolled. Source-only reasoning is not CI or deployment evidence.
+

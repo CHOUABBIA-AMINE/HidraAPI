@@ -322,8 +322,12 @@ class Gz2ScopedReportNativeHttpPostgresIntegrationTest {
             assertEquals(1,f.sql.update("UPDATE hidra_workflow_definition_target_binding "
                     +"SET active=false WHERE definition_id=?",review.definition()));
             var preview=r.get(path+"/available-actions",reviewer);
-            assertEquals(1,preview.size());
-            assertFalse(preview.get(0).path("permitted").asBoolean());
+            assertTrue(preview.isArray());
+            assertTrue(preview.size() >= 1);
+            // Other configured decisions may appear; withdrawal suppresses all of them.
+            preview.forEach(action -> assertFalse(action.path("permitted").asBoolean()));
+            assertTrue(java.util.stream.StreamSupport.stream(preview.spliterator(), false)
+                    .anyMatch(action -> review.transition().equals(action.path("transitionId").asText())));
             assertTrue(r.send("POST",path+"/transitions/"+review.transition()+"/execute",
                     reviewer,attempted).statusCode()>=400);
             assertEquals(1,f.sql.update("UPDATE hidra_workflow_definition_target_binding "

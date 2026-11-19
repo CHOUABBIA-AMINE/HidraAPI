@@ -1470,7 +1470,7 @@
       "lane": "postgres-integration",
       "owner": "custody",
       "path": "src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/ProductRevisionPublicationNativeHttpPostgresIntegrationTest.java",
-      "source_sha256": "bfdd7a75622f9087693f1e35a1c9072cb7ce389bc0f7238d666c5385d7f4032a",
+      "source_sha256": "b27fd2b50ab53c3713d15ff781fab1055a5160bd807e1ca57569f03e4717eeb0",
       "supports": []
     },
     {
@@ -1512,7 +1512,7 @@
       "lane": "postgres-integration",
       "owner": "custody",
       "path": "src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/ProductRevisionPublicationPostgresIntegrationTest.java",
-      "source_sha256": "2d8a1806b0adc9791da4bfc6253b37cf8842beccefd29eaf0283492d69b68ffb",
+      "source_sha256": "4fa214121509d3fecc4a6822433f909dcbaf06f4349bde0574f8b56d2b142856",
       "supports": []
     },
     {
@@ -1605,7 +1605,7 @@
       "lane": "postgres-integration",
       "owner": "custody",
       "path": "src/test/java/dz/sh/hidra/modules/custody/qualification/ProductEngineeringOperatorQualificationTest.java",
-      "source_sha256": "b765409fdd2197ad885042445ef03a05c5428f9ca1141d7679a12580bb79cc1e",
+      "source_sha256": "ed21e960f68fa446395b0f202cc95bf139b11ee40562c1fa435ef0b1a512e843",
       "supports": []
     },
     {
@@ -8293,7 +8293,7 @@
       "lane": "postgres-integration",
       "owner": "simulation",
       "path": "src/test/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/ManufacturerCharacteristicNativeHttpPostgresIntegrationTest.java",
-      "source_sha256": "11900f3142b5e6c720be6791271861653190c0426c15b2d14f98f71e66ce4f71",
+      "source_sha256": "4fdf8002e3b344acb2744827f2066cb9a6a238c07bda153d89600b5d8dc900ca",
       "supports": []
     },
     {
@@ -10954,7 +10954,7 @@
       "lane": "postgres-integration",
       "owner": "topology",
       "path": "src/test/java/dz/sh/hidra/modules/topology/qualification/InstalledEquipmentOperatorQualificationTest.java",
-      "source_sha256": "9e048e716b2e1bf77350ad6e7f0d19e2d45b60aea1762bded26c2276e5dc9f01",
+      "source_sha256": "eb20064173f2915093ae4febba3aa2492fe2aeb736fa06401ccd33248fdee49a",
       "supports": []
     },
     {
@@ -11318,7 +11318,7 @@
       "lane": "unit-architecture",
       "owner": "workflow",
       "path": "src/test/java/dz/sh/hidra/modules/workflow/application/service/WorkflowTransitionApplicationServiceTest.java",
-      "source_sha256": "cdfeadc7da6e951d2ad42b2e700c5b59e143a65b9b0d31a872e4c50fea96eec7",
+      "source_sha256": "05b9b647c099aacb4b210e76309c53662eeae5c315253c31f722aee6eb45def5",
       "supports": []
     },
     {
@@ -11596,6 +11596,7 @@
       "cases": [
         "concurrentActionWritersAllocateContiguousServerSequences",
         "concurrentStartsAllowExactlyOneNonterminalTuple",
+        "currentConfigurationFunctionGrantsOnlyLockAuthorityInOriginalTransaction",
         "incoherentHistoryReferencesAndBlankEvidenceAreRejected",
         "jpaHistorySaveInsertsAndCannotOverwriteExistingId",
         "legacyPurposeMismatchAbortsForwardMigrationWithoutRetagging",
@@ -11606,12 +11607,12 @@
         "unsupportedConfigurationCannotAttachOrActivate"
       ],
       "class": "dz.sh.hidra.modules.workflow.semantic.WorkflowExecutionPostgresTest",
-      "dependency_reason": "Excluded; actual DB/container/transaction",
+      "dependency_reason": "Excluded; actual DB/container/transaction T30 PostgreSQL16 native no-PUBLIC EXECUTE, SELECT-only caller, denied direct write, transaction-held configuration row locks, stale version/family and withdrawn binding proof.",
       "fast": false,
       "lane": "postgres-integration",
       "owner": "workflow",
       "path": "src/test/java/dz/sh/hidra/modules/workflow/semantic/WorkflowExecutionPostgresTest.java",
-      "source_sha256": "2f20a8e8b5ea7cf495900637642c87fde07180150d89167b01202185e7151129",
+      "source_sha256": "9723cc1eb8b9387eb60fd7e79d1c75b708fb7ecded5bae034a1b45fa70a7e05f",
       "supports": []
     },
     {
@@ -12440,7 +12441,7 @@
       "lane": "postgres-integration",
       "owner": "qualification",
       "path": "src/test/java/dz/sh/hidra/qualification/Gz2ScopedReportNativeHttpPostgresIntegrationTest.java",
-      "source_sha256": "91eb4f91389b8336d77ad387d70108471b5e600ecfd10015b0aecd357d86c772",
+      "source_sha256": "65f4936e137c8c66406b50781947b930298b149f7de395acab9d3d468de2dbb2",
       "supports": []
     },
     {

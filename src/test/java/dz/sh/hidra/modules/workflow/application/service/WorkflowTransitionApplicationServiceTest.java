@@ -86,6 +86,9 @@ class WorkflowTransitionApplicationServiceTest {
             return new dz.sh.hidra.modules.identity.application.contract.workflow.WorkflowActorContract.Actor(id,"alice","Alice",null);
         });
         org.mockito.Mockito.lenient().when(ownership.canExecute(any(),any(),org.mockito.ArgumentMatchers.anyBoolean())).thenReturn(true);
+        // The synthetic task has an assigned organization unit; admission checks
+        // its current membership even when an explicit actor is assigned.
+        org.mockito.Mockito.lenient().when(ownership.member(any(),any())).thenReturn(true);
         org.mockito.Mockito.lenient().when(ownership.requireActor(any())).thenAnswer(invocation->new dz.sh.hidra.modules.identity.application.contract.workflow.WorkflowActorContract.Actor(invocation.getArgument(0),"reviewer","Reviewer",null));
         org.mockito.Mockito.lenient().when(ownership.requireUnit(any())).thenAnswer(invocation->new dz.sh.hidra.modules.organization.application.contract.workflow.WorkflowOrganizationContract.Unit(invocation.getArgument(0),"Operations"));
         org.mockito.Mockito.lenient().when(stepRepository.findById("step-1")).thenReturn(Optional.of(new WorkflowStep(

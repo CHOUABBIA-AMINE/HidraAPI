@@ -5574,3 +5574,44 @@ dictionary equality. On verified success, close T30 in the roadmap.
 T31 remains PLANNED and is not selected. Engineering, SITE and
 operational acceptance remain independent.
 
+### T30 owner-approved failed-CI PostgreSQL security repair — 2026-11-19
+
+At original T30 SHA `a850e45def2695aaffcd231c7ba66c7d471db21c`,
+[Full #1320](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44567781414)
+failed three source-sensitive lanes (unit/architecture; PostgreSQL shard 3;
+PostgreSQL shard 10). [Docs #1164](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44567781561)
+passed. JVM tests used an incomplete mock of current organizational membership.
+The signed Reporting A18 test incorrectly assumed one available action
+when two were configured. Native Topology and Manufacturer decisions were
+blocked by PostgreSQL `FOR SHARE` requiring an UPDATE-level privilege
+on Workflow configuration tables that the legitimate native application roles
+intentionally lacked. No migration or CI change from a previous stage is
+being rewritten.
+
+The owner expressly approved expanding this **same T30 repair** solely to
+an additive Flyway migration and focused native PostgreSQL security/role
+fixtures, preserving least privilege. Retain original T30 code scope and exact
+commit message `fix(workflow): enforce current authority for configured decisions`.
+The additional files admitted for this specific repair are:
+
+- CREATE `src/main/resources/db/migration/V20261119_003__t30_workflow_configuration_lock.sql`: fixed-query PostgreSQL `SECURITY DEFINER` Boolean predicate, command-scoped row locks and immediate PUBLIC EXECUTE revocation;
+- UPDATE `src/test/java/dz/sh/hidra/modules/workflow/semantic/WorkflowExecutionPostgresTest.java`: enroll SELECT-only/EXECUTE-only privilege, denial and transaction-held row-lock native test;
+- UPDATE `src/test/java/dz/sh/hidra/modules/topology/qualification/InstalledEquipmentOperatorQualificationTest.java`, `src/test/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/ManufacturerCharacteristicNativeHttpPostgresIntegrationTest.java`: grant function-only EXECUTE to existing isolated native app roles; retain original table grants and target-owner protection;
+- UPDATE `src/test/java/dz/sh/hidra/modules/custody/qualification/ProductEngineeringOperatorQualificationTest.java`, `src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/ProductRevisionPublicationPostgresIntegrationTest.java`, `src/test/java/dz/sh/hidra/modules/custody/infrastructure/persistence/ProductRevisionPublicationNativeHttpPostgresIntegrationTest.java`: preserve the existing selected native app and publication role separation while explicitly granting function-only EXECUTE after Flyway setup.
+
+Previously registered exact files `JpaWorkflowConfigurationAdapter.java`,
+`WorkflowTransitionApplicationServiceTest.java`,
+`Gz2ScopedReportNativeHttpPostgresIntegrationTest.java`,
+`.github/ci-test-inventory.json`, `doc/modules/workflow.md`
+and this roadmap are repaired/updated only as necessary for this failed gate.
+No new API, permission codes, owned target grants, deployment role assumptions,
+table schema changes, preexisting migration rewrite, Workflow lifecycle expansion
+or unrelated test modification is authorized. The security-definer function
+is no trust substitute for application actor, owner and CAS checks.
+
+**T30 status: IN PROGRESS / REPAIR IMPLEMENTED (pending publication and new
+exact-SHA Full Verification Gate).** The original all-shard signed A18,
+unit/architecture, static, runtime OpenAPI and strict dictionary acceptance
+remains required unchanged. T31 stays PLANNED and unselected; engineering,
+SITE, operations and release are not accepted by green CI.
+

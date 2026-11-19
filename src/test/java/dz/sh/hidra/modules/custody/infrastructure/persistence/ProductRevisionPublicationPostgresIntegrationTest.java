@@ -235,6 +235,11 @@ public class ProductRevisionPublicationPostgresIntegrationTest {
         };
         assertThat(jdbc.queryForObject("SHOW autovacuum",String.class)).isEqualTo("off");
         SecurityContextHolder.clearContext();cleanEvidence();flyway.validate();assertThat(flyway.info().pending()).isEmpty();
+        // T30: migration has already completed; grant only the non-public
+        // configuration-lock entry to this isolated Workflow app principal.
+        // No direct configuration-table UPDATE privilege is added.
+        jdbc.execute("GRANT EXECUTE ON FUNCTION public.hidra_workflow_t30_lock_current_configuration("
+                +"text,integer,text,text,text) TO c3_source_claim_app");
         for(String role:List.of("c3_source_claim_app","c3_publication_app")) {
             jdbc.execute("REVOKE ALL ON public.hidra_identity_external_mapping_generation,public.hidra_party_eligibility_generation FROM "+role);
             jdbc.execute("GRANT SELECT ON public.hidra_identity_external_mapping_generation,public.hidra_party_eligibility_generation TO "+role);

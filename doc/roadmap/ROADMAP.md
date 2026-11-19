@@ -4681,3 +4681,40 @@ shard 4 result, external Maven lane rerun, and separately registered
 `docs(notification): reconcile T27 generated contracts and physical dictionary`
 using actual CI artifacts before claiming strict API/dictionary equality.
 T27 stays IN PROGRESS; T28 remains PLANNED, not executed.
+
+
+#### T27 CI #1312 evidence, exact generated contract and dictionary reconciliation — 2026-11-19
+
+[Full CI #1312](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44500388687) failed on
+`7353a6a8d779b44db8f68f10fdc78f937bd2a469` while
+[Documentation Validation #1153](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44500388691)
+passed. All 14 PostgreSQL integration shards and Static Validation passed.
+Java unit/architecture ran 2,621 tests and failed one, the legacy
+`HidraTrustedNativeProtectedRouteHttpTest.realManufacturerTupleRegistryRejectsWrongVerbAndSiblingPattern`:
+`owners` omitted the T27 controller although the test enumerated all 151 approved routes.
+The repair instantiates the exact `WorkflowInboxController` backed by a mocked
+`WorkflowInboxUseCase` exclusively in the route-registration test; no production
+handler, route, authentication or permission contract changes.
+
+The API job generated 459 paths, 504 operations, 541 schemas and passed backward
+compatibility; strict equality failed against the previous 456/501/539 snapshot.
+The genuine CI #1312 OpenAPI artifact `14517211755` supplies the exact three
+new routes and two schemas; canonical JSON SHA-256
+`1e869aa791ad4174ced60eb36b2678bb0e09879f8962a194b51e13cee4f19398`.
+The real PostgreSQL 16.16 schema artifact `14517780578` supplies 231
+migrations, 471 JPA mappings, 610 physical relations and zero unresolved owners.
+Its generated dictionary SHA-256 is
+`47602d84aebf1e7d76dffb4c6b04831717a7edd689d4bedd7ccbf62e06168aad`.
+The two new relations and the Identity permission migration reference were
+verified against the generated full dictionary, without modifying migrations.
+The roadmap, enrolled test fingerprint, canonical OpenAPI, reviewed physical
+dictionary and generation manifest are reconciled from the specific hosted
+artifacts. The original T26 evidence remains COMPLETED for synthetic development
+acceptance; T27 remains **IN PROGRESS, NOT ACCEPTED** until replacement exact-SHA
+CI passes all required lanes. T28 remains PLANNED. No production, OT or SITE
+acceptance is asserted.
+
+Local checks reproduced the canonical contract and dictionary from the hosted
+artifacts and validated documentation and the enrolled test inventory. The
+focused Maven test was blocked before execution because Maven Central DNS
+resolution prevented the Spring Boot parent POM from resolving.

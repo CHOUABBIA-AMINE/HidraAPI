@@ -447,6 +447,10 @@ class HidraTrustedNativeProtectedRouteHttpTest {
     var t26=new dz.sh.hidra.modules.integration.api.rest.controller.SyntheticExchangesController(
         org.mockito.Mockito.mock(dz.sh.hidra.modules.integration.application.port.in.SyntheticExchangeUseCase.class));
     owners.put(t26.getClass(),t26);
+    // T27 exact native WEB inbox handler must participate in the full 151-route proof.
+    var t27=new dz.sh.hidra.modules.notification.api.rest.controller.WorkflowInboxController(
+        org.mockito.Mockito.mock(dz.sh.hidra.modules.notification.application.port.in.WorkflowInboxUseCase.class));
+    owners.put(t27.getClass(),t27);
 
 
     // The same logical operation has two distinct native-protected MVC methods, never one multi-pattern mapping.

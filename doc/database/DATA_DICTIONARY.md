@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `21bbab3a047ce512ef9f51b264362508aba9bd65`
+Captured source SHA: `7353a6a8d779b44db8f68f10fdc78f937bd2a469`
 PostgreSQL server: `16.16 (Debian 16.16-1.pgdg13+1)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `4c707b3db1fc08bdd304113c441a25b06348d514ea9d383de535b5e42678b1cc`.
-Migrations: 230; JPA mappings: 471; catalog relations: 608; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `b971d5ea0d74a192f2b19d5d25c0febfa0ddabe846123247006f2025024deea8`.
+Migrations: 231; JPA mappings: 471; catalog relations: 610; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -12138,6 +12138,7 @@ Persisted PermissionJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261118_003__t17_hse_impact_assessment.sql](../../src/main/resources/db/migration/V20261118_003__t17_hse_impact_assessment.sql)
 - Migration mention (not inferred introduction): [V20261118_004__t25_scoped_report_rendering.sql](../../src/main/resources/db/migration/V20261118_004__t25_scoped_report_rendering.sql)
 - Migration mention (not inferred introduction): [V20261118_005__t26_governed_synthetic_exchange.sql](../../src/main/resources/db/migration/V20261118_005__t26_governed_synthetic_exchange.sql)
+- Migration mention (not inferred introduction): [V20261119_001__t27_recipient_scoped_notification_inbox.sql](../../src/main/resources/db/migration/V20261119_001__t27_recipient_scoped_notification_inbox.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -20292,6 +20293,121 @@ Persisted NotificationSuppressionRuleJpaEntity state; semantic authority remains
 #### Triggers
 
 None captured in this catalog category.
+
+### public.hidra_notification_t27_inbox_acknowledgement
+
+Owner: **notification**; relation kind: `r`.
+
+Notification-owned immutable one-recipient acknowledgement with local composite recipient FK and monotonic receipt time.
+
+- Evidence: [V20261119_001__t27_recipient_scoped_notification_inbox.sql](../../src/main/resources/db/migration/V20261119_001__t27_recipient_scoped_notification_inbox.sql)
+- Evidence: [JdbcWorkflowInboxRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/notification/infrastructure/persistence/adapter/JdbcWorkflowInboxRepositoryAdapter.java)
+- Migration mention (not inferred introduction): [V20261119_001__t27_recipient_scoped_notification_inbox.sql](../../src/main/resources/db/migration/V20261119_001__t27_recipient_scoped_notification_inbox.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| notification_id | character varying(36) | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| acknowledged_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_notification_t27_inbox_acknowledgement_actor_id_check`: CHECK (btrim(actor_id::text) &lt;&gt; ''::text AND actor_id::text = btrim(actor_id::text))
+  - Catalog attributes: {"columns": ["actor_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_notification_t27_inbox_acknowledgement_pkey`: PRIMARY KEY (notification_id)
+  - Catalog attributes: {"columns": ["notification_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `t27_ack_original_recipient`: FOREIGN KEY (notification_id, actor_id) REFERENCES hidra_notification_t27_inbox_item(id, recipient_actor_id)
+  - Catalog attributes: {"columns": ["notification_id", "actor_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id", "recipient_actor_id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_notification_t27_inbox_item"}, "type": "f", "validated": true}
+
+#### Indexes
+
+- `hidra_notification_t27_inbox_acknowledgement_pkey`: CREATE UNIQUE INDEX hidra_notification_t27_inbox_acknowledgement_pkey ON public.hidra_notification_t27_inbox_acknowledgement USING btree (notification_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `t27_ack_immutable`: CREATE TRIGGER t27_ack_immutable BEFORE DELETE OR UPDATE ON hidra_notification_t27_inbox_acknowledgement FOR EACH ROW EXECUTE FUNCTION t27_notification_no_mutation()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t27_notification_no_mutation()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t27_notification_no_mutation()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T27 immutable Notification evidence cannot be changed' USING ERRCODE='23514';<br>END $function$<br>
+- `t27_ack_no_truncate`: CREATE TRIGGER t27_ack_no_truncate BEFORE TRUNCATE ON hidra_notification_t27_inbox_acknowledgement FOR EACH STATEMENT EXECUTE FUNCTION t27_notification_no_mutation()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t27_notification_no_mutation()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t27_notification_no_mutation()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T27 immutable Notification evidence cannot be changed' USING ERRCODE='23514';<br>END $function$<br>
+- `t27_ack_proof`: CREATE TRIGGER t27_ack_proof BEFORE INSERT ON hidra_notification_t27_inbox_acknowledgement FOR EACH ROW EXECUTE FUNCTION t27_notification_ack_proof()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t27_notification_ack_proof()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t27_notification_ack_proof()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>DECLARE delivered timestamptz; recipient varchar(80);<br>BEGIN<br> SELECT i.delivered_at,i.recipient_actor_id INTO delivered,recipient<br>   FROM public.hidra_notification_t27_inbox_item i<br>   WHERE i.id=NEW.notification_id FOR UPDATE;<br> IF NOT FOUND OR NEW.actor_id IS DISTINCT FROM recipient OR NEW.acknowledged_at&lt;delivered THEN<br>   RAISE EXCEPTION 'T27 acknowledgement must match original recipient and delivery' USING ERRCODE='23514';<br> END IF;<br> RETURN NEW;<br>END $function$<br>
+
+### public.hidra_notification_t27_inbox_item
+
+Owner: **notification**; relation kind: `r`.
+
+Notification-owned immutable, source-task-unique WEB assignment item scoped to one recipient and current company/facility.
+
+- Evidence: [V20261119_001__t27_recipient_scoped_notification_inbox.sql](../../src/main/resources/db/migration/V20261119_001__t27_recipient_scoped_notification_inbox.sql)
+- Evidence: [JdbcWorkflowInboxRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/notification/infrastructure/persistence/adapter/JdbcWorkflowInboxRepositoryAdapter.java)
+- Migration mention (not inferred introduction): [V20261119_001__t27_recipient_scoped_notification_inbox.sql](../../src/main/resources/db/migration/V20261119_001__t27_recipient_scoped_notification_inbox.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| id | character varying(36) | False | None; identity=; generated= | No current mapped Java column | — |
+| event_code | character varying(70) | False | None; identity=; generated= | No current mapped Java column | — |
+| message_code | character varying(70) | False | None; identity=; generated= | No current mapped Java column | — |
+| channel | character varying(20) | False | None; identity=; generated= | No current mapped Java column | — |
+| delivery_status | character varying(20) | False | None; identity=; generated= | No current mapped Java column | — |
+| company_id | character varying(96) | False | None; identity=; generated= | No current mapped Java column | — |
+| facility_id | character varying(120) | False | None; identity=; generated= | No current mapped Java column | — |
+| recipient_actor_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| workflow_task_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| assigned_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| delivered_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_notification_t27_inbox_item_channel_check`: CHECK (channel::text = 'WEB'::text)
+  - Catalog attributes: {"columns": ["channel"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_notification_t27_inbox_item_check`: CHECK (delivered_at &gt;= assigned_at)
+  - Catalog attributes: {"columns": ["delivered_at", "assigned_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_notification_t27_inbox_item_company_id_check`: CHECK (btrim(company_id::text) &lt;&gt; ''::text AND company_id::text = btrim(company_id::text))
+  - Catalog attributes: {"columns": ["company_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_notification_t27_inbox_item_delivery_status_check`: CHECK (delivery_status::text = 'DELIVERED'::text)
+  - Catalog attributes: {"columns": ["delivery_status"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_notification_t27_inbox_item_event_code_check`: CHECK (event_code::text = 'WORKFLOW_REPORT_REVIEW_TASK_ASSIGNED_V1'::text)
+  - Catalog attributes: {"columns": ["event_code"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_notification_t27_inbox_item_facility_id_check`: CHECK (btrim(facility_id::text) &lt;&gt; ''::text AND facility_id::text = btrim(facility_id::text))
+  - Catalog attributes: {"columns": ["facility_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_notification_t27_inbox_item_id_check`: CHECK (id::text ~ '^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$'::text)
+  - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_notification_t27_inbox_item_message_code_check`: CHECK (message_code::text = 'REPORT_REVIEW_TASK_ASSIGNED_V1'::text)
+  - Catalog attributes: {"columns": ["message_code"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_notification_t27_inbox_item_pkey`: PRIMARY KEY (id)
+  - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_notification_t27_inbox_item_recipient_actor_id_check`: CHECK (btrim(recipient_actor_id::text) &lt;&gt; ''::text AND recipient_actor_id::text = btrim(recipient_actor_id::text))
+  - Catalog attributes: {"columns": ["recipient_actor_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_notification_t27_inbox_item_workflow_task_id_check`: CHECK (btrim(workflow_task_id::text) &lt;&gt; ''::text AND workflow_task_id::text = btrim(workflow_task_id::text))
+  - Catalog attributes: {"columns": ["workflow_task_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `t27_notification_event_unique`: UNIQUE (event_code, workflow_task_id)
+  - Catalog attributes: {"columns": ["event_code", "workflow_task_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `t27_notification_recipient_unique`: UNIQUE (id, recipient_actor_id)
+  - Catalog attributes: {"columns": ["id", "recipient_actor_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+
+#### Indexes
+
+- `hidra_notification_t27_inbox_item_pkey`: CREATE UNIQUE INDEX hidra_notification_t27_inbox_item_pkey ON public.hidra_notification_t27_inbox_item USING btree (id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `t27_inbox_keyset`: CREATE INDEX t27_inbox_keyset ON public.hidra_notification_t27_inbox_item USING btree (company_id, facility_id, recipient_actor_id, delivered_at DESC, id DESC)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+- `t27_notification_event_unique`: CREATE UNIQUE INDEX t27_notification_event_unique ON public.hidra_notification_t27_inbox_item USING btree (event_code, workflow_task_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `t27_notification_recipient_unique`: CREATE UNIQUE INDEX t27_notification_recipient_unique ON public.hidra_notification_t27_inbox_item USING btree (id, recipient_actor_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `t27_inbox_immutable`: CREATE TRIGGER t27_inbox_immutable BEFORE DELETE OR UPDATE ON hidra_notification_t27_inbox_item FOR EACH ROW EXECUTE FUNCTION t27_notification_no_mutation()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t27_notification_no_mutation()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t27_notification_no_mutation()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T27 immutable Notification evidence cannot be changed' USING ERRCODE='23514';<br>END $function$<br>
+- `t27_inbox_no_truncate`: CREATE TRIGGER t27_inbox_no_truncate BEFORE TRUNCATE ON hidra_notification_t27_inbox_item FOR EACH STATEMENT EXECUTE FUNCTION t27_notification_no_mutation()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t27_notification_no_mutation()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t27_notification_no_mutation()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T27 immutable Notification evidence cannot be changed' USING ERRCODE='23514';<br>END $function$<br>
 
 ### public.hidra_notification_template
 

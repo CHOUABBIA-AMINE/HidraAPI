@@ -11959,7 +11959,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java",
-      "source_sha256": "d4798355d506ef7741360f3203f3e193e745a7f7b23c214e9df72925513647d7",
+      "source_sha256": "2fc91808222204e5eedb44ff4fe708eea1eefaff313393ba2bc4b7074db0f316",
       "supports": []
     },
     {

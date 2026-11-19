@@ -12443,12 +12443,12 @@
         "transientReceiverRollsBackThenDistinctAuthorizedReplayCreatesOneDraftAcrossRestart"
       ],
       "class": "dz.sh.hidra.qualification.Gz2SyntheticExchangeNativeHttpPostgresIntegrationTest",
-      "dependency_reason": "T26 signed LOCAL / PostgreSQL native synthetic transient receiver failure and privileged replay; Testcontainers and separate application JVM.",
+      "dependency_reason": "T26 signed LOCAL and PostgreSQL client journey: concurrent same-key submit, competing replay, retired/wrong scope and schema, physical commit guards, signed revocation and failed post-restart recovery.",
       "fast": false,
       "lane": "postgres-integration",
       "owner": "qualification",
       "path": "src/test/java/dz/sh/hidra/qualification/Gz2SyntheticExchangeNativeHttpPostgresIntegrationTest.java",
-      "source_sha256": "799a97a20a85627aefc7f7cb0bbfc0583379e5730a9d4e088d7cc1f0d236c160",
+      "source_sha256": "b87796a7fdcbec3d2dab3693ae808c2848afb7d6cca7505531e2038de01873ed",
       "supports": []
     }
   ],

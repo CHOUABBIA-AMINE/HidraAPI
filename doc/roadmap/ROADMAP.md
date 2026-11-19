@@ -4553,3 +4553,17 @@ synthetic data and the fresh migration chain. This registration is only
 `docs(roadmap): record T26 CI acceptance evidence and register T27 envelope`,
 updates this roadmap alone, and leaves T27 PLANNED with the sequence gates above.
 T28 remains the next later roadmap candidate.
+
+#### T26 outstanding acceptance implementation — 2026-11-19
+
+The owner explicitly selected completing the five outstanding T26 acceptance
+checks. The existing signed T26 PostgreSQL scenario now additionally exercises
+concurrent same-key submission and competing authorized replay, live revocation
+of a signed reader's facility grant, current company/facility and mapping/schema
+mismatch, direct SQL preservation and deferred native commit guards, and a
+separate failed recovery attempt after an application restart. Only the
+enrolled T26 qualification test, its exact-source inventory record and this
+roadmap evidence are touched. No business behavior, schema, permission, legacy
+route, or accepted T27 envelope is changed. This is source-level test extension,
+not executed passing evidence; the full exact-SHA CI result remains required
+to close T26. Keep T26 IN PROGRESS and T27 PLANNED until that gate passes.

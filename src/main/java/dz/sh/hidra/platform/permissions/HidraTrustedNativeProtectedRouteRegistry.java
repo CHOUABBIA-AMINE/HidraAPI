@@ -64,6 +64,11 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
             Class<?> controller=Class.forName(controllerName);
             Class<?> save=Class.forName(prefix+"request.ManufacturerCharacteristicRevisionRequests$Save");
             Class<?> qualify=Class.forName(prefix+"request.ManufacturerCharacteristicRevisionRequests$Qualify");
+            // Four independently compiled native-protected T31 scenario endpoints.
+            Class<?> t31=Class.forName(prefix+"controller.ScenarioInputRevisionController");
+            Class<?> t31Create=Class.forName(prefix+"request.ScenarioInputRevisionRequests$Create");
+            Class<?> t31Append=Class.forName(prefix+"request.ScenarioInputRevisionRequests$Append");
+            String t31Base="/api/v1/simulation/companies/{companyId}/pipeline-systems/{pipelineSystemId}/scenarios";
             final String topology="dz.sh.hidra.modules.topology.api.rest.";
             Class<?> installed=Class.forName(topology+"controller.InstalledCharacteristicLinkController");
             Class<?> approval=Class.forName(topology+"request.InstalledCharacteristicLinkRequests$CharacteristicLinkApprovalCommand");
@@ -478,6 +483,14 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
                 new Route(baseline,baseline.getDeclaredMethod("current",java.util.UUID.class,String.class,String.class),"GET",baselineBase+"/{manifestId}"),
                 new Route(baseline,baseline.getDeclaredMethod("revision",java.util.UUID.class,long.class,String.class,String.class),"GET",baselineBase+"/{manifestId}/revisions/{version}"),
                 new Route(baseline,baseline.getDeclaredMethod("validate",java.util.UUID.class,String.class,String.class,Long.class),"POST",baselineBase+"/{manifestId}/validation"),
+                new Route(t31,t31.getDeclaredMethod("create",String.class,String.class,t31Create),
+                        "POST",t31Base),
+                new Route(t31,t31.getDeclaredMethod("append",String.class,String.class,java.util.UUID.class,t31Append),
+                        "POST",t31Base+"/{scenarioId}/revisions"),
+                new Route(t31,t31.getDeclaredMethod("read",String.class,String.class,java.util.UUID.class,long.class),
+                        "GET",t31Base+"/{scenarioId}/revisions/{revision}"),
+                new Route(t31,t31.getDeclaredMethod("validate",String.class,String.class,java.util.UUID.class,long.class),
+                        "GET",t31Base+"/{scenarioId}/revisions/{revision}/validation"),
                 new Route(controller,controller.getDeclaredMethod("save",String.class,String.class,save),
                     "PUT",base+"/revisions/{revisionId}"),
                 new Route(controller,controller.getDeclaredMethod("revision",String.class,String.class,String.class),

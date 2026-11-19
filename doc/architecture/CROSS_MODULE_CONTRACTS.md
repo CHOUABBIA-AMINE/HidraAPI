@@ -296,3 +296,27 @@ Audit alone owns the three append-only physical relations
 Identity/Topology private aggregates or source owners are exported.
 The exact four native HTTP routes require a Platform registry entry;
 provenance and access receipts are Audit-owned and never field actuation.
+
+## T31 exact baseline-pinned Simulation owner boundaries — 2026-11-19
+
+Only `dz.sh.hidra.modules.simulation.infrastructure.integration.ScenarioInputOwnerAccessAdapter`
+may consume these **two exact owner contracts** and their nested scalar values:
+
+- `identity.application.contract.simulation.ScenarioInputAuthorizationContract`:
+  current signed LOCAL actor and **both** explicit current direct grants
+  (`CUSTOM simulation-company:{companyId}`, `PIPELINE_SYSTEM {pipelineSystemId}`)
+  for the requested read/write permission, with policy DENY precedence.
+  Identity runs in the original Simulation transaction. Write requires
+  an additional distinct read grant.
+- `topology.application.contract.simulation.ScenarioBaselineReceiptContract`:
+  exact T07 protected publication receipt, manifest UUID, publication epoch
+  and canonical digest. Its implementation calls the existing Topology
+  protected `EXACT` read under the same signed principal in **Topology's own
+  original transaction outside Simulation's transaction**, including live
+  source-pin authorization. It never invokes current-head fallback.
+
+Simulation alone owns immutable input revisions and CAS/replay, with separate
+initial and final current-authority decisions. Neither contract exports a
+Topology aggregate, private repository, raw engineering manifest, solver,
+result or operational action. Architecture and Forensic negative tests
+reject same-prefix siblings and consumers other than the one adapter.

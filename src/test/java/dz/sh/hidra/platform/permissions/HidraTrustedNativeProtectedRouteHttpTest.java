@@ -96,12 +96,23 @@ class HidraTrustedNativeProtectedRouteHttpTest {
  @AfterEach void clearAuthentication() {
    SecurityContextHolder.clearContext();
  }
- @Test void t28NativeAuditRoutesRejectSiblingAndWrongVerbs() {
+ @Test void t31NativeScenarioRoutesRejectSiblingAndWrongVerbs() {
+    var routes=new HidraTrustedNativeProtectedRouteRegistry().candidates();
+    String base="/api/v1/simulation/companies/{companyId}/pipeline-systems/{pipelineSystemId}/scenarios";
+    var own=routes.stream().filter(x->x.controller().getSimpleName().equals("ScenarioInputRevisionController")).toList();
+    assertEquals(159,routes.size());assertEquals(4,own.size());
+    assertEquals(java.util.Set.of("POST "+base,"POST "+base+"/{scenarioId}/revisions",
+          "GET "+base+"/{scenarioId}/revisions/{revision}",
+          "GET "+base+"/{scenarioId}/revisions/{revision}/validation"),
+          own.stream().map(x->x.verb()+" "+x.pattern()).collect(java.util.stream.Collectors.toSet()));
+    assertTrue(own.stream().allMatch(x->x.method().isAnnotationPresent(NativeProtectedOperation.class)));
+  }
+  @Test void t28NativeAuditRoutesRejectSiblingAndWrongVerbs() {
     var routes=new HidraTrustedNativeProtectedRouteRegistry().candidates();
     String base="/api/v1/audit/companies/{companyId}/facilities/{facilityId}";
     var t28=routes.stream().filter(x->x.controller().getSimpleName()
             .equals("ScopedAuditEvidenceController")).toList();
-    assertEquals(155,routes.size());assertEquals(4,t28.size());
+    assertEquals(159,routes.size());assertEquals(4,t28.size());
     var declared=t28.stream().map(x->x.verb()+" "+x.pattern())
             .collect(java.util.stream.Collectors.toSet());
     assertEquals(java.util.Set.of("GET "+base+"/events","POST "+base+"/exports",
@@ -115,7 +126,7 @@ class HidraTrustedNativeProtectedRouteHttpTest {
     String base="/api/v1/notification/companies/{companyId}/facilities/{facilityId}/inbox";
     var routes=registry.candidates().stream()
         .filter(r->r.controller().getSimpleName().equals("WorkflowInboxController")).toList();
-    assertEquals(155,registry.candidates().size());
+    assertEquals(159,registry.candidates().size());
     assertEquals(3,routes.size());
     var declared=routes.stream().map(r->r.verb()+" "+r.pattern())
         .collect(java.util.stream.Collectors.toSet());
@@ -192,7 +203,7 @@ class HidraTrustedNativeProtectedRouteHttpTest {
    var resolver = org.mockito.Mockito.mock(HidraEffectivePermissionResolver.class);
    authenticated();
    var registry = new HidraTrustedNativeProtectedRouteRegistry();
-   assertEquals(155,registry.candidates().size());
+   assertEquals(159,registry.candidates().size());
    var mvc = mvc(owner, new UntrustedController(), resolver,registry);
    assertThrows(Exception.class, () ->
       mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(TRUSTED)));
@@ -201,7 +212,7 @@ class HidraTrustedNativeProtectedRouteHttpTest {
  @Test void realManufacturerTupleRegistryRejectsWrongVerbAndSiblingPattern() throws Exception {
    var registry=new HidraTrustedNativeProtectedRouteRegistry();
    var routes=registry.candidates();
-   assertEquals(155,routes.size());
+   assertEquals(159,routes.size());
    var expected=java.util.Set.of(
      "GET /api/v1/audit/companies/{companyId}/facilities/{facilityId}/events",
      "POST /api/v1/audit/companies/{companyId}/facilities/{facilityId}/exports",
@@ -465,14 +476,17 @@ class HidraTrustedNativeProtectedRouteHttpTest {
     var t26=new dz.sh.hidra.modules.integration.api.rest.controller.SyntheticExchangesController(
         org.mockito.Mockito.mock(dz.sh.hidra.modules.integration.application.port.in.SyntheticExchangeUseCase.class));
     owners.put(t26.getClass(),t26);
-    // T27 exact native WEB inbox handler must participate in the full 155-route proof.
+    // T27 exact native WEB inbox handler must participate in the full 159-route proof.
     var t27=new dz.sh.hidra.modules.notification.api.rest.controller.WorkflowInboxController(
         org.mockito.Mockito.mock(dz.sh.hidra.modules.notification.application.port.in.WorkflowInboxUseCase.class));
     owners.put(t27.getClass(),t27);
-    // T28 participates in the entire 155-tuple real-MVC startup inventory.
+    // T28 participates in the entire 159-tuple real-MVC startup inventory.
     var t28=new dz.sh.hidra.modules.audit.api.rest.controller.ScopedAuditEvidenceController(
         org.mockito.Mockito.mock(dz.sh.hidra.modules.audit.application.port.in.ScopedAuditEvidenceUseCase.class));
     owners.put(t28.getClass(),t28);
+    var t31=new dz.sh.hidra.modules.simulation.api.rest.controller.ScenarioInputRevisionController(
+        org.mockito.Mockito.mock(dz.sh.hidra.modules.simulation.application.port.in.ScenarioInputRevisionUseCase.class));
+    owners.put(t31.getClass(),t31);
 
 
     // The same logical operation has two distinct native-protected MVC methods, never one multi-pattern mapping.

@@ -280,3 +280,57 @@ A Simulation-owned pure Java candidate provides explicit method-tagged synthetic
 **Declared refusal:** unknown or non-SYNTHETIC reference methods, missing or mismatched source bindings/times, invalid/extra device IDs, extrapolated or nonrectangular maps, mismatched T or compressor inlet reference pressure, unsupported zero/reverse compressor/active valve operation, out-of-map flow/differential pressure, unspecified synthetic equipment limits, invalid trial pressure, unanchored closed components and solver nonconvergence. Map interpretation, synthetic physical values, all numerical tolerances, pressure/flow domains and stability remain development-only. Real GZ4 operational source qualification, actual equipment curves and field calibration are NOT established.
 
 **Tests added:** independent bilinear interpolation and derivatives, named-method rejection, synthetic union/binding validation, compressor/valve bridge pressure and power, equipment-only union, real pipe plus device flow separation, closed-isolation anchoring, and invalid-state rejection. Numerical acceptance must still verify full source-derived ten-file scope and reference matrix through actual Java 21 CI; no test pass is claimed before observation. Regulator behavior cannot be silently aliased to valve and remains a separate unresolved topology/source-schema obligation; 008C therefore remains PENDING even if this bounded candidate's CI passes.
+
+## T31 — Versioned engine-neutral scenario input readiness (2026-11-19)
+
+T31 adds an independent **Simulation-owned** immutable input preparation path;
+it does not modify the older SimulationScenario model, run admission or solver
+contract. Its routes are
+`/api/v1/simulation/companies/{companyId}/pipeline-systems/{pipelineSystemId}/scenarios`
+with create, append revision, exact revision read and structural validation.
+The supported profile `T31_INPUT_V1` contains a trimmed scenario name (1–120),
+a mode (`STEADY` or `TRANSIENT`), a unique actor-scoped replay key,
+an exact Topology published-baseline receipt UUID and SHA-256 digest,
+`SUPPLY_PRESSURE` in `PA` or `BAR_ABSOLUTE` and
+`DELIVERY_MASS_FLOW` in `KG_PER_S`. Declared values retain their
+submitted decimal/unit, alongside exact SI values. Pressure must be positive,
+mass flow nonnegative and both decimals bounded to 18 significant digits
+and at most six fractional places. STEADY forbids window controls;
+TRANSIENT requires positive integer duration/step in seconds, divides evenly
+and is limited to 10,000 constant-boundary intervals. No node mapping
+is claimed.
+
+The deterministic input SHA-256 is computed from `T31_INPUT_V1` and
+length-prefixed UTF-8 canonical scalar fields: Simulation company/pipeline,
+Topology receipt UUID, manifest UUID, epoch and **actual published digest**,
+scenario name, mode, sorted boundary slots, locale-independent decimal
+normalization, supplied unit names and optional integer time controls.
+Replay fingerprint `T31_REPLAY_V1` binds scenario identity, previous revision,
+current actor, request key and input digest. First-revision replay additionally
+compares the computed input digest under the identical scoped actor/request key.
+
+Both current Identity company `CUSTOM simulation-company:{companyId}`
+and exact `PIPELINE_SYSTEM` direct grants are mandatory:
+`simulation:scenario-inputs:read` for either read, and read plus
+`simulation:scenario-inputs:write` for either mutation. Permissions are
+provisioned **ungranted**. Each operation first authorizes Simulation and
+locates only its scoped baseline reference, then invokes the existing
+Topology T07 protected `EXACT` read **outside** any Simulation transaction.
+Topology retains its original protected execution, source-pin grants and
+historical rights after supersession. The final Simulation transaction
+rechecks the signed LOCAL actor, paired current permissions, original
+scope, authorized locator and, for writes, revision CAS/replay.
+No cross-transaction atomic-revocation guarantee is claimed.
+
+The additive table `hidra_simulation_t31_scenario_input_revision` has
+an immutable same-owner composite predecessor key and exact historical
+scope, receipt, epoch, digest, input fields, actor, policy and replay
+fingerprint. Trigger guards forbid UPDATE, DELETE and TRUNCATE.
+Create and append use parameterized INSERT with scoped conflict
+arbitration, never update historical rows. Unknown/foreign/denied
+references cannot disclose protected history. Valid revisions report
+`VALIDATED_INPUTS`, ordered empty structural diagnostics and
+`numericalCapability=NOT_AVAILABLE`. This is **not** hydraulic
+validation, model execution, qualified output, calibration, OT actuation
+or plant acceptance. The signed GZ2/T15 JVM-restart qualification and
+full exact-SHA CI remain the development acceptance gate.

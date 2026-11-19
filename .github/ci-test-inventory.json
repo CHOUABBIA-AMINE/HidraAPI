@@ -48,6 +48,7 @@
         "t26ExactScalarOwnerImportsExcludeSiblingsAndForeignPersistence",
         "t27OnlyExactNamedConsumersMayUseExactOwnerContracts",
         "t28OnlyTheAuditBridgeImportsExactOwnerContracts",
+        "t31OwnerExportsAreExactAndSolverFree",
         "telemetryNativeAuthorizationContractsRemainExactAndOwnerPrivate",
         "transactionalOrganizationResponsibilityServicesMustRemainProxyable",
         "transitionalCrossModuleAllowlistMustRemainExactAndInUse",
@@ -59,7 +60,7 @@
       "lane": "unit-architecture",
       "owner": "architecture",
       "path": "src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java",
-      "source_sha256": "2f641d4c3b61afe88ab42e60da6f2a92324b1851f46d1485b69efd3c372c1325",
+      "source_sha256": "62bf6be268a6374983172833234cb9fa05e83aebd8d91b26c6f3265023ff864a",
       "supports": []
     },
     {
@@ -110,7 +111,8 @@
         "t25OwnerExportsAreExact",
         "t26OnlyTheRegisteredConsumerMayImportExactScalarContracts",
         "t27OnlyExactNamedConsumersMayUseExactOwnerContracts",
-        "t28OnlyTheAuditBridgeImportsExactOwnerContracts"
+        "t28OnlyTheAuditBridgeImportsExactOwnerContracts",
+        "t31OwnerExportsAreExactAndSolverFree"
       ],
       "class": "dz.sh.hidra.ForensicRemediationClosureTest",
       "dependency_reason": "HAPI-600 B3-S2 exact Identity-export coordinator allowance and sibling/private-adapter negative coverage; inherited HRA-120 architecture closure unchanged",
@@ -118,7 +120,7 @@
       "lane": "unit-architecture",
       "owner": "architecture",
       "path": "src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java",
-      "source_sha256": "8cc042a4ab8d9ac428b2b7a6ab0b57c13b769c8fdc5bd2522a22af7b66e0fe34",
+      "source_sha256": "f418146b7afe9a0a1e1ad61f1579e8fcbf7d197d793da2bb0f501c78c14514e0",
       "supports": []
     },
     {
@@ -11964,6 +11966,7 @@
         "t24DeclaredNativeRoutesKeepExactMethodAndSignature",
         "t27NativeInboxIsExactAndExcludesWrongMethodsAndSiblingPaths",
         "t28NativeAuditRoutesRejectSiblingAndWrongVerbs",
+        "t31NativeScenarioRoutesRejectSiblingAndWrongVerbs",
         "wrongVerbCannotReuseNativeDelegation"
       ],
       "class": "dz.sh.hidra.platform.permissions.HidraTrustedNativeProtectedRouteHttpTest",
@@ -11972,7 +11975,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java",
-      "source_sha256": "a3e51f841e8de6029eb21adecb9477ccdc9193e17b729b322973274c6e604379",
+      "source_sha256": "4f5b7ba71eec35cad86820926afc3fa0b4bf39a065d0179f98c293c5aed1847f",
       "supports": []
     },
     {
@@ -11998,6 +12001,7 @@
         "t26RegistersExactlyFiveScopedIntegrationTuples",
         "t27RegistersExactlyThreeNativeRecipientScopedInboxTuples",
         "t28IsExactlyFourNativeScopedAuditHandlers",
+        "t31HasOnlyFourExactBaselinePinnedScenarioMethods",
         "trustedDeclarationsAreImmutableAndCannotBeSilentlyReplaced",
         "unvalidatedTrustedEntryNeverDelegates",
         "verifiedEntryMatchesExactCompiledSignatureVerbAndRoute"
@@ -12008,7 +12012,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteRegistryTest.java",
-      "source_sha256": "46b22f6db43ca53359f9b34c9479ba809b8e7a17d26da7b47e955ab44935b5a6",
+      "source_sha256": "f6710fff42fd59c807b6b5494af192516f31c551e7c26884455e25b0969b54db",
       "supports": []
     },
     {
@@ -12022,7 +12026,8 @@
         "startupFailsOnWrongVerbOrPattern",
         "startupFailsWhenMethodIsNotAnnotated",
         "t27StartupRegistryRequiresThreeExactAnnotatedNotificationHandlers",
-        "t28StartupRegistryRequiresFourExactAnnotatedHandlers"
+        "t28StartupRegistryRequiresFourExactAnnotatedHandlers",
+        "t31StartupInventoryIsExactAndNoWildcardOrExtraVerb"
       ],
       "class": "dz.sh.hidra.platform.permissions.HidraTrustedNativeProtectedRouteStartupValidatorTest",
       "dependency_reason": "HPS-023 new synthetic Platform native-route security qualification; pure JVM/standalone MVC, no database",
@@ -12030,7 +12035,7 @@
       "lane": "unit-architecture",
       "owner": "platform",
       "path": "src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteStartupValidatorTest.java",
-      "source_sha256": "dcd22f795dca359e2f63544a726fdbd66aabdb7e0802d95d97e47a355798efee",
+      "source_sha256": "4b1f6596e2a2969f13bd61f85ac411e84f836fdf6f3741f1f3ab5350dc9db63d",
       "supports": []
     },
     {
@@ -12455,7 +12460,7 @@
       "lane": "postgres-integration",
       "owner": "qualification",
       "path": "src/test/java/dz/sh/hidra/qualification/Gz2SignedWorkflowNativeHttpPostgresIntegrationTest.java",
-      "source_sha256": "1d339128d428c8758e70c9f0760355743b331d4b20c018161a4e9150616dfcaf",
+      "source_sha256": "e6aa8ad4576bc0395770180234037183700ceedabcd1aed12e0d0c4438611a0f",
       "supports": []
     },
     {

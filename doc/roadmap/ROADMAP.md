@@ -5879,3 +5879,24 @@ final reconciled T31 SHA** is sufficient to mark T31 COMPLETED for
 registered A19/A21 development software. Record the run, signed shard
 and combined artifact. No manual test, extra evidence package or
 separate acceptance sign-off is required for that scope. FG-21 stays deferred.
+
+### T31 source stage initiated — 2026-11-19
+
+The bounded T31 source implementation is registered under
+`feat(simulation): version engine-neutral scenario inputs`.
+Its exact file ledger remains the T31 envelope above. This stage
+adds the additive immutable Simulation history, four typed native routes,
+paired current Identity read/write authority, a scalar Topology T07
+historical receipt bridge, stable `T31_INPUT_V1` normalization, CAS and
+replay, and extension of the existing signed T15 PostgreSQL/JVM-restart
+journey. Legacy simulation scenarios and numerical execution remain unchanged.
+
+**Acceptance remains OPEN:** this entry is source-delivery metadata, not a
+statement of a passing hosted build, runtime OpenAPI capture, physical
+dictionary equality, publication SHA, engineering validation or SITE.
+After the source publication, inspect exact-SHA HidraAPI CI startup and
+stop. If CI fails, repair only the responsible T31 scope. The final
+canonical-document reconciliation is separately registered as
+`docs(simulation): reconcile T31 API and physical dictionary`, and
+T31 can become COMPLETED only after the final exact-SHA Full Verification
+Gate passes. T32 is not selected.

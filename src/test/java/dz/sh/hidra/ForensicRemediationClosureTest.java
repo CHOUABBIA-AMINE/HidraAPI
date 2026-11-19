@@ -165,6 +165,32 @@ class ForensicRemediationClosureTest {
         }
     }
 
+
+    // T31 contracts: no generic cross-module scalar export and no adapter sibling.
+    private static final String T31_ADAPTER =
+            "dz.sh.hidra.modules.simulation.infrastructure.integration.ScenarioInputOwnerAccessAdapter";
+    private static final Set<String> T31_OWNER_CONTRACTS=Set.of(
+            "dz.sh.hidra.modules.identity.application.contract.simulation.ScenarioInputAuthorizationContract",
+            "dz.sh.hidra.modules.topology.application.contract.simulation.ScenarioBaselineReceiptContract");
+    private static boolean t31OwnerRoot(String type) {
+        return T31_OWNER_CONTRACTS.stream().anyMatch(type::startsWith);
+    }
+    private static boolean t31OwnerExport(String consumer,String type) {
+        return T31_ADAPTER.equals(consumer) && T31_OWNER_CONTRACTS.stream()
+            .anyMatch(root->type.equals(root)||type.startsWith(root+"$"));
+    }
+    @Test void t31OwnerExportsAreExactAndSolverFree() {
+        for(String root:T31_OWNER_CONTRACTS) {
+            assertTrue(t31OwnerExport(T31_ADAPTER,root));
+            assertTrue(t31OwnerExport(T31_ADAPTER,root+"$Exact"));
+            assertFalse(t31OwnerExport(T31_ADAPTER+"Sibling",root));
+            assertFalse(t31OwnerExport(T31_ADAPTER,root+"Sibling"));
+            assertTrue(t31OwnerRoot(root+"Sibling"));
+        }
+        assertFalse(t31OwnerExport(T31_ADAPTER,
+                "dz.sh.hidra.modules.simulation.application.port.out.SimulationSolverPort"));
+    }
+
     // T28 alone admits these two exact, owner-owned scalar contracts.
     private static final String T28_CONSUMER =
             "dz.sh.hidra.modules.audit.infrastructure.integration.ScopedAuditEvidenceAccessAdapter";
@@ -458,6 +484,11 @@ class ForensicRemediationClosureTest {
                 String importedPackage = packageName(imported);
                 String targetModule = module(importedPackage);
                 if (targetModule == null || sourceModule.equals(targetModule)) {
+                    continue;
+                }
+                if (t31OwnerRoot(imported)) {
+                    if (!t31OwnerExport(source.fqcn(),imported))
+                        violations.add(source.fqcn()+" -> unauthorized T31 owner "+imported);
                     continue;
                 }
                 if (t28OwnerRoot(imported)) {

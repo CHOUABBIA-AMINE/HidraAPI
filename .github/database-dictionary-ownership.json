@@ -882,6 +882,14 @@
     "owner": "simulation",
     "purpose": "Simulation-owned immutable canonical manufacturer characteristic source with digest, declared engineering applicability and original transaction provenance; no numerical solver or operational certification."
   },
+  "public.hidra_simulation_t31_scenario_input_revision": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261119_004__t31_scenario_input_revisions.sql",
+      "src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/adapter/JdbcScenarioInputRevisionAdapter.java"
+    ],
+    "owner": "simulation",
+    "purpose": "Simulation-owned immutable, paired-scope baseline-pinned engine-neutral scenario input revisions; one append-only relation with same-owner predecessor, actor replay uniqueness and no Topology persistence FK or solver output."
+  },
   "public.hidra_telemetry_custody_interval_evidence": {
     "evidence": [
       "src/main/resources/db/migration/V20261115_005__t20_qualified_custody_measurement_capture.sql",

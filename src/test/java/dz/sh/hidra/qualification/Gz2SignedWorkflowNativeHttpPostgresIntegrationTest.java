@@ -48,6 +48,7 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
     private static final String INCIDENT = "/api/v1/incident/incidents";
 
     private record Baselines(JsonNode original, JsonNode successor, Instant asOfOriginal, Instant asOfSuccessor) { }
+    private record T31Scenario(JsonNode first,JsonNode second,JsonNode third) { }
     private record Plan(String revision, String target, String instance) { }
     private record Reading(String raw, String assessment, String trusted) { }
     private record ResponseChain(String rule, String evaluation, String alarm, String candidate, String incident,
@@ -63,10 +64,12 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
             grantEngineering(fixture);
             grantPlanning(fixture);
             grantOperatingAuthorities(fixture);
+            grantScenarioInputPermissions(fixture);
 
             Instant start = now().minusSeconds(900);
             Instant end = start.plusSeconds(7_200);
             Baselines baselines;
+            T31Scenario scenario;
             Plan plan;
             Reading reading;
             ResponseChain response;
@@ -86,6 +89,7 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
                 Instant firstEffective = now();
                 JsonNode baseline = publishBaseline(fixture, runtime, author, reviewer, review, network, product, firstEffective, 0);
                 Instant beforeSuccessor = databaseTime(fixture);
+                T31Scenario prepared=prepareScenarioInputs(fixture,runtime,author,reviewer,baseline);
 
                 commissioned = commission(fixture, runtime, producer, start);
                 plan = approvePlan(fixture, runtime, author, reviewer, field(commissioned, "pointId"), start, end);
@@ -101,6 +105,7 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
                 JsonNode successor = publishBaseline(fixture, runtime, author, reviewer, review,
                         network, product, now(), 1);
                 assertNotEquals(field(baseline, "receiptId"), field(successor, "receiptId"));
+                scenario=appendTransientScenario(fixture,runtime,author,prepared,successor);
                 baselines = new Baselines(baseline, successor, beforeSuccessor, databaseTime(fixture));
                 System.out.printf("GZ2 phase=committed pid=%d baseline=%s successor=%s target=%s trusted=%s evaluation=%s incident=%s%n",
                         firstPid, field(baseline, "receiptId"), field(successor, "receiptId"), plan.target(), reading.trusted(),
@@ -112,6 +117,7 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
                 verifyPublishedOperations(restarted);
                 readAfterRestart(fixture, restarted, baselines, commissioned, plan, reading, response);
                 verifyCurrentScope(fixture, restarted, baselines, commissioned, plan, response);
+                verifyScenarioAfterRestart(fixture,restarted,scenario,baselines);
                 System.out.printf("GZ2 phase=reconstructed pid=%d originalPid=%d scope=foreign,wrong-asset,revoked%n",
                         restarted.pid(), firstPid);
             }
@@ -141,6 +147,180 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
         f.global(f.reviewer, "workflow:tasks:execute", "workflow:tasks:read");
         f.paired(f.foreign, "topology:engineering-baseline", "ENGINEERING_BASELINE_DRAFT",
                 "topology-company:" + f.foreignCompany, "topology-network:" + f.pipeline, "read");
+    }
+
+    private static void grantScenarioInputPermissions(Gz2SignedWorkflowFixture f) {
+        // The new permission rows are created ungranted. Grant exact, independent
+        // company and PIPELINE_SYSTEM scopes only for signed synthetic actors.
+        for(String actor:List.of(f.author,f.reader,f.reviewer,f.wrongAsset,f.revoked)) {
+            f.permit(actor,"simulation:scenario-inputs:read","SCENARIO_INPUT_REVISION",
+                    "CUSTOM","simulation-company:"+f.company);
+            f.permit(actor,"simulation:scenario-inputs:read","SCENARIO_INPUT_REVISION",
+                    "PIPELINE_SYSTEM",f.pipeline);
+        }
+        for(String actor:List.of(f.author,f.revoked)) {
+            f.permit(actor,"simulation:scenario-inputs:write","SCENARIO_INPUT_REVISION",
+                    "CUSTOM","simulation-company:"+f.company);
+            f.permit(actor,"simulation:scenario-inputs:write","SCENARIO_INPUT_REVISION",
+                    "PIPELINE_SYSTEM",f.pipeline);
+        }
+        f.permit(f.foreign,"simulation:scenario-inputs:read","SCENARIO_INPUT_REVISION",
+                "CUSTOM","simulation-company:"+f.foreignCompany);
+        f.permit(f.foreign,"simulation:scenario-inputs:read","SCENARIO_INPUT_REVISION",
+                "PIPELINE_SYSTEM",f.pipeline);
+    }
+
+    private static String scenarioBase(Gz2SignedWorkflowFixture f) {
+        return "/api/v1/simulation/companies/"+f.company+"/pipeline-systems/"+f.pipeline+"/scenarios";
+    }
+
+    private static Map<String,Object> t31Input(JsonNode baseline,String mode,String key) {
+        var body=new java.util.LinkedHashMap<String,Object>();
+        body.put("baselineReceiptId",field(baseline,"receiptId"));
+        body.put("expectedManifestDigest",field(baseline.path("submission"),"canonicalSha256"));
+        body.put("name","Synthetic GZ2 scenario");
+        body.put("mode",mode);
+        body.put("boundaries",List.of(
+            Map.of("slot","SUPPLY_PRESSURE","value",new java.math.BigDecimal("50.250000"),
+                   "unit","BAR_ABSOLUTE"),
+            Map.of("slot","DELIVERY_MASS_FLOW","value",new java.math.BigDecimal("12.500000"),
+                   "unit","KG_PER_S")));
+        if("TRANSIENT".equals(mode)) {
+            body.put("durationSeconds",3600);
+            body.put("stepSeconds",60);
+        }
+        body.put("requestKey",key);
+        return body;
+    }
+
+    private static T31Scenario prepareScenarioInputs(Gz2SignedWorkflowFixture f,
+            Gz2SignedWorkflowFixture.Runtime r,String author,String reviewer,JsonNode baseline) throws Exception {
+        String root=scenarioBase(f);
+        var steady=t31Input(baseline,"STEADY",id());
+        JsonNode first=r.json("POST",root,author,steady,201);
+        String scenarioId=field(first,"scenarioId");
+        assertEquals(1,first.path("revision").asInt());
+        assertEquals("VALIDATED_INPUTS",field(first,"status"));
+        assertEquals("NOT_AVAILABLE",field(first,"numericalCapability"));
+        assertEquals("T31_INPUT_V1",field(first,"policyId"));
+        assertEquals("5025000",first.path("boundaries").get(0).path("siValue").decimalValue()
+                .stripTrailingZeros().toPlainString());
+        assertEquals(scenarioId,field(r.json("POST",root,author,steady,200),"scenarioId"));
+        assertEquals(0,r.get(root+"/"+scenarioId+"/revisions/1/validation",author)
+                .path("diagnostics").size());
+        assertEquals("NOT_AVAILABLE",field(r.get(root+"/"+scenarioId+"/revisions/1/validation",author),
+                "numericalCapability"));
+        var badDigest=new java.util.LinkedHashMap<String,Object>(steady);
+        badDigest.put("expectedManifestDigest","0".repeat(64));
+        assertEquals(400,r.send("POST",root,author,badDigest).statusCode());
+        var badMode=new java.util.LinkedHashMap<String,Object>(steady);
+        badMode.put("requestKey",id());badMode.put("mode","TRANSIENT");
+        assertEquals(400,r.send("POST",root,author,badMode).statusCode());
+        var badUnit=new java.util.LinkedHashMap<String,Object>(steady);
+        badUnit.put("requestKey",id());
+        badUnit.put("boundaries",List.of(Map.of("slot","SUPPLY_PRESSURE","value",50,
+                        "unit","KG_PER_S"),Map.of("slot","DELIVERY_MASS_FLOW","value",12,"unit","KG_PER_S")));
+        assertEquals(400,r.send("POST",root,author,badUnit).statusCode());
+        noDisclosure(r.send("POST",root,reviewer,steady),scenarioId);
+        String append=root+"/"+scenarioId+"/revisions";
+        var a=new java.util.LinkedHashMap<String,Object>(t31Input(baseline,"STEADY",id()));
+        a.put("expectedRevision",1);
+        var b=new java.util.LinkedHashMap<String,Object>(t31Input(baseline,"STEADY",id()));
+        b.put("expectedRevision",1);
+        var pool=java.util.concurrent.Executors.newFixedThreadPool(2);
+        java.net.http.HttpResponse<String> one,two;
+        try {
+            var futureA=pool.submit(()->r.send("POST",append,author,a));
+            var futureB=pool.submit(()->r.send("POST",append,author,b));
+            one=futureA.get();two=futureB.get();
+        }finally{pool.shutdownNow();}
+        assertEquals(java.util.Set.of(201,409),java.util.Set.of(one.statusCode(),two.statusCode()));
+        JsonNode second=JSON.readTree(one.statusCode()==201?one.body():two.body());
+        assertEquals(2,second.path("revision").asInt());
+        var chosen=one.statusCode()==201?a:b;
+        assertEquals(scenarioId,field(r.json("POST",append,author,chosen,200),"scenarioId"));
+        var stale=new java.util.LinkedHashMap<String,Object>(t31Input(baseline,"STEADY",id()));
+        stale.put("expectedRevision",1);
+        assertEquals(409,r.send("POST",append,author,stale).statusCode());
+        var keyConflict=new java.util.LinkedHashMap<String,Object>(chosen);
+        keyConflict.put("name","Other synthetic inputs");
+        assertEquals(409,r.send("POST",append,author,keyConflict).statusCode());
+        assertEquals(2L,f.sql.queryForObject("SELECT count(*) FROM hidra_simulation_t31_scenario_input_revision WHERE scenario_id=?",
+                Long.class,java.util.UUID.fromString(scenarioId)));
+        return new T31Scenario(first,second,null);
+    }
+
+    private static T31Scenario appendTransientScenario(Gz2SignedWorkflowFixture f,
+            Gz2SignedWorkflowFixture.Runtime r,String author,T31Scenario prepared,JsonNode successor) throws Exception {
+        String scenarioId=field(prepared.first(),"scenarioId");
+        String root=scenarioBase(f);
+        var transientInput=new java.util.LinkedHashMap<String,Object>(t31Input(successor,"TRANSIENT",id()));
+        transientInput.put("expectedRevision",2);
+        JsonNode third=r.json("POST",root+"/"+scenarioId+"/revisions",author,transientInput,201);
+        assertEquals(3,third.path("revision").asInt());
+        assertEquals(3600,third.path("durationSeconds").asInt());
+        assertEquals(60,third.path("stepSeconds").asInt());
+        assertEquals("NOT_AVAILABLE",field(third,"numericalCapability"));
+        assertEquals(field(successor,"receiptId"),field(third.path("baseline"),"receiptId"));
+        assertEquals(3L,f.sql.queryForObject("SELECT count(*) FROM hidra_simulation_t31_scenario_input_revision WHERE scenario_id=?",
+                Long.class,java.util.UUID.fromString(scenarioId)));
+        // Database must independently preserve append-only history, even for the migration owner.
+        assertThrows(org.springframework.dao.DataAccessException.class,()->f.sql.update(
+                "UPDATE hidra_simulation_t31_scenario_input_revision SET scenario_name='mutated' WHERE scenario_id=?",
+                java.util.UUID.fromString(scenarioId)));
+        assertThrows(org.springframework.dao.DataAccessException.class,()->f.sql.update(
+                "DELETE FROM hidra_simulation_t31_scenario_input_revision WHERE scenario_id=?",
+                java.util.UUID.fromString(scenarioId)));
+        assertThrows(org.springframework.dao.DataAccessException.class,()->f.sql.execute(
+                "TRUNCATE hidra_simulation_t31_scenario_input_revision"));
+        assertThrows(org.springframework.dao.DataAccessException.class,()->f.sql.update("""
+            INSERT INTO hidra_simulation_t31_scenario_input_revision
+            (scenario_id,revision,predecessor_revision,company_id,pipeline_system_id,
+             baseline_receipt_id,manifest_id,baseline_epoch,baseline_digest,scenario_name,
+             mode,pressure_value,pressure_unit,pressure_si_pa,flow_value,flow_unit,flow_si_kg_per_s,
+             duration_seconds,step_seconds,actor_id,recorded_at,policy_id,input_digest,request_key,request_fingerprint)
+            SELECT scenario_id,4,3,company_id,?,baseline_receipt_id,manifest_id,baseline_epoch,
+                   baseline_digest,scenario_name,mode,pressure_value,pressure_unit,pressure_si_pa,
+                   flow_value,flow_unit,flow_si_kg_per_s,duration_seconds,step_seconds,
+                   actor_id,recorded_at,policy_id,input_digest,?,request_fingerprint
+            FROM hidra_simulation_t31_scenario_input_revision WHERE scenario_id=? AND revision=3
+            """,f.secondAsset,id(),java.util.UUID.fromString(scenarioId)));
+        assertEquals(0L,f.sql.queryForObject("SELECT count(*) FROM hidra_simulation_run",Long.class));
+        assertEquals(0L,f.sql.queryForObject("SELECT count(*) FROM hidra_simulation_result_value",Long.class));
+        return new T31Scenario(prepared.first(),prepared.second(),third);
+    }
+
+    private static void verifyScenarioAfterRestart(Gz2SignedWorkflowFixture f,
+            Gz2SignedWorkflowFixture.Runtime r,T31Scenario scenario,Baselines baselines) throws Exception {
+        String root=scenarioBase(f);
+        String id=field(scenario.first(),"scenarioId");
+        String reader=r.login(f.reader);
+        for(JsonNode saved:List.of(scenario.first(),scenario.second(),scenario.third())) {
+            int version=saved.path("revision").asInt();
+            String path=root+"/"+id+"/revisions/"+version;
+            JsonNode actual=r.get(path,reader);
+            assertEquals(field(saved,"inputDigest"),field(actual,"inputDigest"));
+            assertEquals(field(saved.path("baseline"),"receiptId"),
+                    field(actual.path("baseline"),"receiptId"));
+            assertEquals("T31_INPUT_V1",field(actual,"policyId"));
+            assertEquals("NOT_AVAILABLE",field(actual,"numericalCapability"));
+            JsonNode structural=r.get(path+"/validation",reader);
+            assertEquals("VALIDATED_INPUTS",field(structural,"status"));
+            assertEquals("NOT_AVAILABLE",field(structural,"numericalCapability"));
+            assertEquals(0,structural.path("diagnostics").size());
+        }
+        assertEquals(field(baselines.original(),"receiptId"),
+                field(scenario.first().path("baseline"),"receiptId"));
+        assertEquals(field(baselines.successor(),"receiptId"),
+                field(scenario.third().path("baseline"),"receiptId"));
+        String first=root+"/"+id+"/revisions/1";
+        noDisclosure(r.send("GET",first,r.login(f.foreign),null),id);
+        noDisclosure(r.send("GET",first,r.login(f.wrongAsset),null),id);
+        noDisclosure(r.send("GET",first,r.login(f.revoked),null),id);
+        noDisclosure(r.send("GET",root+"/"+java.util.UUID.randomUUID()+"/revisions/1",reader,null),id);
+        noDisclosure(r.send("GET",root.replace(f.pipeline,f.secondAsset)+"/"+id+"/revisions/1",reader,null),id);
+        assertEquals(3L,f.sql.queryForObject("SELECT count(*) FROM hidra_simulation_t31_scenario_input_revision WHERE scenario_id=?",
+                Long.class,java.util.UUID.fromString(id)));
     }
 
     private static void grantPlanning(Gz2SignedWorkflowFixture f) {
@@ -680,6 +860,11 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
 
     private static void verifyPublishedOperations(Gz2SignedWorkflowFixture.Runtime runtime) throws Exception {
         JsonNode paths = runtime.get("/v3/api-docs", null).path("paths");
+        String scenario="/api/v1/simulation/companies/{companyId}/pipeline-systems/{pipelineSystemId}/scenarios";
+        assertTrue(paths.path(scenario).has("post"));
+        assertTrue(paths.path(scenario+"/{scenarioId}/revisions").has("post"));
+        assertTrue(paths.path(scenario+"/{scenarioId}/revisions/{revision}").has("get"));
+        assertTrue(paths.path(scenario+"/{scenarioId}/revisions/{revision}/validation").has("get"));
         for (String route : List.of(BASELINE + "/publications/{receiptId}", PLAN + "/targets/{id}",
                 POINT + "{pointId}/trusted-readings/{trustedId}", RULE + "/{id}/evaluations/{evaluationId}",
                 ALARM + "/{id}/evidence", LEAK + "/{id}/evidence", INCIDENT + "/{id}/timeline")) {

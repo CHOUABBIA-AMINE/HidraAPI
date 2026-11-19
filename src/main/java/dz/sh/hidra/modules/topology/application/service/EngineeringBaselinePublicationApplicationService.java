@@ -20,6 +20,7 @@
 package dz.sh.hidra.modules.topology.application.service;
 
 import dz.sh.hidra.modules.topology.application.model.EngineeringBaselineDraftFailure;
+import dz.sh.hidra.modules.topology.application.contract.simulation.ScenarioBaselineReceiptContract;
 import dz.sh.hidra.modules.topology.application.port.in.EngineeringBaselinePublicationUseCase;
 import dz.sh.hidra.modules.topology.application.port.in.EngineeringBaselineReadUseCase;
 import dz.sh.hidra.platform.persistence.ProtectedTransactionExecutor;
@@ -28,7 +29,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 @Service
-public final class EngineeringBaselinePublicationApplicationService implements EngineeringBaselinePublicationUseCase, EngineeringBaselineReadUseCase {
+public final class EngineeringBaselinePublicationApplicationService implements EngineeringBaselinePublicationUseCase, EngineeringBaselineReadUseCase, ScenarioBaselineReceiptContract {
     private final ProtectedEngineeringBaselinePublicationCoordinator coordinator;
     private final ProtectedTransactionExecutor executor;
 
@@ -75,6 +76,22 @@ public final class EngineeringBaselinePublicationApplicationService implements E
             }
             throw failure;
         }
+    }
+
+    /** Exact T07 protected read; never bypass historical source authorization or select current. */
+    @Override
+    public ScenarioBaselineReceiptContract.Exact exact(String company,String pipeline,java.util.UUID receiptId) {
+        var result=read(new EngineeringBaselineReadUseCase.Query(
+                EngineeringBaselineReadUseCase.Action.EXACT,company,pipeline,receiptId,
+                null,null,0,null));
+        var receipt=result.primary();
+        var manifest=receipt.submission().manifest();
+        if(!company.equals(manifest.companyPartyId())
+                ||!pipeline.equals(manifest.pipelineSystemId())
+                ||!receiptId.equals(receipt.id()))
+            throw new EngineeringBaselineDraftFailure(EngineeringBaselineDraftFailure.Kind.NOT_FOUND);
+        return new ScenarioBaselineReceiptContract.Exact(receipt.id(),manifest.manifestId(),
+                receipt.epoch(),receipt.submission().sha256());
     }
 
 }

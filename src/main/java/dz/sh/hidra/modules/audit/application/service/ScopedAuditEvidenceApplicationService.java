@@ -31,7 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public final class ScopedAuditEvidenceApplicationService implements ScopedAuditEvidenceUseCase {
+public class ScopedAuditEvidenceApplicationService implements ScopedAuditEvidenceUseCase {
     private final ScopedAuditEvidenceRepositoryPort repository;
     private final ScopedAuditEvidenceAccessPort access;
     private final AuditExportEncodingPort encoder;

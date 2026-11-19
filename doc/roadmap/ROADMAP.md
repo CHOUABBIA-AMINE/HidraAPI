@@ -5015,3 +5015,49 @@ exact-SHA gate passes.
 
 **Status:** IN PROGRESS, **not COMPLETED**. T29 remains PLANNED and is
 not selected by this implementation.
+
+### T28 CI #1314 failure analysis and bounded Spring proxy repair — 2026-11-19
+
+[HidraAPI CI #1314](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44519427200),
+run attempt 1 on source commit `ac4e6c4231143187ef3c32bca224ef5218111a45`,
+completed **FAILURE**. The API contract lane built the application but startup
+failed with `java.lang.IllegalArgumentException: Cannot subclass final class
+dz.sh.hidra.modules.audit.infrastructure.persistence.adapter.JdbcScopedAuditEvidenceRepositoryAdapter`.
+This is a confirmed Spring class-proxy incompatibility introduced with T28's
+`@Transactional(propagation=MANDATORY)` persistence adapter; the resulting
+`UnsatisfiedDependencyException` cascaded through the new Audit controller and
+into PostgreSQL integration contexts. Thus downstream API generation,
+dictionary capture, strict OpenAPI equality and physical-dictionary equality
+were not performed. These skipped gates are not passing evidence.
+
+The separately failing Java 21 unit/architecture lane did not run any tests:
+its Maven Wrapper download of Apache Maven 3.9.11 failed at
+`repo.maven.apache.org`; the missing Surefire inventory was downstream
+of that external download failure, not a verified unit-test defect.
+Static validation passed. No T28 behavioral CI acceptance is claimed.
+
+**Same-task repair** retains the registered implementation commit message
+`feat(audit): search and export scoped governed evidence` and changes only
+the class modifiers of the four new proxied T28 owner components:
+`JdbcScopedAuditEvidenceRepositoryAdapter`,
+`ScopedAuditEvidenceApplicationService`,
+`ScopedAuditEvidenceAuthorizationQueryService` and
+`AuditFacilityOwnershipQueryService`. Remove their `final` class
+modifier; preserve every `@Transactional` annotation, propagation,
+scope filter, live Identity/Topology authority evaluation, immutable
+database guard and tested public contract. The three additional
+transactional services were audited proactively for the same class-proxy
+startup defect. No migrations, tests, permitted route tuples or CI
+workflow protections are changed.
+
+**Verification:** original CI failure mechanism and all four source
+declarations inspected on the failing exact SHA. The repair source is
+statically reviewed; Java/PostgreSQL runtime proof remains with the
+replacement exact-SHA Full Verification Gate. A normal lane rerun may
+recover Maven Central. If a lane again fails before tests, the external
+failure must be diagnosed separately; it must not be marked passing.
+
+**Status remains IN PROGRESS**. The complete A17 signed PostgreSQL,
+architecture/security, backward-compatible generated OpenAPI and
+strict physical dictionary gates remain obligatory before COMPLETED.
+T29 remains PLANNED and unselected.

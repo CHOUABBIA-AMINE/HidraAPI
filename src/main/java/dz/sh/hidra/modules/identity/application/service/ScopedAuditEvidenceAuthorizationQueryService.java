@@ -33,7 +33,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public final class ScopedAuditEvidenceAuthorizationQueryService
+public class ScopedAuditEvidenceAuthorizationQueryService
         implements ScopedAuditEvidenceAuthorizationContract {
     private static final Set<String> PERMISSIONS=Set.of(
             "audit:scoped-evidence:read","audit:scoped-evidence:export");

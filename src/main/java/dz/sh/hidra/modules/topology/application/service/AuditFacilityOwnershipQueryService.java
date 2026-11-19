@@ -28,7 +28,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public final class AuditFacilityOwnershipQueryService implements AuditFacilityOwnershipContract {
+public class AuditFacilityOwnershipQueryService implements AuditFacilityOwnershipContract {
     private final ControlledDocumentFacilityOwnershipContract facilities;
     public AuditFacilityOwnershipQueryService(ControlledDocumentFacilityOwnershipContract facilities) {
         this.facilities=Objects.requireNonNull(facilities);

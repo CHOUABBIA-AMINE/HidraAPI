@@ -36,7 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 /** SQL cannot read another business module's table. Owner scope comes from a trusted contract. */
 @Component
 @Transactional(propagation=Propagation.MANDATORY)
-public final class JdbcScopedAuditEvidenceRepositoryAdapter implements ScopedAuditEvidenceRepositoryPort {
+public class JdbcScopedAuditEvidenceRepositoryAdapter implements ScopedAuditEvidenceRepositoryPort {
     private static final String S="public.hidra_audit_t28_event_scope";
     private static final String X="public.hidra_audit_t28_export";
     private static final String A="public.hidra_audit_t28_access_receipt";

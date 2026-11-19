@@ -5345,3 +5345,43 @@ owner acceptance sign-off for this defined T29 scope. T30 follows T29.
 ### T29 implementation publication — 2026-11-19
 
 The bounded source implementation uses registered `fix(hse): qualify scoped business-key read coverage`. It extends signed HSE list filters, source-authorized single-cursor case discovery, single-statement CAPA page/count, legacy unavailable normalization and six-key Workbench denials. JVM, route-registry and signed PostgreSQL regression assertions are updated; the retained T15–T28 owner lanes are unchanged. Source publication is IMPLEMENTED / CI PENDING, not development-software acceptance. After exact-head full CI and true generated contract reconciliation, record gate and implementation SHA here; mark T29 completed only on evidence. T30 remains planned.
+
+### T29 CI #1318 canonical contract reconciliation — 2026-11-19
+
+**T29 remains IN PROGRESS (development-software acceptance pending).** Source
+commit `8e7293a61d813ecfa7e640e2077da604c86e5363` is unchanged. In
+[HidraAPI CI #1318](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44543489071),
+runtime OpenAPI generation and backward compatibility passed. The API contract
+and dictionary job `135627758788` failed only canonical OpenAPI equality; strict
+physical dictionary equality was skipped. Static validation, Java unit/architecture
+and all fourteen PostgreSQL integration shards succeeded. The dependent Full
+Verification Gate failed. Neither that job nor the full workflow was successful.
+
+The genuine generated OpenAPI is artifact `14539775885`, member `hidra-api.json`,
+ZIP SHA-256 `39cf24797caed3cdb48a3900a94bd2ad24b671a052e2cc5144db5514b937c4d4`,
+member SHA-256 `379f337af57100fb47e985c20f6cde4e9645fa11629dcdbdfda4fcc340df69fc`.
+The deterministic canonical snapshot SHA-256 is
+`8538045f998796dc0f7dcf9e3014c168132b3fb6f2734b76bc8c4e8633408d6f`.
+It contains 463 paths, 508 operations and 545 schemas. Removing the two new
+optional query parameters `caseNumber` and `actionNumber` and restoring the
+prior generator SHA reproduces the exact preceding canonical snapshot digest
+`169b2e2484fc95d01325a310e0f069cc97085db1d48388eb43206cb724c1a241`.
+Every other contract object remains unchanged; no API objects were hand-authored.
+
+The actual PostgreSQL artifact `14539930681` (ZIP SHA-256
+`69fd1299fd1769ed7b61040c2219d8a5aca045c4f7af391e5812f1d90dd67fd1`)
+has 232 migrations, 471 JPA mappings, 613 physical relations and no unresolved
+owners; source bundle SHA-256
+`52480a372a45d96707d338764275d38fd2098858b9b60f667c9105857a822c12`.
+The generated dictionary matches successful T28 CI #1317 except for its
+captured source-SHA line, which the strict checker deliberately normalizes.
+The canonical dictionary, migrations and ownership mappings remain unchanged.
+
+Only the registered three-file documentation reconciliation
+`docs(hse): reconcile T29 owner read contract` updates `doc/api/openapi.yaml`,
+`.github/documentation-validation.json` and this appended
+`doc/roadmap/ROADMAP.md` entry. There are no Java, Flyway, security, test,
+test-inventory, CI-workflow or dictionary changes. Fresh exact-SHA full CI with
+OpenAPI equality, strict physical dictionary equality and the complete gate is
+required before T29 software acceptance. T30 is not selected, and industrial
+qualification is not inferred.

@@ -2003,7 +2003,7 @@
       "workflow_conclusion": "failure",
       "zip_sha256": "a31ddb2ba16dfc2fbd5653f4b768292a2f1a9ac39d588a3543d40b4fa937d6c9"
     },
-    "provenance": {
+    "prior_reviewed_provenance_t28": {
       "artifact_id": 14532682103,
       "artifact_member": "hidra-api.json",
       "artifact_name": "hidra-api-openapi-3ca97bccc11f9db0e7269bd0a083cc07085c10fc-44528083316-1-api-contract",
@@ -2043,8 +2043,48 @@
       "workflow_conclusion": "failure",
       "zip_sha256": "99dd0881b0295827fd8e58912896e262d1d14b7813992fa2f4be61e08fede000"
     },
-    "sha256": "169b2e2484fc95d01325a310e0f069cc97085db1d48388eb43206cb724c1a241",
-    "source_sha": "3ca97bccc11f9db0e7269bd0a083cc07085c10fc"
+    "provenance": {
+      "artifact_id": 14539775885,
+      "artifact_member": "hidra-api.json",
+      "artifact_name": "hidra-api-openapi-8e7293a61d813ecfa7e640e2077da604c86e5363-44543489071-1-api-contract",
+      "compatibility_review": "CI #1318 passed runtime backward compatibility against full-CI-success T28 source f28e68d8107b14f8d0bfbd6bf04f9420e3448810. Exact reconstruction of the previous canonical snapshot proves only optional query parameters caseNumber and actionNumber were added to the two existing HSE GET list operations; 463 paths, 508 operations, 545 schemas and all other contract objects remain unchanged.",
+      "conclusion": "success",
+      "conclusion_scope": "Only the named runtime OpenAPI generation and backward-compatibility steps passed. API contract job #135627758788 and Full CI #1318 FAILED canonical OpenAPI equality; strict dictionary equality was skipped. Static, unit/architecture and all 14 PostgreSQL shards succeeded. This evidence is not T29 software acceptance or deployment qualification.",
+      "database_evidence": {
+        "artifact_id": 14539930681,
+        "artifact_member": "DATA_DICTIONARY.md",
+        "artifact_name": "hidra-database-schema-8e7293a61d813ecfa7e640e2077da604c86e5363-44543489071-1-api-contract",
+        "artifact_zip_sha256": "69fd1299fd1769ed7b61040c2219d8a5aca045c4f7af391e5812f1d90dd67fd1",
+        "catalog_sha256": "a1c58614531b9eff85cd521a5c1b7e21cb387505101261c58dd6417bc7ffa532",
+        "dictionary_sha256": "7805739119c1a1d8d54b2e257b9d0f0ec9c9d59216a68f079653585d4b9e3a7e",
+        "jpa_mappings": 471,
+        "migrations": 232,
+        "relations": 613,
+        "reviewed_dictionary_checked": false,
+        "server_version": "16.16 (Debian 16.16-1.pgdg13+1)",
+        "source_bundle_sha256": "52480a372a45d96707d338764275d38fd2098858b9b60f667c9105857a822c12",
+        "source_sha": "8e7293a61d813ecfa7e640e2077da604c86e5363",
+        "status": "CI #1318 captured disposable PostgreSQL metadata. Relative to successful T28 CI #1317, the dictionary differs only in its captured source-SHA line, which the strict dictionary checker explicitly normalizes. Replacement strict equality remains pending.",
+        "unresolved_owners": []
+      },
+      "failed_step": "Enforce canonical OpenAPI snapshot equality",
+      "generation_step": "Publish deterministic OpenAPI contract",
+      "generation_step_conclusion": "success",
+      "generation_step_number": 9,
+      "job_conclusion": "failure",
+      "job_id": 135627758788,
+      "json_sha256": "379f337af57100fb47e985c20f6cde4e9645fa11629dcdbdfda4fcc340df69fc",
+      "remaining_gates": [
+        "Fresh exact-SHA Full Verification Gate must pass runtime OpenAPI equality, backward compatibility, strict physical dictionary, static/unit/architecture and all 14 PostgreSQL shards. T29 remains IN PROGRESS until this evidence is recorded."
+      ],
+      "run_attempt": 1,
+      "run_id": 44543489071,
+      "source_sha": "8e7293a61d813ecfa7e640e2077da604c86e5363",
+      "workflow_conclusion": "failure",
+      "zip_sha256": "39cf24797caed3cdb48a3900a94bd2ad24b671a052e2cc5144db5514b937c4d4"
+    },
+    "sha256": "8538045f998796dc0f7dcf9e3014c168132b3fb6f2734b76bc8c4e8633408d6f",
+    "source_sha": "8e7293a61d813ecfa7e640e2077da604c86e5363"
   },
   "register": "doc/governance/DOCUMENT_REGISTER.md",
   "register_areas": {

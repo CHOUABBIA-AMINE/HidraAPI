@@ -239,3 +239,28 @@ native runs preserve HMR-014 terminal immutability. The adapter is the only cros
 consumer; no generic importing APIs or OT connectors are introduced. Exact typed
 contract roots, nested scalar types and consumer exclusivity are enforced by Architecture
 and Forensic guardrails. Declared implementation is not an accepted CI or SITE outcome.
+
+## T27 exact Notification inbox owner exports — 2026-11-19
+
+The selected T27 Workflow assignment is admitted only for the ACTIVE
+`T27_SCOPED_REPORT_APPROVAL_INBOX_V1` definition and matching direct
+assignment rule. Workflow retains task and transition ownership. Its existing
+`workflow.application.contract.target.WorkflowOwnedTargetLookup` now exposes
+a default-deny task assignment callback, consumed only through
+`reporting.infrastructure.integration.ScopedReportWorkflowTargetLookup`.
+Reporting rechecks the SUBMITTED scoped report and current starter access and
+is the sole consumer of the Notification-owned
+`notification.application.contract.reporting.ReportReviewTaskInboxContract`
+including its `Assignment` record. This callback joins the task transaction.
+
+Notification's `notification.infrastructure.integration.WorkflowInboxAccessAdapter`
+is the sole consumer of these scalar owner exports:
+
+- `identity.application.contract.notification.NotificationInboxAuthorizationContract`
+- `topology.application.contract.notification.NotificationInboxFacilityOwnershipContract`
+
+Their nested projection types are included in the exact owner boundary.
+Notification stores WEB delivery and recipient acknowledgement via its own
+ports and JDBC; it imports no Workflow, Reporting or other owner's private
+entities, repositories or adapters. No legacy Notification ingress or
+external dispatch capability is implied.

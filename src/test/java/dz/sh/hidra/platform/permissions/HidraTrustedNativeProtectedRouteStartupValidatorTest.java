@@ -59,9 +59,19 @@ class HidraTrustedNativeProtectedRouteStartupValidatorTest {
         return mapping;
     }
 
+    @Test void t27StartupRegistryRequiresThreeExactAnnotatedNotificationHandlers() {
+        var registry=new HidraTrustedNativeProtectedRouteRegistry();
+        var routes=registry.candidates().stream()
+                .filter(r->r.controller().getSimpleName().equals("WorkflowInboxController")).toList();
+        assertEquals(151,registry.candidates().size());
+        assertEquals(3,routes.size());
+        assertTrue(routes.stream().allMatch(r->r.method().isAnnotationPresent(NativeProtectedOperation.class)));
+        assertEquals(3,routes.stream().map(r->r.verb()+" "+r.pattern()).distinct().count());
+    }
+
     @Test void productionNativeExactRoutesFailWithoutCompiledMappings() {
         var registry = new HidraTrustedNativeProtectedRouteRegistry();
-        assertEquals(148, registry.candidates().size());
+        assertEquals(151, registry.candidates().size());
         assertThrows(IllegalStateException.class, ()->
                 new HidraTrustedNativeProtectedRouteStartupValidator(
                     new RequestMappingHandlerMapping(), registry).validate());

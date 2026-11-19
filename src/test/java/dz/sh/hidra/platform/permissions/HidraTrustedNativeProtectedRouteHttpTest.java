@@ -96,6 +96,21 @@ class HidraTrustedNativeProtectedRouteHttpTest {
  @AfterEach void clearAuthentication() {
    SecurityContextHolder.clearContext();
  }
+ @Test void t27NativeInboxIsExactAndExcludesWrongMethodsAndSiblingPaths() {
+    var registry=new HidraTrustedNativeProtectedRouteRegistry();
+    String base="/api/v1/notification/companies/{companyId}/facilities/{facilityId}/inbox";
+    var routes=registry.candidates().stream()
+        .filter(r->r.controller().getSimpleName().equals("WorkflowInboxController")).toList();
+    assertEquals(151,registry.candidates().size());
+    assertEquals(3,routes.size());
+    var declared=routes.stream().map(r->r.verb()+" "+r.pattern())
+        .collect(java.util.stream.Collectors.toSet());
+    assertEquals(java.util.Set.of("GET "+base,"GET "+base+"/{notificationId}",
+        "POST "+base+"/{notificationId}/acknowledgement"),declared);
+    assertTrue(declared.stream().noneMatch(route->route.contains("/legacy")
+        || route.startsWith("PUT ") || route.startsWith("DELETE ")
+        || route.startsWith("GET /api/v1/notification/messages")));
+ }
  @Test void t24DeclaredNativeRoutesKeepExactMethodAndSignature() {
     var routes=new HidraTrustedNativeProtectedRouteRegistry().candidates().stream()
         .filter(x->x.controller().getSimpleName().equals("ControlledDocumentsController")).toList();
@@ -163,7 +178,7 @@ class HidraTrustedNativeProtectedRouteHttpTest {
    var resolver = org.mockito.Mockito.mock(HidraEffectivePermissionResolver.class);
    authenticated();
    var registry = new HidraTrustedNativeProtectedRouteRegistry();
-   assertEquals(148,registry.candidates().size());
+   assertEquals(151,registry.candidates().size());
    var mvc = mvc(owner, new UntrustedController(), resolver,registry);
    assertThrows(Exception.class, () ->
       mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(TRUSTED)));
@@ -172,7 +187,7 @@ class HidraTrustedNativeProtectedRouteHttpTest {
  @Test void realManufacturerTupleRegistryRejectsWrongVerbAndSiblingPattern() throws Exception {
    var registry=new HidraTrustedNativeProtectedRouteRegistry();
    var routes=registry.candidates();
-   assertEquals(148,routes.size());
+   assertEquals(151,routes.size());
    var expected=java.util.Set.of(
      "GET /api/v1/integration/companies/{companyId}/facilities/{facilityId}/synthetic-mappings/{profileId}",
      "POST /api/v1/integration/companies/{companyId}/facilities/{facilityId}/synthetic-exchanges",

@@ -627,6 +627,22 @@
     "owner": "monitoring",
     "purpose": "Monitoring-owned immutable rule-to-company/asset registration and server-derived creation actor provenance; used for scoped authorization, not a Telemetry physical foreign key."
   },
+  "public.hidra_notification_t27_inbox_acknowledgement": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261119_001__t27_recipient_scoped_notification_inbox.sql",
+      "src/main/java/dz/sh/hidra/modules/notification/infrastructure/persistence/adapter/JdbcWorkflowInboxRepositoryAdapter.java"
+    ],
+    "owner": "notification",
+    "purpose": "Notification-owned immutable one-recipient acknowledgement with local composite recipient FK and monotonic receipt time."
+  },
+  "public.hidra_notification_t27_inbox_item": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261119_001__t27_recipient_scoped_notification_inbox.sql",
+      "src/main/java/dz/sh/hidra/modules/notification/infrastructure/persistence/adapter/JdbcWorkflowInboxRepositoryAdapter.java"
+    ],
+    "owner": "notification",
+    "purpose": "Notification-owned immutable, source-task-unique WEB assignment item scoped to one recipient and current company/facility."
+  },
   "public.hidra_org_appointment_binding_head": {
     "evidence": [
       "src/main/resources/db/migration/V20261021_003__organization_appointment_ownership_lifecycle.sql",

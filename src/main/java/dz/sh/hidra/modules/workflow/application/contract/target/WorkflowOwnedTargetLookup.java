@@ -19,10 +19,14 @@
  */
 package dz.sh.hidra.modules.workflow.application.contract.target;
 
+import java.time.Instant;
 import java.util.Optional;
 import java.util.Set;
 public interface WorkflowOwnedTargetLookup {
     default boolean scopedReportStarterAllowed(String requestId) { return false; }
+    /** Default-deny exact Reporting callback for an already saved, directly assigned T27 task. */
+    default boolean reportTaskAssigned(String requestId,String taskId,String recipientActorId,
+            Instant assignedAt) { return false; }
     String REPORT_REQUEST_TARGET = "REPORT_REQUEST";
     static boolean scopedReportApproval(String type, String purpose) {
         return REPORT_REQUEST_TARGET.equals(type) && "REPORT_APPROVAL".equals(purpose);

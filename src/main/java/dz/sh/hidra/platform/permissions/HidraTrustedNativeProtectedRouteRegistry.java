@@ -203,7 +203,15 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
             String t26Base="/api/v1/integration/companies/{companyId}/facilities/{facilityId}";
             String t25Base="/api/v1/reporting/companies/{companyId}/facilities/{facilityId}";
             String t17Base="/api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases";
+            Class<?> t27=Class.forName("dz.sh.hidra.modules.notification.api.rest.controller.WorkflowInboxController");
+            String t27Base="/api/v1/notification/companies/{companyId}/facilities/{facilityId}/inbox";
             return List.of(
+                new Route(t27,t27.getDeclaredMethod("list",String.class,String.class,Integer.class,String.class),
+                    "GET",t27Base),
+                new Route(t27,t27.getDeclaredMethod("detail",String.class,String.class,String.class),
+                    "GET",t27Base+"/{notificationId}"),
+                new Route(t27,t27.getDeclaredMethod("acknowledge",String.class,String.class,String.class),
+                    "POST",t27Base+"/{notificationId}/acknowledgement"),
                 new Route(t26,t26.getDeclaredMethod("mapping",String.class,String.class,String.class),
                     "GET",t26Base+"/synthetic-mappings/{profileId}"),
                 new Route(t26,t26.getDeclaredMethod("submit",String.class,String.class,t26Submit),

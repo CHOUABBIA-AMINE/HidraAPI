@@ -66,6 +66,24 @@ class HidraTrustedNativeProtectedRouteRegistryTest {
     }
 
 
+    @Test void t27RegistersExactlyThreeNativeRecipientScopedInboxTuples() {
+        var registry=new HidraTrustedNativeProtectedRouteRegistry();
+        var routes=registry.candidates().stream()
+                .filter(route->route.controller().getSimpleName().equals("WorkflowInboxController")).toList();
+        String base="/api/v1/notification/companies/{companyId}/facilities/{facilityId}/inbox";
+        assertEquals(151,registry.candidates().size());
+        assertEquals(3,routes.size());
+        assertEquals(java.util.Set.of("GET "+base,"GET "+base+"/{notificationId}",
+                "POST "+base+"/{notificationId}/acknowledgement"),
+                routes.stream().map(r->r.verb()+" "+r.pattern())
+                        .collect(java.util.stream.Collectors.toSet()));
+        assertTrue(routes.stream().allMatch(r->
+                r.method().isAnnotationPresent(NativeProtectedOperation.class)));
+        assertEquals(java.util.Set.of("list","detail","acknowledge"),
+                routes.stream().map(r->r.method().getName())
+                        .collect(java.util.stream.Collectors.toSet()));
+    }
+
     @Test void t26RegistersExactlyFiveScopedIntegrationTuples() {
         var routes=new HidraTrustedNativeProtectedRouteRegistry().candidates().stream()
                 .filter(route -> route.controller().getSimpleName().equals("SyntheticExchangesController"))
@@ -194,7 +212,7 @@ class HidraTrustedNativeProtectedRouteRegistryTest {
 
     @Test void baselineRoutesDeclareOnlyFiveExactCompiledTuples(){
         var registry=new HidraTrustedNativeProtectedRouteRegistry();
-        assertEquals(148,registry.candidates().size());
+        assertEquals(151,registry.candidates().size());
         var rows=registry.candidates().stream().filter(r->r.controller().getSimpleName().equals("EngineeringBaselineDraftController")).toList();
         assertEquals(5,rows.size());
         assertEquals(java.util.Set.of("POST /api/v1/topology/engineering-baselines","PUT /api/v1/topology/engineering-baselines/{manifestId}",

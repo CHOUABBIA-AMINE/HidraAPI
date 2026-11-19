@@ -4584,3 +4584,43 @@ updates the test's exact source identity in the approved CI inventory, and
 records this failure and remediation. There are no product-source changes,
 migrations or weakened assertions. T26 remains IN PROGRESS pending green
 exact-SHA CI; T27 remains PLANNED.
+
+#### T26 expanded acceptance closed; T27 source implementation selected — 2026-11-19
+
+**T26 COMPLETED for development-software acceptance.** On
+`d7530bd2c9c79e3717c4f0622f3b7db0a3799db6`, all of the expanded
+T26 signed PostgreSQL checks for concurrent first submit, competing
+replay, scope/mapping mismatch, live grant revocation, database mutation
+and deferred-commit guards, and a failed second recovery after restart
+passed. [HidraAPI CI #1310](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44490857328)
+completed SUCCESS on attempt 1; all 14 PostgreSQL shards, Java unit and
+architecture, static validation, runtime OpenAPI equality/compatibility,
+physical PostgreSQL dictionary equality and Full Verification Gate passed.
+The gate collected 605 executed test classes and 4,487 tests with zero
+failures, errors or skips, on 230 migrations, 471 JPA mappings and 608
+catalog relations with zero unresolved owners. The optional serial verification
+lane was skipped by workflow design; this does not assert release eligibility.
+[Documentation Validation #1151](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44490857230)
+completed SUCCESS on the same SHA. Accepted scope is synthetic
+development-software behavior only, not industrial calibration, live OT,
+production deployment, engineering approval or SITE acceptance. The prior
+T26 IN PROGRESS statements above preserve their historical dates.
+
+**T27 IN PROGRESS — source implementation selected by the owner's next
+instruction.** The registered bounded `FG-16/A16` implementation envelope
+includes exactly 15 CREATE and 16 UPDATE paths; there are no deletions.
+The one selected implementation commit message is
+`feat(notification): deliver recipient-scoped workflow inbox`.
+It adds the exact direct Reporting/Workflow source callback, Notification
+WEB item and acknowledgement immutable tables, owner-specific Identity
+and Topology bridges, three native recipient routes, and extends the
+signed T25 qualification client journey with transaction fault injection,
+recipient/read-only denials, pagination, concurrent acknowledgement and
+restart. Existing Workflow decisions and legacy Notification provider
+routing remain unaffected. Local Maven, Docker and fresh PostgreSQL
+execution are not claimed in this environment. T27 software acceptance
+remains open pending full exact-SHA CI and, where strict generated contract
+and physical dictionary equality requires it, the separately registered
+`docs(notification): reconcile T27 generated contracts and physical dictionary`
+using genuine CI artifacts. T28 remains a later candidate, not authorized
+for execution.

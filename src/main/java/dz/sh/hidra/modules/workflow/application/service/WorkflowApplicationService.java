@@ -199,7 +199,12 @@ public class WorkflowApplicationService implements StartWorkflowInstanceUseCase,
         );
         ownership.validateAssignment(task,configuration);
         if(assigned==null && !step.allowClaim()) throw new InvalidWorkflowValueException("Organization pool tasks require an explicitly claimable step.");
-        return WorkflowApplicationMapper.toSummary(taskRepositoryPort.save(task));
+        var saved=taskRepositoryPort.save(task);
+        ownership.publishOptedInReportAssignment(instance,step,saved,
+                definitions.findById(instance.definitionId())
+                        .orElseThrow(()->new InvalidWorkflowValueException("Unknown Workflow definition.")),
+                configuration);
+        return WorkflowApplicationMapper.toSummary(saved);
     }
 
     @Override

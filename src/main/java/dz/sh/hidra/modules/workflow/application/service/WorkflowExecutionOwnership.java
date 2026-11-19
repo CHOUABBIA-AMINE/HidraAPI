@@ -22,6 +22,15 @@ package dz.sh.hidra.modules.workflow.application.service;
 import dz.sh.hidra.modules.identity.application.contract.workflow.WorkflowActorContract;
 import dz.sh.hidra.modules.organization.application.contract.workflow.WorkflowOrganizationContract;
 import dz.sh.hidra.modules.workflow.application.contract.target.WorkflowOwnedTargetLookup;
+import dz.sh.hidra.modules.workflow.application.port.out.WorkflowStepAssignmentRuleRepositoryPort;
+import dz.sh.hidra.modules.workflow.application.port.out.WorkflowConfigurationPort;
+import dz.sh.hidra.modules.workflow.domain.model.WorkflowDefinition;
+import dz.sh.hidra.modules.workflow.domain.model.WorkflowInstance;
+import dz.sh.hidra.modules.workflow.domain.model.WorkflowStep;
+import dz.sh.hidra.modules.workflow.domain.model.WorkflowTask;
+import dz.sh.hidra.modules.workflow.domain.value.WorkflowDefinitionStatus;
+import dz.sh.hidra.modules.workflow.domain.value.WorkflowTaskStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import dz.sh.hidra.platform.security.CurrentSecurityContext;
 import dz.sh.hidra.modules.workflow.domain.exception.WorkflowTransitionDeniedException;
 import java.time.Instant;
@@ -35,10 +44,19 @@ public class WorkflowExecutionOwnership {
     private final WorkflowOrganizationContract organizations;
     private final CurrentSecurityContext security;
     private final List<WorkflowOwnedTargetLookup> targets;
+    private final WorkflowStepAssignmentRuleRepositoryPort rules;
+    // Preserve direct constructor clients; production uses the explicitly wired source rule port.
     public WorkflowExecutionOwnership(WorkflowActorContract actors,WorkflowOrganizationContract organizations,
             CurrentSecurityContext security,List<WorkflowOwnedTargetLookup> targets) {
+        this(actors,organizations,security,targets,null);
+    }
+    @Autowired
+    public WorkflowExecutionOwnership(WorkflowActorContract actors,WorkflowOrganizationContract organizations,
+            CurrentSecurityContext security,List<WorkflowOwnedTargetLookup> targets,
+            WorkflowStepAssignmentRuleRepositoryPort rules) {
         this.actors=Objects.requireNonNull(actors);this.organizations=Objects.requireNonNull(organizations);
         this.security=Objects.requireNonNull(security);this.targets=List.copyOf(targets);
+        this.rules=rules;
     }
     public WorkflowActorContract.Actor requireCurrentActor(){
         var principal=security.currentPrincipal().filter(p->p.authenticated()).orElseThrow(()->denied("Authenticated Workflow actor required."));
@@ -129,6 +147,55 @@ public class WorkflowExecutionOwnership {
             throw denied("Topology Workflow target unavailable.");
         requireTarget(instance.targetModule(),type.code(),instance.targetId(),instance.targetCodeSnapshot());
     }
+    /**
+     * The opted-in Reporting definition is the only Workflow assignment source for T27.
+     * Validate the saved task and exact current DIRECT default rule before delegating
+     * the owned report target into its original source transaction.
+     */
+    public void publishOptedInReportAssignment(WorkflowInstance instance,WorkflowStep step,
+            WorkflowTask task,WorkflowDefinition definition,WorkflowConfigurationPort configuration) {
+        if (!"T27_SCOPED_REPORT_APPROVAL_INBOX_V1".equals(definition.code())) return;
+        if (definition.status()!=WorkflowDefinitionStatus.ACTIVE
+                || definition.version()!=instance.definitionVersion()
+                || !definition.id().equals(instance.definitionId())
+                || !"reporting".equals(instance.targetModule())
+                || task.status()!=WorkflowTaskStatus.OPEN
+                || !task.instanceId().equals(instance.id())
+                || !step.id().equals(task.stepId())
+                || !instance.definitionId().equals(step.definitionId())
+                || task.assignedActorId()==null
+                || task.assignedActorId().equals(instance.startedByActorId())
+                || task.assignedOrganizationUnitId()!=null
+                || task.assignedRoleCodeSnapshot()!=null
+                || step.defaultAssignmentRuleId()==null
+                || rules==null)
+            throw denied("Opted-in report task requires a current independent direct assignment.");
+        var type=configuration.requireActiveCatalog(instance.targetTypeId(),"WORKFLOW_TARGET_TYPE");
+        var purpose=configuration.requireActiveCatalog(instance.workflowPurposeId(),"WORKFLOW_PURPOSE");
+        if (!WorkflowOwnedTargetLookup.scopedReportApproval(type.code(),purpose.code())
+                || !configuration.activeBinding(definition.id(),"reporting",
+                        instance.targetTypeId(),instance.workflowPurposeId()))
+            throw denied("Opted-in task requires the exact active Reporting binding.");
+        var rule=rules.findById(step.defaultAssignmentRuleId())
+                .orElseThrow(()->denied("Missing opted-in assignment rule."));
+        if (!rule.active() || !definition.id().equals(rule.definitionId())
+                || !step.id().equals(rule.stepId())
+                || !task.assignedActorId().equals(rule.actorId())
+                || rule.organizationUnitId()!=null || rule.roleCode()!=null
+                || rule.organizationRoleCode()!=null || rule.targetOwnerMode()!=null
+                || !"DIRECT".equals(configuration.requireActiveCatalog(
+                        rule.assignmentModeId(),"WORKFLOW_ASSIGNMENT_MODE").code())
+                || task.assignmentModeId()!=null
+                    && !"DIRECT".equals(configuration.requireActiveCatalog(
+                            task.assignmentModeId(),"WORKFLOW_ASSIGNMENT_MODE").code()))
+            throw denied("Opted-in report assignment does not match the current direct rule.");
+        var owners=targets.stream().filter(t->"reporting".equals(t.module())
+                && t.targetTypeCodes().contains(WorkflowOwnedTargetLookup.REPORT_REQUEST_TARGET)).toList();
+        if (owners.size()!=1 || !owners.getFirst().reportTaskAssigned(
+                instance.targetId(),task.id(),task.assignedActorId(),task.createdAt()))
+            throw denied("No single Reporting owner accepted the opted-in assignment.");
+    }
+
     public boolean scopedReportStarterAllowed(String targetId) {
         return targets.stream().filter(t -> "reporting".equals(t.module())
                 && t.targetTypeCodes().contains(WorkflowOwnedTargetLookup.REPORT_REQUEST_TARGET))

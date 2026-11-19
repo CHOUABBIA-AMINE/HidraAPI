@@ -144,3 +144,35 @@ The linked decisions carry the precise per-subject exceptions and source/test/mi
 | NotificationRequest | [HMSR-039 reconciled rule](../domain/SEMANTIC_DECISIONS.md#notification-notificationrequest) |
 | NotificationMessage | [HMSR-061 reconciled rule](../domain/SEMANTIC_DECISIONS.md#notification-notificationmessage) |
 | NotificationDeliveryAttempt | [HMSR-072 reconciled rule](../domain/SEMANTIC_DECISIONS.md#notification-notificationdeliveryattempt) |
+
+## T27 recipient-scoped Workflow assignment inbox (implementation under CI verification)
+
+The opted-in `T27_SCOPED_REPORT_APPROVAL_INBOX_V1` Workflow task creation
+can publish the exact `WORKFLOW_REPORT_REVIEW_TASK_ASSIGNED_V1` event into
+one durable Notification-owned WEB inbox item, in the same source transaction.
+The Reporting owner callback validates a SUBMITTED report request, fixed
+company/facility scope and current starter authority. A failed Notification
+write rolls back Workflow task creation. Legacy request/message/delivery-attempt
+APIs and provider gateways remain separate and unchanged.
+
+The three native routes are `GET /api/v1/notification/companies/{companyId}/facilities/{facilityId}/inbox`,
+`GET .../inbox/{notificationId}` and bodyless
+`POST .../inbox/{notificationId}/acknowledgement`. They require the current
+signed LOCAL actor, live paired Notification COMPANY/FACILITY grants and
+active Topology owner association; acknowledgement additionally requires
+`notification:inbox:acknowledge`. Read queries and acknowledgement writes
+are scoped to that authenticated recipient; no total count, recipient PII,
+Workflow or Reporting identifier, transport payload or provider metadata is
+exposed. Exclusive descending keyset pagination uses bounded opaque cursors.
+
+`hidra_notification_t27_inbox_item` is immutable and unique by source
+event/task. `hidra_notification_t27_inbox_acknowledgement` is an immutable
+single-recipient receipt with an original-recipient composite FK and
+PostgreSQL chronology proof. Duplicate assignment and acknowledgement
+must return their original records. WEB DELIVERED confirms durable availability
+in HidraAPI, not receipt on a remote device or an authorized Workflow
+decision. No OT command, automatic decision or background transport is added.
+
+These descriptions are implementation-scope assertions only; full
+fresh-schema PostgreSQL and signed HTTP CI acceptance must pass on the
+published source SHA before T27 is marked COMPLETED.

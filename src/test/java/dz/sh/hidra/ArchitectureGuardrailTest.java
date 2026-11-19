@@ -452,6 +452,11 @@ class ArchitectureGuardrailTest {
                         violations.add(source.getName() + " -> " + target.getName());
                     continue;
                 }
+                if (t27OwnerRoot(target.getName())) {
+                    if (!t27Export(source.getName(),target.getName()))
+                        violations.add(source.getName()+" -> "+target.getName());
+                    continue;
+                }
                 if (T26_OWNER_ROOTS.stream().anyMatch(target.getName()::startsWith)) {
                     if(!t26Export(source.getName(),target.getName()))
                         violations.add(source.getName()+" -> "+target.getName());
@@ -1119,6 +1124,41 @@ class ArchitectureGuardrailTest {
         }
     }
 
+    // T27 has three exact scalar owner exports and no package-wide import exemption.
+    private static final String T27_REPORT_CONSUMER =
+            "dz.sh.hidra.modules.reporting.infrastructure.integration.ScopedReportWorkflowTargetLookup";
+    private static final String T27_ACCESS_CONSUMER =
+            "dz.sh.hidra.modules.notification.infrastructure.integration.WorkflowInboxAccessAdapter";
+    private static final String T27_REPORT_EXPORT =
+            "dz.sh.hidra.modules.notification.application.contract.reporting.ReportReviewTaskInboxContract";
+    private static final Set<String> T27_ACCESS_EXPORTS=Set.of(
+            "dz.sh.hidra.modules.identity.application.contract.notification.NotificationInboxAuthorizationContract",
+            "dz.sh.hidra.modules.topology.application.contract.notification.NotificationInboxFacilityOwnershipContract");
+    private static boolean t27Export(String consumer,String imported) {
+        if (consumer.equals(T27_REPORT_CONSUMER)
+                && (imported.equals(T27_REPORT_EXPORT) || imported.startsWith(T27_REPORT_EXPORT+"$")))
+            return true;
+        return consumer.equals(T27_ACCESS_CONSUMER)
+                && T27_ACCESS_EXPORTS.stream()
+                    .anyMatch(root->imported.equals(root)||imported.startsWith(root+"$"));
+    }
+    private static boolean t27OwnerRoot(String imported) {
+        return imported.startsWith(T27_REPORT_EXPORT)
+                || T27_ACCESS_EXPORTS.stream().anyMatch(imported::startsWith);
+    }
+    @Test void t27OnlyExactNamedConsumersMayUseExactOwnerContracts() {
+        assertTrue(t27Export(T27_REPORT_CONSUMER,T27_REPORT_EXPORT));
+        assertTrue(t27Export(T27_REPORT_CONSUMER,T27_REPORT_EXPORT+"$Assignment"));
+        assertFalse(t27Export(T27_REPORT_CONSUMER+"Sibling",T27_REPORT_EXPORT));
+        assertFalse(t27Export(T27_REPORT_CONSUMER,T27_REPORT_EXPORT+"Sibling"));
+        for (String root:T27_ACCESS_EXPORTS) {
+            assertTrue(t27Export(T27_ACCESS_CONSUMER,root));
+            assertFalse(t27Export(T27_ACCESS_CONSUMER+"Sibling",root));
+            assertFalse(t27Export(T27_ACCESS_CONSUMER,root+"Sibling"));
+            assertTrue(t27OwnerRoot(root+"Sibling"));
+        }
+    }
+
     private static final String T25_BRIDGE = "dz.sh.hidra.modules.reporting.infrastructure.integration.ScopedReportOwnerAccessAdapter";
     private static final String T25_TARGET_RESOLVER = "dz.sh.hidra.modules.reporting.infrastructure.integration.ScopedReportWorkflowTargetLookup";
     private static final String T25_TARGET_CONTRACT = "dz.sh.hidra.modules.workflow.application.contract.target.WorkflowOwnedTargetLookup";
@@ -1225,6 +1265,8 @@ class ArchitectureGuardrailTest {
         if (sourceModule == null || targetModule == null || sourceModule.equals(targetModule)) {
             return false;
         }
+        if (t27OwnerRoot(targetClassName))
+            return !t27Export(sourceClassName,targetClassName);
         if (T26_OWNER_ROOTS.stream().anyMatch(targetClassName::startsWith))
             return !t26Export(sourceClassName,targetClassName);
         if (t26Export(sourceClassName,targetClassName)) return false;

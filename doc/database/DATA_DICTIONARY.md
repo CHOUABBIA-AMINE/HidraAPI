@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `82437fc40dd4ca37383619bc8bd73fc8deeb4a7e`
+Captured source SHA: `21bbab3a047ce512ef9f51b264362508aba9bd65`
 PostgreSQL server: `16.16 (Debian 16.16-1.pgdg13+1)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `6efad66e8d480d1664f782bc8bd82e21129fb7fe0d0a2d0089fafb9342f66aae`.
-Migrations: 229; JPA mappings: 471; catalog relations: 605; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `4c707b3db1fc08bdd304113c441a25b06348d514ea9d383de535b5e42678b1cc`.
+Migrations: 230; JPA mappings: 471; catalog relations: 608; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -8548,6 +8548,7 @@ Immutable Documents-owned enrolled FACILITY company binding, non-transferable cr
 - Migration mention (not inferred introduction): [V20261117_005__t24_controlled_document_history.sql](../../src/main/resources/db/migration/V20261117_005__t24_controlled_document_history.sql)
 - Migration mention (not inferred introduction): [V20261118_001__t24_consistency_decision_alias.sql](../../src/main/resources/db/migration/V20261118_001__t24_consistency_decision_alias.sql)
 - Migration mention (not inferred introduction): [V20261118_004__t25_scoped_report_rendering.sql](../../src/main/resources/db/migration/V20261118_004__t25_scoped_report_rendering.sql)
+- Migration mention (not inferred introduction): [V20261118_005__t26_governed_synthetic_exchange.sql](../../src/main/resources/db/migration/V20261118_005__t26_governed_synthetic_exchange.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -12136,6 +12137,7 @@ Persisted PermissionJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261118_002__t17_hse_capa_governed_lifecycle.sql](../../src/main/resources/db/migration/V20261118_002__t17_hse_capa_governed_lifecycle.sql)
 - Migration mention (not inferred introduction): [V20261118_003__t17_hse_impact_assessment.sql](../../src/main/resources/db/migration/V20261118_003__t17_hse_impact_assessment.sql)
 - Migration mention (not inferred introduction): [V20261118_004__t25_scoped_report_rendering.sql](../../src/main/resources/db/migration/V20261118_004__t25_scoped_report_rendering.sql)
+- Migration mention (not inferred introduction): [V20261118_005__t26_governed_synthetic_exchange.sql](../../src/main/resources/db/migration/V20261118_005__t26_governed_synthetic_exchange.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -14219,6 +14221,7 @@ Persisted IntegrationCatalogEntryJpaEntity state; semantic authority remains wit
 - Migration mention (not inferred introduction): [V20260929_002__enforce_same_module_reference_integrity_b.sql](../../src/main/resources/db/migration/V20260929_002__enforce_same_module_reference_integrity_b.sql)
 - Migration mention (not inferred introduction): [V20261004_014__hmr_014_integration_integration_job_run.sql](../../src/main/resources/db/migration/V20261004_014__hmr_014_integration_integration_job_run.sql)
 - Migration mention (not inferred introduction): [V20261007_010__hmr_056_integration_exchange_message.sql](../../src/main/resources/db/migration/V20261007_010__hmr_056_integration_exchange_message.sql)
+- Migration mention (not inferred introduction): [V20261118_005__t26_governed_synthetic_exchange.sql](../../src/main/resources/db/migration/V20261118_005__t26_governed_synthetic_exchange.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -14422,6 +14425,7 @@ Persisted IntegrationDeadLetterRecordJpaEntity state; semantic authority remains
 - Migration mention (not inferred introduction): [V20260611_019__create_integration_tables.sql](../../src/main/resources/db/migration/V20260611_019__create_integration_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_002__enforce_same_module_reference_integrity_b.sql](../../src/main/resources/db/migration/V20260929_002__enforce_same_module_reference_integrity_b.sql)
 - Migration mention (not inferred introduction): [V20261007_011__hmr_071_integration_dead_letter_record.sql](../../src/main/resources/db/migration/V20261007_011__hmr_071_integration_dead_letter_record.sql)
+- Migration mention (not inferred introduction): [V20261118_005__t26_governed_synthetic_exchange.sql](../../src/main/resources/db/migration/V20261118_005__t26_governed_synthetic_exchange.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -14503,6 +14507,7 @@ Persisted IntegrationExchangeMessageJpaEntity state; semantic authority remains 
 - Migration mention (not inferred introduction): [V20260929_002__enforce_same_module_reference_integrity_b.sql](../../src/main/resources/db/migration/V20260929_002__enforce_same_module_reference_integrity_b.sql)
 - Migration mention (not inferred introduction): [V20261007_010__hmr_056_integration_exchange_message.sql](../../src/main/resources/db/migration/V20261007_010__hmr_056_integration_exchange_message.sql)
 - Migration mention (not inferred introduction): [V20261007_011__hmr_071_integration_dead_letter_record.sql](../../src/main/resources/db/migration/V20261007_011__hmr_071_integration_dead_letter_record.sql)
+- Migration mention (not inferred introduction): [V20261118_005__t26_governed_synthetic_exchange.sql](../../src/main/resources/db/migration/V20261118_005__t26_governed_synthetic_exchange.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -14538,6 +14543,8 @@ Persisted IntegrationExchangeMessageJpaEntity state; semantic authority remains 
   - Catalog attributes: {"columns": ["endpoint_id", "external_system_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id", "external_system_id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_integration_external_endpoint"}, "type": "f", "validated": true}
 - `hmr056_run_fk`: FOREIGN KEY (job_run_id) REFERENCES hidra_integration_job_run(id)
   - Catalog attributes: {"columns": ["job_run_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_integration_job_run"}, "type": "f", "validated": true}
+- `t26_native_message_guard`: TRIGGER DEFERRABLE INITIALLY DEFERRED
+  - Catalog attributes: {"columns": [], "deferrable": true, "initially_deferred": true, "reference": null, "type": "t", "validated": true}
 
 #### Indexes
 
@@ -14567,6 +14574,9 @@ Persisted IntegrationExchangeMessageJpaEntity state; semantic authority remains 
 - `hmr056_message_catalog`: CREATE TRIGGER hmr056_message_catalog BEFORE INSERT OR UPDATE ON hidra_integration_exchange_message FOR EACH ROW EXECUTE FUNCTION hmr056_message_catalog_guard()
   - Catalog attributes: {"enabled": "O", "function_identity": "public.hmr056_message_catalog_guard()"}
   - Function evidence: CREATE OR REPLACE FUNCTION public.hmr056_message_catalog_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    IF NOT EXISTS(SELECT 1 FROM hidra_integration_catalog_entry WHERE id=NEW.message_type_id AND catalog_name='MESSAGE_TYPE' AND active)<br>        OR NOT EXISTS(SELECT 1 FROM hidra_integration_catalog_entry WHERE id=NEW.payload_format_id AND catalog_name='PAYLOAD_FORMAT' AND active) THEN<br>        RAISE EXCEPTION 'Integration message catalogs must be active in their exact families' USING ERRCODE='23514';<br>    END IF;<br>    RETURN NEW;<br>END $function$<br>
+- `t26_native_message_guard`: CREATE CONSTRAINT TRIGGER t26_native_message_guard AFTER INSERT OR UPDATE ON hidra_integration_exchange_message DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION t26_guard_native_reserved()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t26_guard_native_reserved()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t26_guard_native_reserved()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>DECLARE native_id varchar(80); matched boolean;<br>BEGIN<br>    IF TG_TABLE_NAME='hidra_integration_job_run' THEN<br>        IF NEW.correlation_id IS NULL OR NEW.correlation_id NOT LIKE 'T26:%' THEN RETURN NULL; END IF;<br>        native_id:=NEW.id;<br>        SELECT EXISTS(SELECT 1 FROM public.hidra_integration_t26_attempt_receipt a<br>                      WHERE a.job_run_id=native_id) INTO matched;<br>    ELSE<br>        IF NEW.external_message_id IS NULL OR NEW.external_message_id NOT LIKE 'T26:%' THEN RETURN NULL; END IF;<br>        native_id:=NEW.id;<br>        SELECT EXISTS(SELECT 1 FROM public.hidra_integration_t26_attempt_receipt a<br>                      WHERE a.message_id=native_id) INTO matched;<br>    END IF;<br>    IF NOT matched THEN<br>        RAISE EXCEPTION 'Reserved T26 native identity requires a governed attempt receipt'<br>          USING ERRCODE='23514';<br>    END IF;<br>    RETURN NULL;<br>END $function$<br>
 
 ### public.hidra_integration_external_endpoint
 
@@ -14706,6 +14716,7 @@ Persisted ExternalSystemJpaEntity state; semantic authority remains with integra
 - Migration mention (not inferred introduction): [V20260611_019__create_integration_tables.sql](../../src/main/resources/db/migration/V20260611_019__create_integration_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_002__enforce_same_module_reference_integrity_b.sql](../../src/main/resources/db/migration/V20260929_002__enforce_same_module_reference_integrity_b.sql)
 - Migration mention (not inferred introduction): [V20261004_047__hmr_047_integration_external_system.sql](../../src/main/resources/db/migration/V20261004_047__hmr_047_integration_external_system.sql)
+- Migration mention (not inferred introduction): [V20261118_005__t26_governed_synthetic_exchange.sql](../../src/main/resources/db/migration/V20261118_005__t26_governed_synthetic_exchange.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -14858,6 +14869,7 @@ Persisted IntegrationInboundRecordJpaEntity state; semantic authority remains wi
 - Migration mention (not inferred introduction): [V20260611_019__create_integration_tables.sql](../../src/main/resources/db/migration/V20260611_019__create_integration_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_002__enforce_same_module_reference_integrity_b.sql](../../src/main/resources/db/migration/V20260929_002__enforce_same_module_reference_integrity_b.sql)
 - Migration mention (not inferred introduction): [V20261007_011__hmr_071_integration_dead_letter_record.sql](../../src/main/resources/db/migration/V20261007_011__hmr_071_integration_dead_letter_record.sql)
+- Migration mention (not inferred introduction): [V20261118_005__t26_governed_synthetic_exchange.sql](../../src/main/resources/db/migration/V20261118_005__t26_governed_synthetic_exchange.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -14917,6 +14929,7 @@ Persisted IntegrationJobDefinitionJpaEntity state; semantic authority remains wi
 - Migration mention (not inferred introduction): [V20260611_019__create_integration_tables.sql](../../src/main/resources/db/migration/V20260611_019__create_integration_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_002__enforce_same_module_reference_integrity_b.sql](../../src/main/resources/db/migration/V20260929_002__enforce_same_module_reference_integrity_b.sql)
 - Migration mention (not inferred introduction): [V20261004_014__hmr_014_integration_integration_job_run.sql](../../src/main/resources/db/migration/V20261004_014__hmr_014_integration_integration_job_run.sql)
+- Migration mention (not inferred introduction): [V20261118_005__t26_governed_synthetic_exchange.sql](../../src/main/resources/db/migration/V20261118_005__t26_governed_synthetic_exchange.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -14983,6 +14996,7 @@ Persisted IntegrationJobRunJpaEntity state; semantic authority remains with inte
 - Migration mention (not inferred introduction): [V20261004_014__hmr_014_integration_integration_job_run.sql](../../src/main/resources/db/migration/V20261004_014__hmr_014_integration_integration_job_run.sql)
 - Migration mention (not inferred introduction): [V20261007_010__hmr_056_integration_exchange_message.sql](../../src/main/resources/db/migration/V20261007_010__hmr_056_integration_exchange_message.sql)
 - Migration mention (not inferred introduction): [V20261007_011__hmr_071_integration_dead_letter_record.sql](../../src/main/resources/db/migration/V20261007_011__hmr_071_integration_dead_letter_record.sql)
+- Migration mention (not inferred introduction): [V20261118_005__t26_governed_synthetic_exchange.sql](../../src/main/resources/db/migration/V20261118_005__t26_governed_synthetic_exchange.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -15019,6 +15033,8 @@ Persisted IntegrationJobRunJpaEntity state; semantic authority remains with inte
   - Catalog attributes: {"columns": ["job_definition_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_integration_job_definition"}, "type": "f", "validated": true}
 - `hidra_integration_job_run_pkey`: PRIMARY KEY (id)
   - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `t26_native_run_guard`: TRIGGER DEFERRABLE INITIALLY DEFERRED
+  - Catalog attributes: {"columns": [], "deferrable": true, "initially_deferred": true, "reference": null, "type": "t", "validated": true}
 
 #### Indexes
 
@@ -15041,6 +15057,9 @@ Persisted IntegrationJobRunJpaEntity state; semantic authority remains with inte
 
 #### Triggers
 
+- `t26_native_run_guard`: CREATE CONSTRAINT TRIGGER t26_native_run_guard AFTER INSERT OR UPDATE ON hidra_integration_job_run DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION t26_guard_native_reserved()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t26_guard_native_reserved()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t26_guard_native_reserved()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>DECLARE native_id varchar(80); matched boolean;<br>BEGIN<br>    IF TG_TABLE_NAME='hidra_integration_job_run' THEN<br>        IF NEW.correlation_id IS NULL OR NEW.correlation_id NOT LIKE 'T26:%' THEN RETURN NULL; END IF;<br>        native_id:=NEW.id;<br>        SELECT EXISTS(SELECT 1 FROM public.hidra_integration_t26_attempt_receipt a<br>                      WHERE a.job_run_id=native_id) INTO matched;<br>    ELSE<br>        IF NEW.external_message_id IS NULL OR NEW.external_message_id NOT LIKE 'T26:%' THEN RETURN NULL; END IF;<br>        native_id:=NEW.id;<br>        SELECT EXISTS(SELECT 1 FROM public.hidra_integration_t26_attempt_receipt a<br>                      WHERE a.message_id=native_id) INTO matched;<br>    END IF;<br>    IF NOT matched THEN<br>        RAISE EXCEPTION 'Reserved T26 native identity requires a governed attempt receipt'<br>          USING ERRCODE='23514';<br>    END IF;<br>    RETURN NULL;<br>END $function$<br>
 - `trg_hmr014_integration_job_run_insert`: CREATE TRIGGER trg_hmr014_integration_job_run_insert BEFORE INSERT ON hidra_integration_job_run FOR EACH ROW EXECUTE FUNCTION hmr014_prepare_job_run_insert()
   - Catalog attributes: {"enabled": "O", "function_identity": "public.hmr014_prepare_job_run_insert()"}
   - Function evidence: CREATE OR REPLACE FUNCTION public.hmr014_prepare_job_run_insert()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>DECLARE<br>    job_active boolean;<br>    manual_allowed boolean;<br>    connector_id varchar(80);<br>    mapping_id varchar(80);<br>    job_target_module varchar(80);<br>    job_type_code varchar(120);<br>    next_run_number bigint;<br>BEGIN<br>    SELECT<br>        jd.active,<br>        jd.manual_run_allowed,<br>        jd.connector_instance_id,<br>        jd.mapping_profile_id,<br>        jd.target_module,<br>        upper(c.code)<br>    INTO<br>        job_active,<br>        manual_allowed,<br>        connector_id,<br>        mapping_id,<br>        job_target_module,<br>        job_type_code<br>    FROM hidra_integration_job_definition jd<br>    JOIN hidra_integration_catalog_entry c<br>      ON c.id = jd.job_type_id<br>     AND c.catalog_name = 'JOB_TYPE'<br>     AND c.active = TRUE<br>    WHERE jd.id = NEW.job_definition_id;<br><br>    IF NOT FOUND THEN<br>        RAISE EXCEPTION<br>            'IntegrationJobRun requires an existing job definition with an ACTIVE JOB_TYPE entry: %',<br>            NEW.job_definition_id<br>            USING ERRCODE = '23514';<br>    END IF;<br><br>    IF job_active &lt;&gt; TRUE THEN<br>        RAISE EXCEPTION<br>            'IntegrationJobRun cannot start from an inactive job definition: %',<br>            NEW.job_definition_id<br>            USING ERRCODE = '23514';<br>    END IF;<br><br>    IF NEW.trigger_type = 'MANUAL' THEN<br>        IF manual_allowed &lt;&gt; TRUE THEN<br>            RAISE EXCEPTION<br>                'Integration job definition does not allow MANUAL execution'<br>                USING ERRCODE = '23514';<br>        END IF;<br>        IF NEW.triggered_by_actor_id IS NULL OR btrim(NEW.triggered_by_actor_id) = '' THEN<br>            RAISE EXCEPTION<br>                'MANUAL IntegrationJobRun requires triggered_by_actor_id'<br>                USING ERRCODE = '23514';<br>        END IF;<br>    ELSIF NOT EXISTS (<br>        SELECT 1<br>        FROM hidra_integration_connector_instance ci<br>        WHERE ci.id = connector_id<br>          AND ci.active = TRUE<br>    ) THEN<br>        RAISE EXCEPTION<br>            'Automated IntegrationJobRun requires an active ConnectorInstance'<br>            USING ERRCODE = '23514';<br>    END IF;<br><br>    IF job_type_code IN ('IMPORT', 'SYNC') THEN<br>        IF mapping_id IS NULL THEN<br>            RAISE EXCEPTION<br>                'IMPORT/SYNC requires a mapping profile in the current repository baseline'<br>                USING ERRCODE = '23514';<br>        END IF;<br><br>        IF NOT EXISTS (<br>            SELECT 1<br>            FROM hidra_integration_mapping_profile mp<br>            WHERE mp.id = mapping_id<br>              AND (<br>                  NEW.trigger_type = 'MANUAL'<br>                  OR mp.status = 'ACTIVE'<br>              )<br>              AND (<br>                  job_target_module IS NULL<br>                  OR mp.target_module = job_target_module<br>              )<br>        ) THEN<br>            RAISE EXCEPTION<br>                'IntegrationJobRun mapping profile is missing, ineligible, or targets another module'<br>                USING ERRCODE = '23514';<br>        END IF;<br>    END IF;<br><br>    INSERT INTO hidra_integration_job_run_sequence (job_definition_id, last_run_number)<br>    VALUES (NEW.job_definition_id, 1)<br>    ON CONFLICT (job_definition_id)<br>    DO UPDATE SET last_run_number =<br>        hidra_integration_job_run_sequence.last_run_number + 1<br>    RETURNING last_run_number INTO next_run_number;<br><br>    NEW.run_number := next_run_number;<br>    RETURN NEW;<br>END;<br>$function$<br>
@@ -15132,6 +15151,7 @@ Persisted IntegrationMappingProfileJpaEntity state; semantic authority remains w
 - Migration mention (not inferred introduction): [V20260611_019__create_integration_tables.sql](../../src/main/resources/db/migration/V20260611_019__create_integration_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_002__enforce_same_module_reference_integrity_b.sql](../../src/main/resources/db/migration/V20260929_002__enforce_same_module_reference_integrity_b.sql)
 - Migration mention (not inferred introduction): [V20261004_014__hmr_014_integration_integration_job_run.sql](../../src/main/resources/db/migration/V20261004_014__hmr_014_integration_integration_job_run.sql)
+- Migration mention (not inferred introduction): [V20261118_005__t26_governed_synthetic_exchange.sql](../../src/main/resources/db/migration/V20261118_005__t26_governed_synthetic_exchange.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -15452,6 +15472,7 @@ Persisted IntegrationSchemaVersionJpaEntity state; semantic authority remains wi
 - Evidence: [IntegrationSchemaVersionJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/integration/infrastructure/persistence/entity/IntegrationSchemaVersionJpaEntity.java)
 - Migration mention (not inferred introduction): [V20260611_019__create_integration_tables.sql](../../src/main/resources/db/migration/V20260611_019__create_integration_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_002__enforce_same_module_reference_integrity_b.sql](../../src/main/resources/db/migration/V20260929_002__enforce_same_module_reference_integrity_b.sql)
+- Migration mention (not inferred introduction): [V20261118_005__t26_governed_synthetic_exchange.sql](../../src/main/resources/db/migration/V20261118_005__t26_governed_synthetic_exchange.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -15536,6 +15557,274 @@ Persisted IntegrationSyncCursorJpaEntity state; semantic authority remains with 
   - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
 - `ix_hidra_integration_sync_cursor_updated_at`: CREATE INDEX ix_hidra_integration_sync_cursor_updated_at ON public.hidra_integration_sync_cursor USING btree (updated_at)
   - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+
+#### Triggers
+
+None captured in this catalog category.
+
+### public.hidra_integration_t26_attempt_receipt
+
+Owner: **integration**; relation kind: `r`.
+
+Integration-owned per-attempt native run/message/inbound and dead-letter references, preserved terminal history and one optional receiving draft receipt.
+
+- Evidence: [V20261118_005__t26_governed_synthetic_exchange.sql](../../src/main/resources/db/migration/V20261118_005__t26_governed_synthetic_exchange.sql)
+- Evidence: [JdbcSyntheticExchangeRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/integration/infrastructure/persistence/adapter/JdbcSyntheticExchangeRepositoryAdapter.java)
+- Migration mention (not inferred introduction): [V20261118_005__t26_governed_synthetic_exchange.sql](../../src/main/resources/db/migration/V20261118_005__t26_governed_synthetic_exchange.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| exchange_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| attempt_ordinal | integer | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| request_key | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| reason | character varying(500) | True | None; identity=; generated= | No current mapped Java column | — |
+| job_run_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| message_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| inbound_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| dead_letter_id | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+| phase | character varying(20) | False | None; identity=; generated= | No current mapped Java column | — |
+| failure_code | character varying(120) | True | None; identity=; generated= | No current mapped Java column | — |
+| document_id | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+| claimed_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| expires_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| completed_at | timestamp with time zone | True | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_integration_t26_attempt_r_exchange_id_attempt_ordinal_key`: UNIQUE (exchange_id, attempt_ordinal)
+  - Catalog attributes: {"columns": ["exchange_id", "attempt_ordinal"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_integration_t26_attempt_recei_exchange_id_request_key_key`: UNIQUE (exchange_id, request_key)
+  - Catalog attributes: {"columns": ["exchange_id", "request_key"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_integration_t26_attempt_receipt_attempt_ordinal_check`: CHECK (attempt_ordinal &gt;= 1 AND attempt_ordinal &lt;= 2)
+  - Catalog attributes: {"columns": ["attempt_ordinal"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_integration_t26_attempt_receipt_check`: CHECK (expires_at &gt; claimed_at)
+  - Catalog attributes: {"columns": ["expires_at", "claimed_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_integration_t26_attempt_receipt_dead_letter_id_fkey`: FOREIGN KEY (dead_letter_id) REFERENCES hidra_integration_dead_letter_record(id)
+  - Catalog attributes: {"columns": ["dead_letter_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_integration_dead_letter_record"}, "type": "f", "validated": true}
+- `hidra_integration_t26_attempt_receipt_dead_letter_id_key`: UNIQUE (dead_letter_id)
+  - Catalog attributes: {"columns": ["dead_letter_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_integration_t26_attempt_receipt_exchange_id_fkey`: FOREIGN KEY (exchange_id) REFERENCES hidra_integration_t26_exchange_receipt(id)
+  - Catalog attributes: {"columns": ["exchange_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_integration_t26_exchange_receipt"}, "type": "f", "validated": true}
+- `hidra_integration_t26_attempt_receipt_inbound_id_fkey`: FOREIGN KEY (inbound_id) REFERENCES hidra_integration_inbound_record(id)
+  - Catalog attributes: {"columns": ["inbound_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_integration_inbound_record"}, "type": "f", "validated": true}
+- `hidra_integration_t26_attempt_receipt_inbound_id_key`: UNIQUE (inbound_id)
+  - Catalog attributes: {"columns": ["inbound_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_integration_t26_attempt_receipt_job_run_id_fkey`: FOREIGN KEY (job_run_id) REFERENCES hidra_integration_job_run(id)
+  - Catalog attributes: {"columns": ["job_run_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_integration_job_run"}, "type": "f", "validated": true}
+- `hidra_integration_t26_attempt_receipt_job_run_id_key`: UNIQUE (job_run_id)
+  - Catalog attributes: {"columns": ["job_run_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_integration_t26_attempt_receipt_message_id_fkey`: FOREIGN KEY (message_id) REFERENCES hidra_integration_exchange_message(id)
+  - Catalog attributes: {"columns": ["message_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_integration_exchange_message"}, "type": "f", "validated": true}
+- `hidra_integration_t26_attempt_receipt_message_id_key`: UNIQUE (message_id)
+  - Catalog attributes: {"columns": ["message_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_integration_t26_attempt_receipt_phase_check`: CHECK (phase::text = ANY (ARRAY['CLAIMED'::character varying, 'FAILED'::character varying, 'SUCCEEDED'::character varying, 'ABANDONED'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["phase"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_integration_t26_attempt_receipt_pkey`: PRIMARY KEY (id)
+  - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `t26_attempt_commit`: TRIGGER DEFERRABLE INITIALLY DEFERRED
+  - Catalog attributes: {"columns": [], "deferrable": true, "initially_deferred": true, "reference": null, "type": "t", "validated": true}
+- `t26_attempt_order`: CHECK (completed_at IS NULL OR completed_at &gt;= claimed_at)
+  - Catalog attributes: {"columns": ["completed_at", "claimed_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `t26_attempt_shape`: CHECK (phase::text = 'CLAIMED'::text AND completed_at IS NULL AND failure_code IS NULL AND dead_letter_id IS NULL AND document_id IS NULL OR phase::text = 'SUCCEEDED'::text AND completed_at IS NOT NULL AND failure_code IS NULL AND dead_letter_id IS NULL AND document_id IS NOT NULL OR phase::text = 'FAILED'::text AND completed_at IS NOT NULL AND failure_code IS NOT NULL AND dead_letter_id IS NOT NULL AND document_id IS NULL OR phase::text = 'ABANDONED'::text AND completed_at IS NOT NULL AND failure_code IS NOT NULL AND document_id IS NULL)
+  - Catalog attributes: {"columns": ["phase", "completed_at", "failure_code", "dead_letter_id", "document_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_integration_t26_attempt_r_exchange_id_attempt_ordinal_key`: CREATE UNIQUE INDEX hidra_integration_t26_attempt_r_exchange_id_attempt_ordinal_key ON public.hidra_integration_t26_attempt_receipt USING btree (exchange_id, attempt_ordinal)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_integration_t26_attempt_recei_exchange_id_request_key_key`: CREATE UNIQUE INDEX hidra_integration_t26_attempt_recei_exchange_id_request_key_key ON public.hidra_integration_t26_attempt_receipt USING btree (exchange_id, request_key)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_integration_t26_attempt_receipt_dead_letter_id_key`: CREATE UNIQUE INDEX hidra_integration_t26_attempt_receipt_dead_letter_id_key ON public.hidra_integration_t26_attempt_receipt USING btree (dead_letter_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_integration_t26_attempt_receipt_inbound_id_key`: CREATE UNIQUE INDEX hidra_integration_t26_attempt_receipt_inbound_id_key ON public.hidra_integration_t26_attempt_receipt USING btree (inbound_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_integration_t26_attempt_receipt_job_run_id_key`: CREATE UNIQUE INDEX hidra_integration_t26_attempt_receipt_job_run_id_key ON public.hidra_integration_t26_attempt_receipt USING btree (job_run_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_integration_t26_attempt_receipt_message_id_key`: CREATE UNIQUE INDEX hidra_integration_t26_attempt_receipt_message_id_key ON public.hidra_integration_t26_attempt_receipt USING btree (message_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_integration_t26_attempt_receipt_pkey`: CREATE UNIQUE INDEX hidra_integration_t26_attempt_receipt_pkey ON public.hidra_integration_t26_attempt_receipt USING btree (id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `t26_attempt_history`: CREATE INDEX t26_attempt_history ON public.hidra_integration_t26_attempt_receipt USING btree (exchange_id, attempt_ordinal)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+
+#### Triggers
+
+- `t26_attempt_commit`: CREATE CONSTRAINT TRIGGER t26_attempt_commit AFTER INSERT OR UPDATE ON hidra_integration_t26_attempt_receipt DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION t26_verify_evidence()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t26_verify_evidence()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t26_verify_evidence()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>DECLARE xid varchar(80); e public.hidra_integration_t26_exchange_receipt%ROWTYPE;<br>BEGIN<br>    IF TG_TABLE_NAME='hidra_integration_t26_exchange_receipt' THEN xid:=NEW.id;<br>    ELSIF TG_TABLE_NAME='hidra_integration_t26_attempt_receipt' THEN xid:=NEW.exchange_id;<br>    ELSE RETURN NULL; END IF;<br>    SELECT * INTO e FROM public.hidra_integration_t26_exchange_receipt WHERE id=xid;<br>    IF NOT FOUND THEN RETURN NULL; END IF;<br>    IF (SELECT count(*) FROM public.hidra_integration_t26_attempt_receipt a WHERE a.exchange_id=xid) &lt;&gt; e.latest_attempt<br>       OR NOT EXISTS (<br>           SELECT 1 FROM public.hidra_integration_t26_attempt_receipt a<br>           JOIN public.hidra_integration_job_run r ON r.id=a.job_run_id<br>           JOIN public.hidra_integration_exchange_message m ON m.id=a.message_id<br>           JOIN public.hidra_integration_inbound_record i ON i.id=a.inbound_id<br>           WHERE a.exchange_id=xid AND a.attempt_ordinal=e.latest_attempt<br>             AND a.phase=e.phase AND a.document_id IS NOT DISTINCT FROM e.document_id<br>             AND r.job_definition_id=e.job_definition_id AND r.trigger_type='MANUAL'<br>             AND r.triggered_by_actor_id=a.actor_id AND r.correlation_id='T26:'&#124;&#124;xid&#124;&#124;':'&#124;&#124;a.attempt_ordinal<br>             AND m.job_run_id=r.id AND m.external_system_id=e.external_system_id<br>             AND m.external_message_id='T26:'&#124;&#124;xid&#124;&#124;':'&#124;&#124;a.attempt_ordinal<br>             AND m.payload_hash=e.payload_digest AND m.payload_storage_mode='INLINE_SANITIZED'<br>             AND i.job_run_id=r.id AND i.exchange_message_id=m.id AND i.mapping_profile_id=e.mapping_profile_id<br>             AND i.target_module='documents' AND i.target_type_code='DOCUMENT'<br>             AND i.target_id IS NOT DISTINCT FROM a.document_id<br>             AND (CASE a.phase<br>                WHEN 'CLAIMED' THEN r.status='RUNNING' AND m.status='RECEIVED' AND i.submission_status='NOT_SUBMITTED'<br>                WHEN 'SUCCEEDED' THEN r.status='COMPLETED' AND m.status='ACCEPTED' AND i.submission_status='ACCEPTED'<br>                     AND EXISTS (SELECT 1 FROM public.hidra_documents_controlled_scope s<br>                       WHERE s.document_id=a.document_id AND s.company_id=e.company_id<br>                         AND s.facility_id=e.facility_id AND s.create_request_id='T26-'&#124;&#124;xid)<br>                WHEN 'FAILED' THEN r.status='FAILED' AND m.status='DEAD_LETTERED' AND i.submission_status='DEAD_LETTERED'<br>                     AND EXISTS (SELECT 1 FROM public.hidra_integration_dead_letter_record d<br>                        WHERE d.id=a.dead_letter_id AND d.job_run_id=r.id AND d.exchange_message_id=m.id<br>                         AND d.inbound_record_id=i.id AND d.status IN ('OPEN','REPLAYED'))<br>                WHEN 'ABANDONED' THEN r.status='FAILED' AND i.submission_status='DEAD_LETTERED'<br>                ELSE false END)<br>           )<br>       THEN RAISE EXCEPTION 'T26 native exchange or receiver receipt mismatch' USING ERRCODE='23514';<br>    END IF;<br>    RETURN NULL;<br>END $function$<br>
+- `t26_attempt_no_truncate`: CREATE TRIGGER t26_attempt_no_truncate BEFORE TRUNCATE ON hidra_integration_t26_attempt_receipt FOR EACH STATEMENT EXECUTE FUNCTION t26_preserve_attempt()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t26_preserve_attempt()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t26_preserve_attempt()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    IF TG_OP='DELETE' OR TG_OP='TRUNCATE' THEN<br>        RAISE EXCEPTION 'T26 attempt evidence cannot be deleted' USING ERRCODE='23514';<br>    END IF;<br>    IF ROW(NEW.id,NEW.exchange_id,NEW.attempt_ordinal,NEW.actor_id,NEW.request_key,NEW.reason,<br>           NEW.job_run_id,NEW.message_id,NEW.inbound_id,NEW.claimed_at,NEW.expires_at)<br>       IS DISTINCT FROM<br>       ROW(OLD.id,OLD.exchange_id,OLD.attempt_ordinal,OLD.actor_id,OLD.request_key,OLD.reason,<br>           OLD.job_run_id,OLD.message_id,OLD.inbound_id,OLD.claimed_at,OLD.expires_at)<br>       OR OLD.phase&lt;&gt;'CLAIMED' OR NEW.phase='CLAIMED' THEN<br>        RAISE EXCEPTION 'T26 attempt evidence is immutable after completion' USING ERRCODE='23514';<br>    END IF;<br>    RETURN NEW;<br>END $function$<br>
+- `t26_attempt_preservation`: CREATE TRIGGER t26_attempt_preservation BEFORE DELETE OR UPDATE ON hidra_integration_t26_attempt_receipt FOR EACH ROW EXECUTE FUNCTION t26_preserve_attempt()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t26_preserve_attempt()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t26_preserve_attempt()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    IF TG_OP='DELETE' OR TG_OP='TRUNCATE' THEN<br>        RAISE EXCEPTION 'T26 attempt evidence cannot be deleted' USING ERRCODE='23514';<br>    END IF;<br>    IF ROW(NEW.id,NEW.exchange_id,NEW.attempt_ordinal,NEW.actor_id,NEW.request_key,NEW.reason,<br>           NEW.job_run_id,NEW.message_id,NEW.inbound_id,NEW.claimed_at,NEW.expires_at)<br>       IS DISTINCT FROM<br>       ROW(OLD.id,OLD.exchange_id,OLD.attempt_ordinal,OLD.actor_id,OLD.request_key,OLD.reason,<br>           OLD.job_run_id,OLD.message_id,OLD.inbound_id,OLD.claimed_at,OLD.expires_at)<br>       OR OLD.phase&lt;&gt;'CLAIMED' OR NEW.phase='CLAIMED' THEN<br>        RAISE EXCEPTION 'T26 attempt evidence is immutable after completion' USING ERRCODE='23514';<br>    END IF;<br>    RETURN NEW;<br>END $function$<br>
+
+### public.hidra_integration_t26_exchange_receipt
+
+Owner: **integration**; relation kind: `r`.
+
+Integration-owned immutable pinned scope, mapping and sanitized source digest with unique idempotency and a fenced latest-attempt outcome; Documents remains receiver owner.
+
+- Evidence: [V20261118_005__t26_governed_synthetic_exchange.sql](../../src/main/resources/db/migration/V20261118_005__t26_governed_synthetic_exchange.sql)
+- Evidence: [JdbcSyntheticExchangeRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/integration/infrastructure/persistence/adapter/JdbcSyntheticExchangeRepositoryAdapter.java)
+- Migration mention (not inferred introduction): [V20261118_005__t26_governed_synthetic_exchange.sql](../../src/main/resources/db/migration/V20261118_005__t26_governed_synthetic_exchange.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| binding_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| company_id | character varying(96) | False | None; identity=; generated= | No current mapped Java column | — |
+| facility_id | character varying(120) | False | None; identity=; generated= | No current mapped Java column | — |
+| request_key | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| submitter_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| mapping_profile_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| schema_version_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| schema_checksum | character varying(128) | False | None; identity=; generated= | No current mapped Java column | — |
+| mapping_digest | character(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| payload_digest | character(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| projection | text | False | None; identity=; generated= | No current mapped Java column | — |
+| title_fr | character varying(160) | False | None; identity=; generated= | No current mapped Java column | — |
+| document_type_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| classification_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| job_definition_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| external_system_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| message_type_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| payload_format_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| phase | character varying(20) | False | None; identity=; generated= | No current mapped Java column | — |
+| latest_attempt | integer | False | None; identity=; generated= | No current mapped Java column | — |
+| document_id | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+| created_at | timestamp with time zone | False | now(); identity=; generated= | No current mapped Java column | — |
+| updated_at | timestamp with time zone | False | now(); identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_integration_t26_exchange_receipt_check`: CHECK (octet_length(projection) &gt;= 1 AND octet_length(projection) &lt;= 1000 AND jsonb_typeof(projection::jsonb) = 'object'::text AND encode(sha256(convert_to(projection, 'UTF8'::name)), 'hex'::text) = payload_digest::text)
+  - Catalog attributes: {"columns": ["projection", "payload_digest"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_integration_t26_exchange_receipt_external_system_id_fkey`: FOREIGN KEY (external_system_id) REFERENCES hidra_integration_external_system(id)
+  - Catalog attributes: {"columns": ["external_system_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_integration_external_system"}, "type": "f", "validated": true}
+- `hidra_integration_t26_exchange_receipt_id_latest_attempt_key`: UNIQUE (id, latest_attempt)
+  - Catalog attributes: {"columns": ["id", "latest_attempt"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_integration_t26_exchange_receipt_job_definition_id_fkey`: FOREIGN KEY (job_definition_id) REFERENCES hidra_integration_job_definition(id)
+  - Catalog attributes: {"columns": ["job_definition_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_integration_job_definition"}, "type": "f", "validated": true}
+- `hidra_integration_t26_exchange_receipt_latest_attempt_check`: CHECK (latest_attempt &gt;= 1 AND latest_attempt &lt;= 2)
+  - Catalog attributes: {"columns": ["latest_attempt"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_integration_t26_exchange_receipt_mapping_digest_check`: CHECK (mapping_digest ~ '^[a-f0-9]{64}$'::text)
+  - Catalog attributes: {"columns": ["mapping_digest"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_integration_t26_exchange_receipt_message_type_id_fkey`: FOREIGN KEY (message_type_id) REFERENCES hidra_integration_catalog_entry(id)
+  - Catalog attributes: {"columns": ["message_type_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_integration_catalog_entry"}, "type": "f", "validated": true}
+- `hidra_integration_t26_exchange_receipt_payload_digest_check`: CHECK (payload_digest ~ '^[a-f0-9]{64}$'::text)
+  - Catalog attributes: {"columns": ["payload_digest"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_integration_t26_exchange_receipt_payload_format_id_fkey`: FOREIGN KEY (payload_format_id) REFERENCES hidra_integration_catalog_entry(id)
+  - Catalog attributes: {"columns": ["payload_format_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_integration_catalog_entry"}, "type": "f", "validated": true}
+- `hidra_integration_t26_exchange_receipt_phase_check`: CHECK (phase::text = ANY (ARRAY['CLAIMED'::character varying, 'FAILED'::character varying, 'SUCCEEDED'::character varying, 'ABANDONED'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["phase"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_integration_t26_exchange_receipt_pkey`: PRIMARY KEY (id)
+  - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_integration_t26_exchange_receipt_request_key_check`: CHECK (btrim(request_key::text) &lt;&gt; ''::text AND request_key::text = btrim(request_key::text))
+  - Catalog attributes: {"columns": ["request_key"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_integration_t26_exchange_receipt_schema_checksum_check`: CHECK (btrim(schema_checksum::text) &lt;&gt; ''::text)
+  - Catalog attributes: {"columns": ["schema_checksum"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_integration_t26_exchange_receipt_title_fr_check`: CHECK (btrim(title_fr::text) &lt;&gt; ''::text)
+  - Catalog attributes: {"columns": ["title_fr"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `t26_exchange_binding`: FOREIGN KEY (binding_id, company_id, facility_id, mapping_profile_id) REFERENCES hidra_integration_t26_mapping_binding(id, company_id, facility_id, mapping_profile_id)
+  - Catalog attributes: {"columns": ["binding_id", "company_id", "facility_id", "mapping_profile_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id", "company_id", "facility_id", "mapping_profile_id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_integration_t26_mapping_binding"}, "type": "f", "validated": true}
+- `t26_exchange_commit`: TRIGGER DEFERRABLE INITIALLY DEFERRED
+  - Catalog attributes: {"columns": [], "deferrable": true, "initially_deferred": true, "reference": null, "type": "t", "validated": true}
+- `t26_exchange_one_document`: UNIQUE (document_id)
+  - Catalog attributes: {"columns": ["document_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `t26_exchange_one_key`: UNIQUE (company_id, facility_id, request_key)
+  - Catalog attributes: {"columns": ["company_id", "facility_id", "request_key"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `t26_exchange_receipt_shape`: CHECK ((phase::text = 'SUCCEEDED'::text) = (document_id IS NOT NULL))
+  - Catalog attributes: {"columns": ["phase", "document_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_integration_t26_exchange_receipt_id_latest_attempt_key`: CREATE UNIQUE INDEX hidra_integration_t26_exchange_receipt_id_latest_attempt_key ON public.hidra_integration_t26_exchange_receipt USING btree (id, latest_attempt)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_integration_t26_exchange_receipt_pkey`: CREATE UNIQUE INDEX hidra_integration_t26_exchange_receipt_pkey ON public.hidra_integration_t26_exchange_receipt USING btree (id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `t26_exchange_one_document`: CREATE UNIQUE INDEX t26_exchange_one_document ON public.hidra_integration_t26_exchange_receipt USING btree (document_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `t26_exchange_one_key`: CREATE UNIQUE INDEX t26_exchange_one_key ON public.hidra_integration_t26_exchange_receipt USING btree (company_id, facility_id, request_key)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `t26_exchange_scope`: CREATE INDEX t26_exchange_scope ON public.hidra_integration_t26_exchange_receipt USING btree (company_id, facility_id, id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+
+#### Triggers
+
+- `t26_exchange_commit`: CREATE CONSTRAINT TRIGGER t26_exchange_commit AFTER INSERT OR UPDATE ON hidra_integration_t26_exchange_receipt DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION t26_verify_evidence()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t26_verify_evidence()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t26_verify_evidence()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>DECLARE xid varchar(80); e public.hidra_integration_t26_exchange_receipt%ROWTYPE;<br>BEGIN<br>    IF TG_TABLE_NAME='hidra_integration_t26_exchange_receipt' THEN xid:=NEW.id;<br>    ELSIF TG_TABLE_NAME='hidra_integration_t26_attempt_receipt' THEN xid:=NEW.exchange_id;<br>    ELSE RETURN NULL; END IF;<br>    SELECT * INTO e FROM public.hidra_integration_t26_exchange_receipt WHERE id=xid;<br>    IF NOT FOUND THEN RETURN NULL; END IF;<br>    IF (SELECT count(*) FROM public.hidra_integration_t26_attempt_receipt a WHERE a.exchange_id=xid) &lt;&gt; e.latest_attempt<br>       OR NOT EXISTS (<br>           SELECT 1 FROM public.hidra_integration_t26_attempt_receipt a<br>           JOIN public.hidra_integration_job_run r ON r.id=a.job_run_id<br>           JOIN public.hidra_integration_exchange_message m ON m.id=a.message_id<br>           JOIN public.hidra_integration_inbound_record i ON i.id=a.inbound_id<br>           WHERE a.exchange_id=xid AND a.attempt_ordinal=e.latest_attempt<br>             AND a.phase=e.phase AND a.document_id IS NOT DISTINCT FROM e.document_id<br>             AND r.job_definition_id=e.job_definition_id AND r.trigger_type='MANUAL'<br>             AND r.triggered_by_actor_id=a.actor_id AND r.correlation_id='T26:'&#124;&#124;xid&#124;&#124;':'&#124;&#124;a.attempt_ordinal<br>             AND m.job_run_id=r.id AND m.external_system_id=e.external_system_id<br>             AND m.external_message_id='T26:'&#124;&#124;xid&#124;&#124;':'&#124;&#124;a.attempt_ordinal<br>             AND m.payload_hash=e.payload_digest AND m.payload_storage_mode='INLINE_SANITIZED'<br>             AND i.job_run_id=r.id AND i.exchange_message_id=m.id AND i.mapping_profile_id=e.mapping_profile_id<br>             AND i.target_module='documents' AND i.target_type_code='DOCUMENT'<br>             AND i.target_id IS NOT DISTINCT FROM a.document_id<br>             AND (CASE a.phase<br>                WHEN 'CLAIMED' THEN r.status='RUNNING' AND m.status='RECEIVED' AND i.submission_status='NOT_SUBMITTED'<br>                WHEN 'SUCCEEDED' THEN r.status='COMPLETED' AND m.status='ACCEPTED' AND i.submission_status='ACCEPTED'<br>                     AND EXISTS (SELECT 1 FROM public.hidra_documents_controlled_scope s<br>                       WHERE s.document_id=a.document_id AND s.company_id=e.company_id<br>                         AND s.facility_id=e.facility_id AND s.create_request_id='T26-'&#124;&#124;xid)<br>                WHEN 'FAILED' THEN r.status='FAILED' AND m.status='DEAD_LETTERED' AND i.submission_status='DEAD_LETTERED'<br>                     AND EXISTS (SELECT 1 FROM public.hidra_integration_dead_letter_record d<br>                        WHERE d.id=a.dead_letter_id AND d.job_run_id=r.id AND d.exchange_message_id=m.id<br>                         AND d.inbound_record_id=i.id AND d.status IN ('OPEN','REPLAYED'))<br>                WHEN 'ABANDONED' THEN r.status='FAILED' AND i.submission_status='DEAD_LETTERED'<br>                ELSE false END)<br>           )<br>       THEN RAISE EXCEPTION 'T26 native exchange or receiver receipt mismatch' USING ERRCODE='23514';<br>    END IF;<br>    RETURN NULL;<br>END $function$<br>
+- `t26_exchange_no_truncate`: CREATE TRIGGER t26_exchange_no_truncate BEFORE TRUNCATE ON hidra_integration_t26_exchange_receipt FOR EACH STATEMENT EXECUTE FUNCTION t26_preserve_exchange()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t26_preserve_exchange()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t26_preserve_exchange()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    IF TG_OP='DELETE' OR TG_OP='TRUNCATE' THEN<br>        RAISE EXCEPTION 'T26 exchange evidence cannot be deleted' USING ERRCODE='23514';<br>    END IF;<br>    IF ROW(NEW.id,NEW.binding_id,NEW.company_id,NEW.facility_id,NEW.request_key,NEW.submitter_id,<br>            NEW.mapping_profile_id,NEW.schema_version_id,NEW.schema_checksum,NEW.mapping_digest,<br>            NEW.payload_digest,NEW.projection,NEW.title_fr,NEW.document_type_id,<br>            NEW.classification_id,NEW.job_definition_id,NEW.external_system_id,<br>            NEW.message_type_id,NEW.payload_format_id,NEW.created_at)<br>       IS DISTINCT FROM<br>       ROW(OLD.id,OLD.binding_id,OLD.company_id,OLD.facility_id,OLD.request_key,OLD.submitter_id,<br>            OLD.mapping_profile_id,OLD.schema_version_id,OLD.schema_checksum,OLD.mapping_digest,<br>            OLD.payload_digest,OLD.projection,OLD.title_fr,OLD.document_type_id,<br>            OLD.classification_id,OLD.job_definition_id,OLD.external_system_id,<br>            OLD.message_type_id,OLD.payload_format_id,OLD.created_at)<br>       OR (OLD.phase='SUCCEEDED' AND NEW.phase&lt;&gt;'SUCCEEDED')<br>       OR (OLD.phase='FAILED' AND NEW.phase NOT IN ('FAILED','CLAIMED'))<br>       OR NEW.latest_attempt &lt; OLD.latest_attempt<br>       OR NEW.latest_attempt &gt; OLD.latest_attempt + 1<br>       OR (NEW.phase='CLAIMED' AND NEW.latest_attempt&gt;1 AND OLD.phase NOT IN ('FAILED','ABANDONED'))<br>       OR (OLD.document_id IS NOT NULL AND NEW.document_id IS DISTINCT FROM OLD.document_id) THEN<br>       RAISE EXCEPTION 'T26 pinned exchange or terminal receipt cannot be rewritten' USING ERRCODE='23514';<br>    END IF;<br>    RETURN NEW;<br>END $function$<br>
+- `t26_exchange_preservation`: CREATE TRIGGER t26_exchange_preservation BEFORE DELETE OR UPDATE ON hidra_integration_t26_exchange_receipt FOR EACH ROW EXECUTE FUNCTION t26_preserve_exchange()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t26_preserve_exchange()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t26_preserve_exchange()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    IF TG_OP='DELETE' OR TG_OP='TRUNCATE' THEN<br>        RAISE EXCEPTION 'T26 exchange evidence cannot be deleted' USING ERRCODE='23514';<br>    END IF;<br>    IF ROW(NEW.id,NEW.binding_id,NEW.company_id,NEW.facility_id,NEW.request_key,NEW.submitter_id,<br>            NEW.mapping_profile_id,NEW.schema_version_id,NEW.schema_checksum,NEW.mapping_digest,<br>            NEW.payload_digest,NEW.projection,NEW.title_fr,NEW.document_type_id,<br>            NEW.classification_id,NEW.job_definition_id,NEW.external_system_id,<br>            NEW.message_type_id,NEW.payload_format_id,NEW.created_at)<br>       IS DISTINCT FROM<br>       ROW(OLD.id,OLD.binding_id,OLD.company_id,OLD.facility_id,OLD.request_key,OLD.submitter_id,<br>            OLD.mapping_profile_id,OLD.schema_version_id,OLD.schema_checksum,OLD.mapping_digest,<br>            OLD.payload_digest,OLD.projection,OLD.title_fr,OLD.document_type_id,<br>            OLD.classification_id,OLD.job_definition_id,OLD.external_system_id,<br>            OLD.message_type_id,OLD.payload_format_id,OLD.created_at)<br>       OR (OLD.phase='SUCCEEDED' AND NEW.phase&lt;&gt;'SUCCEEDED')<br>       OR (OLD.phase='FAILED' AND NEW.phase NOT IN ('FAILED','CLAIMED'))<br>       OR NEW.latest_attempt &lt; OLD.latest_attempt<br>       OR NEW.latest_attempt &gt; OLD.latest_attempt + 1<br>       OR (NEW.phase='CLAIMED' AND NEW.latest_attempt&gt;1 AND OLD.phase NOT IN ('FAILED','ABANDONED'))<br>       OR (OLD.document_id IS NOT NULL AND NEW.document_id IS DISTINCT FROM OLD.document_id) THEN<br>       RAISE EXCEPTION 'T26 pinned exchange or terminal receipt cannot be rewritten' USING ERRCODE='23514';<br>    END IF;<br>    RETURN NEW;<br>END $function$<br>
+
+### public.hidra_integration_t26_mapping_binding
+
+Owner: **integration**; relation kind: `r`.
+
+Integration-owned synthetic scope/binding registration to existing profile, active schema, manual native job and vetted Documents draft type; no enterprise mapping or grant is seeded.
+
+- Evidence: [V20261118_005__t26_governed_synthetic_exchange.sql](../../src/main/resources/db/migration/V20261118_005__t26_governed_synthetic_exchange.sql)
+- Evidence: [JdbcSyntheticExchangeRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/integration/infrastructure/persistence/adapter/JdbcSyntheticExchangeRepositoryAdapter.java)
+- Migration mention (not inferred introduction): [V20261118_005__t26_governed_synthetic_exchange.sql](../../src/main/resources/db/migration/V20261118_005__t26_governed_synthetic_exchange.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| company_id | character varying(96) | False | None; identity=; generated= | No current mapped Java column | — |
+| facility_id | character varying(120) | False | None; identity=; generated= | No current mapped Java column | — |
+| mapping_profile_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| schema_version_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| job_definition_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| external_system_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| message_type_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| payload_format_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| document_type_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| classification_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| status | character varying(20) | False | None; identity=; generated= | No current mapped Java column | — |
+| created_at | timestamp with time zone | False | now(); identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_integration_t26_mapping_binding_company_id_check`: CHECK (btrim(company_id::text) &lt;&gt; ''::text AND company_id::text = btrim(company_id::text))
+  - Catalog attributes: {"columns": ["company_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_integration_t26_mapping_binding_external_system_id_fkey`: FOREIGN KEY (external_system_id) REFERENCES hidra_integration_external_system(id)
+  - Catalog attributes: {"columns": ["external_system_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_integration_external_system"}, "type": "f", "validated": true}
+- `hidra_integration_t26_mapping_binding_facility_id_check`: CHECK (btrim(facility_id::text) &lt;&gt; ''::text AND facility_id::text = btrim(facility_id::text))
+  - Catalog attributes: {"columns": ["facility_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_integration_t26_mapping_binding_job_definition_id_fkey`: FOREIGN KEY (job_definition_id) REFERENCES hidra_integration_job_definition(id)
+  - Catalog attributes: {"columns": ["job_definition_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_integration_job_definition"}, "type": "f", "validated": true}
+- `hidra_integration_t26_mapping_binding_mapping_profile_id_fkey`: FOREIGN KEY (mapping_profile_id) REFERENCES hidra_integration_mapping_profile(id)
+  - Catalog attributes: {"columns": ["mapping_profile_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_integration_mapping_profile"}, "type": "f", "validated": true}
+- `hidra_integration_t26_mapping_binding_message_type_id_fkey`: FOREIGN KEY (message_type_id) REFERENCES hidra_integration_catalog_entry(id)
+  - Catalog attributes: {"columns": ["message_type_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_integration_catalog_entry"}, "type": "f", "validated": true}
+- `hidra_integration_t26_mapping_binding_payload_format_id_fkey`: FOREIGN KEY (payload_format_id) REFERENCES hidra_integration_catalog_entry(id)
+  - Catalog attributes: {"columns": ["payload_format_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_integration_catalog_entry"}, "type": "f", "validated": true}
+- `hidra_integration_t26_mapping_binding_pkey`: PRIMARY KEY (id)
+  - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_integration_t26_mapping_binding_schema_version_id_fkey`: FOREIGN KEY (schema_version_id) REFERENCES hidra_integration_schema_version(id)
+  - Catalog attributes: {"columns": ["schema_version_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_integration_schema_version"}, "type": "f", "validated": true}
+- `hidra_integration_t26_mapping_binding_status_check`: CHECK (status::text = ANY (ARRAY['ACTIVE'::character varying, 'RETIRED'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["status"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_integration_t26_mapping_company_id_facility_id_mappin_key`: UNIQUE (company_id, facility_id, mapping_profile_id)
+  - Catalog attributes: {"columns": ["company_id", "facility_id", "mapping_profile_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_integration_t26_mapping_id_company_id_facility_id_map_key`: UNIQUE (id, company_id, facility_id, mapping_profile_id)
+  - Catalog attributes: {"columns": ["id", "company_id", "facility_id", "mapping_profile_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+
+#### Indexes
+
+- `hidra_integration_t26_mapping_binding_pkey`: CREATE UNIQUE INDEX hidra_integration_t26_mapping_binding_pkey ON public.hidra_integration_t26_mapping_binding USING btree (id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `hidra_integration_t26_mapping_company_id_facility_id_mappin_key`: CREATE UNIQUE INDEX hidra_integration_t26_mapping_company_id_facility_id_mappin_key ON public.hidra_integration_t26_mapping_binding USING btree (company_id, facility_id, mapping_profile_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_integration_t26_mapping_id_company_id_facility_id_map_key`: CREATE UNIQUE INDEX hidra_integration_t26_mapping_id_company_id_facility_id_map_key ON public.hidra_integration_t26_mapping_binding USING btree (id, company_id, facility_id, mapping_profile_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
 
 #### Triggers
 

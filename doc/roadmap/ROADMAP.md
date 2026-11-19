@@ -4312,3 +4312,26 @@ required before completion. No T27 implementation is selected.
 Its implementation commit message is
 `feat(integration): execute and replay scoped synthetic exchanges`.
 T27 remains unselected.
+
+
+#### T26 CI #1307 corrective verification (2026-11-19)
+
+Published T26 implementation `21bbab3a047ce512ef9f51b264362508aba9bd65`
+failed exact-SHA CI #1307 (`44406037310`): the synthetic signed PostgreSQL
+journey in shard 8 returned HTTP 500 instead of 409 on changed-payload
+idempotency conflict, and the API job failed exact canonical OpenAPI equality.
+The other thirteen PostgreSQL shards, unit/architecture, static validation and
+Documentation Validation #1147 passed; the full gate failed downstream.
+
+The T26 corrective implementation scopes conflict handling narrowly to the
+Integration-owned typed `SyntheticExchange.Conflict` and the exact T26 REST
+controller, without broadening global errors or lowering tests. The registered
+documentation reconciliation uses the actual CI #1307 generated OpenAPI
+artifact `14475780101` and disposable PostgreSQL 16 dictionary/catalog
+artifact `14473644792`, preserving source/ZIP/hash provenance and all physical
+metadata. The original CI skipped strict dictionary equality after the
+OpenAPI failure. Local validators confirmed OpenAPI snapshot equality and
+compatibility and reproduced the committed dictionary from the hosted catalog.
+Local Maven compilation was blocked by Maven Central DNS resolution. T26
+remains IN PROGRESS pending the replacement exact-SHA Full Verification Gate.
+T27 remains unselected.

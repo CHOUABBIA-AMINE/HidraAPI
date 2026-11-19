@@ -1239,9 +1239,9 @@
   ],
   "openapi": {
     "counts": {
-      "operations": 496,
-      "paths": 451,
-      "schemas": 533
+      "operations": 501,
+      "paths": 456,
+      "schemas": 539
     },
     "path": "doc/api/openapi.yaml",
     "prior_reviewed_provenance": {
@@ -1827,6 +1827,46 @@
       "workflow_conclusion": "failure",
       "zip_sha256": "d85965988a2b096b9be2e55167b94c48f0adcce893d71c73c64c264436e14fdb"
     },
+    "prior_reviewed_provenance_t25": {
+      "artifact_id": 14440361275,
+      "artifact_member": "hidra-api.json",
+      "artifact_name": "hidra-api-openapi-82437fc40dd4ca37383619bc8bd73fc8deeb4a7e-44329245163-2-api-contract",
+      "compatibility_review": "CI #1305 attempt 2 passed backward compatibility against accepted base 5bb8d4b7. Exactly five scoped T25 routes and four T25 schema names were added; existing paths/schemas remain unchanged.",
+      "conclusion": "success",
+      "conclusion_scope": "Runtime OpenAPI generation and compatibility only. Overall CI #1305 attempt 2 failed its canonical snapshot equality because this reconciliation was pending. No full-CI success is claimed.",
+      "database_evidence": {
+        "artifact_id": 14440915029,
+        "artifact_member": "DATA_DICTIONARY.md",
+        "artifact_name": "hidra-database-schema-82437fc40dd4ca37383619bc8bd73fc8deeb4a7e-44329245163-2-api-contract",
+        "artifact_zip_sha256": "4474623358ffaa298fe066a6a9a650181be17fa34512a3cc80f58187b4389a81",
+        "catalog_sha256": "2e7d731a973351bb8ad63ae87cc8c743eab466139d3bcb51cec5c79eedb9619a",
+        "dictionary_sha256": "aca24290ee30e8836784f1697ff1235a0289ddf50630c99d673231a0ef2a2654",
+        "jpa_mappings": 471,
+        "migrations": 229,
+        "relations": 605,
+        "reviewed_dictionary_checked": false,
+        "server_version": "16.16 (Debian 16.16-1.pgdg13+1)",
+        "source_bundle_sha256": "6efad66e8d480d1664f782bc8bd82e21129fb7fe0d0a2d0089fafb9342f66aae",
+        "source_sha": "82437fc40dd4ca37383619bc8bd73fc8deeb4a7e",
+        "status": "Genuine hosted catalog. Strict equality awaits the replacement reconciliation commit's CI.",
+        "unresolved_owners": []
+      },
+      "failed_step": "Enforce canonical OpenAPI snapshot equality",
+      "generation_step": "Publish deterministic OpenAPI contract",
+      "generation_step_conclusion": "success",
+      "generation_step_number": 9,
+      "job_conclusion": "failure",
+      "json_sha256": "c531ab616e50619d0b9c3302bcf8512e0e485a78d5bb18f55d3841e131e611e1",
+      "remaining_gates": [
+        "New exact-SHA CI must pass required unit, architecture, 14 PostgreSQL shards, backward compatibility, canonical OpenAPI and strict physical dictionary equality, and Full Verification Gate.",
+        "T25 synthetic software acceptance is distinct from engineering/operational acceptance."
+      ],
+      "run_attempt": 2,
+      "run_id": 44329245163,
+      "source_sha": "82437fc40dd4ca37383619bc8bd73fc8deeb4a7e",
+      "workflow_conclusion": "failure",
+      "zip_sha256": "823490f470fc33dccb6fdee120d273b881fa221be72c5ebd77c8d1016f1f58cb"
+    },
     "prior_reviewed_provenance_t25_preflight": {
       "artifact_id": 14431431920,
       "artifact_member": "hidra-api.json",
@@ -1884,27 +1924,27 @@
       "zip_sha256": "a4cd013201b92db13cc4312f46eb6a61c82adc5e075ec9174f125009a4e1ecb8"
     },
     "provenance": {
-      "artifact_id": 14440361275,
+      "artifact_id": 14475780101,
       "artifact_member": "hidra-api.json",
-      "artifact_name": "hidra-api-openapi-82437fc40dd4ca37383619bc8bd73fc8deeb4a7e-44329245163-2-api-contract",
-      "compatibility_review": "CI #1305 attempt 2 passed backward compatibility against accepted base 5bb8d4b7. Exactly five scoped T25 routes and four T25 schema names were added; existing paths/schemas remain unchanged.",
+      "artifact_name": "hidra-api-openapi-21bbab3a047ce512ef9f51b264362508aba9bd65-44406037310-1-api-contract",
+      "compatibility_review": "CI #1307 generated 5 new scoped T26 routes and 6 new schema names; existing contract paths and schemas retained. Compatibility step completed before canonical snapshot mismatch.",
       "conclusion": "success",
-      "conclusion_scope": "Runtime OpenAPI generation and compatibility only. Overall CI #1305 attempt 2 failed its canonical snapshot equality because this reconciliation was pending. No full-CI success is claimed.",
+      "conclusion_scope": "Runtime OpenAPI generation and compatibility checks only; API job and Full Verification Gate failed on CI #1307. Subsequent exact-SHA CI has not yet passed.",
       "database_evidence": {
-        "artifact_id": 14440915029,
+        "artifact_id": 14473644792,
         "artifact_member": "DATA_DICTIONARY.md",
-        "artifact_name": "hidra-database-schema-82437fc40dd4ca37383619bc8bd73fc8deeb4a7e-44329245163-2-api-contract",
-        "artifact_zip_sha256": "4474623358ffaa298fe066a6a9a650181be17fa34512a3cc80f58187b4389a81",
-        "catalog_sha256": "2e7d731a973351bb8ad63ae87cc8c743eab466139d3bcb51cec5c79eedb9619a",
-        "dictionary_sha256": "aca24290ee30e8836784f1697ff1235a0289ddf50630c99d673231a0ef2a2654",
+        "artifact_name": "hidra-database-schema-21bbab3a047ce512ef9f51b264362508aba9bd65-44406037310-1-api-contract",
+        "artifact_zip_sha256": "63e90848a48966c987da38641a11d3f50539559ca8e51e65756b8a85971514a8",
+        "catalog_sha256": "ba08448e3577ba34366d73588a12d29a2baaf1ac5877eb2605880135410ca42a",
+        "dictionary_sha256": "f8e37e6fcbe04139ec290bdea1edbd59fe06d03bd6a42f0da482d922451d0548",
         "jpa_mappings": 471,
-        "migrations": 229,
-        "relations": 605,
+        "migrations": 230,
+        "relations": 608,
         "reviewed_dictionary_checked": false,
         "server_version": "16.16 (Debian 16.16-1.pgdg13+1)",
-        "source_bundle_sha256": "6efad66e8d480d1664f782bc8bd82e21129fb7fe0d0a2d0089fafb9342f66aae",
-        "source_sha": "82437fc40dd4ca37383619bc8bd73fc8deeb4a7e",
-        "status": "Genuine hosted catalog. Strict equality awaits the replacement reconciliation commit's CI.",
+        "source_bundle_sha256": "4c707b3db1fc08bdd304113c441a25b06348d514ea9d383de535b5e42678b1cc",
+        "source_sha": "21bbab3a047ce512ef9f51b264362508aba9bd65",
+        "status": "Genuine hosted PostgreSQL 16 catalog; strict dictionary equality requires the replacement CI.",
         "unresolved_owners": []
       },
       "failed_step": "Enforce canonical OpenAPI snapshot equality",
@@ -1912,19 +1952,19 @@
       "generation_step_conclusion": "success",
       "generation_step_number": 9,
       "job_conclusion": "failure",
-      "json_sha256": "c531ab616e50619d0b9c3302bcf8512e0e485a78d5bb18f55d3841e131e611e1",
+      "job_id": 135161387624,
+      "json_sha256": "3d828358cea1f45a2c1e8e724dc957857239e62900cc2c791de87417731f9830",
       "remaining_gates": [
-        "New exact-SHA CI must pass required unit, architecture, 14 PostgreSQL shards, backward compatibility, canonical OpenAPI and strict physical dictionary equality, and Full Verification Gate.",
-        "T25 synthetic software acceptance is distinct from engineering/operational acceptance."
+        "Replacement exact-SHA CI: all unit/architecture, PostgreSQL shards, runtime OpenAPI, physical dictionary and Full Verification Gate"
       ],
-      "run_attempt": 2,
-      "run_id": 44329245163,
-      "source_sha": "82437fc40dd4ca37383619bc8bd73fc8deeb4a7e",
+      "run_attempt": 1,
+      "run_id": 44406037310,
+      "source_sha": "21bbab3a047ce512ef9f51b264362508aba9bd65",
       "workflow_conclusion": "failure",
-      "zip_sha256": "823490f470fc33dccb6fdee120d273b881fa221be72c5ebd77c8d1016f1f58cb"
+      "zip_sha256": "d11f1e0d419589c351e311bebe970d9fd99357168f3711dcbd12f733f95e30cd"
     },
-    "sha256": "e23223835652c045cc27a35f241d4f4aba53ce95feb8c264cfd0b4fc7ca38db5",
-    "source_sha": "82437fc40dd4ca37383619bc8bd73fc8deeb4a7e"
+    "sha256": "1f5f9314b0d17eeac41f3bf1373d561dc4119f6314c4226de48a02f670c1c49e",
+    "source_sha": "21bbab3a047ce512ef9f51b264362508aba9bd65"
   },
   "register": "doc/governance/DOCUMENT_REGISTER.md",
   "register_areas": {

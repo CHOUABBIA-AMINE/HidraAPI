@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `7353a6a8d779b44db8f68f10fdc78f937bd2a469`
+Captured source SHA: `3ca97bccc11f9db0e7269bd0a083cc07085c10fc`
 PostgreSQL server: `16.16 (Debian 16.16-1.pgdg13+1)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `b971d5ea0d74a192f2b19d5d25c0febfa0ddabe846123247006f2025024deea8`.
-Migrations: 231; JPA mappings: 471; catalog relations: 610; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `52480a372a45d96707d338764275d38fd2098858b9b60f667c9105857a822c12`.
+Migrations: 232; JPA mappings: 471; catalog relations: 613; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -4120,6 +4120,7 @@ Persisted AuditCatalogEntryJpaEntity state; semantic authority remains with audi
 - Migration mention (not inferred introduction): [V20261007_009__hmr_102_audit_before_after_value.sql](../../src/main/resources/db/migration/V20261007_009__hmr_102_audit_before_after_value.sql)
 - Migration mention (not inferred introduction): [V20261008_003__provision_simulation_recommendation_audit_taxonomy.sql](../../src/main/resources/db/migration/V20261008_003__provision_simulation_recommendation_audit_taxonomy.sql)
 - Migration mention (not inferred introduction): [V20261008_006__provision_risk_assessment_audit_taxonomy.sql](../../src/main/resources/db/migration/V20261008_006__provision_risk_assessment_audit_taxonomy.sql)
+- Migration mention (not inferred introduction): [V20261119_002__t28_scoped_audit_evidence.sql](../../src/main/resources/db/migration/V20261119_002__t28_scoped_audit_evidence.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -4317,6 +4318,7 @@ Persisted AuditEventJpaEntity state; semantic authority remains with audit.
 - Migration mention (not inferred introduction): [V20261007_007__hmr_095_audit_event.sql](../../src/main/resources/db/migration/V20261007_007__hmr_095_audit_event.sql)
 - Migration mention (not inferred introduction): [V20261007_008__hmr_101_audit_access_record.sql](../../src/main/resources/db/migration/V20261007_008__hmr_101_audit_access_record.sql)
 - Migration mention (not inferred introduction): [V20261007_009__hmr_102_audit_before_after_value.sql](../../src/main/resources/db/migration/V20261007_009__hmr_102_audit_before_after_value.sql)
+- Migration mention (not inferred introduction): [V20261119_002__t28_scoped_audit_evidence.sql](../../src/main/resources/db/migration/V20261119_002__t28_scoped_audit_evidence.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -4698,6 +4700,210 @@ Persisted AuditSearchProjectionJpaEntity state; semantic authority remains with 
 #### Triggers
 
 None captured in this catalog category.
+
+### public.hidra_audit_t28_access_receipt
+
+Owner: **audit**; relation kind: `r`.
+
+Audit-owned append-only allow/deny/integrity access decision receipt for a current actor and scoped Audit export; no protected export reference on denial.
+
+- Evidence: [V20261119_002__t28_scoped_audit_evidence.sql](../../src/main/resources/db/migration/V20261119_002__t28_scoped_audit_evidence.sql)
+- Evidence: [JdbcScopedAuditEvidenceRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/audit/infrastructure/persistence/adapter/JdbcScopedAuditEvidenceRepositoryAdapter.java)
+- Migration mention (not inferred introduction): [V20261119_002__t28_scoped_audit_evidence.sql](../../src/main/resources/db/migration/V20261119_002__t28_scoped_audit_evidence.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| company_id | character varying(96) | False | None; identity=; generated= | No current mapped Java column | — |
+| facility_id | character varying(120) | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_id | character varying(120) | False | None; identity=; generated= | No current mapped Java column | — |
+| action | character varying(20) | False | None; identity=; generated= | No current mapped Java column | — |
+| outcome | character varying(20) | False | None; identity=; generated= | No current mapped Java column | — |
+| export_id | uuid | True | None; identity=; generated= | No current mapped Java column | — |
+| locator_digest | character(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| accessed_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_audit_t28_access_receipt_action_check`: CHECK (action::text = ANY (ARRAY['CREATE'::character varying, 'SEARCH'::character varying, 'MANIFEST'::character varying, 'DOWNLOAD'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["action"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_audit_t28_access_receipt_actor_id_check`: CHECK (actor_id::text = btrim(actor_id::text) AND actor_id::text &lt;&gt; ''::text)
+  - Catalog attributes: {"columns": ["actor_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_audit_t28_access_receipt_company_id_check`: CHECK (company_id::text = btrim(company_id::text) AND company_id::text &lt;&gt; ''::text)
+  - Catalog attributes: {"columns": ["company_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_audit_t28_access_receipt_facility_id_check`: CHECK (facility_id::text = btrim(facility_id::text) AND facility_id::text &lt;&gt; ''::text)
+  - Catalog attributes: {"columns": ["facility_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_audit_t28_access_receipt_locator_digest_check`: CHECK (locator_digest ~ '^[a-f0-9]{64}$'::text)
+  - Catalog attributes: {"columns": ["locator_digest"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_audit_t28_access_receipt_outcome_check`: CHECK (outcome::text = ANY (ARRAY['ALLOW'::character varying, 'DENY'::character varying, 'INTEGRITY_FAILURE'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["outcome"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_audit_t28_access_receipt_pkey`: PRIMARY KEY (id)
+  - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `t28_access_export_scope`: FOREIGN KEY (export_id, company_id, facility_id) REFERENCES hidra_audit_t28_export(id, company_id, facility_id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["export_id", "company_id", "facility_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id", "company_id", "facility_id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_audit_t28_export"}, "type": "f", "validated": true}
+- `t28_receipt_outcome`: CHECK (action::text = 'DOWNLOAD'::text AND outcome::text = 'ALLOW'::text AND export_id IS NOT NULL OR action::text = 'DOWNLOAD'::text AND outcome::text = 'INTEGRITY_FAILURE'::text AND export_id IS NOT NULL OR action::text = 'DOWNLOAD'::text AND outcome::text = 'DENY'::text AND export_id IS NULL OR action::text = 'CREATE'::text AND outcome::text = 'ALLOW'::text AND export_id IS NOT NULL OR (action::text = ANY (ARRAY['SEARCH'::character varying, 'MANIFEST'::character varying]::text[])) AND outcome::text = 'ALLOW'::text AND export_id IS NULL)
+  - Catalog attributes: {"columns": ["action", "outcome", "export_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_audit_t28_access_receipt_pkey`: CREATE UNIQUE INDEX hidra_audit_t28_access_receipt_pkey ON public.hidra_audit_t28_access_receipt USING btree (id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `t28_access_actor_time`: CREATE INDEX t28_access_actor_time ON public.hidra_audit_t28_access_receipt USING btree (actor_id, accessed_at DESC)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+
+#### Triggers
+
+- `t28_receipt_no_truncate`: CREATE TRIGGER t28_receipt_no_truncate BEFORE TRUNCATE ON hidra_audit_t28_access_receipt FOR EACH STATEMENT EXECUTE FUNCTION t28_audit_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t28_audit_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t28_audit_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T28 Audit evidence is immutable' USING ERRCODE='23514';<br>END $function$<br>
+- `t28_receipt_no_update`: CREATE TRIGGER t28_receipt_no_update BEFORE DELETE OR UPDATE ON hidra_audit_t28_access_receipt FOR EACH ROW EXECUTE FUNCTION t28_audit_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t28_audit_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t28_audit_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T28 Audit evidence is immutable' USING ERRCODE='23514';<br>END $function$<br>
+
+### public.hidra_audit_t28_event_scope
+
+Owner: **audit**; relation kind: `r`.
+
+Audit-owned append-only binding of governed T22 Risk approval event, exact Workflow action and owner-authenticated company/facility, with local source-event FK and keyset index.
+
+- Evidence: [V20261119_002__t28_scoped_audit_evidence.sql](../../src/main/resources/db/migration/V20261119_002__t28_scoped_audit_evidence.sql)
+- Evidence: [JdbcScopedAuditEvidenceRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/audit/infrastructure/persistence/adapter/JdbcScopedAuditEvidenceRepositoryAdapter.java)
+- Migration mention (not inferred introduction): [V20261119_002__t28_scoped_audit_evidence.sql](../../src/main/resources/db/migration/V20261119_002__t28_scoped_audit_evidence.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| event_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| company_id | character varying(96) | False | None; identity=; generated= | No current mapped Java column | — |
+| facility_id | character varying(120) | False | None; identity=; generated= | No current mapped Java column | — |
+| event_type | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| workflow_action_id | character varying(120) | False | None; identity=; generated= | No current mapped Java column | — |
+| occurred_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_audit_t28_event_scope_company_id_check`: CHECK (company_id::text = btrim(company_id::text) AND company_id::text &lt;&gt; ''::text)
+  - Catalog attributes: {"columns": ["company_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_audit_t28_event_scope_event_id_fkey`: FOREIGN KEY (event_id) REFERENCES hidra_audit_event(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["event_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_audit_event"}, "type": "f", "validated": true}
+- `hidra_audit_t28_event_scope_event_type_check`: CHECK (event_type::text = 'RISK_ASSESSMENT_APPROVED'::text)
+  - Catalog attributes: {"columns": ["event_type"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_audit_t28_event_scope_facility_id_check`: CHECK (facility_id::text = btrim(facility_id::text) AND facility_id::text &lt;&gt; ''::text)
+  - Catalog attributes: {"columns": ["facility_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_audit_t28_event_scope_pkey`: PRIMARY KEY (event_id)
+  - Catalog attributes: {"columns": ["event_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_audit_t28_event_scope_workflow_action_id_check`: CHECK (btrim(workflow_action_id::text) &lt;&gt; ''::text)
+  - Catalog attributes: {"columns": ["workflow_action_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_audit_t28_event_scope_workflow_action_id_key`: UNIQUE (workflow_action_id)
+  - Catalog attributes: {"columns": ["workflow_action_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `t28_event_scope_composite`: UNIQUE (event_id, company_id, facility_id)
+  - Catalog attributes: {"columns": ["event_id", "company_id", "facility_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+
+#### Indexes
+
+- `hidra_audit_t28_event_scope_pkey`: CREATE UNIQUE INDEX hidra_audit_t28_event_scope_pkey ON public.hidra_audit_t28_event_scope USING btree (event_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `hidra_audit_t28_event_scope_workflow_action_id_key`: CREATE UNIQUE INDEX hidra_audit_t28_event_scope_workflow_action_id_key ON public.hidra_audit_t28_event_scope USING btree (workflow_action_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `t28_event_scope_composite`: CREATE UNIQUE INDEX t28_event_scope_composite ON public.hidra_audit_t28_event_scope USING btree (event_id, company_id, facility_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `t28_event_scope_keyset`: CREATE INDEX t28_event_scope_keyset ON public.hidra_audit_t28_event_scope USING btree (company_id, facility_id, event_type, occurred_at DESC, event_id DESC)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+
+#### Triggers
+
+- `t28_scope_binding_proof`: CREATE TRIGGER t28_scope_binding_proof BEFORE INSERT ON hidra_audit_t28_event_scope FOR EACH ROW EXECUTE FUNCTION t28_audit_bind_event_proof()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t28_audit_bind_event_proof()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t28_audit_bind_event_proof()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>DECLARE real_event record;<br>BEGIN<br> SELECT e.*,cat.code AS type_code INTO real_event<br>  FROM public.hidra_audit_event e<br>  JOIN public.hidra_audit_catalog_entry cat ON cat.id=e.event_type_id<br>  WHERE e.id=NEW.event_id FOR SHARE OF e;<br> IF NOT FOUND OR real_event.type_code IS DISTINCT FROM 'RISK_ASSESSMENT_APPROVED'<br>    OR real_event.source_module IS DISTINCT FROM 'risk'<br>    OR real_event.target_module IS DISTINCT FROM 'risk'<br>    OR real_event.target_type IS DISTINCT FROM 'RISK_ASSESSMENT'<br>    OR real_event.action_code IS DISTINCT FROM 'APPROVE_RISK_ASSESSMENT'<br>    OR real_event.operation IS DISTINCT FROM 'APPROVE'<br>    OR real_event.workflow_action_id IS DISTINCT FROM NEW.workflow_action_id<br>    OR real_event.occurred_at IS DISTINCT FROM NEW.occurred_at THEN<br>    RAISE EXCEPTION 'T28 event/source/action binding failed' USING ERRCODE='23514';<br> END IF;<br> RETURN NEW;<br>END $function$<br>
+- `t28_scope_no_truncate`: CREATE TRIGGER t28_scope_no_truncate BEFORE TRUNCATE ON hidra_audit_t28_event_scope FOR EACH STATEMENT EXECUTE FUNCTION t28_audit_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t28_audit_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t28_audit_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T28 Audit evidence is immutable' USING ERRCODE='23514';<br>END $function$<br>
+- `t28_scope_no_update`: CREATE TRIGGER t28_scope_no_update BEFORE DELETE OR UPDATE ON hidra_audit_t28_event_scope FOR EACH ROW EXECUTE FUNCTION t28_audit_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t28_audit_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t28_audit_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T28 Audit evidence is immutable' USING ERRCODE='23514';<br>END $function$<br>
+
+### public.hidra_audit_t28_export
+
+Owner: **audit**; relation kind: `r`.
+
+Audit-owned immutable UTF-8 JSON V1 frozen scope-filtered export, with idempotency key, count, bytes, digest, criteria and requester; no Documents dependency.
+
+- Evidence: [V20261119_002__t28_scoped_audit_evidence.sql](../../src/main/resources/db/migration/V20261119_002__t28_scoped_audit_evidence.sql)
+- Evidence: [JdbcScopedAuditEvidenceRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/audit/infrastructure/persistence/adapter/JdbcScopedAuditEvidenceRepositoryAdapter.java)
+- Migration mention (not inferred introduction): [V20261119_002__t28_scoped_audit_evidence.sql](../../src/main/resources/db/migration/V20261119_002__t28_scoped_audit_evidence.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| company_id | character varying(96) | False | None; identity=; generated= | No current mapped Java column | — |
+| facility_id | character varying(120) | False | None; identity=; generated= | No current mapped Java column | — |
+| requester | character varying(120) | False | None; identity=; generated= | No current mapped Java column | — |
+| request_key | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| purpose | character varying(40) | False | None; identity=; generated= | No current mapped Java column | — |
+| format | character varying(40) | False | None; identity=; generated= | No current mapped Java column | — |
+| event_type | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| window_from | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| window_to | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| event_count | integer | False | None; identity=; generated= | No current mapped Java column | — |
+| byte_length | integer | False | None; identity=; generated= | No current mapped Java column | — |
+| sha256 | character(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| content | bytea | False | None; identity=; generated= | No current mapped Java column | — |
+| receipt_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| completed_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_audit_t28_export_byte_length_check`: CHECK (byte_length &gt;= 1 AND byte_length &lt;= 262144)
+  - Catalog attributes: {"columns": ["byte_length"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_audit_t28_export_company_id_check`: CHECK (company_id::text = btrim(company_id::text) AND company_id::text &lt;&gt; ''::text)
+  - Catalog attributes: {"columns": ["company_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_audit_t28_export_event_count_check`: CHECK (event_count &gt;= 0 AND event_count &lt;= 1000)
+  - Catalog attributes: {"columns": ["event_count"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_audit_t28_export_event_type_check`: CHECK (event_type::text = 'RISK_ASSESSMENT_APPROVED'::text)
+  - Catalog attributes: {"columns": ["event_type"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_audit_t28_export_facility_id_check`: CHECK (facility_id::text = btrim(facility_id::text) AND facility_id::text &lt;&gt; ''::text)
+  - Catalog attributes: {"columns": ["facility_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_audit_t28_export_format_check`: CHECK (format::text = 'GZ2_AUDIT_EVIDENCE_JSON_V1'::text)
+  - Catalog attributes: {"columns": ["format"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_audit_t28_export_pkey`: PRIMARY KEY (id)
+  - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_audit_t28_export_purpose_check`: CHECK (purpose::text = 'GZ2_SYNTHETIC_ASSURANCE'::text)
+  - Catalog attributes: {"columns": ["purpose"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_audit_t28_export_receipt_id_key`: UNIQUE (receipt_id)
+  - Catalog attributes: {"columns": ["receipt_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_audit_t28_export_request_key_check`: CHECK (length(request_key::text) &gt;= 1 AND length(request_key::text) &lt;= 80 AND request_key::text = btrim(request_key::text))
+  - Catalog attributes: {"columns": ["request_key"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_audit_t28_export_requester_check`: CHECK (btrim(requester::text) &lt;&gt; ''::text AND requester::text = btrim(requester::text))
+  - Catalog attributes: {"columns": ["requester"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_audit_t28_export_sha256_check`: CHECK (sha256 ~ '^[a-f0-9]{64}$'::text)
+  - Catalog attributes: {"columns": ["sha256"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `t28_export_bytes`: CHECK (octet_length(content) = byte_length AND encode(sha256(content), 'hex'::text) = sha256::text)
+  - Catalog attributes: {"columns": ["content", "byte_length", "sha256"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `t28_export_request`: UNIQUE (company_id, facility_id, requester, request_key)
+  - Catalog attributes: {"columns": ["company_id", "facility_id", "requester", "request_key"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `t28_export_scope_identity`: UNIQUE (id, company_id, facility_id)
+  - Catalog attributes: {"columns": ["id", "company_id", "facility_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `t28_export_time`: CHECK (window_from &lt; window_to AND window_to &lt;= (window_from + '31 days'::interval) AND date_trunc('microseconds'::text, window_from) = window_from AND date_trunc('microseconds'::text, window_to) = window_to)
+  - Catalog attributes: {"columns": ["window_from", "window_to"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_audit_t28_export_pkey`: CREATE UNIQUE INDEX hidra_audit_t28_export_pkey ON public.hidra_audit_t28_export USING btree (id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `hidra_audit_t28_export_receipt_id_key`: CREATE UNIQUE INDEX hidra_audit_t28_export_receipt_id_key ON public.hidra_audit_t28_export USING btree (receipt_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `t28_export_request`: CREATE UNIQUE INDEX t28_export_request ON public.hidra_audit_t28_export USING btree (company_id, facility_id, requester, request_key)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `t28_export_scope_identity`: CREATE UNIQUE INDEX t28_export_scope_identity ON public.hidra_audit_t28_export USING btree (id, company_id, facility_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `t28_export_no_truncate`: CREATE TRIGGER t28_export_no_truncate BEFORE TRUNCATE ON hidra_audit_t28_export FOR EACH STATEMENT EXECUTE FUNCTION t28_audit_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t28_audit_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t28_audit_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T28 Audit evidence is immutable' USING ERRCODE='23514';<br>END $function$<br>
+- `t28_export_no_update`: CREATE TRIGGER t28_export_no_update BEFORE DELETE OR UPDATE ON hidra_audit_t28_export FOR EACH ROW EXECUTE FUNCTION t28_audit_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t28_audit_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t28_audit_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br> RAISE EXCEPTION 'T28 Audit evidence is immutable' USING ERRCODE='23514';<br>END $function$<br>
 
 ### public.hidra_audit_target_reference
 
@@ -12139,6 +12345,7 @@ Persisted PermissionJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261118_004__t25_scoped_report_rendering.sql](../../src/main/resources/db/migration/V20261118_004__t25_scoped_report_rendering.sql)
 - Migration mention (not inferred introduction): [V20261118_005__t26_governed_synthetic_exchange.sql](../../src/main/resources/db/migration/V20261118_005__t26_governed_synthetic_exchange.sql)
 - Migration mention (not inferred introduction): [V20261119_001__t27_recipient_scoped_notification_inbox.sql](../../src/main/resources/db/migration/V20261119_001__t27_recipient_scoped_notification_inbox.sql)
+- Migration mention (not inferred introduction): [V20261119_002__t28_scoped_audit_evidence.sql](../../src/main/resources/db/migration/V20261119_002__t28_scoped_audit_evidence.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|

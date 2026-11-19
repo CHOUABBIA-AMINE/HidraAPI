@@ -5121,3 +5121,40 @@ the canonical files are actually refreshed and the full CI passes.
 Retain the original `feat(audit): search and export scoped governed evidence`
 implementation message and T28 source invariants. T28 remains **IN
 PROGRESS**, not completed. T29 remains PLANNED and unselected.
+
+### T28 CI #1316 generated OpenAPI and migrated dictionary reconciliation — 2026-11-19
+
+[HidraAPI CI #1316](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44528083316), exact implementation source
+`3ca97bccc11f9db0e7269bd0a083cc07085c10fc`, completed **FAILURE** only because the runtime OpenAPI
+snapshot differed from the previous T27 canonical file. The API job
+successfully built the application, generated runtime OpenAPI and
+migrated PostgreSQL 16.16 dictionary, and passed backward compatibility.
+**Java/architecture, static validation and all fourteen PostgreSQL
+integration shards passed**, including T28 signed A17.
+
+This registered same-T28 documentation reconciliation uses the actual hosted
+[OpenAPI artifact](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44528083316/artifacts/14532682103) (ZIP SHA-256
+`99dd0881b0295827fd8e58912896e262d1d14b7813992fa2f4be61e08fede000`)
+and [physical database dictionary artifact](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44528083316/artifacts/14532682111) (ZIP SHA-256
+`513fb5db3bfbefb7afc3fd3205d45746dd4e315f7086b5b422ea737dd42113d9`).
+The generated canonical snapshot has **463 paths, 508 operations and 545
+schemas**: four additive protected Audit operations and four dedicated T28
+DTO schemas versus the T27 baseline. Its exact canonical SHA-256 is
+`169b2e2484fc95d01325a310e0f069cc97085db1d48388eb43206cb724c1a241`. The genuine disposable PostgreSQL catalog
+has **232 Flyway migrations, 471 JPA mappings, 613 relations and zero
+unresolved owners**, including the three immutable Audit-owned T28 relations.
+The generated database dictionary SHA-256 is
+`8f4ed41eed4266d919b0ccbd87ecb60a5dd7f036af4e24c6c21815c597375a05`. These artifacts are source-
+verified *generation evidence*, not a passing full-CI workflow.
+
+This exact documentation stage changes only `doc/api/openapi.yaml`,
+`doc/database/DATA_DICTIONARY.md`, `.github/documentation-validation.json`
+and this append-only `doc/roadmap/ROADMAP.md`; the implementation, migrations,
+legacy snapshots, workflow tests, inventory and enforcement scripts remain
+untouched. The registered message is
+`docs(audit): reconcile T28 generated contracts and physical dictionary`. Both canonical equality gates remain strict and are to be
+re-evaluated by the new exact-SHA Full Verification Gate.
+
+**T28 remains IN PROGRESS**, not COMPLETED, pending that replacement gate.
+T29 remains PLANNED, not selected. Engineering, SITE and operational
+qualification are separate and are not inferred from synthetic software CI.

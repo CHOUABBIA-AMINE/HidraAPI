@@ -208,7 +208,8 @@ class RiskGovernancePostgresIntegrationTest {
             var repos=new JpaRepositoryFactory(em);var auditCatalogs=repos.getRepository(AuditCatalogEntryJpaRepository.class);var policy=new AuditInputPolicy();
             var events=new JpaAuditEventRepositoryAdapter(repos.getRepository(AuditEventJpaRepository.class),em,new JpaAuditCatalogEligibilityAdapter(auditCatalogs),policy);
             var recorder=new AuditApplicationService(events,mock(AuditExportRequestRepositoryPort.class),mock(AuditAccessRecordRepositoryPort.class),policy);
-            var auditOwner=new RiskAssessmentAuditContractAdapter(auditCatalogs,recorder,policy);var manager=new JpaTransactionManager(emf);
+            var auditOwner=new RiskAssessmentAuditContractAdapter(auditCatalogs,recorder,policy,
+                    mock(ScopedAuditEvidenceRepositoryPort.class));var manager=new JpaTransactionManager(emf);
             RiskActorContract actors=at -> new RiskActorContract.Actor("actor","username","Actor");
             RiskTopologyScopeReferenceContract topology=(type,id) -> Optional.of(new RiskTopologyScopeReferenceContract.ScopeView(id,"P-1","Pipeline"));
             // Controlled Workflow-owner fixture isolates transaction enlistment. Configured execution is covered by Workflow owner tests.

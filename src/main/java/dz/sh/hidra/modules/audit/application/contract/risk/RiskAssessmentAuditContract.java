@@ -24,6 +24,20 @@ public interface RiskAssessmentAuditContract {
     record ApprovalEvidence(String assessmentId, String assessmentNumber, String actorId,
             String actorUsername, String actorDisplayName, String reviewerId,
             String workflowInstanceId, String workflowTaskId, String workflowActionId,
-            String reviewActionId, Instant occurredAt) {}
+            String reviewActionId, Instant occurredAt, ApprovalScope scope) {
+        public ApprovalEvidence(String assessmentId,String assessmentNumber,String actorId,
+                String actorUsername,String actorDisplayName,String reviewerId,
+                String workflowInstanceId,String workflowTaskId,String workflowActionId,
+                String reviewActionId,Instant occurredAt) {
+            this(assessmentId,assessmentNumber,actorId,actorUsername,actorDisplayName,reviewerId,
+                    workflowInstanceId,workflowTaskId,workflowActionId,reviewActionId,occurredAt,null);
+        }
+    }
+    record ApprovalScope(String companyId,String facilityId) {
+        public ApprovalScope {
+            if(companyId==null||companyId.isBlank()||facilityId==null||facilityId.isBlank())
+                throw new IllegalArgumentException("Scoped Risk approval requires exact owner identities.");
+        }
+    }
     String appendApproved(ApprovalEvidence evidence);
 }

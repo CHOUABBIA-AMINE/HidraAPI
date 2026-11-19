@@ -20,6 +20,9 @@
 package dz.sh.hidra.modules.audit.infrastructure.integration;
 
 import dz.sh.hidra.modules.audit.application.contract.risk.RiskAssessmentAuditContract.ApprovalEvidence;
+import dz.sh.hidra.modules.audit.application.contract.risk.RiskAssessmentAuditContract.ApprovalScope;
+import dz.sh.hidra.modules.audit.application.port.out.ScopedAuditEvidenceRepositoryPort;
+import dz.sh.hidra.modules.audit.domain.model.ScopedAuditEvidence.Scope;
 import dz.sh.hidra.modules.audit.application.port.in.RecordAuditEventUseCase;
 import dz.sh.hidra.modules.audit.application.command.RecordAuditEventCommand;
 import dz.sh.hidra.modules.audit.application.dto.AuditEventSummaryDto;
@@ -37,8 +40,9 @@ class RiskAssessmentAuditContractAdapterTest {
     private static final Instant NOW=Instant.parse("2026-10-08T00:00:00Z");
     private final AuditCatalogEntryJpaRepository catalogs=mock(AuditCatalogEntryJpaRepository.class);
     private final RecordAuditEventUseCase recorder=mock(RecordAuditEventUseCase.class);
+    private final ScopedAuditEvidenceRepositoryPort scoped=mock(ScopedAuditEvidenceRepositoryPort.class);
     private final RiskAssessmentAuditContractAdapter adapter=
-            new RiskAssessmentAuditContractAdapter(catalogs,recorder,new AuditInputPolicy());
+            new RiskAssessmentAuditContractAdapter(catalogs,recorder,new AuditInputPolicy(),scoped);
 
     @Test void emitsSanitizedScalarEvidenceWithActualTimeAndNoInventedActor() {
         taxonomy();var result=mock(AuditEventSummaryDto.class);when(result.id()).thenReturn("event");when(recorder.recordAuditEvent(any())).thenReturn(result);
@@ -59,6 +63,29 @@ class RiskAssessmentAuditContractAdapterTest {
     @Test void missingTaxonomyFailsRatherThanOmittingAudit() {
         assertThatThrownBy(() -> adapter.appendApproved(evidence("actor"))).hasMessageContaining("taxonomy");
         verifyNoInteractions(recorder);
+    }
+    @Test void exactScopedEventIsBoundAfterFlushedOwnerReceiptOnlyInExistingTransaction() {
+        taxonomy();var result=mock(AuditEventSummaryDto.class);when(result.id()).thenReturn("event");
+        when(recorder.recordAuditEvent(any())).thenReturn(result);
+        var evidence=evidence("actor");
+        var governed=new ApprovalEvidence(evidence.assessmentId(),evidence.assessmentNumber(),
+                evidence.actorId(),evidence.actorUsername(),evidence.actorDisplayName(),
+                evidence.reviewerId(),evidence.workflowInstanceId(),evidence.workflowTaskId(),
+                evidence.workflowActionId(),evidence.reviewActionId(),evidence.occurredAt(),
+                new ApprovalScope("company","facility"));
+        assertThatThrownBy(()->adapter.appendApproved(governed))
+                .hasMessageContaining("transaction");
+        verifyNoInteractions(recorder);
+        org.springframework.transaction.support.TransactionSynchronizationManager
+                .setActualTransactionActive(true);
+        try {
+            assertThat(adapter.appendApproved(governed)).isEqualTo("event");
+            verify(scoped).bindApproved("event","action","recommendation",
+                    new Scope("company","facility"),NOW);
+        } finally {
+            org.springframework.transaction.support.TransactionSynchronizationManager
+                    .setActualTransactionActive(false);
+        }
     }
     private void taxonomy() {
         when(catalogs.findFirstByCatalogNameAndCodeAndActiveTrue("EVENT_TYPE","RISK_ASSESSMENT_APPROVED"))

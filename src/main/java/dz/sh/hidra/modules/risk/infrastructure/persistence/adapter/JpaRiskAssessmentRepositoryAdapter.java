@@ -315,7 +315,12 @@ public class JpaRiskAssessmentRepositoryAdapter implements RiskAssessmentReposit
         require(actor.id().equals(decision.approverId()),"Approval actor must match authenticated actor.");
         String receipt=audit.appendApproved(new RiskAssessmentAuditContract.ApprovalEvidence(a.id(),a.assessmentNumber(),
                 decision.approverId(),decision.approverUsername(),decision.approverDisplayName(),decision.reviewerId(),
-                decision.instanceId(),decision.taskId(),decision.actionId(),decision.reviewActionId(),decision.approvedAt()));
+                decision.instanceId(),decision.taskId(),decision.actionId(),decision.reviewActionId(),
+                decision.approvedAt(), governed
+                        ? new RiskAssessmentAuditContract.ApprovalScope(
+                                t22.scope(a.id()).orElseThrow().companyPartyId(),
+                                t22.scope(a.id()).orElseThrow().facilityId())
+                        : null));
         if(governed) {
             var snapshot=t22.submission(a.id()).orElseThrow();
             var reviewed=t22Workflow.reviewEvidence(a.id());

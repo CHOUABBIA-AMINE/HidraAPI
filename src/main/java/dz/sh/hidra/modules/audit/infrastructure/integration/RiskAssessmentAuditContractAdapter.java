@@ -22,6 +22,8 @@ package dz.sh.hidra.modules.audit.infrastructure.integration;
 import dz.sh.hidra.modules.audit.application.command.RecordAuditEventCommand;
 import dz.sh.hidra.modules.audit.application.contract.risk.RiskAssessmentAuditContract;
 import dz.sh.hidra.modules.audit.application.port.in.RecordAuditEventUseCase;
+import dz.sh.hidra.modules.audit.application.port.out.ScopedAuditEvidenceRepositoryPort;
+import dz.sh.hidra.modules.audit.domain.model.ScopedAuditEvidence.Scope;
 import dz.sh.hidra.modules.audit.application.service.AuditInputPolicy;
 import dz.sh.hidra.modules.audit.domain.value.AuditActorType;
 import dz.sh.hidra.modules.audit.domain.value.AuditOperation;
@@ -37,12 +39,15 @@ public final class RiskAssessmentAuditContractAdapter implements RiskAssessmentA
     private final AuditCatalogEntryJpaRepository catalogs;
     private final RecordAuditEventUseCase recorder;
     private final AuditInputPolicy policy;
+    private final ScopedAuditEvidenceRepositoryPort scoped;
 
     public RiskAssessmentAuditContractAdapter(AuditCatalogEntryJpaRepository catalogs,
-            RecordAuditEventUseCase recorder, AuditInputPolicy policy) {
+            RecordAuditEventUseCase recorder, AuditInputPolicy policy,
+            ScopedAuditEvidenceRepositoryPort scoped) {
         this.catalogs=Objects.requireNonNull(catalogs);
         this.recorder=Objects.requireNonNull(recorder);
         this.policy=Objects.requireNonNull(policy);
+        this.scoped=Objects.requireNonNull(scoped);
     }
 
     @Override
@@ -51,6 +56,9 @@ public final class RiskAssessmentAuditContractAdapter implements RiskAssessmentA
         String assessment=required(evidence.assessmentId());
         String actor=required(evidence.actorId());
         Objects.requireNonNull(evidence.occurredAt(), "Approval time must not be null.");
+        if(evidence.scope()!=null
+                && !org.springframework.transaction.support.TransactionSynchronizationManager.isActualTransactionActive())
+            throw new IllegalStateException("Scoped Audit approval requires original owner transaction.");
         var payload=new LinkedHashMap<String,Object>();
         payload.put("assessmentId",assessment);
         payload.put("reviewerId",required(evidence.reviewerId()));
@@ -66,7 +74,11 @@ public final class RiskAssessmentAuditContractAdapter implements RiskAssessmentA
                 AuditOperation.APPROVE,"APPROVE",null,"Risk assessment approved",
                 required(evidence.workflowInstanceId()),required(evidence.workflowTaskId()),required(evidence.workflowActionId()),
                 null,null,null,evidence.occurredAt(),sanitized));
-        return required(Objects.requireNonNull(result,"Audit approval result must not be null.").id());
+        String event=required(Objects.requireNonNull(result,"Audit approval result must not be null.").id());
+        if(evidence.scope()!=null)scoped.bindApproved(event,required(evidence.workflowActionId()),
+                assessment,new Scope(evidence.scope().companyId(),evidence.scope().facilityId()),
+                evidence.occurredAt());
+        return event;
     }
 
     private String required(String value) {

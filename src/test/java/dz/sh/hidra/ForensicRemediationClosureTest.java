@@ -165,6 +165,30 @@ class ForensicRemediationClosureTest {
         }
     }
 
+    // T28 alone admits these two exact, owner-owned scalar contracts.
+    private static final String T28_CONSUMER =
+            "dz.sh.hidra.modules.audit.infrastructure.integration.ScopedAuditEvidenceAccessAdapter";
+    private static final Set<String> T28_OWNER_EXPORTS=Set.of(
+            "dz.sh.hidra.modules.identity.application.contract.audit.ScopedAuditEvidenceAuthorizationContract",
+            "dz.sh.hidra.modules.topology.application.contract.audit.AuditFacilityOwnershipContract");
+    private static boolean t28Export(String consumer,String imported) {
+        return consumer.equals(T28_CONSUMER) &&
+                T28_OWNER_EXPORTS.stream().anyMatch(root->
+                    imported.equals(root)||imported.startsWith(root+"$"));
+    }
+    private static boolean t28OwnerRoot(String imported) {
+        return T28_OWNER_EXPORTS.stream().anyMatch(imported::startsWith);
+    }
+    @Test void t28OnlyTheAuditBridgeImportsExactOwnerContracts() {
+        for(String root:T28_OWNER_EXPORTS) {
+            assertTrue(t28Export(T28_CONSUMER,root));
+            assertTrue(t28Export(T28_CONSUMER,root+"$Facility"));
+            assertFalse(t28Export(T28_CONSUMER+"Sibling",root));
+            assertFalse(t28Export(T28_CONSUMER,root+"Sibling"));
+            assertTrue(t28OwnerRoot(root+"Sibling"));
+        }
+    }
+
     // T27 has three exact scalar owner exports and no package-wide import exemption.
     private static final String T27_REPORT_CONSUMER =
             "dz.sh.hidra.modules.reporting.infrastructure.integration.ScopedReportWorkflowTargetLookup";
@@ -434,6 +458,11 @@ class ForensicRemediationClosureTest {
                 String importedPackage = packageName(imported);
                 String targetModule = module(importedPackage);
                 if (targetModule == null || sourceModule.equals(targetModule)) {
+                    continue;
+                }
+                if (t28OwnerRoot(imported)) {
+                    if (!t28Export(source.fqcn(),imported))
+                        violations.add(source.fqcn()+" -> unauthorized T28 owner "+imported);
                     continue;
                 }
                 if (t27OwnerRoot(imported)) {

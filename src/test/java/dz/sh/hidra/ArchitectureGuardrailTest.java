@@ -452,6 +452,11 @@ class ArchitectureGuardrailTest {
                         violations.add(source.getName() + " -> " + target.getName());
                     continue;
                 }
+                if (t28OwnerRoot(target.getName())) {
+                    if (!t28Export(source.getName(),target.getName()))
+                        violations.add(source.getName()+" -> "+target.getName());
+                    continue;
+                }
                 if (t27OwnerRoot(target.getName())) {
                     if (!t27Export(source.getName(),target.getName()))
                         violations.add(source.getName()+" -> "+target.getName());
@@ -1124,6 +1129,30 @@ class ArchitectureGuardrailTest {
         }
     }
 
+    // T28 alone admits these two exact, owner-owned scalar contracts.
+    private static final String T28_CONSUMER =
+            "dz.sh.hidra.modules.audit.infrastructure.integration.ScopedAuditEvidenceAccessAdapter";
+    private static final Set<String> T28_OWNER_EXPORTS=Set.of(
+            "dz.sh.hidra.modules.identity.application.contract.audit.ScopedAuditEvidenceAuthorizationContract",
+            "dz.sh.hidra.modules.topology.application.contract.audit.AuditFacilityOwnershipContract");
+    private static boolean t28Export(String consumer,String imported) {
+        return consumer.equals(T28_CONSUMER) &&
+                T28_OWNER_EXPORTS.stream().anyMatch(root->
+                    imported.equals(root)||imported.startsWith(root+"$"));
+    }
+    private static boolean t28OwnerRoot(String imported) {
+        return T28_OWNER_EXPORTS.stream().anyMatch(imported::startsWith);
+    }
+    @Test void t28OnlyTheAuditBridgeImportsExactOwnerContracts() {
+        for(String root:T28_OWNER_EXPORTS) {
+            assertTrue(t28Export(T28_CONSUMER,root));
+            assertTrue(t28Export(T28_CONSUMER,root+"$Facility"));
+            assertFalse(t28Export(T28_CONSUMER+"Sibling",root));
+            assertFalse(t28Export(T28_CONSUMER,root+"Sibling"));
+            assertTrue(t28OwnerRoot(root+"Sibling"));
+        }
+    }
+
     // T27 has three exact scalar owner exports and no package-wide import exemption.
     private static final String T27_REPORT_CONSUMER =
             "dz.sh.hidra.modules.reporting.infrastructure.integration.ScopedReportWorkflowTargetLookup";
@@ -1265,6 +1294,8 @@ class ArchitectureGuardrailTest {
         if (sourceModule == null || targetModule == null || sourceModule.equals(targetModule)) {
             return false;
         }
+        if (t28OwnerRoot(targetClassName))
+            return !t28Export(sourceClassName,targetClassName);
         if (t27OwnerRoot(targetClassName))
             return !t27Export(sourceClassName,targetClassName);
         if (T26_OWNER_ROOTS.stream().anyMatch(targetClassName::startsWith))

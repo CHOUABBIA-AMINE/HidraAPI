@@ -53,6 +53,18 @@ class HidraTrustedNativeProtectedRouteRegistryTest {
                 Owner.class, Owner.class.getMethod("save", String.class), "POST", PATH);
     }
 
+    @Test void t28IsExactlyFourNativeScopedAuditHandlers() {
+        var all=new HidraTrustedNativeProtectedRouteRegistry().candidates();
+        String base="/api/v1/audit/companies/{companyId}/facilities/{facilityId}";
+        var rows=all.stream().filter(x->x.controller().getSimpleName()
+                .equals("ScopedAuditEvidenceController")).toList();
+        assertEquals(155,all.size());assertEquals(4,rows.size());
+        assertEquals(java.util.Set.of("GET "+base+"/events","POST "+base+"/exports",
+                "GET "+base+"/exports/{exportId}","GET "+base+"/exports/{exportId}/content"),
+                rows.stream().map(x->x.verb()+" "+x.pattern())
+                        .collect(java.util.stream.Collectors.toSet()));
+        assertTrue(rows.stream().allMatch(x->x.method().isAnnotationPresent(NativeProtectedOperation.class)));
+    }
     @Test void productionRegistryDeclaresFiveManufacturerAndThreeTopologyApprovalTuples() throws Exception {
         var registry = new HidraTrustedNativeProtectedRouteRegistry();
         var legacy=registry.candidates().stream().filter(r->java.util.Set.of("ManufacturerCharacteristicRevisionController","InstalledCharacteristicLinkController").contains(r.controller().getSimpleName())).toList();
@@ -71,7 +83,7 @@ class HidraTrustedNativeProtectedRouteRegistryTest {
         var routes=registry.candidates().stream()
                 .filter(route->route.controller().getSimpleName().equals("WorkflowInboxController")).toList();
         String base="/api/v1/notification/companies/{companyId}/facilities/{facilityId}/inbox";
-        assertEquals(151,registry.candidates().size());
+        assertEquals(155,registry.candidates().size());
         assertEquals(3,routes.size());
         assertEquals(java.util.Set.of("GET "+base,"GET "+base+"/{notificationId}",
                 "POST "+base+"/{notificationId}/acknowledgement"),
@@ -212,7 +224,7 @@ class HidraTrustedNativeProtectedRouteRegistryTest {
 
     @Test void baselineRoutesDeclareOnlyFiveExactCompiledTuples(){
         var registry=new HidraTrustedNativeProtectedRouteRegistry();
-        assertEquals(151,registry.candidates().size());
+        assertEquals(155,registry.candidates().size());
         var rows=registry.candidates().stream().filter(r->r.controller().getSimpleName().equals("EngineeringBaselineDraftController")).toList();
         assertEquals(5,rows.size());
         assertEquals(java.util.Set.of("POST /api/v1/topology/engineering-baselines","PUT /api/v1/topology/engineering-baselines/{manifestId}",

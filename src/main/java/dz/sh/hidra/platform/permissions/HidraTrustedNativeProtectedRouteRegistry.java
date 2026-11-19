@@ -205,7 +205,21 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
             String t17Base="/api/v1/hse/companies/{companyId}/facilities/{facilityId}/cases";
             Class<?> t27=Class.forName("dz.sh.hidra.modules.notification.api.rest.controller.WorkflowInboxController");
             String t27Base="/api/v1/notification/companies/{companyId}/facilities/{facilityId}/inbox";
+            Class<?> t28=Class.forName(
+                    "dz.sh.hidra.modules.audit.api.rest.controller.ScopedAuditEvidenceController");
+            Class<?> t28Create=Class.forName(
+                    "dz.sh.hidra.modules.audit.api.rest.request.ScopedAuditEvidenceRequests$T28CreateAuditExport");
+            String t28Base="/api/v1/audit/companies/{companyId}/facilities/{facilityId}";
             return List.of(
+                new Route(t28,t28.getDeclaredMethod("search",String.class,String.class,
+                    String.class,java.time.Instant.class,java.time.Instant.class,
+                    Integer.class,String.class),"GET",t28Base+"/events"),
+                new Route(t28,t28.getDeclaredMethod("createExport",String.class,String.class,t28Create),
+                    "POST",t28Base+"/exports"),
+                new Route(t28,t28.getDeclaredMethod("exportManifest",String.class,String.class,
+                    java.util.UUID.class),"GET",t28Base+"/exports/{exportId}"),
+                new Route(t28,t28.getDeclaredMethod("download",String.class,String.class,
+                    java.util.UUID.class),"GET",t28Base+"/exports/{exportId}/content"),
                 new Route(t27,t27.getDeclaredMethod("list",String.class,String.class,Integer.class,String.class),
                     "GET",t27Base),
                 new Route(t27,t27.getDeclaredMethod("detail",String.class,String.class,String.class),

@@ -120,7 +120,7 @@ A task includes its required authorization, REST contract, persistence, failure 
 | **T25 · Render and download an authorized report** | Reporting with Documents and Workflow | T24 and an eligible approved report input, such as T23 | Admit template and parameters, render a durable artifact and expose run status and scoped byte retrieval. | Downloaded bytes match the stored hash and exact input version. Failed rendering cannot produce a downloadable success. **FG-12 / A12.** | COMPLETED |
 | **T26 · Execute and replay a governed synthetic exchange** | Integration with receiving owner | Supported synthetic mapping and receiving contract | Expose mapping version, job/attempt/result, dead letter and privileged replay for one exchange. | Simulated transient failure and authorized replay yield one receiving outcome and a durable attempt history. **FG-15 / A15.** | COMPLETED |
 | **T27 · Deliver a recipient-scoped notification inbox** | Notification | One eligible business event and a supported delivery channel | Expose inbox, delivery state and recipient acknowledgement independently of business workflow state. | Intended recipient reads and acknowledges one notification. Foreign recipient cannot see it. The underlying task state is unchanged by acknowledgement. **FG-16 / A16.** | COMPLETED |
-| **T28 · Search and export scoped Audit evidence** | Audit with Identity and Documents where needed | Durable owner events and authorized export storage | Expose typed event search, export state, manifest/hash and scoped retrieval. Recheck current grant at download. | Export contains only the admitted company, asset and time window. Download after revocation is denied and access evidence is retained. **FG-17 / A17.** | PLANNED |
+| **T28 · Search and export scoped Audit evidence** | Audit with Identity and Documents where needed | Durable owner events and authorized export storage | Expose typed event search, export state, manifest/hash and scoped retrieval. Recheck current grant at download. | Export contains only the admitted company, asset and time window. Download after revocation is denied and access evidence is retained. **FG-17 / A17.** | IN PROGRESS |
 | **T29 · Verify typed owner read coverage** | Business resource owners with Identity | Each affected owner workflow. Check the early workflows during T15. | Verify scoped list/detail/history and pagination/count for affected workflows. Close residual read gaps within the responsible owner. | Independent clients can find completed records by business key. Unauthorized, unavailable and legitimately empty results are distinct. **FG-13 / A13.** | PLANNED |
 | **T30 · Verify authority for supported Workflow targets** | Workflow with participating target owners | Each supported owner workflow. Check Planning, baseline and escalation during T15. | Verify definition eligibility, exact target linkage, current/delegated authority and supported transitions. Close residual owner-specific gaps. | Wrong-target, stale, revoked and self-review cases fail where applicable. Terminal state and decision provenance remain retrievable. **FG-18 / A18.** | PLANNED |
 
@@ -4979,3 +4979,39 @@ This roadmap-only registration changes one file in
 `docs(roadmap): close T26 and T27 and register T28 envelope`. T28 stays
 PLANNED for source execution after the registration's Documentation
 Validation and the owner's next execution instruction. T29 follows T28.
+
+### T28 — selected source implementation, 2026-11-19 (development verification pending)
+
+**Owner instruction:** `start HidraAPI T28 implementation`. This selects
+only the previously registered T28 envelope against base main
+`cc275746de8b6cb084a88747d4471fbfd4b733c2` and its accepted T27
+prerequisites. The implementation commit uses exactly
+`feat(audit): search and export scoped governed evidence`. This subsection
+supersedes only T28's earlier PLANNED/NOT SELECTED execution state; T26/T27
+completion evidence and all prior rows remain preserved.
+
+**Scope prepared:** seventeen CREATE and seventeen UPDATE, zero DELETE, as
+specified in the exact implementation file ledger above. All writes stay
+inside Audit plus the two exact Identity/Topology contracts, existing
+Risk approval evidence/flow, independently registered Platform route tuples,
+mandatory owner/architecture tests, A17 native PostgreSQL qualification
+extension, CI inventory and owner documentation. A new, ordered T28
+migration owns precisely three immutable Audit relations and seeds two
+ungranted Identity permission identities. Source-authenticated scope binding
+must join the original governed approval transaction, not reconstruct
+company/facility from an untrusted Audit payload.
+
+**Verification truth at publication preparation:** the T27 Full Verification
+Gate #1313 and the T28 registration Documentation Validation #1155 were
+successful at their respective historical SHAs. These do **not** establish
+T28 code correctness. No local full Java/PostgreSQL suite, newly generated
+runtime OpenAPI contract, refreshed physical dictionary or A17 CI PASS is
+claimed on the T28 implementation tree. The new source must be evaluated by
+its own exact-SHA Full Verification Gate, including all retained T22 and A17
+cases, and canonical OpenAPI/database dictionary equality. A later
+same-task documentation reconciliation is permitted only using the exact
+registered file subset and message; do not close T28 until the required
+exact-SHA gate passes.
+
+**Status:** IN PROGRESS, **not COMPLETED**. T29 remains PLANNED and is
+not selected by this implementation.

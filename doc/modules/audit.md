@@ -142,3 +142,54 @@ The linked decisions carry the precise per-subject exceptions and source/test/mi
 | AuditEvent | [HMSR-112 reconciled rule](../domain/SEMANTIC_DECISIONS.md#audit-auditevent) |
 | AuditAccessRecord | [HMSR-118 reconciled rule](../domain/SEMANTIC_DECISIONS.md#audit-auditaccessrecord) |
 | AuditBeforeAfterValue | [HMSR-119 reconciled rule](../domain/SEMANTIC_DECISIONS.md#audit-auditbeforeaftervalue) |
+
+---
+
+## T28 — governed scoped Audit approval evidence (source implementation, CI pending)
+
+T28's bounded software slice is the **final approved T22 Risk assessment**:
+`RISK_ASSESSMENT_APPROVED` events bound in the original transaction to the
+company, active facility, exact Risk target, Workflow action and occurrence timestamp.
+Unscoped historical or legacy approvals are not retroactively eligible.
+Risk provides authenticated owner scope; Audit neither parses payload JSON for
+scope nor imports Risk persistence.
+
+Authenticated, native-protected routes under
+`/api/v1/audit/companies/{companyId}/facilities/{facilityId}` are
+`GET /events`, `POST /exports`, `GET /exports/{exportId}` and
+`GET /exports/{exportId}/content`. They require live native signed LOCAL
+identity, `audit:scoped-evidence:read`; the three export operations additionally
+require `audit:scoped-evidence:export`. Each grant must be current and directly
+permitted for both `CUSTOM audit-company:{companyId}` and the exact
+`FACILITY facilityId`, evaluated with deny precedence. Topology confirms
+the active facility's current company. Roles alone and bearer-token snapshots
+are not sufficient authorization.
+
+Only event type `RISK_ASSESSMENT_APPROVED` and fixed export purpose
+`GZ2_SYNTHETIC_ASSURANCE` are admitted. Windows are UTC `[from,to)`,
+at most 31 days, microsecond precision. Search uses descending
+`(occurredAt,eventId)` keyset pagination, default 25 and maximum 100.
+The server projects only safe event IDs, event type, operation, Risk target
+ID, Workflow action ID and occurred time.
+
+Exports are synchronous, deterministic `GZ2_AUDIT_EVIDENCE_JSON_V1`
+UTF-8 JSON documents with a trailing newline, at most 1,000 rows and
+262,144 bytes. PostgreSQL stores an immutable frozen snapshot, digest,
+byte count, normalized criteria, requesting actor and completed timestamp;
+requester/key replay is idempotent and preserves original identity.
+Manifest reads never return bytes. Content downloads recheck current
+authorization, requester, exact company/facility, stored byte length and
+SHA-256 before handing any bytes to HTTP. They return a server-generated
+JSON attachment, explicit length/digest and `Cache-Control: no-store`.
+Audit persists an append-only access receipt for permitted and denied
+downloads (and integrity failures); failed receipt persistence cannot result
+in returning content. Denial evidence contains only actor and a locator
+digest, not a protected export reference.
+
+The three new `public.hidra_audit_t28_*` relations preserve immutable local
+FKs, uniqueness, live-event matching, byte/sha and timestamp bounds and
+UPDATE/DELETE/TRUNCATE guards. Identity permission identities are seeded
+without grants. Development uses synthetic PostgreSQL-16/LOCAL fixtures;
+no live OT, production data, retention or deployment policy is inferred.
+The source implementation and enrolled CI journey require exact-SHA
+Full Verification Gate before T28 may be marked COMPLETED.

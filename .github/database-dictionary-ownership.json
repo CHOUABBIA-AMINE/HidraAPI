@@ -53,6 +53,30 @@
     "owner": "assets",
     "purpose": "Assets-owned maintainable-asset state; physical prefix is hidra_asset rather than hidra_assets."
   },
+  "public.hidra_audit_t28_access_receipt": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261119_002__t28_scoped_audit_evidence.sql",
+      "src/main/java/dz/sh/hidra/modules/audit/infrastructure/persistence/adapter/JdbcScopedAuditEvidenceRepositoryAdapter.java"
+    ],
+    "owner": "audit",
+    "purpose": "Audit-owned append-only allow/deny/integrity access decision receipt for a current actor and scoped Audit export; no protected export reference on denial."
+  },
+  "public.hidra_audit_t28_event_scope": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261119_002__t28_scoped_audit_evidence.sql",
+      "src/main/java/dz/sh/hidra/modules/audit/infrastructure/persistence/adapter/JdbcScopedAuditEvidenceRepositoryAdapter.java"
+    ],
+    "owner": "audit",
+    "purpose": "Audit-owned append-only binding of governed T22 Risk approval event, exact Workflow action and owner-authenticated company/facility, with local source-event FK and keyset index."
+  },
+  "public.hidra_audit_t28_export": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261119_002__t28_scoped_audit_evidence.sql",
+      "src/main/java/dz/sh/hidra/modules/audit/infrastructure/persistence/adapter/JdbcScopedAuditEvidenceRepositoryAdapter.java"
+    ],
+    "owner": "audit",
+    "purpose": "Audit-owned immutable UTF-8 JSON V1 frozen scope-filtered export, with idempotency key, count, bytes, digest, criteria and requester; no Documents dependency."
+  },
   "public.hidra_custody_engineering_product_policy": {
     "evidence": [
       "src/main/resources/db/migration/V20261026_002__custody_product_engineering_drafts.sql",

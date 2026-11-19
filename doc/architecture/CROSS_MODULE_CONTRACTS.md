@@ -264,3 +264,35 @@ Notification stores WEB delivery and recipient acknowledgement via its own
 ports and JDBC; it imports no Workflow, Reporting or other owner's private
 entities, repositories or adapters. No legacy Notification ingress or
 external dispatch capability is implied.
+
+---
+
+## T28 exact scoped Audit owner exports — 2026-11-19
+
+The governed **Risk T22 final approval** publishes an ordinary `RISK_ASSESSMENT_APPROVED` Audit
+event with its existing `RiskAssessmentAuditContract.ApprovalEvidence`. T28 extends that
+existing exported record with optional `ApprovalScope(companyId,facilityId)`, retaining
+the legacy constructor. Only the governed owner branch forwards the already locked and
+authorized source company/facility pair. The Audit adapter binds the flushed event ID,
+exact Workflow action and original event timestamp in the same transaction.
+A failed binding rolls back the Risk approval, Workflow action and Audit event.
+No other business module may mutate Audit scope binding; no payload parsing,
+cross-owner FK or historical backfill is permitted.
+
+The single cross-owner consumer
+`dz.sh.hidra.modules.audit.infrastructure.integration.ScopedAuditEvidenceAccessAdapter`
+may import **only**
+`identity.application.contract.audit.ScopedAuditEvidenceAuthorizationContract`
+and `topology.application.contract.audit.AuditFacilityOwnershipContract`
+(including their nested scalars). Identity resolves the current native signed LOCAL
+actor, direct current paired CUSTOM `audit-company:{companyId}` and FACILITY
+`{facilityId}` permits, and evaluated policy with deny precedence.
+Topology resolves the active locked facility/company association.
+Both owner queries participate in the Audit service's live transaction.
+
+Audit alone owns the three append-only physical relations
+`hidra_audit_t28_event_scope`, `hidra_audit_t28_export` and
+`hidra_audit_t28_access_receipt`. No Audit-private payloads,
+Identity/Topology private aggregates or source owners are exported.
+The exact four native HTTP routes require a Platform registry entry;
+provenance and access receipts are Audit-owned and never field actuation.

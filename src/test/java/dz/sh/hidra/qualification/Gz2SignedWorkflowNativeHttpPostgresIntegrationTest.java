@@ -69,6 +69,7 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
             Instant start = now().minusSeconds(900);
             Instant end = start.plusSeconds(7_200);
             Baselines baselines;
+            String dossierPipeline;
             T31Scenario scenario;
             Plan plan;
             Reading reading;
@@ -85,9 +86,26 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
 
                 JsonNode network = publishNetwork(fixture, runtime, author);
                 JsonNode product = publishProduct(fixture, runtime, author, reviewer);
+                dossierPipeline = prepareProtectedDossier(fixture);
+                String dossierPath = "/api/v1/topology/pipeline-dossiers/" + dossierPipeline
+                        + "/baseline?companyPartyId=" + fixture.company;
+                String dossierReader = runtime.login(fixture.reader);
+                JsonNode noPublication = runtime.get(dossierPath, dossierReader);
+                assertEquals("UNAVAILABLE", noPublication.path("availability").asText());
+                assertTrue(noPublication.path("receiptId").isNull()
+                        || noPublication.path("receiptId").isMissingNode());
                 var review = fixture.review("topology", "ENGINEERING_BASELINE_REVISION", "ENGINEERING_BASELINE_APPROVAL", false);
                 Instant firstEffective = now();
                 JsonNode baseline = publishBaseline(fixture, runtime, author, reviewer, review, network, product, firstEffective, 0);
+                // T35 uses the real T07 receipt and fresh regional authorization.
+                JsonNode firstDossierReceipt = runtime.get(dossierPath, dossierReader);
+                assertEquals(field(baseline, "receiptId"),
+                        firstDossierReceipt.path("receiptId").asText());
+                assertEquals("PIPELINE_SYSTEM", firstDossierReceipt.path("scopeType").asText());
+                assertEquals(fixture.pipeline, firstDossierReceipt.path("pipelineSystemId").asText());
+                assertEquals("AVAILABLE", firstDossierReceipt.path("availability").asText());
+                assertEquals(404, runtime.send("GET", dossierPath, operator, null).statusCode());
+
                 Instant beforeSuccessor = databaseTime(fixture);
                 T31Scenario prepared=prepareScenarioInputs(fixture,runtime,author,reviewer,baseline);
 
@@ -105,6 +123,17 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
                 JsonNode successor = publishBaseline(fixture, runtime, author, reviewer, review,
                         network, product, now(), 1);
                 assertNotEquals(field(baseline, "receiptId"), field(successor, "receiptId"));
+                JsonNode successorDossierReceipt = runtime.get(dossierPath, dossierReader);
+                assertEquals(field(successor, "receiptId"),
+                        successorDossierReceipt.path("receiptId").asText());
+                assertNotEquals(firstDossierReceipt.path("manifestDigest").asText(),
+                        "not-a-receipt-digest");
+                String originalReceipt = BASELINE + "/publications/"
+                        + field(baseline, "receiptId") + "?companyPartyId="
+                        + fixture.company + "&pipelineSystemId=" + fixture.pipeline;
+                JsonNode stillHistorical = runtime.get(originalReceipt, dossierReader);
+                assertEquals(field(baseline, "receiptId"), stillHistorical.path("receiptId").asText());
+
                 scenario=appendTransientScenario(fixture,runtime,author,prepared,successor);
                 baselines = new Baselines(baseline, successor, beforeSuccessor, databaseTime(fixture));
                 System.out.printf("GZ2 phase=committed pid=%d baseline=%s successor=%s target=%s trusted=%s evaluation=%s incident=%s%n",
@@ -116,12 +145,81 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
                 assertNotEquals(firstPid, restarted.pid(), "The original application JVM must be replaced");
                 verifyPublishedOperations(restarted);
                 readAfterRestart(fixture, restarted, baselines, commissioned, plan, reading, response);
+                String dossierAfterRestart = "/api/v1/topology/pipeline-dossiers/" + dossierPipeline
+                        + "/baseline?companyPartyId=" + fixture.company;
+                assertEquals(field(baselines.successor(), "receiptId"),
+                        restarted.get(dossierAfterRestart, restarted.login(fixture.reader))
+                                .path("receiptId").asText());
+
                 verifyCurrentScope(fixture, restarted, baselines, commissioned, plan, response);
                 verifyScenarioAfterRestart(fixture,restarted,scenario,baselines);
                 System.out.printf("GZ2 phase=reconstructed pid=%d originalPid=%d scope=foreign,wrong-asset,revoked%n",
                         restarted.pid(), firstPid);
             }
         }
+    }
+
+    /**
+     * T35: minimal independent regional identity proof over an actual T07 system.
+     * Avoid manufacturing a second baseline or changing any publication source.
+     */
+    private static String prepareProtectedDossier(Gz2SignedWorkflowFixture f) {
+        f.sql.update("UPDATE hidra_topology_pipeline_system SET status='ACTIVE' WHERE id=?", f.pipeline);
+        f.sql.update("""
+                INSERT INTO hidra_topology_foundation_system_owner(pipeline_system_id,company_party_id)
+                SELECT ?,? WHERE NOT EXISTS (
+                    SELECT 1 FROM hidra_topology_foundation_system_owner
+                    WHERE pipeline_system_id=? AND company_party_id=?)
+                """, f.pipeline,f.company,f.pipeline,f.company);
+        String type = id();
+        String pipe = id();
+        f.sql.update("""
+                INSERT INTO hidra_topology_pipeline_type(id,code,active,created_at,updated_at)
+                VALUES (?,?,true,now(),now())
+                """,type,"T35-GZ2-"+type);
+        f.sql.update("""
+                INSERT INTO hidra_topology_pipeline(
+                  id,pipeline_system_id,code,pipeline_type_id,status,created_at,updated_at)
+                VALUES (?,?,?,?,'ACTIVE',now(),now())
+                """,pipe,f.pipeline,"T35-GZ2-PIPELINE",type);
+        f.sql.update("""
+                INSERT INTO hidra_topology_pipeline_authoring_revision(
+                  pipeline_id,revision,company_party_id,pipeline_system_id,
+                  code,pipeline_type_id,actor_user_id,recorded_at)
+                VALUES (?,1,?,?,?,?,?,now())
+                """,pipe,f.company,f.pipeline,"T35-GZ2-PIPELINE",type,f.reader);
+        for (String actor : List.of(f.reader, f.operator)) {
+            f.permit(actor, "topology:pipeline-dossiers:read",
+                    "TOPOLOGY_PIPELINE_DOSSIERS", "GLOBAL", null);
+            f.permit(actor, "topology:regional-resource:read",
+                    "TOPOLOGY_REGIONAL_RESOURCE", "PIPELINE_SYSTEM", f.pipeline);
+            String employee = id();
+            f.sql.update("""
+                    INSERT INTO hidra_org_employee(
+                      id,employee_number,employee_type,status,identity_user_reference,created_at,updated_at)
+                    VALUES (?,?,'PERMANENT','ACTIVE',?,now(),now())
+                    """,employee,"T35-"+employee,actor);
+            f.sql.update("UPDATE hidra_identity_user SET employee_reference_id=? WHERE id=?",
+                    employee,actor);
+            List<Long> registered = f.sql.queryForList("""
+                    SELECT id FROM hidra_org_operational_scope
+                    WHERE scope_type='PIPELINE_SYSTEM' AND target_id=?
+                    """,Long.class,f.pipeline);
+            Long scope = registered.isEmpty()
+                    ? f.sql.queryForObject("""
+                        INSERT INTO hidra_org_operational_scope(scope_type,target_id)
+                        VALUES('PIPELINE_SYSTEM',?) RETURNING id
+                        """,Long.class,f.pipeline)
+                    : registered.getFirst();
+            f.sql.update("""
+                    INSERT INTO hidra_org_responsibility_assignment(
+                      id,responsibility_type,assignee_type,assignee_id,scope_id,
+                      valid_from,valid_to,status,created_at,updated_at)
+                    VALUES(?,'RESPONSIBLE','EMPLOYEE',?,?,
+                      now()-interval '2 hours',now()+interval '2 hours','ACTIVE',now(),now())
+                    """,id(),employee,scope);
+        }
+        return pipe;
     }
 
     private static void grantEngineering(Gz2SignedWorkflowFixture f) {

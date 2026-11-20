@@ -360,7 +360,8 @@ class ForensicRemediationClosureTest {
     /** T34 exact Topology consumer of Identity's current regional resource decision. */
     private static boolean t34RegionalIdentityOwnerExport(String source, String imported) {
         String root = "dz.sh.hidra.modules.identity.application.contract.topology.TopologyRegionalAccessContract";
-        if (!"dz.sh.hidra.modules.topology.application.service.RegionalTopologyMapApplicationService".equals(source))
+        if (!"dz.sh.hidra.modules.topology.application.service.RegionalTopologyMapApplicationService".equals(source)
+                && !"dz.sh.hidra.modules.topology.application.service.PipelineDossierReadApplicationService".equals(source))
             return false;
         return Set.of(root, root + ".Request", root + ".ResourceKind",
                 root + "$Request", root + "$ResourceKind").contains(imported);
@@ -372,6 +373,13 @@ class ForensicRemediationClosureTest {
         assertTrue(t34RegionalIdentityOwnerExport(owner, root));
         assertTrue(t34RegionalIdentityOwnerExport(owner, root + ".Request"));
         assertTrue(t34RegionalIdentityOwnerExport(owner, root + "$ResourceKind"));
+        String dossier = "dz.sh.hidra.modules.topology.application.service.PipelineDossierReadApplicationService";
+        assertTrue(t34RegionalIdentityOwnerExport(dossier, root));
+        assertTrue(t34RegionalIdentityOwnerExport(dossier, root + ".Request"));
+        assertTrue(t34RegionalIdentityOwnerExport(dossier, root + "$ResourceKind"));
+        assertFalse(t34RegionalIdentityOwnerExport(dossier + "Sibling", root));
+        assertFalse(t34RegionalIdentityOwnerExport(dossier, root + "$Unregistered"));
+        assertFalse(t34RegionalIdentityOwnerExport("dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.JpaPipelineDossierReadAdapter",root));
         assertFalse(t34RegionalIdentityOwnerExport(owner + "Sibling", root));
         assertFalse(t34RegionalIdentityOwnerExport(owner, root + ".Other"));
         assertFalse(t34RegionalIdentityOwnerExport(owner, root + "Sibling"));

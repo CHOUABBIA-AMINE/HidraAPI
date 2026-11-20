@@ -189,7 +189,7 @@ class ArchitectureGuardrailTest {
     private static boolean isT34RegionalOwnerExport(String source, String target) {
         String consumer = "dz.sh.hidra.modules.topology.application.service.RegionalTopologyMapApplicationService";
         String root = "dz.sh.hidra.modules.identity.application.contract.topology.TopologyRegionalAccessContract";
-        return source.equals(consumer) && (target.equals(root)
+        return (source.equals(consumer) || source.equals("dz.sh.hidra.modules.topology.application.service.PipelineDossierReadApplicationService")) && (target.equals(root)
                 || target.equals(root + "$Request")
                 || target.equals(root + "$ResourceKind"));
     }
@@ -1658,6 +1658,13 @@ class ArchitectureGuardrailTest {
         assertFalse(isForbiddenCrossModuleDependency(owner, root));
         assertFalse(isForbiddenCrossModuleDependency(owner, root + "$Request"));
         assertFalse(isForbiddenCrossModuleDependency(owner, root + "$ResourceKind"));
+        String dossier = "dz.sh.hidra.modules.topology.application.service.PipelineDossierReadApplicationService";
+        assertFalse(isForbiddenCrossModuleDependency(dossier, root));
+        assertFalse(isForbiddenCrossModuleDependency(dossier, root + "$Request"));
+        assertFalse(isForbiddenCrossModuleDependency(dossier, root + "$ResourceKind"));
+        assertTrue(isForbiddenCrossModuleDependency(dossier + "Sibling", root));
+        assertTrue(isForbiddenCrossModuleDependency(dossier, root + "$Unregistered"));
+        assertTrue(isForbiddenCrossModuleDependency("dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.JpaPipelineDossierReadAdapter", root));
         assertTrue(isForbiddenCrossModuleDependency(owner + "Sibling", root));
         assertTrue(isForbiddenCrossModuleDependency(owner, root + "$Unregistered"));
         assertTrue(isForbiddenCrossModuleDependency(owner, root + "Sibling"));

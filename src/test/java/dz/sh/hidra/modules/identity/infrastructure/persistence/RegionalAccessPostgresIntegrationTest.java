@@ -291,6 +291,30 @@ class RegionalAccessPostgresIntegrationTest {
             f.sql.update("UPDATE hidra_topology_node SET longitude=1,latitude=35 WHERE id=?", firstFrom);
             f.sql.update("UPDATE hidra_topology_node SET longitude=2,latitude=35 WHERE id=?", firstTo);
             String anotherSection = addSection(f, mainPipe, "SECOND", 7, 8);
+            // T35 also exposes legitimately non-drawable sections and sourced design quantities.
+            String nonDrawable = addSection(f, mainPipe, "NO-POSITION", 9, 10);
+            String nonDrawableFrom = f.sql.queryForObject(
+                    "SELECT from_node_id FROM hidra_topology_pipeline_segment WHERE id=?",
+                    String.class, nonDrawable);
+            f.sql.update("UPDATE hidra_topology_node SET longitude=NULL WHERE id=?", nonDrawableFrom);
+            f.sql.update("""
+                    UPDATE hidra_topology_pipeline
+                    SET nominal_diameter=762.0,diameter_unit_code='mm',
+                        design_pressure=70.0,pressure_unit_code='bar',
+                        total_length_km=24.5,updated_at=now()
+                    WHERE id=?
+                    """, mainPipe);
+            f.sql.update("""
+                    UPDATE hidra_topology_pipeline_segment
+                    SET start_kilometer_point=1.25,end_kilometer_point=9.50,
+                        length_km=8.25,updated_at=now()
+                    WHERE id=?
+                    """, firstSection);
+            f.sql.update("UPDATE hidra_topology_node SET elevation_meters=125.0,updated_at=now() WHERE id=?",
+                    firstFrom);
+            f.sql.update("UPDATE hidra_topology_node SET elevation_meters=140.0,updated_at=now() WHERE id=?",
+                    firstTo);
+
             String link = Gz2SignedWorkflowFixture.id();
             f.sql.update("""
                     INSERT INTO hidra_topology_connection(
@@ -317,6 +341,8 @@ class RegionalAccessPostgresIntegrationTest {
             for (String actor : List.of(f.reader, f.operator, f.foreign, f.revoked, f.author)) {
                 f.permit(actor, "topology:regional-map:read", "TOPOLOGY_REGIONAL_MAP", "GLOBAL", null);
                 f.permit(actor, "topology:regional-map:search", "TOPOLOGY_REGIONAL_MAP", "GLOBAL", null);
+                f.permit(actor, "topology:pipeline-dossiers:read",
+                        "TOPOLOGY_PIPELINE_DOSSIERS", "GLOBAL", null);
             }
             bindEmployee(f, f.reader, f.pipeline, false);
             bindEmployee(f, f.operator, secondSystem, false);
@@ -403,6 +429,62 @@ class RegionalAccessPostgresIntegrationTest {
                         explicitlyDenied, null).statusCode());
                 assertEquals(0, client.get(root + "/layers/pipeline-segments/features"
                         + fcompany, own).path("totalFeatures").asInt());
+                // T35: one scoped signed browser journey; no source-pin or hidden graph leakage.
+                String dossier = "/api/v1/topology/pipeline-dossiers/" + mainPipe;
+                JsonNode design = client.get(dossier + company, own);
+                assertEquals(mainPipe, design.path("id").asText());
+                assertEquals(f.pipeline, design.path("pipelineSystemId").asText());
+                assertEquals("AVAILABLE", design.path("nominalDiameter").path("availability").asText());
+                assertEquals(762, design.path("nominalDiameter").path("value").asInt());
+                assertEquals("mm", design.path("nominalDiameter").path("unit").asText());
+                assertEquals("bar", design.path("designPressure").path("unit").asText());
+                assertEquals("DESIGN_PRESSURE", design.path("designPressure").path("meaning").asText());
+                assertEquals("UNAVAILABLE", design.path("designPressure").path("basis").asText());
+                assertFalse(design.toString().contains("MAOP"));
+                assertEquals("km", design.path("declaredLength").path("unit").asText());
+                assertEquals("UNAVAILABLE", design.path("catalogSource").path("revision").asText());
+
+                JsonNode firstDossierPage = client.get(dossier + "/sections" + company + "&size=1", own);
+                assertEquals(3, firstDossierPage.path("totalElements").asInt());
+                assertEquals(1, firstDossierPage.path("items").size());
+                assertTrue(firstDossierPage.path("hasNext").asBoolean());
+                JsonNode section = client.get(dossier + "/sections/" + firstSection + company, own);
+                assertEquals("km", section.path("startKilometerPoint").path("unit").asText());
+                assertEquals("AVAILABLE", section.path("route").path("availability").asText());
+                assertEquals(firstFrom, section.path("route").path("from").path("nodeId").asText());
+                assertEquals("m", section.path("route").path("from")
+                        .path("elevationMeters").path("unit").asText());
+                assertEquals("UNAVAILABLE", client.get(dossier + "/sections/" + nonDrawable + company,
+                        own).path("route").path("availability").asText());
+                JsonNode connections = client.get(dossier + "/connections" + company, own);
+                assertEquals(1, connections.path("totalElements").asInt());
+                assertTrue(connections.toString().contains(link));
+                assertFalse(connections.toString().contains(badLink));
+                assertEquals(1, client.get(dossier + "/equipment" + company, own)
+                        .path("totalElements").asInt());
+                assertEquals(404, client.send("GET", dossier + "/baseline" + company,
+                        own, null).statusCode());
+                assertEquals(404, client.send("GET", dossier + "/sections/" + siblingSection
+                        + company, own, null).statusCode());
+                assertEquals(404, client.send("GET", dossier + "/sections/" + "missing"
+                        + company, own, null).statusCode());
+                assertEquals(400, client.send("GET", dossier + "/sections" + company
+                        + "&size=101", own, null).statusCode());
+                assertEquals(404, client.send("GET", dossier + company,
+                        sibling, null).statusCode());
+                assertEquals(404, client.send("GET", dossier + fcompany,
+                        foreign, null).statusCode());
+                assertEquals(404, client.send("GET", dossier + company,
+                        explicitlyDenied, null).statusCode());
+                assertEquals(403, client.send("GET", dossier + company,
+                        deniedRoute, null).statusCode());
+                assertEquals(401, client.send("GET", dossier + company,
+                        null, null).statusCode());
+                assertTrue(client.send("GET", dossier + company, own, null)
+                        .headers().firstValue("Cache-Control").orElse("").contains("no-store"));
+                assertEquals(200, client.send("GET", dossier + company,
+                        revoked, null).statusCode());
+
                 var protectedResult = client.send("GET", root + "/layers" + company, own, null);
                 assertTrue(protectedResult.headers().firstValue("Cache-Control")
                         .orElse("").contains("no-store"));
@@ -426,6 +508,10 @@ class RegionalAccessPostgresIntegrationTest {
                 assertEquals(404, client.send("GET",
                         root + "/layers/pipeline-segments/features/" + firstSection + company,
                         revoked, null).statusCode());
+                assertEquals(404, client.send("GET", dossier + company,
+                        revoked, null).statusCode());
+                assertEquals(404, client.send("GET", dossier + "/sections/" + firstSection
+                        + company, revoked, null).statusCode());
             }
         }
     }

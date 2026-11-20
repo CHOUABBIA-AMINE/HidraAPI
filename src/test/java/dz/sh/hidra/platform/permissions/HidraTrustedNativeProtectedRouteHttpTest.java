@@ -579,4 +579,30 @@ class HidraTrustedNativeProtectedRouteHttpTest {
             route.controller().equals(type)));
  }
 
+
+ @Test void t35DossierRoutesUseOnlyOrdinaryResourcePermissions() throws Exception {
+    var registry = new HidraTrustedNativeProtectedRouteRegistry();
+    assertEquals(159, registry.candidates().size());
+    String root = "/api/v1/topology/pipeline-dossiers/{pipelineId}";
+    assertTrue(registry.candidates().stream().noneMatch(route -> route.pattern().startsWith(root)));
+    var queries = org.mockito.Mockito.mock(
+            dz.sh.hidra.modules.topology.application.port.in.PipelineDossierReadUseCase.class);
+    var controller = new dz.sh.hidra.modules.topology.api.rest.controller.PipelineDossierController(queries);
+    Class<?> type = dz.sh.hidra.modules.topology.api.rest.controller.PipelineDossierController.class;
+    var handler = new org.springframework.web.method.HandlerMethod(
+            controller, type.getMethod("pipeline", String.class, String.class));
+    var naming = new HidraRoutePermissionNaming();
+    for (String path : List.of(root, root + "/sections", root + "/sections/{sectionId}",
+            root + "/connections", root + "/equipment", root + "/baseline")) {
+        assertEquals("topology:pipeline-dossiers:read",
+                naming.permissionFor(path, "GET", handler));
+    }
+    for (var method : type.getDeclaredMethods()) {
+        if (method.getName().equals("pipeline") || method.getName().equals("sections")
+                || method.getName().equals("section") || method.getName().equals("connections")
+                || method.getName().equals("equipment") || method.getName().equals("baseline")) {
+            assertTrue(!method.isAnnotationPresent(NativeProtectedOperation.class));
+        }
+    }
+ }
 }

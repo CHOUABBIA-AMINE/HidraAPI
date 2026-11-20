@@ -38,7 +38,7 @@ import org.springframework.stereotype.Repository;
  * not region names, stored snapshots, arbitrary routes or the caller's company claim.
  */
 @Repository
-public final class JpaRegionalTopologyRelationshipAdapter implements RegionalTopologyRelationshipPort {
+public class JpaRegionalTopologyRelationshipAdapter implements RegionalTopologyRelationshipPort {
     private final JdbcTemplate sql;
     public JpaRegionalTopologyRelationshipAdapter(JdbcTemplate sql) {
         this.sql = Objects.requireNonNull(sql);

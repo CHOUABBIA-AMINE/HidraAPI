@@ -6528,3 +6528,37 @@ source, CI inventory, prior-stage status or documented response contract is chan
 All source and runtime validation remains **PENDING** for the repair SHA, which must
 be checked with its own exact-SHA CI run; T33 remains **IN PROGRESS** and T34
 remains PLANNED and unselected.
+
+
+### T33 CI #1335 test-compile and Spring startup repair — 2026-11-20
+
+**Exact source SHA:** `1f98bd62067cddf8f6233e18e8b515e2fd1b8fdd`.
+[HidraAPI CI #1335](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44780460152)
+completed **FAILURE**. The earlier ambiguous enum compile defect was cleared,
+but Java/unit and PostgreSQL shards stopped at test compilation: new T33
+coverage in `HidraTrustedNativeProtectedRouteHttpTest.java:118` used the JUnit
+`fail(NoSuchMethodException)` method without its static import. The API
+contract/dictionary lane compiled source and launched the application, but
+failed on Spring bean creation: the T33 Topology
+`JpaRegionalTopologyRelationshipAdapter` was `final` and could not be
+subclassed for Spring's CGLIB persistence proxy. Neither failure establishes
+any passing signed HTTP, PostgreSQL owner authorization, generated OpenAPI,
+or strict Full Verification Gate result.
+[Documentation Validation #1184](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44780460147)
+completed **SUCCESS** at the same SHA.
+
+**Bounded repair:** import existing JUnit `fail` assertion without changing test
+semantics; make the existing Spring `@Repository` adapter class non-final while
+retaining constructor, repository port and fail-closed behavior; update only the
+changed test source's exact SHA256 in `.github/ci-test-inventory.json`.
+No domain/application authorization rules, tested cases, migration history,
+existing native route registry, data dictionary or fabricated runtime OpenAPI
+artifact is changed. The four-path correction remains within the registered
+T33 implementation ledger, with the same registered implementation message:
+`feat(identity): resolve current regional employee resource access`.
+
+**Gate remains OPEN:** the repair's own exact-SHA CI, real JVM tests, Flyway and
+PostgreSQL integration, security and scope negative cases, generated contract
+and Full Verification Gate are not yet accepted. T33 remains **IN PROGRESS**;
+T34 remains **PLANNED** and unselected. Stop after confirming the replacement
+SHA's CI was created or started, without waiting for CI completion.

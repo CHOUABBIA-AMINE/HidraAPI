@@ -549,4 +549,34 @@ class HidraTrustedNativeProtectedRouteHttpTest {
     assertTrue(!registry.isTrusted(handler,entry.verb(),entry.pattern()+"/sibling"));
    }
  }
+
+ @Test void t34RegionalMapUsesOrdinaryRouteCodesWithoutNativeDelegation() throws Exception {
+    var registry = new HidraTrustedNativeProtectedRouteRegistry();
+    assertEquals(159, registry.candidates().size());
+    assertTrue(registry.candidates().stream().noneMatch(
+            route -> route.pattern().startsWith("/api/v1/topology/regional-map")));
+    var controller = new dz.sh.hidra.modules.topology.api.rest.controller.RegionalTopologyMapController(
+            org.mockito.Mockito.mock(
+                dz.sh.hidra.modules.topology.application.port.in.RegionalTopologyMapUseCase.class));
+    var naming = new HidraRoutePermissionNaming();
+    Class<?> type = dz.sh.hidra.modules.topology.api.rest.controller.RegionalTopologyMapController.class;
+    var read = new org.springframework.web.method.HandlerMethod(
+            controller, type.getMethod("features", String.class, String.class,
+                    Integer.class, Integer.class, String.class));
+    var search = new org.springframework.web.method.HandlerMethod(
+            controller, type.getMethod("search", String.class, String.class,
+                    Integer.class, Integer.class));
+    for (String path : List.of("/api/v1/topology/regional-map/layers",
+            "/api/v1/topology/regional-map/layers/{layerId}",
+            "/api/v1/topology/regional-map/layers/{layerId}/features",
+            "/api/v1/topology/regional-map/layers/{layerId}/features/{entityId}",
+            "/api/v1/topology/regional-map/geojson")) {
+        assertEquals("topology:regional-map:read", naming.permissionFor(path, "GET", read));
+    }
+    assertEquals("topology:regional-map:search", naming.permissionFor(
+            "/api/v1/topology/regional-map/search", "GET", search));
+    assertTrue(registry.candidates().stream().noneMatch(route ->
+            route.controller().equals(type)));
+ }
+
 }

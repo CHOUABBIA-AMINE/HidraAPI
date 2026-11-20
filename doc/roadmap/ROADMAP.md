@@ -6751,3 +6751,26 @@ backward compatibility, canonical runtime OpenAPI equality and strict
 physical dictionary equality. The passing run and its combined evidence
 artifact close G2. No separate manual, browser, SITE or engineering
 evidence is required for T34. T39 owns the later consumer handoff.
+
+
+### T34 source implementation publication — 2026-11-20
+
+The registered T34 source delivery adds a separate, protected Topology regional-map
+controller, typed application in/out contracts, a current-authorization projection
+service and a company-bounded scalar PostgreSQL reader. The six regional GET
+operations reuse existing map DTOs while keeping the legacy administrator map,
+T33 Identity/Organization semantics, migration history and physical dictionary
+unchanged. Signed GZ2/PostgreSQL, ordinary-route protection, architecture and
+source-scanner regressions are included in the existing test classes. T34 is
+**IN PROGRESS**, not COMPLETED: the signed fixture, runtime OpenAPI and exact-final-SHA
+Full Verification Gate still require hosted execution and published artifacts.
+
+The canonical OpenAPI snapshot and its documentation-validation provenance remain
+the prior *verified* runtime capture until a real T34 runtime artifact is produced;
+their older counts and hashes must not be represented as T34 evidence. If the
+hosted source run reveals a required contract delta, use only the registered
+\`docs(topology): reconcile T34 regional map API contract\` documentation
+reconciliation, with actual source SHA, artifact and verified checks. No manual
+OpenAPI reconstruction or inferred database dictionary is accepted. The T34
+software acceptance and G2 closure must be recorded after passing the exact
+final source/contract gate. T35 remains PLANNED and unselected.

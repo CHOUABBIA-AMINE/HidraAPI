@@ -246,4 +246,229 @@ class RegionalAccessPostgresIntegrationTest {
                 FROM hidra_identity_permission WHERE code=?
                 """, Gz2SignedWorkflowFixture.id(), actor, scope, READ);
     }
+
+    /**
+     * T34: signed clients cross the real Spring MVC route and Postgres owner joins.
+     * The same token is evaluated again after its scoped resource grant is revoked.
+     */
+    @Test
+    void regionalMapFiltersGeometryBeforeSearchCountsAndDirectLookup() throws Exception {
+        try (var db = new PostgreSQLContainer<>("postgres:16")
+                .withDatabaseName("hidra_gz2_t34")) {
+            db.start();
+            var f = new Gz2SignedWorkflowFixture(db);
+            String foreignSystem = Gz2SignedWorkflowFixture.id();
+            String mainPipe = Gz2SignedWorkflowFixture.id();
+            String firstSection = Gz2SignedWorkflowFixture.id();
+            String equipment = Gz2SignedWorkflowFixture.id();
+            seedTopology(f, foreignSystem, mainPipe, firstSection, equipment);
+
+            String secondSystem = Gz2SignedWorkflowFixture.id();
+            String sysType = f.sql.queryForObject(
+                    "SELECT system_type_id FROM hidra_topology_pipeline_system WHERE id=?",
+                    String.class, f.pipeline);
+            f.sql.update("""
+                    INSERT INTO hidra_topology_pipeline_system(
+                      id,code,system_type_id,status,created_at,updated_at)
+                    VALUES (?,?,?,'ACTIVE',now(),now())
+                    """, secondSystem, "T34-GZ2-SIBLING", sysType);
+            f.sql.update("""
+                    INSERT INTO hidra_topology_foundation_system_owner(
+                      pipeline_system_id,company_party_id) VALUES (?,?)
+                    """, secondSystem, f.company);
+
+            String secondPipe = addPipeline(f, secondSystem, f.company, f.reader);
+            String foreignPipe = addPipeline(f, foreignSystem, f.foreignCompany, f.foreign);
+            String siblingSection = addSection(f, secondPipe, "SIBLING", 3, 4);
+            String foreignSection = addSection(f, foreignPipe, "FOREIGN", 5, 6);
+
+            String firstFrom = f.sql.queryForObject("""
+                    SELECT from_node_id FROM hidra_topology_pipeline_segment WHERE id=?
+                    """, String.class, firstSection);
+            String firstTo = f.sql.queryForObject("""
+                    SELECT to_node_id FROM hidra_topology_pipeline_segment WHERE id=?
+                    """, String.class, firstSection);
+            f.sql.update("UPDATE hidra_topology_node SET longitude=1,latitude=35 WHERE id=?", firstFrom);
+            f.sql.update("UPDATE hidra_topology_node SET longitude=2,latitude=35 WHERE id=?", firstTo);
+            String anotherSection = addSection(f, mainPipe, "SECOND", 7, 8);
+            String link = Gz2SignedWorkflowFixture.id();
+            f.sql.update("""
+                    INSERT INTO hidra_topology_connection(
+                      id,code,from_node_id,to_node_id,connection_type_id,flow_direction,
+                      pipeline_segment_id,status,created_at,updated_at)
+                    VALUES (?,?,?,?,'DIRECT_LINK','DIRECTED',?,'ACTIVE',now(),now())
+                    """, link, "T34-VISIBLE-CONNECTION", firstFrom, firstTo, firstSection);
+            // A contradictory backing-segment link may never become visible.
+            String badLink = Gz2SignedWorkflowFixture.id();
+            f.sql.update("""
+                    INSERT INTO hidra_topology_connection(
+                      id,code,from_node_id,to_node_id,connection_type_id,flow_direction,
+                      pipeline_segment_id,status,created_at,updated_at)
+                    VALUES (?,?,?,?,'DIRECT_LINK','DIRECTED',?,'ACTIVE',now(),now())
+                    """, badLink, "T34-HIDDEN-CONNECTION", firstFrom,
+                    f.sql.queryForObject("""
+                       SELECT to_node_id FROM hidra_topology_pipeline_segment WHERE id=?
+                    """, String.class, siblingSection), firstSection);
+            f.sql.update("""
+                    UPDATE hidra_topology_facility SET longitude=1.5,latitude=35.5
+                    WHERE id=?
+                    """, f.asset);
+
+            for (String actor : List.of(f.reader, f.operator, f.foreign, f.revoked, f.author)) {
+                f.permit(actor, "topology:regional-map:read", "TOPOLOGY_REGIONAL_MAP", "GLOBAL", null);
+                f.permit(actor, "topology:regional-map:search", "TOPOLOGY_REGIONAL_MAP", "GLOBAL", null);
+            }
+            bindEmployee(f, f.reader, f.pipeline, false);
+            bindEmployee(f, f.operator, secondSystem, false);
+            bindEmployee(f, f.foreign, foreignSystem, false);
+            bindEmployee(f, f.revoked, f.pipeline, false);
+            bindEmployee(f, f.author, f.pipeline, false);
+            for (String actor : List.of(f.reader, f.revoked, f.author)) {
+                f.permit(actor, READ, "TOPOLOGY_REGIONAL_RESOURCE", "PIPELINE_SYSTEM", f.pipeline);
+            }
+            explicitlyDeny(f, f.author, f.pipeline);
+            f.permit(f.operator, READ, "TOPOLOGY_REGIONAL_RESOURCE", "PIPELINE_SYSTEM", secondSystem);
+            f.permit(f.foreign, READ, "TOPOLOGY_REGIONAL_RESOURCE", "PIPELINE_SYSTEM", foreignSystem);
+
+            try (var client = f.start()) {
+                String own = client.login(f.reader);
+                String sibling = client.login(f.operator);
+                String foreign = client.login(f.foreign);
+                String revoked = client.login(f.revoked);
+                String explicitlyDenied = client.login(f.author);
+                String deniedRoute = client.login(f.producer);
+
+                String root = "/api/v1/topology/regional-map";
+                String company = "?companyPartyId=" + f.company;
+                String fcompany = "?companyPartyId=" + f.foreignCompany;
+                assertEquals(6, client.get(root + "/layers" + company, own).size());
+                assertEquals("pipeline-segments",
+                        client.get(root + "/layers/pipeline-segments" + company, own).path("id").asText());
+                assertEquals(2, client.get(root + "/layers/pipeline-segments/features"
+                        + company + "&size=1", own).path("totalFeatures").asInt());
+                JsonNode first = client.get(root + "/layers/pipeline-segments/features"
+                        + company + "&size=1", own);
+                assertEquals(1, first.path("features").size());
+                assertEquals(2, first.path("totalPages").asInt());
+                assertTrue(first.path("hasNext").asBoolean());
+                JsonNode second = client.get(root + "/layers/pipeline-segments/features"
+                        + company + "&size=1&page=1", own);
+                assertEquals(1, second.path("features").size());
+                assertFalse(second.path("hasNext").asBoolean());
+                assertNotEquals(first.path("features").get(0).path("id").asText(),
+                        second.path("features").get(0).path("id").asText());
+
+                JsonNode permitted = client.get(root + "/layers/pipeline-segments/features/"
+                        + firstSection + company, own);
+                assertEquals(firstSection, permitted.path("properties").path("entityId").asText());
+                assertEquals(404, client.send("GET", root + "/layers/pipeline-segments/features/"
+                        + siblingSection + company, own, null).statusCode());
+                assertEquals(404, client.send("GET", root + "/layers/pipeline-segments/features/"
+                        + foreignSection + company, own, null).statusCode());
+                assertEquals(404, client.send("GET", root + "/layers/pipeline-segments/features/"
+                        + "not-found" + company, own, null).statusCode());
+
+                JsonNode region = client.get(root + "/geojson" + company
+                        + "&layers=topology-connections,pipelines,topology-connections,pipeline-segments", own);
+                assertEquals(3, region.path("layers").size());
+                assertTrue(region.toString().contains(link));
+                assertTrue(region.toString().contains(firstFrom));
+                assertTrue(region.toString().contains(firstTo));
+                assertFalse(region.toString().contains(badLink));
+                assertFalse(region.toString().contains(siblingSection));
+                assertFalse(region.toString().contains(foreignSection));
+                assertTrue(region.toString().contains(firstSection));
+                assertFalse(region.toString().contains("5.0000000"));
+
+                JsonNode search = client.get(root + "/search" + company + "&q=T34", own);
+                assertTrue(search.path("totalFeatures").asInt() >= 1);
+                assertFalse(search.toString().contains(foreignSection));
+                assertEquals(0, client.get(root + "/search" + company
+                        + "&q=FOREIGN", own).path("totalFeatures").asInt());
+                assertEquals(1, client.get(root + "/layers/pipeline-segments/features"
+                        + company + "&q=SECOND", own).path("totalFeatures").asInt());
+
+                JsonNode other = client.get(root + "/layers/pipeline-segments/features"
+                        + company, sibling);
+                assertEquals(1, other.path("totalFeatures").asInt());
+                assertTrue(other.toString().contains(siblingSection));
+                assertFalse(other.toString().contains(firstSection));
+                assertEquals(1, client.get(root + "/layers/pipeline-segments/features"
+                        + fcompany, foreign).path("totalFeatures").asInt());
+
+                assertEquals(0, client.get(root + "/layers/pipeline-segments/features"
+                        + company, explicitlyDenied).path("totalFeatures").asInt());
+                assertEquals(404, client.send("GET",
+                        root + "/layers/pipeline-segments/features/" + firstSection + company,
+                        explicitlyDenied, null).statusCode());
+                assertEquals(0, client.get(root + "/layers/pipeline-segments/features"
+                        + fcompany, own).path("totalFeatures").asInt());
+                var protectedResult = client.send("GET", root + "/layers" + company, own, null);
+                assertTrue(protectedResult.headers().firstValue("Cache-Control")
+                        .orElse("").contains("no-store"));
+                assertEquals(403, client.send("GET", root + "/layers" + company,
+                        deniedRoute, null).statusCode());
+                assertEquals(401, client.send("GET", root + "/layers" + company,
+                        null, null).statusCode());
+                assertEquals(403, client.send("GET",
+                        "/api/v1/topology/map/layers", own, null).statusCode());
+
+                assertEquals(2, client.get(root + "/layers/pipeline-segments/features"
+                        + company, revoked).path("totalFeatures").asInt());
+                f.sql.update("""
+                        UPDATE hidra_identity_user_permission_grant
+                        SET status='REVOKED',revoked_at=now()
+                        WHERE user_id=? AND scope_type='PIPELINE_SYSTEM' AND scope_reference_id=?
+                        AND permission_id=(SELECT id FROM hidra_identity_permission WHERE code=?)
+                        """, f.revoked, f.pipeline, READ);
+                assertEquals(0, client.get(root + "/layers/pipeline-segments/features"
+                        + company, revoked).path("totalFeatures").asInt());
+                assertEquals(404, client.send("GET",
+                        root + "/layers/pipeline-segments/features/" + firstSection + company,
+                        revoked, null).statusCode());
+            }
+        }
+    }
+
+    private static String addPipeline(Gz2SignedWorkflowFixture f, String system,
+            String company, String actor) {
+        String id = Gz2SignedWorkflowFixture.id();
+        String type = f.sql.queryForObject(
+                "SELECT pipeline_type_id FROM hidra_topology_pipeline LIMIT 1", String.class);
+        f.sql.update("""
+                INSERT INTO hidra_topology_pipeline(
+                  id,pipeline_system_id,code,pipeline_type_id,status,created_at,updated_at)
+                VALUES (?,?,?,?,'ACTIVE',now(),now())
+                """, id, system, "T34-" + id, type);
+        f.sql.update("""
+                INSERT INTO hidra_topology_pipeline_authoring_revision(
+                  pipeline_id,revision,company_party_id,pipeline_system_id,
+                  code,pipeline_type_id,actor_user_id,recorded_at)
+                VALUES (?,1,?,?,?,?,?,now())
+                """, id, company, system, "T34-" + id, type, actor);
+        return id;
+    }
+
+    private static String addSection(Gz2SignedWorkflowFixture f, String pipeline,
+            String label, int startLongitude, int endLongitude) {
+        String from = Gz2SignedWorkflowFixture.id();
+        String to = Gz2SignedWorkflowFixture.id();
+        for (String node : List.of(from, to)) {
+            f.sql.update("""
+                    INSERT INTO hidra_topology_node(
+                      id,code,node_type,status,longitude,latitude,created_at,updated_at)
+                    VALUES (?,?,'JUNCTION','ACTIVE',?,35,now(),now())
+                    """, node, "T34-NODE-" + node,
+                    node.equals(from) ? startLongitude : endLongitude);
+        }
+        String id = Gz2SignedWorkflowFixture.id();
+        f.sql.update("""
+                INSERT INTO hidra_topology_pipeline_segment(
+                  id,pipeline_id,code,segment_type,from_node_id,to_node_id,
+                  flow_direction,status,created_at,updated_at)
+                VALUES (?,?,?,'MAINLINE',?,?,'DIRECTED','ACTIVE',now(),now())
+                """, id, pipeline, "T34-" + label, from, to);
+        return id;
+    }
+
 }

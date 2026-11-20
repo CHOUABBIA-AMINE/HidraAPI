@@ -184,6 +184,16 @@ class ArchitectureGuardrailTest {
                 || target.equals(root + "$Resolution"));
     }
 
+
+    /** T34: the scoped regional reader is the sole consumer of this exact Identity export. */
+    private static boolean isT34RegionalOwnerExport(String source, String target) {
+        String consumer = "dz.sh.hidra.modules.topology.application.service.RegionalTopologyMapApplicationService";
+        String root = "dz.sh.hidra.modules.identity.application.contract.topology.TopologyRegionalAccessContract";
+        return source.equals(consumer) && (target.equals(root)
+                || target.equals(root + "$Request")
+                || target.equals(root + "$ResourceKind"));
+    }
+
     private static boolean isOrganizationOwnerExport(String source, String target) {
         return source.startsWith("dz.sh.hidra.modules.organization.")
                 && ORGANIZATION_OWNER_EXPORTS.stream().anyMatch(root -> target.equals(root) || target.startsWith(root + "$"));
@@ -504,6 +514,11 @@ class ArchitectureGuardrailTest {
                 }
                 if (t26Export(source.getName(),target.getName())) continue;
                 if (t25Export(source.getName(),target.getName())) continue;
+                if (target.getName().startsWith("dz.sh.hidra.modules.identity.application.contract.topology.TopologyRegionalAccessContract")) {
+                    if (!isT34RegionalOwnerExport(source.getName(), target.getName()))
+                        violations.add(source.getName() + " -> " + target.getName());
+                    continue;
+                }
                 if (isExplicitlyExported(target.getPackageName())) {
                     continue;
                 }
@@ -1425,6 +1440,9 @@ class ArchitectureGuardrailTest {
         // B3-S2 exports ONLY the native Identity contract root/nested records to its
         // exact compiled Topology coordinator. The repository port/adapter, siblings
         // and all private Identity participants remain forbidden.
+        String regionalRoot="dz.sh.hidra.modules.identity.application.contract.topology.TopologyRegionalAccessContract";
+        if (targetClassName.startsWith(regionalRoot))
+            return !isT34RegionalOwnerExport(sourceClassName, targetClassName);
         String configurationRoot="dz.sh.hidra.modules.identity.application.contract.topology.TopologyStationConfigurationAuthorizationContract";
         if(targetClassName.startsWith(configurationRoot)) {
             String reviewed="dz.sh.hidra.modules.topology.application.service.ProtectedStationConfigurationAdmissionCoordinator";
@@ -1633,5 +1651,21 @@ class ArchitectureGuardrailTest {
         assertEquals(java.util.Set.of(java.lang.annotation.ElementType.METHOD),
                 java.util.Set.of(marker.getAnnotation(java.lang.annotation.Target.class).value()));
     }
+
+    @Test void t34OnlyRegionalMapServiceMayConsumeExactIdentityDecision() {
+        String owner = "dz.sh.hidra.modules.topology.application.service.RegionalTopologyMapApplicationService";
+        String root = "dz.sh.hidra.modules.identity.application.contract.topology.TopologyRegionalAccessContract";
+        assertFalse(isForbiddenCrossModuleDependency(owner, root));
+        assertFalse(isForbiddenCrossModuleDependency(owner, root + "$Request"));
+        assertFalse(isForbiddenCrossModuleDependency(owner, root + "$ResourceKind"));
+        assertTrue(isForbiddenCrossModuleDependency(owner + "Sibling", root));
+        assertTrue(isForbiddenCrossModuleDependency(owner, root + "$Unregistered"));
+        assertTrue(isForbiddenCrossModuleDependency(owner, root + "Sibling"));
+        assertTrue(isForbiddenCrossModuleDependency(
+                "dz.sh.hidra.modules.topology.infrastructure.visualization.JpaRegionalTopologyMapReadAdapter", root));
+        assertTrue(isForbiddenCrossModuleDependency(owner,
+                "dz.sh.hidra.modules.identity.infrastructure.persistence.adapter.Other"));
+    }
+
 
 }

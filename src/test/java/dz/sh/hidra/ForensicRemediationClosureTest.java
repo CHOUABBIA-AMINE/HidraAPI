@@ -356,6 +356,29 @@ class ForensicRemediationClosureTest {
         assertTrue(violations.isEmpty(), () -> "Fictional event scaffolding returned: " + violations);
     }
 
+
+    /** T34 exact Topology consumer of Identity's current regional resource decision. */
+    private static boolean t34RegionalIdentityOwnerExport(String source, String imported) {
+        String root = "dz.sh.hidra.modules.identity.application.contract.topology.TopologyRegionalAccessContract";
+        if (!"dz.sh.hidra.modules.topology.application.service.RegionalTopologyMapApplicationService".equals(source))
+            return false;
+        return Set.of(root, root + ".Request", root + ".ResourceKind",
+                root + "$Request", root + "$ResourceKind").contains(imported);
+    }
+
+    @Test void t34RegionalIdentityOwnerExportRejectsSiblingsAndPrivateTypes() {
+        String owner = "dz.sh.hidra.modules.topology.application.service.RegionalTopologyMapApplicationService";
+        String root = "dz.sh.hidra.modules.identity.application.contract.topology.TopologyRegionalAccessContract";
+        assertTrue(t34RegionalIdentityOwnerExport(owner, root));
+        assertTrue(t34RegionalIdentityOwnerExport(owner, root + ".Request"));
+        assertTrue(t34RegionalIdentityOwnerExport(owner, root + "$ResourceKind"));
+        assertFalse(t34RegionalIdentityOwnerExport(owner + "Sibling", root));
+        assertFalse(t34RegionalIdentityOwnerExport(owner, root + ".Other"));
+        assertFalse(t34RegionalIdentityOwnerExport(owner, root + "Sibling"));
+        assertFalse(t34RegionalIdentityOwnerExport(owner,
+                "dz.sh.hidra.modules.identity.infrastructure.security.ProtectedOperationIdentityParticipant"));
+    }
+
     /** T33: only the registered Identity evaluator may see the exact Topology scalar lineage export. */
     private static boolean t33RegionalTopologyOwnerExport(String source, String imported) {
         String owner = "dz.sh.hidra.modules.topology.application.contract.identity.IdentityRegionalTopologyContract";
@@ -551,6 +574,12 @@ class ForensicRemediationClosureTest {
                     || imported.startsWith("dz.sh.hidra.modules.topology.application.contract.documents.ControlledDocumentFacilityOwnershipContract")) {
                     if (!t24DocumentOwnerExport(source.fqcn(),imported))
                         violations.add(source.fqcn()+" -> unauthorized T24 owner "+imported);
+                    continue;
+                }
+                if (imported.startsWith(
+                        "dz.sh.hidra.modules.identity.application.contract.topology.TopologyRegionalAccessContract")) {
+                    if (!t34RegionalIdentityOwnerExport(source.fqcn(), imported))
+                        violations.add(source.fqcn() + " -> forbidden T34 export " + imported);
                     continue;
                 }
                 if (EXPORTED_PACKAGES.stream().anyMatch(imported::startsWith)) {

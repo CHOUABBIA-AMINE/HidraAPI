@@ -144,8 +144,8 @@ recorded before T33 is selected.
 | Task | Owner | Depends on | Deliverable | Pass condition | Status |
 |---|---|---|---|---|---|
 | **T33 · Resolve regional employee access (G1)** | Identity with Organization and Topology | T32 closure and owner-approved regional authority policy | Resolve the authenticated employee and current typed resource scope using Identity grants and denies, effective Organization responsibilities and owner-issued Topology relationships. Define company, system, pipeline, section, facility and equipment inheritance and cross-region disclosure. | Signed HTTP and PostgreSQL evidence for two regional employees with different scopes, an unlinked employee, explicit deny, expired responsibility, revoked grant and foreign company. Resource decisions use current authority. | COMPLETED |
-| **T34 · Expose regional map and discovery (G2)** | Topology with Identity and Organization | T33 | Qualify or extend owner-backed layers, features, GeoJSON and search for regional users. Apply scope before pagination and counts, preserve authorized graph semantics and retain the separately protected legacy administrator path. | A regional employee discovers a permitted pipeline. A cross-region fixture proves scope-safe geometry, connections, features, search, totals and direct lookups, including after revocation. | IN PROGRESS |
-| **T35 · Qualify protected pipeline dossier reads (G3)** | Topology with engineering source owners | T33, T04–T07 | Qualify existing reads for a selected pipeline's design characteristics, route, kilometer points, sections, elevation, connections, installed equipment and published revision provenance. Extend a typed read only for a demonstrated gap. | A scoped client retrieves the agreed available facts with explicit units, source and version. Unavailable values are explicit. Restricted history and linked resource details require their own current authority. | PLANNED |
+| **T34 · Expose regional map and discovery (G2)** | Topology with Identity and Organization | T33 | Qualify or extend owner-backed layers, features, GeoJSON and search for regional users. Apply scope before pagination and counts, preserve authorized graph semantics and retain the separately protected legacy administrator path. | A regional employee discovers a permitted pipeline. A cross-region fixture proves scope-safe geometry, connections, features, search, totals and direct lookups, including after revocation. | COMPLETED |
+| **T35 · Qualify protected pipeline dossier reads (G3)** | Topology with engineering source owners | T33, T04–T07 | Qualify existing reads for a selected pipeline's design characteristics, route, kilometer points, sections, elevation, connections, installed equipment and published revision provenance. Extend a typed read only for a demonstrated gap. | A scoped client retrieves the agreed available facts with explicit units, source and version. Unavailable values are explicit. Restricted history and linked resource details require their own current authority. | IN PROGRESS |
 | **T36 · Resolve qualified operating constraints (G4)** | Approved engineering constraint owner, with Integrity for integrity-derived restrictions, Topology and Audit | T33, applicable T07 sources, owner decision on constraint authority | Resolve approved restrictions for an exact asset or section and effective instant. Preserve pressure basis, units, scope, operating conditions, source revision, qualification and authorized decision references. Use existing qualified sources where proven. | Synthetic cases cover applicability, approved effective and historical reads, supersession, withdrawal, unresolved conflicts, missing evidence and unauthorized scope. Design pressure and unqualified assessments are never returned as approved limits. | PLANNED |
 | **T37 · Qualify asset-scoped trusted observations (G5)** | Telemetry with Topology and Identity | T33, T08–T09 | Qualify authorized discovery of relevant commissioned points and trusted latest and historical readings for the selected asset. Preserve applicable binding revision, units, measurement source and time, quality, trust and freshness. | Prove a binding change, stale or unavailable readings, unit or binding incompatibility and revoked scope. Historical reads use the binding valid at the relevant time and enforce current read authority. | PLANNED |
 | **T38 · Govern restriction decisions and evidence (G6)** | Approved engineering constraint owner with Workflow, Audit, Identity and Organization | T33, T36, T28, T30 | Bind submission, independent review, approval, supersession and withdrawal to the exact restriction revision. Publish the effective owner outcome with exact authorized decision and audit references. Reuse supported Workflow and Audit contracts. | Prove approval and readback, self-review denial, revoked authority, stale version and invalid approval reuse. Decision and owner outcome preserve their applicable transaction guarantees, and audit evidence remains scope-safe. | PLANNED |
@@ -6817,3 +6817,149 @@ equality, architecture and the Full Verification Gate. The Maven network
 failure must be retried in that exact replacement run; it is not called
 passing validation. **T34 stays IN PROGRESS / G2 OPEN**. T35 remains PLANNED
 and unselected.
+
+### Close T34 and register T35 protected pipeline dossier — 2026-11-20
+
+**T34 (G2) — COMPLETED for registered development software.**
+[CI #1339 attempt 1](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44817534663/attempts/1)
+passed the [Full Verification Gate](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44817534663/job/136575786180)
+on `bb12817e34ca760e336f2875917cf3a8601bbc03`.
+The [combined evidence](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44817534663/artifacts/14670716198)
+records 4,546 tests in 610 classes and zero failures, errors or skips.
+Java 21 and architecture, all fourteen PostgreSQL shards and the strict
+API/dictionary lane passed. [Documentation Validation #1189](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44817534507)
+passed on the same SHA.
+
+**T35 (G3) — IN PROGRESS, selected and registered.** Dependencies T33 and
+T04–T07 are completed. T34 provides a tested map-to-pipeline navigation
+entry. Topology owns the dossier; engineering source owners retain
+authority and provenance for their records. No engineering mutation is admitted.
+
+#### Existing coverage and demonstrated gap
+
+`RegionalTopologyMapUseCase` resolves drawable features for discovery, and
+does not expose design quantities, section chainage, endpoint elevation,
+installed equipment or baseline receipts as a dossier. It excludes
+non-drawable segments by design. `AuthoredTopologyViewUseCase` provides
+draft-scoped graph and pipeline authoring bindings. A draft revision is
+not a version of every scalar in the live pipeline row.
+`EngineeringBaselineReadUseCase` already owns current, effective, exact,
+history and comparison at **pipeline-system** scope, with current checks
+on each immutable source pin. `InstalledUnitLifecycleUseCase` and
+`StationInstalledConfigurationUseCase` already own installed-unit and
+station configuration detail and history under their own protections.
+
+Add the minimum typed dossier slice for the missing regional workflow.
+Use current Topology catalog facts and authorized linked rows. Keep the
+existing map, authoring, publication and installed-unit routes intact.
+Resolve baseline history and installed-unit/configuration history only
+through their existing owners. A regional grant alone gives no history
+or other owner privileges.
+
+#### Target wire contract and data ownership
+
+All six authorized GETs are under
+`/api/v1/topology/pipeline-dossiers/{pipelineId}`, with a required
+canonical `companyPartyId`. Use the ordinary route permission
+`topology:pipeline-dossiers:read` and the T33 exact PIPELINE decision on
+every operation before loaded facts can affect any response. Resolve
+pipeline-system ancestry from the latest canonical authoring association
+and owner proof, never from a browser-supplied system ID. Apply exact
+child decisions and verify owner relationships before hydration, counts
+and pagination. Recheck the parent and all contributing permits and
+relationship evidence before emitting a response. Do not cache authority
+or dossier payload across requests. All successful responses use
+`Cache-Control: private, no-store`. Authentication and route denial
+follow 401/403. Exact unknown, foreign, out-of-scope and wrong-parent
+targets share a body-equivalent 404. Invalid selectors or paging use
+400. Authorized empty collections have zero totals.
+
+| Suffix | Allowed data and rules |
+|---|---|
+| Base path | Pipeline ID, code, multilingual display name, type, and current catalog status. Include system ID only under a separate exact SYSTEM permit. Return nominal diameter, design pressure and declared length from the owned pipeline row, each with an explicit quantity status, unit and provenance. |
+| `/sections` | Authorized active segments belonging to this pipeline, ordered by canonical ID. Each contains segment ID, code, type, flow direction, start/end chainage and length, with optional ordered endpoint/route samples under the graph rules below. |
+| `/sections/{sectionId}` | Same DTO and graph rules as the collection, with an exact parent/child lookup. A permitted segment with unavailable geometry still has a valid dossier entry. |
+| `/connections` | Active connections with an authorized backing segment of this pipeline and exact matching endpoint pair. Return ID, code, connection type and from/to IDs only when both endpoints qualify. Preserve directional ordering. |
+| `/equipment` | Active, currently installed Equipment catalog entries with an explicit qualifying segment relationship to this pipeline. Require exact EQUIPMENT and PIPELINE_SEGMENT permits, plus exact FACILITY permit for any coupled facility. Return ID, code/name, type, linked section and authorized placement reference, and installation time when present. No implied link based on common system or proximity. Installed-unit declarations, characteristic links, manufacturer data and histories keep their separate owner paths. |
+| `/baseline` | Resolve the selected pipeline to its canonical system. Require exact SYSTEM permission plus the existing `EngineeringBaselineReadUseCase` CURRENT authorization and all source-pin checks. Run the existing protected executor outside any new dossier transaction and recheck selected pipeline/system scope and relationship after it returns. Return just the authorized system publication receipt ID, epoch, manifest digest and publication timestamp with explicit PIPELINE_SYSTEM scope. No proof that the publication pins this exact pipeline or versions the current dossier facts. Keep the existing owner current/effective/exact/history/compare contracts. A permitted owner read with no current receipt returns 200 with UNAVAILABLE and no metadata. Owner denial or inability to establish scope returns the same protected 404 without receipt identity or source details. |
+
+Sections, connections and equipment have zero-based page and size 1–100
+(default 50), stable entity-ID ordering, exact post-authorization totals
+and hasNext. Count and slice the same visible result. A physical section
+can be listed without coordinates. For a drawable section use the T34
+graph invariants with active exact endpoints and separate facility
+authorization where a node carries a facility link. Route points are
+ordered from/to longitude and latitude in degrees. Elevation is in metres
+when present. No interpolated route or continuous profile is inferred.
+If an endpoint cannot be disclosed, return route UNAVAILABLE without
+its ID, coordinates or diagnostic reason. Connections have no independent
+scope grant and inherit only through the exact permitted backing
+segment and matched admitted endpoints. Omit dangling or contradictory
+relationships and prevent hidden data from affecting totals.
+
+Use a fixed typed quantity envelope with AVAILABLE or UNAVAILABLE, decimal
+value and unit only when supported, and owner entity ID, source kind and
+recorded version token when meaningful. Use the existing stored diameter
+and pressure unit codes and fixed km/m/degree units only for the columns
+that establish them. Null values, missing units and unprovable facts are
+explicitly unavailable. Label pressure DESIGN_PRESSURE and pressure basis
+UNAVAILABLE unless the source records it. No operational constraint or
+MAOP is inferred. Live catalog rows carry their actual source ID and
+updatedAt with revision UNAVAILABLE where no revision exists. Report a
+canonical authoring revision only as lineage of the pipeline/system
+association, not as a revision of live scalars. Keep source and units for
+sections, endpoints, connections and equipment. Separate the T07 receipt
+provenance from live catalog data. Mechanical details lacking a verified
+source, such as wall thickness, remain unavailable for this envelope.
+
+#### Exact T35 file ledger
+
+`M/` expands to `src/main/java/dz/sh/hidra/modules/topology/`.
+
+| Action | Path | Responsibility |
+|---|---|---|
+| CREATE | `M/application/port/in/PipelineDossierReadUseCase.java` | Typed summary, section, connection, equipment and system publication queries and results. Define availability, source/version and page shapes using scalar types. |
+| CREATE | `M/application/port/out/PipelineDossierReadPort.java` | Owner-only exact pipeline/system lineage and part candidate projections, scoped stable batching, authorized hydration and structural revalidation. Expose no JPA entities. |
+| CREATE | `M/application/service/PipelineDossierReadApplicationService.java` | Coordinate T33 exact decisions, parent recheck, graph assembly and linked-resource filtering, quantity mapping and totals. Delegate the publication read to the existing T07 use case with its protected transaction lifecycle preserved. Only this new class can consume the T33 Identity export for T35. |
+| CREATE | `M/infrastructure/persistence/adapter/JpaPipelineDossierReadAdapter.java` | Parameterized queries over current Topology pipeline/authoring, section, node, connection and equipment relations. Resolve canonical association and extract stored units/status/timestamps. Compare exact relationship evidence and hydrate only admitted IDs. No publication persistence or foreign repository access. |
+| CREATE | `M/api/rest/controller/PipelineDossierController.java` | Six ordinary protected GETs, bounded canonical inputs, declared OpenAPI response status and cache controls. Normalize non-disclosing exact-target failures. |
+| CREATE | `M/api/rest/response/PipelineDossierResponses.java` | Explicit allowlisted HTTP DTOs and mappings for all six routes. Exclude internal association candidates, grant data, entities and baseline source pins. |
+| UPDATE | `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/RegionalAccessPostgresIntegrationTest.java` | Extend the existing synthetic signed regional journey with map-to-dossier, design/section units and unavailable values, exact graph and equipment filtering, pagination, route security and current revocation. Reuse the deployed test fixture and retain T33/T34 cases. |
+| UPDATE | `src/test/java/dz/sh/hidra/qualification/Gz2SignedWorkflowNativeHttpPostgresIntegrationTest.java` | Reuse its real T06/T07 publication and supersession journey to check dossier provenance with both necessary authorities. Exercise absence, exact system association and independent denial, preserving existing exact/history and restart checks. |
+| UPDATE | `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java` | Verify ordinary route name and absence of trusted-native bypass for all dossier routes, plus retention of existing T07 protected entry points. |
+| UPDATE | `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java` | Admit only the named T35 application service to the same three exact T33 export types as T34. Keep sibling and private-import denials. |
+| UPDATE | `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java` | Mirror the exact consumer/type allowance in the source scanner. Preserve all unrelated checks. |
+| UPDATE | `.github/ci-test-inventory.json` | Update case inventories and source digests for changed suites and preserve their lane assignments. |
+| UPDATE | `doc/api/openapi.yaml` | Reconcile six additive operations and typed schemas from the actual hosted generated artifact. Preserve established operations. |
+| UPDATE | `.github/documentation-validation.json` | Preserve existing history and register source SHA, runtime artifact IDs, counts and digests for the canonical refresh. |
+| UPDATE | `doc/roadmap/ROADMAP.md` | Append T35 source and acceptance evidence. Set COMPLETED only after the gate below. |
+| DELETE | None | Retain all migrations, catalog and dictionary, existing owner contracts, permission model and routes. |
+
+Registered source message `feat(topology): expose protected pipeline dossier reads`.
+For hosted artifact-based reconciliation use
+`docs(topology): reconcile T35 pipeline dossier API contract`.
+No migration, dictionary change, T36 restriction adjudication or frontend
+source change is admitted.
+
+#### Single T35 development-software acceptance gate
+
+One successful exact-final-SHA **HidraAPI CI Full Verification Gate** is
+sufficient. Its existing signed HTTP/fresh PostgreSQL suites must prove
+T34 map discovery to an exact T35 dossier with two regional scopes and a
+foreign company. Verify correct stored diameter/pressure/length units and
+source metadata, no operational-limit inference, unavailable values,
+ordered section endpoints and elevations, preservation of non-drawable
+sections, dangling/cross-scope connection suppression, and exact
+installed-equipment membership. Prove post-filter pages/counts, 401/403,
+indistinguishable absent/denied/wrong-parent 404, independent child
+denial and revocation using a previously issued token. From the existing
+signed publication journey, prove genuine authorized system receipt
+provenance, explicit no-publication absence, and no disclosure on missing
+owner source permissions or a disallowed system even when pipeline read
+is permitted. Verify supersession changes the current receipt while the
+existing authorized T07 historical read retains its old digest. Retain
+both architecture guards, prior signed workflows, backward compatibility,
+strict runtime OpenAPI and physical dictionary equality. Record the run
+and combined evidence artifact. No separate manual, frontend, engineering
+or SITE evidence is required to close T35. The subsequent stage is T36
+(G4), with its separate constraint-owner prerequisite.

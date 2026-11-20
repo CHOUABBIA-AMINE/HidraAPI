@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `6252aa5d5feeacd6e06473d80336dc455052d8fa`
+Captured source SHA: `67fdf80e6737be799643ff898d5724124f3fb492`
 PostgreSQL server: `16.16 (Debian 16.16-1.pgdg13+1)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `92621c86941784757e37c4d8e9195ac639f8b9475be438f7721aa5bfb9869064`.
-Migrations: 234; JPA mappings: 471; catalog relations: 614; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `3514cd8cebc386c3bb94c57a7f40341c02871deac5e76c599db06242b9e20194`.
+Migrations: 235; JPA mappings: 471; catalog relations: 615; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -5107,6 +5107,7 @@ Persisted ConfigurationDefinitionJpaEntity state; semantic authority remains wit
 - Migration mention (not inferred introduction): [V20260611_020__create_configuration_tables.sql](../../src/main/resources/db/migration/V20260611_020__create_configuration_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_002__enforce_same_module_reference_integrity_b.sql](../../src/main/resources/db/migration/V20260929_002__enforce_same_module_reference_integrity_b.sql)
 - Migration mention (not inferred introduction): [V20261103_006__foundation_configuration_lifecycle.sql](../../src/main/resources/db/migration/V20261103_006__foundation_configuration_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261120_001__t32_configuration_override_retirement.sql](../../src/main/resources/db/migration/V20261120_001__t32_configuration_override_retirement.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -5165,6 +5166,7 @@ Persisted ConfigurationDefinitionVersionJpaEntity state; semantic authority rema
 - Migration mention (not inferred introduction): [V20260929_002__enforce_same_module_reference_integrity_b.sql](../../src/main/resources/db/migration/V20260929_002__enforce_same_module_reference_integrity_b.sql)
 - Migration mention (not inferred introduction): [V20261004_039__hmr_039_configuration_configuration_value.sql](../../src/main/resources/db/migration/V20261004_039__hmr_039_configuration_configuration_value.sql)
 - Migration mention (not inferred introduction): [V20261103_006__foundation_configuration_lifecycle.sql](../../src/main/resources/db/migration/V20261103_006__foundation_configuration_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261120_001__t32_configuration_override_retirement.sql](../../src/main/resources/db/migration/V20261120_001__t32_configuration_override_retirement.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -5460,6 +5462,75 @@ Persisted ConfigurationNamespaceJpaEntity state; semantic authority remains with
 
 None captured in this catalog category.
 
+### public.hidra_configuration_override_retirement
+
+Owner: **configuration**; relation kind: `r`.
+
+T32 immutable administrator-authorized scheduled retirement cutoff for an eligible B5 typed environment override; preserves original value and historical as-of semantics.
+
+- Evidence: [V20261120_001__t32_configuration_override_retirement.sql](../../src/main/resources/db/migration/V20261120_001__t32_configuration_override_retirement.sql)
+- Evidence: [JpaConfigurationAdministrationQueryAdapter.java](../../src/main/java/dz/sh/hidra/modules/configuration/infrastructure/query/JpaConfigurationAdministrationQueryAdapter.java)
+- Migration mention (not inferred introduction): [V20261120_001__t32_configuration_override_retirement.sql](../../src/main/resources/db/migration/V20261120_001__t32_configuration_override_retirement.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| value_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| definition_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| definition_version_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| environment | character varying(40) | False | None; identity=; generated= | No current mapped Java column | — |
+| cutoff | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| before_source | character varying(40) | False | None; identity=; generated= | No current mapped Java column | — |
+| before_value_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| after_source | character varying(40) | False | None; identity=; generated= | No current mapped Java column | — |
+| after_value_id | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+| state_token | character varying(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| actor_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| created_at | timestamp with time zone | False | clock_timestamp(); identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `ck_t32_after_provenance`: CHECK (after_source::text = 'DEFAULT'::text AND after_value_id IS NULL OR after_source::text = 'ENVIRONMENT_OVERRIDE'::text AND after_value_id IS NOT NULL AND after_value_id::text &lt;&gt; value_id::text)
+  - Catalog attributes: {"columns": ["after_source", "after_value_id", "value_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_configuration_override_retirem_definition_version_id_fkey`: FOREIGN KEY (definition_version_id) REFERENCES hidra_configuration_definition_version(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["definition_version_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_configuration_definition_version"}, "type": "f", "validated": true}
+- `hidra_configuration_override_retirement_actor_id_check`: CHECK (length(btrim(actor_id::text)) &gt; 0 AND btrim(actor_id::text) = actor_id::text)
+  - Catalog attributes: {"columns": ["actor_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_configuration_override_retirement_after_source_check`: CHECK (after_source::text = ANY (ARRAY['DEFAULT'::character varying, 'ENVIRONMENT_OVERRIDE'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["after_source"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_configuration_override_retirement_before_source_check`: CHECK (before_source::text = 'ENVIRONMENT_OVERRIDE'::text)
+  - Catalog attributes: {"columns": ["before_source"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_configuration_override_retirement_check`: CHECK (before_value_id::text = value_id::text)
+  - Catalog attributes: {"columns": ["before_value_id", "value_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_configuration_override_retirement_definition_id_fkey`: FOREIGN KEY (definition_id) REFERENCES hidra_configuration_definition(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["definition_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_configuration_definition"}, "type": "f", "validated": true}
+- `hidra_configuration_override_retirement_pkey`: PRIMARY KEY (id)
+  - Catalog attributes: {"columns": ["id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_configuration_override_retirement_state_token_check`: CHECK (state_token::text ~ '^[0-9a-f]{64}$'::text)
+  - Catalog attributes: {"columns": ["state_token"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_configuration_override_retirement_value_id_fkey`: FOREIGN KEY (value_id) REFERENCES hidra_configuration_value(id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["value_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_configuration_value"}, "type": "f", "validated": true}
+- `hidra_configuration_override_retirement_value_id_key`: UNIQUE (value_id)
+  - Catalog attributes: {"columns": ["value_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+
+#### Indexes
+
+- `hidra_configuration_override_retirement_pkey`: CREATE UNIQUE INDEX hidra_configuration_override_retirement_pkey ON public.hidra_configuration_override_retirement USING btree (id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `hidra_configuration_override_retirement_value_id_key`: CREATE UNIQUE INDEX hidra_configuration_override_retirement_value_id_key ON public.hidra_configuration_override_retirement USING btree (value_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `ix_t32_retirement_definition_environment`: CREATE INDEX ix_t32_retirement_definition_environment ON public.hidra_configuration_override_retirement USING btree (definition_id, environment, cutoff)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+
+#### Triggers
+
+- `tr_t32_retirement_immutable`: CREATE TRIGGER tr_t32_retirement_immutable BEFORE DELETE OR UPDATE ON hidra_configuration_override_retirement FOR EACH ROW EXECUTE FUNCTION hidra_t32_retirement_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t32_retirement_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t32_retirement_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Configuration retirement receipts are immutable' USING ERRCODE='23514';<br>END $function$<br>
+- `tr_t32_retirement_insert`: CREATE TRIGGER tr_t32_retirement_insert BEFORE INSERT ON hidra_configuration_override_retirement FOR EACH ROW EXECUTE FUNCTION hidra_t32_retirement_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t32_retirement_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t32_retirement_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>DECLARE<br>    v public.hidra_configuration_value%ROWTYPE;<br>    d public.hidra_configuration_definition%ROWTYPE;<br>    ver public.hidra_configuration_definition_version%ROWTYPE;<br>    successor_id varchar(80);<br>BEGIN<br>    -- Match the exact locking order used by the admitted B5 override writer.<br>    SELECT * INTO v FROM public.hidra_configuration_value WHERE id=NEW.value_id;<br>    IF NOT FOUND THEN RAISE EXCEPTION 'Unknown retirement target' USING ERRCODE='23514'; END IF;<br>    SELECT * INTO d FROM public.hidra_configuration_definition WHERE id=v.definition_id FOR UPDATE;<br>    SELECT * INTO v FROM public.hidra_configuration_value WHERE id=NEW.value_id FOR SHARE;<br>    SELECT * INTO ver FROM public.hidra_configuration_definition_version WHERE id=v.definition_version_id;<br>    IF d.id IS NULL OR ver.id IS NULL OR ver.validation_summary IS DISTINCT FROM 'HAPI-927'<br>       OR NOT ver.active OR ver.schema_json IS NOT NULL OR ver.definition_id&lt;&gt;v.definition_id<br>       OR d.status&lt;&gt;'ACTIVE' OR d.scoped OR d.requires_approval OR d.sensitivity NOT IN ('PUBLIC','INTERNAL')<br>       OR d.value_type NOT IN ('STRING','BOOLEAN','NUMBER')<br>       OR v.status&lt;&gt;'ACTIVE' OR v.raw_value IS NULL OR v.json_value IS NOT NULL OR v.secret_reference IS NOT NULL<br>       OR NEW.definition_id&lt;&gt;v.definition_id OR NEW.definition_version_id&lt;&gt;v.definition_version_id<br>       OR NEW.environment&lt;&gt;v.environment OR NEW.before_value_id&lt;&gt;v.id<br>       OR v.effective_from IS NULL OR v.effective_from&gt;=NEW.cutoff<br>       OR (v.effective_to IS NOT NULL AND NEW.cutoff&gt;=v.effective_to)<br>       OR NEW.cutoff&lt;=clock_timestamp()<br>       OR EXISTS(SELECT 1 FROM public.hidra_configuration_override_retirement WHERE value_id=NEW.value_id)<br>       OR EXISTS(SELECT 1 FROM public.hidra_configuration_validation_rule<br>                  WHERE definition_id=v.definition_id AND status='ACTIVE') THEN<br>        RAISE EXCEPTION 'Invalid B5 retirement lifecycle' USING ERRCODE='23514';<br>    END IF;<br><br>    -- The receipt records the observed successor or default *at the scheduling instant*.<br>    SELECT x.id INTO successor_id FROM public.hidra_configuration_value x<br>      LEFT JOIN public.hidra_configuration_override_retirement r ON r.value_id=x.id<br>      WHERE x.id&lt;&gt;v.id AND x.definition_id=v.definition_id<br>        AND x.definition_version_id=v.definition_version_id AND x.environment=v.environment<br>        AND x.status='ACTIVE' AND x.effective_from&lt;=NEW.cutoff<br>        AND (LEAST(x.effective_to,r.cutoff) IS NULL OR NEW.cutoff&lt;LEAST(x.effective_to,r.cutoff))<br>      ORDER BY x.id LIMIT 1;<br>    IF successor_id IS NULL THEN<br>        IF NEW.after_source&lt;&gt;'DEFAULT' OR NEW.after_value_id IS NOT NULL THEN<br>            RAISE EXCEPTION 'Stale retirement successor' USING ERRCODE='23514';<br>        END IF;<br>    ELSIF NEW.after_source&lt;&gt;'ENVIRONMENT_OVERRIDE' OR NEW.after_value_id IS DISTINCT FROM successor_id THEN<br>        RAISE EXCEPTION 'Stale retirement successor' USING ERRCODE='23514';<br>    END IF;<br>    RETURN NEW;<br>END $function$<br>
+
 ### public.hidra_configuration_profile
 
 Owner: **configuration**; relation kind: `r`.
@@ -5674,6 +5745,7 @@ Persisted ConfigurationValidationRuleJpaEntity state; semantic authority remains
 - Evidence: [ConfigurationValidationRuleJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/configuration/infrastructure/persistence/entity/ConfigurationValidationRuleJpaEntity.java)
 - Migration mention (not inferred introduction): [V20260611_020__create_configuration_tables.sql](../../src/main/resources/db/migration/V20260611_020__create_configuration_tables.sql)
 - Migration mention (not inferred introduction): [V20260929_002__enforce_same_module_reference_integrity_b.sql](../../src/main/resources/db/migration/V20260929_002__enforce_same_module_reference_integrity_b.sql)
+- Migration mention (not inferred introduction): [V20261120_001__t32_configuration_override_retirement.sql](../../src/main/resources/db/migration/V20261120_001__t32_configuration_override_retirement.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -5727,6 +5799,7 @@ Persisted ConfigurationValueJpaEntity state; semantic authority remains with con
 - Migration mention (not inferred introduction): [V20260929_002__enforce_same_module_reference_integrity_b.sql](../../src/main/resources/db/migration/V20260929_002__enforce_same_module_reference_integrity_b.sql)
 - Migration mention (not inferred introduction): [V20261004_039__hmr_039_configuration_configuration_value.sql](../../src/main/resources/db/migration/V20261004_039__hmr_039_configuration_configuration_value.sql)
 - Migration mention (not inferred introduction): [V20261103_006__foundation_configuration_lifecycle.sql](../../src/main/resources/db/migration/V20261103_006__foundation_configuration_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261120_001__t32_configuration_override_retirement.sql](../../src/main/resources/db/migration/V20261120_001__t32_configuration_override_retirement.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -5776,7 +5849,7 @@ Persisted ConfigurationValueJpaEntity state; semantic authority remains with con
 
 - `tr_b5_configuration_value`: CREATE TRIGGER tr_b5_configuration_value BEFORE INSERT OR UPDATE ON hidra_configuration_value FOR EACH ROW EXECUTE FUNCTION hidra_b5_configuration_value_guard()
   - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_b5_configuration_value_guard()"}
-  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_b5_configuration_value_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>DECLARE d hidra_configuration_definition%ROWTYPE; v hidra_configuration_definition_version%ROWTYPE;<br>BEGIN<br> SELECT * INTO d FROM hidra_configuration_definition WHERE id=NEW.definition_id FOR UPDATE;<br> SELECT * INTO v FROM hidra_configuration_definition_version WHERE id=NEW.definition_version_id;<br> -- Preserve legacy producer contracts. The B5 version marker selects the strict lifecycle.<br> IF v.validation_summary IS DISTINCT FROM 'HAPI-927' THEN<br>   IF EXISTS(SELECT 1 FROM hidra_configuration_definition_version WHERE definition_id=NEW.definition_id AND validation_summary='HAPI-927') THEN<br>     RAISE EXCEPTION 'Exact active B5 version required' USING ERRCODE='23514';<br>   END IF;<br>   RETURN NEW;<br> END IF;<br> IF TG_OP='UPDATE' THEN RAISE EXCEPTION 'B5 override revisions are append only' USING ERRCODE='23514'; END IF;<br> IF d.status&lt;&gt;'ACTIVE' OR d.requires_approval OR d.scoped OR d.sensitivity NOT IN ('PUBLIC','INTERNAL')<br>   OR NOT v.active OR v.definition_id&lt;&gt;NEW.definition_id OR v.schema_json IS NOT NULL<br>   OR NEW.status&lt;&gt;'ACTIVE' OR NEW.json_value IS NOT NULL OR NEW.secret_reference IS NOT NULL<br>   OR NEW.raw_value IS NULL OR length(NEW.raw_value)&gt;2000 OR btrim(NEW.raw_value)&lt;&gt;NEW.raw_value<br>   OR NEW.created_by_actor_id IS NULL OR btrim(NEW.created_by_actor_id)=''<br>   OR NEW.environment !~ '^[A-Za-z0-9][A-Za-z0-9_.-]{0,39}$'<br>   OR NEW.effective_from IS NULL OR NEW.effective_to&lt;=NEW.effective_from THEN<br>   RAISE EXCEPTION 'Invalid B5 value contract' USING ERRCODE='23514';<br> END IF;<br> IF (d.value_type='BOOLEAN' AND NEW.raw_value NOT IN ('true','false'))<br>   OR (d.value_type='NUMBER' AND (length(NEW.raw_value)&gt;58 OR NEW.raw_value !~ '^-?(0&#124;[1-9][0-9]*)(\.[0-9]+)?$'))<br>   OR d.value_type NOT IN ('STRING','BOOLEAN','NUMBER') THEN<br>   RAISE EXCEPTION 'Invalid B5 typed value' USING ERRCODE='23514';<br> END IF;<br> IF d.value_type='NUMBER' AND (length(replace(ltrim(NEW.raw_value,'-'),'.',''))&gt;38<br>   OR (position('.' in NEW.raw_value)&gt;0 AND length(split_part(NEW.raw_value,'.',2))&gt;18)) THEN<br>   RAISE EXCEPTION 'B5 decimal bounds exceeded' USING ERRCODE='23514';<br> END IF;<br> IF EXISTS(SELECT 1 FROM hidra_configuration_value x WHERE x.definition_id=NEW.definition_id<br>   AND x.environment=NEW.environment AND x.status='ACTIVE'<br>   AND (x.effective_to IS NULL OR x.effective_to&gt;NEW.effective_from)<br>   AND (NEW.effective_to IS NULL OR x.effective_from IS NULL OR x.effective_from&lt;NEW.effective_to)) THEN<br>   RAISE EXCEPTION 'Overlapping B5 override' USING ERRCODE='23514';<br> END IF;<br> RETURN NEW;<br>END $function$<br>
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_b5_configuration_value_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>DECLARE d hidra_configuration_definition%ROWTYPE; v hidra_configuration_definition_version%ROWTYPE;<br>BEGIN<br> SELECT * INTO d FROM hidra_configuration_definition WHERE id=NEW.definition_id FOR UPDATE;<br> SELECT * INTO v FROM hidra_configuration_definition_version WHERE id=NEW.definition_version_id;<br> -- Preserve legacy producer contracts. The B5 version marker selects the strict lifecycle.<br> IF v.validation_summary IS DISTINCT FROM 'HAPI-927' THEN<br>   IF EXISTS(SELECT 1 FROM hidra_configuration_definition_version WHERE definition_id=NEW.definition_id AND validation_summary='HAPI-927') THEN<br>     RAISE EXCEPTION 'Exact active B5 version required' USING ERRCODE='23514';<br>   END IF;<br>   RETURN NEW;<br> END IF;<br> IF TG_OP='UPDATE' THEN RAISE EXCEPTION 'B5 override revisions are append only' USING ERRCODE='23514'; END IF;<br> IF d.status&lt;&gt;'ACTIVE' OR d.requires_approval OR d.scoped OR d.sensitivity NOT IN ('PUBLIC','INTERNAL')<br>   OR NOT v.active OR v.definition_id&lt;&gt;NEW.definition_id OR v.schema_json IS NOT NULL<br>   OR NEW.status&lt;&gt;'ACTIVE' OR NEW.json_value IS NOT NULL OR NEW.secret_reference IS NOT NULL<br>   OR NEW.raw_value IS NULL OR length(NEW.raw_value)&gt;2000 OR btrim(NEW.raw_value)&lt;&gt;NEW.raw_value<br>   OR NEW.created_by_actor_id IS NULL OR btrim(NEW.created_by_actor_id)=''<br>   OR NEW.environment !~ '^[A-Za-z0-9][A-Za-z0-9_.-]{0,39}$'<br>   OR NEW.effective_from IS NULL OR NEW.effective_to&lt;=NEW.effective_from THEN<br>   RAISE EXCEPTION 'Invalid B5 value contract' USING ERRCODE='23514';<br> END IF;<br> IF (d.value_type='BOOLEAN' AND NEW.raw_value NOT IN ('true','false'))<br>   OR (d.value_type='NUMBER' AND (length(NEW.raw_value)&gt;58 OR NEW.raw_value !~ '^-?(0&#124;[1-9][0-9]*)(\.[0-9]+)?$'))<br>   OR d.value_type NOT IN ('STRING','BOOLEAN','NUMBER') THEN<br>   RAISE EXCEPTION 'Invalid B5 typed value' USING ERRCODE='23514';<br> END IF;<br> IF d.value_type='NUMBER' AND (length(replace(ltrim(NEW.raw_value,'-'),'.',''))&gt;38<br>   OR (position('.' in NEW.raw_value)&gt;0 AND length(split_part(NEW.raw_value,'.',2))&gt;18)) THEN<br>   RAISE EXCEPTION 'B5 decimal bounds exceeded' USING ERRCODE='23514';<br> END IF;<br> IF EXISTS(SELECT 1 FROM public.hidra_configuration_value x<br>   LEFT JOIN public.hidra_configuration_override_retirement r ON r.value_id=x.id<br>   WHERE x.definition_id=NEW.definition_id<br>   AND x.environment=NEW.environment AND x.status='ACTIVE'<br>   AND (LEAST(x.effective_to,r.cutoff) IS NULL OR LEAST(x.effective_to,r.cutoff)&gt;NEW.effective_from)<br>   AND (NEW.effective_to IS NULL OR x.effective_from IS NULL OR x.effective_from&lt;NEW.effective_to)) THEN<br>   RAISE EXCEPTION 'Overlapping B5 override' USING ERRCODE='23514';<br> END IF;<br> RETURN NEW;<br>END $function$<br>
 
 ### public.hidra_custody_agreement
 

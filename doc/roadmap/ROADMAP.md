@@ -6304,3 +6304,24 @@ based only on genuine hosted OpenAPI and physical catalog artifacts. T32
 cannot be COMPLETED before its final reconciled exact-SHA Full Verification
 Gate passes. If the six failures persist, use the new exact-SHA diagnostics
 for the next bounded T32 repair.
+
+### T32 canonical API and physical dictionary reconciliation — 2026-11-20
+
+[HidraAPI CI #1332 attempt 1](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44712829132/attempts/1)
+on `67fdf80e6737be799643ff898d5724124f3fb492` passed static validation,
+Java 21 unit/architecture and all fourteen PostgreSQL integration shards,
+including the T32 retirement tests in shard 10.
+[Documentation Validation #1179](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44712829102)
+also passed. The [API contract and dictionary lane](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44712829132/job/136208586615)
+generated runtime OpenAPI, passed backward compatibility and captured the
+migrated catalog. It failed canonical OpenAPI equality and skipped strict
+dictionary equality. The Full Verification Gate failed.
+
+`docs(configuration): reconcile T32 API and physical dictionary` promotes the
+[exact-SHA runtime OpenAPI](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44712829132/artifacts/14617469900)
+and [migrated catalog and dictionary](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44712829132/artifacts/14617624367)
+into the two canonical documents, updates their reviewed provenance in
+`.github/documentation-validation.json` and appends this record. T32
+remains IN PROGRESS until Full Verification Gate passes on the final
+reconciled SHA, including both strict equality checks and the T32
+PostgreSQL tests. FG-20/A20 is the remaining development-software gate.

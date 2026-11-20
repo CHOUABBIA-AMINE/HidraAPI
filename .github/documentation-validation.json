@@ -1239,9 +1239,9 @@
   ],
   "openapi": {
     "counts": {
-      "operations": 508,
-      "paths": 463,
-      "schemas": 545
+      "operations": 512,
+      "paths": 467,
+      "schemas": 548
     },
     "path": "doc/api/openapi.yaml",
     "prior_reviewed_provenance": {
@@ -2043,7 +2043,7 @@
       "workflow_conclusion": "failure",
       "zip_sha256": "99dd0881b0295827fd8e58912896e262d1d14b7813992fa2f4be61e08fede000"
     },
-    "provenance": {
+    "prior_reviewed_provenance_t29": {
       "artifact_id": 14539775885,
       "artifact_member": "hidra-api.json",
       "artifact_name": "hidra-api-openapi-8e7293a61d813ecfa7e640e2077da604c86e5363-44543489071-1-api-contract",
@@ -2083,8 +2083,48 @@
       "workflow_conclusion": "failure",
       "zip_sha256": "39cf24797caed3cdb48a3900a94bd2ad24b671a052e2cc5144db5514b937c4d4"
     },
-    "sha256": "8538045f998796dc0f7dcf9e3014c168132b3fb6f2734b76bc8c4e8633408d6f",
-    "source_sha": "8e7293a61d813ecfa7e640e2077da604c86e5363"
+    "provenance": {
+      "artifact_id": 14607120221,
+      "artifact_member": "hidra-api.json",
+      "artifact_name": "hidra-api-openapi-6252aa5d5feeacd6e06473d80336dc455052d8fa-44686045607-1-api-contract",
+      "compatibility_review": "CI #1329 passed backward compatibility. Local comparison confirms four additive T31 paths and three added schemas with no changes to existing paths or schemas.",
+      "conclusion": "success",
+      "conclusion_scope": "Runtime generation and backward compatibility. The source run failed canonical OpenAPI equality and skipped strict dictionary equality. The replacement exact-SHA Full Verification Gate is pending.",
+      "database_evidence": {
+        "artifact_id": 14605784973,
+        "artifact_member": "DATA_DICTIONARY.md",
+        "artifact_name": "hidra-database-schema-6252aa5d5feeacd6e06473d80336dc455052d8fa-44686045607-1-api-contract",
+        "artifact_zip_sha256": "0a2c3f199faf28569692c22e4fb95eab47e8925a06fd91eb4653ceffc7cc3ff8",
+        "catalog_sha256": "7463f852444d107636cbeac8f84202e7320671ceb6c23d3fd0a5c8ce05d7e2b8",
+        "dictionary_sha256": "cc439b27b5e04f94f21466355e81485ea897145445268b24759173271c1fc28c",
+        "jpa_mappings": 471,
+        "local_artifact_check": "Regenerated from the retained catalog with the repository generator and checked against the downloaded dictionary. Hosted strict comparison on the replacement commit is pending.",
+        "migrations": 234,
+        "relations": 614,
+        "reviewed_dictionary_checked": false,
+        "server_version": "16.16 (Debian 16.16-1.pgdg13+1)",
+        "source_bundle_sha256": "92621c86941784757e37c4d8e9195ac639f8b9475be438f7721aa5bfb9869064",
+        "source_sha": "6252aa5d5feeacd6e06473d80336dc455052d8fa",
+        "unresolved_owners": []
+      },
+      "failed_step": "Enforce canonical OpenAPI snapshot equality",
+      "generation_step": "Publish deterministic OpenAPI contract",
+      "generation_step_conclusion": "success",
+      "generation_step_number": 9,
+      "job_conclusion": "failure",
+      "job_id": 136120498995,
+      "json_sha256": "200b96fa05be81afd7f81e9f08e750393c96155397782eca2932b960c6ea5429",
+      "remaining_gates": [
+        "Final exact-SHA Full Verification Gate including both strict equality checks and signed T31 PostgreSQL coverage."
+      ],
+      "run_attempt": 1,
+      "run_id": 44686045607,
+      "source_sha": "6252aa5d5feeacd6e06473d80336dc455052d8fa",
+      "workflow_conclusion": "failure",
+      "zip_sha256": "141606a0d3db769003fe40e266282c6efd81b6688d5fdfdb90bfadb826b786db"
+    },
+    "sha256": "543c1f236c23638f24fb22c669ded2da2ef6be720f908bfdeeb2cda0c3202bee",
+    "source_sha": "6252aa5d5feeacd6e06473d80336dc455052d8fa"
   },
   "register": "doc/governance/DOCUMENT_REGISTER.md",
   "register_areas": {

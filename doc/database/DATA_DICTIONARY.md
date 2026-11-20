@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `0ac7ae984269c8e76c8fc303843c6c2ca0ce0978`
+Captured source SHA: `6252aa5d5feeacd6e06473d80336dc455052d8fa`
 PostgreSQL server: `16.16 (Debian 16.16-1.pgdg13+1)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `e3e2ec68d0ee7e16888af94ce6bd5ac6431813ae1c7c20eea5386fafb0a3e5e8`.
-Migrations: 233; JPA mappings: 471; catalog relations: 613; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `92621c86941784757e37c4d8e9195ac639f8b9475be438f7721aa5bfb9869064`.
+Migrations: 234; JPA mappings: 471; catalog relations: 614; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -12346,6 +12346,7 @@ Persisted PermissionJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261118_005__t26_governed_synthetic_exchange.sql](../../src/main/resources/db/migration/V20261118_005__t26_governed_synthetic_exchange.sql)
 - Migration mention (not inferred introduction): [V20261119_001__t27_recipient_scoped_notification_inbox.sql](../../src/main/resources/db/migration/V20261119_001__t27_recipient_scoped_notification_inbox.sql)
 - Migration mention (not inferred introduction): [V20261119_002__t28_scoped_audit_evidence.sql](../../src/main/resources/db/migration/V20261119_002__t28_scoped_audit_evidence.sql)
+- Migration mention (not inferred introduction): [V20261119_004__t31_scenario_input_revisions.sql](../../src/main/resources/db/migration/V20261119_004__t31_scenario_input_revisions.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -29806,6 +29807,117 @@ Persisted SimulationSolverTraceJpaEntity state; semantic authority remains with 
 #### Triggers
 
 None captured in this catalog category.
+
+### public.hidra_simulation_t31_scenario_input_revision
+
+Owner: **simulation**; relation kind: `r`.
+
+Simulation-owned immutable, paired-scope baseline-pinned engine-neutral scenario input revisions; one append-only relation with same-owner predecessor, actor replay uniqueness and no Topology persistence FK or solver output.
+
+- Evidence: [V20261119_004__t31_scenario_input_revisions.sql](../../src/main/resources/db/migration/V20261119_004__t31_scenario_input_revisions.sql)
+- Evidence: [JdbcScenarioInputRevisionAdapter.java](../../src/main/java/dz/sh/hidra/modules/simulation/infrastructure/persistence/adapter/JdbcScenarioInputRevisionAdapter.java)
+- Migration mention (not inferred introduction): [V20261119_004__t31_scenario_input_revisions.sql](../../src/main/resources/db/migration/V20261119_004__t31_scenario_input_revisions.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| scenario_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| revision | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| predecessor_revision | bigint | True | None; identity=; generated= | No current mapped Java column | — |
+| company_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| pipeline_system_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| baseline_receipt_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| manifest_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| baseline_epoch | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| baseline_digest | character(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| scenario_name | character varying(120) | False | None; identity=; generated= | No current mapped Java column | — |
+| mode | character varying(12) | False | None; identity=; generated= | No current mapped Java column | — |
+| pressure_value | numeric | False | None; identity=; generated= | No current mapped Java column | — |
+| pressure_unit | character varying(16) | False | None; identity=; generated= | No current mapped Java column | — |
+| pressure_si_pa | numeric | False | None; identity=; generated= | No current mapped Java column | — |
+| flow_value | numeric | False | None; identity=; generated= | No current mapped Java column | — |
+| flow_unit | character varying(12) | False | None; identity=; generated= | No current mapped Java column | — |
+| flow_si_kg_per_s | numeric | False | None; identity=; generated= | No current mapped Java column | — |
+| duration_seconds | integer | True | None; identity=; generated= | No current mapped Java column | — |
+| step_seconds | integer | True | None; identity=; generated= | No current mapped Java column | — |
+| actor_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| recorded_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| policy_id | character varying(16) | False | None; identity=; generated= | No current mapped Java column | — |
+| input_digest | character(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| request_key | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| request_fingerprint | character(64) | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_simulation_t31_scenario_input_r_request_fingerprint_check`: CHECK (request_fingerprint ~ '^[a-f0-9]{64}$'::text)
+  - Catalog attributes: {"columns": ["request_fingerprint"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_simulation_t31_scenario_input_re_pipeline_system_id_check`: CHECK (pipeline_system_id::text &lt;&gt; ''::text AND pipeline_system_id::text = btrim(pipeline_system_id::text))
+  - Catalog attributes: {"columns": ["pipeline_system_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_simulation_t31_scenario_input_revis_baseline_digest_check`: CHECK (baseline_digest ~ '^[a-f0-9]{64}$'::text)
+  - Catalog attributes: {"columns": ["baseline_digest"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_simulation_t31_scenario_input_revisi_baseline_epoch_check`: CHECK (baseline_epoch &gt; 0)
+  - Catalog attributes: {"columns": ["baseline_epoch"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_simulation_t31_scenario_input_revisi_pressure_value_check`: CHECK (pressure_value &gt; 0::numeric)
+  - Catalog attributes: {"columns": ["pressure_value"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_simulation_t31_scenario_input_revisio_pressure_unit_check`: CHECK (pressure_unit::text = ANY (ARRAY['PA'::character varying, 'BAR_ABSOLUTE'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["pressure_unit"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_simulation_t31_scenario_input_revisio_scenario_name_check`: CHECK (scenario_name::text &lt;&gt; ''::text AND scenario_name::text = btrim(scenario_name::text))
+  - Catalog attributes: {"columns": ["scenario_name"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_simulation_t31_scenario_input_revision_actor_id_check`: CHECK (actor_id::text &lt;&gt; ''::text AND actor_id::text = btrim(actor_id::text))
+  - Catalog attributes: {"columns": ["actor_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_simulation_t31_scenario_input_revision_check`: CHECK (pressure_si_pa = (pressure_value *<br>CASE<br>    WHEN pressure_unit::text = 'BAR_ABSOLUTE'::text THEN 100000<br>    ELSE 1<br>END::numeric))
+  - Catalog attributes: {"columns": ["pressure_si_pa", "pressure_value", "pressure_unit"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_simulation_t31_scenario_input_revision_check1`: CHECK (flow_si_kg_per_s = flow_value)
+  - Catalog attributes: {"columns": ["flow_si_kg_per_s", "flow_value"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_simulation_t31_scenario_input_revision_company_id_check`: CHECK (company_id::text &lt;&gt; ''::text AND company_id::text = btrim(company_id::text))
+  - Catalog attributes: {"columns": ["company_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_simulation_t31_scenario_input_revision_flow_unit_check`: CHECK (flow_unit::text = 'KG_PER_S'::text)
+  - Catalog attributes: {"columns": ["flow_unit"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_simulation_t31_scenario_input_revision_flow_value_check`: CHECK (flow_value &gt;= 0::numeric)
+  - Catalog attributes: {"columns": ["flow_value"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_simulation_t31_scenario_input_revision_input_digest_check`: CHECK (input_digest ~ '^[a-f0-9]{64}$'::text)
+  - Catalog attributes: {"columns": ["input_digest"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_simulation_t31_scenario_input_revision_mode_check`: CHECK (mode::text = ANY (ARRAY['STEADY'::character varying, 'TRANSIENT'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["mode"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_simulation_t31_scenario_input_revision_policy_id_check`: CHECK (policy_id::text = 'T31_INPUT_V1'::text)
+  - Catalog attributes: {"columns": ["policy_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_simulation_t31_scenario_input_revision_request_key_check`: CHECK (request_key::text &lt;&gt; ''::text AND request_key::text = btrim(request_key::text))
+  - Catalog attributes: {"columns": ["request_key"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_simulation_t31_scenario_input_revision_revision_check`: CHECK (revision &gt;= 1)
+  - Catalog attributes: {"columns": ["revision"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `t31_bound_numeric`: CHECK (scale(pressure_value) &lt;= 6 AND scale(flow_value) &lt;= 6 AND abs(pressure_value) &lt; '1000000000000000000'::bigint::numeric AND abs(flow_value) &lt; '1000000000000000000'::bigint::numeric)
+  - Catalog attributes: {"columns": ["pressure_value", "flow_value"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `t31_original_actor_request`: UNIQUE (company_id, pipeline_system_id, actor_id, request_key)
+  - Catalog attributes: {"columns": ["company_id", "pipeline_system_id", "actor_id", "request_key"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `t31_predecessor_consistency`: CHECK (revision = 1 AND predecessor_revision IS NULL OR revision &gt; 1 AND predecessor_revision = (revision - 1))
+  - Catalog attributes: {"columns": ["revision", "predecessor_revision"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `t31_revision_pk`: PRIMARY KEY (scenario_id, revision)
+  - Catalog attributes: {"columns": ["scenario_id", "revision"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `t31_same_owner_predecessor`: FOREIGN KEY (scenario_id, predecessor_revision, company_id, pipeline_system_id) REFERENCES hidra_simulation_t31_scenario_input_revision(scenario_id, revision, company_id, pipeline_system_id) ON DELETE RESTRICT
+  - Catalog attributes: {"columns": ["scenario_id", "predecessor_revision", "company_id", "pipeline_system_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["scenario_id", "revision", "company_id", "pipeline_system_id"], "match": "s", "on_delete": "r", "on_update": "a", "schema": "public", "table": "hidra_simulation_t31_scenario_input_revision"}, "type": "f", "validated": true}
+- `t31_scoped_revision_key`: UNIQUE (scenario_id, revision, company_id, pipeline_system_id)
+  - Catalog attributes: {"columns": ["scenario_id", "revision", "company_id", "pipeline_system_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `t31_window_shape`: CHECK (mode::text = 'STEADY'::text AND duration_seconds IS NULL AND step_seconds IS NULL OR mode::text = 'TRANSIENT'::text AND duration_seconds &gt; 0 AND step_seconds &gt; 0 AND mod(duration_seconds, step_seconds) = 0 AND (duration_seconds / NULLIF(step_seconds, 0)) &lt;= 10000)
+  - Catalog attributes: {"columns": ["mode", "duration_seconds", "step_seconds"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `t31_original_actor_request`: CREATE UNIQUE INDEX t31_original_actor_request ON public.hidra_simulation_t31_scenario_input_revision USING btree (company_id, pipeline_system_id, actor_id, request_key)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `t31_revision_pk`: CREATE UNIQUE INDEX t31_revision_pk ON public.hidra_simulation_t31_scenario_input_revision USING btree (scenario_id, revision)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `t31_scenario_scope_head`: CREATE INDEX t31_scenario_scope_head ON public.hidra_simulation_t31_scenario_input_revision USING btree (company_id, pipeline_system_id, scenario_id, revision DESC)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+- `t31_scoped_revision_key`: CREATE UNIQUE INDEX t31_scoped_revision_key ON public.hidra_simulation_t31_scenario_input_revision USING btree (scenario_id, revision, company_id, pipeline_system_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `t31_revision_truncate_guard`: CREATE TRIGGER t31_revision_truncate_guard BEFORE TRUNCATE ON hidra_simulation_t31_scenario_input_revision FOR EACH STATEMENT EXECUTE FUNCTION t31_simulation_immutable_revision()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t31_simulation_immutable_revision()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t31_simulation_immutable_revision()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'T31 immutable scenario input revision' USING ERRCODE='23514';<br>END $function$<br>
+- `t31_revision_update_delete_guard`: CREATE TRIGGER t31_revision_update_delete_guard BEFORE DELETE OR UPDATE ON hidra_simulation_t31_scenario_input_revision FOR EACH ROW EXECUTE FUNCTION t31_simulation_immutable_revision()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.t31_simulation_immutable_revision()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.t31_simulation_immutable_revision()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'T31 immutable scenario input revision' USING ERRCODE='23514';<br>END $function$<br>
 
 ### public.hidra_simulation_validation_finding
 

@@ -6018,3 +6018,28 @@ owners. The separately registered generated-artifact reconciliation
 remains pending. The replacement signed race result and a successful
 Full Verification Gate on the final reconciled SHA remain mandatory.
 T31 remains IN PROGRESS. T32 remains unselected.
+
+### T31 canonical API and physical dictionary reconciliation — 2026-11-20
+
+[CI #1329](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44686045607)
+on `6252aa5d5feeacd6e06473d80336dc455052d8fa` passed static checks,
+Java unit and architecture checks, and all fourteen PostgreSQL shards.
+The [signed GZ2 shard 12](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44686045607/job/136120499949)
+passed the registered T31 assertions, including the concurrent append
+with one 201 and one 409. Runtime generation, catalog capture and
+backward compatibility passed. The API lane failed canonical OpenAPI
+equality and skipped strict dictionary equality. The full gate failed.
+
+Publish the exact source run's [OpenAPI artifact](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44686045607/artifacts/14607120221)
+and [physical dictionary artifact](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44686045607/artifacts/14605784973).
+Verified ZIP digests, runtime source SHA and canonical OpenAPI equality
+with the captured payload. Compatibility passed locally. The catalog
+contains 234 migrations, 471 JPA mappings and 614 relations with zero
+unresolved owners. Offline regeneration matched the downloaded
+dictionary, which is promoted byte-for-byte. The documentation
+validation manifest records the evidence and retains earlier provenance.
+
+This registered reconciliation changes only the canonical OpenAPI,
+physical dictionary, documentation validation manifest and this roadmap
+append. T31 stays IN PROGRESS pending the exact-SHA Full Verification
+Gate on this reconciliation. T32 stays unselected.

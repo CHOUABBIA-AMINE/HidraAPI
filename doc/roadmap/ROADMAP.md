@@ -128,7 +128,7 @@ A task includes its required authorization, REST contract, persistence, failure 
 
 | Task | Owner | Depends on | Deliverable | Pass condition | Status |
 |---|---|---|---|---|---|
-| **T31 · Version and reconstruct engine-neutral scenarios** | Simulation with Topology | T07 | Expose scenario create/version/validate/read with exact baseline digest, units, boundary conditions, intended steady/transient mode and capability state. | Historical scenario reconstructs after baseline supersession. Availability and validation states do not imply computed results. **FG-19 / A19/A21.** | IN PROGRESS |
+| **T31 · Version and reconstruct engine-neutral scenarios** | Simulation with Topology | T07 | Expose scenario create/version/validate/read with exact baseline digest, units, boundary conditions, intended steady/transient mode and capability state. | Historical scenario reconstructs after baseline supersession. Availability and validation states do not imply computed results. **FG-19 / A19/A21.** | COMPLETED |
 | **T32 · Preview and retire configuration with effective dating** | Configuration | Confirmed consumer need and existing configuration lifecycle | Add scoped impact preview and an effective-dated retirement action with historical reads. | Authorized client gets the correct result on both sides of the effective boundary. Earlier consumers retain the accepted configuration interpretation. **FG-20 / A20.** | PLANNED |
 
 **Deferred — FG-21.** Numerical execution, calibration and industrial integrations are outside the 32 proposed tasks. Apply A21 to delivered contracts so clients can distinguish readiness, trust, engineering qualification and computation.
@@ -6043,3 +6043,128 @@ This registered reconciliation changes only the canonical OpenAPI,
 physical dictionary, documentation validation manifest and this roadmap
 append. T31 stays IN PROGRESS pending the exact-SHA Full Verification
 Gate on this reconciliation. T32 stays unselected.
+
+### Close T31 and prepare T32 implementation envelope — 2026-11-20
+
+**T31 — COMPLETED for registered development-software acceptance (FG-19 / A19/A21).**
+On final reconciliation commit `7ced7587f7828121f491b66d79f2a7d17fa53d11`,
+[HidraAPI CI #1330 attempt 2](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44687917083/attempts/2)
+passed its [Full Verification Gate](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44687917083/job/136135657931).
+The [combined evidence artifact](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44687917083/artifacts/14607909226)
+records 4,513 tests across 605 classes with zero failures, errors or skips.
+The gate used PostgreSQL shard 4 from attempt 2 and the remaining required
+lanes from attempt 1 on the same SHA, including the
+[signed GZ2 PostgreSQL shard 12](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44687917083/job/136126565518)
+and [strict OpenAPI and physical dictionary validation](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44687917083/job/136126564820).
+[Documentation Validation #1175](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44687917085)
+also passed on that SHA. This closes the registered development-software gate.
+FG-21 and industrial qualification remain deferred.
+
+**T32 — next in sequence, PLANNED pending the registered consumer prerequisite.**
+Configuration owns FG-20/A20. At the verified parent, the B5 administration
+API already resolves a scalar at an explicit instant. The
+[HidraWEB Configuration candidate](https://github.com/CHOUABBIA-AMINE/HidraWEB/blob/84538a585e81cb605f815abde259e3fbf5eeaf93/openapi/candidates/hidra-configuration-f1fdc206c916a5266f609810c045c6b5688bfd49.json)
+shows a candidate effective-read contract. No currently evidenced frontend
+workflow or backend call site establishes a need for scheduled retirement
+and preservation of the earlier interpretation. To activate T32, record the
+owning consumer and workflow, configuration key or bounded key family,
+what triggers retirement, and why that workflow must resolve the former
+value at its original instant. The envelope below applies when that
+consumer fits the existing typed, administrator-only environment boundary.
+A consumer requiring a different authority or retirement of definitions
+requires a scoped decision before execution. Consumer confirmation is an
+entry dependency. No separate acceptance evidence is required after the CI
+gate below.
+
+#### Proposed behavior within the existing Configuration boundary
+
+Retire one existing B5 PUBLIC/INTERNAL typed environment override by
+appending an immutable cutoff receipt. Identify it by value ID and verify
+the exact definition ID, active definition version and environment. Preserve
+the original value row, status, audit fields and definition version. The
+existing effective reader uses the earlier of the original exclusive end
+and retirement cutoff. Immediately before cutoff it returns the original
+value and provenance. At and after cutoff it returns the admitted successor
+if one is effective, otherwise the existing typed default, with the
+existing source indicator. A successor may begin exactly at the cutoff.
+Restrict cutoffs to microsecond-aligned future instants inside the original
+window at transaction time. Preserve current authority, redaction, typed
+default, and legacy exclusions. Feature flags, whole-definition
+retirement, secrets, arbitrary scopes and other modules are outside this
+envelope.
+
+Add `POST /api/v1/configuration/values/{valueId}/retirement-preview`
+(read-only, HTTP 200) and `PUT /api/v1/configuration/values/{valueId}/retirement`
+(HTTP 201, exact authorized replay HTTP 200). Preview accepts definition ID,
+definition version ID, environment and cutoff. It returns server-derived
+before/after source and value IDs without raw payloads or secret references,
+plus a server-computed state token binding the target, cutoff and resolved
+transition (including the successor at cutoff or the default version).
+Commit uses the same fields plus the token. Recompute under the existing
+definition lock, record actor from the bearer, and recheck current
+authority before returning or committing. Verify current authority first
+on replay, then return the original receipt for the same actor and exact
+request even after the cutoff. Reject changed or stale tokens, competing
+retirements, and unsupported lifecycle states with 409, invalid fields
+with 400, authority failure with 403 (401 for unauthenticated requests),
+and authorized unknown or mismatched targets with the same 404. Preview
+does not promise that future authorized writes cannot change the post-cutoff
+resolution.
+
+#### Proposed exact file ledger
+
+Paths starting with `M/` expand to
+`src/main/java/dz/sh/hidra/modules/configuration/`. The proposed migration
+name assumes the verified parent. Refresh migration ordering before
+registering the implementation commit.
+
+| Action | Path | Responsibility |
+|---|---|---|
+| UPDATE | `M/domain/service/TypedConfigurationPolicy.java` | Validate cutoff precision, original interval and future-only command timing using the existing typed policy. |
+| UPDATE | `M/application/port/in/ConfigurationAdministrationUseCase.java` | Define typed preview/commit inputs and results, provenance and stale-state token. |
+| UPDATE | `M/application/port/out/ConfigurationAdministrationPersistencePort.java` | Define exact target lookup plus immutable receipt lookup and append. Retain the definition-lock and overlap contract. |
+| UPDATE | `M/application/service/ConfigurationAdministrationApplicationService.java` | Coordinate authorization, target check, preview, locked revalidation, replay, receipt write and final authority check in the existing transactional convention. Own the token computation. |
+| UPDATE | `M/infrastructure/query/JpaConfigurationAdministrationQueryAdapter.java` | Bind receipt/query SQL by exact resource key, calculate effective end for historical reads and use the same end for existing overlap checks. Preserve existing list and legacy semantics. |
+| UPDATE | `M/api/rest/request/ConfigurationAdministrationRequests.java` | Add bounded request records for preview and commit, with token input on commit only. |
+| UPDATE | `M/api/rest/response/ConfigurationAdministrationResponses.java` | Map provenance-only preview and immutable receipt without exposing the original scalar payload. |
+| UPDATE | `M/api/rest/controller/ConfigurationAdministrationController.java` | Map both routes through the existing administrator controller and its error mapping. Add explicit protected target 404 and create/replay status mapping. |
+| CREATE | `src/main/resources/db/migration/V20261120_001__t32_configuration_override_retirement.sql` | Add one append-only retirement receipt per override, restrictive foreign key and immutable receipt enforcement. Validate the exact B5 scope and cutoff under the definition-row lock. Update the existing overlap guard in a new migration to use the effective cutoff while preserving original B5 row immutability and legacy branches. Protect referenced value rows from destructive removal. |
+| UPDATE | `src/test/java/dz/sh/hidra/modules/configuration/domain/service/TypedConfigurationPolicyTest.java` | Cover precision, exact boundaries and invalid cutoffs with a fixed test instant. |
+| UPDATE | `src/test/java/dz/sh/hidra/modules/configuration/infrastructure/persistence/ConfigurationAdministrationPostgresIntegrationTest.java` | Drive signed HTTP requests against fresh Flyway PostgreSQL, verify readback, persistence and rollback, and exercise both service and SQL concurrency/invariants. |
+| UPDATE | `.github/ci-test-inventory.json` | Refresh the two changed entries with exact case lists and source hashes, preserving their lane assignment. |
+| UPDATE | `.github/database-dictionary-ownership.json` | Register Configuration ownership and receipt migration provenance for strict generation. |
+| UPDATE | `doc/api/openapi.yaml` | Reconcile both routes and DTO/status contracts from the final implementation runtime artifact. |
+| UPDATE | `doc/database/DATA_DICTIONARY.md` | Reconcile the receipt relation, columns, key and foreign key from the final strict PostgreSQL artifact. |
+| UPDATE | `doc/roadmap/ROADMAP.md` | Record the confirmed consumer, authorized stage and CI provenance using the existing task row and append-only evidence. |
+| DELETE | None | Preserve all migration history and existing read/write entry points. |
+
+Proposed source message `feat(configuration): preview and schedule override retirement`.
+If the canonical artifacts require a separate artifact-based reconciliation,
+use `docs(configuration): reconcile T32 API and physical dictionary`.
+The existing signed administrator adapter and override writer are reused.
+The writer participates through the existing definition lock and
+`requireNoOverlap` port. No new CI workflow or consumer implementation is
+part of this candidate envelope.
+
+#### Single T32 development-software acceptance gate
+
+On the final reconciled implementation SHA, require one passing
+**HidraAPI CI Full Verification Gate**. The existing Configuration
+PostgreSQL integration suite must exercise the named workflow with
+synthetic data and the signed administrator HTTP boundary. Verify preview
+writes zero rows, exact pre-cutoff/as-of-cutoff/post-cutoff results (including
+one microsecond before and after), default and adjacent replacement
+outcomes, persistence on a fresh transaction, and preservation of original
+override ID, version, payload and historical effective result. Assert
+missing and mismatched targets are indistinguishable, unprivileged and
+revoked callers get no protected data, and a denial after provisional
+write rolls back. Verify invalid cutoffs, stale previews, exact replay
+after cutoff, concurrent duplicate/conflicting retirements and
+retirement racing an override insert. Confirm a single receipt, no
+overlap, and PostgreSQL rejection of invalid direct receipt inserts,
+receipt mutation and original value mutation. Retain existing B5,
+legacy, security and architecture assertions. The same gate validates
+inventory, runtime OpenAPI and the strict generated physical dictionary.
+The run and its combined evidence artifact are sufficient to close
+FG-20/A20. No manual run, external report, separate sign-off or operational
+calibration is part of that development-software acceptance.

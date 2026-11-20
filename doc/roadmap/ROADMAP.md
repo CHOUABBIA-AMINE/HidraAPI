@@ -9,7 +9,7 @@
 | Status | ACTIVE |
 | Authority | Sole task register and execution source for HidraAPI |
 | Owner adoption | 2026-11-10 |
-| Active task selection | T26 and T27 COMPLETED for synthetic development-software acceptance. T28 is selected for planning with the registered implementation envelope below. |
+| Active task selection | T32 COMPLETED on exact-SHA CI #1333; T33 selected / implementation envelope registered, source pending. |
 
 The task register controls scope, dependencies, status and acceptance. Existing technical policy and verified implementation evidence retain their applicability. Task status advances only with recorded evidence. The initial status for each task is PLANNED. The first candidate is T01.
 
@@ -129,7 +129,7 @@ A task includes its required authorization, REST contract, persistence, failure 
 | Task | Owner | Depends on | Deliverable | Pass condition | Status |
 |---|---|---|---|---|---|
 | **T31 · Version and reconstruct engine-neutral scenarios** | Simulation with Topology | T07 | Expose scenario create/version/validate/read with exact baseline digest, units, boundary conditions, intended steady/transient mode and capability state. | Historical scenario reconstructs after baseline supersession. Availability and validation states do not imply computed results. **FG-19 / A19/A21.** | COMPLETED |
-| **T32 · Preview and retire configuration with effective dating** | Configuration | Confirmed consumer need and existing configuration lifecycle | Add scoped impact preview and an effective-dated retirement action with historical reads. | Authorized client gets the correct result on both sides of the effective boundary. Earlier consumers retain the accepted configuration interpretation. **FG-20 / A20.** | PLANNED |
+| **T32 · Preview and retire configuration with effective dating** | Configuration | Confirmed consumer need and existing configuration lifecycle | Add scoped impact preview and an effective-dated retirement action with historical reads. | Authorized client gets the correct result on both sides of the effective boundary. Earlier consumers retain the accepted configuration interpretation. **FG-20 / A20.** | COMPLETED |
 
 ### Increment 9 — Circle 1 regional pipeline workplace
 
@@ -143,7 +143,7 @@ recorded before T33 is selected.
 
 | Task | Owner | Depends on | Deliverable | Pass condition | Status |
 |---|---|---|---|---|---|
-| **T33 · Resolve regional employee access (G1)** | Identity with Organization and Topology | T32 closure and owner-approved regional authority policy | Resolve the authenticated employee and current typed resource scope using Identity grants and denies, effective Organization responsibilities and owner-issued Topology relationships. Define company, system, pipeline, section, facility and equipment inheritance and cross-region disclosure. | Signed HTTP and PostgreSQL evidence for two regional employees with different scopes, an unlinked employee, explicit deny, expired responsibility, revoked grant and foreign company. Resource decisions use current authority. | PLANNED |
+| **T33 · Resolve regional employee access (G1)** | Identity with Organization and Topology | T32 closure and owner-approved regional authority policy | Resolve the authenticated employee and current typed resource scope using Identity grants and denies, effective Organization responsibilities and owner-issued Topology relationships. Define company, system, pipeline, section, facility and equipment inheritance and cross-region disclosure. | Signed HTTP and PostgreSQL evidence for two regional employees with different scopes, an unlinked employee, explicit deny, expired responsibility, revoked grant and foreign company. Resource decisions use current authority. | IN PROGRESS |
 | **T34 · Expose regional map and discovery (G2)** | Topology with Identity and Organization | T33 | Qualify or extend owner-backed layers, features, GeoJSON and search for regional users. Apply scope before pagination and counts, preserve authorized graph semantics and retain the separately protected legacy administrator path. | A regional employee discovers a permitted pipeline. A cross-region fixture proves scope-safe geometry, connections, features, search, totals and direct lookups, including after revocation. | PLANNED |
 | **T35 · Qualify protected pipeline dossier reads (G3)** | Topology with engineering source owners | T33, T04–T07 | Qualify existing reads for a selected pipeline's design characteristics, route, kilometer points, sections, elevation, connections, installed equipment and published revision provenance. Extend a typed read only for a demonstrated gap. | A scoped client retrieves the agreed available facts with explicit units, source and version. Unavailable values are explicit. Restricted history and linked resource details require their own current authority. | PLANNED |
 | **T36 · Resolve qualified operating constraints (G4)** | Approved engineering constraint owner, with Integrity for integrity-derived restrictions, Topology and Audit | T33, applicable T07 sources, owner decision on constraint authority | Resolve approved restrictions for an exact asset or section and effective instant. Preserve pressure basis, units, scope, operating conditions, source revision, qualification and authorized decision references. Use existing qualified sources where proven. | Synthetic cases cover applicability, approved effective and historical reads, supersession, withdrawal, unresolved conflicts, missing evidence and unauthorized scope. Design pressure and unqualified assessments are never returned as approved limits. | PLANNED |
@@ -6363,3 +6363,79 @@ into the two canonical documents, updates their reviewed provenance in
 remains IN PROGRESS until Full Verification Gate passes on the final
 reconciled SHA, including both strict equality checks and the T32
 PostgreSQL tests. FG-20/A20 is the remaining development-software gate.
+
+### T32 verified software acceptance and T33 regional-authority selection — 2026-11-20
+
+**T32 — COMPLETED (registered development-software scope, FG-20/A20).** The final canonical API/dictionary reconciliation commit
+[`8f21a46784ffec13be748d6e857deb2585e03a43`](https://github.com/CHOUABBIA-AMINE/HidraAPI/commit/8f21a46784ffec13be748d6e857deb2585e03a43)
+has [HidraAPI CI #1333](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44715369813) **completed/SUCCESS** on its exact SHA. Verified jobs: static validation, Java 21 unit/architecture, all 14 PostgreSQL integration shards, API contract and dictionary, and Full Verification Gate. The final roadmap-registration-only child
+[`007afc1ac15c57b5aae609078a0b96c2154de01a`](https://github.com/CHOUABBIA-AMINE/HidraAPI/commit/007afc1ac15c57b5aae609078a0b96c2154de01a)
+passed [Documentation Validation #1181](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44749477946).
+These facts close the outstanding T32 software gate; they do **not** establish deployment, site acceptance, calibration, production values, or future T33 implementation.
+
+**T33 — IN PROGRESS / OWNER-SELECTED; IMPLEMENTATION NOT YET PUBLISHED.**
+The owner approved proceeding after T32 closure and approved the restrictive regional-policy recommendation in the preceding discussion. This paragraph registers the exact implementation envelope before any T33 source mutation. It is a single G1 obligation, not authorization for T34–T39.
+
+#### T33 approved meaning and source-backed boundaries
+
+- **Authority = current Identity permission AND effective Organization responsibility AND exact current Topology relationship.** Each is independently required. An explicit Identity DENY at an applicable exact/ancestor scope takes precedence; any INDETERMINATE, missing owner, stale identity, unavailable provider, ambiguous owner relationship or failed current verification denies. No actor/user/employee ID supplied by the browser is authority. Employee number, username similarity, job title, region display name, OrganizationUnit membership or geographic proximity never grant an operation on their own.
+- Identity resolves the native authenticated current ACTIVE, unlocked User and its `employeeReferenceId`. Organization must establish the same ACTIVE employee, reciprocal `identityUserReference` when populated, current effective responsibility (`validFrom <= now < validTo`, `ACTIVE`) and, when using a unit-held responsibility, a distinct current employee-to-unit assignment plus the unit's own effective status. A unit appointment or direct employee responsibility is a **constraint**, not a permission grant; historical assignments remain immutable historical evidence. At most the existing `OWNER`, `ACCOUNTABLE` and `RESPONSIBLE` responsibilities can qualify this read; `SUPPORT`, `ESCALATION` and `APPROVER` do not become general regional reader rights.
+- Existing Organization `OperationalScopeType` supports `GLOBAL`, `ORGANIZATION_UNIT`, `PIPELINE_SYSTEM`, `PIPELINE`, `FACILITY`, `EQUIPMENT`; there is **no** registered `PIPELINE_SECTION`. A selected section is the existing Topology pipeline segment, inheriting only through its verified owner pipeline relation; T33 must not create a fabricated registry type or infer a new section aggregate. `GLOBAL` and `ORGANIZATION_UNIT` responsibility alone are insufficient to expand physical rights. An exact equipment responsibility covers that equipment only.
+- Only Topology may resolve authoritative pipeline-to-system, segment-to-pipeline, facility-to-system through effective `PipelineSystemFacility`, and equipment-to-facility or segment. Parent scope may flow downward solely along a verified active association at the evaluation instant. No upward, sibling or transitive cross-system propagation. Conflicting direct facility/segment bindings, mixed-company or multiply associated shared assets fail closed unless separately and exactly authorized for the selected company and asset. Historical engineering draft metadata and display labels are not company authority. Company context must be checked against a live, owner-qualified company/system association; the presence of a draft, publication copy, `companyPartyId` string or map geometry alone does not prove company ownership.
+- Cross-region and foreign-company requested resource identity, coordinates, metadata, geometry, existence, counts, histories and graph neighborhood must not be disclosed. The G1 decision is current-request-only and never a durable authorization token. Any required backend permission (including one for the dedicated query route) is checked at request time; existing route permission, legacy administrator paths and protected owner operations are not globally relaxed. Synthetic GZ2 identities and scopes are test data, not installed OT or legal region catalog entries.
+- **No new table/migration is admitted** for this read-only authorization composition. Use the current Identity/Organization/Topology owners and existing persistence relationships. If an authoritative company association cannot be proved by current source, the safe outcome is unavailable/deny, not a guessed association or an unapproved schema extension.
+
+#### T33 API, domain, ports and implementation contract
+
+The one admitted typed, authenticated, non-mutating client query is
+`GET /api/v1/identity/me/regional-access/{resourceKind}/{resourceId}?companyPartyId=...`.
+`resourceKind` accepts exactly `PIPELINE_SYSTEM`, `PIPELINE`, `PIPELINE_SEGMENT`, `FACILITY`, `EQUIPMENT`.
+`companyPartyId` is an untrusted selector and must be verified against the Topology owner, not inferred as an access grant. A successfully permitted exact resource returns only its kind/id, selected company and `permitted=true` (no inherited foreign objects or grant details). Missing authentication is 401, missing route permission is 403, and resource absent versus forbidden/foreign is non-disclosing 404. Owner unavailability fails closed without revealing the requested protected identity. The URI is a **target API** until the new runtime OpenAPI is generated and accepted; do not assert it exists today.
+
+Identity owns a pure-Java policy combining three owner decisions; a typed inbound use case obtains the server-side actor, evaluates current Identity grant/deny with the existing evaluator and current signed native binding, acquires effective Organization facts and Topology ancestry only through deliberate public contracts, and refuses unproved authority. Organization exports eligible employee/responsibility scalar snapshots, not private aggregates. Topology exports owner-resolved typed ancestry and company-context evidence, not JPA entities, map features or inferred edges. The REST adapter maps explicit DTOs and canonical error semantics. No general platform authorization bypass, foreign persistence access, generic Workbench exposure or cross-module domain import is admitted. Cross-module architecture exceptions must be exact, not package wildcards. T34 must reuse the completed T33 evaluator within each authorized map/discovery query; T33 alone does not retrofit map endpoint security.
+
+#### Exact T33 implementation file ledger
+
+**CREATE** (new, specifically admitted paths):
+- `src/main/java/dz/sh/hidra/modules/identity/domain/service/RegionalResourceAccessPolicy.java` — pure policy for grant/responsibility/ancestry/denial conjunction, no frameworks.
+- `src/main/java/dz/sh/hidra/modules/identity/application/port/in/ResolveRegionalAccessUseCase.java` — exact resource/company query and minimal result.
+- `src/main/java/dz/sh/hidra/modules/identity/application/contract/topology/TopologyRegionalAccessContract.java` — exported current-scope decision for later Topology consumers, not a bearer token.
+- `src/main/java/dz/sh/hidra/modules/identity/application/service/RegionalAccessApplicationService.java` — actor/authorization orchestration with fail-closed owner snapshots.
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/controller/RegionalAccessController.java` — typed authenticated REST, no caller-supplied actor.
+- `src/main/java/dz/sh/hidra/modules/identity/api/rest/response/RegionalAccessResponse.java` — explicit minimal response, no persistence entity.
+- `src/main/java/dz/sh/hidra/modules/organization/application/contract/identity/IdentityRegionalResponsibilityContract.java` — Organization-owned current eligible responsibility scalar export.
+- `src/main/java/dz/sh/hidra/modules/organization/application/service/IdentityRegionalResponsibilityQueryService.java` — uses Organization ports and effective windows; no Identity private imports.
+- `src/main/java/dz/sh/hidra/modules/topology/application/contract/identity/IdentityRegionalTopologyContract.java` — Topology-owned active relation/lineage scalar export.
+- `src/main/java/dz/sh/hidra/modules/topology/application/port/out/RegionalTopologyRelationshipPort.java` — inward persistence query boundary.
+- `src/main/java/dz/sh/hidra/modules/topology/application/service/IdentityRegionalTopologyQueryService.java` — checks exact graph ancestry and company/asset ambiguity using Topology ports.
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JpaRegionalTopologyRelationshipAdapter.java` — query existing Topology-owned relations without foreign-table writes.
+- `src/test/java/dz/sh/hidra/modules/identity/domain/service/RegionalResourceAccessPolicyTest.java` — conjunction, deny precedence, missing/ambiguous statuses and inheritance.
+- `src/test/java/dz/sh/hidra/modules/identity/application/service/RegionalAccessApplicationServiceTest.java` — server-side actor, exact semantics, owner failures and no cached grants.
+- `src/test/java/dz/sh/hidra/modules/organization/application/service/IdentityRegionalResponsibilityQueryServiceTest.java` — employee reciprocal binding, unit-held responsibility, ACTIVE/effective interval.
+- `src/test/java/dz/sh/hidra/modules/topology/application/service/IdentityRegionalTopologyQueryServiceTest.java` — strict lineage and shared/cross-region ambiguity.
+- `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/RegionalAccessPostgresIntegrationTest.java` — real Flyway/PostgreSQL and signed HTTP integration with two regional users, unlinked employee, DENY, expiry, revocation, foreign company and physical edge ambiguity.
+
+**UPDATE** (existing specific paths only when exercised by the listed implementation):
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/PipelineSegmentJpaRepository.java` — bounded descendant lookup by verified pipeline identity.
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/PipelineSystemFacilityJpaRepository.java` — effective system/facility association lookup.
+- `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/repository/EquipmentJpaRepository.java` — exact facility/segment equipment linkage lookup.
+- `src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/repository/EmployeeAssignmentJpaRepository.java` — current employee-to-unit lookup only where a unit-held responsibility is applied.
+- `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java` — exact new Topology-to-Identity public contract exception plus negative sibling/private import tests.
+- `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java` — assert the new route is not a bypass of existing route-level enforcement and does not expand legacy handlers.
+- `.github/ci-test-inventory.json` — add exact new test classes/method inventories and updated source SHA256 digests.
+- `doc/roadmap/ROADMAP.md` — append stage/validation/provenance; retain completed entries.
+- `doc/api/openapi.yaml` and `.github/documentation-validation.json` — ONLY with a genuinely generated hosted runtime contract and the normal deterministic documentation checks; never synthesize an API snapshot from annotations.
+
+**DELETE: NONE.** No Flyway migration, changing existing security interceptor, broad `HidraEffectivePermissionResolver` semantics, cross-module private-access allowlist, UI files, new roles seeded for real personnel, simulation, or control/OT code. Any need outside this ledger requires a separately registered amendment rather than silent scope expansion.
+
+#### Exact commit, validation, handoff and stop rule
+
+One T33 bounded source implementation message:
+`feat(identity): resolve current regional employee resource access`.
+The current documentation/registration change uses:
+`docs(roadmap): close T32 and register T33 regional access`.
+Do not split T33 into unsolicited multiple implementation commits. A hosted contract/dictionary change is not accepted until compared to the actual emitted runtime artifact; if this cannot be reconciled inside the bounded implementation scope, stop and register the specific missing acceptance step rather than fabricating it.
+
+**Single T33 development-software acceptance:** the exact reconciled source SHA passes Java 21 compilation, ArchitectureGuardrailTest, the new domain/application tests, signed native HTTP on a fresh migrated PostgreSQL schema, route authorization and documented 401/403/404 behavior, successful current same-region resolution and denial/no-leak cases after revocation, all applicable CI test inventory checks, strict generated OpenAPI equality/compatibility and the full repository Full Verification Gate. HTTP evidence must include two independently scoped regional employees, an employee with no valid binding, explicit deny, elapsed responsibility, revoked permission and a foreign-company asset. Negative cases must not expose counts/coordinates/metadata. Existing owner workflows and T01–T32 acceptance cases remain preserved.
+
+At completion record actual file/commit/CI evidence and mark T33 COMPLETED only after its final passing gate. Then stop; **T34 remains PLANNED and unselected**. CI-green development software does not imply HidraWEB browser acceptance, OT integration or SITE deployment.

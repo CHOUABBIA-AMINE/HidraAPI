@@ -143,8 +143,8 @@ recorded before T33 is selected.
 
 | Task | Owner | Depends on | Deliverable | Pass condition | Status |
 |---|---|---|---|---|---|
-| **T33 · Resolve regional employee access (G1)** | Identity with Organization and Topology | T32 closure and owner-approved regional authority policy | Resolve the authenticated employee and current typed resource scope using Identity grants and denies, effective Organization responsibilities and owner-issued Topology relationships. Define company, system, pipeline, section, facility and equipment inheritance and cross-region disclosure. | Signed HTTP and PostgreSQL evidence for two regional employees with different scopes, an unlinked employee, explicit deny, expired responsibility, revoked grant and foreign company. Resource decisions use current authority. | IN PROGRESS |
-| **T34 · Expose regional map and discovery (G2)** | Topology with Identity and Organization | T33 | Qualify or extend owner-backed layers, features, GeoJSON and search for regional users. Apply scope before pagination and counts, preserve authorized graph semantics and retain the separately protected legacy administrator path. | A regional employee discovers a permitted pipeline. A cross-region fixture proves scope-safe geometry, connections, features, search, totals and direct lookups, including after revocation. | PLANNED |
+| **T33 · Resolve regional employee access (G1)** | Identity with Organization and Topology | T32 closure and owner-approved regional authority policy | Resolve the authenticated employee and current typed resource scope using Identity grants and denies, effective Organization responsibilities and owner-issued Topology relationships. Define company, system, pipeline, section, facility and equipment inheritance and cross-region disclosure. | Signed HTTP and PostgreSQL evidence for two regional employees with different scopes, an unlinked employee, explicit deny, expired responsibility, revoked grant and foreign company. Resource decisions use current authority. | COMPLETED |
+| **T34 · Expose regional map and discovery (G2)** | Topology with Identity and Organization | T33 | Qualify or extend owner-backed layers, features, GeoJSON and search for regional users. Apply scope before pagination and counts, preserve authorized graph semantics and retain the separately protected legacy administrator path. | A regional employee discovers a permitted pipeline. A cross-region fixture proves scope-safe geometry, connections, features, search, totals and direct lookups, including after revocation. | IN PROGRESS |
 | **T35 · Qualify protected pipeline dossier reads (G3)** | Topology with engineering source owners | T33, T04–T07 | Qualify existing reads for a selected pipeline's design characteristics, route, kilometer points, sections, elevation, connections, installed equipment and published revision provenance. Extend a typed read only for a demonstrated gap. | A scoped client retrieves the agreed available facts with explicit units, source and version. Unavailable values are explicit. Restricted history and linked resource details require their own current authority. | PLANNED |
 | **T36 · Resolve qualified operating constraints (G4)** | Approved engineering constraint owner, with Integrity for integrity-derived restrictions, Topology and Audit | T33, applicable T07 sources, owner decision on constraint authority | Resolve approved restrictions for an exact asset or section and effective instant. Preserve pressure basis, units, scope, operating conditions, source revision, qualification and authorized decision references. Use existing qualified sources where proven. | Synthetic cases cover applicability, approved effective and historical reads, supersession, withdrawal, unresolved conflicts, missing evidence and unauthorized scope. Design pressure and unqualified assessments are never returned as approved limits. | PLANNED |
 | **T37 · Qualify asset-scoped trusted observations (G5)** | Telemetry with Topology and Identity | T33, T08–T09 | Qualify authorized discovery of relevant commissioned points and trusted latest and historical readings for the selected asset. Preserve applicable binding revision, units, measurement source and time, quality, trust and freshness. | Prove a binding change, stale or unavailable readings, unit or binding incompatibility and revoked scope. Historical reads use the binding valid at the relevant time and enforce current read authority. | PLANNED |
@@ -6618,3 +6618,136 @@ stage T34 remains **PLANNED** and unselected. Use registered exact message
 `feat(identity): resolve current regional employee resource access` for
 this bounded CI repair, then stop after checking CI creation/queue, without
 waiting for completion or automatically advancing.
+
+### Close T33 and register T34 regional map and discovery — 2026-11-20
+
+**T33 (G1) — COMPLETED for registered development software.**
+[HidraAPI CI #1337 attempt 2](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44785259566/attempts/2)
+passed the [Full Verification Gate](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44785259566/job/136470419902)
+on `65551ca83fe42d924b0558f776fd4b6a30646848`. Its
+[combined evidence](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44785259566/artifacts/14655880780)
+reports 4,542 tests in 610 classes, zero failures, errors or skips.
+Java 21 and architecture, all 14 PostgreSQL shards, and the strict API
+contract and physical dictionary lane passed. [Documentation Validation #1186](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44785259550)
+also passed on that SHA. This closes the registered T33 gate.
+
+**T34 (G2) — IN PROGRESS, selected and registered.** Topology owns the
+regional map projection and graph. Identity and Organization remain
+authority providers through the accepted T33 evaluator. The existing
+`TopologyMapController` calls `requireGlobalMapAccess()` on all five
+legacy routes. Its visualization adapter aggregates unscoped JPA rows,
+so filtering its existing responses would be too late for geometry and totals.
+Use a separate regional entry point and reuse the existing scalar map
+response types. The legacy routes, payloads and global administrator
+check remain as they are.
+
+#### T34 route and projection contract
+
+All six operations are GET under `/api/v1/topology/regional-map` and
+require an exact `companyPartyId` selector. The ordinary route gate
+requires `topology:regional-map:read` for the five read operations and
+`topology:regional-map:search` for search as derived by
+`HidraRoutePermissionNaming`. Fixture grants for these route codes and
+T33 resource grants are separate. A route grant gives no resource rights.
+Use the signed current employee via T33. A company selector, client
+region, previously returned feature or cached result gives no authority.
+No trusted-native bypass registration, fallback to the global map,
+or browser-callable permission override is admitted.
+
+| Relative path | Outcome |
+|---|---|
+| `/layers` | Return the fixed supported layer descriptors with regional feature URLs. Descriptors expose no company inventory or grant data. |
+| `/layers/{layerId}` | Resolve the descriptor from the same fixed catalog. Unknown layer returns 404. |
+| `/layers/{layerId}/features` | Return one authorized layer as a typed paginated FeatureCollection. Optional `q` filters visible fields. |
+| `/layers/{layerId}/features/{entityId}` | Resolve an exact canonical ID within the specified layer and apply the identical projection policy. Unknown, geometry unavailable, foreign and denied features share 404. |
+| `/geojson` | Return a FeatureCollection for the requested comma-delimited subset of layers (all six by default). Deduplicate layer IDs before aggregation. |
+| `/search` | Search authorized scalar identifiers, codes and display names across the same projection. Return the existing typed search result. Require nonblank `q`. |
+
+Require a canonical company selector and bound query length to 120
+characters and page size to 1–500 (default 100, zero-based page default
+0). Reject malformed selectors, query or pagination with 400. Use
+deterministic layer order and entity-ID order within each layer, and
+apply the same rules for totals, total pages and hasNext. Retain 401 for
+unauthenticated and 403 for missing route authority. Collection queries
+with no visible matching data return 200 with zero totals and no resource
+metadata. Never redirect to a legacy endpoint or return a resource or
+policy diagnostic. Return protected responses with private, no-store caching.
+
+- For systems, pipelines, segments and facilities, call the existing
+  `TopologyRegionalAccessContract` with that exact kind, ID and company.
+  Use current active Topology rows, T33 canonical ancestry and effective
+  facility linking. No upward or sibling grant. A system or pipeline
+  feature needs its own permit and at least one visible drawable segment.
+  Build MultiLineString only from visible child segments, and suppress
+  parent ID properties unless independently permitted.
+- A node has no independent T33 kind. Admit an active node with coordinates
+  through a permitted active incident segment and, if it is tied to a
+  facility, a separate exact facility permit. Establish permitted segment
+  scope before node derivation, then require two admitted endpoints for
+  drawing that segment. Display no hidden incident IDs, counts or neighbors.
+  Use existing coordinate order and preserve individual segment lines.
+- A connection needs an active row, a non-null permitted backing segment,
+  and endpoints matching that segment in either order. Both nodes must
+  be admitted. Preserve the connection's stored endpoint ordering and
+  type. Missing, contradictory or cross-scope relationships are omitted.
+  Never join visible fragments across an excluded edge.
+- The owner query fetches company-qualified candidate IDs and scalar
+  relationship references in deterministic bounded batches. Apply T33
+  decisions before hydrating output metadata/coordinates and building
+  geometry, matching search, counting or taking a public page. A page
+  size limits emitted features and cannot limit the authorized total.
+  Reuse exact decisions only within one request. Re-read contributing
+  authority before emitting the completed projection and fail closed if
+  it changed. Keep the enclosing transaction compatible with T33's
+  transactional calls. Avoid per-layer global entity scans and state
+  shared across requests.
+
+#### Exact T34 file ledger
+
+`M/` means `src/main/java/dz/sh/hidra/modules/topology/`.
+
+| Action | Path | Scope |
+|---|---|---|
+| CREATE | `M/application/port/in/RegionalTopologyMapUseCase.java` | Six typed regional query operations, canonical company selector and bounded page/filter inputs. Reuse the existing map geometry, layer, collection and search result types. |
+| CREATE | `M/application/port/out/RegionalTopologyMapReadPort.java` | Define owner-only scalar candidate, graph and authorized hydration shapes. Include deterministic batch traversal, exact lookup keys and current status. Export no JPA entities or policy internals. |
+| CREATE | `M/application/service/RegionalTopologyMapApplicationService.java` | Coordinate the T33 export, graph dependency checks, authority recheck, direct lookups, geometry projection, search and authorized pagination. Keep the static regional layer catalog here. This is the sole T34 consumer of the exact Identity contract and its named request/kind types. |
+| CREATE | `M/infrastructure/visualization/JpaRegionalTopologyMapReadAdapter.java` | Implement company-bound candidate selection with existing owner/revision/facility associations and exact graph edges. Hydrate only authorized IDs using parameterized owner queries. Use existing tables and indexes, with no foreign module persistence access. |
+| CREATE | `M/api/rest/controller/RegionalTopologyMapController.java` | Bind the six regional GET routes, request validation, explicit OpenAPI responses and restricted cache headers. Map empty lists and non-disclosing direct lookups consistently. |
+| UPDATE | `src/test/java/dz/sh/hidra/modules/identity/infrastructure/persistence/RegionalAccessPostgresIntegrationTest.java` | Extend established signed GZ2/fresh PostgreSQL fixture with a separate T34 regional map scenario. Reuse its package-private fixture, and keep previous T33 assertions. Verify all six regional operations and legacy separation. |
+| UPDATE | `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java` | Verify regional pattern/verb names derive the exact ordinary route codes and that none receives a trusted-native bypass. Preserve the existing registered route set. |
+| UPDATE | `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java` | Assert the exact new Topology consumer uses only the named public Identity export. Retain architecture guards and negative sibling/private import coverage. |
+| UPDATE | `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java` | Mirror exact consumer/export and nested-type checks in the independent source scanner. Keep the existing package/private rules and add no wildcard exception. |
+| UPDATE | `.github/ci-test-inventory.json` | Record exact cases and SHA-256 for changed test classes. Preserve existing lane assignment, including the signed PostgreSQL class. |
+| UPDATE | `doc/api/openapi.yaml` | Artifact-based reconciliation for the six additive operations and any generated contract deltas. Preserve every previous operation. |
+| UPDATE | `.github/documentation-validation.json` | Pin runtime capture commit, workflow/job/artifact IDs, hashes and canonical counts. Preserve prior provenance. |
+| UPDATE | `doc/roadmap/ROADMAP.md` | Append scoped publication and exact CI evidence. Close T34 only after the gate below. |
+| DELETE | None | Preserve all owned schemas, legacy classifiers and existing endpoints. |
+
+Registered source message `feat(topology): expose scoped regional map and discovery`.
+If hosted runtime capture is needed for the canonical snapshot, use
+`docs(topology): reconcile T34 regional map API contract` for artifact
+reconciliation. Existing dictionary, migrations and production Identity,
+Organization and security policy files are outside the implementation ledger.
+T35 dossier reads are a separate stage.
+
+#### Single T34 development-software acceptance gate
+
+Require one passing exact-final-SHA **HidraAPI CI Full Verification Gate**
+in partitioned development mode. Use the signed fresh-PostgreSQL scenario
+to show two regional employees discover different resources in the same
+company and neither sees a foreign company. Seed conflicting direct
+lookups, hidden siblings inside an otherwise authorized system,
+coordinates distinguishable by region, admitted and excluded links, and
+more than one authorized result page. Verify layers, per-layer features,
+exact lookup, mixed-layer GeoJSON and search against that same graph.
+Compare emitted IDs, coordinates, connection endpoint IDs, stable page
+ordering, exact filtered totals and hasNext. Prove exact 404 equivalence
+for absent and denied direct lookups, empty authorized search, route
+401/403, and revocation or expiry on the same previously issued token.
+Prove an independent explicit deny suppresses the corresponding resource
+and derived geometry, and the global map still rejects the regional user.
+Retain T33 and earlier test coverage, route and architecture guards,
+backward compatibility, canonical runtime OpenAPI equality and strict
+physical dictionary equality. The passing run and its combined evidence
+artifact close G2. No separate manual, browser, SITE or engineering
+evidence is required for T34. T39 owns the later consumer handoff.

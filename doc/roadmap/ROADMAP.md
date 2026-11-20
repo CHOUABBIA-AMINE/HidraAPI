@@ -6504,3 +6504,27 @@ without a genuine hosted runtime artifact.
 
 **Next registered stage after T33 acceptance:** T34 (regional map
 and discovery), still PLANNED and not selected for implementation.
+
+
+### T33 CI #1334 compile repair — 2026-11-20
+
+The exact-SHA [HidraAPI CI #1334](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44761185353)
+for `712c514a9e7e8403a9bb51b643cde1cb0196a67b` completed **FAILURE**.
+The Java 21 unit/architecture, API contract/dictionary and all PostgreSQL shards
+failed at common Java compilation in `RegionalAccessApplicationService.java:132`:
+`ResourceKind` ambiguously refers to the nested enums exported by
+`ResolveRegionalAccessUseCase` and `TopologyRegionalAccessContract`.
+Those jobs did **not** reach Java tests, runtime OpenAPI, signed HTTP or PostgreSQL
+application tests. The failing Full Verification Gate is not T33 acceptance.
+[Documentation Validation #1183](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44761185321)
+on that SHA passed.
+
+This bounded T33 repair makes the delegated resource-kind conversion explicitly
+`ResolveRegionalAccessUseCase.ResourceKind`, and marks the main five-argument
+application-service constructor with Spring `@Autowired` because the separate
+package-private test constructor makes single-constructor inference unavailable.
+No authorization policy, schema, code grant, topology relationship, route, test
+source, CI inventory, prior-stage status or documented response contract is changed.
+All source and runtime validation remains **PENDING** for the repair SHA, which must
+be checked with its own exact-SHA CI run; T33 remains **IN PROGRESS** and T34
+remains PLANNED and unselected.

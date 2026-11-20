@@ -39,6 +39,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,6 +59,7 @@ public class RegionalAccessApplicationService
     private final RegionalResourceAccessPolicy policy;
     private final Clock clock;
 
+    @Autowired
     public RegionalAccessApplicationService(TopologyCurrentActorContract actors,
             IdentityAdministrationQueryUseCase principals, EvaluatePermissionUseCase grants,
             IdentityRegionalResponsibilityContract responsibilities,
@@ -129,7 +131,7 @@ public class RegionalAccessApplicationService
     public boolean permitted(TopologyRegionalAccessContract.Request request) {
         if (request == null) return false;
         try {
-            return permitted(new Query(ResourceKind.valueOf(request.resourceKind().name()),
+            return permitted(new Query(ResolveRegionalAccessUseCase.ResourceKind.valueOf(request.resourceKind().name()),
                     request.resourceId(), request.companyPartyId()));
         } catch (RuntimeException invalid) {
             return false;

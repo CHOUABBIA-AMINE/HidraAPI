@@ -171,6 +171,19 @@ class ArchitectureGuardrailTest {
             "dz.sh.hidra.modules.identity.application.contract.organization.OrganizationProtectedAppointmentAuthorizationContract",
             "dz.sh.hidra.modules.party.application.contract.organization.OrganizationProtectedPartyEligibilityContract");
 
+    /**
+     * T33: only Identity's regional evaluator may consume Topology's exact scalar
+     * current-lineage contract. Siblings and private Topology repositories remain closed.
+     */
+    private static boolean isT33RegionalOwnerExport(String source, String target) {
+        String consumer = "dz.sh.hidra.modules.identity.application.service.RegionalAccessApplicationService";
+        String root = "dz.sh.hidra.modules.topology.application.contract.identity.IdentityRegionalTopologyContract";
+        return source.equals(consumer) && (target.equals(root)
+                || target.equals(root + "$Kind")
+                || target.equals(root + "$Scope")
+                || target.equals(root + "$Resolution"));
+    }
+
     private static boolean isOrganizationOwnerExport(String source, String target) {
         return source.startsWith("dz.sh.hidra.modules.organization.")
                 && ORGANIZATION_OWNER_EXPORTS.stream().anyMatch(root -> target.equals(root) || target.startsWith(root + "$"));
@@ -253,6 +266,18 @@ class ArchitectureGuardrailTest {
             assertTrue(isForbiddenCrossModuleDependency(
                     "dz.sh.hidra.modules.planning.application.service.Other",exported));
         }
+    }
+
+    @Test void t33OnlyIdentityRegionalEvaluatorMayImportTopologyLineage() {
+        String reviewer = "dz.sh.hidra.modules.identity.application.service.RegionalAccessApplicationService";
+        String root = "dz.sh.hidra.modules.topology.application.contract.identity.IdentityRegionalTopologyContract";
+        assertFalse(isForbiddenCrossModuleDependency(reviewer, root));
+        assertFalse(isForbiddenCrossModuleDependency(reviewer, root + "$Scope"));
+        assertFalse(isForbiddenCrossModuleDependency(reviewer, root + "$Resolution"));
+        assertTrue(isForbiddenCrossModuleDependency(reviewer + "Sibling", root));
+        assertTrue(isForbiddenCrossModuleDependency(reviewer, root + "$Unregistered"));
+        assertTrue(isForbiddenCrossModuleDependency(reviewer,
+                "dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.JpaRegionalTopologyRelationshipAdapter"));
     }
 
     @Test void appointmentOwnerExportsAdmitOnlyTheirExactRootsAndNestedData() {
@@ -487,6 +512,7 @@ class ArchitectureGuardrailTest {
                 }
                 if (isBaselineOwnerExport(source.getName(), target.getName())) continue;
                 if (isOrganizationOwnerExport(source.getName(), target.getName())) continue;
+                if (isT33RegionalOwnerExport(source.getName(), target.getName())) continue;
                 if (isOrganizationFoundationIdentityEligibilityExport(source.getName(), target.getName())) continue;
                 if (isCustodyProductOwnerExport(source.getName(), target.getName())) continue;
                 if (isManufacturerOwnerExport(source.getName(), target.getName())) continue;
@@ -1416,6 +1442,7 @@ class ArchitectureGuardrailTest {
             return false;
         }
         if (isOrganizationOwnerExport(sourceClassName, targetClassName)) return false;
+        if (isT33RegionalOwnerExport(sourceClassName, targetClassName)) return false;
         if (isOrganizationFoundationIdentityEligibilityExport(sourceClassName, targetClassName)) return false;
         if (isCustodyProductOwnerExport(sourceClassName, targetClassName)) return false;
         return !isTransitionallyAllowed(sourceClassName, targetClassName);

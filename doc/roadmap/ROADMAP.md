@@ -6439,3 +6439,68 @@ Do not split T33 into unsolicited multiple implementation commits. A hosted cont
 **Single T33 development-software acceptance:** the exact reconciled source SHA passes Java 21 compilation, ArchitectureGuardrailTest, the new domain/application tests, signed native HTTP on a fresh migrated PostgreSQL schema, route authorization and documented 401/403/404 behavior, successful current same-region resolution and denial/no-leak cases after revocation, all applicable CI test inventory checks, strict generated OpenAPI equality/compatibility and the full repository Full Verification Gate. HTTP evidence must include two independently scoped regional employees, an employee with no valid binding, explicit deny, elapsed responsibility, revoked permission and a foreign-company asset. Negative cases must not expose counts/coordinates/metadata. Existing owner workflows and T01–T32 acceptance cases remain preserved.
 
 At completion record actual file/commit/CI evidence and mark T33 COMPLETED only after its final passing gate. Then stop; **T34 remains PLANNED and unselected**. CI-green development software does not imply HidraWEB browser acceptance, OT integration or SITE deployment.
+
+
+### T33 bounded source delivery, validation pending — 2026-11-20
+
+**Stage:** T33 / G1, registered source implementation only; the status is
+**IN PROGRESS**, not software-accepted or operationally accepted.
+**Implementation commit message:**
+\`feat(identity): resolve current regional employee resource access\`.
+**Exact authorized pre-implementation parent:**
+\`d9416b21c9f71b80d9f76b9deedaaea4ffa51d58\`
+(tree \`094d82d02c870cd7758a9d1cd03674e250765d42\`).
+This record travels in the same bounded source commit. It does not
+invent a resulting SHA, full CI status, API artifact or runtime acceptance.
+
+Identity owns a pure-Java deny-precedence conjunction and a current
+transactional use case. The authenticated current human Identity user and
+its server-side employee reference are checked before owner evidence
+is used. A fixed \`topology:regional-resource:read\` permission is evaluated
+at every qualified ancestor scope; no-grant does not silently become an
+explicit deny, whereas applicable explicit DENY/INDETERMINATE
+overrides any ancestor PERMIT. An ACTIVE, effective Organization
+responsibility on the **same scope** is independently necessary.
+Organization uses its current registry and employee contracts and
+the existing owner-validated unit-membership contract. Topology
+resolves live company/system, authored pipeline, segment, facility
+and equipment relationships through its own JDBC adapter; mixed
+facility-system or equipment ancestry without a single company path
+is refused. No status, role or geographic label alone confers authority.
+
+The new ordinary permission-guarded
+\`GET /api/v1/identity/me/regional-access/{resourceKind}/{resourceId}?companyPartyId=...\`
+is **not** entered into the 159-item trusted native route bypass
+registry. The HTTP handler returns a typed positive response only;
+protected non-permits are indistinguishable 404, the ordinary route's
+separate Identity permission is enforced, and raw graph/employee
+details never cross this boundary. The exported current query contract
+is available to T34 owner enforcement but does not authorize map
+routes by itself. G1 neither provides regional geometry nor grants
+OT/SCADA rights.
+
+**Source ledger:** 12 new production types in Identity, Organization
+and Topology, five new focused JUnit/Testcontainers classes,
+two tightly bounded existing architecture/native-route test edits,
+updated source-hashed \`.github/ci-test-inventory.json\`, and this
+append-only roadmap entry. Existing owner repository ports, migration
+history, generic platform interceptor, protected native route registry,
+legacy workflow routes and simulation code remain untouched.
+No physical schema change or backfill is introduced. Synthetic
+fixture credentials and employee IDs are test-only.
+
+**Validation state at source publication:** source inspection and
+registered file-scope reconciliation were performed. Java 21
+compilation, signed HTTP/PostgreSQL, Flyway and Testcontainers,
+strict generated OpenAPI equality and exact-SHA Full Verification Gate
+have **not** been run/accepted yet. Actual CI and documentation
+status must be checked after this source commit is published and must
+be recorded truthfully on follow-up. The single T33 software gate
+remains OPEN until its final reconciled exact-SHA passing Full
+Verification Gate. A new generated OpenAPI route is expected to
+require artifact-based canonical reconciliation; neither the
+canonical API document nor physical dictionary is modified here
+without a genuine hosted runtime artifact.
+
+**Next registered stage after T33 acceptance:** T34 (regional map
+and discovery), still PLANNED and not selected for implementation.

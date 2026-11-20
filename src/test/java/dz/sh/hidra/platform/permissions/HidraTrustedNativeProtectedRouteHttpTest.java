@@ -96,6 +96,29 @@ class HidraTrustedNativeProtectedRouteHttpTest {
  @AfterEach void clearAuthentication() {
    SecurityContextHolder.clearContext();
  }
+ @Test void t33RegionalAccessIsNotTrustedNativeDelegationOrPermissionBypass() {
+   var registry = new HidraTrustedNativeProtectedRouteRegistry();
+   assertEquals(159, registry.candidates().size());
+   assertTrue(registry.candidates().stream().noneMatch(r ->
+       r.pattern().startsWith("/api/v1/identity/me/regional-access")));
+   // The ordinary route requires identity:me:read before Identity independently
+   // evaluates current resource grants; existing native routes remain unchanged.
+   var naming = new HidraRoutePermissionNaming();
+   try {
+     var controller = new dz.sh.hidra.modules.identity.api.rest.controller.RegionalAccessController(
+         org.mockito.Mockito.mock(dz.sh.hidra.modules.identity.application.port.in.ResolveRegionalAccessUseCase.class));
+     var handler = new org.springframework.web.method.HandlerMethod(
+         controller, dz.sh.hidra.modules.identity.api.rest.controller.RegionalAccessController.class
+             .getMethod("current",
+                 dz.sh.hidra.modules.identity.application.port.in.ResolveRegionalAccessUseCase.ResourceKind.class,
+                 String.class, String.class));
+     assertEquals("identity:me:read", naming.permissionFor(
+         "/api/v1/identity/me/regional-access/{resourceKind}/{resourceId}", "GET", handler));
+   } catch (NoSuchMethodException missing) {
+     fail(missing);
+   }
+ }
+
  @Test void t31NativeScenarioRoutesRejectSiblingAndWrongVerbs() {
     var routes=new HidraTrustedNativeProtectedRouteRegistry().candidates();
     String base="/api/v1/simulation/companies/{companyId}/pipeline-systems/{pipelineSystemId}/scenarios";

@@ -7,7 +7,7 @@
  *
  * @Name        : ConfigurationAdministrationRequests
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-04
+ * @UpdatedOn   : 2026-11-20
  *
  * @Type        : Class
  * @Layer       : API
@@ -26,6 +26,14 @@ public final class ConfigurationAdministrationRequests {
     private ConfigurationAdministrationRequests() { }
     @io.swagger.v3.oas.annotations.media.Schema(name="FoundationConfigurationActivationRequest")
     public record Activation(@NotNull Instant expectedUpdatedAt) { }
+    @io.swagger.v3.oas.annotations.media.Schema(name="FoundationConfigurationRetirementPreviewRequest")
+    public record RetirementPreview(@NotBlank @Size(max=80) String definitionId,
+            @NotBlank @Size(max=80) String definitionVersionId,@NotBlank @Size(max=40) String environment,
+            @NotNull Instant cutoff) { }
+    @io.swagger.v3.oas.annotations.media.Schema(name="FoundationConfigurationRetirementCommitRequest")
+    public record RetirementCommit(@NotBlank @Size(max=80) String definitionId,
+            @NotBlank @Size(max=80) String definitionVersionId,@NotBlank @Size(max=40) String environment,
+            @NotNull Instant cutoff,@NotBlank @Pattern(regexp="[0-9a-f]{64}") String stateToken) { }
     @io.swagger.v3.oas.annotations.media.Schema(name="FoundationConfigurationFlagStateRequest")
     public record FlagState(@NotBlank @Size(max=40) String environment,@NotNull Boolean enabled,@NotNull Instant expectedUpdatedAt) { }
 }

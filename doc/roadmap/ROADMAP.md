@@ -6221,3 +6221,42 @@ the T32 API, Flyway migration, immutable receipt, tests, runtime OpenAPI,
 physical dictionary and exact-SHA Full Verification Gate remain unimplemented
 or unverified. T32 is not COMPLETED. No CI success, production deployment,
 calibration, live GZ2 workflow, or site acceptance is claimed.
+
+
+### T32 Configuration source stage — 2026-11-20
+
+**T32 — IN PROGRESS; source delivery, not development-software acceptance.**
+The owner-adopted Configuration Administration consumer above authorizes the
+bounded source implementation message
+`feat(configuration): preview and schedule override retirement`.
+
+This source stage adds two administrator-only native HTTP entry points
+(`POST /api/v1/configuration/values/{valueId}/retirement-preview` and
+`PUT /api/v1/configuration/values/{valueId}/retirement`), application
+preview/schedule and persistence port contracts, effective interval resolution
+with immutable scheduled cutoff, a standalone append-only PostgreSQL T32
+receipt relation with same-definition locking, and the replaced B5 overlap
+guard for newly written adjacent successors. The original typed override,
+definition revision, actor, effective-from and effective-to are left intact;
+legacy configuration branches, flags, arbitrary scopes and secret values
+are excluded. Preview returns provenance and a state token, not scalar data;
+commit returns 201 and exact same-actor replay returns 200. Unauthorized
+and mismatched targets are non-disclosing.
+
+The selected **single development-software acceptance gate** remains
+FG-20/A20 on the **final reconciled implementation SHA**. Two existing
+Configuration test classes are extended with synthetic signed administrator
+HTTP, future cutoff, effective-history boundary, replay including after
+cutoff, concurrency, and SQL integrity assertions; their CI inventory hashes
+and Configuration dictionary ownership are updated. No new CI workflow or
+test class is introduced.
+
+**Evidence limit:** this source publication does not assert compilation,
+Flyway application, PostgreSQL test pass, runtime OpenAPI equality,
+physical dictionary equality or Full Verification Gate success.
+The separately registered artifact step
+`docs(configuration): reconcile T32 API and physical dictionary` is
+required only after actual hosted runtime OpenAPI and database catalog
+artifacts are available. Do not infer physical relations or endpoint
+schemas for the canonical generated documents. T32 stays IN PROGRESS
+until exact-SHA passing full CI gate; no T33 advancement is authorized.

@@ -7,7 +7,7 @@
  *
  * @Name        : JpaConfigurationAdministrationQueryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-04
+ * @UpdatedOn   : 2026-11-20
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -21,6 +21,7 @@ package dz.sh.hidra.modules.configuration.infrastructure.query;
 
 import dz.sh.hidra.modules.configuration.application.port.in.ConfigurationAdministrationUseCase.*;
 import dz.sh.hidra.modules.configuration.application.port.out.ConfigurationAdministrationPersistencePort;
+import dz.sh.hidra.modules.configuration.application.port.out.ConfigurationAdministrationPersistencePort.RetirementReceipt;
 import dz.sh.hidra.modules.configuration.domain.model.*;
 import dz.sh.hidra.modules.configuration.domain.value.*;
 import java.time.Instant;
@@ -77,13 +78,49 @@ public class JpaConfigurationAdministrationQueryAdapter implements Configuration
     @Override public List<ConfigurationValue> values(String id,String environment,int limit,int offset) {
         return jdbc.query("SELECT * FROM public.hidra_configuration_value WHERE definition_id=? AND environment=? ORDER BY effective_from,id LIMIT ? OFFSET ?",(r,n)->value(r),id,environment,limit,offset);
     }
+    @Override public ConfigurationValue retirementTarget(String valueId) {
+        return jdbc.query("SELECT * FROM public.hidra_configuration_value WHERE id=?", (r,n)->value(r),valueId)
+                .stream().findFirst().orElse(null);
+    }
+    private static RetirementReceipt receipt(ResultSet r) throws SQLException {
+        return new RetirementReceipt(r.getString("id"),r.getString("value_id"),r.getString("definition_id"),
+                r.getString("definition_version_id"),r.getString("environment"),time(r,"cutoff"),
+                r.getString("before_source"),r.getString("before_value_id"),r.getString("after_source"),
+                r.getString("after_value_id"),r.getString("state_token"),r.getString("actor_id"),time(r,"created_at"));
+    }
+    @Override public RetirementReceipt retirementReceipt(String valueId) {
+        return jdbc.query("SELECT * FROM public.hidra_configuration_override_retirement WHERE value_id=?",
+                (r,n)->receipt(r),valueId).stream().findFirst().orElse(null);
+    }
+    @Override public RetirementReceipt appendRetirement(RetirementReceipt receipt) {
+        return one(jdbc.query("INSERT INTO public.hidra_configuration_override_retirement "
+                +"(id,value_id,definition_id,definition_version_id,environment,cutoff,before_source,before_value_id,"
+                +"after_source,after_value_id,state_token,actor_id,created_at) "
+                +"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,clock_timestamp()) RETURNING *",(r,n)->receipt(r),
+                receipt.id(),receipt.valueId(),receipt.definitionId(),receipt.definitionVersionId(),
+                receipt.environment(),stamp(receipt.cutoff()),receipt.beforeSource(),receipt.beforeValueId(),
+                receipt.afterSource(),receipt.afterValueId(),receipt.stateToken(),receipt.actorId()));
+    }
     @Override public ConfigurationValue effectiveValue(String id,String version,String environment,Instant instant) {
-        var rows=jdbc.query("SELECT * FROM public.hidra_configuration_value WHERE definition_id=? AND definition_version_id=? AND environment=? AND status='ACTIVE' AND effective_from<=? AND (effective_to IS NULL OR ?<effective_to) ORDER BY id LIMIT 2",(r,n)->value(r),id,version,environment,stamp(instant),stamp(instant));
+        return effectiveValueExcluding(id,version,environment,instant,null);
+    }
+    @Override public ConfigurationValue effectiveValueExcluding(String id,String version,String environment,Instant instant,String excludedId) {
+        var rows=jdbc.query("SELECT v.* FROM public.hidra_configuration_value v "
+                +"LEFT JOIN public.hidra_configuration_override_retirement r ON r.value_id=v.id "
+                +"WHERE v.definition_id=? AND v.definition_version_id=? AND v.environment=? AND v.status='ACTIVE' "
+                +"AND (?::varchar IS NULL OR v.id<>?) AND v.effective_from<=? "
+                +"AND (LEAST(v.effective_to,r.cutoff) IS NULL OR ?<LEAST(v.effective_to,r.cutoff)) "
+                +"ORDER BY v.id LIMIT 2",(rs,n)->value(rs),id,version,environment,excludedId,excludedId,stamp(instant),stamp(instant));
         if(rows.size()>1)throw new IllegalStateException("Ambiguous effective configuration.");
         return rows.isEmpty()?null:rows.getFirst();
     }
     @Override public void requireNoOverlap(String id,String environment,Instant from,Instant to) {
-        var count=jdbc.queryForObject("SELECT count(*) FROM public.hidra_configuration_value WHERE definition_id=? AND environment=? AND status='ACTIVE' AND (effective_to IS NULL OR effective_to>?) AND (?::timestamptz IS NULL OR effective_from IS NULL OR effective_from<?)",Integer.class,id,environment,stamp(from),stamp(to),stamp(to));
+        var count=jdbc.queryForObject("SELECT count(*) FROM public.hidra_configuration_value v "
+                +"LEFT JOIN public.hidra_configuration_override_retirement r ON r.value_id=v.id "
+                +"WHERE v.definition_id=? AND v.environment=? AND v.status='ACTIVE' "
+                +"AND (LEAST(v.effective_to,r.cutoff) IS NULL OR LEAST(v.effective_to,r.cutoff)>?) "
+                +"AND (?::timestamptz IS NULL OR v.effective_from IS NULL OR v.effective_from<?)",
+                Integer.class,id,environment,stamp(from),stamp(to),stamp(to));
         if(count==null||count!=0)throw new IllegalStateException("Overlapping active environment override.");
     }
     @Override public List<FeatureFlag> flags(int limit,int offset) {

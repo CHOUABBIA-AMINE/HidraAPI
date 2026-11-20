@@ -7,7 +7,7 @@
  *
  * @Name        : ConfigurationAdministrationResponses
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-04
+ * @UpdatedOn   : 2026-11-20
  *
  * @Type        : Class
  * @Layer       : API
@@ -43,6 +43,20 @@ public final class ConfigurationAdministrationResponses {
     @io.swagger.v3.oas.annotations.media.Schema(name="FoundationConfigurationEffectiveResponse")
     public record Effective(String definitionId,String definitionVersionId,String environment,Instant instant,String value,String provenance,String sourceValueId,boolean redacted) {
         public static Effective from(ConfigurationAdministrationUseCase.Effective v){return new Effective(v.definitionId(),v.definitionVersionId(),v.environment(),v.instant(),v.value(),v.provenance(),v.sourceValueId(),v.redacted());}
+    }
+    @io.swagger.v3.oas.annotations.media.Schema(name="FoundationConfigurationRetirementPreviewResponse")
+    public record RetirementPreview(String valueId,String definitionId,String definitionVersionId,String environment,
+            Instant cutoff,String beforeSource,String beforeValueId,String afterSource,String afterValueId,String stateToken) {
+        public static RetirementPreview from(ConfigurationAdministrationUseCase.RetirementPreview v) {
+            return new RetirementPreview(v.valueId(),v.definitionId(),v.definitionVersionId(),v.environment(),v.cutoff(),
+                    v.beforeSource(),v.beforeValueId(),v.afterSource(),v.afterValueId(),v.stateToken());
+        }
+    }
+    @io.swagger.v3.oas.annotations.media.Schema(name="FoundationConfigurationRetirementReceiptResponse")
+    public record RetirementReceipt(RetirementPreview transition,String receiptId,String actorId,Instant scheduledAt,boolean replay) {
+        public static RetirementReceipt from(ConfigurationAdministrationUseCase.RetirementScheduled v) {
+            return new RetirementReceipt(RetirementPreview.from(v.preview()),v.receiptId(),v.actorId(),v.scheduledAt(),v.replay());
+        }
     }
     @io.swagger.v3.oas.annotations.media.Schema(name="FoundationConfigurationFlagStateResponse")
     public record FlagState(String flagId,String environment,boolean enabled,String provenance,Instant updatedAt) {

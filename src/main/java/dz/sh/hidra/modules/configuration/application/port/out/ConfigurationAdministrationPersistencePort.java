@@ -7,7 +7,7 @@
  *
  * @Name        : ConfigurationAdministrationPersistencePort
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-04
+ * @UpdatedOn   : 2026-11-20
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -26,6 +26,9 @@ import java.util.List;
 
 public interface ConfigurationAdministrationPersistencePort {
     record DefinitionState(ConfigurationDefinition definition,String activeVersionId) { }
+    record RetirementReceipt(String id,String valueId,String definitionId,String definitionVersionId,String environment,
+            Instant cutoff,String beforeSource,String beforeValueId,String afterSource,String afterValueId,
+            String stateToken,String actorId,Instant createdAt) { }
     void requireNamespace(String id);
     List<Choice> namespaces(int limit,int offset);
     List<DefinitionState> definitions(String namespaceId,int limit,int offset);
@@ -35,6 +38,10 @@ public interface ConfigurationAdministrationPersistencePort {
     ConfigurationValue effectiveValue(String definitionId,String version,String environment,Instant instant);
     void requireSupportedRules(String definitionId);
     void requireNoOverlap(String definitionId,String environment,Instant from,Instant to);
+    ConfigurationValue retirementTarget(String valueId);
+    RetirementReceipt retirementReceipt(String valueId);
+    ConfigurationValue effectiveValueExcluding(String definitionId,String version,String environment,Instant instant,String excludedId);
+    RetirementReceipt appendRetirement(RetirementReceipt receipt);
     List<FeatureFlag> flags(int limit,int offset);
     FeatureFlag flag(String id,boolean lock);
     FeatureFlag activateFlag(FeatureFlag before,String actor);

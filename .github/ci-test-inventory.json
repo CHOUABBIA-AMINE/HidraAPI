@@ -974,6 +974,7 @@
       "baseline_seconds": 0,
       "cases": [
         "nonemptyHalfOpenWindowsAndExactMicroseconds",
+        "retirementRequiresFutureExactMicrosecondAndStrictInterior",
         "secretMaterialIsRejectedAcrossRawJsonAndDefaults",
         "staleVersionAndInvalidEnvironmentReject",
         "strictBooleanAndPlainBoundedDecimal",
@@ -986,7 +987,7 @@
       "lane": "unit-architecture",
       "owner": "configuration",
       "path": "src/test/java/dz/sh/hidra/modules/configuration/domain/service/TypedConfigurationPolicyTest.java",
-      "source_sha256": "89341c8a686dec396174137c2c9841f2c65f819dfefbf09df8438770c5e74136",
+      "source_sha256": "ebe599200cf2eb6fee8d2ad56e4f9211998590ef79da221eef8c2ccdcb518e0f",
       "supports": []
     },
     {
@@ -1001,6 +1002,12 @@
         "nativeBooleanFlagActivationAndEnvironmentState",
         "nativeDefinitionActivationTypedOverrideAndExactHalfOpenReload",
         "overlappingOverridesRejectWhileAdjacentWindowsSucceed",
+        "retirementAuthorizedExactReplayAfterCutoff",
+        "retirementFinalAuthorityDenialRollsBackProvisionalReceipt",
+        "retirementInvalidTargetCutoffStaleAndRevokedAuthority",
+        "retirementPreviewCommitHistoricalBoundaryAndAdjacentSuccessor",
+        "retirementRacingAdjacentWriterSerializesAndPreventsOverlap",
+        "retirementReplayConcurrencyAndDirectSqlGuards",
         "sensitiveLegacyDefaultsAndValuesAreRedactedBeforeSerialization",
         "staleWrongTypesWindowsVersionAndImpersonationNeverPersist",
         "unsupportedTypesApprovalScopesSecretsAndStrategiesRejectWithoutRows"
@@ -1011,7 +1018,7 @@
       "lane": "postgres-integration",
       "owner": "configuration",
       "path": "src/test/java/dz/sh/hidra/modules/configuration/infrastructure/persistence/ConfigurationAdministrationPostgresIntegrationTest.java",
-      "source_sha256": "e96a9c74034a1ff6bfae53b42516747d20ce297c86831c9552a5cd47b2e064c8",
+      "source_sha256": "33044ffb09f2b055eee3f9b29a3ecbeda8dd35689f0325a576a082495bc28992",
       "supports": []
     },
     {

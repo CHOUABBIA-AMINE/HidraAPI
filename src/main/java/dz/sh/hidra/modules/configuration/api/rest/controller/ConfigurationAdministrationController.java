@@ -7,7 +7,7 @@
  *
  * @Name        : ConfigurationAdministrationController
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-04
+ * @UpdatedOn   : 2026-11-20
  *
  * @Type        : Class
  * @Layer       : API
@@ -21,6 +21,7 @@ package dz.sh.hidra.modules.configuration.api.rest.controller;
 
 import dz.sh.hidra.modules.configuration.application.port.in.ConfigurationAdministrationUseCase;
 import dz.sh.hidra.modules.configuration.api.rest.request.ConfigurationAdministrationRequests;
+import dz.sh.hidra.modules.configuration.api.rest.response.ConfigurationAdministrationResponses;
 import dz.sh.hidra.modules.configuration.api.rest.response.ConfigurationAdministrationResponses.*;
 import java.time.Instant;
 import java.util.List;
@@ -38,6 +39,21 @@ public class ConfigurationAdministrationController {
     @PostMapping("/definitions/{id}/activate") public Definition activateDefinition(@PathVariable String id,@Valid @RequestBody ConfigurationAdministrationRequests.Activation request) {return Definition.from(service.activateDefinition(id,request.expectedUpdatedAt()));}
     @GetMapping("/values") public List<Value> values(@RequestParam String definitionId,@RequestParam String environment,@RequestParam(defaultValue="100") int limit,@RequestParam(defaultValue="0") int offset) {return service.values(definitionId,environment,limit,offset).stream().map(Value::from).toList();}
     @GetMapping("/effective") public Effective effective(@RequestParam String definitionId,@RequestParam String environment,@RequestParam Instant instant) {return Effective.from(service.effective(definitionId,environment,instant));}
+    @PostMapping("/values/{valueId}/retirement-preview")
+    public ConfigurationAdministrationResponses.RetirementPreview previewRetirement(@PathVariable String valueId,
+            @Valid @RequestBody ConfigurationAdministrationRequests.RetirementPreview request) {
+        return ConfigurationAdministrationResponses.RetirementPreview.from(service.previewRetirement(valueId,
+                new ConfigurationAdministrationUseCase.RetirementCommand(request.definitionId(),request.definitionVersionId(),
+                        request.environment(),request.cutoff())));
+    }
+    @PutMapping("/values/{valueId}/retirement")
+    public org.springframework.http.ResponseEntity<ConfigurationAdministrationResponses.RetirementReceipt> retire(
+            @PathVariable String valueId,@Valid @RequestBody ConfigurationAdministrationRequests.RetirementCommit request) {
+        var result=service.scheduleRetirement(valueId,new ConfigurationAdministrationUseCase.RetirementCommand(
+                request.definitionId(),request.definitionVersionId(),request.environment(),request.cutoff()),request.stateToken());
+        return org.springframework.http.ResponseEntity.status(result.replay()?org.springframework.http.HttpStatus.OK:
+                org.springframework.http.HttpStatus.CREATED).body(ConfigurationAdministrationResponses.RetirementReceipt.from(result));
+    }
     @GetMapping("/feature-flags") public List<Flag> flags(@RequestParam(defaultValue="100") int limit,@RequestParam(defaultValue="0") int offset) {return service.flags(limit,offset).stream().map(Flag::from).toList();}
     @PostMapping("/feature-flags/{id}/activate") public Flag activateFlag(@PathVariable String id,@Valid @RequestBody ConfigurationAdministrationRequests.Activation request) {return Flag.from(service.activateFlag(id,request.expectedUpdatedAt()));}
     @PutMapping("/feature-flags/{id}/state") public FlagState setFlagState(@PathVariable String id,@Valid @RequestBody ConfigurationAdministrationRequests.FlagState request) {return FlagState.from(service.setFlagState(id,request.environment(),request.enabled(),request.expectedUpdatedAt()));}
@@ -48,6 +64,14 @@ public class ConfigurationAdministrationController {
         @ExceptionHandler(dz.sh.hidra.modules.configuration.domain.exception.ConfigurationDomainException.class)
         public org.springframework.http.ProblemDetail invalid() {
             return problem(org.springframework.http.HttpStatus.BAD_REQUEST,"CONFIGURATION_INVALID","Configuration violates the admitted value or ownership policy.");
+        }
+        @ExceptionHandler(java.util.NoSuchElementException.class)
+        public org.springframework.http.ProblemDetail notFound() {
+            return problem(org.springframework.http.HttpStatus.NOT_FOUND,"CONFIGURATION_NOT_FOUND","Configuration resource unavailable.");
+        }
+        @ExceptionHandler(IllegalArgumentException.class)
+        public org.springframework.http.ProblemDetail badRequest() {
+            return problem(org.springframework.http.HttpStatus.BAD_REQUEST,"CONFIGURATION_INVALID","Configuration request is invalid.");
         }
         @ExceptionHandler({IllegalStateException.class,org.springframework.dao.DataIntegrityViolationException.class})
         public org.springframework.http.ProblemDetail conflict() {

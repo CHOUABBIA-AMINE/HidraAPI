@@ -7,7 +7,7 @@
  *
  * @Name        : TypedConfigurationPolicyTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-04
+ * @UpdatedOn   : 2026-11-20
  *
  * @Type        : Class
  * @Layer       : Test
@@ -56,5 +56,15 @@ class TypedConfigurationPolicyTest {
     @Test void stringsAreBoundedAndNeverSilentlyTrimmed() {
         assertEquals("ordinary",TypedConfigurationPolicy.typed(ConfigurationValueType.STRING,"ordinary"));
         for(String s:new String[]{" x ","x\nq","x".repeat(2001)})assertThrows(IllegalArgumentException.class,()->TypedConfigurationPolicy.typed(ConfigurationValueType.STRING,s));
+    }
+
+    @Test void retirementRequiresFutureExactMicrosecondAndStrictInterior() {
+        Instant now=Instant.parse("2026-11-20T12:00:00Z"),start=now.minusSeconds(10),end=now.plusSeconds(20);
+        assertDoesNotThrow(()->TypedConfigurationPolicy.retirement(start,end,now.plusSeconds(1),now));
+        assertDoesNotThrow(()->TypedConfigurationPolicy.retirement(start,null,now.plusSeconds(1),now));
+        for(Instant invalid:new Instant[]{start,end,now,now.minusSeconds(1),now.plusNanos(1)}) {
+            assertThrows(IllegalArgumentException.class,()->TypedConfigurationPolicy.retirement(start,end,invalid,now));
+        }
+        assertThrows(IllegalArgumentException.class,()->TypedConfigurationPolicy.retirement(start,start,now.plusSeconds(1),now));
     }
 }

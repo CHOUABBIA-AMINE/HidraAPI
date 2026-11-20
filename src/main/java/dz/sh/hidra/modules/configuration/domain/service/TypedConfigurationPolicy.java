@@ -7,7 +7,7 @@
  *
  * @Name        : TypedConfigurationPolicy
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-04
+ * @UpdatedOn   : 2026-11-20
  *
  * @Type        : Class
  * @Layer       : Domain
@@ -85,6 +85,12 @@ public final class TypedConfigurationPolicy {
     }
     public static void microseconds(Instant instant) {
         if(instant==null||instant.getNano()%1000!=0)throw new IllegalArgumentException("Exact PostgreSQL microsecond instant required.");
+    }
+    /** A scheduled cutoff is strictly inside the original window and remains in the future. */
+    public static void retirement(Instant from,Instant to,Instant cutoff,Instant now) {
+        window(from,to);microseconds(cutoff);
+        if(now==null||!cutoff.isAfter(now)||!cutoff.isAfter(from)||to!=null&&!cutoff.isBefore(to))
+            throw new IllegalArgumentException("Retirement must be future and inside original override window.");
     }
     public static void version(Instant actual,Instant expected) {
         microseconds(expected);

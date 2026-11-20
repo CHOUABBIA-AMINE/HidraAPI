@@ -77,6 +77,14 @@
     "owner": "audit",
     "purpose": "Audit-owned immutable UTF-8 JSON V1 frozen scope-filtered export, with idempotency key, count, bytes, digest, criteria and requester; no Documents dependency."
   },
+  "public.hidra_configuration_override_retirement": {
+    "owner": "configuration",
+    "purpose": "T32 immutable administrator-authorized scheduled retirement cutoff for an eligible B5 typed environment override; preserves original value and historical as-of semantics.",
+    "evidence": [
+      "src/main/resources/db/migration/V20261120_001__t32_configuration_override_retirement.sql",
+      "src/main/java/dz/sh/hidra/modules/configuration/infrastructure/query/JpaConfigurationAdministrationQueryAdapter.java"
+    ]
+  },
   "public.hidra_custody_engineering_product_policy": {
     "evidence": [
       "src/main/resources/db/migration/V20261026_002__custody_product_engineering_drafts.sql",

@@ -7,7 +7,7 @@
  *
  * @Name        : ConfigurationAdministrationUseCase
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-04
+ * @UpdatedOn   : 2026-11-20
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -24,6 +24,10 @@ import java.util.List;
 
 public interface ConfigurationAdministrationUseCase {
     record Choice(String id,String code,String label) { }
+    record RetirementCommand(String definitionId,String definitionVersionId,String environment,Instant cutoff) { }
+    record RetirementPreview(String valueId,String definitionId,String definitionVersionId,String environment,
+            Instant cutoff,String beforeSource,String beforeValueId,String afterSource,String afterValueId,String stateToken) { }
+    record RetirementScheduled(RetirementPreview preview,String receiptId,String actorId,Instant scheduledAt,boolean replay) { }
     record DefinitionView(String id,String namespaceId,String key,String valueType,String sensitivity,String status,
             String activeVersionId,String defaultValue,boolean redacted,Instant updatedAt) { }
     record ValueView(String id,String definitionId,String definitionVersionId,String environment,String rawValue,
@@ -38,6 +42,8 @@ public interface ConfigurationAdministrationUseCase {
     DefinitionView activateDefinition(String id,Instant expectedUpdatedAt);
     List<ValueView> values(String definitionId,String environment,int limit,int offset);
     Effective effective(String definitionId,String environment,Instant instant);
+    RetirementPreview previewRetirement(String valueId,RetirementCommand command);
+    RetirementScheduled scheduleRetirement(String valueId,RetirementCommand command,String stateToken);
     List<FlagView> flags(int limit,int offset);
     FlagView activateFlag(String id,Instant expectedUpdatedAt);
     FlagState setFlagState(String id,String environment,boolean enabled,Instant expectedUpdatedAt);

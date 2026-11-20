@@ -7,7 +7,7 @@
  *
  * @Name        : ConfigurationAdministrationPostgresIntegrationTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-04
+ * @UpdatedOn   : 2026-11-20
  *
  * @Type        : Class
  * @Layer       : Test
@@ -220,5 +220,192 @@ class ConfigurationAdministrationPostgresIntegrationTest {
         assertEquals(2,calls.get());
         assertEquals("DRAFT",jdbc.queryForObject("SELECT status FROM public.hidra_configuration_definition WHERE id=?",String.class,d));
         assertEquals(0,jdbc.queryForObject("SELECT count(*) FROM public.hidra_configuration_definition_version WHERE definition_id=?",Integer.class,d));
+    }
+
+    private record RetirementFixture(String definition,String version,String valueId,Instant from,Instant cutoff,Instant end) { }
+    private RetirementFixture retirementFixture() throws Exception {
+        String d=definition("STRING","INTERNAL","synthetic-default",false),v=activate(d);
+        Instant from=Instant.now().minusSeconds(60).truncatedTo(java.time.temporal.ChronoUnit.MICROS);
+        Instant cutoff=Instant.now().plusSeconds(180).truncatedTo(java.time.temporal.ChronoUnit.MICROS);
+        Instant end=cutoff.plusSeconds(360);
+        String target=value(call("POST",BASE+"/values",admin,override(d,v,"synthetic-temporary",
+                from.toString(),end.toString(),null)).andExpect(status().isOk()),"id");
+        return new RetirementFixture(d,v,target,from,cutoff,end);
+    }
+    private String retirementPath(RetirementFixture f) {
+        return BASE+"/values/"+f.valueId()+"/retirement";
+    }
+    private String retirementRequest(RetirementFixture f,String token) throws Exception {
+        if(token==null)return json("definitionId",f.definition(),"definitionVersionId",f.version(),
+                "environment","TEST","cutoff",f.cutoff().toString());
+        return json("definitionId",f.definition(),"definitionVersionId",f.version(),"environment","TEST",
+                "cutoff",f.cutoff().toString(),"stateToken",token);
+    }
+    private String preview(RetirementFixture f) throws Exception {
+        return value(call("POST",retirementPath(f)+"-preview",admin,retirementRequest(f,null))
+                .andExpect(status().isOk()),"stateToken");
+    }
+    @Test void retirementPreviewCommitHistoricalBoundaryAndAdjacentSuccessor() throws Exception {
+        var f=retirementFixture();
+        String token=preview(f);
+        assertEquals(0,jdbc.queryForObject("SELECT count(*) FROM public.hidra_configuration_override_retirement WHERE value_id=?",
+                Integer.class,f.valueId()));
+        call("POST",retirementPath(f)+"-preview",admin,retirementRequest(f,null))
+            .andExpect(status().isOk()).andExpect(jsonPath("$.beforeValueId").value(f.valueId()))
+            .andExpect(jsonPath("$.beforeSource").value("ENVIRONMENT_OVERRIDE"))
+            .andExpect(jsonPath("$.afterSource").value("DEFAULT"))
+            .andExpect(jsonPath("$.afterValueId").doesNotExist());
+        call("PUT",retirementPath(f),admin,retirementRequest(f,token)).andExpect(status().isCreated())
+            .andExpect(jsonPath("$.transition.stateToken").value(token))
+            .andExpect(jsonPath("$.actorId").value(adminUser))
+            .andExpect(jsonPath("$.replay").value(false));
+        assertEquals(1,jdbc.queryForObject("SELECT count(*) FROM public.hidra_configuration_override_retirement WHERE value_id=?",
+                Integer.class,f.valueId()));
+        var row=jdbc.queryForMap("SELECT raw_value,definition_version_id,effective_to FROM public.hidra_configuration_value WHERE id=?",f.valueId());
+        assertEquals("synthetic-temporary",row.get("raw_value"));
+        assertEquals(f.version(),row.get("definition_version_id"));
+        assertEquals(f.end(),((java.sql.Timestamp)row.get("effective_to")).toInstant());
+        Instant before=f.cutoff().minusNanos(1000);
+        call("GET",effective(f.definition(),before.toString()),admin,null).andExpect(status().isOk())
+            .andExpect(jsonPath("$.sourceValueId").value(f.valueId()))
+            .andExpect(jsonPath("$.value").value("synthetic-temporary"));
+        call("GET",effective(f.definition(),f.cutoff().toString()),admin,null).andExpect(status().isOk())
+            .andExpect(jsonPath("$.sourceValueId").doesNotExist())
+            .andExpect(jsonPath("$.value").value("synthetic-default"));
+        call("GET",effective(f.definition(),f.cutoff().plusNanos(1000).toString()),admin,null)
+            .andExpect(status().isOk()).andExpect(jsonPath("$.value").value("synthetic-default"));
+        call("POST",BASE+"/values",admin,override(f.definition(),f.version(),"synthetic-successor",
+                f.cutoff().toString(),f.end().plusSeconds(300).toString(),null))
+            .andExpect(status().isOk());
+        call("GET",effective(f.definition(),f.cutoff().toString()),admin,null).andExpect(status().isOk())
+            .andExpect(jsonPath("$.value").value("synthetic-successor"))
+            .andExpect(jsonPath("$.provenance").value("ENVIRONMENT_OVERRIDE"));
+        call("GET",effective(f.definition(),before.toString()),admin,null).andExpect(status().isOk())
+            .andExpect(jsonPath("$.sourceValueId").value(f.valueId()));
+        call("GET",BASE+"/values?definitionId="+f.definition()+"&environment=TEST",admin,null)
+            .andExpect(status().isOk()).andExpect(jsonPath("$[0].id").value(f.valueId()));
+    }
+    @Test void retirementInvalidTargetCutoffStaleAndRevokedAuthority() throws Exception {
+        var f=retirementFixture();
+        String missing=retirementPath(f).replace(f.valueId(),id());
+        call("POST",missing+"-preview",admin,retirementRequest(f,null)).andExpect(status().isNotFound());
+        call("POST",retirementPath(f)+"-preview",admin,json("definitionId",id(),"definitionVersionId",f.version(),
+                "environment","TEST","cutoff",f.cutoff().toString())).andExpect(status().isNotFound());
+        call("POST",retirementPath(f)+"-preview",admin,json("definitionId",f.definition(),"definitionVersionId",id(),
+                "environment","TEST","cutoff",f.cutoff().toString())).andExpect(status().isNotFound());
+        call("POST",retirementPath(f)+"-preview",ordinary,retirementRequest(f,null)).andExpect(status().isForbidden());
+        call("POST",retirementPath(f)+"-preview",admin,json("definitionId",f.definition(),
+                "definitionVersionId",f.version(),"environment","TEST","cutoff",f.from().toString()))
+                .andExpect(status().isBadRequest());
+        call("POST",retirementPath(f)+"-preview",admin,json("definitionId",f.definition(),
+                "definitionVersionId",f.version(),"environment","TEST","cutoff",f.cutoff().plusNanos(1).toString()))
+                .andExpect(status().isBadRequest());
+        String token=preview(f);
+        call("PUT",retirementPath(f),admin,retirementRequest(f,"0".repeat(64))).andExpect(status().isConflict());
+        assertEquals(0,jdbc.queryForObject("SELECT count(*) FROM public.hidra_configuration_override_retirement WHERE value_id=?",
+                Integer.class,f.valueId()));
+        jdbc.update("UPDATE public.hidra_identity_user_role_grant SET status='REVOKED' WHERE user_id=?",adminUser);
+        call("PUT",retirementPath(f),admin,retirementRequest(f,token)).andExpect(status().isForbidden());
+        call("POST",retirementPath(f)+"-preview",admin,retirementRequest(f,null)).andExpect(status().isForbidden());
+        assertEquals(0,jdbc.queryForObject("SELECT count(*) FROM public.hidra_configuration_override_retirement WHERE value_id=?",
+                Integer.class,f.valueId()));
+    }
+    @Test void retirementReplayConcurrencyAndDirectSqlGuards() throws Exception {
+        var f=retirementFixture();String token=preview(f),body=retirementRequest(f,token);
+        var pool=java.util.concurrent.Executors.newFixedThreadPool(2);
+        var latch=new java.util.concurrent.CountDownLatch(1);
+        try {
+            java.util.concurrent.Callable<Integer> invoke=()->{latch.await();
+                return call("PUT",retirementPath(f),admin,body).andReturn().getResponse().getStatus();};
+            var a=pool.submit(invoke);var b=pool.submit(invoke);latch.countDown();
+            var codes=new java.util.ArrayList<>(java.util.List.of(a.get(30,java.util.concurrent.TimeUnit.SECONDS),
+                    b.get(30,java.util.concurrent.TimeUnit.SECONDS)));
+            java.util.Collections.sort(codes);assertEquals(java.util.List.of(200,201),codes);
+        } finally {pool.shutdownNow();}
+        call("PUT",retirementPath(f),admin,body).andExpect(status().isOk())
+            .andExpect(jsonPath("$.replay").value(true));
+        call("POST",retirementPath(f)+"-preview",admin,retirementRequest(f,null)).andExpect(status().isConflict());
+        call("PUT",retirementPath(f),admin,json("definitionId",f.definition(),"definitionVersionId",f.version(),
+            "environment","TEST","cutoff",f.cutoff().plusSeconds(1).toString(),"stateToken",token))
+            .andExpect(status().isConflict());
+        assertEquals(1,jdbc.queryForObject("SELECT count(*) FROM public.hidra_configuration_override_retirement WHERE value_id=?",
+                Integer.class,f.valueId()));
+        assertThrows(org.springframework.dao.DataAccessException.class,()->jdbc.update(
+            "UPDATE public.hidra_configuration_override_retirement SET cutoff=cutoff+interval '1 second' WHERE value_id=?",f.valueId()));
+        assertThrows(org.springframework.dao.DataAccessException.class,()->jdbc.update(
+            "DELETE FROM public.hidra_configuration_override_retirement WHERE value_id=?",f.valueId()));
+        assertThrows(org.springframework.dao.DataAccessException.class,()->jdbc.update(
+            "UPDATE public.hidra_configuration_value SET raw_value='synthetic-illegal' WHERE id=?",f.valueId()));
+        assertThrows(org.springframework.dao.DataAccessException.class,()->jdbc.update(
+            "DELETE FROM public.hidra_configuration_value WHERE id=?",f.valueId()));
+        assertThrows(org.springframework.dao.DataAccessException.class,()->jdbc.update(
+            "INSERT INTO public.hidra_configuration_override_retirement(id,value_id,definition_id,definition_version_id,"
+            +"environment,cutoff,before_source,before_value_id,after_source,state_token,actor_id) "
+            +"VALUES (?,?,?,?,? ,?,'ENVIRONMENT_OVERRIDE',?,'DEFAULT',?,?)",
+            id(),id(),f.definition(),f.version(),"TEST",java.sql.Timestamp.from(f.cutoff()),
+            f.valueId(),token,adminUser));
+    }
+    @Test void retirementRacingAdjacentWriterSerializesAndPreventsOverlap() throws Exception {
+        var f=retirementFixture();String token=preview(f);
+        var pool=java.util.concurrent.Executors.newFixedThreadPool(2);
+        var latch=new java.util.concurrent.CountDownLatch(1);
+        try {
+            var retirement=pool.submit((java.util.concurrent.Callable<Integer>)()->{latch.await();
+                return call("PUT",retirementPath(f),admin,retirementRequest(f,token))
+                        .andReturn().getResponse().getStatus();});
+            var successor=pool.submit((java.util.concurrent.Callable<Integer>)()->{latch.await();
+                return call("POST",BASE+"/values",admin,override(f.definition(),f.version(),"synthetic-adjacent",
+                        f.cutoff().toString(),f.end().plusSeconds(1).toString(),null))
+                        .andReturn().getResponse().getStatus();});
+            latch.countDown();
+            assertEquals(201,retirement.get(30,java.util.concurrent.TimeUnit.SECONDS));
+            int code=successor.get(30,java.util.concurrent.TimeUnit.SECONDS);
+            assertTrue(code==200||code==409,"Adjacent writer must succeed or report the existing overlap.");
+            call("GET",effective(f.definition(),f.cutoff().toString()),admin,null).andExpect(status().isOk())
+                .andExpect(jsonPath("$.value").value(code==200?"synthetic-adjacent":"synthetic-default"));
+        } finally {pool.shutdownNow();}
+        assertEquals(1,jdbc.queryForObject("SELECT count(*) FROM public.hidra_configuration_override_retirement WHERE value_id=?",
+                Integer.class,f.valueId()));
+    }
+    @Test void retirementFinalAuthorityDenialRollsBackProvisionalReceipt() throws Exception {
+        var f=retirementFixture();String token=preview(f);authenticateAdmin();
+        var count=new java.util.concurrent.atomic.AtomicInteger();
+        var guarded=new dz.sh.hidra.modules.configuration.application.service.ConfigurationAdministrationApplicationService(
+                store,()->{
+                    if(count.incrementAndGet()==2)
+                        jdbc.update("UPDATE public.hidra_identity_user_role_grant SET status='REVOKED' WHERE user_id=?",adminUser);
+                    return authority.administrator();
+                });
+        try {
+            var tx=new TransactionTemplate(manager);
+            assertThrows(org.springframework.security.access.AccessDeniedException.class,()->tx.executeWithoutResult(
+                status->guarded.scheduleRetirement(f.valueId(),
+                    new ConfigurationAdministrationUseCase.RetirementCommand(
+                        f.definition(),f.version(),"TEST",f.cutoff()),token)));
+        } finally {org.springframework.security.core.context.SecurityContextHolder.clearContext();}
+        assertEquals(2,count.get());
+        assertEquals(0,jdbc.queryForObject("SELECT count(*) FROM public.hidra_configuration_override_retirement WHERE value_id=?",
+                Integer.class,f.valueId()));
+    }
+
+    @Test void retirementAuthorizedExactReplayAfterCutoff() throws Exception {
+        String d=definition("STRING","PUBLIC","synthetic-default",false),v=activate(d);
+        Instant from=Instant.now().minusSeconds(30).truncatedTo(java.time.temporal.ChronoUnit.MICROS);
+        Instant cutoff=Instant.now().plusSeconds(8).truncatedTo(java.time.temporal.ChronoUnit.MICROS);
+        Instant end=cutoff.plusSeconds(120);
+        String target=value(call("POST",BASE+"/values",admin,override(d,v,"synthetic-test",
+                from.toString(),end.toString(),null)).andExpect(status().isOk()),"id");
+        var f=new RetirementFixture(d,v,target,from,cutoff,end);
+        String token=preview(f);
+        call("PUT",retirementPath(f),admin,retirementRequest(f,token)).andExpect(status().isCreated());
+        long wait=java.time.Duration.between(Instant.now(),cutoff.plusMillis(100)).toMillis();
+        if(wait>0)Thread.sleep(wait);
+        call("PUT",retirementPath(f),admin,retirementRequest(f,token)).andExpect(status().isOk())
+            .andExpect(jsonPath("$.replay").value(true))
+            .andExpect(jsonPath("$.transition.stateToken").value(token));
+        call("GET",effective(d,cutoff.minusNanos(1000).toString()),admin,null).andExpect(status().isOk())
+            .andExpect(jsonPath("$.sourceValueId").value(target));
+        call("GET",effective(d,cutoff.toString()),admin,null).andExpect(status().isOk())
+            .andExpect(jsonPath("$.value").value("synthetic-default"));
     }
 }

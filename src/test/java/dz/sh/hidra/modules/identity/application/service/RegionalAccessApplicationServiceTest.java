@@ -81,18 +81,18 @@ class RegionalAccessApplicationServiceTest {
     }
 
     @Test void explicitChildDenyOverridesInheritedSystemPermit() {
-        when(grant.evaluate(any())).thenAnswer(invocation -> {
+        doAnswer(invocation -> {
             EvaluatePermissionQuery request = invocation.getArgument(0);
             return "p".equals(request.scope().scopeReferenceId())
                     ? decision(AuthorizationDecisionValue.DENY, "EXPLICIT_DENY")
                     : decision(AuthorizationDecisionValue.PERMIT, "AUTHORITY_MATCHED");
-        });
+        }).when(grant).evaluate(any());
         assertFalse(service.permitted(query));
     }
 
     @Test void revokedGrantCannotRemainCached() {
         assertTrue(service.permitted(query));
-        when(grant.evaluate(any())).thenReturn(decision(AuthorizationDecisionValue.DENY, "NO_GRANT_MATCHED"));
+        doReturn(decision(AuthorizationDecisionValue.DENY, "NO_GRANT_MATCHED")).when(grant).evaluate(any());
         assertFalse(service.permitted(query));
     }
 

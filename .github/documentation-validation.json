@@ -1239,9 +1239,9 @@
   ],
   "openapi": {
     "counts": {
-      "operations": 514,
-      "paths": 469,
-      "schemas": 552
+      "operations": 515,
+      "paths": 470,
+      "schemas": 553
     },
     "path": "doc/api/openapi.yaml",
     "prior_reviewed_provenance": {
@@ -2124,6 +2124,30 @@
       "zip_sha256": "141606a0d3db769003fe40e266282c6efd81b6688d5fdfdb90bfadb826b786db"
     },
     "provenance": {
+      "artifact_id": 14651278799,
+      "artifact_member": "hidra-api.json",
+      "artifact_name": "hidra-api-openapi-15dbae118b82803f4a38eece453149670faf0c5f-44781444295-1-api-contract",
+      "compatibility_review": "CI #1336 runtime backward-compatibility passed. Exact artifact has one new bearer-protected regional-access GET, one RegionalAccessResponse schema, and one Identity Regional Access tag. Reversing exactly these additions and restoring prior source SHA reproduces previous canonical digest c6130db6750300d45110a80202f24a7f83bcbba8cca946715da3f8992dc5a65a.",
+      "conclusion": "success",
+      "conclusion_scope": "Only generated runtime OpenAPI and backward-compatibility steps succeeded. API job and whole CI #1336 failed strict canonical equality and independent unit/architecture tests; no full CI acceptance is implied.",
+      "failed_step": "Enforce canonical OpenAPI snapshot equality",
+      "generation_step": "Publish deterministic OpenAPI contract",
+      "generation_step_conclusion": "success",
+      "job_conclusion": "failure",
+      "job_id": 136444876971,
+      "json_sha256": "501ac223cb0e46ee37289efcb9318c3fd92e04bf8b258c3ca2d725a8265b18e9",
+      "remaining_gates": [
+        "Exact replacement-SHA unit and architecture tests, fourteen PostgreSQL shards, runtime OpenAPI and physical dictionary strict equality, Full Verification Gate"
+      ],
+      "run_attempt": 1,
+      "run_id": 44781444295,
+      "source_sha": "15dbae118b82803f4a38eece453149670faf0c5f",
+      "workflow_conclusion": "failure",
+      "zip_sha256": "449da1639cad286d43fe120fbfe0e63666c739aff781ce8082141633532f4481"
+    },
+    "sha256": "563dfd7080f4edd99c543bbf572feb13e821fa02055d0d2526a024ff1e87f3b8",
+    "source_sha": "15dbae118b82803f4a38eece453149670faf0c5f",
+    "prior_reviewed_provenance_t32": {
       "artifact_id": 14617469900,
       "artifact_member": "hidra-api.json",
       "artifact_name": "hidra-api-openapi-67fdf80e6737be799643ff898d5724124f3fb492-44712829132-1-api-contract",
@@ -2158,9 +2182,7 @@
       "source_sha": "67fdf80e6737be799643ff898d5724124f3fb492",
       "workflow_conclusion": "failure",
       "zip_sha256": "83ef8c0999fc3ebde67b4748e8b6fa18bdb1284bf5eaa4f7cedc9d81e83a9f39"
-    },
-    "sha256": "c6130db6750300d45110a80202f24a7f83bcbba8cca946715da3f8992dc5a65a",
-    "source_sha": "67fdf80e6737be799643ff898d5724124f3fb492"
+    }
   },
   "register": "doc/governance/DOCUMENT_REGISTER.md",
   "register_areas": {

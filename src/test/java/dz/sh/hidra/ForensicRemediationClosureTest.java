@@ -356,6 +356,26 @@ class ForensicRemediationClosureTest {
         assertTrue(violations.isEmpty(), () -> "Fictional event scaffolding returned: " + violations);
     }
 
+    /** T33: only the registered Identity evaluator may see the exact Topology scalar lineage export. */
+    private static boolean t33RegionalTopologyOwnerExport(String source, String imported) {
+        String owner = "dz.sh.hidra.modules.topology.application.contract.identity.IdentityRegionalTopologyContract";
+        if (!"dz.sh.hidra.modules.identity.application.service.RegionalAccessApplicationService".equals(source)) return false;
+        return Set.of(owner, owner + ".Kind", owner + ".Scope", owner + ".Resolution",
+                owner + "$Kind", owner + "$Scope", owner + "$Resolution").contains(imported);
+    }
+
+    @Test void t33RegionalTopologyOwnerExportIsExact() {
+        String consumer = "dz.sh.hidra.modules.identity.application.service.RegionalAccessApplicationService";
+        String root = "dz.sh.hidra.modules.topology.application.contract.identity.IdentityRegionalTopologyContract";
+        assertTrue(t33RegionalTopologyOwnerExport(consumer, root));
+        assertTrue(t33RegionalTopologyOwnerExport(consumer, root + ".Scope"));
+        assertTrue(t33RegionalTopologyOwnerExport(consumer, root + "$Resolution"));
+        assertFalse(t33RegionalTopologyOwnerExport(consumer + "Sibling", root));
+        assertFalse(t33RegionalTopologyOwnerExport(consumer, root + "$Unregistered"));
+        assertFalse(t33RegionalTopologyOwnerExport(consumer,
+                "dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.JpaRegionalTopologyRelationshipAdapter"));
+    }
+
     @Test
     void crossModulePrivateImportsRemainClosed() throws IOException {
         String reviewConsumer = "dz.sh.hidra.modules.workflow.application.service.WorkflowTransitionApplicationService";
@@ -580,6 +600,7 @@ class ForensicRemediationClosureTest {
                 if (t24DocumentOwnerExport(source.fqcn(), imported)) continue;
                 if (isT17OwnerExport(source.fqcn(), imported)) continue;
                 if (t23AnalyticsOwnerExport(source.fqcn(), imported)) continue;
+                if (t33RegionalTopologyOwnerExport(source.fqcn(), imported)) continue;
                 violations.add(source.fqcn() + " -> " + imported);
             }
         }

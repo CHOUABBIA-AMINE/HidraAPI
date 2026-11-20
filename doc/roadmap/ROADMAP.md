@@ -6562,3 +6562,59 @@ PostgreSQL integration, security and scope negative cases, generated contract
 and Full Verification Gate are not yet accepted. T33 remains **IN PROGRESS**;
 T34 remains **PLANNED** and unselected. Stop after confirming the replacement
 SHA's CI was created or started, without waiting for CI completion.
+
+
+### T33 CI #1336 — registered forensic-guardrail amendment and generated OpenAPI repair (2026-11-20)
+
+**Observed exact SHA:** `15dbae118b82803f4a38eece453149670faf0c5f`. [HidraAPI CI #1336](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44781444295)
+completed **FAILURE**. Static validation and all fourteen PostgreSQL shards
+passed on that source SHA. The unit/architecture lane executed 2,662 tests and
+reported one failure in `ForensicRemediationClosureTest.crossModulePrivateImportsRemainClosed`
+and two Mockito restubbing errors in `RegionalAccessApplicationServiceTest`.
+The API lane generated source-SHA runtime OpenAPI and passed backward compatibility,
+but failed strict equality against the older canonical snapshot. This is NOT a
+passed Full Verification Gate; [Documentation Validation #1185](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44781444165)
+passed independently.
+
+**Explicit T33 scope amendment, narrowly registered here:** the earlier
+T33 file ledger did not name
+`src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java`. That
+existing repository-wide forensic scanner independently rejects T33's already
+registered exact Identity-to-Topology contract import, even though the
+registered `ArchitectureGuardrailTest` permits it. This repair additionally
+admits that one exact existing test path **only** to align its positive
+allowance with the registered T33 identity service and Topology contract;
+negative sibling, unrelated nested type and persistence adapter cases remain
+forbidden. This is an explicit extension of the T33 test envelope, not a
+package-wide boundary weakening or a new business requirement. Its new
+JUnit case and exact source digest must be inventoried.
+
+**Exact repair file scope (six paths):**
+`src/test/java/dz/sh/hidra/modules/identity/application/service/RegionalAccessApplicationServiceTest.java`
+(Mockito stub override via `doAnswer`/`doReturn`, original behavioral assertions unchanged),
+`src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java`
+(exact named Topology export and explicit sibling/private negative cases),
+`.github/ci-test-inventory.json` (both exact test source digests and new case),
+`doc/api/openapi.yaml` (actual hosted generated T33 API snapshot),
+`.github/documentation-validation.json` (reviewed provenance/digest/counts),
+and `doc/roadmap/ROADMAP.md` (this append-only amendment and evidence).
+No migrations, permission semantics, native-route bypass registry, production
+code, Flyway or database dictionary is changed.
+
+**Generated OpenAPI provenance:** actual CI #1336 attempt 1 run `44781444295`,
+API job `136444876971`, OpenAPI artifact `14651278799`
+(`hidra-api.json`). Actual artifact JSON SHA-256
+`501ac223cb0e46ee37289efcb9318c3fd92e04bf8b258c3ca2d725a8265b18e9`;
+ZIP SHA-256 `449da1639cad286d43fe120fbfe0e63666c739aff781ce8082141633532f4481`.
+Canonical generated digest with source SHA `15dbae118b82803f4a38eece453149670faf0c5f`:
+`563dfd7080f4edd99c543bbf572feb13e821fa02055d0d2526a024ff1e87f3b8` (470 paths, 515 operations, 553 schemas).
+Removing only the one T33 path, one schema and one tag and restoring previous
+source SHA reproduces the previous snapshot SHA-256 exactly. The OpenAPI
+validation on the **replacement commit** remains a distinct pending check;
+this commit does not claim its exact-SHA CI success.
+
+**Status:** T33 **IN PROGRESS**, software acceptance OPEN. Next registered
+stage T34 remains **PLANNED** and unselected. Use registered exact message
+`feat(identity): resolve current regional employee resource access` for
+this bounded CI repair, then stop after checking CI creation/queue, without
+waiting for completion or automatically advancing.

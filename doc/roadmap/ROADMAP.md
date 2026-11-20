@@ -6168,3 +6168,56 @@ inventory, runtime OpenAPI and the strict generated physical dictionary.
 The run and its combined evidence artifact are sufficient to close
 FG-20/A20. No manual run, external report, separate sign-off or operational
 calibration is part of that development-software acceptance.
+
+
+### T32 owner-adopted administrative consumer and implementation authorization — 2026-11-20
+
+**Owner decision: ADOPTED. T32 — IN PROGRESS (entry prerequisite satisfied; source and acceptance not yet delivered).**
+This approval follows the owner-requested T32 recommendations and the previously
+registered T32 implementation envelope. The admitted owning consumer is the
+existing Configuration Administration administrator-only effective-value
+workflow; it does not presume a HidraWEB delivery or any additional
+Monitoring, Simulation or OT integration.
+
+The approved bounded configuration-key family consists exclusively of
+eligible **existing B5 active PUBLIC/INTERNAL, non-secret, typed
+STRING/BOOLEAN/NUMBER, unscoped, no-approval environment overrides** satisfying
+`TypedConfigurationPolicy.supported` and the exact active definition-version
+guard. The family is the agreed implementation selector; no real GZ2
+configuration key or live operator consumer has been verified or invented.
+Synthetic GZ2 evaluation fixtures may demonstrate the administrator workflow
+without creating production seed data.
+
+**Workflow and retirement trigger:** an administrator previews and schedules
+the cutoff of an existing temporary override at the end of its approved,
+bounded evaluation window. A future-only, microsecond-aligned cutoff is
+authorized inside the original half-open validity window. Scheduled retirement
+does not delete, update, inactivate, or re-version the original override.
+The immutable retirement receipt must preserve identity and decision provenance.
+
+**Historical consumer requirement:** an authorized Configuration administrator
+must be able to reconstruct the typed effective value and source at the
+original evaluation instant immediately before the cutoff, and verify the
+successor override or original typed default at/after the cutoff. This is
+configuration-state reproducibility for review and administrative
+investigations, **not** unconditional reconstruction across unrelated future
+definition-version changes, industrial validation or operator control.
+Existing authorization is required before disclosing either historical or
+current effective results.
+
+**Authorized source scope and acceptance:** use exactly the proposed T32
+ledger, preview/commit semantics, domain and database invariants, single
+synthetic signed-admin PostgreSQL journey and FG-20/A20 Full Verification Gate
+registered in the preceding envelope. No additional file, module, security
+authority, real system key, frontend workflow or test gate is introduced by
+this decision. Source implementation commit remains
+`feat(configuration): preview and schedule override retirement`. Any
+artifact-based reconciliation, if required, remains
+`docs(configuration): reconcile T32 API and physical dictionary` and must be
+based on actual hosted artifacts.
+
+**Evidence state:** owner approval and bounded consumer are registered here;
+the T32 API, Flyway migration, immutable receipt, tests, runtime OpenAPI,
+physical dictionary and exact-SHA Full Verification Gate remain unimplemented
+or unverified. T32 is not COMPLETED. No CI success, production deployment,
+calibration, live GZ2 workflow, or site acceptance is claimed.

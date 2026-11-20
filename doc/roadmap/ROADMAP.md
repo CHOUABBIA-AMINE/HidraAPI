@@ -6774,3 +6774,46 @@ reconciliation, with actual source SHA, artifact and verified checks. No manual
 OpenAPI reconstruction or inferred database dictionary is accepted. The T34
 software acceptance and G2 closure must be recorded after passing the exact
 final source/contract gate. T35 remains PLANNED and unselected.
+
+### T34 CI #1338 failure and artifact-backed contract repair — 2026-11-20
+
+**Failure evidence, source `eddb78cf823385d436808233b0ed5a7b11490165`.**
+[HidraAPI CI #1338 attempt 1](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44814796990)
+completed FAILURE. Java 21 unit/architecture, static validation, and thirteen
+PostgreSQL integration shards passed. PostgreSQL shard 2 failed *before any
+selected test execution* because its runner could not fetch Maven 3.9.11 from
+repo.maven.apache.org; missing Surefire evidence is consequential, not
+a proven test assertion failure. The API contract/dictionary job compiled,
+generated runtime OpenAPI, migrated a disposable database and passed backward
+compatibility, but the old snapshot failed strict equality; strict physical
+dictionary comparison was skipped. The Full Verification Gate failed.
+
+**Artifact-authentic canonical OpenAPI reconciliation.** Runtime generation
+job `136560226961`, successful generation step 9, run `44814796990`,
+attempt 1, artifact `14669750020` (`hidra-api.json`), raw JSON SHA-256
+`1322a289c44ee042b5bf7be2c10b65d7e2f9bc609801e9b0f1503ddf7d797090`,
+artifact ZIP SHA-256
+`083945bfd68fd911ae561df50b756633715a56d4f096349437b36603e99c816f`.
+The exact artifact has **476 paths, 521 operations and 553 schemas**.
+It adds precisely six GET regional map operations and one Regional Topology
+Map tag; existing map operation IDs receive generated collision suffixes,
+which are preserved instead of inventing new identifiers. Canonical compact
+sorted snapshot SHA-256 is
+`c79a372cbafdd2baa1a41e5fae21eb924f380ce95cf3a01da0b606669a2a718e`,
+verified exact Git blob
+`cd9057bf45279b742f8fa82e9b563be6c44881cc`.
+The source SHA field retains the generation source; semantic equality ignores
+only that field when verifying the replacement commit. Generation success and
+compatibility are **not** whole-workflow success.
+
+The T34 repair changes only
+`doc/api/openapi.yaml`, `.github/documentation-validation.json` and this
+append-only roadmap evidence using the registered message
+`docs(topology): reconcile T34 regional map API contract`.
+No production code, test, permission, Flyway, schema or dictionary mutation is
+authorized by this repair. Full CI on the replacement SHA must still prove
+all fourteen PostgreSQL shards, runtime OpenAPI equality, physical dictionary
+equality, architecture and the Full Verification Gate. The Maven network
+failure must be retried in that exact replacement run; it is not called
+passing validation. **T34 stays IN PROGRESS / G2 OPEN**. T35 remains PLANNED
+and unselected.

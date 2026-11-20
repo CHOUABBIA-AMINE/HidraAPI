@@ -5983,3 +5983,38 @@ Maven-download failures or the required full combined gate; retry
 through the next exact-SHA CI. T31 remains IN PROGRESS pending the
 signed GZ2 check, actual runtime OpenAPI, PostgreSQL catalog and final
 reconciled green Full Verification Gate. T32 remains unselected.
+
+### T31 protected baseline read contention repair — 2026-11-20
+
+[HidraAPI CI #1328](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44633491278)
+on `a4a0ac68f8f643b45a5257f3fd30d1a7f3dfaeb4` failed. Static, Java
+unit/architecture and thirteen PostgreSQL shards passed. Signed GZ2
+shard 12 again observed 201/503 instead of 201/409 in the T31 append race.
+Removing the Simulation predecessor row lock did not resolve the race.
+Both writers also run the exact T07 read, whose storage and publication
+locks use mutually exclusive SHARE ROW EXCLUSIVE NOWAIT. The shard log
+reports the HTTP status but does not include the original SQL state.
+
+The same-task source repair is
+`fix(simulation): retry contended T31 baseline reads`. Its only code path
+is the registered scalar T31 export in
+`src/main/java/dz/sh/hidra/modules/topology/application/service/EngineeringBaselinePublicationApplicationService.java`.
+Retry only PostgreSQL 55P03 on an exact read rejected before commit, up
+to five attempts with bounded backoff. Each attempt obtains a fresh owner
+proof with all original authorization and transaction fences. Preserve
+interrupts and expose an exhausted retry as unavailable. Do not retry
+indeterminate outcomes, denials, or Simulation writes. Map Topology's
+non-disclosing missing result to the scalar contract's unavailable
+lookup outcome. Preserve T07's other callers, replay arbitration and
+the existing signed race assertion.
+
+The separate API-contract lane passed generation and compatibility but
+failed canonical OpenAPI equality, so it skipped strict dictionary
+equality. The hosted [OpenAPI](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44633491278/artifacts/14582399601)
+and [dictionary](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44633491278/artifacts/14583845034)
+were downloaded and matched their GitHub ZIP digests. The dictionary
+reports 234 migrations, 471 JPA mappings, 614 relations and no unresolved
+owners. The separately registered generated-artifact reconciliation
+remains pending. The replacement signed race result and a successful
+Full Verification Gate on the final reconciled SHA remain mandatory.
+T31 remains IN PROGRESS. T32 remains unselected.

@@ -24,12 +24,17 @@ import dz.sh.hidra.modules.topology.application.contract.simulation.ScenarioBase
 import dz.sh.hidra.modules.topology.application.port.in.EngineeringBaselinePublicationUseCase;
 import dz.sh.hidra.modules.topology.application.port.in.EngineeringBaselineReadUseCase;
 import dz.sh.hidra.platform.persistence.ProtectedTransactionExecutor;
+import java.sql.SQLException;
+import java.time.Duration;
+import java.util.NoSuchElementException;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 @Service
 public final class EngineeringBaselinePublicationApplicationService implements EngineeringBaselinePublicationUseCase, EngineeringBaselineReadUseCase, ScenarioBaselineReceiptContract {
+    private static final int SCENARIO_READ_ATTEMPTS = 5;
     private final ProtectedEngineeringBaselinePublicationCoordinator coordinator;
     private final ProtectedTransactionExecutor executor;
 
@@ -80,18 +85,53 @@ public final class EngineeringBaselinePublicationApplicationService implements E
 
     /** Exact T07 protected read; never bypass historical source authorization or select current. */
     @Override
-    public ScenarioBaselineReceiptContract.Exact exact(String company,String pipeline,java.util.UUID receiptId) {
-        var result=read(new EngineeringBaselineReadUseCase.Query(
-                EngineeringBaselineReadUseCase.Action.EXACT,company,pipeline,receiptId,
-                null,null,0,null));
-        var receipt=result.primary();
-        var manifest=receipt.submission().manifest();
-        if(!company.equals(manifest.companyPartyId())
-                ||!pipeline.equals(manifest.pipelineSystemId())
-                ||!receiptId.equals(receipt.id()))
-            throw new EngineeringBaselineDraftFailure(EngineeringBaselineDraftFailure.Kind.NOT_FOUND);
-        return new ScenarioBaselineReceiptContract.Exact(receipt.id(),manifest.manifestId(),
-                receipt.epoch(),receipt.submission().sha256());
+    public ScenarioBaselineReceiptContract.Exact exact(String company, String pipeline, UUID receiptId) {
+        var query = new EngineeringBaselineReadUseCase.Query(
+                EngineeringBaselineReadUseCase.Action.EXACT, company, pipeline, receiptId,
+                null, null, 0, null);
+        var receipt = readScenarioBaseline(query).primary();
+        var manifest = receipt.submission().manifest();
+        if (!company.equals(manifest.companyPartyId())
+                || !pipeline.equals(manifest.pipelineSystemId())
+                || !receiptId.equals(receipt.id())) {
+            throw new NoSuchElementException("Scenario baseline unavailable");
+        }
+        return new ScenarioBaselineReceiptContract.Exact(receipt.id(), manifest.manifestId(),
+                receipt.epoch(), receipt.submission().sha256());
     }
 
+    private EngineeringBaselineReadUseCase.Result readScenarioBaseline(EngineeringBaselineReadUseCase.Query query) {
+        for (int attempt = 1; ; attempt++) {
+            try {
+                return read(query);
+            } catch (EngineeringBaselineDraftFailure failure) {
+                if (failure.kind() == EngineeringBaselineDraftFailure.Kind.NOT_FOUND) {
+                    throw new NoSuchElementException("Scenario baseline unavailable");
+                }
+                throw failure;
+            } catch (ProtectedTransactionExecutor.ExecutionFailure failure) {
+                if (attempt == SCENARIO_READ_ATTEMPTS
+                        || failure.outcome() != ProtectedTransactionExecutor.Outcome.REJECTED_BEFORE_COMMIT
+                        || !lockUnavailable(failure)) {
+                    throw failure;
+                }
+                // Each retry starts a fresh protected read and obtains all owner proofs again.
+                try {
+                    Thread.sleep(Duration.ofMillis(50L << (attempt - 1)));
+                } catch (InterruptedException interrupted) {
+                    Thread.currentThread().interrupt();
+                    throw failure;
+                }
+            }
+        }
+    }
+
+    private static boolean lockUnavailable(Throwable failure) {
+        for (Throwable cause = failure; cause != null; cause = cause.getCause()) {
+            if (cause instanceof SQLException sql && "55P03".equals(sql.getSQLState())) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

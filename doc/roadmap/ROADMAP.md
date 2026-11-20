@@ -131,6 +131,44 @@ A task includes its required authorization, REST contract, persistence, failure 
 | **T31 · Version and reconstruct engine-neutral scenarios** | Simulation with Topology | T07 | Expose scenario create/version/validate/read with exact baseline digest, units, boundary conditions, intended steady/transient mode and capability state. | Historical scenario reconstructs after baseline supersession. Availability and validation states do not imply computed results. **FG-19 / A19/A21.** | COMPLETED |
 | **T32 · Preview and retire configuration with effective dating** | Configuration | Confirmed consumer need and existing configuration lifecycle | Add scoped impact preview and an effective-dated retirement action with historical reads. | Authorized client gets the correct result on both sides of the effective boundary. Earlier consumers retain the accepted configuration interpretation. **FG-20 / A20.** | PLANNED |
 
+### Increment 9 — Circle 1 regional pipeline workplace
+
+Circle 1 connects Identity, Organization, Topology, Integrity, Telemetry,
+Workflow and Audit into an authorized, gas-first regional workplace.
+G1–G7 are gap references. T33–T39 are the corresponding registered HidraAPI
+tasks. The owner authorizes roadmap registration in this change. Each task
+is PLANNED and requires its own selection, exact file scope, commit message
+and acceptance envelope before implementation. T32 acceptance must be
+recorded before T33 is selected.
+
+| Task | Owner | Depends on | Deliverable | Pass condition | Status |
+|---|---|---|---|---|---|
+| **T33 · Resolve regional employee access (G1)** | Identity with Organization and Topology | T32 closure and owner-approved regional authority policy | Resolve the authenticated employee and current typed resource scope using Identity grants and denies, effective Organization responsibilities and owner-issued Topology relationships. Define company, system, pipeline, section, facility and equipment inheritance and cross-region disclosure. | Signed HTTP and PostgreSQL evidence for two regional employees with different scopes, an unlinked employee, explicit deny, expired responsibility, revoked grant and foreign company. Resource decisions use current authority. | PLANNED |
+| **T34 · Expose regional map and discovery (G2)** | Topology with Identity and Organization | T33 | Qualify or extend owner-backed layers, features, GeoJSON and search for regional users. Apply scope before pagination and counts, preserve authorized graph semantics and retain the separately protected legacy administrator path. | A regional employee discovers a permitted pipeline. A cross-region fixture proves scope-safe geometry, connections, features, search, totals and direct lookups, including after revocation. | PLANNED |
+| **T35 · Qualify protected pipeline dossier reads (G3)** | Topology with engineering source owners | T33, T04–T07 | Qualify existing reads for a selected pipeline's design characteristics, route, kilometer points, sections, elevation, connections, installed equipment and published revision provenance. Extend a typed read only for a demonstrated gap. | A scoped client retrieves the agreed available facts with explicit units, source and version. Unavailable values are explicit. Restricted history and linked resource details require their own current authority. | PLANNED |
+| **T36 · Resolve qualified operating constraints (G4)** | Approved engineering constraint owner, with Integrity for integrity-derived restrictions, Topology and Audit | T33, applicable T07 sources, owner decision on constraint authority | Resolve approved restrictions for an exact asset or section and effective instant. Preserve pressure basis, units, scope, operating conditions, source revision, qualification and authorized decision references. Use existing qualified sources where proven. | Synthetic cases cover applicability, approved effective and historical reads, supersession, withdrawal, unresolved conflicts, missing evidence and unauthorized scope. Design pressure and unqualified assessments are never returned as approved limits. | PLANNED |
+| **T37 · Qualify asset-scoped trusted observations (G5)** | Telemetry with Topology and Identity | T33, T08–T09 | Qualify authorized discovery of relevant commissioned points and trusted latest and historical readings for the selected asset. Preserve applicable binding revision, units, measurement source and time, quality, trust and freshness. | Prove a binding change, stale or unavailable readings, unit or binding incompatibility and revoked scope. Historical reads use the binding valid at the relevant time and enforce current read authority. | PLANNED |
+| **T38 · Govern restriction decisions and evidence (G6)** | Approved engineering constraint owner with Workflow, Audit, Identity and Organization | T33, T36, T28, T30 | Bind submission, independent review, approval, supersession and withdrawal to the exact restriction revision. Publish the effective owner outcome with exact authorized decision and audit references. Reuse supported Workflow and Audit contracts. | Prove approval and readback, self-review denial, revoked authority, stale version and invalid approval reuse. Decision and owner outcome preserve their applicable transaction guarantees, and audit evidence remains scope-safe. | PLANNED |
+| **T39 · Qualify the Circle 1 HidraAPI consumer handoff (G7)** | HidraAPI integration and QA with the seven Circle 1 owners | T33–T37 for the read-only milestone. T38 for full Circle 1. | Pin runtime OpenAPI, DTOs and permission/error semantics. Prove the signed HTTP journey on fresh PostgreSQL and provide the synthetic regional fixture and linked evidence required for the HidraWEB browser journey. Reuse protected owner reads where they satisfy the journey. | The exact-SHA API evidence covers regional isolation, revocation, map-to-dossier navigation, qualified constraint and trusted observation distinctions, and scope-safe decision readback. Full acceptance additionally covers the governed decision. HidraWEB independently records matching browser acceptance on its pinned consumer SHA. | PLANNED |
+
+**Decision dependencies.** Before T33 selection, record whether an effective
+Organization responsibility constrains Identity grants or can contribute
+access through an explicitly approved policy, and define cross-region
+geometry and metadata disclosure. Regional membership and employee title
+alone confer no access. Before T36 or T38 selection, identify the owning
+engineering authority for each admitted constraint class and its approved
+source and decision rules.
+
+**Delivery checkpoints.** T35, T36 and T37 can qualify their owner reads
+in parallel after regional authority is settled. The read-only milestone
+includes authorized decision references and readback where an authoritative
+source supplies them. Full Circle 1 adds the governed restriction decision
+path in T38. T39 is the API consumer handoff and integration proof. The
+matching integration and browser acceptance remain governed by HidraWEB.
+Use synthetic, gas-first GZ2 fixtures for software acceptance. Site
+qualification, live OT integration and numerical solver work retain their
+separate gates.
+
 **Deferred — FG-21.** Numerical execution, calibration and industrial integrations are outside the 32 proposed tasks. Apply A21 to delivered contracts so clients can distinguish readiness, trust, engineering qualification and computation.
 
 ## 5. Detailed delivery specifications

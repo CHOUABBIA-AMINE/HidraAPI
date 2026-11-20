@@ -154,7 +154,10 @@ public class ConfigurationAdministrationApplicationService implements Configurat
         return new RetirementPreview(v.id(),v.definitionId(),v.definitionVersionId(),v.environment(),c.cutoff(),
                 "ENVIRONMENT_OVERRIDE",v.id(),afterSource,afterId,token);
     }
-    @Override public RetirementPreview previewRetirement(String valueId,RetirementCommand command) {
+    // Preview writes no rows but verifies the active namespace using PostgreSQL FOR SHARE.
+    // Override the class read-only transaction so this existing lock check is supported.
+    @Override @Transactional(rollbackFor=Exception.class)
+    public RetirementPreview previewRetirement(String valueId,RetirementCommand command) {
         authority.administrator();request(command);
         var target=target(valueId,command,false);
         if(store.retirementReceipt(valueId)!=null)throw new IllegalStateException("Override already scheduled for retirement.");

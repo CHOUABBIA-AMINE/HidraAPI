@@ -6260,3 +6260,47 @@ required only after actual hosted runtime OpenAPI and database catalog
 artifacts are available. Do not infer physical relations or endpoint
 schemas for the canonical generated documents. T32 stays IN PROGRESS
 until exact-SHA passing full CI gate; no T33 advancement is authorized.
+
+
+### T32 failed-CI retirement preview transaction repair — 2026-11-20
+
+The initial T32 source commit `de907dfe7622a08f8d2b4a6879726ffcdcddc64c` had
+[HidraAPI CI #1331](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44710663202)
+**FAILED** on exact SHA. Static validation, Java 21 unit/architecture,
+thirteen of fourteen PostgreSQL shards and
+[Documentation Validation #1178](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44710662923)
+passed. PostgreSQL shard 10 failed six T32 synthetic signed-HTTP cases,
+all reaching T32 retirement preview with HTTP 500 rather than the expected
+200 or 400. The API contract/dictionary job independently failed **only
+canonical OpenAPI equality** after runtime capture and backward compatibility
+passed; strict physical dictionary equality was not completed. The hosted
+catalog capture reported 235 migrations, 471 JPA mappings, 615 relations,
+zero unresolved owners. T32 remains IN PROGRESS and the full gate is OPEN.
+
+**Source-local defect identified from the exact implementation:**
+`ConfigurationAdministrationApplicationService` is class-annotated
+`@Transactional(readOnly=true)`; the T32 preview inherits this while
+`target(...,false)` calls `store.requireNamespace(...)`, whose B5 JDBC
+implementation executes `SELECT ... FOR SHARE`. PostgreSQL disallows
+`FOR SHARE` in a read-only transaction. The CI log did not expose a
+resolved root exception for the HTTP 500, so the transactional mismatch
+is a source-proven cause candidate, pending hosted confirmation.
+
+**Authorized same-task repair:** exact commit message
+`fix(configuration): allow locked T32 retirement preview`.
+Update only
+`src/main/java/dz/sh/hidra/modules/configuration/application/service/ConfigurationAdministrationApplicationService.java`
+and append this roadmap evidence. Give only `previewRetirement` a
+read/write-capable `@Transactional(rollbackFor=Exception.class)` boundary;
+it performs no data writes and retains the existing definition/namespace
+checks, administrator fencing, token recomputation, receipt immutability
+and preview-zero-write test assertion. Do not weaken the B5 namespace lock,
+database guard or tests; no migration, other module, permission or
+unrelated file change is admitted.
+
+After publication, inspect exact-SHA HidraAPI CI creation/queue/start and
+STOP. The previously registered T32 artifact reconciliation stays separate,
+based only on genuine hosted OpenAPI and physical catalog artifacts. T32
+cannot be COMPLETED before its final reconciled exact-SHA Full Verification
+Gate passes. If the six failures persist, use the new exact-SHA diagnostics
+for the next bounded T32 repair.

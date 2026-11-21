@@ -329,7 +329,7 @@ public class PipelineDossierReadApplicationService implements PipelineDossierRea
         if (id == null) return false;
         Request req = new Request(kind, id, c.association.companyPartyId());
         boolean allowed = access.permitted(req);
-        if (allowed) c.authorities.add(req);
+        if (allowed) c.authorities.add(kind.name() + ":" + id);
         return allowed;
     }
 
@@ -341,7 +341,13 @@ public class PipelineDossierReadApplicationService implements PipelineDossierRea
         Association refreshed = read.association(c.association.companyPartyId(), c.association.pipelineId())
                 .orElseThrow(PipelineDossierReadApplicationService::missing);
         if (!refreshed.equals(c.association)) throw missing();
-        for (Request request : c.authorities) if (!access.permitted(request)) throw missing();
+        for (String evidence : c.authorities) {
+            int sep = evidence.indexOf(':');
+            ResourceKind kind = ResourceKind.valueOf(evidence.substring(0, sep));
+            String resourceId = evidence.substring(sep + 1);
+            if (!access.permitted(new Request(kind, resourceId, c.association.companyPartyId())))
+                throw missing();
+        }
         for (BooleanSupplier check : c.checks) if (!check.getAsBoolean()) throw missing();
         if (!c.association.equals(read.association(
                 c.association.companyPartyId(), c.association.pipelineId()).orElse(null)))
@@ -397,7 +403,7 @@ public class PipelineDossierReadApplicationService implements PipelineDossierRea
     }
     private static final class Context {
         final Association association;
-        final Set<Request> authorities = new LinkedHashSet<>();
+        final Set<String> authorities = new LinkedHashSet<>();
         final List<BooleanSupplier> checks = new ArrayList<>();
         Context(Association association) { this.association = association; }
     }

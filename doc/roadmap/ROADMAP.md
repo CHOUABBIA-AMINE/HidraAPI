@@ -7718,3 +7718,29 @@ authority, competing publications, rollback and restart evidence.
 T38 remains IN PROGRESS. Runtime OpenAPI and the physical dictionary require
 reconciliation from generated evidence. Acceptance requires the registered
 exact-final-SHA Full Verification Gate.
+
+### T38 CI #1353 startup and exact-caller guardrail repair
+
+[CI #1353](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44948937402)
+on `067cd26d2ce8eacea4f21829149376816538110e` passed static validation.
+The API application and integration contexts could not start because
+constructor injection from the pressure Workflow target to Audit opened
+a cycle back through Documents and Workflow. The Java 21 lane ran 2,683
+tests and failed the platform exact-caller source guardrail. Its literal
+inventory omitted the T38 publication service named in the approved
+implementation ledger. PostgreSQL shard 1 independently stopped before
+test execution when the Maven Wrapper download failed.
+
+The bounded repair changes the T38 evidence adapter to resolve Audit
+only at evidence append or read, in the existing owner invocation and
+transaction. Add the exact T38 caller literal to the existing platform
+boundary guardrail and require exactly one occurrence in the protected
+executor and zero in the protected data source. Every other module
+reference remains forbidden. Update this guardrail's CI fingerprint.
+This extends the T38 file ledger only for the named boundary test;
+retain the registered source commit message and existing permission,
+trigger, runtime and acceptance boundaries.
+
+Runtime OpenAPI and database dictionary artifacts were unavailable after
+startup stopped. T38 remains IN PROGRESS pending artifact reconciliation
+and the final exact-SHA gate.

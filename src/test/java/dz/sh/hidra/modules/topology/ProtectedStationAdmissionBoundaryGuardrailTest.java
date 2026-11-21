@@ -108,6 +108,8 @@ class ProtectedStationAdmissionBoundaryGuardrailTest {
         String baselinePublicationService="\"dz.sh.hidra.modules.topology.application.service.EngineeringBaselinePublicationApplicationService\"";
         String baselinePublicationCoordinator="\"dz.sh.hidra.modules.topology.application.service.ProtectedEngineeringBaselinePublicationCoordinator\"";
         String baselinePublicationRepository="\"dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.JdbcEngineeringBaselinePublicationRepositoryAdapter\"";
+        String pressureRestrictionService =
+                "\"dz.sh.hidra.modules.topology.application.service.PressureRestrictionDecisionApplicationService\"";
         for(String name:List.of("ProtectedTransactionExecutor","ProtectedOperationDataSource")) {
             String s=source("platform/persistence/"+name+".java");
             String productService="\"dz.sh.hidra.modules.custody.application.service.ProductEngineeringDraftApplicationService\"";
@@ -141,7 +143,10 @@ class ProtectedStationAdmissionBoundaryGuardrailTest {
                     baselinePublicationService,baselinePublicationCoordinator,baselinePublicationRepository))
                 assertEquals(name.equals("ProtectedTransactionExecutor")?1:0,
                     s.split(java.util.regex.Pattern.quote(reviewed),-1).length-1);
-            assertFalse(s.replace(baselineService,"\"reviewed-baseline-service\"")
+            assertEquals(name.equals("ProtectedTransactionExecutor") ? 1 : 0,
+                    s.split(java.util.regex.Pattern.quote(pressureRestrictionService), -1).length - 1);
+            assertFalse(s.replace(pressureRestrictionService,"\"reviewed-pressure-restriction-service\"")
+                .replace(baselineService,"\"reviewed-baseline-service\"")
                 .replace(baselineCoordinator,"\"reviewed-baseline-coordinator\"")
                 .replace(baselineRepository,"\"reviewed-baseline-repository\"")
                 .replace(baselineSource,"\"reviewed-baseline-source\"")

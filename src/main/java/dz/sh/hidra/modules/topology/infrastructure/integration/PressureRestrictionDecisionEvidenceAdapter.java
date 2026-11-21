@@ -36,10 +36,11 @@ import org.springframework.stereotype.Component;
 public class PressureRestrictionDecisionEvidenceAdapter implements PressureRestrictionDecisionEvidencePort {
     private final TopologyPressureRestrictionAuthorizationContract identity;
     private final ObjectProvider<RevisionApprovalEvidenceContract> workflow;
-    private final PressureRestrictionAuditEvidenceContract audit;
+    private final ObjectProvider<PressureRestrictionAuditEvidenceContract> audit;
 
     public PressureRestrictionDecisionEvidenceAdapter(TopologyPressureRestrictionAuthorizationContract identity,
-            ObjectProvider<RevisionApprovalEvidenceContract> workflow, PressureRestrictionAuditEvidenceContract audit) {
+            ObjectProvider<RevisionApprovalEvidenceContract> workflow,
+            ObjectProvider<PressureRestrictionAuditEvidenceContract> audit) {
         this.identity = identity;
         this.workflow = workflow;
         this.audit = audit;
@@ -67,12 +68,12 @@ public class PressureRestrictionDecisionEvidenceAdapter implements PressureRestr
 
     @Override
     public String appendAudit(QualifiedPressureWorkflowCandidate candidate, Approval approval, Instant recordedAt) {
-        return audit.appendPressureWitness(witness(candidate, approval));
+        return audit.getObject().appendPressureWitness(witness(candidate, approval));
     }
 
     @Override
     public boolean auditMatches(QualifiedPressureWorkflowCandidate candidate, Approval approval, String eventId) {
-        return audit.matchesPressureWitness(eventId, witness(candidate, approval));
+        return audit.getObject().matchesPressureWitness(eventId, witness(candidate, approval));
     }
 
     private static TopologyPressureRestrictionAuthorizationContract.Target target(Scope scope) {

@@ -7517,3 +7517,28 @@ The canonical OpenAPI and validation manifest await reconciliation from
 the hosted runtime artifact. Physical schema and dictionary are unchanged.
 Acceptance remains the registered Full Verification Gate on the final
 reconciled implementation SHA.
+
+### T37 CI #1351 OpenAPI reconciliation — 2026-11-21
+
+[CI #1351 attempt 1](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44916009574/attempts/1)
+on `dad778c5d4f02c9d6213105560227b963d4fe913` passed static validation,
+Java 21 unit/architecture, and all fourteen PostgreSQL integration shards.
+[Shard 1](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44916009574/job/136881648840)
+passed the signed GZ2 journey. The API and dictionary lane generated the
+current contract, captured the migrated catalog, and passed backward
+compatibility. Strict OpenAPI equality failed against the previous
+snapshot, so hosted dictionary equality was skipped and the Full
+Verification Gate failed.
+
+The [runtime artifact](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44916009574/artifacts/14712266122)
+contains 487 paths, 532 operations and 573 schemas. The exact generated
+delta adds three authenticated Asset Telemetry GETs, seven response
+schemas and one tag. Existing paths, operations and schemas are
+preserved. The repository dictionary comparator passed against the
+[exact-SHA captured catalog](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44916009574/artifacts/14712236384).
+
+The registered documentation commit
+`docs(telemetry): reconcile T37 asset-scoped trusted observation contracts`
+updates the canonical OpenAPI, records artifact provenance and appends
+this evidence. T37 remains IN PROGRESS until the exact-final-SHA
+Full Verification Gate passes.

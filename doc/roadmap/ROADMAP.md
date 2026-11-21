@@ -9,7 +9,7 @@
 | Status | ACTIVE |
 | Authority | Sole task register and execution source for HidraAPI |
 | Owner adoption | 2026-11-10 |
-| Active task selection | T32 COMPLETED on exact-SHA CI #1333; T33 selected / implementation envelope registered, source pending. |
+| Active task selection | T36 COMPLETED on exact-SHA CI #1350. T37 selected and registered, source pending. |
 
 The task register controls scope, dependencies, status and acceptance. Existing technical policy and verified implementation evidence retain their applicability. Task status advances only with recorded evidence. The initial status for each task is PLANNED. The first candidate is T01.
 
@@ -146,8 +146,8 @@ recorded before T33 is selected.
 | **T33 · Resolve regional employee access (G1)** | Identity with Organization and Topology | T32 closure and owner-approved regional authority policy | Resolve the authenticated employee and current typed resource scope using Identity grants and denies, effective Organization responsibilities and owner-issued Topology relationships. Define company, system, pipeline, section, facility and equipment inheritance and cross-region disclosure. | Signed HTTP and PostgreSQL evidence for two regional employees with different scopes, an unlinked employee, explicit deny, expired responsibility, revoked grant and foreign company. Resource decisions use current authority. | COMPLETED |
 | **T34 · Expose regional map and discovery (G2)** | Topology with Identity and Organization | T33 | Qualify or extend owner-backed layers, features, GeoJSON and search for regional users. Apply scope before pagination and counts, preserve authorized graph semantics and retain the separately protected legacy administrator path. | A regional employee discovers a permitted pipeline. A cross-region fixture proves scope-safe geometry, connections, features, search, totals and direct lookups, including after revocation. | COMPLETED |
 | **T35 · Qualify protected pipeline dossier reads (G3)** | Topology with engineering source owners | T33, T04–T07 | Qualify existing reads for a selected pipeline's design characteristics, route, kilometer points, sections, elevation, connections, installed equipment and published revision provenance. Extend a typed read only for a demonstrated gap. | A scoped client retrieves the agreed available facts with explicit units, source and version. Unavailable values are explicit. Restricted history and linked resource details require their own current authority. | COMPLETED |
-| **T36 · Resolve qualified operating constraints (G4)** | Configurable company-scoped engineering restriction authority (logical capability), with Topology as read-only custodian, Identity, Workflow and Audit; Integrity only for separately admitted derived restrictions | T33, applicable T07 sources, approved logical authority/source/decision contract (recorded below) | Resolve approved restrictions for an exact asset or section and effective instant. Preserve pressure basis, units, scope, operating conditions, source revision, qualification and authorized decision references. Use existing qualified sources where proven. | Synthetic cases cover applicability, approved effective and historical reads, supersession, withdrawal, unresolved conflicts, missing evidence and unauthorized scope. Design pressure and unqualified assessments are never returned as approved limits. | PLANNED |
-| **T37 · Qualify asset-scoped trusted observations (G5)** | Telemetry with Topology and Identity | T33, T08–T09 | Qualify authorized discovery of relevant commissioned points and trusted latest and historical readings for the selected asset. Preserve applicable binding revision, units, measurement source and time, quality, trust and freshness. | Prove a binding change, stale or unavailable readings, unit or binding incompatibility and revoked scope. Historical reads use the binding valid at the relevant time and enforce current read authority. | PLANNED |
+| **T36 · Resolve qualified operating constraints (G4)** | Configurable company-scoped engineering restriction authority (logical capability), with Topology as read-only custodian, Identity, Workflow and Audit; Integrity only for separately admitted derived restrictions | T33, applicable T07 sources, approved logical authority/source/decision contract (recorded below) | Resolve approved restrictions for an exact asset or section and effective instant. Preserve pressure basis, units, scope, operating conditions, source revision, qualification and authorized decision references. Use existing qualified sources where proven. | Synthetic cases cover applicability, approved effective and historical reads, supersession, withdrawal, unresolved conflicts, missing evidence and unauthorized scope. Design pressure and unqualified assessments are never returned as approved limits. | COMPLETED |
+| **T37 · Qualify asset-scoped trusted observations (G5)** | Telemetry with Topology and Identity | T33, T08–T09 | Qualify authorized discovery of relevant commissioned points and trusted latest and historical readings for the selected asset. Preserve applicable binding revision, units, measurement source and time, quality, trust and freshness. | Prove a binding change, stale or unavailable readings, unit or binding incompatibility and revoked scope. Historical reads use the binding valid at the relevant time and enforce current read authority. | IN PROGRESS |
 | **T38 · Govern restriction decisions and evidence (G6)** | Approved engineering constraint owner with Workflow, Audit, Identity and Organization | T33, T36, T28, T30 | Bind submission, independent review, approval, supersession and withdrawal to the exact restriction revision. Publish the effective owner outcome with exact authorized decision and audit references. Reuse supported Workflow and Audit contracts. | Prove approval and readback, self-review denial, revoked authority, stale version and invalid approval reuse. Decision and owner outcome preserve their applicable transaction guarantees, and audit evidence remains scope-safe. | PLANNED |
 | **T39 · Qualify the Circle 1 HidraAPI consumer handoff (G7)** | HidraAPI integration and QA with the seven Circle 1 owners | T33–T37 for the read-only milestone. T38 for full Circle 1. | Pin runtime OpenAPI, DTOs and permission/error semantics. Prove the signed HTTP journey on fresh PostgreSQL and provide the synthetic regional fixture and linked evidence required for the HidraWEB browser journey. Reuse protected owner reads where they satisfy the journey. | The exact-SHA API evidence covers regional isolation, revocation, map-to-dossier navigation, qualified constraint and trusted observation distinctions, and scope-safe decision readback. Full acceptance additionally covers the governed decision. HidraWEB independently records matching browser acceptance on its pinned consumer SHA. | PLANNED |
 
@@ -7338,3 +7338,157 @@ and the API and dictionary lane passed. [Documentation Validation
 #1200](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44911018937)
 passed. T36 remains open pending the replacement exact-SHA Full
 Verification Gate.
+
+### Close T36 and register T37 asset-scoped trusted observations — 2026-11-21
+
+**T36 (G4) — COMPLETED for registered development software.**
+[HidraAPI CI #1350 attempt 1](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44912235018/attempts/1)
+passed the [Full Verification Gate](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44912235018/job/136873275481)
+on `6bfaffae205d9a86899000d3afed50fe41b859a8` (parent
+`dd5ac5b4dac9827532e3be3144d860110d576e43`, tree
+`4231dea09e0a0f22f74889b5308ff2f55c24dd4b`).
+The [combined evidence](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44912235018/artifacts/14710916406)
+records 4,561 tests in 611 classes with zero failures, errors or skipped
+tests. The signed GZ2 report ran on PostgreSQL shard 1. All fourteen
+PostgreSQL shards, static validation, Java 21 unit/architecture, runtime
+OpenAPI and physical dictionary verification passed. The serial fallback
+job was skipped in development-partitioned mode. [Documentation Validation
+#1201](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44912235092)
+succeeded on the same SHA. This closes the synthetic G4 pressure restriction
+reader. Governed authoring and decisions remain T38.
+
+**T37 (G5) — IN PROGRESS, selected and registered, source pending.**
+T33, T08 and T09 are completed. T15 already exercises trusted lineage
+after an independent JVM restart. Telemetry owns commissioning, bindings,
+trust and observation readback. Topology owns asset identity and
+relationships. Identity owns current regional and Telemetry authorization.
+
+#### Source baseline and admitted scope
+
+T08 can commission and rotate a point binding and its direct mapping.
+Its Topology ownership contract admits active FACILITY and EQUIPMENT only.
+Reuse those exact asset kinds. HidraWEB can pass an explicitly linked,
+authorized equipment ID from the T35 dossier or an authorized facility ID.
+Pipeline, section and system IDs do not serve as commissioning assets.
+Cross-asset observation aggregation, new asset kinds, new writes and
+changes to T08/T09 routes are outside this task.
+
+T09 exact and history reads start from a known point and authorize its
+current binding. History sorts by trust publication time. Those operations
+cannot discover commissioned points by asset or prove that a historical row
+belongs to that asset when measured. A trusted row already pins raw,
+assessment, binding, quantity, source timestamp and publication time.
+The raw ingest receipt pins the source, unit and mapping. Use those
+stored references to establish each row's exact historical lineage.
+
+#### Public read contract
+
+Root `/api/v1/telemetry/assets/{assetType}/{assetId}/points`.
+All operations are ordinary authenticated GETs, with explicit
+`companyPartyId`, stable operation IDs, typed OpenAPI and private no-store.
+
+| Relative route | Operation ID | Contract |
+|---|---|---|
+| Collection root | `listAssetScopedTelemetryPoints` | List eligible commissioned points at one `at` instant (defaults to server time, future instants rejected). Return point, source, available unit and exact applicable binding ID/window. Sort by point ID. Use limit 1–50, default 20, and an optional after-point cursor. Derive any next cursor only after authorization and eligibility filtering. An authorized asset with no visible commissioned points returns an empty list. |
+| `/{pointId}/trusted-readings/latest` | `readLatestAssetScopedTrustedObservation` | Resolve the unique current binding, exact asset membership and current point/source grant. Select the newest trusted publication by observation timestamp and trusted ID within that binding. Older publications from prior bindings are excluded. Report FRESH, STALE or UNAVAILABLE. A stale value carries its original provenance. Missing or incompatible evidence returns UNAVAILABLE with no observation payload. Do not substitute an older sample when the newest candidate for that binding has incompatible lineage. |
+| `/{pointId}/trusted-readings/history` | `listAssetScopedTrustedObservationHistory` | Require explicit UTC `from` and `until` over a half-open observation-time window, at most 31 days and ending no later than server time. Authorize the point's asset membership within the window and each historical source. Match each candidate to its recorded binding at measurement time. Return only qualifying rows, by observation time descending then trusted ID descending. Limit 1–50, default 20, with an optional validated observation-time and trusted-ID cursor scoped to the same filter. Empty authorized history returns an empty list. |
+
+Use one captured server instant per request. Latest and history take the
+required UI freshness threshold `maxAgeSeconds` in 1–604800. Report the
+evaluation instant, threshold and age from the source timestamp. Age at or
+below the threshold is FRESH, age above it is STALE. This threshold expresses
+client display policy and leaves stored T09 quality and trust unchanged.
+A future-dated observation never becomes FRESH. Use FRESHNESS_UNAVAILABLE
+for a history entry whose age cannot be established. No unit conversion
+or inferred value. Expose the typed stored value, available unit identity,
+source ID, source and receipt times, assessment ID/status, quality code,
+trust level, trust-publication time, raw and trusted IDs, and recorded
+binding ID/effective interval. Respect Telemetry's unit-exempt signal shapes.
+
+#### Authorization and consistency
+
+Resolve exact current Topology ownership and current T33 permission before
+enumeration. Apply the existing Telemetry TRUSTED_READ paired company and
+exact source/point policy to discovery and observations. Neither regional
+access nor a Telemetry grant alone suffices. A historical binding is data
+lineage. It never confers present authority. For history and historical
+discovery, check current authority over the requested owner and applicable
+historical source/point; a current binding to another asset confers no
+authority over the old one. For latest, require exact currently commissioned
+membership. Use the T33/T35 status conventions: 401 unauthenticated, 403
+for ordinary route denial, uniform protected 404 for absent/foreign/denied
+exact scope or wrong asset/point, and 400 for invalid query syntax. Suppress
+unauthorized list rows before deriving the slice or cursor. Do not emit
+unfiltered counts or existence hints.
+
+At the observation timestamp, require one matching binding under the
+half-open validity rule and an exact match among the trusted row, assessment,
+raw observation, ingest receipt, pinned direct mapping, source/point and unit.
+Validate the recorded historical unit and mapping against the evidence;
+never substitute a successor's unit, source or binding. Exclude ambiguous,
+unpublished, failed or incompatible lineage. Use bounded parameterized
+owner reads and the established owner-scope transaction/locking patterns.
+Recheck applicable exact owner/authority and scope after assembly before
+disclosure, with no durable or token-cached scope decisions.
+
+#### Exact T37 file ledger
+
+`M/` expands to `src/main/java/dz/sh/hidra/modules/telemetry/`.
+`J/` expands to `src/test/java/dz/sh/hidra/`.
+
+| Action | Path | Responsibility |
+|---|---|---|
+| CREATE | `M/application/port/in/AssetScopedTrustedObservationReadUseCase.java` | Typed discovery, latest and history contracts, bounded query parameters, asset/point scope, binding lineage, freshness and eligible page results. Scalar references and no adapter DTOs. |
+| CREATE | `M/application/port/out/AssetScopedTrustedObservationReadPort.java` | Telemetry-only candidate, exact current/historical membership and pinned publication evidence projections with stable seek ordering and bounded batches. Return no persistence entities. |
+| CREATE | `M/application/port/out/AssetScopedTrustedObservationAuthorizationPort.java` | Scalar current regional asset and Telemetry source/point checks. Keep current authority distinct from the observation time. |
+| CREATE | `M/application/service/AssetScopedTrustedObservationReadApplicationService.java` | Coordinate the three read paths, current and historical semantics, exact checks and final rechecks before disclosure, post-filter pagination, and freshness using one server instant. |
+| CREATE | `M/infrastructure/persistence/adapter/JdbcAssetScopedTrustedObservationReadAdapter.java` | Read existing Telemetry tables only. Use parameterized candidate queries and exact joins to commissioning/mapping, raw receipt, trusted row and quality assessment. Preserve time, point, source, unit and provenance consistency. Apply exact point/asset/time bounds before querying potentially relevant publications. |
+| CREATE | `M/api/rest/controller/AssetScopedTrustedObservationController.java` | Expose the three ordinary GETs with stable operation IDs, bounded inputs, typed errors and no-store. Preserve the existing protected-native routes. |
+| CREATE | `M/api/rest/response/AssetScopedTrustedObservationResponses.java` | Explicit DTOs and allowlisted response mapping. Exclude internal scope evidence, raw payloads, external tag credentials and diagnostics. |
+| UPDATE | `M/infrastructure/security/TelemetryReadingNativeScopeAdapter.java` | Implement the new outbound authorization port by reusing the existing Topology owner and Identity Telemetry ACL bridges and the three exact T33 regional export types. Preserve the existing native authorization and its callers. |
+| UPDATE | `J/ArchitectureGuardrailTest.java` | Admit only the new consumer-to-export edges used by the named Telemetry security adapter; maintain the denial for sibling packages and concrete foreign adapters. |
+| UPDATE | `J/ForensicRemediationClosureTest.java` | Mirror exact T33 type/import allowance in the source scanner. Keep the existing Telemetry Identity/Topology bridge and all unrelated restrictions. |
+| UPDATE | `J/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java` | Verify the three routes use the ordinary route gate without native bypass and retain the T08/T09 route protections. |
+| UPDATE | `J/qualification/Gz2SignedWorkflowNativeHttpPostgresIntegrationTest.java` | Add one assertion sequence to the existing signed fresh-PostgreSQL workflow, reusing genuine T08/T09 commissioning, ingest, assessment and publication. Add scoped synthetic reassignment, exact boundary and incompatible evidence cases while retaining all existing restart and G4 assertions. |
+| UPDATE | `.github/ci-test-inventory.json` | Maintain changed suites' source hashes, exact test inventory and existing shard/lane assignments. |
+| UPDATE | `doc/api/openapi.yaml` | Reconcile only the three additive operations and their typed schemas from exact runtime output. |
+| UPDATE | `.github/documentation-validation.json` | Record runtime artifact identity, source SHA, counts and digests while preserving existing provenance. |
+| UPDATE | `doc/roadmap/ROADMAP.md` | Append implementation and final gate evidence. Mark T37 COMPLETED when the registered gate passes. |
+| DELETE | None | Preserve the schema, migrations, physical dictionary, permission codes, T08/T09 commands and current client contracts. |
+
+Source commit `feat(telemetry): qualify asset-scoped trusted observations`.
+If hosted OpenAPI reconciliation requires a separate documentation commit,
+use `docs(telemetry): reconcile T37 asset-scoped trusted observation contracts`.
+Recheck exact scope against main at implementation time.
+
+#### Single T37 development-software acceptance gate
+
+One passing HidraAPI CI Full Verification Gate on the final reconciled
+implementation SHA is sufficient. Its signed HTTP journey must prove:
+
+1. An authorized regional reader discovers a commissioned point from a
+   permitted asset, sees a fresh latest and ordered history, and receives
+   exact source, unit, timestamp, quality, trust and binding lineage.
+2. A genuine T08 binding successor moves the point to a second eligible
+   asset. Include pre-boundary, exact-boundary and post-boundary observations.
+   Latest follows only the current binding. Historical reads and discovery
+   use the applicable historical binding and never mix the assets. Use
+   an authorized historical read after the existing JVM restart to prove
+   that provenance remains independently retrievable.
+3. A stale trusted observation is explicitly stale. A commissioned point
+   without publication is unavailable for latest and has empty history.
+   Prove wrong-unit and wrong-binding evidence through the existing native
+   admission guards and verify that no raw, failed or incompatible reading
+   appears in any T37 response. Show that a post-filter page can still
+   return a later authorized row and exposes no hidden counts or cursor.
+4. Cover signed readers in different regional scopes, a foreign company,
+   regional-only and Telemetry-only grants, wrong asset/point, and current
+   revocation on a previously issued token. Check protected response parity,
+   route gating, and both architecture scanners.
+
+The same gate includes full registered regression, all PostgreSQL shards,
+inventory, generated OpenAPI backward compatibility and strict equality,
+and strict physical dictionary equality. Retain the same-run combined
+artifact and link the gate. This closes the software task without a separate
+manual, browser, engineering, field calibration or SITE evidence package.
+T38 remains the next registered task after T37 and requires its own selection.

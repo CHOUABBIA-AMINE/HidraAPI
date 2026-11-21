@@ -9,7 +9,7 @@
 | Status | ACTIVE |
 | Authority | Sole task register and execution source for HidraAPI |
 | Owner adoption | 2026-11-10 |
-| Active task selection | T36 COMPLETED on exact-SHA CI #1350. T37 selected and registered, source pending. |
+| Active task selection | T37 COMPLETED on exact-SHA CI #1352. T38 selected and registered, implementation pending. |
 
 The task register controls scope, dependencies, status and acceptance. Existing technical policy and verified implementation evidence retain their applicability. Task status advances only with recorded evidence. The initial status for each task is PLANNED. The first candidate is T01.
 
@@ -147,8 +147,8 @@ recorded before T33 is selected.
 | **T34 · Expose regional map and discovery (G2)** | Topology with Identity and Organization | T33 | Qualify or extend owner-backed layers, features, GeoJSON and search for regional users. Apply scope before pagination and counts, preserve authorized graph semantics and retain the separately protected legacy administrator path. | A regional employee discovers a permitted pipeline. A cross-region fixture proves scope-safe geometry, connections, features, search, totals and direct lookups, including after revocation. | COMPLETED |
 | **T35 · Qualify protected pipeline dossier reads (G3)** | Topology with engineering source owners | T33, T04–T07 | Qualify existing reads for a selected pipeline's design characteristics, route, kilometer points, sections, elevation, connections, installed equipment and published revision provenance. Extend a typed read only for a demonstrated gap. | A scoped client retrieves the agreed available facts with explicit units, source and version. Unavailable values are explicit. Restricted history and linked resource details require their own current authority. | COMPLETED |
 | **T36 · Resolve qualified operating constraints (G4)** | Configurable company-scoped engineering restriction authority (logical capability), with Topology as read-only custodian, Identity, Workflow and Audit; Integrity only for separately admitted derived restrictions | T33, applicable T07 sources, approved logical authority/source/decision contract (recorded below) | Resolve approved restrictions for an exact asset or section and effective instant. Preserve pressure basis, units, scope, operating conditions, source revision, qualification and authorized decision references. Use existing qualified sources where proven. | Synthetic cases cover applicability, approved effective and historical reads, supersession, withdrawal, unresolved conflicts, missing evidence and unauthorized scope. Design pressure and unqualified assessments are never returned as approved limits. | COMPLETED |
-| **T37 · Qualify asset-scoped trusted observations (G5)** | Telemetry with Topology and Identity | T33, T08–T09 | Qualify authorized discovery of relevant commissioned points and trusted latest and historical readings for the selected asset. Preserve applicable binding revision, units, measurement source and time, quality, trust and freshness. | Prove a binding change, stale or unavailable readings, unit or binding incompatibility and revoked scope. Historical reads use the binding valid at the relevant time and enforce current read authority. | IN PROGRESS |
-| **T38 · Govern restriction decisions and evidence (G6)** | Approved engineering constraint owner with Workflow, Audit, Identity and Organization | T33, T36, T28, T30 | Bind submission, independent review, approval, supersession and withdrawal to the exact restriction revision. Publish the effective owner outcome with exact authorized decision and audit references. Reuse supported Workflow and Audit contracts. | Prove approval and readback, self-review denial, revoked authority, stale version and invalid approval reuse. Decision and owner outcome preserve their applicable transaction guarantees, and audit evidence remains scope-safe. | PLANNED |
+| **T37 · Qualify asset-scoped trusted observations (G5)** | Telemetry with Topology and Identity | T33, T08–T09 | Qualify authorized discovery of relevant commissioned points and trusted latest and historical readings for the selected asset. Preserve applicable binding revision, units, measurement source and time, quality, trust and freshness. | Prove a binding change, stale or unavailable readings, unit or binding incompatibility and revoked scope. Historical reads use the binding valid at the relevant time and enforce current read authority. | COMPLETED |
+| **T38 · Govern restriction decisions and evidence (G6)** | Approved engineering constraint owner with Workflow, Audit, Identity and Organization | T33, T36, T28, T30 | Bind submission, independent review, approval, supersession and withdrawal to the exact restriction revision. Publish the effective owner outcome with exact authorized decision and audit references. Reuse supported Workflow and Audit contracts. | Prove approval and readback, self-review denial, revoked authority, stale version and invalid approval reuse. Decision and owner outcome preserve their applicable transaction guarantees, and audit evidence remains scope-safe. | IN PROGRESS |
 | **T39 · Qualify the Circle 1 HidraAPI consumer handoff (G7)** | HidraAPI integration and QA with the seven Circle 1 owners | T33–T37 for the read-only milestone. T38 for full Circle 1. | Pin runtime OpenAPI, DTOs and permission/error semantics. Prove the signed HTTP journey on fresh PostgreSQL and provide the synthetic regional fixture and linked evidence required for the HidraWEB browser journey. Reuse protected owner reads where they satisfy the journey. | The exact-SHA API evidence covers regional isolation, revocation, map-to-dossier navigation, qualified constraint and trusted observation distinctions, and scope-safe decision readback. Full acceptance additionally covers the governed decision. HidraWEB independently records matching browser acceptance on its pinned consumer SHA. | PLANNED |
 
 **Decision dependencies.** Before T33 selection, record whether an effective
@@ -7542,3 +7542,164 @@ The registered documentation commit
 updates the canonical OpenAPI, records artifact provenance and appends
 this evidence. T37 remains IN PROGRESS until the exact-final-SHA
 Full Verification Gate passes.
+
+### Close T37 and register T38 restriction decisions and evidence — 2026-11-21
+
+**T37 (G5) — COMPLETED for registered development software.**
+[HidraAPI CI #1352 attempt 1](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44921865293/attempts/1)
+passed the [Full Verification Gate](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44921865293/job/136902351902)
+on `b55c967ceb808ba83c33f7e0a804ba70a5d3f2e4`, parent
+`dad778c5d4f02c9d6213105560227b963d4fe913`, tree
+`8d5839dfdb6f6f688904e40349950a89a18ca2fb`. The [combined evidence](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44921865293/artifacts/14714048757)
+records 4,562 tests across 611 classes, zero failures, errors and skips.
+Static validation, Java 21 unit/architecture, the strict API and dictionary
+lane and all fourteen PostgreSQL shards passed. The signed GZ2 journey ran
+on [shard 1](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44921865293/job/136899450784).
+The serial fallback job was skipped in development-partitioned mode.
+[Documentation Validation #1204](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44921865267)
+also passed on the same SHA.
+
+**T38 (G6) — selected, envelope registered, implementation pending.**
+T33, T36, T28 and T30 are completed. Apply the logical approval authority
+and class approved in the T36 activation record. Topology is the restriction
+owner, Workflow owns decisions, Audit owns immutable evidence, Identity
+and Organization own current authority and responsibilities. Deployment
+maps these capabilities to named personnel through existing administration.
+This stage covers the registered synthetic upper operating pressure class
+only and introduces no site-specific assignment or live activation.
+
+#### T38 execution contract
+
+- Add an exact Topology owner resource under
+  `/api/v1/topology/operating-constraints/pipelines/{pipelineId}/restriction-requests`,
+  with POST submission, GET exact request, POST `/{requestId}/publication`
+  and GET `/{requestId}/evidence`. Use explicit company context and nullable
+  section, an exact condition and effective period, and separate DTOs
+  for initial restriction, replacement and withdrawal. Reuse existing T36
+  effective/historical GETs and Workflow review/assignment routes. Treat
+  client receipt IDs, expected stream version and request IDs as references
+  and concurrency controls. Derive actor, source digest, source revision,
+  decision time and audit linkage from owner evidence. Source is the exact
+  admitted T07 network publication pin. Preserve T07 protected reads.
+- Check T33 canonical pipeline/section and current Organization responsibility
+  plus distinct configurable Identity operations for submit, review, publish,
+  and evidence read. Authorize before exposing lookup, CAS or conflict data.
+  Workflow start requires the immutable candidate's authenticated submitter
+  and live submit authority. REVIEW requires an independently assigned
+  eligible human, current exact review authority and T30 configuration
+  and transition checks. For pressure targets, apply the owner check in
+  previews and execution, including the generic Workflow route. Exact
+  readback uses current authority and independent evidence permission
+  before returning Audit or decision details. Return non-disclosing 404
+  for absent/denied owner targets, 400 for invalid input and 409 for an
+  authorized stale, invalid lifecycle or replay conflict.
+- Submit in one owner transaction to persist request idempotency, expected
+  stream version, and immutable candidate IDs. Review uses the existing
+  atomic T30 decision transaction. A committed review alone changes no
+  effective pressure. Owner publication independently requires exact
+  final APPROVE evidence bound to candidate and locator, current reviewer
+  eligibility and publisher authority. Recheck relevant authority and source
+  at the write boundary. Use a separate protected T07 preflight outside
+  the owner write transaction and validate/lock the exact immutable source
+  and current structural bindings at publication. Preserve the separate
+  transaction boundaries. A failed publication leaves the review intact
+  and leaves all owner publication and Audit writes rolled back.
+- Initial publication consumes one REVISION approval. Withdrawal consumes
+  one WITHDRAW approval against the exact current revision. Supersession
+  preserves the two existing immutable candidate and Workflow identities,
+  REVISION for the successor and SUPERSEDE for the retirement. T36's current
+  target lookup requires an already published successor for SUPERSEDE.
+  Admit instead the same request's immutable successor candidate with
+  identical scope, source, predecessor and boundary; retain the existing
+  committed successor check for historical or legacy readback. Verify both
+  final decisions, then insert the successor first and termination second,
+  with both distinct Audit receipts and stream advancement in one transaction.
+  Retain T36's existing database admission and no-resurrection rules.
+- Serialize publication on the exact company/system/pipeline/section/condition
+  stream, compare the expected version and applicable prior revision, reject
+  conflicting intervals or a second termination, and consume each decision
+  once. Authorize retries before receipt disclosure. Same key and canonical
+  payload replays the original receipt, and a changed payload or stale
+  version conflicts without a partial write. Use the existing protected
+  publication credential via an exact caller fence, forward-only owner
+  SQL functions with fixed search path, exact execution grants and typed
+  parameters. Keep ordinary runtime direct writes and destructive updates
+  to immutable evidence denied. Do not weaken existing T36 triggers or
+  retrofit already accepted history.
+
+#### Exact T38 implementation file ledger
+
+`M/` = `src/main/java/dz/sh/hidra/modules/`. `J/` = `src/test/java/dz/sh/hidra/`.
+
+| Action | Exact path | Role and bounded scope |
+|---|---|---|
+| CREATE | `M/topology/domain/model/PressureRestrictionDecisionRequest.java` | Pure Java submission variants, canonical request identity, pressure/interval invariants, expected stream version and valid publication combinations. Reuse T36 value semantics. |
+| CREATE | `M/topology/application/port/in/PressureRestrictionDecisionUseCase.java` | Typed submit, exact request, publish and protected evidence read contracts; no transport or persistence types. |
+| CREATE | `M/topology/application/port/out/PressureRestrictionDecisionPort.java` | Topology-owned request/idempotency, stream locking/recheck, ordered projection append and final receipt ports. |
+| CREATE | `M/topology/application/port/out/PressureRestrictionDecisionEvidencePort.java` | Narrow scalar ports for exact Workflow approval resolution, scoped Audit append/read and Identity authority. Keep candidate, reviewer and source provenance explicit. |
+| CREATE | `M/topology/application/service/PressureRestrictionDecisionApplicationService.java` | Owner orchestration, detached T07 preflight, contextual role checks, atomic scope-locked publication and guarded replay/readback. Sole newly authorized protected credential caller. |
+| CREATE | `M/topology/infrastructure/persistence/adapter/JdbcPressureRestrictionDecisionAdapter.java` | Parameterized Topology owner request/stream/projection operations. Invoke the bounded SQL entry points; no direct Workflow or Audit repository access. |
+| CREATE | `M/topology/infrastructure/integration/PressureRestrictionDecisionEvidenceAdapter.java` | Bridge only the named Identity, Workflow and Audit public projections; expose no foreign internal types. |
+| CREATE | `M/topology/api/rest/controller/PressureRestrictionDecisionController.java` | Four exact owner operations with ordinary route authorization and scoped command admission; preserve current T36 GET and Workflow contracts. |
+| CREATE | `M/topology/api/rest/request/PressureRestrictionDecisionRequests.java` | Allowlisted validation for operation-specific commands, idempotency and expected version; no client-selected actors or evidence assertions. |
+| CREATE | `M/topology/api/rest/response/PressureRestrictionDecisionResponses.java` | Safe request/publication/outcome and independently authorized evidence DTOs with stable operation contracts. |
+| CREATE | `M/identity/application/contract/topology/TopologyPressureRestrictionAuthorizationContract.java` | Export exact actor/operation/resource permission and current reviewer revalidation to the named adapter only. |
+| CREATE | `M/identity/application/service/TopologyPressureRestrictionAuthorizationQueryService.java` | Reuse current human and Identity grant evaluation, T33 authority and Organization responsibility. Lock or transactionally revalidate authority before final writes. Keep all operation grants separate and ungranted by default. |
+| UPDATE | `M/topology/application/port/in/QualifiedPressureWorkflowCandidateReadUseCase.java` | Define explicit owner admission for Workflow start and independent review. Preserve protected exact read. |
+| UPDATE | `M/topology/application/service/QualifiedPressureWorkflowCandidateReadApplicationService.java` | Enforce operation-specific current authority; resolve same-request immutable successor for pending supersession and preserve committed lineage/legacy reads. |
+| UPDATE | `M/topology/infrastructure/integration/TopologyQualifiedPressureWorkflowTargetLookup.java` | Enforce pressure start and review callbacks and preserve the detached T07 preflight boundary. |
+| UPDATE | `M/workflow/application/contract/target/WorkflowOwnedTargetLookup.java` | Pressure-only default-deny callbacks for starter/reviewer/preview. Leave other owner entry points unchanged. |
+| UPDATE | `M/workflow/application/service/WorkflowExecutionOwnership.java` | Dispatch the exact pressure family to its sole owner and fail closed if absent. |
+| UPDATE | `M/workflow/application/service/WorkflowApplicationService.java` | Bind pressure start to the submitted candidate and current actor before Workflow writes. Preserve existing assignment and all unrelated target families. |
+| UPDATE | `M/workflow/application/service/WorkflowTransitionApplicationService.java` | Require current pressure owner review authorization before revealing CAS/state or writing a decision. Preserve T30 configuration/task ordering and independent-human checks. |
+| UPDATE | `M/workflow/infrastructure/query/JpaWorkflowQueryAdapter.java` | Exclude pressure review actions from advertised permissions if exact owner eligibility is denied; retain Workflow scope checks. |
+| UPDATE | `M/workflow/application/contract/target/RevisionApprovalEvidenceContract.java` | Add pressure-specific exact candidate/locator/approval projection; no digest or caller-asserted substitute. |
+| UPDATE | `M/workflow/application/service/RevisionApprovalEvidenceQueryService.java` | Resolve persisted final exact pressure approval, including real task, configuration, outcome, actors and times. Preserve other revision evidence routes. |
+| CREATE | `M/audit/application/contract/topology/PressureRestrictionAuditEvidenceContract.java` | Typed pressure event append and exact scope-bound receipt query for the named adapter. |
+| UPDATE | `M/audit/application/service/AuditApplicationService.java` | Route typed pressure append/read through owner-owned event redemption and repository; join the owner write transaction and reserve pressure event types from generic event creation. Preserve T28 search/export scope and general Audit behavior. |
+| UPDATE | `src/main/java/dz/sh/hidra/platform/persistence/ProtectedTransactionExecutor.java` | Admit only the named T38 service to the existing publication credential path; include it in the existing bounded work policy. |
+| CREATE | `src/main/resources/db/migration/V20261121_004__t38_pressure_restriction_decision_governance.sql` | Install owner request/stream/one-use evidence constraints, bounded owner functions, permission and reserved Audit catalog entries without actor assignments. Retain direct-write fences and T36 immutable triggers. Preserve compatibility with existing T36 synthetic witnesses. |
+| UPDATE | `J/qualification/Gz2SignedWorkflowNativeHttpPostgresIntegrationTest.java` | Add the full signed T38 lifecycle to the enrolled journey, preserving T36/T37 regressions. Extend existing pressure fixtures with explicit synthetic grants where owner admission now requires them. |
+| UPDATE | `J/qualification/Gz2SignedWorkflowFixture.java` | Provision synthetic actors, responsibility, Workflow assignment and least-privilege publication role separately from ordinary runtime. Provide narrowly scoped failure injection and concurrent requests for atomicity proof. |
+| UPDATE | `J/ArchitectureGuardrailTest.java` | Admit only named public scalar exports and protected caller; verify inward dependencies and retain existing scope denials. |
+| UPDATE | `J/ForensicRemediationClosureTest.java` | Mirror exact source allowances and reject any direct foreign persistence or new generic Audit/Workflow bypass. |
+| UPDATE | `J/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java` | Prove the four owner operations use the ordinary gate and retain existing protected Workflow behavior. |
+| UPDATE | `.github/ci-test-inventory.json` | Refresh changed suite and supporting fixture hashes/cases, preserving all lanes and shard coverage. |
+| UPDATE | `.github/database-dictionary-ownership.json` | Register only added or changed T38 PostgreSQL objects and owner meaning. Preserve the historical entries and configuration ownership. |
+| UPDATE | `doc/api/openapi.yaml`, `doc/database/DATA_DICTIONARY.md`, `.github/documentation-validation.json` | Reconcile only the runtime-generated OpenAPI, the actually migrated physical catalog and their exact artifact provenance. Preserve backward compatibility and historical provenance. |
+| UPDATE | `doc/roadmap/ROADMAP.md` | Append source, reconciliation and acceptance evidence; mark COMPLETED only after the gate. |
+| DELETE | None | Preserve all existing migration bytes and supported interfaces. |
+
+Source commit `feat(topology): govern pressure restriction decisions and evidence`.
+Use `docs(topology): reconcile T38 restriction decision contracts` only
+when one artifact-backed follow-up is required. Refresh live main,
+migration ordering and the exact file ledger before source changes.
+
+#### Single T38 software acceptance gate
+
+One successful Full Verification Gate on the final reconciled implementation
+SHA must contain the signed fresh PostgreSQL journey and all existing
+development gates. Submit an initial restriction, independently assign and
+approve it, and confirm Workflow approval stays distinct from owner
+publication. Publish, read the exact approval and Audit receipt, and read
+the effective T36 limit. Supersede with two valid separate decisions and
+prove the precise half-open cutover, paired audit and historical readback.
+Withdraw the successor and prove the predecessor is never resurrected.
+Recheck authorized history and current revocation after application restart.
+
+Cover current regional and per-operation authority, self-review, wrong
+parent/company, generic Workflow bypass, non-current configuration, exact
+old-token revocation at review and publish, protected evidence denial,
+unapproved/rejected and foreign/inexact decision substitution, reused
+approval and stale stream versions. Race two competing publications and
+assert exactly one complete owner outcome. Inject an Audit or second
+projection write failure and prove owner state, evidence, stream version
+and decision consumption roll back together while committed Workflow
+history remains retrievable. Verify unauthorized runtime direct writes
+and mutation of immutable rows are rejected.
+
+The same CI gate includes strict runtime OpenAPI and physical dictionary
+equality, backward compatibility, architecture, inventory and the
+existing PostgreSQL shards. Retain the combined exact-SHA evidence
+artifact. No additional manual, browser, engineering, operational or
+SITE evidence is needed for T38 software completion. T39 is subsequent.

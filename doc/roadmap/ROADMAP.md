@@ -7492,3 +7492,28 @@ and strict physical dictionary equality. Retain the same-run combined
 artifact and link the gate. This closes the software task without a separate
 manual, browser, engineering, field calibration or SITE evidence package.
 T38 remains the next registered task after T37 and requires its own selection.
+
+### T37 asset-scoped trusted observation implementation — 2026-11-21
+
+T37 remains **IN PROGRESS**. The selected source stage adds three ordinary
+Telemetry reads for FACILITY and EQUIPMENT, with exact T33 and T09
+authorization, pinned measurement-time binding and mapping, typed values
+and quality lineage, post-authorization discovery pages, and explicit
+freshness. The runtime route catalog derives `telemetry:assets:read`
+for the three GETs. Paired Telemetry and regional resource grants still
+govern access to the resource and exact observations. The write path
+and the existing T08 and T09 contracts remain in place.
+
+The new reads use short owner authorization transactions and revalidate
+the admitted evidence and scope before disclosure. A denied candidate
+does not roll back discovery for the other visible points. The signed
+GZ2 journey exercises a native commissioning successor, the exact
+measurement-time boundary, wrong-unit, untrusted and incompatible
+observations, scope revocation and historical lineage after restart.
+
+The registered source message is
+`feat(telemetry): qualify asset-scoped trusted observations`.
+The canonical OpenAPI and validation manifest await reconciliation from
+the hosted runtime artifact. Physical schema and dictionary are unchanged.
+Acceptance remains the registered Full Verification Gate on the final
+reconciled implementation SHA.

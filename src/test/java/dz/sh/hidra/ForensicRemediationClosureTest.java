@@ -374,7 +374,8 @@ class ForensicRemediationClosureTest {
     private static boolean t34RegionalIdentityOwnerExport(String source, String imported) {
         String root = "dz.sh.hidra.modules.identity.application.contract.topology.TopologyRegionalAccessContract";
         if (!"dz.sh.hidra.modules.topology.application.service.RegionalTopologyMapApplicationService".equals(source)
-                && !"dz.sh.hidra.modules.topology.application.service.PipelineDossierReadApplicationService".equals(source))
+                && !"dz.sh.hidra.modules.topology.application.service.PipelineDossierReadApplicationService".equals(source)
+                && !"dz.sh.hidra.modules.telemetry.infrastructure.security.TelemetryReadingNativeScopeAdapter".equals(source))
             return false;
         return Set.of(root, root + ".Request", root + ".ResourceKind",
                 root + "$Request", root + "$ResourceKind").contains(imported);
@@ -390,6 +391,14 @@ class ForensicRemediationClosureTest {
         assertTrue(t34RegionalIdentityOwnerExport(dossier, root));
         assertTrue(t34RegionalIdentityOwnerExport(dossier, root + ".Request"));
         assertTrue(t34RegionalIdentityOwnerExport(dossier, root + "$ResourceKind"));
+        String telemetry = "dz.sh.hidra.modules.telemetry.infrastructure.security.TelemetryReadingNativeScopeAdapter";
+        assertTrue(t34RegionalIdentityOwnerExport(telemetry, root));
+        assertTrue(t34RegionalIdentityOwnerExport(telemetry, root + ".Request"));
+        assertTrue(t34RegionalIdentityOwnerExport(telemetry, root + "$ResourceKind"));
+        assertFalse(t34RegionalIdentityOwnerExport(telemetry + "Sibling", root));
+        assertFalse(t34RegionalIdentityOwnerExport(telemetry, root + ".Other"));
+        assertFalse(t34RegionalIdentityOwnerExport(
+                "dz.sh.hidra.modules.telemetry.application.service.AssetScopedTrustedObservationReadApplicationService", root));
         assertFalse(t34RegionalIdentityOwnerExport(dossier + "Sibling", root));
         assertFalse(t34RegionalIdentityOwnerExport(dossier, root + "$Unregistered"));
         assertFalse(t34RegionalIdentityOwnerExport("dz.sh.hidra.modules.topology.infrastructure.persistence.adapter.JpaPipelineDossierReadAdapter",root));

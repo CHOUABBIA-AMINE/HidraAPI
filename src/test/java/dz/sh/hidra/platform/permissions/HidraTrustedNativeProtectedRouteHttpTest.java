@@ -19,6 +19,7 @@
  */
 package dz.sh.hidra.platform.permissions;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -116,6 +117,30 @@ class HidraTrustedNativeProtectedRouteHttpTest {
              naming.permissionFor("/api/v1/topology/operating-constraints/pipelines/{pipelineId}","GET",handler));
    } catch(NoSuchMethodException missing) { fail(missing); }
  }
+ @Test void t37AssetObservationReadsUseOrdinaryRouteAuthorization() throws Exception {
+   var registry = new HidraTrustedNativeProtectedRouteRegistry();
+   var useCase = org.mockito.Mockito.mock(
+       dz.sh.hidra.modules.telemetry.application.port.in.AssetScopedTrustedObservationReadUseCase.class);
+   var controller = new dz.sh.hidra.modules.telemetry.api.rest.controller.AssetScopedTrustedObservationController(useCase);
+   var type = controller.getClass();
+   var naming = new HidraRoutePermissionNaming();
+   String root = "/api/v1/telemetry/assets/{assetType}/{assetId}/points";
+   var methods = List.of("discover", "latest", "history");
+   var suffixes = List.of("", "/{pointId}/trusted-readings/latest", "/{pointId}/trusted-readings/history");
+   for (int i = 0; i < methods.size(); i++) {
+     String method = methods.get(i);
+     String path = root + suffixes.get(i);
+     var handler = new org.springframework.web.method.HandlerMethod(controller,
+         java.util.Arrays.stream(type.getMethods()).filter(candidate -> candidate.getName().equals(method))
+             .findFirst().orElseThrow());
+     assertEquals("telemetry:assets:read", naming.permissionFor(path, "GET", handler));
+     assertFalse(registry.isTrusted(handler, "GET", path));
+   }
+   assertEquals(159, registry.candidates().size());
+   assertTrue(registry.candidates().stream().anyMatch(route ->
+       route.controller().getSimpleName().equals("TelemetryQualityController")));
+ }
+
  @Test void t33RegionalAccessIsNotTrustedNativeDelegationOrPermissionBypass() {
    var registry = new HidraTrustedNativeProtectedRouteRegistry();
    assertEquals(159, registry.candidates().size());

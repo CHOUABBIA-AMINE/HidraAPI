@@ -20,22 +20,61 @@
 package dz.sh.hidra.modules.telemetry.infrastructure.security;
 
 
+import dz.sh.hidra.modules.telemetry.application.port.in.AssetScopedTrustedObservationReadUseCase.Asset;
+import dz.sh.hidra.modules.telemetry.application.port.out.AssetScopedTrustedObservationAuthorizationPort;
 import dz.sh.hidra.modules.telemetry.application.port.out.TelemetryReadingScopeAuthorizationPort;
+import dz.sh.hidra.modules.identity.application.contract.topology.TopologyRegionalAccessContract;
 import dz.sh.hidra.modules.telemetry.application.port.out.TelemetryReadingIngestionReferencePort.Scope;
 import dz.sh.hidra.modules.identity.application.contract.telemetry.TelemetryScopedAuthorizationContract;
 import dz.sh.hidra.modules.topology.application.contract.telemetry.TelemetryTopologyOwnershipContract;
 import java.util.Objects;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 
 @Component
-public final class TelemetryReadingNativeScopeAdapter implements TelemetryReadingScopeAuthorizationPort {
+public final class TelemetryReadingNativeScopeAdapter implements TelemetryReadingScopeAuthorizationPort,
+        AssetScopedTrustedObservationAuthorizationPort {
     private final TelemetryTopologyOwnershipContract topology;
     private final TelemetryScopedAuthorizationContract identity;
+    private final TopologyRegionalAccessContract regional;
+    private final TransactionTemplate readAuthorization;
+
     public TelemetryReadingNativeScopeAdapter(TelemetryTopologyOwnershipContract topology,
-            TelemetryScopedAuthorizationContract identity) {
-        this.topology=Objects.requireNonNull(topology);this.identity=Objects.requireNonNull(identity);
+            TelemetryScopedAuthorizationContract identity, TopologyRegionalAccessContract regional,
+            PlatformTransactionManager manager) {
+        this.topology = Objects.requireNonNull(topology);
+        this.identity = Objects.requireNonNull(identity);
+        this.regional = Objects.requireNonNull(regional);
+        this.readAuthorization = new TransactionTemplate(manager);
     }
+    @Override
+    public boolean permitsAsset(Asset asset) {
+        var kind = switch (asset.type()) {
+            case FACILITY -> TopologyRegionalAccessContract.ResourceKind.FACILITY;
+            case EQUIPMENT -> TopologyRegionalAccessContract.ResourceKind.EQUIPMENT;
+        };
+        return Boolean.TRUE.equals(readAuthorization.execute(status ->
+                regional.permitted(new TopologyRegionalAccessContract.Request(kind, asset.id(), asset.companyPartyId()))
+                && topology.currentOwner(asset.type().name(), asset.id())
+                        .filter(owner -> owner.companyPartyId().equals(asset.companyPartyId())
+                                && owner.typeCode().equals(asset.type().name()) && owner.assetId().equals(asset.id()))
+                        .isPresent()));
+    }
+
+    @Override
+    public boolean permitsPoint(Asset asset, String sourceId, String pointId) {
+        try {
+            readAuthorization.executeWithoutResult(status ->
+                    identity.require(TelemetryScopedAuthorizationContract.Operation.TRUSTED_READ,
+                            asset.companyPartyId(), sourceId, pointId));
+            return true;
+        } catch (AccessDeniedException denied) {
+            return false;
+        }
+    }
+
     @Override public void require(Scope scope,Operation operation) {
         authorize(scope,operation,null,false);
     }

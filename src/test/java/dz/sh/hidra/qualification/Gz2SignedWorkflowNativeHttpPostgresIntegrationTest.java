@@ -42,6 +42,7 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
     private static final String PRODUCT = "/api/v1/custody/engineering-products";
     private static final String PLAN = "/api/v1/planning";
     private static final String POINT = "/api/v1/telemetry/points/";
+    private static final String ASSET_POINTS = "/api/v1/telemetry/assets/{assetType}/{assetId}/points";
     private static final String RULE = "/api/v1/monitoring/rules";
     private static final String ALARM = "/api/v1/alarm/alarms";
     private static final String LEAK = "/api/v1/leakdetection/candidates";
@@ -71,6 +72,7 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
             Baselines baselines;
             String dossierPipeline;
             T31Scenario scenario;
+            T37History t37;
             Plan plan;
             Reading reading;
             ResponseChain response;
@@ -137,6 +139,7 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
                 JsonNode stillHistorical = runtime.get(originalReceipt, dossierReader);
                 assertEquals(field(baseline, "receiptId"), stillHistorical.path("receiptId").asText());
 
+                t37 = verifyAssetObservations(fixture, runtime, commissioned, reading, stale, start);
                 scenario=appendTransientScenario(fixture,runtime,author,prepared,successor);
                 baselines = new Baselines(baseline, successor, beforeSuccessor, databaseTime(fixture));
                 System.out.printf("GZ2 phase=committed pid=%d baseline=%s successor=%s target=%s trusted=%s evaluation=%s incident=%s%n",
@@ -156,6 +159,10 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
 
                 verifyCurrentScope(fixture, restarted, baselines, commissioned, plan, response);
                 verifyScenarioAfterRestart(fixture,restarted,scenario,baselines);
+                JsonNode restored = restarted.get(t37.route(), restarted.login(fixture.reader))
+                        .path("observations").get(0);
+                assertEquals(t37.trustedId(), field(restored, "trustedId"));
+                assertEquals(t37.bindingId(), field(restored.path("binding"), "id"));
                 System.out.printf("GZ2 phase=reconstructed pid=%d originalPid=%d scope=foreign,wrong-asset,revoked%n",
                         restarted.pid(), firstPid);
             }
@@ -949,19 +956,246 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
 
     private static JsonNode commission(Gz2SignedWorkflowFixture f, Gz2SignedWorkflowFixture.Runtime r, String producer,
             Instant start) throws Exception {
+        return commission(f, r, producer, start, id(), "GZ2");
+    }
+
+    private static JsonNode commission(Gz2SignedWorkflowFixture f, Gz2SignedWorkflowFixture.Runtime r, String producer,
+            Instant start, String requestId, String code) throws Exception {
         JsonNode receipt = r.json("POST", "/api/v1/telemetry/commissioning", producer, Map.ofEntries(
-                Map.entry("requestId", id()), Map.entry("companyPartyId", f.company), Map.entry("assetType", "FACILITY"),
-                Map.entry("assetId", f.asset), Map.entry("sourceCode", "GZ2-S"), Map.entry("sourceNameFr", "Source synthétique"),
+                Map.entry("requestId", requestId), Map.entry("companyPartyId", f.company), Map.entry("assetType", "FACILITY"),
+                Map.entry("assetId", f.asset), Map.entry("sourceCode", code + "-S"), Map.entry("sourceNameFr", "Source synthétique"),
                 Map.entry("sourceTypeId", f.telemetryType("SOURCE_TYPE", null)), Map.entry("protocolId", f.telemetryType("PROTOCOL", null)),
-                Map.entry("deviceCode", "GZ2-D"), Map.entry("deviceNameFr", "Appareil synthétique"),
-                Map.entry("deviceTypeId", f.telemetryType("DEVICE_TYPE", null)), Map.entry("pointCode", "GZ2-P"),
+                Map.entry("deviceCode", code + "-D"), Map.entry("deviceNameFr", "Appareil synthétique"),
+                Map.entry("deviceTypeId", f.telemetryType("DEVICE_TYPE", null)), Map.entry("pointCode", code + "-P"),
                 Map.entry("pointNameFr", "Pression synthétique"), Map.entry("pointTypeId", f.telemetryType("POINT_TYPE", null)),
                 Map.entry("signalTypeId", f.telemetryType("SIGNAL_TYPE", "NUMERIC")), Map.entry("unitId", f.pressureUnit),
-                Map.entry("bindingRoleId", f.telemetryType("BINDING_ROLE", null)), Map.entry("externalTagName", "GZ2.PRESSURE"),
+                Map.entry("bindingRoleId", f.telemetryType("BINDING_ROLE", null)), Map.entry("externalTagName", code + ".PRESSURE"),
                 Map.entry("validFrom", start.toString())), 200);
         assertEquals(f.asset, field(receipt, "assetId"));
         assertFalse(field(receipt, "bindingId").isBlank());
         return receipt;
+    }
+
+    private record T37History(String route, String trustedId, String bindingId) { }
+
+    private static T37History verifyAssetObservations(Gz2SignedWorkflowFixture f, Gz2SignedWorkflowFixture.Runtime r,
+            JsonNode primary, Reading original, Reading stale, Instant start) throws Exception {
+        createT37SecondRegion(f);
+        for (String actor : List.of(f.reader, f.wrongAsset, f.producer, f.operator, f.foreign, f.reviewer)) {
+            f.global(actor, "telemetry:assets:read");
+        }
+        String producer = r.login(f.producer);
+        String originalPoint = field(primary, "pointId");
+        List<String> requests = List.of("00000000-0000-0000-0037-000000000001",
+                "00000000-0000-0000-0037-000000000002", "00000000-0000-0000-0037-000000000003").stream()
+                .sorted(java.util.Comparator.comparing(Gz2SignedWorkflowNativeHttpPostgresIntegrationTest::t37PointId))
+                .toList();
+        String hiddenRequest = requests.get(1);
+        String movableRequest = originalPoint.compareTo(t37PointId(hiddenRequest)) < 0
+                ? requests.getLast() : requests.getFirst();
+        JsonNode movable = commission(f, r, producer, start, movableRequest, "GZ2-T37-MOVABLE");
+        String point = field(movable, "pointId");
+        String source = field(movable, "sourceId");
+        String previousBinding = field(movable, "bindingId");
+        String quality = prepareTelemetry(f, movable, false);
+        String pointScope = "telemetry-source-point:" + source + ":" + point;
+        f.permit(f.producer, "telemetry:commission:manage", "TELEMETRY_COMMISSIONING", "CUSTOM", pointScope);
+        for (String actor : List.of(f.wrongAsset, f.reviewer, f.foreign)) {
+            f.paired(actor, "telemetry:trusted-reading", "TRUSTED_READING",
+                    "telemetry-company:" + (actor.equals(f.foreign) ? f.foreignCompany : f.company), pointScope, "read");
+        }
+        String reader = r.login(f.reader);
+        String regionalOnly = r.login(f.operator);
+        String foreign = r.login(f.foreign);
+        String reviewer = r.login(f.reviewer);
+        String secondReader = r.login(f.wrongAsset);
+        producer = r.login(f.producer);
+
+        JsonNode hidden = commission(f, r, producer, start, hiddenRequest, "GZ2-T37-HIDDEN");
+        String hiddenPoint = field(hidden, "pointId");
+        String root = t37AssetPoints(f.asset);
+        String other = t37AssetPoints(f.secondAsset);
+        Instant discoveredAt = now();
+        String first = query(root, "companyPartyId", f.company, "at", discoveredAt.toString(), "limit", "1");
+        JsonNode page = r.get(first, reader);
+        assertEquals(1, page.path("points").size());
+        String firstVisible = originalPoint.compareTo(point) < 0 ? originalPoint : point;
+        assertEquals(firstVisible, field(page.path("points").get(0), "pointId"));
+        assertFalse(page.has("total"));
+        String next = field(page, "nextPointId");
+        assertEquals(firstVisible, next);
+        JsonNode secondPage = r.get(first + "&afterPointId=" + next, reader);
+        assertEquals(1, secondPage.path("points").size());
+        assertEquals(firstVisible.equals(originalPoint) ? point : originalPoint,
+                field(secondPage.path("points").get(0), "pointId"));
+        assertFalse(secondPage.hasNonNull("nextPointId"));
+        assertFalse(page.toString().contains(hiddenPoint) || secondPage.toString().contains(hiddenPoint));
+
+        String latest = t37Latest(root, point, f.company, 120);
+        String primaryLatest = t37Latest(root, originalPoint, f.company, 600);
+        JsonNode fresh = r.get(primaryLatest, reader);
+        assertEquals("FRESH", field(fresh, "status"));
+        assertT37Lineage(f, fresh.path("observation"), primary, original);
+        assertEquals("STALE", field(r.get(t37Latest(root, originalPoint, f.company, 1), reader), "status"));
+        String originalHistory = t37History(root, originalPoint, f.company, start, now(), 1);
+        JsonNode paged = r.get(originalHistory, reader);
+        assertEquals(original.trusted(), field(paged.path("observations").get(0), "trustedId"));
+        JsonNode cursor = paged.path("next");
+        JsonNode pagedNext = r.get(originalHistory + "&afterObservedAt=" + field(cursor, "observedAt")
+                + "&afterTrustedId=" + field(cursor, "trustedId"), reader);
+        assertEquals(stale.trusted(), field(pagedNext.path("observations").get(0), "trustedId"));
+        assertFalse(pagedNext.hasNonNull("next"));
+
+        JsonNode empty = r.get(latest, reader);
+        assertEquals("UNAVAILABLE", field(empty, "status"));
+        assertFalse(empty.hasNonNull("observation"));
+        assertTrue(r.get(t37History(root, point, f.company, start, now(), 20), reader).path("observations").isEmpty());
+        assertEquals(401, r.send("GET", latest, null, null).statusCode());
+        assertEquals(403, r.send("GET", latest, r.login(f.revoked), null).statusCode());
+        for (String denied : List.of(regionalOnly, producer, secondReader, foreign)) {
+            var result = r.send("GET", latest, denied, null);
+            assertEquals(404, result.statusCode(), result::body);
+            assertEquals("Resource unavailable", field(JSON.readTree(result.body()), "detail"));
+        }
+        var foreignClaim = r.send("GET", t37Latest(root, point, f.foreignCompany, 120), foreign, null);
+        assertEquals(404, foreignClaim.statusCode(), foreignClaim::body);
+        assertEquals(404, r.send("GET", t37Latest(root, hiddenPoint, f.company, 120), reader, null).statusCode());
+        assertEquals(404, r.send("GET", t37Latest(other, point, f.company, 120), secondReader, null).statusCode());
+
+        Instant observedBefore = now().minusSeconds(5);
+        Reading before = trust(f, r, producer, movable, quality, observedBefore);
+        assertT37Lineage(f, r.get(latest, reviewer).path("observation"), movable, before);
+        assertEquals(1, f.sql.update("""
+                UPDATE hidra_identity_user_permission_grant SET status='REVOKED',revoked_at=now()
+                WHERE user_id=? AND scope_reference_id=?
+                  AND permission_id=(SELECT id FROM hidra_identity_permission WHERE code='telemetry:trusted-reading:read')
+                """, f.reviewer, pointScope));
+        assertEquals(404, r.send("GET", latest, reviewer, null).statusCode());
+        assertEquals(404, r.send("GET", t37History(root, point, f.company, start, now(), 20),
+                reviewer, null).statusCode());
+
+        String rawPath = POINT + point + "/readings";
+        assertEquals(403, r.send("POST", rawPath, producer,
+                t37Raw(source, "gz2-temperature", quality, now())).statusCode());
+        String pending = field(r.json("POST", rawPath, producer,
+                t37Raw(source, f.pressureUnit, quality, now()), 201), "id");
+        String rejectedQuality = f.telemetryType("QUALITY_CODE", null);
+        String failed = field(r.json("POST", rawPath, producer,
+                t37Raw(source, f.pressureUnit, rejectedQuality, now()), 201), "id");
+        Map<String, String> companyScope = Map.of("companyPartyId", f.company);
+        JsonNode assessment = r.json("POST", rawPath + "/" + failed + "/assessment", producer, companyScope, 201);
+        assertEquals("FAILED", field(assessment, "status"));
+        assertEquals(400, r.send("POST", rawPath + "/" + failed + "/trust", producer, companyScope).statusCode());
+
+        Instant switchAt = now().plusSeconds(4);
+        JsonNode successor = r.json("POST", "/api/v1/telemetry/commissioning/points/" + point + "/bindings",
+                producer, Map.of("requestId", id(), "companyPartyId", f.company, "assetType", "FACILITY",
+                        "assetId", f.secondAsset, "bindingRoleId", field(movable, "bindingRoleId"),
+                        "externalTagName", "GZ2.T37.RELOCATED", "validFrom", switchAt.toString()), 200);
+        String successorBinding = field(successor, "bindingId");
+        assertNotEquals(previousBinding, successorBinding);
+        while (now().isBefore(switchAt)) Thread.sleep(50);
+        assertEquals(403, r.send("POST", rawPath + "/" + pending + "/assessment", producer, companyScope).statusCode());
+
+        String successorLatest = t37Latest(other, point, f.company, 120);
+        // T09 records the publication binding. A late sample stamped before the rebind must stay
+        // out of T37 because that recorded binding was not effective when the sample was measured.
+        Reading late = trust(f, r, producer, successor, quality, switchAt.minus(1, ChronoUnit.MICROS));
+        JsonNode incompatible = r.get(successorLatest, secondReader);
+        assertEquals("UNAVAILABLE", field(incompatible, "status"));
+        assertFalse(incompatible.hasNonNull("observation"));
+
+        Reading boundary = trust(f, r, producer, successor, quality, switchAt);
+        Reading after = trust(f, r, producer, successor, quality, now());
+        assertT37Lineage(f, r.get(successorLatest, secondReader).path("observation"), successor, after);
+        assertEquals(404, r.send("GET", successorLatest, reader, null).statusCode());
+        assertEquals(404, r.send("GET", latest, reader, null).statusCode());
+
+        Instant until = now();
+        String oldRoute = t37History(root, point, f.company, start, until, 20);
+        JsonNode old = r.get(oldRoute, reader);
+        assertEquals(1, old.path("observations").size());
+        assertT37Lineage(f, old.path("observations").get(0), movable, before);
+        assertEquals(switchAt, Instant.parse(field(old.path("observations").get(0).path("binding"), "validUntil")));
+        var olderScope = r.send("GET", oldRoute, secondReader, null);
+        assertEquals(404, olderScope.statusCode(), olderScope::body);
+        JsonNode newHistory = r.get(t37History(other, point, f.company, switchAt, until, 20), secondReader);
+        assertEquals(2, newHistory.path("observations").size());
+        assertEquals(after.trusted(), field(newHistory.path("observations").get(0), "trustedId"));
+        assertEquals(boundary.trusted(), field(newHistory.path("observations").get(1), "trustedId"));
+        assertFalse(newHistory.toString().contains(late.trusted()));
+        assertEquals(point, field(r.get(query(other, "companyPartyId", f.company, "at", switchAt.toString()),
+                secondReader).path("points").get(0), "pointId"));
+        assertEquals(0, r.get(query(other, "companyPartyId", f.company,
+                "at", switchAt.minus(1, ChronoUnit.MICROS).toString()), secondReader).path("points").size());
+        return new T37History(oldRoute, before.trusted(), previousBinding);
+    }
+
+    private static void createT37SecondRegion(Gz2SignedWorkflowFixture f) {
+        String system = id();
+        String employee = id();
+        f.sql.update("""
+                INSERT INTO hidra_topology_pipeline_system(id,code,system_type_id,status,created_at,updated_at)
+                SELECT ?,?,system_type_id,'ACTIVE',now(),now() FROM hidra_topology_pipeline_system WHERE id=?
+                """, system, "T37-" + system, f.pipeline);
+        f.sql.update("INSERT INTO hidra_topology_foundation_system_owner(pipeline_system_id,company_party_id) VALUES (?,?)",
+                system, f.company);
+        f.sql.update("""
+                INSERT INTO hidra_topology_pipeline_system_facility(id,pipeline_system_id,facility_id,status,created_at,updated_at)
+                VALUES (?,?,?,'ACTIVE',now(),now())
+                """, id(), system, f.secondAsset);
+        f.sql.update("""
+                INSERT INTO hidra_org_employee(id,employee_number,employee_type,status,identity_user_reference,created_at,updated_at)
+                VALUES (?,?,'PERMANENT','ACTIVE',?,now(),now())
+                """, employee, "T37-" + employee, f.wrongAsset);
+        f.sql.update("UPDATE hidra_identity_user SET employee_reference_id=? WHERE id=?", employee, f.wrongAsset);
+        Long scope = f.sql.queryForObject("""
+                INSERT INTO hidra_org_operational_scope(scope_type,target_id)
+                VALUES ('PIPELINE_SYSTEM',?) RETURNING id
+                """, Long.class, system);
+        f.sql.update("""
+                INSERT INTO hidra_org_responsibility_assignment(
+                    id,responsibility_type,assignee_type,assignee_id,scope_id,valid_from,valid_to,status,created_at,updated_at)
+                VALUES (?,'RESPONSIBLE','EMPLOYEE',?,?,now()-interval '2 hours',now()+interval '2 hours','ACTIVE',now(),now())
+                """, id(), employee, scope);
+        f.permit(f.wrongAsset, "topology:regional-resource:read", "TOPOLOGY_REGIONAL_RESOURCE", "PIPELINE_SYSTEM", system);
+    }
+
+    private static String t37PointId(String request) {
+        return java.util.UUID.nameUUIDFromBytes(("HIDRA_T08|" + request + "|point")
+                .getBytes(java.nio.charset.StandardCharsets.UTF_8)).toString();
+    }
+
+    private static Map<String, Object> t37Raw(String source, String unit, String quality, Instant observed) {
+        return Map.of("sourceId", source, "sourceSequenceNumber", id(), "numericValue", 103,
+                "qualityCodeId", quality, "unitId", unit, "sourceTimestamp", observed.toString());
+    }
+
+    private static String t37AssetPoints(String asset) {
+        return ASSET_POINTS.replace("{assetType}", "FACILITY").replace("{assetId}", asset);
+    }
+
+    private static String t37Latest(String root, String point, String company, int maxAge) {
+        return query(root + "/" + point + "/trusted-readings/latest",
+                "companyPartyId", company, "maxAgeSeconds", Integer.toString(maxAge));
+    }
+
+    private static String t37History(String root, String point, String company, Instant from, Instant until, int limit) {
+        return query(root + "/" + point + "/trusted-readings/history", "companyPartyId", company,
+                "from", from.toString(), "until", until.toString(), "maxAgeSeconds", "600", "limit", Integer.toString(limit));
+    }
+
+    private static void assertT37Lineage(Gz2SignedWorkflowFixture f, JsonNode view, JsonNode commissioned, Reading reading) {
+        assertEquals(reading.trusted(), field(view, "trustedId"));
+        assertEquals(reading.raw(), field(view, "rawReadingId"));
+        assertEquals(reading.assessment(), field(view, "assessmentId"));
+        assertEquals("PASSED", field(view, "assessmentStatus"));
+        assertEquals("HIGH", field(view, "trustLevel"));
+        assertEquals(f.pressureUnit, field(view, "unitId"));
+        assertEquals(field(commissioned, "sourceId"), field(view, "sourceId"));
+        assertEquals(field(commissioned, "bindingId"), field(view.path("binding"), "id"));
+        assertFalse(Instant.parse(field(view, "observedAt")).isAfter(Instant.parse(field(view, "receivedAt"))));
+        assertFalse(field(view, "qualityCodeId").isBlank());
     }
 
     private static Plan approvePlan(Gz2SignedWorkflowFixture f, Gz2SignedWorkflowFixture.Runtime r, String author,
@@ -1003,15 +1237,28 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
     }
 
     private static String prepareTelemetry(Gz2SignedWorkflowFixture f, JsonNode commissioned) {
+        return prepareTelemetry(f, commissioned, true);
+    }
+
+    private static String prepareTelemetry(Gz2SignedWorkflowFixture f, JsonNode commissioned, boolean provisionSharedScopes) {
         String point = field(commissioned, "pointId");
         String reference = "telemetry-source-point:" + field(commissioned, "sourceId") + ":" + point;
-        f.paired(f.producer, "telemetry:raw-reading", "TELEMETRY_READING", "telemetry-company:" + f.company,
-                reference, "ingest", "read");
-        f.paired(f.producer, "telemetry:trusted-reading", "TRUSTED_READING", "telemetry-company:" + f.company,
-                reference, "qualify", "read");
-        f.paired(f.reader, "telemetry:raw-reading", "TELEMETRY_READING", "telemetry-company:" + f.company, reference, "read");
-        f.paired(f.reader, "telemetry:trusted-reading", "TRUSTED_READING", "telemetry-company:" + f.company, reference, "read");
-        f.global(f.reader, "telemetry:points:read");
+        if (provisionSharedScopes) {
+            String company = "telemetry-company:" + f.company;
+            f.permit(f.producer, "telemetry:raw-reading:ingest", "TELEMETRY_READING", "CUSTOM", company);
+            f.permit(f.producer, "telemetry:raw-reading:read", "TELEMETRY_READING", "CUSTOM", company);
+            f.permit(f.producer, "telemetry:trusted-reading:qualify", "TRUSTED_READING", "CUSTOM", company);
+            f.permit(f.producer, "telemetry:trusted-reading:read", "TRUSTED_READING", "CUSTOM", company);
+            f.permit(f.reader, "telemetry:raw-reading:read", "TELEMETRY_READING", "CUSTOM", company);
+            f.permit(f.reader, "telemetry:trusted-reading:read", "TRUSTED_READING", "CUSTOM", company);
+            f.global(f.reader, "telemetry:points:read");
+        }
+        f.permit(f.producer, "telemetry:raw-reading:ingest", "TELEMETRY_READING", "CUSTOM", reference);
+        f.permit(f.producer, "telemetry:raw-reading:read", "TELEMETRY_READING", "CUSTOM", reference);
+        f.permit(f.producer, "telemetry:trusted-reading:qualify", "TRUSTED_READING", "CUSTOM", reference);
+        f.permit(f.producer, "telemetry:trusted-reading:read", "TRUSTED_READING", "CUSTOM", reference);
+        f.permit(f.reader, "telemetry:raw-reading:read", "TELEMETRY_READING", "CUSTOM", reference);
+        f.permit(f.reader, "telemetry:trusted-reading:read", "TRUSTED_READING", "CUSTOM", reference);
         String quality = f.telemetryType("QUALITY_CODE", null);
         f.sql.update("""
                 INSERT INTO hidra_telemetry_validation_rule(id,code,name,scope_type,scope_reference_id,rule_type_id,
@@ -1325,7 +1572,9 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
         assertTrue(paths.path(scenario+"/{scenarioId}/revisions/{revision}").has("get"));
         assertTrue(paths.path(scenario+"/{scenarioId}/revisions/{revision}/validation").has("get"));
         for (String route : List.of(BASELINE + "/publications/{receiptId}", PLAN + "/targets/{id}",
-                POINT + "{pointId}/trusted-readings/{trustedId}", RULE + "/{id}/evaluations/{evaluationId}",
+                POINT + "{pointId}/trusted-readings/{trustedId}", ASSET_POINTS,
+                ASSET_POINTS + "/{pointId}/trusted-readings/latest", ASSET_POINTS + "/{pointId}/trusted-readings/history",
+                RULE + "/{id}/evaluations/{evaluationId}",
                 ALARM + "/{id}/evidence", LEAK + "/{id}/evidence", INCIDENT + "/{id}/timeline")) {
             assertTrue(paths.path(route).has("get"), () -> "Runtime OpenAPI omits GET " + route);
         }

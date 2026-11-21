@@ -146,7 +146,7 @@ recorded before T33 is selected.
 | **T33 · Resolve regional employee access (G1)** | Identity with Organization and Topology | T32 closure and owner-approved regional authority policy | Resolve the authenticated employee and current typed resource scope using Identity grants and denies, effective Organization responsibilities and owner-issued Topology relationships. Define company, system, pipeline, section, facility and equipment inheritance and cross-region disclosure. | Signed HTTP and PostgreSQL evidence for two regional employees with different scopes, an unlinked employee, explicit deny, expired responsibility, revoked grant and foreign company. Resource decisions use current authority. | COMPLETED |
 | **T34 · Expose regional map and discovery (G2)** | Topology with Identity and Organization | T33 | Qualify or extend owner-backed layers, features, GeoJSON and search for regional users. Apply scope before pagination and counts, preserve authorized graph semantics and retain the separately protected legacy administrator path. | A regional employee discovers a permitted pipeline. A cross-region fixture proves scope-safe geometry, connections, features, search, totals and direct lookups, including after revocation. | COMPLETED |
 | **T35 · Qualify protected pipeline dossier reads (G3)** | Topology with engineering source owners | T33, T04–T07 | Qualify existing reads for a selected pipeline's design characteristics, route, kilometer points, sections, elevation, connections, installed equipment and published revision provenance. Extend a typed read only for a demonstrated gap. | A scoped client retrieves the agreed available facts with explicit units, source and version. Unavailable values are explicit. Restricted history and linked resource details require their own current authority. | COMPLETED |
-| **T36 · Resolve qualified operating constraints (G4)** | Approved engineering constraint owner, with Integrity for integrity-derived restrictions, Topology and Audit | T33, applicable T07 sources, owner decision on constraint authority | Resolve approved restrictions for an exact asset or section and effective instant. Preserve pressure basis, units, scope, operating conditions, source revision, qualification and authorized decision references. Use existing qualified sources where proven. | Synthetic cases cover applicability, approved effective and historical reads, supersession, withdrawal, unresolved conflicts, missing evidence and unauthorized scope. Design pressure and unqualified assessments are never returned as approved limits. | PLANNED |
+| **T36 · Resolve qualified operating constraints (G4)** | Configurable company-scoped engineering restriction authority (logical capability), with Topology as read-only custodian, Identity, Workflow and Audit; Integrity only for separately admitted derived restrictions | T33, applicable T07 sources, approved logical authority/source/decision contract (recorded below) | Resolve approved restrictions for an exact asset or section and effective instant. Preserve pressure basis, units, scope, operating conditions, source revision, qualification and authorized decision references. Use existing qualified sources where proven. | Synthetic cases cover applicability, approved effective and historical reads, supersession, withdrawal, unresolved conflicts, missing evidence and unauthorized scope. Design pressure and unqualified assessments are never returned as approved limits. | PLANNED |
 | **T37 · Qualify asset-scoped trusted observations (G5)** | Telemetry with Topology and Identity | T33, T08–T09 | Qualify authorized discovery of relevant commissioned points and trusted latest and historical readings for the selected asset. Preserve applicable binding revision, units, measurement source and time, quality, trust and freshness. | Prove a binding change, stale or unavailable readings, unit or binding incompatibility and revoked scope. Historical reads use the binding valid at the relevant time and enforce current read authority. | PLANNED |
 | **T38 · Govern restriction decisions and evidence (G6)** | Approved engineering constraint owner with Workflow, Audit, Identity and Organization | T33, T36, T28, T30 | Bind submission, independent review, approval, supersession and withdrawal to the exact restriction revision. Publish the effective owner outcome with exact authorized decision and audit references. Reuse supported Workflow and Audit contracts. | Prove approval and readback, self-review denial, revoked authority, stale version and invalid approval reuse. Decision and owner outcome preserve their applicable transaction guarantees, and audit evidence remains scope-safe. | PLANNED |
 | **T39 · Qualify the Circle 1 HidraAPI consumer handoff (G7)** | HidraAPI integration and QA with the seven Circle 1 owners | T33–T37 for the read-only milestone. T38 for full Circle 1. | Pin runtime OpenAPI, DTOs and permission/error semantics. Prove the signed HTTP journey on fresh PostgreSQL and provide the synthetic regional fixture and linked evidence required for the HidraWEB browser journey. Reuse protected owner reads where they satisfy the journey. | The exact-SHA API evidence covers regional isolation, revocation, map-to-dossier navigation, qualified constraint and trusted observation distinctions, and scope-safe decision readback. Full acceptance additionally covers the governed decision. HidraWEB independently records matching browser acceptance on its pinned consumer SHA. | PLANNED |
@@ -7161,3 +7161,64 @@ regression, runtime OpenAPI compatibility and equality, and strict
 physical dictionary equality. The passing run and combined artifact
 suffice. No separate manual, browser, operational or site evidence is
 required to close the software task.
+
+### Owner decision: activate T36 with a configurable engineering authority contract — 2026-11-21
+
+**Decision and prerequisite resolution.** The owner approved the T36 read-only
+Topology pressure-restriction approach and clarified that identifying a named
+SONATRACH department, individual approver or operational role assignment is
+**not** a development prerequisite. For T36, “owning engineering authority”
+means a **logical, company-scoped and resource-scoped engineering restriction
+approval capability** whose authenticated grant, independence, decision and
+Audit binding will be exercised by the later governed T38 write workflow.
+The organization maps that capability to its authorized personnel at deployment.
+No SONATRACH-specific department is embedded in the domain model, schema,
+controller, permissions or test fixtures.
+
+**Selected class and ownership.** Admit exactly the first-class **upper operating
+pressure restriction**, on an exact pipeline or exact section, for an approved
+condition and half-open effective interval. Topology owns the immutable read
+projection, resolution and REST contract; Identity owns current actor and
+resource scope; T07 provides separately protected published-baseline
+provenance; Workflow and Audit own authorized decision and immutable evidence
+contracts. A T07 approval qualifies its engineering baseline **only**: it is
+not a restriction approval. Integrity owns contributing assessments but no
+Integrity-derived operating limit is admitted until separately authorized.
+Design pressure and manufacturer equipment information are never promoted
+into operating limits by inference.
+
+**Qualification/decision rule.** A QUALIFIED T36 read requires a complete,
+immutable, internally consistent and separately authorized restriction-revision
+qualification binding to an exact published T07 receipt/digest, the admitted
+engineering source revision, an independent approval decision and immutable
+Audit reference, with the declared company, target, unit and pressure basis.
+A bare decision UUID, role name, asserted `approved` flag, unqualified
+assessment or client-supplied declaration is insufficient. The projection
+must be read-only for the application role, with no writer, runtime seeder or
+live operational restriction data. Synthetic fixtures may exercise qualified
+approval witnesses only when their tests prove the evidence contract and
+fail-closed rejection paths; they are not operationally approved records.
+Until an admissible independently authorized decision exists, the result is
+UNAVAILABLE, not a fabricated operating limit. T38 will create and govern
+actual submission, independent review, approval, supersession and withdrawal
+and its configurable authority assignments. This allocation does not pre-approve
+T38 implementation or remove its own acceptance gate.
+
+**T36 selection and implementation registration.** T36 (G4) is **SELECTED for
+implementation** under the conditional exact file ledger immediately above,
+which is adopted as the initial file allowlist for this registered class;
+revalidate paths, signatures, migration version and source evidence at the
+implementation HEAD before editing. Adopt the exact implementation message
+`feat(topology): resolve qualified operating pressure restrictions`; use
+`docs(topology): reconcile T36 operating constraint contracts` only if
+a distinct artifact-based reconciliation commit is necessary. No deletions,
+other task advancement, production-data migration, external industrial
+calibration or organizational department designation are authorized. T36
+remains **PLANNED** in the completion table until its full exact-final-SHA
+CI gate and source/DB/runtime artifacts pass. The registered acceptance gate
+is the one above; no additional manual or SITE evidence is required for the
+development-software completion state. T37 and T38 remain unselected.
+
+**Approval publication boundary.** This decision is documentation-only; it
+registers the owner's earlier approval and the clarified configurable authority
+model. It is not an implementation commit, runtime qualification or CI pass.

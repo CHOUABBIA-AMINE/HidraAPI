@@ -80,7 +80,7 @@ public final class QualifiedPressureRestriction {
             Objects.requireNonNull(upperPressure, "upperPressure");
             if (upperPressure.signum() <= 0 || upperPressure.precision() > 24 || upperPressure.scale() > 12)
                 throw new IllegalArgumentException("Positive bounded pressure required");
-            pressureUnit = id(pressureUnit);
+            pressureUnit = QualifiedPressureRestriction.id(pressureUnit);
             Objects.requireNonNull(basis, "basis");
             Objects.requireNonNull(effectiveFrom, "effectiveFrom");
             Objects.requireNonNull(recordedAt, "recordedAt");

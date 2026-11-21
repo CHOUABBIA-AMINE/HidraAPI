@@ -7313,3 +7313,28 @@ failed separately while fetching Maven Wrapper's distribution before
 tests. The [API and dictionary lane](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44909871008/job/136863197920)
 passed, including both strict checks. [Documentation Validation #1199](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44909871052)
 passed. Full Verification Gate awaits the exact replacement SHA.
+
+### T36 CI #1349 section authorization fixture repair — 2026-11-21
+
+[CI #1349 attempt 1](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44911018977/attempts/1)
+failed on `dd5ac5b4dac9827532e3be3144d860110d576e43`.
+[PostgreSQL shard 1](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44911018977/job/136866643894)
+still returned HTTP 400 with Hibernate enum hydration at the first
+section read. The section's live Topology enum codes were already
+corrected. The fixture also inserted `PIPELINE_SEGMENT` into
+`hidra_identity_user_permission_grant.scope_type`, where it is absent
+from the Identity `ScopeType` enum. T33 resolves a section through its
+active pipeline and pipeline-system associations. Reuse the signed
+actors' existing system grants and Organization responsibilities, as
+the T33 PostgreSQL test already does for a segment. Remove the three
+invalid synthetic grant inserts only. Preserve the exact section and
+wrong-parent assertions, authority checks, schema and runtime code.
+Refresh the test source hash in the CI inventory and append this record.
+Use the registered source message
+`feat(topology): resolve qualified operating pressure restrictions`.
+
+The other thirteen PostgreSQL shards, static, Java 21 unit/architecture,
+and the API and dictionary lane passed. [Documentation Validation
+#1200](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44911018937)
+passed. T36 remains open pending the replacement exact-SHA Full
+Verification Gate.

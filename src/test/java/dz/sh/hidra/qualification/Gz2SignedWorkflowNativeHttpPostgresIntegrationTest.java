@@ -343,10 +343,8 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
                  flow_direction,status,created_at,updated_at)
                 VALUES(?,?,'T36-GZ2-SECTION','MAINLINE',?,?,'DIRECTED','ACTIVE',now(),now())
                 """,section,pipe,nodeA,nodeB);
-        for(String actor:List.of(f.reader,f.author,f.reviewer)) {
-            f.permit(actor,"topology:regional-resource:read",
-                    "TOPOLOGY_REGIONAL_RESOURCE","PIPELINE_SEGMENT",section);
-        }
+        // The existing pipeline-system grant and responsibility cover its active sections.
+        // PIPELINE_SEGMENT is a Topology resource kind, not an Identity grant scope.
         String sectionPath=query("/api/v1/topology/operating-constraints/pipelines/" + pipe
                 + "/sections/" + section,"companyPartyId",f.company,
                 "conditionCode","NOMINAL","effectiveAt",now().toString());

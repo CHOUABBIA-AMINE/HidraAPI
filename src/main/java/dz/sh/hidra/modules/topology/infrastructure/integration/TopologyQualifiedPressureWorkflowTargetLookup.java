@@ -54,6 +54,13 @@ public class TopologyQualifiedPressureWorkflowTargetLookup implements WorkflowOw
     @Override public Set<String> targetTypeCodes(){return Set.of(TARGET_TYPE);}
     @Override public Optional<Target> eligibleTarget(String typeCode,String id){return Optional.empty();}
 
+    @Override public boolean protectedReadAllowed(String typeCode, String id, String locator,
+            ProtectedRead operation) {
+        // A pending proposal is never a public Workflow resource. Re-run
+        // current protected Topology/T07 owner checks for each task/history read.
+        return operation != null && eligibleTarget(typeCode,id,locator).isPresent();
+    }
+
     @Override public Optional<Target> eligibleTarget(String typeCode,String id,String locator) {
         if(!TARGET_TYPE.equals(typeCode) || id==null || locator==null) return Optional.empty();
         final UUID revision;

@@ -432,13 +432,19 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase, Manufactur
         WorkflowCatalogEntryJpaEntity type = entityManager.find(WorkflowCatalogEntryJpaEntity.class, instance.targetTypeId());
         if (type == null || !"WORKFLOW_TARGET_TYPE".equals(type.catalogName()) || !type.active())
             throw new NoSuchElementException("Workflow target unavailable.");
+        boolean operatingPressure = topology
+                && WorkflowOwnedTargetLookup.OPERATING_PRESSURE_TARGET.equals(type.code());
         String expected=topology ? (WorkflowOwnedTargetLookup.BASELINE_TARGET.equals(type.code())
-                ? WorkflowOwnedTargetLookup.BASELINE_TARGET : "INSTALLED_CHARACTERISTIC_LINK_REVISION")
+                ? WorkflowOwnedTargetLookup.BASELINE_TARGET : operatingPressure
+                ? WorkflowOwnedTargetLookup.OPERATING_PRESSURE_TARGET
+                : "INSTALLED_CHARACTERISTIC_LINK_REVISION")
                 : simulation ? "MANUFACTURER_CHARACTERISTIC_REVISION" : "PLAN_REVISION";
         if (!expected.equals(type.code()))
             throw new NoSuchElementException("Workflow target unavailable.");
         if (instance.targetId() == null || instance.targetId().isBlank()
-                || !planning && !instance.targetId().matches("[0-9a-f]{64}"))
+                || !planning && !(operatingPressure
+                     ? instance.targetId().matches("[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}")
+                     : instance.targetId().matches("[0-9a-f]{64}")))
             throw new NoSuchElementException("Workflow target unavailable.");
         var owners = targetOwners.stream()
                 .filter(o -> instance.targetModule().equals(o.module())

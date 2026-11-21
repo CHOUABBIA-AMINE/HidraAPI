@@ -33,6 +33,8 @@ public interface WorkflowOwnedTargetLookup {
     }
     String BASELINE_TARGET = "ENGINEERING_BASELINE_REVISION";
     String BASELINE_PURPOSE = "ENGINEERING_BASELINE_APPROVAL";
+    String OPERATING_PRESSURE_TARGET = "OPERATING_PRESSURE_RESTRICTION";
+    String OPERATING_PRESSURE_PURPOSE = "OPERATING_PRESSURE_RESTRICTION_APPROVAL";
 
     static boolean hseTarget(String type) {
         return "HSE_CASE".equals(type) || "HSE_CAPA".equals(type);

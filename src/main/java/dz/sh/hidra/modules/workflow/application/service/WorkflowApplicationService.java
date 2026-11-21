@@ -99,6 +99,12 @@ public class WorkflowApplicationService implements StartWorkflowInstanceUseCase,
                 && dz.sh.hidra.modules.workflow.application.contract.target.WorkflowOwnedTargetLookup.BASELINE_TARGET.equals(type.code())
                 && !dz.sh.hidra.modules.workflow.application.contract.target.WorkflowOwnedTargetLookup.BASELINE_PURPOSE.equals(purpose.code()))
             throw new InvalidWorkflowValueException("Exact Topology baseline approval family required.");
+        if ("topology".equals(command.targetModule())
+                && dz.sh.hidra.modules.workflow.application.contract.target.WorkflowOwnedTargetLookup
+                    .OPERATING_PRESSURE_TARGET.equals(type.code())
+                && !dz.sh.hidra.modules.workflow.application.contract.target.WorkflowOwnedTargetLookup
+                    .OPERATING_PRESSURE_PURPOSE.equals(purpose.code()))
+            throw new InvalidWorkflowValueException("Exact Topology pressure restriction approval family required.");
         if ("hse".equals(command.targetModule())
                 && !dz.sh.hidra.modules.workflow.application.contract.target.WorkflowOwnedTargetLookup
                         .hseApproval(type.code(), purpose.code()))
@@ -166,7 +172,8 @@ public class WorkflowApplicationService implements StartWorkflowInstanceUseCase,
         // independent of the instance starter. Generic assignment never grants owner rights.
         if ("topology".equals(instance.targetModule())
                 && java.util.Set.of("INSTALLED_CHARACTERISTIC_LINK_REVISION",
-                        dz.sh.hidra.modules.workflow.application.contract.target.WorkflowOwnedTargetLookup.BASELINE_TARGET)
+                        dz.sh.hidra.modules.workflow.application.contract.target.WorkflowOwnedTargetLookup.BASELINE_TARGET,
+                        dz.sh.hidra.modules.workflow.application.contract.target.WorkflowOwnedTargetLookup.OPERATING_PRESSURE_TARGET)
                         .contains(configuration.requireActiveCatalog(instance.targetTypeId(), "WORKFLOW_TARGET_TYPE").code())
                 && (assigned == null || creator.id().equals(assigned.id())))
             throw new InvalidWorkflowValueException("An independently assigned reviewer is required.");

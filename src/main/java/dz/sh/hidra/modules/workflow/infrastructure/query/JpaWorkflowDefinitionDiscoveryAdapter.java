@@ -107,14 +107,20 @@ public class JpaWorkflowDefinitionDiscoveryAdapter implements WorkflowDefinition
         boolean planning = "planning".equals(module);
         if ((!topology && !planning) || targetId == null || targetId.isBlank()
                 || targetTypeId == null || workflowPurposeId == null
-                || topology && (!targetId.matches("[0-9a-f]{64}") || locator == null || locator.isBlank()))
+                || topology && (!(targetId.matches("[0-9a-f]{64}")
+                       || targetId.matches("[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}"))
+                       || locator == null || locator.isBlank()))
             return List.of();
 
         var type = entities.find(WorkflowCatalogEntryJpaEntity.class, targetTypeId);
         var purpose = entities.find(WorkflowCatalogEntryJpaEntity.class, workflowPurposeId);
         boolean baseline = topology && type != null && WorkflowOwnedTargetLookup.BASELINE_TARGET.equals(type.code());
-        String expectedType = topology ? (baseline ? WorkflowOwnedTargetLookup.BASELINE_TARGET : TYPE) : PLANNING_TYPE;
-        String expectedPurpose = topology ? (baseline ? WorkflowOwnedTargetLookup.BASELINE_PURPOSE : PURPOSE) : PLANNING_PURPOSE;
+        boolean pressure = topology && type != null
+                && WorkflowOwnedTargetLookup.OPERATING_PRESSURE_TARGET.equals(type.code());
+        String expectedType = topology ? (baseline ? WorkflowOwnedTargetLookup.BASELINE_TARGET
+                : pressure ? WorkflowOwnedTargetLookup.OPERATING_PRESSURE_TARGET : TYPE) : PLANNING_TYPE;
+        String expectedPurpose = topology ? (baseline ? WorkflowOwnedTargetLookup.BASELINE_PURPOSE
+                : pressure ? WorkflowOwnedTargetLookup.OPERATING_PRESSURE_PURPOSE : PURPOSE) : PLANNING_PURPOSE;
         if (type == null || !type.active() || !"WORKFLOW_TARGET_TYPE".equals(type.catalogName())
                 || !expectedType.equals(type.code()) || purpose == null || !purpose.active()
                 || !"WORKFLOW_PURPOSE".equals(purpose.catalogName())

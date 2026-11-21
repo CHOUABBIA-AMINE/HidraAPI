@@ -247,8 +247,12 @@ public class WorkflowTransitionApplicationService implements ExecuteWorkflowTran
             boolean allowedFamily = baseline
                     ? dz.sh.hidra.modules.workflow.application.contract.target.WorkflowOwnedTargetLookup
                         .BASELINE_PURPOSE.equals(reviewedPurpose.code()) && ownership.baselineReviewerAllowed(instance)
-                    : "INSTALLED_CHARACTERISTIC_LINK_REVISION".equals(reviewedType.code())
-                        && "INSTALLED_CHARACTERISTIC_LINK_APPROVAL".equals(reviewedPurpose.code());
+                    : ("INSTALLED_CHARACTERISTIC_LINK_REVISION".equals(reviewedType.code())
+                        && "INSTALLED_CHARACTERISTIC_LINK_APPROVAL".equals(reviewedPurpose.code()))
+                      || (dz.sh.hidra.modules.workflow.application.contract.target.WorkflowOwnedTargetLookup
+                            .OPERATING_PRESSURE_TARGET.equals(reviewedType.code())
+                        && dz.sh.hidra.modules.workflow.application.contract.target.WorkflowOwnedTargetLookup
+                            .OPERATING_PRESSURE_PURPOSE.equals(reviewedPurpose.code()));
             if (actor.id().equals(instance.startedByActorId())
                     || !allowedFamily
                     || publicationHumans == null

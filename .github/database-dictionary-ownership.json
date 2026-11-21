@@ -1271,6 +1271,15 @@
     "owner": "topology",
     "purpose": "Owner-governed, initially empty per-company condition and pressure-unit admission vocabulary. Immutable and not a runtime or site configuration seeder."
   },
+  "public.hidra_topology_t36_pressure_candidate": {
+    "evidence": [
+      "src/main/java/dz/sh/hidra/modules/topology/domain/model/QualifiedPressureWorkflowCandidate.java",
+      "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcQualifiedOperatingConstraintReadAdapter.java",
+      "src/main/resources/db/migration/V20261121_002__t36_immutable_workflow_pressure_candidates.sql"
+    ],
+    "owner": "topology",
+    "purpose": "Immutable, unapproved exact prospective pressure or termination target; T36 Workflow can review only current protected Topology/T07-bound proposals. Admission binds the later independent Workflow decision to identical payload/source. No runtime writer, qualification or operational acceptance."
+  },
   "public.hidra_topology_t36_pressure_revision": {
     "evidence": [
       "src/main/java/dz/sh/hidra/modules/topology/domain/model/QualifiedPressureRestriction.java",

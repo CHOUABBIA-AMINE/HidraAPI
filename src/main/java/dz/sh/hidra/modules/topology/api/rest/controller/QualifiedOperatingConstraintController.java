@@ -22,7 +22,7 @@ package dz.sh.hidra.modules.topology.api.rest.controller;
 import dz.sh.hidra.modules.topology.application.port.in.QualifiedOperatingConstraintReadUseCase;
 import dz.sh.hidra.modules.topology.application.port.in.QualifiedOperatingConstraintReadUseCase.Query;
 import dz.sh.hidra.modules.topology.api.rest.response.QualifiedOperatingConstraintResponse;
-import dz.sh.hidra.modules.topology.api.rest.response.QualifiedOperatingConstraintResponse.View;
+import dz.sh.hidra.modules.topology.api.rest.response.QualifiedOperatingConstraintResponse.QualifiedOperatingConstraintView;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -53,7 +53,7 @@ public final class QualifiedOperatingConstraintController {
     @Operation(summary = "Resolve a qualified upper operating-pressure restriction for one authorized pipeline")
     @ApiResponse(responseCode = "200", description = "QUALIFIED, UNAVAILABLE or disclosure-safe CONFLICT")
     @ApiResponse(responseCode = "404", description = "Target missing or unauthorized")
-    public ResponseEntity<View> pipeline(@PathVariable String pipelineId,
+    public ResponseEntity<QualifiedOperatingConstraintView> pipeline(@PathVariable String pipelineId,
             @RequestParam String companyPartyId, @RequestParam String effectiveAt,
             @RequestParam String conditionCode) {
         return response(new Query(companyPartyId, pipelineId, null, conditionCode, instant(effectiveAt)));
@@ -62,12 +62,12 @@ public final class QualifiedOperatingConstraintController {
     @Operation(summary = "Resolve a qualified restriction for an exact authorized section, without inheritance")
     @ApiResponse(responseCode = "200", description = "QUALIFIED, UNAVAILABLE or disclosure-safe CONFLICT")
     @ApiResponse(responseCode = "404", description = "Target missing, wrong parent or unauthorized")
-    public ResponseEntity<View> section(@PathVariable String pipelineId,
+    public ResponseEntity<QualifiedOperatingConstraintView> section(@PathVariable String pipelineId,
             @PathVariable String sectionId, @RequestParam String companyPartyId,
             @RequestParam String effectiveAt, @RequestParam String conditionCode) {
         return response(new Query(companyPartyId, pipelineId, sectionId, conditionCode, instant(effectiveAt)));
     }
-    private ResponseEntity<View> response(Query request) {
+    private ResponseEntity<QualifiedOperatingConstraintView> response(Query request) {
         return ResponseEntity.ok().header(HttpHeaders.CACHE_CONTROL, "private, no-store")
                 .body(QualifiedOperatingConstraintResponse.of(read.read(request)));
     }

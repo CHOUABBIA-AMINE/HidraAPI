@@ -20,11 +20,14 @@
 package dz.sh.hidra.modules.topology.application.port.out;
 
 import dz.sh.hidra.modules.topology.domain.model.QualifiedPressureRestriction.Scope;
+import dz.sh.hidra.modules.topology.domain.model.QualifiedPressureWorkflowCandidate;
 import dz.sh.hidra.modules.topology.domain.model.QualifiedPressureRestriction.Revision;
 import dz.sh.hidra.modules.topology.domain.model.QualifiedPressureRestriction.Termination;
 import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 
 /** A datastore source is not authorization or proof of a T38 decision. */
 public interface QualifiedOperatingConstraintReadPort {
@@ -36,5 +39,7 @@ public interface QualifiedOperatingConstraintReadPort {
     }
     boolean targetMatches(Scope scope, String pipelineSystemId);
     boolean conditionAllows(Scope scope, String unitCode);
+    boolean conditionKnown(Scope scope);
+    Optional<QualifiedPressureWorkflowCandidate> candidate(UUID candidateId);
     Snapshot snapshot(Scope scope, Instant recordedBy);
 }

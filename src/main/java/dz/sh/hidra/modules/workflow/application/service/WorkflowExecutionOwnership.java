@@ -139,9 +139,12 @@ public class WorkflowExecutionOwnership {
         if (!"topology".equals(instance.targetModule())) return;
         var type=configuration.requireActiveCatalog(instance.targetTypeId(),"WORKFLOW_TARGET_TYPE");
         boolean baseline = WorkflowOwnedTargetLookup.BASELINE_TARGET.equals(type.code());
-        if (!baseline && !"INSTALLED_CHARACTERISTIC_LINK_REVISION".equals(type.code())) return;
+        boolean pressure = "OPERATING_PRESSURE_RESTRICTION".equals(type.code());
+        if (!baseline && !pressure && !"INSTALLED_CHARACTERISTIC_LINK_REVISION".equals(type.code())) return;
         var purpose=configuration.requireActiveCatalog(instance.workflowPurposeId(),"WORKFLOW_PURPOSE");
-        if (!(baseline ? WorkflowOwnedTargetLookup.BASELINE_PURPOSE : "INSTALLED_CHARACTERISTIC_LINK_APPROVAL").equals(purpose.code())
+        if (!(baseline ? WorkflowOwnedTargetLookup.BASELINE_PURPOSE : pressure
+                ? "OPERATING_PRESSURE_RESTRICTION_APPROVAL"
+                : "INSTALLED_CHARACTERISTIC_LINK_APPROVAL").equals(purpose.code())
                 || !configuration.activeBinding(instance.definitionId(),instance.targetModule(),
                         instance.targetTypeId(),instance.workflowPurposeId()))
             throw denied("Topology Workflow target unavailable.");

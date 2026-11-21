@@ -21,12 +21,14 @@ package dz.sh.hidra.modules.topology.infrastructure.persistence.adapter;
 
 import dz.sh.hidra.modules.topology.application.port.out.QualifiedOperatingConstraintReadPort;
 import dz.sh.hidra.modules.topology.domain.model.QualifiedPressureRestriction.*;
+import dz.sh.hidra.modules.topology.domain.model.QualifiedPressureWorkflowCandidate;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -74,6 +76,48 @@ public class JdbcQualifiedOperatingConstraintReadAdapter
                 )
                 """, Boolean.class, s.companyPartyId(), s.conditionCode(), unit);
         return Boolean.TRUE.equals(exists);
+    }
+
+    @Override
+    public boolean conditionKnown(Scope s) {
+        Boolean exists=jdbc.queryForObject("""
+                SELECT EXISTS(SELECT 1
+                FROM public.hidra_topology_t36_condition_policy
+                WHERE company_party_id=? AND condition_code=?)
+                """,Boolean.class,s.companyPartyId(),s.conditionCode());
+        return Boolean.TRUE.equals(exists);
+    }
+
+    @Override
+    public Optional<QualifiedPressureWorkflowCandidate> candidate(UUID candidateId) {
+        List<QualifiedPressureWorkflowCandidate> candidates=jdbc.query("""
+                SELECT candidate_id,candidate_kind,company_party_id,pipeline_id,section_id,
+                pipeline_system_id,condition_code,upper_pressure,pressure_unit,
+                pressure_basis,effective_from,effective_until,retired_revision_id,
+                successor_revision_id,baseline_receipt_id,baseline_manifest_digest,
+                engineering_source_revision,submitted_by,created_at
+                FROM public.hidra_topology_t36_pressure_candidate
+                WHERE candidate_id=?
+                """,(rs,index) -> {
+                    String section=rs.getString("section_id");
+                    return new QualifiedPressureWorkflowCandidate(
+                        uuid(rs,"candidate_id"),
+                        QualifiedPressureWorkflowCandidate.Kind.valueOf(rs.getString("candidate_kind")),
+                        new Scope(rs.getString("company_party_id"),rs.getString("pipeline_id"),
+                                section==null||section.isEmpty()?null:section,
+                                rs.getString("condition_code")),
+                        rs.getString("pipeline_system_id"),rs.getBigDecimal("upper_pressure"),
+                        rs.getString("pressure_unit"),
+                        rs.getString("pressure_basis")==null?null:
+                            PressureBasis.valueOf(rs.getString("pressure_basis")),
+                        instant(rs,"effective_from"),instant(rs,"effective_until"),
+                        uuid(rs,"retired_revision_id"),uuid(rs,"successor_revision_id"),
+                        uuid(rs,"baseline_receipt_id"),
+                        rs.getString("baseline_manifest_digest").trim(),
+                        rs.getString("engineering_source_revision"),
+                        rs.getString("submitted_by"),instant(rs,"created_at"));
+                },candidateId);
+        return candidates.size()==1?Optional.of(candidates.getFirst()):Optional.empty();
     }
 
     @Override

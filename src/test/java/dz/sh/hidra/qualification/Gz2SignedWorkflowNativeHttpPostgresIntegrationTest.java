@@ -341,7 +341,7 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
                 INSERT INTO public.hidra_topology_pipeline_segment(
                  id,pipeline_id,code,segment_type,from_node_id,to_node_id,
                  flow_direction,status,created_at,updated_at)
-                VALUES(?,?,'T36-GZ2-SECTION','PIPE',?,?,'FROM_TO','ACTIVE',now(),now())
+                VALUES(?,?,'T36-GZ2-SECTION','MAINLINE',?,?,'DIRECTED','ACTIVE',now(),now())
                 """,section,pipe,nodeA,nodeB);
         for(String actor:List.of(f.reader,f.author,f.reviewer)) {
             f.permit(actor,"topology:regional-resource:read",

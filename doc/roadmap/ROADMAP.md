@@ -7292,3 +7292,24 @@ Use `docs(topology): reconcile T36 operating constraint contracts`
 for this artifact reconciliation and diagnostic amendment. T36
 acceptance remains open pending successful exact-SHA signed PostgreSQL
 coverage and Full Verification Gate. T37 and T38 remain unselected.
+
+### T36 CI #1348 section fixture repair — 2026-11-21
+
+[CI #1348 attempt 1](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44909871008/attempts/1)
+failed on `28cb245f4b795f4ffddbec49bb4b2abae9286d9e`.
+[PostgreSQL shard 1](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44909871008/job/136863198287)
+captured the T36 HTTP 400 cause as a Hibernate enum hydration exception.
+The signed fixture inserted `PIPE` and `FROM_TO` into the live segment
+table. Those values are absent from `PipelineSegmentType` and
+`FlowDirection`, which are mapped by name in `PipelineSegmentJpaEntity`.
+Use the existing live segment values `MAINLINE` and `DIRECTED`.
+Keep all assertions, the test times and protected read behavior unchanged.
+The patch touches the signed test, its CI inventory source hash and this
+record. Use the registered source message
+`feat(topology): resolve qualified operating pressure restrictions`.
+
+[PostgreSQL shard 7](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44909871008/job/136863198372)
+failed separately while fetching Maven Wrapper's distribution before
+tests. The [API and dictionary lane](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44909871008/job/136863197920)
+passed, including both strict checks. [Documentation Validation #1199](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44909871052)
+passed. Full Verification Gate awaits the exact replacement SHA.

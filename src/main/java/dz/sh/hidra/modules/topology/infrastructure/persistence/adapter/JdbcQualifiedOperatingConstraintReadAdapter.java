@@ -32,7 +32,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public final class JdbcQualifiedOperatingConstraintReadAdapter
+public class JdbcQualifiedOperatingConstraintReadAdapter
         implements QualifiedOperatingConstraintReadPort {
     private static final int MAX_FETCH = 4097;
     private final JdbcTemplate jdbc;

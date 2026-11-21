@@ -20,6 +20,7 @@
 package dz.sh.hidra.modules.workflow.application.service;
 
 import dz.sh.hidra.modules.workflow.application.contract.target.RevisionApprovalEvidenceContract;
+import dz.sh.hidra.modules.workflow.application.contract.target.WorkflowOwnedTargetLookup;
 import dz.sh.hidra.modules.workflow.application.port.out.WorkflowActionRepositoryPort;
 import dz.sh.hidra.modules.workflow.application.port.out.WorkflowConfigurationPort;
 import dz.sh.hidra.modules.workflow.application.port.out.WorkflowInstanceRepositoryPort;
@@ -80,6 +81,50 @@ public class RevisionApprovalEvidenceQueryService implements RevisionApprovalEvi
     public Optional<Evidence> resolveBaseline(Request r, BaselineBinding binding) {
         return binding == null || r == null || !"topology".equals(r.targetModule())
                 ? Optional.empty() : resolve(r, binding);
+    }
+
+    @Override
+    @Transactional(propagation = org.springframework.transaction.annotation.Propagation.MANDATORY)
+    public Optional<Evidence> resolvePressure(PressureRequest request) {
+        if (request == null || request.candidateId() == null || request.submittedAt() == null
+                || request.evaluationAt() == null || blank(request.instanceId()) || blank(request.taskId())
+                || blank(request.actionId()) || blank(request.submitterId()) || manufacturerFence == null)
+            return Optional.empty();
+        manufacturerFence.lockCurrentTopologyApprovalEvidence();
+
+        var instance = instances.findById(request.instanceId()).orElse(null);
+        String candidateId = request.candidateId().toString();
+        if (instance == null || !"topology".equals(instance.targetModule())
+                || !candidateId.equals(instance.targetId()) || !("t36-v1:" + candidateId).equals(instance.targetCodeSnapshot())
+                || !request.submitterId().equals(instance.startedByActorId())
+                || instance.status() != WorkflowInstanceStatus.COMPLETED) return Optional.empty();
+        try {
+            var type = configuration.requireActiveCatalog(instance.targetTypeId(), "WORKFLOW_TARGET_TYPE");
+            var purpose = configuration.requireActiveCatalog(instance.workflowPurposeId(), "WORKFLOW_PURPOSE");
+            if (!WorkflowOwnedTargetLookup.OPERATING_PRESSURE_TARGET.equals(type.code())
+                    || !WorkflowOwnedTargetLookup.OPERATING_PRESSURE_PURPOSE.equals(purpose.code())
+                    || !configuration.lockCurrentInstanceConfiguration(instance.definitionId(),
+                            instance.definitionVersion(), instance.targetModule(), instance.targetTypeId(),
+                            instance.workflowPurposeId())) return Optional.empty();
+        } catch (InvalidWorkflowValueException unavailableConfiguration) {
+            return Optional.empty();
+        }
+
+        var task = tasks.findById(request.taskId()).orElse(null);
+        var action = actions.findById(request.actionId()).orElse(null);
+        if (task == null || action == null || task.status() != WorkflowTaskStatus.APPROVED
+                || !instance.id().equals(task.instanceId()) || !instance.id().equals(action.instanceId())
+                || !task.id().equals(action.taskId()) || action.actionType() != WorkflowActionType.APPROVE
+                || action.decision() != WorkflowDecision.APPROVE || blank(action.actorId())
+                || request.submitterId().equals(action.actorId()) || blank(action.actorDisplayNameSnapshot())
+                || !action.actorId().equals(task.completedByActorId())
+                || !action.actedAt().equals(task.completedAt()) || !action.actedAt().equals(instance.completedAt())
+                || action.actedAt().isBefore(request.submittedAt()) || action.actedAt().isAfter(request.evaluationAt())
+                || action.actionSequence() != actions.nextSequence(instance.id()) - 1) return Optional.empty();
+
+        return Optional.of(new Evidence(instance.id(), task.id(), action.id(), instance.definitionId(),
+                instance.definitionVersion(), instance.targetTypeId(), instance.workflowPurposeId(),
+                action.actorId(), action.actorDisplayNameSnapshot(), action.actedAt()));
     }
 
     private Optional<Evidence> resolve(Request r, BaselineBinding baseline) {

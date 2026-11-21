@@ -21,6 +21,7 @@ package dz.sh.hidra.modules.workflow.application.contract.target;
 
 import java.time.Instant;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface RevisionApprovalEvidenceContract {
     record Request(String targetModule, String targetDigest, String definitionId, int definitionVersion,
@@ -30,6 +31,9 @@ public interface RevisionApprovalEvidenceContract {
             int definitionVersion, String targetTypeId, String purposeId, String actorId,
             String actorDisplayName, Instant actedAt) {}
     record BaselineBinding(String locator, String submitterId, String correlationId, Instant submittedAt) {}
+    record PressureRequest(UUID candidateId, String instanceId, String taskId, String actionId,
+                           String submitterId, Instant submittedAt, Instant evaluationAt) {}
     Optional<Evidence> resolve(Request request);
+    default Optional<Evidence> resolvePressure(PressureRequest request) { return Optional.empty(); }
     default Optional<Evidence> resolveBaseline(Request request, BaselineBinding binding) { return Optional.empty(); }
 }

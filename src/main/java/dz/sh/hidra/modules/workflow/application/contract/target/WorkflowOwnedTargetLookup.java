@@ -44,6 +44,10 @@ public interface WorkflowOwnedTargetLookup {
         return hseTarget(type) && (type + "_APPROVAL").equals(purpose);
     }
 
+    default boolean pressureStartAllowed(String id, String locator, String actor) { return false; }
+
+    default boolean pressureReviewAllowed(String id, String locator, String actor) { return false; }
+
     default boolean protectedReviewAllowed(String type, String digest, String locator) {
         return false;
     }

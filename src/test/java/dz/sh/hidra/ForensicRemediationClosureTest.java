@@ -412,9 +412,29 @@ class ForensicRemediationClosureTest {
     /** T33: only the registered Identity evaluator may see the exact Topology scalar lineage export. */
     private static boolean t33RegionalTopologyOwnerExport(String source, String imported) {
         String owner = "dz.sh.hidra.modules.topology.application.contract.identity.IdentityRegionalTopologyContract";
-        if (!"dz.sh.hidra.modules.identity.application.service.RegionalAccessApplicationService".equals(source)) return false;
+        if (!"dz.sh.hidra.modules.identity.application.service.RegionalAccessApplicationService".equals(source)
+                && !"dz.sh.hidra.modules.identity.application.service.TopologyPressureRestrictionAuthorizationQueryService".equals(source)) return false;
         return Set.of(owner, owner + ".Kind", owner + ".Scope", owner + ".Resolution",
                 owner + "$Kind", owner + "$Scope", owner + "$Resolution").contains(imported);
+    }
+
+
+    private static boolean t38OwnerRoot(String target) {
+        return target.startsWith("dz.sh.hidra.modules.identity.application.contract.topology.TopologyPressureRestrictionAuthorizationContract")
+                || target.startsWith("dz.sh.hidra.modules.audit.application.contract.topology.PressureRestrictionAuditEvidenceContract")
+                || target.equals("dz.sh.hidra.modules.workflow.application.contract.target.RevisionApprovalEvidenceContract.PressureRequest");
+    }
+
+    private static boolean t38Export(String source, String target) {
+        if (!source.equals("dz.sh.hidra.modules.topology.infrastructure.integration.PressureRestrictionDecisionEvidenceAdapter")) return false;
+        return Set.of(
+                "dz.sh.hidra.modules.identity.application.contract.topology.TopologyPressureRestrictionAuthorizationContract",
+                "dz.sh.hidra.modules.identity.application.contract.topology.TopologyPressureRestrictionAuthorizationContract.Operation",
+                "dz.sh.hidra.modules.identity.application.contract.topology.TopologyPressureRestrictionAuthorizationContract.Target",
+                "dz.sh.hidra.modules.audit.application.contract.topology.PressureRestrictionAuditEvidenceContract",
+                "dz.sh.hidra.modules.audit.application.contract.topology.PressureRestrictionAuditEvidenceContract.Kind",
+                "dz.sh.hidra.modules.audit.application.contract.topology.PressureRestrictionAuditEvidenceContract.Witness",
+                "dz.sh.hidra.modules.workflow.application.contract.target.RevisionApprovalEvidenceContract.PressureRequest").contains(target);
     }
 
     @Test void t33RegionalTopologyOwnerExportIsExact() {
@@ -559,6 +579,11 @@ class ForensicRemediationClosureTest {
                 if (targetModule == null || sourceModule.equals(targetModule)) {
                     continue;
                 }
+                if (t38OwnerRoot(imported)) {
+                    if (!t38Export(source.fqcn(), imported))
+                        violations.add(source.fqcn()+" -> unauthorized T38 owner "+imported);
+                    continue;
+                }
                 if (t31OwnerRoot(imported)) {
                     if (!t31OwnerExport(source.fqcn(),imported))
                         violations.add(source.fqcn()+" -> unauthorized T31 owner "+imported);
@@ -659,7 +684,9 @@ class ForensicRemediationClosureTest {
                 if (t24DocumentOwnerExport(source.fqcn(), imported)) continue;
                 if (isT17OwnerExport(source.fqcn(), imported)) continue;
                 if (t23AnalyticsOwnerExport(source.fqcn(), imported)) continue;
-                if (t33RegionalTopologyOwnerExport(source.fqcn(), imported)) continue;
+                if (t33RegionalTopologyOwnerExport(source.fqcn(), imported)
+                        || source.fqcn().equals("dz.sh.hidra.modules.topology.infrastructure.integration.PressureRestrictionDecisionEvidenceAdapter")
+                           && imported.equals("dz.sh.hidra.modules.workflow.application.contract.target.RevisionApprovalEvidenceContract")) continue;
                 violations.add(source.fqcn() + " -> " + imported);
             }
         }

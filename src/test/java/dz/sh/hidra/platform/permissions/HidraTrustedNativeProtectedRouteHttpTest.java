@@ -141,6 +141,27 @@ class HidraTrustedNativeProtectedRouteHttpTest {
        route.controller().getSimpleName().equals("TelemetryQualityController")));
  }
 
+ @Test void t38RestrictionDecisionsUseOrdinaryRouteAuthorization() {
+   var registry = new HidraTrustedNativeProtectedRouteRegistry();
+   var owner = org.mockito.Mockito.mock(
+       dz.sh.hidra.modules.topology.application.port.in.PressureRestrictionDecisionUseCase.class);
+   var controller = new dz.sh.hidra.modules.topology.api.rest.controller.PressureRestrictionDecisionController(owner);
+   var naming = new HidraRoutePermissionNaming();
+   String root = "/api/v1/topology/operating-constraints/pipelines/{pipelineId}/restriction-requests";
+   var suffixes = java.util.Map.of("submit", "", "request", "/{requestId}",
+           "publish", "/{requestId}/publication", "evidence", "/{requestId}/evidence");
+   for (var method : controller.getClass().getDeclaredMethods()) {
+     if (!suffixes.containsKey(method.getName())) continue;
+     String verb = method.getName().equals("submit") || method.getName().equals("publish") ? "POST" : "GET";
+     var handler = new org.springframework.web.method.HandlerMethod(controller, method);
+     String path = root + suffixes.get(method.getName());
+     String expected = "POST".equals(verb) ? "execute" : "read";
+     assertEquals("topology:operating-constraints:" + expected, naming.permissionFor(path, verb, handler));
+     assertFalse(registry.isTrusted(handler, verb, path));
+   }
+   assertTrue(registry.candidates().stream().noneMatch(route -> route.pattern().contains("/restriction-requests")));
+ }
+
  @Test void t33RegionalAccessIsNotTrustedNativeDelegationOrPermissionBypass() {
    var registry = new HidraTrustedNativeProtectedRouteRegistry();
    assertEquals(159, registry.candidates().size());

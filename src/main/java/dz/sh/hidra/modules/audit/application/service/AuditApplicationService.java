@@ -20,6 +20,11 @@
 package dz.sh.hidra.modules.audit.application.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import dz.sh.hidra.modules.audit.application.contract.topology.PressureRestrictionAuditEvidenceContract;
+import dz.sh.hidra.modules.audit.domain.value.AuditActorType;
+import dz.sh.hidra.modules.audit.domain.value.AuditOperation;
 
 import dz.sh.hidra.modules.audit.application.command.RecordAuditAccessCommand;
 import dz.sh.hidra.modules.audit.application.command.RecordAuditEventCommand;
@@ -48,7 +53,8 @@ import java.util.Objects;
  * Application service for audit events, export requests, and access records.
  */
 @Service
-public class AuditApplicationService implements RecordAuditEventUseCase, RequestAuditExportUseCase, RecordAuditAccessUseCase {
+public class AuditApplicationService implements RecordAuditEventUseCase, RequestAuditExportUseCase, RecordAuditAccessUseCase,
+        PressureRestrictionAuditEvidenceContract {
 
     private final AuditInputPolicy inputPolicy;
 
@@ -71,6 +77,42 @@ public class AuditApplicationService implements RecordAuditEventUseCase, Request
     @Override
     public AuditEventSummaryDto recordAuditEvent(RecordAuditEventCommand command) {
         Objects.requireNonNull(command, "Record audit event command must not be null.");
+        if ("OPERATING_PRESSURE_RESTRICTION".equals(command.targetType())
+                || java.util.Arrays.stream(PressureRestrictionAuditEvidenceContract.Kind.values()).anyMatch(kind ->
+                    kind.typeId().equals(command.eventTypeId()) || kind.actionCode().equals(command.actionCode()))) {
+            throw new IllegalArgumentException("Pressure restriction evidence requires owner publication");
+        }
+        return persistAuditEvent(command);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.MANDATORY)
+    public String appendPressureWitness(Witness witness) {
+        Objects.requireNonNull(witness);
+        return persistAuditEvent(new RecordAuditEventCommand(
+                witness.kind().typeId(), "t38_pressure_governance", null,
+                "topology", "pressure-restriction-publication", witness.action(),
+                witness.kind().actionCode(), null, witness.reviewer(), AuditActorType.USER, null, null,
+                "topology", "OPERATING_PRESSURE_RESTRICTION", witness.candidate().toString(),
+                "t36-v1:" + witness.candidate(), null, AuditOperation.APPROVE, "APPROVE", null, null,
+                witness.instance(), witness.task(), witness.action(), null, null, null, witness.actedAt(), null)).id();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean matchesPressureWitness(String eventId, Witness witness) {
+        return auditEventRepositoryPort.findById(eventId).filter(event ->
+                witness.kind().typeId().equals(event.eventTypeId())
+                && witness.kind().actionCode().equals(event.actionCode())
+                && "topology".equals(event.targetModule()) && "topology".equals(event.sourceModule())
+                && "OPERATING_PRESSURE_RESTRICTION".equals(event.targetType())
+                && witness.candidate().toString().equals(event.targetId()) && event.operation() == AuditOperation.APPROVE
+                && witness.reviewer().equals(event.actorId()) && witness.instance().equals(event.workflowInstanceId())
+                && witness.task().equals(event.workflowTaskId()) && witness.action().equals(event.workflowActionId())
+                && witness.actedAt().equals(event.occurredAt())).isPresent();
+    }
+
+    private AuditEventSummaryDto persistAuditEvent(RecordAuditEventCommand command) {
         Instant now = Instant.now();
         AuditEvent event = new AuditEvent(
                 AuditId.newId().value(),

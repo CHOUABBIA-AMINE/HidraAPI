@@ -142,10 +142,13 @@ public final class ProtectedTransactionExecutor {
         publicationRouter=router;
     }
 
+    private static final String PRESSURE_RESTRICTION_SERVICE =
+            "dz.sh.hidra.modules.topology.application.service.PressureRestrictionDecisionApplicationService";
+
     /** Select the private credential before any physical transaction; no business permission implied. */
     public <T> T executePublication(Supplier<T> work,Runnable flush,Runnable guard) {
         String caller=StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).getCallerClass().getName();
-        if(!caller.equals(BASELINE_SERVICE) && !caller.equals(BASELINE_PUBLICATION_SERVICE) && !caller.equals(MANUFACTURER_SERVICE) && !caller.equals(STATION_CONFIG_SERVICE) && !caller.equals(LINK_SERVICE) && !caller.equals(INSTALLED_SERVICE) && !caller.equals(PRODUCT_PUBLICATION_SERVICE) && !caller.equals(FLUID_SERVICE) && !caller.equals(PRODUCT_SERVICE) && !caller.equals(DRAFT_SERVICE) && !caller.equals(PUBLICATION_SERVICE) && !caller.equals(APPOINTMENT_SERVICE) && !caller.equals(
+        if(!caller.equals(PRESSURE_RESTRICTION_SERVICE) && !caller.equals(BASELINE_SERVICE) && !caller.equals(BASELINE_PUBLICATION_SERVICE) && !caller.equals(MANUFACTURER_SERVICE) && !caller.equals(STATION_CONFIG_SERVICE) && !caller.equals(LINK_SERVICE) && !caller.equals(INSTALLED_SERVICE) && !caller.equals(PRODUCT_PUBLICATION_SERVICE) && !caller.equals(FLUID_SERVICE) && !caller.equals(PRODUCT_SERVICE) && !caller.equals(DRAFT_SERVICE) && !caller.equals(PUBLICATION_SERVICE) && !caller.equals(APPOINTMENT_SERVICE) && !caller.equals(
             "dz.sh.hidra.modules.topology.application.service.ProtectedStationGraphOperationService"))
             throw new IllegalStateException("Unreviewed credential route caller");
         long budgetNanos=publicationWorkBudgetNanos(caller);
@@ -163,7 +166,7 @@ public final class ProtectedTransactionExecutor {
     private long publicationWorkBudgetNanos(String caller) {
         if(caller.equals(MANUFACTURER_SERVICE))return budgets.manufacturerWorkBudgetNanos();
         if(caller.equals(APPOINTMENT_SERVICE))return budgets.appointmentWorkBudgetNanos();
-        if(caller.equals(BASELINE_SERVICE) || caller.equals(BASELINE_PUBLICATION_SERVICE) || caller.equals(INSTALLED_SERVICE) || caller.equals(STATION_CONFIG_SERVICE) || caller.equals(LINK_SERVICE))return budgets.installedUnitWorkBudgetNanos();
+        if(caller.equals(PRESSURE_RESTRICTION_SERVICE) || caller.equals(BASELINE_SERVICE) || caller.equals(BASELINE_PUBLICATION_SERVICE) || caller.equals(INSTALLED_SERVICE) || caller.equals(STATION_CONFIG_SERVICE) || caller.equals(LINK_SERVICE))return budgets.installedUnitWorkBudgetNanos();
         if(caller.equals(PRODUCT_SERVICE) || caller.equals(FLUID_SERVICE) || caller.equals(PRODUCT_PUBLICATION_SERVICE))
             return budgets.custodyWorkBudgetNanos();
         // Owner-authorized development headroom for the remaining admitted topology/setup families.

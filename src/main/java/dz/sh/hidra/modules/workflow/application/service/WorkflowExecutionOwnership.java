@@ -96,6 +96,23 @@ public class WorkflowExecutionOwnership {
     public Optional<WorkflowActorContract.Actor> resolveActor(String reference){
         return actors.eligibleReference(reference,Instant.now());
     }
+    public boolean pressureOwnerAllowed(String targetId, String locator, String actor, boolean start) {
+        var owners = targets.stream().filter(owner -> "topology".equals(owner.module())
+                && owner.targetTypeCodes().contains(WorkflowOwnedTargetLookup.OPERATING_PRESSURE_TARGET)).toList();
+        if (owners.size() != 1) return false;
+        var owner = owners.getFirst();
+        return start ? owner.pressureStartAllowed(targetId, locator, actor)
+                : owner.pressureReviewAllowed(targetId, locator, actor);
+    }
+
+    public boolean pressureReviewAllowed(String module, String targetId, String locator, String targetTypeId,
+                                         String actor, WorkflowConfigurationPort configuration) {
+        if (!"topology".equals(module) || locator == null || !locator.startsWith("t36-v1:")) return true;
+        var type = configuration.requireActiveCatalog(targetTypeId, "WORKFLOW_TARGET_TYPE");
+        return !WorkflowOwnedTargetLookup.OPERATING_PRESSURE_TARGET.equals(type.code())
+                || pressureOwnerAllowed(targetId, locator, actor, false);
+    }
+
     public boolean permitted(String actorId,String permission,String instanceId){return actors.permitted(actorId,permission,instanceId);}
     public WorkflowOrganizationContract.Unit requireUnit(String id){
         return organizations.availableUnit(id,Instant.now()).orElseThrow(()->denied("Workflow organization unit unavailable: "+id));

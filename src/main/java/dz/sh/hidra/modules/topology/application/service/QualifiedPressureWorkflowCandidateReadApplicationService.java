@@ -27,6 +27,9 @@ import dz.sh.hidra.modules.topology.domain.model.EngineeringBaselineManifest;
 import dz.sh.hidra.modules.topology.domain.model.QualifiedPressureWorkflowCandidate;
 import dz.sh.hidra.modules.topology.domain.model.QualifiedPressureRestriction.Scope;
 import java.time.Instant;
+import dz.sh.hidra.modules.topology.application.port.out.PressureRestrictionDecisionPort;
+import dz.sh.hidra.modules.topology.application.port.out.PressureRestrictionDecisionEvidencePort;
+import dz.sh.hidra.modules.topology.application.port.out.PressureRestrictionDecisionEvidencePort.Operation;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -45,12 +48,18 @@ public class QualifiedPressureWorkflowCandidateReadApplicationService
     private final QualifiedOperatingConstraintReadPort projection;
     private final PipelineDossierReadUseCase dossier;
     private final EngineeringBaselineReadUseCase baselines;
+    private final PressureRestrictionDecisionPort requests;
+    private final PressureRestrictionDecisionEvidencePort authority;
+
     public QualifiedPressureWorkflowCandidateReadApplicationService(
             QualifiedOperatingConstraintReadPort projection,
-            PipelineDossierReadUseCase dossier, EngineeringBaselineReadUseCase baselines) {
+            PipelineDossierReadUseCase dossier, EngineeringBaselineReadUseCase baselines,
+            PressureRestrictionDecisionPort requests, PressureRestrictionDecisionEvidencePort authority) {
         this.projection=Objects.requireNonNull(projection);
         this.dossier=Objects.requireNonNull(dossier);
         this.baselines=Objects.requireNonNull(baselines);
+        this.requests=Objects.requireNonNull(requests);
+        this.authority=Objects.requireNonNull(authority);
     }
     @Override
     public Optional<String> validatedLocator(UUID candidateId) {
@@ -80,6 +89,41 @@ public class QualifiedPressureWorkflowCandidateReadApplicationService
             return Optional.empty();
         }
     }
+    @Override
+    public boolean permitsStart(UUID candidateId, String actor) {
+        return permits(candidateId, actor, Operation.SUBMIT);
+    }
+
+    @Override
+    public boolean permitsReview(UUID candidateId, String actor) {
+        return permits(candidateId, actor, Operation.REVIEW);
+    }
+
+    private boolean permits(UUID candidateId, String actor, Operation operation) {
+        try {
+            var candidate = projection.candidate(candidateId).orElse(null);
+            return candidate != null && actor != null
+                    && candidate.submittedBy().equals(actor) == (operation == Operation.SUBMIT)
+                    && actor.equals(authority.requireCurrent(candidate.scope(), operation))
+                    && validatedLocator(candidateId).isPresent();
+        } catch (RuntimeException unavailable) {
+            return false;
+        }
+    }
+
+    private boolean pendingSuccessor(QualifiedPressureWorkflowCandidate candidate) {
+        return requests.requestByCandidate(candidate.id()).stream().flatMap(request -> request.candidates().stream())
+                .anyMatch(successor -> successor.kind() == QualifiedPressureWorkflowCandidate.Kind.REVISION
+                        && successor.id().equals(candidate.successorRevisionId())
+                        && successor.scope().equals(candidate.scope())
+                        && successor.pipelineSystemId().equals(candidate.pipelineSystemId())
+                        && candidate.retiredRevisionId().equals(successor.retiredRevisionId())
+                        && candidate.effectiveFrom().equals(successor.effectiveFrom())
+                        && candidate.baselineReceiptId().equals(successor.baselineReceiptId())
+                        && candidate.baselineDigest().equals(successor.baselineDigest())
+                        && candidate.engineeringSourceRevision().equals(successor.engineeringSourceRevision()));
+    }
+
     private boolean candidateAllowed(QualifiedPressureWorkflowCandidate c,String system) {
         Scope scope=c.scope();
         if(c.kind()==QualifiedPressureWorkflowCandidate.Kind.REVISION) {
@@ -95,7 +139,7 @@ public class QualifiedPressureWorkflowCandidateReadApplicationService
                     && snapshot.revisions().stream().noneMatch(r->
                         r.id().equals(c.successorRevisionId())
                             && c.effectiveFrom().equals(r.effectiveFrom())
-                            && c.retiredRevisionId().equals(r.supersedes())))
+                            && c.retiredRevisionId().equals(r.supersedes())) && !pendingSuccessor(c))
                 return false;
         }
         var receipt=baselines.read(new EngineeringBaselineReadUseCase.Query(

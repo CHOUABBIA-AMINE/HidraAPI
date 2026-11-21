@@ -125,6 +125,10 @@ public class WorkflowApplicationService implements StartWorkflowInstanceUseCase,
         // in targetCodeSnapshot for Topology only. The owner validates every original
         // company/unit/link revision through native protected admission before use.
         // The verified target.code(), never the request snapshot, is persisted.
+        if ("topology".equals(command.targetModule())
+                && "OPERATING_PRESSURE_RESTRICTION".equals(type.code())
+                && !ownership.pressureOwnerAllowed(command.targetId(), command.targetCodeSnapshot(), actor.id(), true))
+            throw new InvalidWorkflowValueException("Workflow target unavailable.");
         var target=ownership.requireTarget(command.targetModule(),type.code(),command.targetId(),
                 "topology".equals(command.targetModule()) ? command.targetCodeSnapshot() : null);
         WorkflowInstance instance = new WorkflowInstance(

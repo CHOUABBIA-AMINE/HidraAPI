@@ -61,7 +61,20 @@ public class TopologyQualifiedPressureWorkflowTargetLookup implements WorkflowOw
         return operation != null && eligibleTarget(typeCode,id,locator).isPresent();
     }
 
+    @Override public boolean pressureStartAllowed(String id, String locator, String actor) {
+        return evaluate(TARGET_TYPE, id, locator, candidate -> owner.permitsStart(candidate, actor)).isPresent();
+    }
+
+    @Override public boolean pressureReviewAllowed(String id, String locator, String actor) {
+        return evaluate(TARGET_TYPE, id, locator, candidate -> owner.permitsReview(candidate, actor)).isPresent();
+    }
+
     @Override public Optional<Target> eligibleTarget(String typeCode,String id,String locator) {
+        return evaluate(typeCode, id, locator, candidate -> owner.validatedLocator(candidate).filter(locator::equals).isPresent());
+    }
+
+    private Optional<Target> evaluate(String typeCode, String id, String locator,
+                                      java.util.function.Predicate<UUID> admission) {
         if(!TARGET_TYPE.equals(typeCode) || id==null || locator==null) return Optional.empty();
         final UUID revision;
         try {
@@ -80,9 +93,9 @@ public class TopologyQualifiedPressureWorkflowTargetLookup implements WorkflowOw
                     return Optional.empty();
                 if(scaffold) TransactionSynchronizationManager.clearSynchronization();
                 try {
-                    var eligible=owner.validatedLocator(revision);
-                    return eligible.filter(locator::equals)
-                            .map(verified -> new Target(id,verified,"Proposed operating pressure restriction"));
+                    return admission.test(revision)
+                            ? Optional.of(new Target(id, locator, "Proposed operating pressure restriction"))
+                            : Optional.empty();
                 } finally {
                     if(scaffold) TransactionSynchronizationManager.initSynchronization();
                 }

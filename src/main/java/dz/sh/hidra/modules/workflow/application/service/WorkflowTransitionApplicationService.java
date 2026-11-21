@@ -174,6 +174,12 @@ public class WorkflowTransitionApplicationService implements ExecuteWorkflowTran
                 instance.workflowPurposeId())) {
             throw new WorkflowTransitionDeniedException("Workflow configuration unavailable.");
         }
+        if ("topology".equals(instance.targetModule()) && instance.targetCodeSnapshot() != null
+                && instance.targetCodeSnapshot().startsWith("t36-v1:")
+                && !ownership.pressureReviewAllowed(instance.targetModule(), instance.targetId(),
+                        instance.targetCodeSnapshot(), instance.targetTypeId(), actor.id(), configuration)) {
+            throw new WorkflowTransitionDeniedException("Workflow task unavailable.");
+        }
         if (!command.expectedTaskUpdatedAt().equals(task.updatedAt())) {
             throw new WorkflowTransitionConflictException("Workflow task changed after it was loaded. Refresh available actions before retrying.");
         }

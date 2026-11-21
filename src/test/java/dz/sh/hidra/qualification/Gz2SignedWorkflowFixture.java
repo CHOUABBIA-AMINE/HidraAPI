@@ -95,7 +95,7 @@ class Gz2SignedWorkflowFixture {
         // function, not application UPDATE rights on Workflow configuration tables.
         // The disposable GZ2 runtime role was created before Flyway migration.
         sql.execute("GRANT EXECUTE ON FUNCTION public.hidra_workflow_t30_lock_current_configuration("
-                + "text,integer,text,text,text) TO " + APP);
+                + "text,integer,text,text,text) TO " + APP + "," + PUBLICATION);
         restrictEngineeringRoles();
         seedScope();
         verifyRuntimeUnitLock();
@@ -133,6 +133,19 @@ class Gz2SignedWorkflowFixture {
                 + "hidra_topology_engineering_baseline_revision,hidra_topology_engineering_baseline_request",
                 null, "SELECT,INSERT,UPDATE");
         sql.execute("GRANT SELECT,INSERT ON hidra_topology_baseline_submission,hidra_topology_baseline_publication TO " + PUBLICATION);
+        restrict("hidra_topology_pressure_decision_stream,hidra_topology_pressure_decision_request,"
+                + "hidra_topology_pressure_decision_publication,hidra_topology_pressure_decision_witness",
+                "SELECT", "SELECT");
+        for (String function : List.of(
+                "hidra_topology_t38_lock_stream(varchar,varchar,varchar,varchar,varchar)",
+                "hidra_topology_t38_lock_source(varchar,varchar,varchar,varchar,uuid,varchar)",
+                "hidra_topology_t38_guard(uuid,bigint)",
+                "hidra_topology_t38_submit(uuid,varchar,varchar,varchar,varchar,varchar,bigint,uuid,uuid,uuid,"
+                        + "numeric,varchar,varchar,timestamptz,timestamptz,uuid,varchar,varchar,varchar,timestamptz)",
+                "hidra_topology_t38_publish(uuid,bigint,timestamptz,varchar[],varchar[],varchar[],varchar[],varchar[],timestamptz[])")) {
+            sql.execute("GRANT EXECUTE ON FUNCTION public." + function + " TO " + PUBLICATION);
+        }
+
         for (String function : List.of("hidra_topology_baseline_lock_storage", "hidra_topology_baseline_lock_sources",
                 "hidra_custody_baseline_lock_product_source", "hidra_topology_baseline_lock_publication")) {
             sql.execute("GRANT EXECUTE ON FUNCTION public." + function + "() TO " + PUBLICATION);

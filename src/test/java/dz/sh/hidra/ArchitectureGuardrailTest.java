@@ -175,10 +175,35 @@ class ArchitectureGuardrailTest {
      * T33: only Identity's regional evaluator may consume Topology's exact scalar
      * current-lineage contract. Siblings and private Topology repositories remain closed.
      */
+
+    private static boolean t38OwnerRoot(String target) {
+        return target.startsWith("dz.sh.hidra.modules.identity.application.contract.topology.TopologyPressureRestrictionAuthorizationContract")
+                || target.startsWith("dz.sh.hidra.modules.audit.application.contract.topology.PressureRestrictionAuditEvidenceContract")
+                || target.equals("dz.sh.hidra.modules.workflow.application.contract.target.RevisionApprovalEvidenceContract$PressureRequest");
+    }
+
+    private static boolean t38WorkflowRead(String source, String target) {
+        String root = "dz.sh.hidra.modules.workflow.application.contract.target.RevisionApprovalEvidenceContract";
+        return source.equals("dz.sh.hidra.modules.topology.infrastructure.integration.PressureRestrictionDecisionEvidenceAdapter")
+                && (target.equals(root) || target.equals(root + "$Evidence"));
+    }
+
+    private static boolean t38Export(String source, String target) {
+        if (!source.equals("dz.sh.hidra.modules.topology.infrastructure.integration.PressureRestrictionDecisionEvidenceAdapter")) return false;
+        return Set.of(
+                "dz.sh.hidra.modules.identity.application.contract.topology.TopologyPressureRestrictionAuthorizationContract",
+                "dz.sh.hidra.modules.identity.application.contract.topology.TopologyPressureRestrictionAuthorizationContract$Operation",
+                "dz.sh.hidra.modules.identity.application.contract.topology.TopologyPressureRestrictionAuthorizationContract$Target",
+                "dz.sh.hidra.modules.audit.application.contract.topology.PressureRestrictionAuditEvidenceContract",
+                "dz.sh.hidra.modules.audit.application.contract.topology.PressureRestrictionAuditEvidenceContract$Kind",
+                "dz.sh.hidra.modules.audit.application.contract.topology.PressureRestrictionAuditEvidenceContract$Witness",
+                "dz.sh.hidra.modules.workflow.application.contract.target.RevisionApprovalEvidenceContract$PressureRequest").contains(target);
+    }
+
     private static boolean isT33RegionalOwnerExport(String source, String target) {
         String consumer = "dz.sh.hidra.modules.identity.application.service.RegionalAccessApplicationService";
         String root = "dz.sh.hidra.modules.topology.application.contract.identity.IdentityRegionalTopologyContract";
-        return source.equals(consumer) && (target.equals(root)
+        return (source.equals(consumer) || source.equals("dz.sh.hidra.modules.identity.application.service.TopologyPressureRestrictionAuthorizationQueryService")) && (target.equals(root)
                 || target.equals(root + "$Kind")
                 || target.equals(root + "$Scope")
                 || target.equals(root + "$Resolution"));
@@ -510,6 +535,12 @@ class ArchitectureGuardrailTest {
                 if (targetModule == null || sourceModule.equals(targetModule)) {
                     continue;
                 }
+                if (t38OwnerRoot(target.getName())) {
+                    if (!t38Export(source.getName(), target.getName()))
+                        violations.add(source.getName()+" -> unauthorized T38 owner "+target.getName());
+                    continue;
+                }
+                if (t38WorkflowRead(source.getName(), target.getName())) continue;
                 if (!isPrivateCrossModulePackage(target.getPackageName())) {
                     continue;
                 }
@@ -1401,6 +1432,8 @@ class ArchitectureGuardrailTest {
         if (sourceModule == null || targetModule == null || sourceModule.equals(targetModule)) {
             return false;
         }
+        if (t38OwnerRoot(targetClassName)) return !t38Export(sourceClassName, targetClassName);
+        if (t38WorkflowRead(sourceClassName,targetClassName)) return false;
         if (t31OwnerRoot(targetClassName))
             return !t31OwnerExport(sourceClassName,targetClassName);
         if (t28OwnerRoot(targetClassName))

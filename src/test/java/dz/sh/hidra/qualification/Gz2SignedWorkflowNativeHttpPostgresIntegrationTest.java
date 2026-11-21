@@ -73,6 +73,7 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
             String dossierPipeline;
             T31Scenario scenario;
             T37History t37;
+            T38Proof t38;
             Plan plan;
             Reading reading;
             ResponseChain response;
@@ -102,6 +103,7 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
                 // T35 uses the real T07 receipt and fresh regional authorization.
                 String constraint = qualifiedT36(fixture, runtime, author, reviewer, dossierReader,
                         dossierPipeline, baseline, network);
+                t38 = verifyT38Lifecycle(fixture, runtime, author, reviewer, dossierReader, dossierPipeline, baseline);
                 assertEquals("QUALIFIED", runtime.get(constraint, dossierReader).path("status").asText());
                 JsonNode firstDossierReceipt = runtime.get(dossierPath, dossierReader);
                 assertEquals(field(baseline, "receiptId"),
@@ -163,6 +165,10 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
                         .path("observations").get(0);
                 assertEquals(t37.trustedId(), field(restored, "trustedId"));
                 assertEquals(t37.bindingId(), field(restored.path("binding"), "id"));
+                var after = restarted.get(t38.evidencePath(), restarted.login(fixture.author));
+                assertEquals(t38.actionId(), field(after.path("decisions").get(0), "actionId"));
+                assertEquals(t38.auditId(), field(after.path("decisions").get(0), "auditEventId"));
+
                 System.out.printf("GZ2 phase=reconstructed pid=%d originalPid=%d scope=foreign,wrong-asset,revoked%n",
                         restarted.pid(), firstPid);
             }
@@ -232,6 +238,205 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
         return pipe;
     }
 
+    private record T38Proof(String evidencePath, String actionId, String auditId) { }
+
+    private static T38Proof verifyT38Lifecycle(Gz2SignedWorkflowFixture f, Gz2SignedWorkflowFixture.Runtime r,
+            String author, String reviewer, String reader, String pipeline, JsonNode baseline) throws Exception {
+        String condition = "T38-NOMINAL";
+        f.sql.update("""
+                INSERT INTO public.hidra_topology_t36_condition_policy
+                    (company_party_id,condition_code,pressure_unit,recorded_at)
+                VALUES (?,?,'bar',clock_timestamp())
+                """, f.company, condition);
+        String topology = "/api/v1/topology/operating-constraints/pipelines/" + pipeline;
+        String root = topology + "/restriction-requests";
+        String receipt = field(baseline, "receiptId");
+        var review = f.review("topology", "OPERATING_PRESSURE_RESTRICTION",
+                "OPERATING_PRESSURE_RESTRICTION_APPROVAL", false);
+        Instant initialAt = now().minusSeconds(30);
+        Instant replacedAt = initialAt.plusSeconds(10);
+        Instant withdrawnAt = replacedAt.plusSeconds(10);
+        String first = id();
+        JsonNode pending = submitT38(r, author, root, f.company, condition, receipt, first, 0,
+                Map.of("kind", "INITIAL", "pressure", t38Pressure("64", initialAt)));
+        assertEquals(1, pending.path("candidates").size());
+        String original = field(pending.path("candidates").get(0), "candidateId");
+        List<Map<String,String>> decision = List.of(t38FirstApproval(f, r, author, reviewer, review, pending));
+        assertEquals("UNAVAILABLE", field(r.get(t38Effective(topology, f.company, condition, initialAt), reader), "status"));
+        JsonNode published = publishT38(r, author, root, f.company, first, 0, decision);
+        assertEquals(original, field(published, "revisionId"));
+        assertEquals(published, publishT38(r, author, root, f.company, first, 0, decision));
+        String evidencePath = query(root + "/" + first + "/evidence", "companyPartyId", f.company);
+        var proof = r.get(evidencePath, author);
+        assertEquals(decision.getFirst().get("actionId"), field(proof.path("decisions").get(0), "actionId"));
+        assertFalse(field(proof.path("decisions").get(0), "auditEventId").isBlank());
+        assertEquals(404, r.send("GET", query(root + "/" + first + "/evidence", "companyPartyId", f.company),
+                reviewer, null).statusCode());
+        assertEquals("QUALIFIED", field(r.get(t38Effective(topology, f.company, condition, initialAt), reader), "status"));
+
+        String second = id();
+        JsonNode replacement = submitT38(r, author, root, f.company, condition, receipt, second, 1,
+                Map.of("kind", "REPLACEMENT", "predecessorId", original, "pressure", t38Pressure("55", replacedAt)));
+        assertEquals(2, replacement.path("candidates").size());
+        var successorApprovals = t38Approve(f, r, author, reviewer, review, replacement);
+        assertEquals(409, r.send("POST", root + "/" + second + "/publication", author,
+                Map.of("companyPartyId", f.company, "expectedVersion", 1, "decisions", decision)).statusCode());
+        f.sql.execute("""
+                CREATE FUNCTION public.t38_fixture_reject_witness() RETURNS trigger LANGUAGE plpgsql AS $$
+                BEGIN
+                  IF NEW.position=2 THEN RAISE EXCEPTION 'Synthetic rollback fixture' USING ERRCODE='23514'; END IF;
+                  RETURN NEW;
+                END $$;
+                """);
+        f.sql.execute("""
+                CREATE TRIGGER t38_fixture_reject_witness BEFORE INSERT
+                ON public.hidra_topology_pressure_decision_witness
+                FOR EACH ROW EXECUTE FUNCTION public.t38_fixture_reject_witness()
+                """);
+        try {
+            assertEquals(409, r.send("POST", root + "/" + second + "/publication", author,
+                    Map.of("companyPartyId", f.company, "expectedVersion", 1, "decisions", successorApprovals)).statusCode());
+        } finally {
+            f.sql.execute("DROP TRIGGER t38_fixture_reject_witness ON public.hidra_topology_pressure_decision_witness");
+            f.sql.execute("DROP FUNCTION public.t38_fixture_reject_witness()");
+        }
+        for (var approval : successorApprovals) {
+            assertEquals(0, f.sql.queryForObject("SELECT count(*) FROM public.hidra_audit_event WHERE workflow_action_id=?",
+                    Integer.class, approval.get("actionId")));
+            assertEquals(1, f.sql.queryForObject("SELECT count(*) FROM public.hidra_workflow_action WHERE id=?",
+                    Integer.class, approval.get("actionId")));
+        }
+        assertEquals(original, field(r.get(t38Effective(topology, f.company, condition, replacedAt), reader), "revisionId"));
+        JsonNode updated = publishT38(r, author, root, f.company, second, 1, successorApprovals);
+        String successor = field(updated, "revisionId");
+        assertFalse(field(updated, "terminationId").isBlank());
+        assertEquals(original, field(r.get(t38Effective(topology, f.company, condition, replacedAt.minusNanos(1000)), reader),
+                "revisionId"));
+        assertEquals(successor, field(r.get(t38Effective(topology, f.company, condition, replacedAt), reader), "revisionId"));
+
+        String third = id();
+        JsonNode withdrawal = submitT38(r, author, root, f.company, condition, receipt, third, 2,
+                Map.of("kind", "WITHDRAWAL", "predecessorId", successor, "effectiveAt", withdrawnAt.toString()));
+        var withdrawalApprovals = t38Approve(f, r, author, reviewer, review, withdrawal);
+        publishT38(r, author, root, f.company, third, 2, withdrawalApprovals);
+        assertEquals("UNAVAILABLE", field(r.get(t38Effective(topology, f.company, condition, withdrawnAt), reader), "status"));
+        assertEquals(successor, field(r.get(t38Effective(topology, f.company, condition, replacedAt), reader), "revisionId"));
+
+        String firstCompeting = id();
+        String secondCompeting = id();
+        var change = Map.of("kind", "INITIAL", "pressure", t38Pressure("57", withdrawnAt.plusSeconds(1)));
+        var firstPending = submitT38(r, author, root, f.company, condition, receipt, firstCompeting, 3, change);
+        var secondPending = submitT38(r, author, root, f.company, condition, receipt, secondCompeting, 3, change);
+        var firstDecision = t38Approve(f, r, author, reviewer, review, firstPending);
+        var secondDecision = t38Approve(f, r, author, reviewer, review, secondPending);
+        try (var workers = java.util.concurrent.Executors.newVirtualThreadPerTaskExecutor()) {
+            var start = new java.util.concurrent.CountDownLatch(1);
+            var left = workers.submit(() -> {
+                start.await();
+                return r.send("POST", root + "/" + firstCompeting + "/publication", author,
+                        Map.of("companyPartyId", f.company, "expectedVersion", 3, "decisions", firstDecision));
+            });
+            var right = workers.submit(() -> {
+                start.await();
+                return r.send("POST", root + "/" + secondCompeting + "/publication", author,
+                        Map.of("companyPartyId", f.company, "expectedVersion", 3, "decisions", secondDecision));
+            });
+            start.countDown();
+            var one = left.get();
+            var two = right.get();
+            assertEquals(List.of(200, 409), java.util.stream.Stream.of(one, two).map(response -> response.statusCode())
+                    .sorted().toList(), () -> one.body() + " | " + two.body());
+        }
+        assertEquals(1, f.sql.queryForObject("""
+                SELECT count(*) FROM public.hidra_topology_pressure_decision_publication WHERE request_id IN (?,?)
+                """, Integer.class, java.util.UUID.fromString(firstCompeting), java.util.UUID.fromString(secondCompeting)));
+        f.sql.update("""
+                UPDATE public.hidra_identity_user_permission_grant SET status='REVOKED', revoked_at=clock_timestamp()
+                WHERE user_id=? AND permission_id='t38_pressure_publish'
+                """, f.author);
+        try {
+            assertEquals(404, r.send("POST", root + "/" + first + "/publication", author,
+                    Map.of("companyPartyId", f.company, "expectedVersion", 0, "decisions", decision)).statusCode());
+        } finally {
+            f.permit(f.author, "topology:pressure-restriction:publish", "OPERATING_PRESSURE_RESTRICTION",
+                    "PIPELINE_SYSTEM", f.pipeline);
+        }
+        assertEquals(404, r.send("GET", query(root + "/" + first, "companyPartyId", f.foreignCompany),
+                author, null).statusCode());
+        return new T38Proof(evidencePath, decision.getFirst().get("actionId"),
+                field(proof.path("decisions").get(0), "auditEventId"));
+    }
+
+    private static Map<String,String> t38FirstApproval(Gz2SignedWorkflowFixture f, Gz2SignedWorkflowFixture.Runtime r,
+            String author, String reviewer, Gz2SignedWorkflowFixture.Review review, JsonNode submission) throws Exception {
+        var candidate = submission.path("candidates").get(0);
+        String candidateId = field(candidate, "candidateId");
+        String correlation = id();
+        var start = Map.of("definitionId", review.definition(), "definitionVersion", 1,
+                "workflowPurposeId", review.purpose(), "targetModule", "topology", "targetTypeId", review.type(),
+                "targetId", candidateId, "targetCodeSnapshot", field(candidate, "workflowLocator"),
+                "currentStepId", review.step(), "startedByActorId", f.author, "correlationId", correlation);
+        String instance = field(r.json("POST", "/api/v1/workflow/instances", author, start, 200), "id");
+        String tasks = "/api/v1/workflow/tasks";
+        var self = r.send("POST", tasks, author, Map.of("instanceId", instance, "stepId", review.step(),
+                "assignedActorId", f.author, "taskLabelSnapshot", "Synthetic self-review rejected"));
+        assertTrue(self.statusCode() >= 400 && self.statusCode() < 500, self::body);
+        String task = field(r.json("POST", tasks, author, Map.of("instanceId", instance, "stepId", review.step(),
+                "assignedActorId", f.reviewer, "taskLabelSnapshot", "Synthetic restriction review"), 200), "id");
+        String taskPath = tasks + "/" + task;
+        String execute = taskPath + "/transitions/" + review.transition() + "/execute";
+        var command = Map.of("expectedTaskUpdatedAt", field(r.get(taskPath, reviewer), "updatedAt"),
+                "correlationId", correlation);
+        f.sql.update("""
+                UPDATE public.hidra_identity_user_permission_grant SET status='REVOKED', revoked_at=clock_timestamp()
+                WHERE user_id=? AND permission_id='t38_pressure_review'
+                """, f.reviewer);
+        try {
+            var denied = r.send("POST", execute, reviewer, command);
+            assertTrue(denied.statusCode() == 403 || denied.statusCode() == 404, denied::body);
+        } finally {
+            f.permit(f.reviewer, "topology:pressure-restriction:review", "OPERATING_PRESSURE_RESTRICTION",
+                    "PIPELINE_SYSTEM", f.pipeline);
+        }
+        var approved = r.json("POST", execute, reviewer, command, 200);
+        assertEquals("APPROVE", field(approved, "decision"));
+        return Map.of("candidateId", candidateId, "instanceId", instance, "taskId", task,
+                "actionId", field(approved, "actionId"));
+    }
+
+    private static Map<String,String> t38Pressure(String value, Instant start) {
+        return Map.of("upperPressure", value, "unit", "bar", "basis", "GAUGE", "effectiveFrom", start.toString());
+    }
+
+    private static String t38Effective(String path, String company, String condition, Instant at) {
+        return query(path, "companyPartyId", company, "conditionCode", condition, "effectiveAt", at.toString());
+    }
+
+    private static JsonNode submitT38(Gz2SignedWorkflowFixture.Runtime r, String actor, String root, String company,
+            String condition, String receipt, String requestId, int version, Map<String,?> change) throws Exception {
+        return r.json("POST", root, actor, Map.of("requestId",requestId,"companyPartyId",company,
+                "conditionCode",condition,"baselineReceiptId",receipt,"expectedVersion",version,"change",change), 200);
+    }
+
+    private static JsonNode publishT38(Gz2SignedWorkflowFixture.Runtime r, String actor, String root, String company,
+            String requestId, int version, List<Map<String,String>> decisions) throws Exception {
+        return r.json("POST", root + "/" + requestId + "/publication", actor,
+                Map.of("companyPartyId",company,"expectedVersion",version,"decisions",decisions), 200);
+    }
+
+    private static List<Map<String,String>> t38Approve(Gz2SignedWorkflowFixture f, Gz2SignedWorkflowFixture.Runtime r,
+            String author, String reviewer, Gz2SignedWorkflowFixture.Review review, JsonNode submission) throws Exception {
+        var complete = new java.util.ArrayList<Map<String,String>>();
+        for (JsonNode candidate : submission.path("candidates")) {
+            String id = field(candidate, "candidateId");
+            var reference = new java.util.HashMap<>(workflowDecision(f, r, author, reviewer, review, "topology", id,
+                    field(candidate, "workflowLocator"), id()));
+            reference.put("candidateId", id);
+            complete.add(Map.copyOf(reference));
+        }
+        return List.copyOf(complete);
+    }
+
     /**
      * T36: the restrictive pressure value is NOT derived from design pressure or
      * baseline approval. Synthetic, independent signed Workflow approval plus
@@ -262,6 +467,14 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
                   company_party_id,condition_code,pressure_unit,recorded_at)
                 VALUES (?,'NOMINAL','bar',clock_timestamp())
                 """,f.company);
+
+        f.sql.execute("GRANT SELECT ON " + tables + " TO gz2_publication");
+        for (String operation : List.of("submit","publish","evidence-read")) {
+            f.permit(f.author,"topology:pressure-restriction:"+operation,"OPERATING_PRESSURE_RESTRICTION","PIPELINE_SYSTEM",f.pipeline);
+        }
+        f.permit(f.reviewer,"topology:pressure-restriction:review","OPERATING_PRESSURE_RESTRICTION","PIPELINE_SYSTEM",f.pipeline);
+        f.global(f.author,"topology:operating-constraints:execute","topology:operating-constraints:read");
+        f.global(f.reviewer,"topology:operating-constraints:execute","topology:operating-constraints:read");
 
         String revision=id();
         Instant initialFrom=now().minusSeconds(3600);

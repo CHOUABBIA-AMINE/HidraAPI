@@ -7703,3 +7703,18 @@ equality, backward compatibility, architecture, inventory and the
 existing PostgreSQL shards. Retain the combined exact-SHA evidence
 artifact. No additional manual, browser, engineering, operational or
 SITE evidence is needed for T38 software completion. T39 is subsequent.
+
+### T38 source delivery — pressure restriction decisions and evidence
+
+The registered T38 implementation adds an exact-scope Topology owner route
+for submission, request readback, publication and evidence. The supported
+Workflow review retains its own decision transaction and requires live
+candidate-specific owner authority. Protected publication consumes only exact
+terminal approvals and commits the Audit witnesses, T36 outcomes and stream
+version in one transaction. The signed GZ2 journey exercises the initial
+restriction, distinct successor and retirement approvals, withdrawal, revoked
+authority, competing publications, rollback and restart evidence.
+
+T38 remains IN PROGRESS. Runtime OpenAPI and the physical dictionary require
+reconciliation from generated evidence. Acceptance requires the registered
+exact-final-SHA Full Verification Gate.

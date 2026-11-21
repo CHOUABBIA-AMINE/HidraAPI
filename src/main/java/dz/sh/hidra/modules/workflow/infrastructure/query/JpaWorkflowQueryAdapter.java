@@ -221,7 +221,11 @@ public class JpaWorkflowQueryAdapter implements WorkflowQueryUseCase, Manufactur
                 && currentConfiguration != null
                 && currentConfiguration.currentInstanceConfiguration(instance.definitionId(),
                     instance.definitionVersion(), instance.targetModule(), instance.targetTypeId(),
-                    instance.workflowPurposeId());
+                    instance.workflowPurposeId())
+                && (!"topology".equals(instance.targetModule()) || instance.targetCodeSnapshot() == null
+                    || !instance.targetCodeSnapshot().startsWith("t36-v1:")
+                    || ownership.pressureReviewAllowed(instance.targetModule(), instance.targetId(),
+                        instance.targetCodeSnapshot(), instance.targetTypeId(), actorReference, currentConfiguration));
         Set<String> permissions = effectivePermissions == null ? Set.of() : effectivePermissions;
         return entityManager.createQuery(
                         "select e from WorkflowTransitionJpaEntity e where e.definitionId = :definition and e.fromStepId = :step order by e.id",

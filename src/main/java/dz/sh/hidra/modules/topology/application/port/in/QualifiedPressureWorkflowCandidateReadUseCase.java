@@ -28,4 +28,6 @@ public interface QualifiedPressureWorkflowCandidateReadUseCase {
      * the result is never an approved operating pressure.
      */
     Optional<String> validatedLocator(UUID candidateId);
+    boolean permitsStart(UUID candidateId, String actor);
+    boolean permitsReview(UUID candidateId, String actor);
 }

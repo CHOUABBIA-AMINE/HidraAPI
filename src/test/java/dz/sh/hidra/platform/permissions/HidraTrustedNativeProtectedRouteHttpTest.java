@@ -97,6 +97,25 @@ class HidraTrustedNativeProtectedRouteHttpTest {
  @AfterEach void clearAuthentication() {
    SecurityContextHolder.clearContext();
  }
+ @Test void t36QualifiedOperatingConstraintsUseOrdinaryRouteAuthorizationOnly() {
+   var registry = new HidraTrustedNativeProtectedRouteRegistry();
+   assertEquals(159,registry.candidates().size());
+   assertTrue(registry.candidates().stream().noneMatch(r ->
+        r.pattern().startsWith("/api/v1/topology/operating-constraints/")));
+   try {
+      var ctrl=new dz.sh.hidra.modules.topology.api.rest.controller.QualifiedOperatingConstraintController(
+          org.mockito.Mockito.mock(dz.sh.hidra.modules.topology.application.port.in.QualifiedOperatingConstraintReadUseCase.class));
+      var naming=new HidraRoutePermissionNaming();
+      var type=dz.sh.hidra.modules.topology.api.rest.controller.QualifiedOperatingConstraintController.class;
+      var pipeline=new org.springframework.web.method.HandlerMethod(ctrl,
+          type.getMethod("pipeline",String.class,String.class,String.class,String.class));
+      var section=new org.springframework.web.method.HandlerMethod(ctrl,
+          type.getMethod("section",String.class,String.class,String.class,String.class,String.class));
+      for(var handler:List.of(pipeline,section))
+         assertEquals("topology:operating-constraints:read",
+             naming.permissionFor("/api/v1/topology/operating-constraints/pipelines/{pipelineId}","GET",handler));
+   } catch(NoSuchMethodException missing) { fail(missing); }
+ }
  @Test void t33RegionalAccessIsNotTrustedNativeDelegationOrPermissionBypass() {
    var registry = new HidraTrustedNativeProtectedRouteRegistry();
    assertEquals(159, registry.candidates().size());

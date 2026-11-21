@@ -1263,6 +1263,32 @@
     "owner": "topology",
     "purpose": "Topology-owned immutable station graph declarations with canonical byte integrity and exact history; storage does not establish company authorization or authenticated publication."
   },
+  "public.hidra_topology_t36_condition_policy": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261121_001__t36_qualified_pressure_restriction_projection.sql",
+      "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcQualifiedOperatingConstraintReadAdapter.java"
+    ],
+    "owner": "topology",
+    "purpose": "Owner-governed, initially empty per-company condition and pressure-unit admission vocabulary. Immutable and not a runtime or site configuration seeder."
+  },
+  "public.hidra_topology_t36_pressure_revision": {
+    "evidence": [
+      "src/main/java/dz/sh/hidra/modules/topology/domain/model/QualifiedPressureRestriction.java",
+      "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcQualifiedOperatingConstraintReadAdapter.java",
+      "src/main/resources/db/migration/V20261121_001__t36_qualified_pressure_restriction_projection.sql"
+    ],
+    "owner": "topology",
+    "purpose": "Append-only, typed exact-scope qualified upper operating-pressure declaration; separately validated T07 source, approved Workflow action and immutable Audit event witnesses. Not design pressure and not an operator command."
+  },
+  "public.hidra_topology_t36_pressure_termination": {
+    "evidence": [
+      "src/main/java/dz/sh/hidra/modules/topology/domain/model/QualifiedPressureRestriction.java",
+      "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcQualifiedOperatingConstraintReadAdapter.java",
+      "src/main/resources/db/migration/V20261121_001__t36_qualified_pressure_restriction_projection.sql"
+    ],
+    "owner": "topology",
+    "purpose": "Immutable, separately approved supersession and withdrawal event timeline. Historic effective records remain queryable, without automatic inheritance or arbitrary conflict preference."
+  },
   "public.hidra_workflow_custody_publication_policy": {
     "evidence": [
       "src/main/resources/db/migration/V20261027_005__workflow_custody_publication_policy.sql",

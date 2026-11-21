@@ -98,6 +98,9 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
                 Instant firstEffective = now();
                 JsonNode baseline = publishBaseline(fixture, runtime, author, reviewer, review, network, product, firstEffective, 0);
                 // T35 uses the real T07 receipt and fresh regional authorization.
+                String constraint = qualifiedT36(fixture, runtime, author, reviewer, dossierReader,
+                        dossierPipeline, baseline, network);
+                assertEquals("QUALIFIED", runtime.get(constraint, dossierReader).path("status").asText());
                 JsonNode firstDossierReceipt = runtime.get(dossierPath, dossierReader);
                 assertEquals(field(baseline, "receiptId"),
                         firstDossierReceipt.path("receiptId").asText());
@@ -220,6 +223,305 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
                     """,id(),employee,scope);
         }
         return pipe;
+    }
+
+    /**
+     * T36: the restrictive pressure value is NOT derived from design pressure or
+     * baseline approval. Synthetic, independent signed Workflow approval plus
+     * immutable Audit evidence are joined by the protected SQL admission trigger.
+     * No T36 application writer or runtime operating record is introduced.
+     */
+    private static String qualifiedT36(Gz2SignedWorkflowFixture f, Gz2SignedWorkflowFixture.Runtime r,
+            String authorToken, String reviewerToken, String readerToken, String pipe,
+            JsonNode baseline, JsonNode network) throws Exception {
+        String path = query("/api/v1/topology/operating-constraints/pipelines/" + pipe,
+                "companyPartyId", f.company, "conditionCode", "NOMINAL",
+                "effectiveAt", now().toString());
+        f.permit(f.reader, "topology:operating-constraints:read", "TOPOLOGY_OPERATING_CONSTRAINT", "GLOBAL", null);
+        f.permit(f.operator, "topology:operating-constraints:read", "TOPOLOGY_OPERATING_CONSTRAINT", "GLOBAL", null);
+        assertEquals("UNAVAILABLE", r.get(path, readerToken).path("status").asText());
+        assertTrue(java.util.Set.of(403,404).contains(r.send("GET",path,r.login(f.foreign),null).statusCode()));
+
+        // Explicit synthetic policy and the three read projections. The
+        // migrated runtime roles must not retain default INSERT/UPDATE/DELETE.
+        String tables="public.hidra_topology_t36_condition_policy,"
+                +"public.hidra_topology_t36_pressure_revision,"
+                +"public.hidra_topology_t36_pressure_termination";
+        f.sql.execute("REVOKE ALL ON " + tables + " FROM gz2_runtime,gz2_publication");
+        f.sql.execute("GRANT SELECT ON " + tables + " TO gz2_runtime");
+        f.sql.update("""
+                INSERT INTO public.hidra_topology_t36_condition_policy(
+                  company_party_id,condition_code,pressure_unit,recorded_at)
+                VALUES (?,'NOMINAL','bar',clock_timestamp())
+                """,f.company);
+
+        String revision=id();
+        var approval=f.review("topology","OPERATING_PRESSURE_RESTRICTION",
+                "OPERATING_PRESSURE_RESTRICTION_APPROVAL",false);
+        var decision=workflowDecision(f,r,authorToken,reviewerToken,approval,
+                "topology",revision,"t36-synthetic-only",id());
+        String auditType=f.catalog("audit","EVENT_TYPE","OPERATING_PRESSURE_RESTRICTION_APPROVED");
+        String auditCategory=f.catalog("audit","EVENT_CATEGORY","T36_SYNTHETIC_ENGINEERING");
+        String auditId=id();
+        java.sql.Timestamp acted=f.sql.queryForObject(
+                "SELECT acted_at FROM public.hidra_workflow_action WHERE id=?",
+                java.sql.Timestamp.class,decision.get("actionId"));
+        f.sql.update("""
+                INSERT INTO public.hidra_audit_event(
+                  id,event_type_id,event_category_id,source_module,action_code,
+                  event_status,actor_id,actor_type,target_module,target_type,
+                  target_id,operation,workflow_instance_id,workflow_task_id,
+                  workflow_action_id,occurred_at,recorded_at)
+                VALUES (?,?,?,'topology','APPROVE_OPERATING_PRESSURE_RESTRICTION',
+                  'RECORDED',?,'HUMAN','topology','OPERATING_PRESSURE_RESTRICTION',
+                  ?,'APPROVE',?,?,?, ?,clock_timestamp())
+                """,auditId,auditType,auditCategory,f.reviewer,revision,
+                decision.get("instanceId"),decision.get("taskId"),decision.get("actionId"),acted);
+        // Admission must reject an unrelated or unapproved Workflow action.
+        assertThrows(org.springframework.dao.DataAccessException.class,()->f.sql.update("""
+                INSERT INTO public.hidra_topology_t36_pressure_revision(
+                  revision_id,company_party_id,pipeline_id,section_id,pipeline_system_id,
+                  condition_code,upper_pressure,pressure_unit,pressure_basis,effective_from,
+                  recorded_at,baseline_receipt_id,baseline_manifest_digest,
+                  engineering_source_revision,decision_action_id,audit_event_id,
+                  submitted_by,reviewed_by,approved_at)
+                VALUES (?,?,?,?,?,'NOMINAL',68,'bar','GAUGE',?,
+                   clock_timestamp(),?,?,?,?,?,?,?,?)
+                """,java.util.UUID.fromString(id()),f.company,pipe,"",f.pipeline,
+                java.sql.Timestamp.from(now().minusSeconds(10)),
+                java.util.UUID.fromString(field(baseline,"receiptId")),
+                field(baseline.path("submission"),"canonicalSha256"),
+                field(network,"revisionId"),id(),auditId,f.author,f.reviewer,acted));
+
+        f.sql.update("""
+                INSERT INTO public.hidra_topology_t36_pressure_revision(
+                  revision_id,company_party_id,pipeline_id,section_id,pipeline_system_id,
+                  condition_code,upper_pressure,pressure_unit,pressure_basis,effective_from,
+                  recorded_at,baseline_receipt_id,baseline_manifest_digest,
+                  engineering_source_revision,decision_action_id,audit_event_id,
+                  submitted_by,reviewed_by,approved_at)
+                VALUES (?,?,?,?,?,'NOMINAL',68,'bar','GAUGE',?,
+                  clock_timestamp(),?,?,?,?,?,?,?,?)
+                """,java.util.UUID.fromString(revision),f.company,pipe,"",f.pipeline,
+                java.sql.Timestamp.from(now().minusSeconds(10)),
+                java.util.UUID.fromString(field(baseline,"receiptId")),
+                field(baseline.path("submission"),"canonicalSha256"),
+                field(network,"revisionId"),decision.get("actionId"),auditId,
+                f.author,f.reviewer,acted);
+        JsonNode qualified=r.get(path,readerToken);
+        assertEquals("QUALIFIED",qualified.path("status").asText());
+        assertEquals(revision,qualified.path("revisionId").asText());
+        assertEquals(0,new java.math.BigDecimal("68").compareTo(qualified.path("upperPressure").decimalValue()));
+        assertEquals("GAUGE",qualified.path("pressureBasis").asText());
+        assertEquals("bar",qualified.path("pressureUnit").asText());
+        assertEquals(field(baseline,"receiptId"),qualified.path("sourceBaselineReceiptId").asText());
+        assertFalse(qualified.hasNonNull("auditEventId"));
+        assertTrue(r.send("GET",path,readerToken,null).headers()
+                .firstValue("cache-control").orElse("").contains("no-store"));
+        // A canonical exact section is NOT a child-copy of its pipeline limit.
+        String nodeA=id(),nodeB=id(),section=id();
+        f.sql.update("""
+                INSERT INTO public.hidra_topology_node(
+                 id,code,node_type,status,created_at,updated_at)
+                VALUES(?,?,'JUNCTION','ACTIVE',now(),now()),
+                      (?,?,'JUNCTION','ACTIVE',now(),now())
+                """,nodeA,nodeA,nodeB,nodeB);
+        f.sql.update("""
+                INSERT INTO public.hidra_topology_pipeline_segment(
+                 id,pipeline_id,code,segment_type,from_node_id,to_node_id,
+                 flow_direction,status,created_at,updated_at)
+                VALUES(?,?,'T36-GZ2-SECTION','PIPE',?,?,'FROM_TO','ACTIVE',now(),now())
+                """,section,pipe,nodeA,nodeB);
+        f.permit(f.reader,"topology:regional-resource:read",
+                "TOPOLOGY_REGIONAL_RESOURCE","PIPELINE_SEGMENT",section);
+        String sectionPath=query("/api/v1/topology/operating-constraints/pipelines/" + pipe
+                + "/sections/" + section,"companyPartyId",f.company,
+                "conditionCode","NOMINAL","effectiveAt",now().toString());
+        assertEquals("UNAVAILABLE",r.get(sectionPath,readerToken).path("status").asText(),
+                "Pipeline limits do not inherit into sections");
+
+        // The section receives a DIFFERENT signed human decision and exact Audit
+        // witness. A section restriction is qualified only for its own target.
+        String sectionRevision=id();
+        var sectionDecision=workflowDecision(f,r,authorToken,reviewerToken,approval,
+                "topology",sectionRevision,"t36-section-synthetic-only",id());
+        String sectionAudit=id();
+        java.sql.Timestamp sectionApproved=f.sql.queryForObject(
+                "SELECT acted_at FROM public.hidra_workflow_action WHERE id=?",
+                java.sql.Timestamp.class,sectionDecision.get("actionId"));
+        f.sql.update("""
+                INSERT INTO public.hidra_audit_event(
+                 id,event_type_id,event_category_id,source_module,action_code,
+                 event_status,actor_id,actor_type,target_module,target_type,target_id,
+                 operation,workflow_instance_id,workflow_task_id,workflow_action_id,
+                 occurred_at,recorded_at)
+                VALUES(?,?,?,'topology','APPROVE_OPERATING_PRESSURE_RESTRICTION',
+                  'RECORDED',?,'HUMAN','topology','OPERATING_PRESSURE_RESTRICTION',
+                  ?,'APPROVE',?,?,?, ?,clock_timestamp())
+                """,sectionAudit,auditType,auditCategory,f.reviewer,sectionRevision,
+                sectionDecision.get("instanceId"),sectionDecision.get("taskId"),
+                sectionDecision.get("actionId"),sectionApproved);
+        f.sql.update("""
+                INSERT INTO public.hidra_topology_t36_pressure_revision(
+                  revision_id,company_party_id,pipeline_id,section_id,pipeline_system_id,
+                  condition_code,upper_pressure,pressure_unit,pressure_basis,effective_from,
+                  recorded_at,baseline_receipt_id,baseline_manifest_digest,
+                  engineering_source_revision,decision_action_id,audit_event_id,
+                  submitted_by,reviewed_by,approved_at)
+                VALUES(?,?,?,?,?,'NOMINAL',54,'bar','GAUGE',?,
+                  clock_timestamp(),?,?,?,?,?,?,?,?)
+                """,java.util.UUID.fromString(sectionRevision),f.company,pipe,section,f.pipeline,
+                java.sql.Timestamp.from(now().minusSeconds(10)),
+                java.util.UUID.fromString(field(baseline,"receiptId")),
+                field(baseline.path("submission"),"canonicalSha256"),
+                field(network,"revisionId"),sectionDecision.get("actionId"),sectionAudit,
+                f.author,f.reviewer,sectionApproved);
+        assertEquals("QUALIFIED",r.get(sectionPath,readerToken).path("status").asText());
+        assertEquals(sectionRevision,r.get(sectionPath,readerToken).path("revisionId").asText());
+        assertEquals(0,new java.math.BigDecimal("54").compareTo(
+                r.get(sectionPath,readerToken).path("upperPressure").decimalValue()));
+        assertEquals(revision,r.get(path,readerToken).path("revisionId").asText(),
+                "Section restriction must not replace pipeline restriction");
+        assertEquals(404,r.send("GET",sectionPath.replace("/pipelines/"+pipe+"/",
+                "/pipelines/"+id()+"/"),readerToken,null).statusCode());
+
+        // Two authorized restriction revisions and two separately approved
+        // timeline events. A second independent restriction exposes CONFLICT,
+        // without leaking either pressure value or candidate count.
+        Instant changeAt=now().plusSeconds(3600);
+        String successor=id();
+        var nextWitness=t36Witness(f,r,authorToken,reviewerToken,approval,successor,
+                "OPERATING_PRESSURE_RESTRICTION_APPROVED",
+                "APPROVE_OPERATING_PRESSURE_RESTRICTION");
+        t36Revision(f,pipe,"",successor,revision,baseline,network,changeAt,
+                null,"62",nextWitness);
+        String supersession=id();
+        var supersessionWitness=t36Witness(f,r,authorToken,reviewerToken,approval,supersession,
+                "OPERATING_PRESSURE_RESTRICTION_SUPERSEDED",
+                "SUPERSEDE_OPERATING_PRESSURE_RESTRICTION");
+        t36Termination(f,pipe,supersession,revision,"SUPERSEDE",successor,
+                changeAt,baseline,network,supersessionWitness);
+        String futurePath=query("/api/v1/topology/operating-constraints/pipelines/" + pipe,
+                "companyPartyId",f.company,"conditionCode","NOMINAL",
+                "effectiveAt",changeAt.plusSeconds(10).toString());
+        assertEquals(successor,r.get(futurePath,readerToken).path("revisionId").asText());
+        assertEquals(revision,r.get(path,readerToken).path("revisionId").asText(),
+                "Supersession must not rewrite the earlier effective revision");
+
+        String competitor=id();
+        var competingWitness=t36Witness(f,r,authorToken,reviewerToken,approval,competitor,
+                "OPERATING_PRESSURE_RESTRICTION_APPROVED",
+                "APPROVE_OPERATING_PRESSURE_RESTRICTION");
+        t36Revision(f,pipe,"",competitor,null,baseline,network,changeAt.plusSeconds(20),
+                changeAt.plusSeconds(120),"58",competingWitness);
+        String conflictPath=query("/api/v1/topology/operating-constraints/pipelines/" + pipe,
+                "companyPartyId",f.company,"conditionCode","NOMINAL",
+                "effectiveAt",changeAt.plusSeconds(60).toString());
+        var conflict=r.get(conflictPath,readerToken);
+        assertEquals("CONFLICT",conflict.path("status").asText());
+        assertTrue(conflict.path("upperPressure").isNull()
+                || conflict.path("upperPressure").isMissingNode());
+        assertTrue(conflict.path("revisionId").isNull()
+                || conflict.path("revisionId").isMissingNode());
+
+        String withdrawal=id();
+        var withdrawalWitness=t36Witness(f,r,authorToken,reviewerToken,approval,withdrawal,
+                "OPERATING_PRESSURE_RESTRICTION_WITHDRAWN",
+                "WITHDRAW_OPERATING_PRESSURE_RESTRICTION");
+        t36Termination(f,pipe,withdrawal,successor,"WITHDRAW",null,
+                changeAt.plusSeconds(300),baseline,network,withdrawalWitness);
+        String withdrawnPath=query("/api/v1/topology/operating-constraints/pipelines/" + pipe,
+                "companyPartyId",f.company,"conditionCode","NOMINAL",
+                "effectiveAt",changeAt.plusSeconds(301).toString());
+        assertEquals("UNAVAILABLE",r.get(withdrawnPath,readerToken).path("status").asText(),
+                "Withdrawn restrictions must never resurrect");
+        assertEquals(successor,r.get(futurePath,readerToken).path("revisionId").asText(),
+                "Withdrawal must preserve earlier qualified historical resolution");
+
+        // The operator has a route grant but not the qualified T07 source.
+        assertEquals("UNAVAILABLE",r.get(path,r.login(f.operator)).path("status").asText());
+        var appJdbc=new org.springframework.jdbc.core.JdbcTemplate(
+                new org.springframework.jdbc.datasource.DriverManagerDataSource(
+                        f.postgres.getJdbcUrl(),"gz2_runtime","synthetic-gz2-runtime"));
+        assertThrows(org.springframework.dao.DataAccessException.class,()->
+                appJdbc.update("DELETE FROM public.hidra_topology_t36_pressure_revision WHERE revision_id=?",
+                        java.util.UUID.fromString(revision)));
+        assertThrows(org.springframework.dao.DataAccessException.class,()->
+                f.sql.update("UPDATE public.hidra_topology_t36_pressure_revision SET upper_pressure=10 WHERE revision_id=?",
+                        java.util.UUID.fromString(revision)));
+        return path;
+    }
+
+    private record T36Witness(String actionId,String auditId,java.sql.Timestamp reviewedAt) { }
+
+    private static T36Witness t36Witness(Gz2SignedWorkflowFixture f,
+            Gz2SignedWorkflowFixture.Runtime runtime,String authorToken,String reviewerToken,
+            Gz2SignedWorkflowFixture.Review workflow,String target,String eventCode,
+            String actionCode) throws Exception {
+        var decision=workflowDecision(f,runtime,authorToken,reviewerToken,workflow,
+                "topology",target,"t36-independent-synthetic-decision",id());
+        String auditEvent=id();
+        String eventType=f.catalog("audit","EVENT_TYPE",eventCode);
+        String category=f.catalog("audit","EVENT_CATEGORY","T36_SYNTHETIC_ENGINEERING");
+        java.sql.Timestamp acted=f.sql.queryForObject(
+                "SELECT acted_at FROM public.hidra_workflow_action WHERE id=?",
+                java.sql.Timestamp.class,decision.get("actionId"));
+        f.sql.update("""
+                INSERT INTO public.hidra_audit_event(
+                 id,event_type_id,event_category_id,source_module,action_code,
+                 event_status,actor_id,actor_type,target_module,target_type,target_id,
+                 operation,workflow_instance_id,workflow_task_id,workflow_action_id,
+                 occurred_at,recorded_at)
+                VALUES(?,?,?,'topology',?,
+                  'RECORDED',?,'HUMAN','topology','OPERATING_PRESSURE_RESTRICTION',
+                  ?,'APPROVE',?,?,?, ?,clock_timestamp())
+                """,auditEvent,eventType,category,actionCode,f.reviewer,target,
+                decision.get("instanceId"),decision.get("taskId"),decision.get("actionId"),acted);
+        return new T36Witness(decision.get("actionId"),auditEvent,acted);
+    }
+
+    private static void t36Revision(Gz2SignedWorkflowFixture f,String pipe,
+            String section,String revision,String supersedes,JsonNode baseline,JsonNode network,
+            Instant from,Instant until,String pressure,T36Witness decision) {
+        f.sql.update("""
+                INSERT INTO public.hidra_topology_t36_pressure_revision(
+                 revision_id,company_party_id,pipeline_id,section_id,pipeline_system_id,
+                 condition_code,upper_pressure,pressure_unit,pressure_basis,
+                 effective_from,effective_until,recorded_at,baseline_receipt_id,
+                 baseline_manifest_digest,engineering_source_revision,decision_action_id,
+                 audit_event_id,submitted_by,reviewed_by,approved_at,supersedes_revision_id)
+                VALUES(?,?,?,?,?,'NOMINAL',?,'bar','GAUGE',?,?,clock_timestamp(),
+                 ?,?,?,?,?,?,?,?,?)
+                """,java.util.UUID.fromString(revision),f.company,pipe,section,f.pipeline,
+                new java.math.BigDecimal(pressure),java.sql.Timestamp.from(from),
+                until==null?null:java.sql.Timestamp.from(until),
+                java.util.UUID.fromString(field(baseline,"receiptId")),
+                field(baseline.path("submission"),"canonicalSha256"),
+                field(network,"revisionId"),decision.actionId(),decision.auditId(),
+                f.author,f.reviewer,decision.reviewedAt(),
+                supersedes==null?null:java.util.UUID.fromString(supersedes));
+    }
+
+    private static void t36Termination(Gz2SignedWorkflowFixture f,String pipe,
+            String event,String retired,String kind,String successor,Instant effective,
+            JsonNode baseline,JsonNode network,T36Witness decision) {
+        f.sql.update("""
+                INSERT INTO public.hidra_topology_t36_pressure_termination(
+                 event_id,company_party_id,pipeline_id,section_id,pipeline_system_id,
+                 condition_code,retired_revision_id,event_kind,successor_revision_id,
+                 effective_at,recorded_at,baseline_receipt_id,baseline_manifest_digest,
+                 engineering_source_revision,decision_action_id,audit_event_id,
+                 submitted_by,reviewed_by,approved_at)
+                VALUES(?,?,?,?,?,'NOMINAL',?,?,?, ?,clock_timestamp(),
+                 ?,?,?,?,?,?,?,?)
+                """,java.util.UUID.fromString(event),f.company,pipe,"",f.pipeline,
+                java.util.UUID.fromString(retired),kind,
+                successor==null?null:java.util.UUID.fromString(successor),
+                java.sql.Timestamp.from(effective),
+                java.util.UUID.fromString(field(baseline,"receiptId")),
+                field(baseline.path("submission"),"canonicalSha256"),
+                field(network,"revisionId"),decision.actionId(),decision.auditId(),
+                f.author,f.reviewer,decision.reviewedAt());
     }
 
     private static void grantEngineering(Gz2SignedWorkflowFixture f) {

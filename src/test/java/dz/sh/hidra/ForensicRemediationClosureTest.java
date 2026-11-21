@@ -358,6 +358,19 @@ class ForensicRemediationClosureTest {
 
 
     /** T34 exact Topology consumer of Identity's current regional resource decision. */
+    @Test
+    void t36ImmutablePressureReadDoesNotDependOnForeignPersistence() throws Exception {
+        String file = java.nio.file.Files.readString(java.nio.file.Path.of(
+                "src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/"
+                + "JdbcQualifiedOperatingConstraintReadAdapter.java"));
+        org.junit.jupiter.api.Assertions.assertFalse(file.contains("hidra_workflow_")
+                || file.contains("hidra_audit_") || file.contains("hidra_integrity_"),
+                "T36 JDBC adapter must access only Topology-owned projection and canonical target");
+        org.junit.jupiter.api.Assertions.assertFalse(file.contains("INSERT INTO")
+                || file.contains("UPDATE public.") || file.contains("DELETE FROM"),
+                "T36 does not provide an application writer");
+    }
+
     private static boolean t34RegionalIdentityOwnerExport(String source, String imported) {
         String root = "dz.sh.hidra.modules.identity.application.contract.topology.TopologyRegionalAccessContract";
         if (!"dz.sh.hidra.modules.topology.application.service.RegionalTopologyMapApplicationService".equals(source)

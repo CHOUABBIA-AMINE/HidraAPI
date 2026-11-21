@@ -186,6 +186,38 @@ class ArchitectureGuardrailTest {
 
 
     /** T34: the scoped regional reader is the sole consumer of this exact Identity export. */
+    @Test
+    void t36ReadApplicationKeepsDecisionEvidenceBehindOwnerPorts() {
+        String app = "src/main/java/dz/sh/hidra/modules/topology/application/service/"
+                + "QualifiedOperatingConstraintReadApplicationService.java";
+        String domain = "src/main/java/dz/sh/hidra/modules/topology/domain/model/"
+                + "QualifiedPressureRestriction.java";
+        String resolver = "src/main/java/dz/sh/hidra/modules/topology/domain/service/"
+                + "QualifiedPressureRestrictionResolver.java";
+        for (String target : java.util.List.of(domain,resolver)) {
+            try {
+                String source = java.nio.file.Files.readString(java.nio.file.Path.of(target));
+                org.junit.jupiter.api.Assertions.assertFalse(source.contains("import org.springframework.")
+                        || source.contains("import jakarta.persistence.")
+                        || source.contains("import com.fasterxml.")
+                        || source.contains(".infrastructure.")
+                        || source.contains(".api.rest."), target);
+            } catch(java.io.IOException e) {
+                throw new AssertionError("Missing T36 domain source: " + target,e);
+            }
+        }
+        try {
+            String source = java.nio.file.Files.readString(java.nio.file.Path.of(app));
+            org.junit.jupiter.api.Assertions.assertFalse(source.contains("import dz.sh.hidra.modules."
+                    + "workflow.") || source.contains("import dz.sh.hidra.modules.audit.")
+                    || source.contains(".infrastructure.persistence."));
+            org.junit.jupiter.api.Assertions.assertTrue(source.contains("EngineeringBaselineReadUseCase"));
+            org.junit.jupiter.api.Assertions.assertTrue(source.contains("PipelineDossierReadUseCase"));
+        } catch(java.io.IOException e) {
+            throw new AssertionError("Missing T36 protected read orchestration",e);
+        }
+    }
+
     private static boolean isT34RegionalOwnerExport(String source, String target) {
         String consumer = "dz.sh.hidra.modules.topology.application.service.RegionalTopologyMapApplicationService";
         String root = "dz.sh.hidra.modules.identity.application.contract.topology.TopologyRegionalAccessContract";

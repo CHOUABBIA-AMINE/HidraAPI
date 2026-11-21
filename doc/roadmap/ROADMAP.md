@@ -7744,3 +7744,38 @@ trigger, runtime and acceptance boundaries.
 Runtime OpenAPI and database dictionary artifacts were unavailable after
 startup stopped. T38 remains IN PROGRESS pending artifact reconciliation
 and the final exact-SHA gate.
+
+### T38 CI #1354 transaction flush and OpenAPI schema isolation repair
+
+[CI #1354 attempt 1](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44949779050/attempts/1)
+on `51b14b96916e71a8536058a010b41e559223fd01` passed Java 21 unit and
+architecture, static validation and thirteen PostgreSQL shards.
+[PostgreSQL shard 1](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44949779050/job/136984931368)
+failed the new signed submission with SQLSTATE 25000 after the scalar
+final guard. T38 supplied an empty flush callback even though the
+Identity evaluation can queue JPA authorization decision writes in the
+owner transaction. The T38 service now invokes the storage port's shared
+entity manager flush in the executor's FLUSHING phase. The existing
+single scalar guard, rollback behavior and signed test assertions are
+preserved.
+
+The [API contract job](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44949779050/job/136984931328)
+generated and uploaded the runtime OpenAPI and physical catalog. Hosted
+backward compatibility passed, but strict snapshot equality failed and
+hosted dictionary equality was skipped. Inspection of the
+[OpenAPI artifact](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44949779050/artifacts/14725068180)
+found that T38 replaced the existing Planning `Request` component, used
+one `Publication` component for both the T38 command and receipt, and
+referenced an unrelated `Evidence` component. The existing T38 request
+and response DTO files now give each exposed component a distinct,
+pressure-restriction-specific name. HTTP routes and JSON fields are
+preserved. Do not promote the defective runtime snapshot.
+
+The [database artifact](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44949779050/artifacts/14724499800)
+contains 239 migrations, 471 JPA mappings, 623 relations and zero
+unresolved owners. Reconcile both canonical artifacts in the registered
+documentation follow-up after obtaining the corrected runtime contract.
+The repair uses the registered source commit message
+`feat(topology): govern pressure restriction decisions and evidence`.
+T38 remains IN PROGRESS until the exact reconciled SHA passes the Full
+Verification Gate.

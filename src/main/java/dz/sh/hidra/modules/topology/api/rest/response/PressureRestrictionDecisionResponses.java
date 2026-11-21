@@ -20,6 +20,7 @@
 package dz.sh.hidra.modules.topology.api.rest.response;
 
 import dz.sh.hidra.modules.topology.application.port.in.PressureRestrictionDecisionUseCase;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
@@ -27,8 +28,10 @@ import java.util.UUID;
 public final class PressureRestrictionDecisionResponses {
     private PressureRestrictionDecisionResponses() { }
 
+    @Schema(name = "PressureRestrictionCandidate")
     public record Candidate(UUID candidateId, String kind, String workflowLocator) { }
 
+    @Schema(name = "PressureRestrictionRequest")
     public record Request(UUID requestId, long expectedVersion, Instant submittedAt,
                           List<Candidate> candidates, Publication publication) {
         public static Request from(PressureRestrictionDecisionUseCase.RequestView source) {
@@ -40,6 +43,7 @@ public final class PressureRestrictionDecisionResponses {
         }
     }
 
+    @Schema(name = "PressureRestrictionPublicationReceipt")
     public record Publication(UUID requestId, long streamVersion, UUID revisionId, UUID terminationId, Instant recordedAt) {
         public static Publication from(PressureRestrictionDecisionUseCase.Published source) {
             return new Publication(source.requestId(), source.streamVersion(), source.revisionId(),
@@ -47,9 +51,11 @@ public final class PressureRestrictionDecisionResponses {
         }
     }
 
+    @Schema(name = "PressureRestrictionDecisionWitness")
     public record Decision(UUID candidateId, String instanceId, String taskId, String actionId,
                            String reviewerId, Instant decidedAt, String auditEventId) { }
 
+    @Schema(name = "PressureRestrictionDecisionEvidence")
     public record Evidence(Publication publication, List<Decision> decisions) {
         public static Evidence from(PressureRestrictionDecisionUseCase.EvidenceView source) {
             return new Evidence(Publication.from(source.publication()), source.decisions().stream()

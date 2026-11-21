@@ -239,7 +239,7 @@ public final class PressureRestrictionDecisionApplicationService implements Pres
 
     private <T> T protectedWrite(Supplier<T> work, AtomicReference<Guard> guard) {
         try {
-            return executor.executePublication(work, () -> { }, () -> {
+            return executor.executePublication(work, store::flush, () -> {
                 var expected = guard.get();
                 if (expected == null || !store.guard(expected.request(), expected.streamVersion())) throw new Conflict();
             });

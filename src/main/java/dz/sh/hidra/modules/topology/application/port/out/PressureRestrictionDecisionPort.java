@@ -54,6 +54,9 @@ public interface PressureRestrictionDecisionPort {
     /** Keep the canonical target and exact baseline source bound until transaction completion. */
     boolean lockSource(Scope scope, Source source);
 
+    /** Flush writes from all participants in the shared transaction before the final guard. */
+    void flush();
+
     /** Single scalar check executed during the protected executor's final guard phase. */
     boolean guard(StoredRequest request, long streamVersion);
 

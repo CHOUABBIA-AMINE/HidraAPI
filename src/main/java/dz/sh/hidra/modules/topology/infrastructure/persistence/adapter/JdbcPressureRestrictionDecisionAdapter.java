@@ -29,6 +29,7 @@ import dz.sh.hidra.modules.topology.domain.model.PressureRestrictionDecisionRequ
 import dz.sh.hidra.modules.topology.domain.model.PressureRestrictionDecisionRequest.Source;
 import dz.sh.hidra.modules.topology.domain.model.QualifiedPressureRestriction.Scope;
 import dz.sh.hidra.modules.topology.domain.model.QualifiedPressureWorkflowCandidate;
+import jakarta.persistence.EntityManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -47,10 +48,13 @@ public class JdbcPressureRestrictionDecisionAdapter implements PressureRestricti
             "SELECT request_id,expected_version,revision_candidate_id,termination_candidate_id "
             + "FROM public.hidra_topology_pressure_decision_request ";
     private final JdbcTemplate jdbc;
+    private final EntityManager entityManager;
     private final QualifiedOperatingConstraintReadPort candidates;
 
-    public JdbcPressureRestrictionDecisionAdapter(JdbcTemplate jdbc, QualifiedOperatingConstraintReadPort candidates) {
+    public JdbcPressureRestrictionDecisionAdapter(JdbcTemplate jdbc, EntityManager entityManager,
+                                                 QualifiedOperatingConstraintReadPort candidates) {
         this.jdbc = jdbc;
+        this.entityManager = entityManager;
         this.candidates = candidates;
     }
 
@@ -81,6 +85,11 @@ public class JdbcPressureRestrictionDecisionAdapter implements PressureRestricti
         return Boolean.TRUE.equals(jdbc.queryForObject("SELECT public.hidra_topology_t38_lock_source(?,?,?,?,?,?)",
                 Boolean.class, scope.companyPartyId(), source.pipelineSystemId(), scope.pipelineId(), section(scope),
                 source.receiptId(), source.manifestDigest()));
+    }
+
+    @Override
+    public void flush() {
+        entityManager.flush();
     }
 
     @Override

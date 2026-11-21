@@ -1239,9 +1239,9 @@
   ],
   "openapi": {
     "counts": {
-      "operations": 521,
-      "paths": 476,
-      "schemas": 553
+      "operations": 527,
+      "paths": 482,
+      "schemas": 565
     },
     "path": "doc/api/openapi.yaml",
     "prior_reviewed_provenance": {
@@ -2124,30 +2124,31 @@
       "zip_sha256": "141606a0d3db769003fe40e266282c6efd81b6688d5fdfdb90bfadb826b786db"
     },
     "provenance": {
-      "artifact_id": 14669750020,
+      "artifact_id": 14672980372,
       "artifact_member": "hidra-api.json",
-      "artifact_name": "hidra-api-openapi-eddb78cf823385d436808233b0ed5a7b11490165-44814796990-1-api-contract",
-      "compatibility_review": "CI #1338 artifact: six additive bearer-protected regional-map GET paths and one Regional Topology Map tag; no component schema additions. The runtime resolves existing legacy Topology map method operationIds with _1 suffix (and search_3); these exact generated metadata changes are included. The backward-compatibility step 13 passed. Reconstructed canonical Git blob cd9057bf45279b742f8fa82e9b563be6c44881cc matches the runtime artifact byte-for-byte after the repository's compact/sorted JSON canonicalization.",
+      "artifact_name": "hidra-api-openapi-d29ba957091b2751c29c1ef7e092e5466d0e49c1-44822044203-1-api-contract",
+      "compatibility_review": "CI #1340 attempt 1 produced six additive bearer-protected Pipeline Dossiers GET paths, twelve typed schemas, and one Pipeline Dossiers tag. All pre-existing operations and component schemas were preserved, and backward-compatibility step 13 succeeded. Canonical Git blob 1b3640156298969149c5015a93b4da3f653d9547 matches the canonicalized runtime artifact exactly; no inferred declarations.",
       "conclusion": "success",
-      "conclusion_scope": "Only runtime OpenAPI generation (step 9) and backward-compatibility (step 13) succeeded at CI #1338 attempt 1; the API contract job and overall CI failed. Strict canonical equality failed against the old snapshot and PostgreSQL shard 2 was blocked by a Maven 3.9.11 download/network failure before tests. No T34 or full-CI acceptance is implied.",
+      "conclusion_scope": "Only generated OpenAPI (step 9) and backward compatibility (step 13) passed at CI #1340. API lane failed strict snapshot equality and independent Java/architecture lane failed a T35 nested Context import guard; overall Full Verification Gate failed. No complete-CI acceptance is implied.",
       "failed_step": "Enforce canonical OpenAPI snapshot equality",
       "generation_step": "Publish deterministic OpenAPI contract",
       "generation_step_conclusion": "success",
+      "generation_step_number": 9,
       "job_conclusion": "failure",
-      "job_id": 136560226961,
-      "json_sha256": "1322a289c44ee042b5bf7be2c10b65d7e2f9bc609801e9b0f1503ddf7d797090",
+      "job_id": 136585091530,
+      "json_sha256": "6705f03317efef13f13150143d53e1bfd466b50a6383f5eff0b883dfdba921a3",
       "remaining_gates": [
-        "Fresh exact-final-SHA HidraAPI CI Full Verification Gate with all fourteen PostgreSQL shards, Java/architecture, runtime OpenAPI and strict physical dictionary equality",
-        "T34 remains IN PROGRESS until its registered signed-scope and graph-fixture acceptance evidence passes; T35 remains unselected."
+        "Fresh exact-final-SHA full CI including T35 signed PostgreSQL journeys, Java/architecture, runtime OpenAPI, strict physical dictionary equality and Full Verification Gate",
+        "T35 stays IN PROGRESS until successful exact-head CI evidence is recorded; T36 remains unselected."
       ],
       "run_attempt": 1,
-      "run_id": 44814796990,
-      "source_sha": "eddb78cf823385d436808233b0ed5a7b11490165",
+      "run_id": 44822044203,
+      "source_sha": "d29ba957091b2751c29c1ef7e092e5466d0e49c1",
       "workflow_conclusion": "failure",
-      "zip_sha256": "083945bfd68fd911ae561df50b756633715a56d4f096349437b36603e99c816f"
+      "zip_sha256": "0908655be797552f6eaa1e77af1400eac250be440589ddaa17415b08afd44729"
     },
-    "sha256": "c79a372cbafdd2baa1a41e5fae21eb924f380ce95cf3a01da0b606669a2a718e",
-    "source_sha": "eddb78cf823385d436808233b0ed5a7b11490165",
+    "sha256": "e955692f46356ea3ff9d5dbabcbedc2fb455ad9dc8a830efe4e202330dcacacd",
+    "source_sha": "d29ba957091b2751c29c1ef7e092e5466d0e49c1",
     "prior_reviewed_provenance_t32": {
       "artifact_id": 14617469900,
       "artifact_member": "hidra-api.json",
@@ -2205,6 +2206,29 @@
       "source_sha": "15dbae118b82803f4a38eece453149670faf0c5f",
       "workflow_conclusion": "failure",
       "zip_sha256": "449da1639cad286d43fe120fbfe0e63666c739aff781ce8082141633532f4481"
+    },
+    "prior_reviewed_provenance_t34": {
+      "artifact_id": 14669750020,
+      "artifact_member": "hidra-api.json",
+      "artifact_name": "hidra-api-openapi-eddb78cf823385d436808233b0ed5a7b11490165-44814796990-1-api-contract",
+      "compatibility_review": "CI #1338 artifact: six additive bearer-protected regional-map GET paths and one Regional Topology Map tag; no component schema additions. The runtime resolves existing legacy Topology map method operationIds with _1 suffix (and search_3); these exact generated metadata changes are included. The backward-compatibility step 13 passed. Reconstructed canonical Git blob cd9057bf45279b742f8fa82e9b563be6c44881cc matches the runtime artifact byte-for-byte after the repository's compact/sorted JSON canonicalization.",
+      "conclusion": "success",
+      "conclusion_scope": "Only runtime OpenAPI generation (step 9) and backward-compatibility (step 13) succeeded at CI #1338 attempt 1; the API contract job and overall CI failed. Strict canonical equality failed against the old snapshot and PostgreSQL shard 2 was blocked by a Maven 3.9.11 download/network failure before tests. No T34 or full-CI acceptance is implied.",
+      "failed_step": "Enforce canonical OpenAPI snapshot equality",
+      "generation_step": "Publish deterministic OpenAPI contract",
+      "generation_step_conclusion": "success",
+      "job_conclusion": "failure",
+      "job_id": 136560226961,
+      "json_sha256": "1322a289c44ee042b5bf7be2c10b65d7e2f9bc609801e9b0f1503ddf7d797090",
+      "remaining_gates": [
+        "Fresh exact-final-SHA HidraAPI CI Full Verification Gate with all fourteen PostgreSQL shards, Java/architecture, runtime OpenAPI and strict physical dictionary equality",
+        "T34 remains IN PROGRESS until its registered signed-scope and graph-fixture acceptance evidence passes; T35 remains unselected."
+      ],
+      "run_attempt": 1,
+      "run_id": 44814796990,
+      "source_sha": "eddb78cf823385d436808233b0ed5a7b11490165",
+      "workflow_conclusion": "failure",
+      "zip_sha256": "083945bfd68fd911ae561df50b756633715a56d4f096349437b36603e99c816f"
     }
   },
   "register": "doc/governance/DOCUMENT_REGISTER.md",

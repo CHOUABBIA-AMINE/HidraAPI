@@ -7222,3 +7222,39 @@ development-software completion state. T37 and T38 remain unselected.
 **Approval publication boundary.** This decision is documentation-only; it
 registers the owner's earlier approval and the clarified configurable authority
 model. It is not an implementation commit, runtime qualification or CI pass.
+
+### T36 CI #1346 repair — 2026-11-21
+
+[HidraAPI CI #1346 attempt 1](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44897817149/attempts/1)
+failed on exact SHA `301e51e44a66df20dad48d5e9483362e10421f6d`.
+[PostgreSQL shard 1](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44897817149/job/136827132365)
+reached the T36 signed qualification fixture and errored during the valid
+revision insert. PostgreSQL reported that trigger record NEW had no
+`event_id` field. The shared publication guard selected `revision_id` or
+`event_id` in one SQL CASE expression, which resolves both field references
+against the current trigger row type. Static validation, Java 21
+unit/architecture, and the other thirteen PostgreSQL shards passed.
+[Documentation Validation #1197](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44897817072)
+also passed.
+
+The [API contract and dictionary lane](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44897817149/job/136827132086)
+passed strict OpenAPI equality and failed strict dictionary equality.
+Its [migrated catalog artifact](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44897817149/artifacts/14703684858)
+describes the old guard body and 237 migrations. Dictionary rendering
+includes both the trigger function body and migration source inventory,
+so reconciliation requires the catalog from the repaired SHA.
+
+The bounded repair keeps the registered source message
+`feat(topology): resolve qualified operating pressure restrictions`.
+Add only
+`src/main/resources/db/migration/V20261121_003__t36_dispatch_publication_guard_by_row_type.sql`
+and this roadmap note. Replace the existing guard in place using
+procedural IF/ELSIF so only the relevant row identifier is accessed.
+Reject unexpected trigger tables. Retain the guard's owner, grants,
+security definer search path, both trigger bindings and all existing
+candidate, evidence, decision and payload comparisons. Keep every
+prior Flyway script and test assertion intact.
+
+T36 remains open pending the repaired signed PostgreSQL case, artifact
+reconciliation and one passing Full Verification Gate on the final
+reconciled SHA. T37 and T38 remain unselected.

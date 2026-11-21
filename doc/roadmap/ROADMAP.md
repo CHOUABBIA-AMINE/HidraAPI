@@ -145,7 +145,7 @@ recorded before T33 is selected.
 |---|---|---|---|---|---|
 | **T33 · Resolve regional employee access (G1)** | Identity with Organization and Topology | T32 closure and owner-approved regional authority policy | Resolve the authenticated employee and current typed resource scope using Identity grants and denies, effective Organization responsibilities and owner-issued Topology relationships. Define company, system, pipeline, section, facility and equipment inheritance and cross-region disclosure. | Signed HTTP and PostgreSQL evidence for two regional employees with different scopes, an unlinked employee, explicit deny, expired responsibility, revoked grant and foreign company. Resource decisions use current authority. | COMPLETED |
 | **T34 · Expose regional map and discovery (G2)** | Topology with Identity and Organization | T33 | Qualify or extend owner-backed layers, features, GeoJSON and search for regional users. Apply scope before pagination and counts, preserve authorized graph semantics and retain the separately protected legacy administrator path. | A regional employee discovers a permitted pipeline. A cross-region fixture proves scope-safe geometry, connections, features, search, totals and direct lookups, including after revocation. | COMPLETED |
-| **T35 · Qualify protected pipeline dossier reads (G3)** | Topology with engineering source owners | T33, T04–T07 | Qualify existing reads for a selected pipeline's design characteristics, route, kilometer points, sections, elevation, connections, installed equipment and published revision provenance. Extend a typed read only for a demonstrated gap. | A scoped client retrieves the agreed available facts with explicit units, source and version. Unavailable values are explicit. Restricted history and linked resource details require their own current authority. | IN PROGRESS |
+| **T35 · Qualify protected pipeline dossier reads (G3)** | Topology with engineering source owners | T33, T04–T07 | Qualify existing reads for a selected pipeline's design characteristics, route, kilometer points, sections, elevation, connections, installed equipment and published revision provenance. Extend a typed read only for a demonstrated gap. | A scoped client retrieves the agreed available facts with explicit units, source and version. Unavailable values are explicit. Restricted history and linked resource details require their own current authority. | COMPLETED |
 | **T36 · Resolve qualified operating constraints (G4)** | Approved engineering constraint owner, with Integrity for integrity-derived restrictions, Topology and Audit | T33, applicable T07 sources, owner decision on constraint authority | Resolve approved restrictions for an exact asset or section and effective instant. Preserve pressure basis, units, scope, operating conditions, source revision, qualification and authorized decision references. Use existing qualified sources where proven. | Synthetic cases cover applicability, approved effective and historical reads, supersession, withdrawal, unresolved conflicts, missing evidence and unauthorized scope. Design pressure and unqualified assessments are never returned as approved limits. | PLANNED |
 | **T37 · Qualify asset-scoped trusted observations (G5)** | Telemetry with Topology and Identity | T33, T08–T09 | Qualify authorized discovery of relevant commissioned points and trusted latest and historical readings for the selected asset. Preserve applicable binding revision, units, measurement source and time, quality, trust and freshness. | Prove a binding change, stale or unavailable readings, unit or binding incompatibility and revoked scope. Historical reads use the binding valid at the relevant time and enforce current read authority. | PLANNED |
 | **T38 · Govern restriction decisions and evidence (G6)** | Approved engineering constraint owner with Workflow, Audit, Identity and Organization | T33, T36, T28, T30 | Bind submission, independent review, approval, supersession and withdrawal to the exact restriction revision. Publish the effective owner outcome with exact authorized decision and audit references. Reuse supported Workflow and Audit contracts. | Prove approval and readback, self-review denial, revoked authority, stale version and invalid approval reuse. Decision and owner outcome preserve their applicable transaction guarantees, and audit evidence remains scope-safe. | PLANNED |
@@ -6999,3 +6999,165 @@ does not change the runtime API surface.
 all fourteen PostgreSQL shards, strict runtime OpenAPI, physical data dictionary equality,
 and the registered signed T35 dossier journey. This note is not a completed acceptance
 claim. T36 (G4) remains PLANNED/unselected with its own authority prerequisites.
+
+### Close T35 and prepare T36 qualified operating constraints — 2026-11-21
+
+**T35 (G3) — COMPLETED for registered development software.**
+[CI #1341 attempt 1](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44876980474/attempts/1)
+passed the [Full Verification Gate](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44876980474/job/136766217418)
+on `3bf4c40381126403208e28e641ec79988f394c45`.
+The [combined evidence](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44876980474/artifacts/14696772005)
+reports 4,547 tests across 610 classes, zero failures, errors or skips.
+All fourteen PostgreSQL shards, Java 21 unit/architecture and the API
+contract and dictionary lane passed. [Documentation Validation #1192](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44876980679)
+also passed on that exact SHA.
+
+**T36 (G4) — next in roadmap sequence, PLANNED pending the engineering
+authority decision.** T33 and applicable T07 software dependencies
+are complete. The roadmap requires identification of the engineering
+approval owner, admitted source and decision rules before T36 selection.
+This is a scope prerequisite. It is not extra acceptance evidence.
+No implementation commit is authorized by this preflight.
+
+#### Verified source and proposed owner decision
+
+`PipelineDossierController` exposes live design facts. Design pressure
+does not establish an approved operating maximum. The T07
+`EngineeringBaselineReadUseCase` establishes a published system-level
+baseline with immutable pins and scoped historical reads. Its approval
+qualifies that baseline, not an operating restriction. Integrity's
+`IntegrityAssessment` can contain approval and evidence references,
+but has no typed pressure basis, effective restriction timeline or
+restriction-bound approval. Manufacturer limits linked by installed
+characteristics describe equipment and do not qualify a pipeline limit.
+No existing typed authority for the requested resolution was identified.
+
+**Proposed activation decision.** Adopt Topology as software custodian
+of a read-only qualified pressure restriction projection. Name the
+engineering function authorized to approve, supersede and withdraw the
+one proposed first class, **upper operating pressure restriction** on
+an exact pipeline or section. Confirm the admissible T07-linked
+engineering source and how an independently authorized decision and
+audit reference bind the exact restriction revision. Integrity remains
+owner of any contributing assessment. Exclude integrity-derived limits
+from this first class unless the owner separately authorizes their
+approval dependency and evidence contract. Workflow and Audit retain
+decision and evidence ownership. The selected business authority is
+distinct from the proposed module placement.
+
+If a qualified upstream source and read contract are identified before
+activation, reuse them and re-register the storage rows of this ledger
+against the actual source. The candidate below assumes no existing
+qualified read model and stages one Topology-owned append-only
+projection. T36 delivers resolution against synthetic owner-qualified
+fixtures through PostgreSQL. T38 owns the supported publication,
+approval and withdrawal workflow. T36 adds no production writer,
+runtime seeder, or assertion that an operator may rely on fixture data.
+
+#### Candidate behavior, conditional on that decision
+
+Add `GET /api/v1/topology/operating-constraints/pipelines/{pipelineId}`
+and `GET /api/v1/topology/operating-constraints/pipelines/{pipelineId}/sections/{sectionId}`.
+Require canonical `companyPartyId`, explicit ISO UTC `effectiveAt`
+aligned to database microsecond precision, and an exact canonical
+`conditionCode` selected from the approved condition vocabulary. Use
+ordinary `topology:operating-constraints:read` plus current exact T33
+pipeline authority and, for a section, exact segment authority and
+verified pipeline membership. Establish source authorization through
+the existing T07 EXACT read with its own scoped current checks on source
+pins. Resolve system from verified Topology ancestry. Reject wrong
+receipt, digest, owner or scope evidence. A referenced source receipt is
+a provenance pin. A separate owner-qualified decision is required for
+the restriction. Recheck contributing proofs before response. Keep the
+T07 protected executor outside an enclosing new transaction. Use
+private, no-store cache headers, 400 for malformed inputs, 401/403 for
+authentication/route failure and equivalent 404 for denied, foreign,
+missing or wrong-parent target. Source inaccessibility does not
+disclose whether a hidden revision exists. No inheritance from a
+pipeline restriction to a section, or from a sibling, is assumed.
+
+Store exact company, pipeline, optional section, approved class and
+condition, immutable revision identity, source baseline receipt and
+digest, engineering source revision reference, decision and audit
+binding, owner, typed pressure value/unit/basis and half-open
+applicability window. Admitted values must be positive finite decimal
+quantities in the approved unit vocabulary with explicit GAUGE or
+ABSOLUTE basis. No conversion or cross-basis comparison is required.
+Record publication time separately from effective time. Each immutable
+qualification or termination event has an exact decision binding.
+A successor or withdrawal references the prior revision in the same
+scope/condition stream. Resolve the prior revision for instants before
+the successor/withdrawal takes effect; never resurrect a terminated
+revision. Exclude events not yet recorded at query time. Mutable row
+timestamps cannot rewrite historical applicability. Conflicts between
+independent qualifying records at the same effective instant fail
+closed. Never pick the highest, latest inserted or numerically tightest
+pressure as a substitute for an engineering decision.
+
+Return `QUALIFIED`, `UNAVAILABLE` or `CONFLICT` only after target
+authorization. QUALIFIED requires one coherent applicable authorized
+record and complete scope, qualification, source and decision binding.
+It returns explicit scope, condition, interval, value, unit, basis,
+revision and the authorized source/decision reference. Preserve audit
+binding internally; public audit IDs are omitted unless a separately
+protected owner contract grants them. UNAVAILABLE covers absent,
+withdrawn, mismatched or incomplete eligibility without source clues.
+CONFLICT has no candidates, counts or values and is exposed only where
+all conflicting records are independently disclosable. Otherwise
+return UNAVAILABLE with no value. Preserve existing T35 dossier,
+T07 baselines, all historical values and prior migration history.
+
+#### Conditional exact file ledger
+
+`M/` expands to `src/main/java/dz/sh/hidra/modules/topology/`.
+The following ledger applies only if the proposed owner/storage choice
+is adopted. Revalidate the Flyway sequence against activation HEAD.
+
+| Action | Path | Responsibility |
+|---|---|---|
+| CREATE | `M/domain/model/QualifiedPressureRestriction.java` | Immutable scope, applicability, pressure/basis/unit, qualification and evidence binding. Model exact termination references. Keep pure Java and enforce quantity, interval and scope invariants. |
+| CREATE | `M/domain/service/QualifiedPressureRestrictionResolver.java` | Resolve time windows and successor/withdrawal lineage for the exact condition. Return safe qualified, absent or conflict outcomes. No persistence or grant policy. |
+| CREATE | `M/application/port/in/QualifiedOperatingConstraintReadUseCase.java` | Exact pipeline/section point-in-time query and typed result. Include source and approved decision lineage without raw audit internals. |
+| CREATE | `M/application/port/out/QualifiedOperatingConstraintReadPort.java` | Query current canonical target membership and exact immutable candidate/event history by bounded key and instant. Include consistency recheck. Expose scalar facts only. |
+| CREATE | `M/application/service/QualifiedOperatingConstraintReadApplicationService.java` | Own read orchestration and authority ordering. Consume only the existing T33 Identity export and the same-module T07 protected read. Verify evidence bindings and revalidate target/source state before mapping. |
+| CREATE | `M/infrastructure/persistence/adapter/JdbcQualifiedOperatingConstraintReadAdapter.java` | Parameterized exact-scope reads of the owned projection and canonical Topology membership. No Workflow, Audit or Integrity table reads. No writer. |
+| CREATE | `M/api/rest/controller/QualifiedOperatingConstraintController.java` | Two ordinary protected GETs, exact IDs, explicit instant/condition validation, safe errors and private cache headers. Document final DTO and status semantics. |
+| CREATE | `M/api/rest/response/QualifiedOperatingConstraintResponse.java` | Closed response projection. Suppress pressure, revision and lineage on unavailable/conflict outcomes. Use exact non-floating decimal values. |
+| CREATE | `src/main/resources/db/migration/V20261121_001__t36_qualified_pressure_restriction_projection.sql` | Add Topology-owned revision and effective event storage and restricted read grants. Enforce exact scope keys and same-stream references, bounded quantity/basis/time constraints and immutable history. Add same-owner references where supported. Preserve role separation and prohibit app writes in T36. Store decision/audit references without foreign repository ownership. |
+| CREATE | `src/test/java/dz/sh/hidra/modules/topology/domain/service/QualifiedPressureRestrictionResolverTest.java` | Pure resolver coverage for temporal edges, no resurrection, exact conditions, pressure basis, unavailable evidence and ambiguous approvals. |
+| UPDATE | `src/test/java/dz/sh/hidra/qualification/Gz2SignedWorkflowNativeHttpPostgresIntegrationTest.java` | Reuse genuine T06/T07 source publications and synthetic explicit qualification fixtures. Verify real HTTP, fresh migrated DB, persisted history and separate route/target/source authorization. Keep existing assertions. |
+| UPDATE | `src/test/java/dz/sh/hidra/platform/permissions/HidraTrustedNativeProtectedRouteHttpTest.java` | Pin ordinary permission and verify the two new routes receive no trusted-native bypass. |
+| UPDATE | `src/test/java/dz/sh/hidra/ArchitectureGuardrailTest.java` | Admit the exact T36 application service and only the existing named T33 export types, preserving all private access denials. |
+| UPDATE | `src/test/java/dz/sh/hidra/ForensicRemediationClosureTest.java` | Mirror the same exact source/type allowance in the independent import scanner. |
+| UPDATE | `.github/ci-test-inventory.json` | Register added/changed test cases and exact source hashes in the applicable unit and PostgreSQL lanes. |
+| UPDATE | `.github/database-dictionary-ownership.json` | Register the new Topology relations and their migration references for strict dictionary generation. |
+| UPDATE | `doc/api/openapi.yaml` | Reconcile only from genuine hosted runtime artifacts. Preserve existing operations. |
+| UPDATE | `doc/database/DATA_DICTIONARY.md` | Promote strict generated PostgreSQL catalog output for the new owned projection. |
+| UPDATE | `.github/documentation-validation.json` | Capture exact runtime and catalog artifact provenance and hashes, preserving earlier entries. |
+| UPDATE | `doc/roadmap/ROADMAP.md` | Register the owner decision and final source envelope at activation. Append exact verification evidence and close G4 after the gate. |
+| DELETE | None | All existing data, APIs, published revisions and migration history are retained. |
+
+Candidate source message
+`feat(topology): resolve qualified operating pressure restrictions`.
+If artifact-based reconciliation is needed, use
+`docs(topology): reconcile T36 operating constraint contracts`.
+Confirm the final file ledger and exact message at activation.
+
+#### Single development-software acceptance gate after activation
+
+One passing HidraAPI CI Full Verification Gate on the **final reconciled
+implementation SHA** closes the admitted G4 class. Require signature-backed
+HTTP on a fresh migrated PostgreSQL database with a genuine protected
+T07 source plus synthetic exact revision/decision pairs. Check pipeline
+and section reads, unit and basis round-trip, condition mismatch,
+half-open boundaries, current and historical resolution, supersession,
+withdrawal without resurrection, overlapping approval conflict,
+incomplete evidence, unseen or independently denied sources, wrong
+parent/company and revoked scope. Prove direct writes by the runtime
+role and destructive mutation of immutable evidence are rejected.
+Show design pressure and approved assessments alone produce no qualified
+restriction. The same gate includes architecture, inventory, legacy
+regression, runtime OpenAPI compatibility and equality, and strict
+physical dictionary equality. The passing run and combined artifact
+suffice. No separate manual, browser, operational or site evidence is
+required to close the software task.

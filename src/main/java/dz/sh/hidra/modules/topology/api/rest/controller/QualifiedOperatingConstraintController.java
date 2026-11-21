@@ -45,6 +45,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Qualified Operating Constraints", description = "Owner-qualified read-only pressure restrictions; never design pressure")
 @RequestMapping("/api/v1/topology/operating-constraints/pipelines/{pipelineId}")
 public final class QualifiedOperatingConstraintController {
+    private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory
+            .getLogger(QualifiedOperatingConstraintController.class);
     private final QualifiedOperatingConstraintReadUseCase read;
     public QualifiedOperatingConstraintController(QualifiedOperatingConstraintReadUseCase read) {
         this.read = Objects.requireNonNull(read);
@@ -88,7 +90,10 @@ public final class QualifiedOperatingConstraintController {
         return error(HttpStatus.NOT_FOUND, "Resource unavailable");
     }
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ProblemDetail> invalid(IllegalArgumentException ignored) {
+    public ResponseEntity<ProblemDetail> invalid(IllegalArgumentException failure) {
+        var origin = java.util.Arrays.stream(failure.getStackTrace()).limit(10)
+                .map(StackTraceElement::toString).toList();
+        LOG.debug("T36 constraint read rejected ({}): {}", failure.getClass().getName(), origin);
         return error(HttpStatus.BAD_REQUEST, "Invalid qualified operating constraint request");
     }
     private static ResponseEntity<ProblemDetail> error(HttpStatus status, String message) {

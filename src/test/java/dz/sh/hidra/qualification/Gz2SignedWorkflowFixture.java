@@ -531,6 +531,8 @@ class Gz2SignedWorkflowFixture {
             launcher.environment().put("SPRING_FLYWAY_PASSWORD", postgres.getPassword());
             launcher.environment().put("HIDRA_PLATFORM_PERSISTENCE_PUBLICATION_PASSWORD", PUBLICATION_PASSWORD);
             launcher.environment().put("HIDRA_JWT_HMAC_SECRET", JWT_KEY);
+            launcher.environment().put(
+                    "LOGGING_LEVEL_DZ_SH_HIDRA_MODULES_TOPOLOGY_API_REST_CONTROLLER", "DEBUG");
             launcher.redirectErrorStream(true).redirectOutput(log.toFile());
             try {
                 child = launcher.start();
@@ -621,8 +623,11 @@ class Gz2SignedWorkflowFixture {
 
         JsonNode json(String method, String route, String token, Object body, int status) throws Exception {
             var response = send(method, route, token, body);
+            boolean t36BadRequest = response.statusCode() == 400
+                    && route.startsWith("/api/v1/topology/operating-constraints/");
             assertEquals(status, response.statusCode(), () -> method + " " + route + ": "
-                    + redact(response.body()) + (response.statusCode() >= 500 ? serverDiagnostics() : ""));
+                    + redact(response.body())
+                    + (response.statusCode() >= 500 || t36BadRequest ? serverDiagnostics() : ""));
             return JSON.readTree(response.body());
         }
 

@@ -7258,3 +7258,37 @@ prior Flyway script and test assertion intact.
 T36 remains open pending the repaired signed PostgreSQL case, artifact
 reconciliation and one passing Full Verification Gate on the final
 reconciled SHA. T37 and T38 remain unselected.
+
+### T36 CI #1347 dictionary reconciliation and section-read diagnostics — 2026-11-21
+
+[CI #1347 attempt 1](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44900526832/attempts/1)
+on `f499d8c8b94a580037f921924c9f1302f58801e8` passed static,
+Java 21 unit/architecture, 13 PostgreSQL shards and runtime OpenAPI
+equality. The signed scenario in
+[PostgreSQL shard 1](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44900526832/job/136835268987)
+got past the previously failing valid revision insert and pipeline
+qualification. It then expected HTTP 200 with UNAVAILABLE for a section
+without its own restriction and received HTTP 400. The response and
+retained logs do not identify the throwing expression. This is still
+a failed T36 assertion.
+
+Promote the [exact repaired-SHA physical dictionary](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44900526832/artifacts/14706260299)
+for 238 migrations and 619 relations after checking the capture with the
+strict generator. Update its provenance manifest and append this record.
+No new migration or generated API edit is needed for this step.
+
+For the separately observed section failure, add narrowly scoped
+diagnostics in `QualifiedOperatingConstraintController.java` and the
+existing test support `Gz2SignedWorkflowFixture.java`. Log only exception
+type and stack locations when the T36 handler catches an illegal argument. Enable debug logging for
+the controller package only in the signed fixture. Refresh its inventory
+source digest.
+On an unexpected T36 HTTP 400, the signed fixture will now include its
+redacted server log tail. The response, authority, assertions and status
+mapping are preserved. This change does not assert that the section
+failure is fixed.
+
+Use `docs(topology): reconcile T36 operating constraint contracts`
+for this artifact reconciliation and diagnostic amendment. T36
+acceptance remains open pending successful exact-SHA signed PostgreSQL
+coverage and Full Verification Gate. T37 and T38 remain unselected.

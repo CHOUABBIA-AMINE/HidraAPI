@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `67fdf80e6737be799643ff898d5724124f3fb492`
+Captured source SHA: `f499d8c8b94a580037f921924c9f1302f58801e8`
 PostgreSQL server: `16.16 (Debian 16.16-1.pgdg13+1)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `3514cd8cebc386c3bb94c57a7f40341c02871deac5e76c599db06242b9e20194`.
-Migrations: 235; JPA mappings: 471; catalog relations: 615; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `746d19848404de895544e0ef266f39ea3fda97ae32b2a408e3157a57a70c74e1`.
+Migrations: 238; JPA mappings: 471; catalog relations: 619; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -4121,6 +4121,7 @@ Persisted AuditCatalogEntryJpaEntity state; semantic authority remains with audi
 - Migration mention (not inferred introduction): [V20261008_003__provision_simulation_recommendation_audit_taxonomy.sql](../../src/main/resources/db/migration/V20261008_003__provision_simulation_recommendation_audit_taxonomy.sql)
 - Migration mention (not inferred introduction): [V20261008_006__provision_risk_assessment_audit_taxonomy.sql](../../src/main/resources/db/migration/V20261008_006__provision_risk_assessment_audit_taxonomy.sql)
 - Migration mention (not inferred introduction): [V20261119_002__t28_scoped_audit_evidence.sql](../../src/main/resources/db/migration/V20261119_002__t28_scoped_audit_evidence.sql)
+- Migration mention (not inferred introduction): [V20261121_001__t36_qualified_pressure_restriction_projection.sql](../../src/main/resources/db/migration/V20261121_001__t36_qualified_pressure_restriction_projection.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -4319,6 +4320,7 @@ Persisted AuditEventJpaEntity state; semantic authority remains with audit.
 - Migration mention (not inferred introduction): [V20261007_008__hmr_101_audit_access_record.sql](../../src/main/resources/db/migration/V20261007_008__hmr_101_audit_access_record.sql)
 - Migration mention (not inferred introduction): [V20261007_009__hmr_102_audit_before_after_value.sql](../../src/main/resources/db/migration/V20261007_009__hmr_102_audit_before_after_value.sql)
 - Migration mention (not inferred introduction): [V20261119_002__t28_scoped_audit_evidence.sql](../../src/main/resources/db/migration/V20261119_002__t28_scoped_audit_evidence.sql)
+- Migration mention (not inferred introduction): [V20261121_001__t36_qualified_pressure_restriction_projection.sql](../../src/main/resources/db/migration/V20261121_001__t36_qualified_pressure_restriction_projection.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -23379,6 +23381,8 @@ Persisted PartyJpaEntity state; semantic authority remains with party.
 - Migration mention (not inferred introduction): [V20261103_001__topology_engineering_baseline_drafts.sql](../../src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql)
 - Migration mention (not inferred introduction): [V20261103_005__foundation_pipeline_graph_associations.sql](../../src/main/resources/db/migration/V20261103_005__foundation_pipeline_graph_associations.sql)
 - Migration mention (not inferred introduction): [V20261110_002__planning_company_scope.sql](../../src/main/resources/db/migration/V20261110_002__planning_company_scope.sql)
+- Migration mention (not inferred introduction): [V20261121_001__t36_qualified_pressure_restriction_projection.sql](../../src/main/resources/db/migration/V20261121_001__t36_qualified_pressure_restriction_projection.sql)
+- Migration mention (not inferred introduction): [V20261121_002__t36_immutable_workflow_pressure_candidates.sql](../../src/main/resources/db/migration/V20261121_002__t36_immutable_workflow_pressure_candidates.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -31318,6 +31322,8 @@ Append-only approved baseline publications and request receipts. The greatest co
 - Evidence: [JdbcEngineeringBaselinePublicationRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringBaselinePublicationRepositoryAdapter.java)
 - Evidence: [V20261111_002__topology_engineering_baseline_publication.sql](../../src/main/resources/db/migration/V20261111_002__topology_engineering_baseline_publication.sql)
 - Migration mention (not inferred introduction): [V20261111_002__topology_engineering_baseline_publication.sql](../../src/main/resources/db/migration/V20261111_002__topology_engineering_baseline_publication.sql)
+- Migration mention (not inferred introduction): [V20261121_001__t36_qualified_pressure_restriction_projection.sql](../../src/main/resources/db/migration/V20261121_001__t36_qualified_pressure_restriction_projection.sql)
+- Migration mention (not inferred introduction): [V20261121_002__t36_immutable_workflow_pressure_candidates.sql](../../src/main/resources/db/migration/V20261121_002__t36_immutable_workflow_pressure_candidates.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -31383,6 +31389,8 @@ Exact baseline submission tied to one immutable company/pipeline manifest revisi
 - Evidence: [JdbcEngineeringBaselinePublicationRepositoryAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcEngineeringBaselinePublicationRepositoryAdapter.java)
 - Evidence: [V20261111_002__topology_engineering_baseline_publication.sql](../../src/main/resources/db/migration/V20261111_002__topology_engineering_baseline_publication.sql)
 - Migration mention (not inferred introduction): [V20261111_002__topology_engineering_baseline_publication.sql](../../src/main/resources/db/migration/V20261111_002__topology_engineering_baseline_publication.sql)
+- Migration mention (not inferred introduction): [V20261121_001__t36_qualified_pressure_restriction_projection.sql](../../src/main/resources/db/migration/V20261121_001__t36_qualified_pressure_restriction_projection.sql)
+- Migration mention (not inferred introduction): [V20261121_002__t36_immutable_workflow_pressure_candidates.sql](../../src/main/resources/db/migration/V20261121_002__t36_immutable_workflow_pressure_candidates.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -32901,6 +32909,8 @@ Explicit immutable company ownership for newly registered foundation systems; no
 - Evidence: [V20261105_001__topology_foundation_setup.sql](../../src/main/resources/db/migration/V20261105_001__topology_foundation_setup.sql)
 - Evidence: [JdbcTopologyFoundationAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcTopologyFoundationAdapter.java)
 - Migration mention (not inferred introduction): [V20261105_001__topology_foundation_setup.sql](../../src/main/resources/db/migration/V20261105_001__topology_foundation_setup.sql)
+- Migration mention (not inferred introduction): [V20261121_001__t36_qualified_pressure_restriction_projection.sql](../../src/main/resources/db/migration/V20261121_001__t36_qualified_pressure_restriction_projection.sql)
+- Migration mention (not inferred introduction): [V20261121_002__t36_immutable_workflow_pressure_candidates.sql](../../src/main/resources/db/migration/V20261121_002__t36_immutable_workflow_pressure_candidates.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -33632,6 +33642,8 @@ Persisted PipelineJpaEntity state; semantic authority remains with topology.
 - Migration mention (not inferred introduction): [V20260929_001__enforce_same_module_reference_integrity_a.sql](../../src/main/resources/db/migration/V20260929_001__enforce_same_module_reference_integrity_a.sql)
 - Migration mention (not inferred introduction): [V20261004_042__hmr_042_topology_pipeline.sql](../../src/main/resources/db/migration/V20261004_042__hmr_042_topology_pipeline.sql)
 - Migration mention (not inferred introduction): [V20261103_005__foundation_pipeline_graph_associations.sql](../../src/main/resources/db/migration/V20261103_005__foundation_pipeline_graph_associations.sql)
+- Migration mention (not inferred introduction): [V20261121_001__t36_qualified_pressure_restriction_projection.sql](../../src/main/resources/db/migration/V20261121_001__t36_qualified_pressure_restriction_projection.sql)
+- Migration mention (not inferred introduction): [V20261121_002__t36_immutable_workflow_pressure_candidates.sql](../../src/main/resources/db/migration/V20261121_002__t36_immutable_workflow_pressure_candidates.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -33690,6 +33702,8 @@ Immutable canonical Pipeline owner/identity and authored label revisions; no eng
 - Evidence: [V20261103_005__foundation_pipeline_graph_associations.sql](../../src/main/resources/db/migration/V20261103_005__foundation_pipeline_graph_associations.sql)
 - Evidence: [JpaAuthoredTopologyViewAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/query/JpaAuthoredTopologyViewAdapter.java)
 - Migration mention (not inferred introduction): [V20261103_005__foundation_pipeline_graph_associations.sql](../../src/main/resources/db/migration/V20261103_005__foundation_pipeline_graph_associations.sql)
+- Migration mention (not inferred introduction): [V20261121_001__t36_qualified_pressure_restriction_projection.sql](../../src/main/resources/db/migration/V20261121_001__t36_qualified_pressure_restriction_projection.sql)
+- Migration mention (not inferred introduction): [V20261121_002__t36_immutable_workflow_pressure_candidates.sql](../../src/main/resources/db/migration/V20261121_002__t36_immutable_workflow_pressure_candidates.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -33863,6 +33877,8 @@ Persisted PipelineSegmentJpaEntity state; semantic authority remains with topolo
 - Migration mention (not inferred introduction): [V20261004_031__hmr_031_topology_topology_connection.sql](../../src/main/resources/db/migration/V20261004_031__hmr_031_topology_topology_connection.sql)
 - Migration mention (not inferred introduction): [V20261006_009__hmr_054_equipment_catalog_and_attachments.sql](../../src/main/resources/db/migration/V20261006_009__hmr_054_equipment_catalog_and_attachments.sql)
 - Migration mention (not inferred introduction): [V20261103_005__foundation_pipeline_graph_associations.sql](../../src/main/resources/db/migration/V20261103_005__foundation_pipeline_graph_associations.sql)
+- Migration mention (not inferred introduction): [V20261121_001__t36_qualified_pressure_restriction_projection.sql](../../src/main/resources/db/migration/V20261121_001__t36_qualified_pressure_restriction_projection.sql)
+- Migration mention (not inferred introduction): [V20261121_002__t36_immutable_workflow_pressure_candidates.sql](../../src/main/resources/db/migration/V20261121_002__t36_immutable_workflow_pressure_candidates.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -33928,6 +33944,8 @@ Persisted PipelineSystemJpaEntity state; semantic authority remains with topolog
 - Migration mention (not inferred introduction): [V20261103_001__topology_engineering_baseline_drafts.sql](../../src/main/resources/db/migration/V20261103_001__topology_engineering_baseline_drafts.sql)
 - Migration mention (not inferred introduction): [V20261103_005__foundation_pipeline_graph_associations.sql](../../src/main/resources/db/migration/V20261103_005__foundation_pipeline_graph_associations.sql)
 - Migration mention (not inferred introduction): [V20261105_001__topology_foundation_setup.sql](../../src/main/resources/db/migration/V20261105_001__topology_foundation_setup.sql)
+- Migration mention (not inferred introduction): [V20261121_001__t36_qualified_pressure_restriction_projection.sql](../../src/main/resources/db/migration/V20261121_001__t36_qualified_pressure_restriction_projection.sql)
+- Migration mention (not inferred introduction): [V20261121_002__t36_immutable_workflow_pressure_candidates.sql](../../src/main/resources/db/migration/V20261121_002__t36_immutable_workflow_pressure_candidates.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -34559,6 +34577,337 @@ Topology-owned immutable station graph declarations with canonical byte integrit
   - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_reject_station_graph_revision_mutation()"}
   - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_reject_station_graph_revision_mutation()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    RAISE EXCEPTION 'Topology station graph revisions are append-only' USING ERRCODE = '23514';<br>END;<br>$function$<br>
 
+### public.hidra_topology_t36_condition_policy
+
+Owner: **topology**; relation kind: `r`.
+
+Owner-governed, initially empty per-company condition and pressure-unit admission vocabulary. Immutable and not a runtime or site configuration seeder.
+
+- Evidence: [V20261121_001__t36_qualified_pressure_restriction_projection.sql](../../src/main/resources/db/migration/V20261121_001__t36_qualified_pressure_restriction_projection.sql)
+- Evidence: [JdbcQualifiedOperatingConstraintReadAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcQualifiedOperatingConstraintReadAdapter.java)
+- Migration mention (not inferred introduction): [V20261121_001__t36_qualified_pressure_restriction_projection.sql](../../src/main/resources/db/migration/V20261121_001__t36_qualified_pressure_restriction_projection.sql)
+- Migration mention (not inferred introduction): [V20261121_002__t36_immutable_workflow_pressure_candidates.sql](../../src/main/resources/db/migration/V20261121_002__t36_immutable_workflow_pressure_candidates.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| condition_code | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| pressure_unit | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| recorded_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_topology_t36_condition_policy_company_party_id_fkey`: FOREIGN KEY (company_party_id) REFERENCES hidra_party_party(id)
+  - Catalog attributes: {"columns": ["company_party_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_party_party"}, "type": "f", "validated": true}
+- `hidra_topology_t36_condition_policy_condition_code_check`: CHECK (condition_code::text ~ '^[A-Za-z0-9][A-Za-z0-9_.:-]{0,79}$'::text)
+  - Catalog attributes: {"columns": ["condition_code"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_t36_condition_policy_pkey`: PRIMARY KEY (company_party_id, condition_code, pressure_unit)
+  - Catalog attributes: {"columns": ["company_party_id", "condition_code", "pressure_unit"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_topology_t36_condition_policy_pressure_unit_check`: CHECK (pressure_unit::text ~ '^[A-Za-z0-9][A-Za-z0-9_.:-]{0,79}$'::text)
+  - Catalog attributes: {"columns": ["pressure_unit"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_topology_t36_condition_policy_pkey`: CREATE UNIQUE INDEX hidra_topology_t36_condition_policy_pkey ON public.hidra_topology_t36_condition_policy USING btree (company_party_id, condition_code, pressure_unit)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `t36_conditions_immutable`: CREATE TRIGGER t36_conditions_immutable BEFORE DELETE OR UPDATE ON hidra_topology_t36_condition_policy FOR EACH ROW EXECUTE FUNCTION hidra_topology_t36_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_t36_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_t36_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN RAISE EXCEPTION 'T36 qualified restriction history is immutable' USING ERRCODE='23514';<br>END; $function$<br>
+- `t36_conditions_truncate`: CREATE TRIGGER t36_conditions_truncate BEFORE TRUNCATE ON hidra_topology_t36_condition_policy FOR EACH STATEMENT EXECUTE FUNCTION hidra_topology_t36_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_t36_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_t36_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN RAISE EXCEPTION 'T36 qualified restriction history is immutable' USING ERRCODE='23514';<br>END; $function$<br>
+
+### public.hidra_topology_t36_pressure_candidate
+
+Owner: **topology**; relation kind: `r`.
+
+Immutable, unapproved exact prospective pressure or termination target; T36 Workflow can review only current protected Topology/T07-bound proposals. Admission binds the later independent Workflow decision to identical payload/source. No runtime writer, qualification or operational acceptance.
+
+- Evidence: [QualifiedPressureWorkflowCandidate.java](../../src/main/java/dz/sh/hidra/modules/topology/domain/model/QualifiedPressureWorkflowCandidate.java)
+- Evidence: [JdbcQualifiedOperatingConstraintReadAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcQualifiedOperatingConstraintReadAdapter.java)
+- Evidence: [V20261121_002__t36_immutable_workflow_pressure_candidates.sql](../../src/main/resources/db/migration/V20261121_002__t36_immutable_workflow_pressure_candidates.sql)
+- Migration mention (not inferred introduction): [V20261121_002__t36_immutable_workflow_pressure_candidates.sql](../../src/main/resources/db/migration/V20261121_002__t36_immutable_workflow_pressure_candidates.sql)
+- Migration mention (not inferred introduction): [V20261121_003__t36_dispatch_publication_guard_by_row_type.sql](../../src/main/resources/db/migration/V20261121_003__t36_dispatch_publication_guard_by_row_type.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| candidate_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| candidate_kind | character varying(16) | False | None; identity=; generated= | No current mapped Java column | — |
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| pipeline_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| section_id | character varying(80) | False | ''::character varying; identity=; generated= | No current mapped Java column | — |
+| pipeline_system_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| condition_code | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| upper_pressure | numeric(24,12) | True | None; identity=; generated= | No current mapped Java column | — |
+| pressure_unit | character varying(80) | True | None; identity=; generated= | No current mapped Java column | — |
+| pressure_basis | character varying(16) | True | None; identity=; generated= | No current mapped Java column | — |
+| effective_from | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| effective_until | timestamp with time zone | True | None; identity=; generated= | No current mapped Java column | — |
+| retired_revision_id | uuid | True | None; identity=; generated= | No current mapped Java column | — |
+| successor_revision_id | uuid | True | None; identity=; generated= | No current mapped Java column | — |
+| baseline_receipt_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| baseline_manifest_digest | character(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| engineering_source_revision | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| submitted_by | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| created_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_topology_t36_pressure_c_engineering_source_revision_check`: CHECK (engineering_source_revision::text ~ '^[A-Za-z0-9][A-Za-z0-9_.:-]{0,79}$'::text)
+  - Catalog attributes: {"columns": ["engineering_source_revision"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_t36_pressure_cand_baseline_manifest_digest_check`: CHECK (baseline_manifest_digest ~ '^[0-9a-f]{64}$'::text)
+  - Catalog attributes: {"columns": ["baseline_manifest_digest"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_t36_pressure_candidate_candidate_kind_check`: CHECK (candidate_kind::text = ANY (ARRAY['REVISION'::character varying, 'SUPERSEDE'::character varying, 'WITHDRAW'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["candidate_kind"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_t36_pressure_candidate_company_party_id_fkey`: FOREIGN KEY (company_party_id) REFERENCES hidra_party_party(id)
+  - Catalog attributes: {"columns": ["company_party_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_party_party"}, "type": "f", "validated": true}
+- `hidra_topology_t36_pressure_candidate_condition_code_check`: CHECK (condition_code::text ~ '^[A-Za-z0-9][A-Za-z0-9_.:-]{0,79}$'::text)
+  - Catalog attributes: {"columns": ["condition_code"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_t36_pressure_candidate_pipeline_id_fkey`: FOREIGN KEY (pipeline_id) REFERENCES hidra_topology_pipeline(id)
+  - Catalog attributes: {"columns": ["pipeline_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_pipeline"}, "type": "f", "validated": true}
+- `hidra_topology_t36_pressure_candidate_pipeline_system_id_fkey`: FOREIGN KEY (pipeline_system_id) REFERENCES hidra_topology_pipeline_system(id)
+  - Catalog attributes: {"columns": ["pipeline_system_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_pipeline_system"}, "type": "f", "validated": true}
+- `hidra_topology_t36_pressure_candidate_pkey`: PRIMARY KEY (candidate_id)
+  - Catalog attributes: {"columns": ["candidate_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_topology_t36_pressure_candidate_retired_revision_id_fkey`: FOREIGN KEY (retired_revision_id) REFERENCES hidra_topology_t36_pressure_revision(revision_id)
+  - Catalog attributes: {"columns": ["retired_revision_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["revision_id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_t36_pressure_revision"}, "type": "f", "validated": true}
+- `hidra_topology_t36_pressure_candidate_submitted_by_check`: CHECK (submitted_by::text ~ '^[A-Za-z0-9][A-Za-z0-9_.:-]{0,79}$'::text)
+  - Catalog attributes: {"columns": ["submitted_by"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `t36_candidate_exact_source`: FOREIGN KEY (company_party_id, pipeline_system_id, baseline_receipt_id) REFERENCES hidra_topology_baseline_publication(company_party_id, pipeline_system_id, receipt_id)
+  - Catalog attributes: {"columns": ["company_party_id", "pipeline_system_id", "baseline_receipt_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["company_party_id", "pipeline_system_id", "receipt_id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_baseline_publication"}, "type": "f", "validated": true}
+- `t36_candidate_no_self_retirement`: CHECK (retired_revision_id IS NULL OR retired_revision_id &lt;&gt; candidate_id)
+  - Catalog attributes: {"columns": ["retired_revision_id", "candidate_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `t36_candidate_pressure_policy`: FOREIGN KEY (company_party_id, condition_code, pressure_unit) REFERENCES hidra_topology_t36_condition_policy(company_party_id, condition_code, pressure_unit)
+  - Catalog attributes: {"columns": ["company_party_id", "condition_code", "pressure_unit"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["company_party_id", "condition_code", "pressure_unit"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_t36_condition_policy"}, "type": "f", "validated": true}
+- `t36_candidate_shape`: CHECK (candidate_kind::text = 'REVISION'::text AND upper_pressure IS NOT NULL AND upper_pressure &gt; 0::numeric AND pressure_unit IS NOT NULL AND (pressure_basis::text = ANY (ARRAY['GAUGE'::character varying, 'ABSOLUTE'::character varying]::text[])) AND successor_revision_id IS NULL AND (effective_until IS NULL OR effective_until &gt; effective_from) OR candidate_kind::text = 'SUPERSEDE'::text AND upper_pressure IS NULL AND pressure_unit IS NULL AND pressure_basis IS NULL AND effective_until IS NULL AND retired_revision_id IS NOT NULL AND successor_revision_id IS NOT NULL AND successor_revision_id &lt;&gt; retired_revision_id OR candidate_kind::text = 'WITHDRAW'::text AND upper_pressure IS NULL AND pressure_unit IS NULL AND pressure_basis IS NULL AND effective_until IS NULL AND retired_revision_id IS NOT NULL AND successor_revision_id IS NULL)
+  - Catalog attributes: {"columns": ["candidate_kind", "upper_pressure", "pressure_unit", "pressure_basis", "successor_revision_id", "effective_until", "effective_from", "retired_revision_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+
+#### Indexes
+
+- `hidra_topology_t36_pressure_candidate_pkey`: CREATE UNIQUE INDEX hidra_topology_t36_pressure_candidate_pkey ON public.hidra_topology_t36_pressure_candidate USING btree (candidate_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `t36_candidate_admission`: CREATE TRIGGER t36_candidate_admission BEFORE INSERT ON hidra_topology_t36_pressure_candidate FOR EACH ROW EXECUTE FUNCTION hidra_topology_t36_candidate_admission()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_t36_candidate_admission()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_t36_candidate_admission()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>DECLARE actual_company text; actual_system text; actual_digest text;<br>BEGIN<br> IF NEW.created_at&lt;&gt;date_trunc('microseconds',NEW.created_at)<br>    OR NEW.effective_from&lt;&gt;date_trunc('microseconds',NEW.effective_from)<br>    OR NEW.effective_until IS NOT NULL<br>         AND NEW.effective_until&lt;&gt;date_trunc('microseconds',NEW.effective_until) THEN<br>   RAISE EXCEPTION 'T36 candidate requires exact microsecond instants'<br>       USING ERRCODE='23514';<br> END IF;<br> SELECT r.company_party_id,p.pipeline_system_id<br> INTO actual_company,actual_system<br> FROM public.hidra_topology_pipeline p<br> JOIN public.hidra_topology_pipeline_system sys<br>     ON sys.id=p.pipeline_system_id AND sys.status='ACTIVE'<br> JOIN public.hidra_topology_foundation_system_owner o<br>     ON o.pipeline_system_id=sys.id<br> JOIN public.hidra_topology_pipeline_authoring_revision r<br>     ON r.pipeline_id=p.id AND r.pipeline_system_id=sys.id<br> WHERE p.id=NEW.pipeline_id AND p.status='ACTIVE'<br>   AND r.revision=(SELECT max(x.revision)<br>        FROM public.hidra_topology_pipeline_authoring_revision x<br>        WHERE x.pipeline_id=p.id)<br>   AND r.company_party_id=o.company_party_id;<br> IF NOT FOUND OR actual_company&lt;&gt;NEW.company_party_id<br>       OR actual_system&lt;&gt;NEW.pipeline_system_id<br>       OR NEW.section_id&lt;&gt;'' AND NOT EXISTS (<br>         SELECT 1 FROM public.hidra_topology_pipeline_segment seg<br>         WHERE seg.id=NEW.section_id AND seg.pipeline_id=NEW.pipeline_id<br>           AND seg.status='ACTIVE') THEN<br>   RAISE EXCEPTION 'T36 candidate canonical target unavailable'<br>       USING ERRCODE='23514';<br> END IF;<br> SELECT s.canonical_sha256 INTO actual_digest<br> FROM public.hidra_topology_baseline_publication p<br> JOIN public.hidra_topology_baseline_submission s<br> ON s.company_party_id=p.company_party_id<br> AND s.pipeline_system_id=p.pipeline_system_id<br> AND s.submission_id=p.submission_id<br> WHERE p.receipt_id=NEW.baseline_receipt_id<br>   AND p.company_party_id=NEW.company_party_id<br>   AND p.pipeline_system_id=NEW.pipeline_system_id<br>   AND p.published_at&lt;=NEW.created_at;<br> IF NOT FOUND OR actual_digest&lt;&gt;NEW.baseline_manifest_digest THEN<br>   RAISE EXCEPTION 'T36 candidate source publication mismatch' USING ERRCODE='23514';<br> END IF;<br> IF NOT EXISTS(<br>   SELECT 1 FROM public.hidra_topology_t36_condition_policy policy<br>   WHERE policy.company_party_id=NEW.company_party_id<br>     AND policy.condition_code=NEW.condition_code<br>     AND (NEW.candidate_kind&lt;&gt;'REVISION' OR policy.pressure_unit=NEW.pressure_unit))<br> THEN RAISE EXCEPTION 'T36 candidate pressure condition not admitted'<br>       USING ERRCODE='23514';<br> END IF;<br> RETURN NEW;<br>END;<br>$function$<br>
+- `t36_candidate_immutable`: CREATE TRIGGER t36_candidate_immutable BEFORE DELETE OR UPDATE ON hidra_topology_t36_pressure_candidate FOR EACH ROW EXECUTE FUNCTION hidra_topology_t36_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_t36_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_t36_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN RAISE EXCEPTION 'T36 qualified restriction history is immutable' USING ERRCODE='23514';<br>END; $function$<br>
+- `t36_candidate_no_truncate`: CREATE TRIGGER t36_candidate_no_truncate BEFORE TRUNCATE ON hidra_topology_t36_pressure_candidate FOR EACH STATEMENT EXECUTE FUNCTION hidra_topology_t36_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_t36_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_t36_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN RAISE EXCEPTION 'T36 qualified restriction history is immutable' USING ERRCODE='23514';<br>END; $function$<br>
+
+### public.hidra_topology_t36_pressure_revision
+
+Owner: **topology**; relation kind: `r`.
+
+Append-only, typed exact-scope qualified upper operating-pressure declaration; separately validated T07 source, approved Workflow action and immutable Audit event witnesses. Not design pressure and not an operator command.
+
+- Evidence: [QualifiedPressureRestriction.java](../../src/main/java/dz/sh/hidra/modules/topology/domain/model/QualifiedPressureRestriction.java)
+- Evidence: [JdbcQualifiedOperatingConstraintReadAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcQualifiedOperatingConstraintReadAdapter.java)
+- Evidence: [V20261121_001__t36_qualified_pressure_restriction_projection.sql](../../src/main/resources/db/migration/V20261121_001__t36_qualified_pressure_restriction_projection.sql)
+- Migration mention (not inferred introduction): [V20261121_001__t36_qualified_pressure_restriction_projection.sql](../../src/main/resources/db/migration/V20261121_001__t36_qualified_pressure_restriction_projection.sql)
+- Migration mention (not inferred introduction): [V20261121_002__t36_immutable_workflow_pressure_candidates.sql](../../src/main/resources/db/migration/V20261121_002__t36_immutable_workflow_pressure_candidates.sql)
+- Migration mention (not inferred introduction): [V20261121_003__t36_dispatch_publication_guard_by_row_type.sql](../../src/main/resources/db/migration/V20261121_003__t36_dispatch_publication_guard_by_row_type.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| revision_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| pipeline_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| section_id | character varying(80) | False | ''::character varying; identity=; generated= | No current mapped Java column | — |
+| pipeline_system_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| condition_code | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| upper_pressure | numeric(24,12) | False | None; identity=; generated= | No current mapped Java column | — |
+| pressure_unit | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| pressure_basis | character varying(16) | False | None; identity=; generated= | No current mapped Java column | — |
+| effective_from | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| effective_until | timestamp with time zone | True | None; identity=; generated= | No current mapped Java column | — |
+| recorded_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| baseline_receipt_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| baseline_manifest_digest | character(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| engineering_source_revision | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| decision_action_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| audit_event_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| submitted_by | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| reviewed_by | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| approved_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| supersedes_revision_id | uuid | True | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_topology_t36_pressure_r_engineering_source_revision_check`: CHECK (btrim(engineering_source_revision::text) &lt;&gt; ''::text)
+  - Catalog attributes: {"columns": ["engineering_source_revision"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_t36_pressure_revi_baseline_manifest_digest_check`: CHECK (baseline_manifest_digest ~ '^[0-9a-f]{64}$'::text)
+  - Catalog attributes: {"columns": ["baseline_manifest_digest"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_t36_pressure_revisio_supersedes_revision_id_fkey`: FOREIGN KEY (supersedes_revision_id) REFERENCES hidra_topology_t36_pressure_revision(revision_id)
+  - Catalog attributes: {"columns": ["supersedes_revision_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["revision_id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_t36_pressure_revision"}, "type": "f", "validated": true}
+- `hidra_topology_t36_pressure_revision_audit_event_id_check`: CHECK (btrim(audit_event_id::text) &lt;&gt; ''::text)
+  - Catalog attributes: {"columns": ["audit_event_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_t36_pressure_revision_audit_event_id_key`: UNIQUE (audit_event_id)
+  - Catalog attributes: {"columns": ["audit_event_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_topology_t36_pressure_revision_check`: CHECK (btrim(reviewed_by::text) &lt;&gt; ''::text AND reviewed_by::text &lt;&gt; submitted_by::text)
+  - Catalog attributes: {"columns": ["reviewed_by", "submitted_by"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_t36_pressure_revision_company_party_id_fkey`: FOREIGN KEY (company_party_id) REFERENCES hidra_party_party(id)
+  - Catalog attributes: {"columns": ["company_party_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_party_party"}, "type": "f", "validated": true}
+- `hidra_topology_t36_pressure_revision_decision_action_id_check`: CHECK (btrim(decision_action_id::text) &lt;&gt; ''::text)
+  - Catalog attributes: {"columns": ["decision_action_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_t36_pressure_revision_decision_action_id_key`: UNIQUE (decision_action_id)
+  - Catalog attributes: {"columns": ["decision_action_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_topology_t36_pressure_revision_pipeline_id_fkey`: FOREIGN KEY (pipeline_id) REFERENCES hidra_topology_pipeline(id)
+  - Catalog attributes: {"columns": ["pipeline_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_pipeline"}, "type": "f", "validated": true}
+- `hidra_topology_t36_pressure_revision_pipeline_system_id_fkey`: FOREIGN KEY (pipeline_system_id) REFERENCES hidra_topology_pipeline_system(id)
+  - Catalog attributes: {"columns": ["pipeline_system_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_pipeline_system"}, "type": "f", "validated": true}
+- `hidra_topology_t36_pressure_revision_pkey`: PRIMARY KEY (revision_id)
+  - Catalog attributes: {"columns": ["revision_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_topology_t36_pressure_revision_pressure_basis_check`: CHECK (pressure_basis::text = ANY (ARRAY['GAUGE'::character varying, 'ABSOLUTE'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["pressure_basis"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_t36_pressure_revision_submitted_by_check`: CHECK (btrim(submitted_by::text) &lt;&gt; ''::text)
+  - Catalog attributes: {"columns": ["submitted_by"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_t36_pressure_revision_upper_pressure_check`: CHECK (upper_pressure &gt; 0::numeric)
+  - Catalog attributes: {"columns": ["upper_pressure"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `t36_revision_interval`: CHECK (effective_until IS NULL OR effective_until &gt; effective_from)
+  - Catalog attributes: {"columns": ["effective_until", "effective_from"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `t36_revision_pressure_unit`: FOREIGN KEY (company_party_id, condition_code, pressure_unit) REFERENCES hidra_topology_t36_condition_policy(company_party_id, condition_code, pressure_unit)
+  - Catalog attributes: {"columns": ["company_party_id", "condition_code", "pressure_unit"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["company_party_id", "condition_code", "pressure_unit"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_t36_condition_policy"}, "type": "f", "validated": true}
+- `t36_revision_recorded`: CHECK (recorded_at &gt;= approved_at)
+  - Catalog attributes: {"columns": ["recorded_at", "approved_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `t36_revision_scope`: UNIQUE (company_party_id, pipeline_id, section_id, condition_code, revision_id)
+  - Catalog attributes: {"columns": ["company_party_id", "pipeline_id", "section_id", "condition_code", "revision_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `t36_revision_source`: FOREIGN KEY (company_party_id, pipeline_system_id, baseline_receipt_id) REFERENCES hidra_topology_baseline_publication(company_party_id, pipeline_system_id, receipt_id)
+  - Catalog attributes: {"columns": ["company_party_id", "pipeline_system_id", "baseline_receipt_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["company_party_id", "pipeline_system_id", "receipt_id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_baseline_publication"}, "type": "f", "validated": true}
+
+#### Indexes
+
+- `hidra_topology_t36_pressure_revision_audit_event_id_key`: CREATE UNIQUE INDEX hidra_topology_t36_pressure_revision_audit_event_id_key ON public.hidra_topology_t36_pressure_revision USING btree (audit_event_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_topology_t36_pressure_revision_decision_action_id_key`: CREATE UNIQUE INDEX hidra_topology_t36_pressure_revision_decision_action_id_key ON public.hidra_topology_t36_pressure_revision USING btree (decision_action_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_topology_t36_pressure_revision_pkey`: CREATE UNIQUE INDEX hidra_topology_t36_pressure_revision_pkey ON public.hidra_topology_t36_pressure_revision USING btree (revision_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `t36_revision_history_idx`: CREATE INDEX t36_revision_history_idx ON public.hidra_topology_t36_pressure_revision USING btree (company_party_id, pipeline_id, section_id, condition_code, recorded_at, revision_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+- `t36_revision_scope`: CREATE UNIQUE INDEX t36_revision_scope ON public.hidra_topology_t36_pressure_revision USING btree (company_party_id, pipeline_id, section_id, condition_code, revision_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `t36_revision_qualify`: CREATE TRIGGER t36_revision_qualify BEFORE INSERT ON hidra_topology_t36_pressure_revision FOR EACH ROW EXECUTE FUNCTION hidra_topology_t36_admission_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_t36_admission_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_t36_admission_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>DECLARE<br> target_ref text; expected_event text; expected_action text;<br> wf record; audit_row record; source_row record; target_row record;<br>BEGIN<br> IF NEW.recorded_at&lt;&gt;date_trunc('microseconds',NEW.recorded_at)<br>    OR NEW.approved_at&lt;&gt;date_trunc('microseconds',NEW.approved_at)<br>    OR NEW.reviewed_by=NEW.submitted_by THEN<br>   RAISE EXCEPTION 'T36 invalid evidence precision or reviewer separation' USING ERRCODE='23514';<br> END IF;<br> IF TG_TABLE_NAME='hidra_topology_t36_pressure_revision' THEN<br>   target_ref:=NEW.revision_id::text;<br>   expected_event:='OPERATING_PRESSURE_RESTRICTION_APPROVED';<br>   expected_action:='APPROVE_OPERATING_PRESSURE_RESTRICTION';<br>   IF NEW.effective_from&lt;&gt;date_trunc('microseconds',NEW.effective_from)<br>      OR NEW.effective_until IS NOT NULL<br>         AND NEW.effective_until&lt;&gt;date_trunc('microseconds',NEW.effective_until)<br>      OR NEW.supersedes_revision_id=NEW.revision_id THEN<br>     RAISE EXCEPTION 'T36 invalid revision interval/lineage' USING ERRCODE='23514';<br>   END IF;<br> ELSE<br>   target_ref:=NEW.event_id::text;<br>   expected_event:=CASE NEW.event_kind<br>     WHEN 'SUPERSEDE' THEN 'OPERATING_PRESSURE_RESTRICTION_SUPERSEDED'<br>     ELSE 'OPERATING_PRESSURE_RESTRICTION_WITHDRAWN' END;<br>   expected_action:=CASE NEW.event_kind<br>     WHEN 'SUPERSEDE' THEN 'SUPERSEDE_OPERATING_PRESSURE_RESTRICTION'<br>     ELSE 'WITHDRAW_OPERATING_PRESSURE_RESTRICTION' END;<br>   IF NEW.effective_at&lt;&gt;date_trunc('microseconds',NEW.effective_at) THEN<br>     RAISE EXCEPTION 'T36 invalid termination precision' USING ERRCODE='23514';<br>   END IF;<br> END IF;<br> -- Canonical owner: latest active authored Pipeline/Section association.<br> SELECT p.pipeline_system_id, r.company_party_id INTO target_row<br> FROM public.hidra_topology_pipeline p<br> JOIN public.hidra_topology_pipeline_system s ON s.id=p.pipeline_system_id<br> JOIN public.hidra_topology_foundation_system_owner o ON o.pipeline_system_id=s.id<br> JOIN public.hidra_topology_pipeline_authoring_revision r<br>   ON r.pipeline_id=p.id AND r.pipeline_system_id=s.id<br> WHERE p.id=NEW.pipeline_id AND p.status='ACTIVE' AND s.status='ACTIVE'<br>   AND r.revision=(SELECT max(v.revision)<br>                  FROM public.hidra_topology_pipeline_authoring_revision v<br>                  WHERE v.pipeline_id=p.id)<br>   AND o.company_party_id=r.company_party_id;<br> IF NOT FOUND OR target_row.pipeline_system_id&lt;&gt;NEW.pipeline_system_id<br>   OR target_row.company_party_id&lt;&gt;NEW.company_party_id<br>   OR (NEW.section_id&lt;&gt;'' AND NOT EXISTS(<br>      SELECT 1 FROM public.hidra_topology_pipeline_segment seg<br>      WHERE seg.id=NEW.section_id AND seg.pipeline_id=NEW.pipeline_id AND seg.status='ACTIVE')) THEN<br>   RAISE EXCEPTION 'T36 canonical target ownership mismatch' USING ERRCODE='23514';<br> END IF;<br> SELECT s.canonical_sha256 INTO source_row<br> FROM public.hidra_topology_baseline_publication p<br> JOIN public.hidra_topology_baseline_submission s<br>   ON s.company_party_id=p.company_party_id<br>  AND s.pipeline_system_id=p.pipeline_system_id AND s.submission_id=p.submission_id<br> WHERE p.company_party_id=NEW.company_party_id<br>   AND p.pipeline_system_id=NEW.pipeline_system_id<br>   AND p.receipt_id=NEW.baseline_receipt_id AND p.published_at&lt;=NEW.recorded_at;<br> IF NOT FOUND OR source_row.canonical_sha256&lt;&gt;NEW.baseline_manifest_digest THEN<br>   RAISE EXCEPTION 'T36 source publication mismatch' USING ERRCODE='23514';<br> END IF;<br> -- Existing Workflow enforces active definition, bound target, task sequencing,<br> -- actor evidence and immutable action. No T36 Workflow side table is invented.<br> SELECT a.actor_id, a.acted_at, i.started_by_actor_id INTO wf<br> FROM public.hidra_workflow_action a<br> JOIN public.hidra_workflow_instance i ON i.id=a.instance_id<br> JOIN public.hidra_workflow_type_catalog tgt ON tgt.id=i.target_type_id<br> JOIN public.hidra_workflow_type_catalog pur ON pur.id=i.workflow_purpose_id<br> WHERE a.id=NEW.decision_action_id<br>   AND a.action_type='APPROVE' AND a.decision='APPROVE'<br>   AND i.target_module='topology' AND i.target_id=target_ref<br>   AND tgt.catalog_name='WORKFLOW_TARGET_TYPE' AND tgt.code='OPERATING_PRESSURE_RESTRICTION'<br>   AND pur.catalog_name='WORKFLOW_PURPOSE' AND pur.code='OPERATING_PRESSURE_RESTRICTION_APPROVAL';<br> IF NOT FOUND OR wf.actor_id IS DISTINCT FROM NEW.reviewed_by<br>   OR wf.started_by_actor_id IS DISTINCT FROM NEW.submitted_by<br>   OR wf.acted_at IS DISTINCT FROM NEW.approved_at THEN<br>   RAISE EXCEPTION 'T36 independent Workflow approval mismatch' USING ERRCODE='23514';<br> END IF;<br> -- Audit owner receipt is immutable and must bind the same exact Workflow<br> -- decision, target, reviewer, action and typed event. No synthetic Audit UUID.<br> SELECT e.id INTO audit_row<br> FROM public.hidra_audit_event e<br> JOIN public.hidra_audit_catalog_entry kind ON kind.id=e.event_type_id<br> WHERE e.id=NEW.audit_event_id AND e.target_module='topology'<br>   AND e.target_type='OPERATING_PRESSURE_RESTRICTION'<br>   AND e.target_id=target_ref AND e.workflow_action_id=NEW.decision_action_id<br>   AND e.actor_id=NEW.reviewed_by AND e.action_code=expected_action<br>   AND e.operation='APPROVE' AND kind.catalog_name='EVENT_TYPE'<br>   AND kind.code=expected_event AND e.occurred_at&lt;=NEW.recorded_at;<br> IF NOT FOUND THEN<br>   RAISE EXCEPTION 'T36 Audit event binding mismatch' USING ERRCODE='23514';<br> END IF;<br> IF TG_TABLE_NAME='hidra_topology_t36_pressure_termination' THEN<br>   SELECT * INTO target_row FROM public.hidra_topology_t36_pressure_revision r<br>   WHERE r.revision_id=NEW.retired_revision_id;<br>   IF NOT FOUND OR target_row.pipeline_system_id&lt;&gt;NEW.pipeline_system_id<br>       OR NEW.effective_at&lt;target_row.effective_from THEN<br>     RAISE EXCEPTION 'T36 invalid prior effective revision' USING ERRCODE='23514';<br>   END IF;<br>   IF NEW.event_kind='SUPERSEDE' AND NOT EXISTS(<br>      SELECT 1 FROM public.hidra_topology_t36_pressure_revision next<br>      WHERE next.revision_id=NEW.successor_revision_id<br>        AND next.supersedes_revision_id=NEW.retired_revision_id<br>        AND next.effective_from=NEW.effective_at) THEN<br>     RAISE EXCEPTION 'T36 successor effective lineage mismatch' USING ERRCODE='23514';<br>   END IF;<br> ELSIF NEW.supersedes_revision_id IS NOT NULL AND NOT EXISTS(<br>    SELECT 1 FROM public.hidra_topology_t36_pressure_revision prior<br>    WHERE prior.revision_id=NEW.supersedes_revision_id<br>      AND (prior.company_party_id,prior.pipeline_id,prior.section_id,<br>           prior.pipeline_system_id,prior.condition_code)<br>          =(NEW.company_party_id,NEW.pipeline_id,NEW.section_id,<br>            NEW.pipeline_system_id,NEW.condition_code)) THEN<br>    RAISE EXCEPTION 'T36 successor scope mismatch' USING ERRCODE='23514';<br> END IF;<br> RETURN NEW;<br>END;<br>$function$<br>
+- `t36_revisions_immutable`: CREATE TRIGGER t36_revisions_immutable BEFORE DELETE OR UPDATE ON hidra_topology_t36_pressure_revision FOR EACH ROW EXECUTE FUNCTION hidra_topology_t36_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_t36_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_t36_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN RAISE EXCEPTION 'T36 qualified restriction history is immutable' USING ERRCODE='23514';<br>END; $function$<br>
+- `t36_revisions_truncate`: CREATE TRIGGER t36_revisions_truncate BEFORE TRUNCATE ON hidra_topology_t36_pressure_revision FOR EACH STATEMENT EXECUTE FUNCTION hidra_topology_t36_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_t36_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_t36_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN RAISE EXCEPTION 'T36 qualified restriction history is immutable' USING ERRCODE='23514';<br>END; $function$<br>
+- `z_t36_revision_candidate_publication`: CREATE TRIGGER z_t36_revision_candidate_publication BEFORE INSERT ON hidra_topology_t36_pressure_revision FOR EACH ROW EXECUTE FUNCTION hidra_topology_t36_candidate_publication_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_t36_candidate_publication_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_t36_candidate_publication_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>DECLARE approved_id uuid; proposed record;<br>BEGIN<br> -- Each trigger row has only the identifier column of its own table.<br> IF TG_TABLE_NAME = 'hidra_topology_t36_pressure_revision' THEN<br>   approved_id := NEW.revision_id;<br> ELSIF TG_TABLE_NAME = 'hidra_topology_t36_pressure_termination' THEN<br>   approved_id := NEW.event_id;<br> ELSE<br>   RAISE EXCEPTION 'Unexpected T36 publication trigger table' USING ERRCODE='23514';<br> END IF;<br> SELECT c.* INTO proposed<br> FROM public.hidra_topology_t36_pressure_candidate c<br> WHERE c.candidate_id=approved_id;<br> IF NOT FOUND THEN<br>   RAISE EXCEPTION 'T36 immutable review target missing' USING ERRCODE='23514';<br> END IF;<br> IF (proposed.company_party_id,proposed.pipeline_id,proposed.section_id,<br>       proposed.pipeline_system_id,proposed.condition_code,<br>       proposed.baseline_receipt_id,proposed.baseline_manifest_digest,<br>       proposed.engineering_source_revision,proposed.submitted_by)<br>    IS DISTINCT FROM<br>       (NEW.company_party_id,NEW.pipeline_id,NEW.section_id,<br>        NEW.pipeline_system_id,NEW.condition_code,<br>        NEW.baseline_receipt_id,NEW.baseline_manifest_digest,<br>        NEW.engineering_source_revision,NEW.submitted_by)<br>    OR proposed.created_at&gt;NEW.approved_at<br>    OR NOT EXISTS (<br>        SELECT 1 FROM public.hidra_workflow_action a<br>        JOIN public.hidra_workflow_instance i ON i.id=a.instance_id<br>        WHERE a.id=NEW.decision_action_id<br>          AND i.target_id=approved_id::text<br>          AND i.target_code_snapshot='t36-v1:'&#124;&#124;approved_id::text)<br> THEN<br>   RAISE EXCEPTION 'T36 approved action does not bind exact candidate'<br>       USING ERRCODE='23514';<br> END IF;<br> IF TG_TABLE_NAME='hidra_topology_t36_pressure_revision' THEN<br>   IF proposed.candidate_kind&lt;&gt;'REVISION'<br>       OR (proposed.upper_pressure,proposed.pressure_unit,proposed.pressure_basis,<br>           proposed.effective_from,proposed.effective_until,<br>           proposed.retired_revision_id)<br>       IS DISTINCT FROM<br>          (NEW.upper_pressure,NEW.pressure_unit,NEW.pressure_basis,<br>           NEW.effective_from,NEW.effective_until,NEW.supersedes_revision_id)<br>   THEN RAISE EXCEPTION 'T36 reviewed pressure proposal differs from publication'<br>       USING ERRCODE='23514'; END IF;<br> ELSE<br>   IF proposed.candidate_kind&lt;&gt;NEW.event_kind<br>       OR (proposed.effective_from,proposed.retired_revision_id,<br>           proposed.successor_revision_id)<br>       IS DISTINCT FROM<br>          (NEW.effective_at,NEW.retired_revision_id,NEW.successor_revision_id)<br>   THEN RAISE EXCEPTION 'T36 reviewed termination differs from publication'<br>       USING ERRCODE='23514'; END IF;<br> END IF;<br> RETURN NEW;<br>END;<br>$function$<br>
+
+### public.hidra_topology_t36_pressure_termination
+
+Owner: **topology**; relation kind: `r`.
+
+Immutable, separately approved supersession and withdrawal event timeline. Historic effective records remain queryable, without automatic inheritance or arbitrary conflict preference.
+
+- Evidence: [QualifiedPressureRestriction.java](../../src/main/java/dz/sh/hidra/modules/topology/domain/model/QualifiedPressureRestriction.java)
+- Evidence: [JdbcQualifiedOperatingConstraintReadAdapter.java](../../src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcQualifiedOperatingConstraintReadAdapter.java)
+- Evidence: [V20261121_001__t36_qualified_pressure_restriction_projection.sql](../../src/main/resources/db/migration/V20261121_001__t36_qualified_pressure_restriction_projection.sql)
+- Migration mention (not inferred introduction): [V20261121_001__t36_qualified_pressure_restriction_projection.sql](../../src/main/resources/db/migration/V20261121_001__t36_qualified_pressure_restriction_projection.sql)
+- Migration mention (not inferred introduction): [V20261121_002__t36_immutable_workflow_pressure_candidates.sql](../../src/main/resources/db/migration/V20261121_002__t36_immutable_workflow_pressure_candidates.sql)
+- Migration mention (not inferred introduction): [V20261121_003__t36_dispatch_publication_guard_by_row_type.sql](../../src/main/resources/db/migration/V20261121_003__t36_dispatch_publication_guard_by_row_type.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| event_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| pipeline_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| section_id | character varying(80) | False | ''::character varying; identity=; generated= | No current mapped Java column | — |
+| pipeline_system_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| condition_code | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| retired_revision_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| event_kind | character varying(16) | False | None; identity=; generated= | No current mapped Java column | — |
+| successor_revision_id | uuid | True | None; identity=; generated= | No current mapped Java column | — |
+| effective_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| recorded_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+| baseline_receipt_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| baseline_manifest_digest | character(64) | False | None; identity=; generated= | No current mapped Java column | — |
+| engineering_source_revision | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| decision_action_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| audit_event_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| submitted_by | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| reviewed_by | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| approved_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_topology_t36_pressure_t_engineering_source_revision_check`: CHECK (btrim(engineering_source_revision::text) &lt;&gt; ''::text)
+  - Catalog attributes: {"columns": ["engineering_source_revision"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_t36_pressure_term_baseline_manifest_digest_check`: CHECK (baseline_manifest_digest ~ '^[0-9a-f]{64}$'::text)
+  - Catalog attributes: {"columns": ["baseline_manifest_digest"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_t36_pressure_terminatio_decision_action_id_check`: CHECK (btrim(decision_action_id::text) &lt;&gt; ''::text)
+  - Catalog attributes: {"columns": ["decision_action_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_t36_pressure_termination_audit_event_id_check`: CHECK (btrim(audit_event_id::text) &lt;&gt; ''::text)
+  - Catalog attributes: {"columns": ["audit_event_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_t36_pressure_termination_audit_event_id_key`: UNIQUE (audit_event_id)
+  - Catalog attributes: {"columns": ["audit_event_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_topology_t36_pressure_termination_check`: CHECK (btrim(reviewed_by::text) &lt;&gt; ''::text AND reviewed_by::text &lt;&gt; submitted_by::text)
+  - Catalog attributes: {"columns": ["reviewed_by", "submitted_by"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_t36_pressure_termination_decision_action_id_key`: UNIQUE (decision_action_id)
+  - Catalog attributes: {"columns": ["decision_action_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_topology_t36_pressure_termination_event_kind_check`: CHECK (event_kind::text = ANY (ARRAY['SUPERSEDE'::character varying, 'WITHDRAW'::character varying]::text[]))
+  - Catalog attributes: {"columns": ["event_kind"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_t36_pressure_termination_pkey`: PRIMARY KEY (event_id)
+  - Catalog attributes: {"columns": ["event_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_topology_t36_pressure_termination_submitted_by_check`: CHECK (btrim(submitted_by::text) &lt;&gt; ''::text)
+  - Catalog attributes: {"columns": ["submitted_by"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `t36_termination_prior`: FOREIGN KEY (company_party_id, pipeline_id, section_id, condition_code, retired_revision_id) REFERENCES hidra_topology_t36_pressure_revision(company_party_id, pipeline_id, section_id, condition_code, revision_id)
+  - Catalog attributes: {"columns": ["company_party_id", "pipeline_id", "section_id", "condition_code", "retired_revision_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["company_party_id", "pipeline_id", "section_id", "condition_code", "revision_id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_t36_pressure_revision"}, "type": "f", "validated": true}
+- `t36_termination_recorded`: CHECK (recorded_at &gt;= approved_at)
+  - Catalog attributes: {"columns": ["recorded_at", "approved_at"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `t36_termination_shape`: CHECK (event_kind::text = 'SUPERSEDE'::text AND successor_revision_id IS NOT NULL AND successor_revision_id &lt;&gt; retired_revision_id OR event_kind::text = 'WITHDRAW'::text AND successor_revision_id IS NULL)
+  - Catalog attributes: {"columns": ["event_kind", "successor_revision_id", "retired_revision_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `t36_termination_source`: FOREIGN KEY (company_party_id, pipeline_system_id, baseline_receipt_id) REFERENCES hidra_topology_baseline_publication(company_party_id, pipeline_system_id, receipt_id)
+  - Catalog attributes: {"columns": ["company_party_id", "pipeline_system_id", "baseline_receipt_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["company_party_id", "pipeline_system_id", "receipt_id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_baseline_publication"}, "type": "f", "validated": true}
+- `t36_termination_successor`: FOREIGN KEY (company_party_id, pipeline_id, section_id, condition_code, successor_revision_id) REFERENCES hidra_topology_t36_pressure_revision(company_party_id, pipeline_id, section_id, condition_code, revision_id)
+  - Catalog attributes: {"columns": ["company_party_id", "pipeline_id", "section_id", "condition_code", "successor_revision_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["company_party_id", "pipeline_id", "section_id", "condition_code", "revision_id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_t36_pressure_revision"}, "type": "f", "validated": true}
+- `t36_termination_unique_prior`: UNIQUE (retired_revision_id)
+  - Catalog attributes: {"columns": ["retired_revision_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+
+#### Indexes
+
+- `hidra_topology_t36_pressure_termination_audit_event_id_key`: CREATE UNIQUE INDEX hidra_topology_t36_pressure_termination_audit_event_id_key ON public.hidra_topology_t36_pressure_termination USING btree (audit_event_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_topology_t36_pressure_termination_decision_action_id_key`: CREATE UNIQUE INDEX hidra_topology_t36_pressure_termination_decision_action_id_key ON public.hidra_topology_t36_pressure_termination USING btree (decision_action_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_topology_t36_pressure_termination_pkey`: CREATE UNIQUE INDEX hidra_topology_t36_pressure_termination_pkey ON public.hidra_topology_t36_pressure_termination USING btree (event_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `t36_termination_history_idx`: CREATE INDEX t36_termination_history_idx ON public.hidra_topology_t36_pressure_termination USING btree (company_party_id, pipeline_id, section_id, condition_code, recorded_at, event_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": false, "valid": true}
+- `t36_termination_unique_prior`: CREATE UNIQUE INDEX t36_termination_unique_prior ON public.hidra_topology_t36_pressure_termination USING btree (retired_revision_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `t36_termination_qualify`: CREATE TRIGGER t36_termination_qualify BEFORE INSERT ON hidra_topology_t36_pressure_termination FOR EACH ROW EXECUTE FUNCTION hidra_topology_t36_admission_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_t36_admission_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_t36_admission_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>DECLARE<br> target_ref text; expected_event text; expected_action text;<br> wf record; audit_row record; source_row record; target_row record;<br>BEGIN<br> IF NEW.recorded_at&lt;&gt;date_trunc('microseconds',NEW.recorded_at)<br>    OR NEW.approved_at&lt;&gt;date_trunc('microseconds',NEW.approved_at)<br>    OR NEW.reviewed_by=NEW.submitted_by THEN<br>   RAISE EXCEPTION 'T36 invalid evidence precision or reviewer separation' USING ERRCODE='23514';<br> END IF;<br> IF TG_TABLE_NAME='hidra_topology_t36_pressure_revision' THEN<br>   target_ref:=NEW.revision_id::text;<br>   expected_event:='OPERATING_PRESSURE_RESTRICTION_APPROVED';<br>   expected_action:='APPROVE_OPERATING_PRESSURE_RESTRICTION';<br>   IF NEW.effective_from&lt;&gt;date_trunc('microseconds',NEW.effective_from)<br>      OR NEW.effective_until IS NOT NULL<br>         AND NEW.effective_until&lt;&gt;date_trunc('microseconds',NEW.effective_until)<br>      OR NEW.supersedes_revision_id=NEW.revision_id THEN<br>     RAISE EXCEPTION 'T36 invalid revision interval/lineage' USING ERRCODE='23514';<br>   END IF;<br> ELSE<br>   target_ref:=NEW.event_id::text;<br>   expected_event:=CASE NEW.event_kind<br>     WHEN 'SUPERSEDE' THEN 'OPERATING_PRESSURE_RESTRICTION_SUPERSEDED'<br>     ELSE 'OPERATING_PRESSURE_RESTRICTION_WITHDRAWN' END;<br>   expected_action:=CASE NEW.event_kind<br>     WHEN 'SUPERSEDE' THEN 'SUPERSEDE_OPERATING_PRESSURE_RESTRICTION'<br>     ELSE 'WITHDRAW_OPERATING_PRESSURE_RESTRICTION' END;<br>   IF NEW.effective_at&lt;&gt;date_trunc('microseconds',NEW.effective_at) THEN<br>     RAISE EXCEPTION 'T36 invalid termination precision' USING ERRCODE='23514';<br>   END IF;<br> END IF;<br> -- Canonical owner: latest active authored Pipeline/Section association.<br> SELECT p.pipeline_system_id, r.company_party_id INTO target_row<br> FROM public.hidra_topology_pipeline p<br> JOIN public.hidra_topology_pipeline_system s ON s.id=p.pipeline_system_id<br> JOIN public.hidra_topology_foundation_system_owner o ON o.pipeline_system_id=s.id<br> JOIN public.hidra_topology_pipeline_authoring_revision r<br>   ON r.pipeline_id=p.id AND r.pipeline_system_id=s.id<br> WHERE p.id=NEW.pipeline_id AND p.status='ACTIVE' AND s.status='ACTIVE'<br>   AND r.revision=(SELECT max(v.revision)<br>                  FROM public.hidra_topology_pipeline_authoring_revision v<br>                  WHERE v.pipeline_id=p.id)<br>   AND o.company_party_id=r.company_party_id;<br> IF NOT FOUND OR target_row.pipeline_system_id&lt;&gt;NEW.pipeline_system_id<br>   OR target_row.company_party_id&lt;&gt;NEW.company_party_id<br>   OR (NEW.section_id&lt;&gt;'' AND NOT EXISTS(<br>      SELECT 1 FROM public.hidra_topology_pipeline_segment seg<br>      WHERE seg.id=NEW.section_id AND seg.pipeline_id=NEW.pipeline_id AND seg.status='ACTIVE')) THEN<br>   RAISE EXCEPTION 'T36 canonical target ownership mismatch' USING ERRCODE='23514';<br> END IF;<br> SELECT s.canonical_sha256 INTO source_row<br> FROM public.hidra_topology_baseline_publication p<br> JOIN public.hidra_topology_baseline_submission s<br>   ON s.company_party_id=p.company_party_id<br>  AND s.pipeline_system_id=p.pipeline_system_id AND s.submission_id=p.submission_id<br> WHERE p.company_party_id=NEW.company_party_id<br>   AND p.pipeline_system_id=NEW.pipeline_system_id<br>   AND p.receipt_id=NEW.baseline_receipt_id AND p.published_at&lt;=NEW.recorded_at;<br> IF NOT FOUND OR source_row.canonical_sha256&lt;&gt;NEW.baseline_manifest_digest THEN<br>   RAISE EXCEPTION 'T36 source publication mismatch' USING ERRCODE='23514';<br> END IF;<br> -- Existing Workflow enforces active definition, bound target, task sequencing,<br> -- actor evidence and immutable action. No T36 Workflow side table is invented.<br> SELECT a.actor_id, a.acted_at, i.started_by_actor_id INTO wf<br> FROM public.hidra_workflow_action a<br> JOIN public.hidra_workflow_instance i ON i.id=a.instance_id<br> JOIN public.hidra_workflow_type_catalog tgt ON tgt.id=i.target_type_id<br> JOIN public.hidra_workflow_type_catalog pur ON pur.id=i.workflow_purpose_id<br> WHERE a.id=NEW.decision_action_id<br>   AND a.action_type='APPROVE' AND a.decision='APPROVE'<br>   AND i.target_module='topology' AND i.target_id=target_ref<br>   AND tgt.catalog_name='WORKFLOW_TARGET_TYPE' AND tgt.code='OPERATING_PRESSURE_RESTRICTION'<br>   AND pur.catalog_name='WORKFLOW_PURPOSE' AND pur.code='OPERATING_PRESSURE_RESTRICTION_APPROVAL';<br> IF NOT FOUND OR wf.actor_id IS DISTINCT FROM NEW.reviewed_by<br>   OR wf.started_by_actor_id IS DISTINCT FROM NEW.submitted_by<br>   OR wf.acted_at IS DISTINCT FROM NEW.approved_at THEN<br>   RAISE EXCEPTION 'T36 independent Workflow approval mismatch' USING ERRCODE='23514';<br> END IF;<br> -- Audit owner receipt is immutable and must bind the same exact Workflow<br> -- decision, target, reviewer, action and typed event. No synthetic Audit UUID.<br> SELECT e.id INTO audit_row<br> FROM public.hidra_audit_event e<br> JOIN public.hidra_audit_catalog_entry kind ON kind.id=e.event_type_id<br> WHERE e.id=NEW.audit_event_id AND e.target_module='topology'<br>   AND e.target_type='OPERATING_PRESSURE_RESTRICTION'<br>   AND e.target_id=target_ref AND e.workflow_action_id=NEW.decision_action_id<br>   AND e.actor_id=NEW.reviewed_by AND e.action_code=expected_action<br>   AND e.operation='APPROVE' AND kind.catalog_name='EVENT_TYPE'<br>   AND kind.code=expected_event AND e.occurred_at&lt;=NEW.recorded_at;<br> IF NOT FOUND THEN<br>   RAISE EXCEPTION 'T36 Audit event binding mismatch' USING ERRCODE='23514';<br> END IF;<br> IF TG_TABLE_NAME='hidra_topology_t36_pressure_termination' THEN<br>   SELECT * INTO target_row FROM public.hidra_topology_t36_pressure_revision r<br>   WHERE r.revision_id=NEW.retired_revision_id;<br>   IF NOT FOUND OR target_row.pipeline_system_id&lt;&gt;NEW.pipeline_system_id<br>       OR NEW.effective_at&lt;target_row.effective_from THEN<br>     RAISE EXCEPTION 'T36 invalid prior effective revision' USING ERRCODE='23514';<br>   END IF;<br>   IF NEW.event_kind='SUPERSEDE' AND NOT EXISTS(<br>      SELECT 1 FROM public.hidra_topology_t36_pressure_revision next<br>      WHERE next.revision_id=NEW.successor_revision_id<br>        AND next.supersedes_revision_id=NEW.retired_revision_id<br>        AND next.effective_from=NEW.effective_at) THEN<br>     RAISE EXCEPTION 'T36 successor effective lineage mismatch' USING ERRCODE='23514';<br>   END IF;<br> ELSIF NEW.supersedes_revision_id IS NOT NULL AND NOT EXISTS(<br>    SELECT 1 FROM public.hidra_topology_t36_pressure_revision prior<br>    WHERE prior.revision_id=NEW.supersedes_revision_id<br>      AND (prior.company_party_id,prior.pipeline_id,prior.section_id,<br>           prior.pipeline_system_id,prior.condition_code)<br>          =(NEW.company_party_id,NEW.pipeline_id,NEW.section_id,<br>            NEW.pipeline_system_id,NEW.condition_code)) THEN<br>    RAISE EXCEPTION 'T36 successor scope mismatch' USING ERRCODE='23514';<br> END IF;<br> RETURN NEW;<br>END;<br>$function$<br>
+- `t36_terminations_immutable`: CREATE TRIGGER t36_terminations_immutable BEFORE DELETE OR UPDATE ON hidra_topology_t36_pressure_termination FOR EACH ROW EXECUTE FUNCTION hidra_topology_t36_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_t36_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_t36_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN RAISE EXCEPTION 'T36 qualified restriction history is immutable' USING ERRCODE='23514';<br>END; $function$<br>
+- `t36_terminations_truncate`: CREATE TRIGGER t36_terminations_truncate BEFORE TRUNCATE ON hidra_topology_t36_pressure_termination FOR EACH STATEMENT EXECUTE FUNCTION hidra_topology_t36_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_t36_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_t36_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN RAISE EXCEPTION 'T36 qualified restriction history is immutable' USING ERRCODE='23514';<br>END; $function$<br>
+- `z_t36_termination_candidate_publication`: CREATE TRIGGER z_t36_termination_candidate_publication BEFORE INSERT ON hidra_topology_t36_pressure_termination FOR EACH ROW EXECUTE FUNCTION hidra_topology_t36_candidate_publication_guard()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_t36_candidate_publication_guard()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_t36_candidate_publication_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>DECLARE approved_id uuid; proposed record;<br>BEGIN<br> -- Each trigger row has only the identifier column of its own table.<br> IF TG_TABLE_NAME = 'hidra_topology_t36_pressure_revision' THEN<br>   approved_id := NEW.revision_id;<br> ELSIF TG_TABLE_NAME = 'hidra_topology_t36_pressure_termination' THEN<br>   approved_id := NEW.event_id;<br> ELSE<br>   RAISE EXCEPTION 'Unexpected T36 publication trigger table' USING ERRCODE='23514';<br> END IF;<br> SELECT c.* INTO proposed<br> FROM public.hidra_topology_t36_pressure_candidate c<br> WHERE c.candidate_id=approved_id;<br> IF NOT FOUND THEN<br>   RAISE EXCEPTION 'T36 immutable review target missing' USING ERRCODE='23514';<br> END IF;<br> IF (proposed.company_party_id,proposed.pipeline_id,proposed.section_id,<br>       proposed.pipeline_system_id,proposed.condition_code,<br>       proposed.baseline_receipt_id,proposed.baseline_manifest_digest,<br>       proposed.engineering_source_revision,proposed.submitted_by)<br>    IS DISTINCT FROM<br>       (NEW.company_party_id,NEW.pipeline_id,NEW.section_id,<br>        NEW.pipeline_system_id,NEW.condition_code,<br>        NEW.baseline_receipt_id,NEW.baseline_manifest_digest,<br>        NEW.engineering_source_revision,NEW.submitted_by)<br>    OR proposed.created_at&gt;NEW.approved_at<br>    OR NOT EXISTS (<br>        SELECT 1 FROM public.hidra_workflow_action a<br>        JOIN public.hidra_workflow_instance i ON i.id=a.instance_id<br>        WHERE a.id=NEW.decision_action_id<br>          AND i.target_id=approved_id::text<br>          AND i.target_code_snapshot='t36-v1:'&#124;&#124;approved_id::text)<br> THEN<br>   RAISE EXCEPTION 'T36 approved action does not bind exact candidate'<br>       USING ERRCODE='23514';<br> END IF;<br> IF TG_TABLE_NAME='hidra_topology_t36_pressure_revision' THEN<br>   IF proposed.candidate_kind&lt;&gt;'REVISION'<br>       OR (proposed.upper_pressure,proposed.pressure_unit,proposed.pressure_basis,<br>           proposed.effective_from,proposed.effective_until,<br>           proposed.retired_revision_id)<br>       IS DISTINCT FROM<br>          (NEW.upper_pressure,NEW.pressure_unit,NEW.pressure_basis,<br>           NEW.effective_from,NEW.effective_until,NEW.supersedes_revision_id)<br>   THEN RAISE EXCEPTION 'T36 reviewed pressure proposal differs from publication'<br>       USING ERRCODE='23514'; END IF;<br> ELSE<br>   IF proposed.candidate_kind&lt;&gt;NEW.event_kind<br>       OR (proposed.effective_from,proposed.retired_revision_id,<br>           proposed.successor_revision_id)<br>       IS DISTINCT FROM<br>          (NEW.effective_at,NEW.retired_revision_id,NEW.successor_revision_id)<br>   THEN RAISE EXCEPTION 'T36 reviewed termination differs from publication'<br>       USING ERRCODE='23514'; END IF;<br> END IF;<br> RETURN NEW;<br>END;<br>$function$<br>
+
 ### public.hidra_workflow_action
 
 Owner: **workflow**; relation kind: `r`.
@@ -34571,6 +34920,9 @@ Persisted WorkflowActionJpaEntity state; semantic authority remains with workflo
 - Migration mention (not inferred introduction): [V20261006_017__hmr_081_workflow_action.sql](../../src/main/resources/db/migration/V20261006_017__hmr_081_workflow_action.sql)
 - Migration mention (not inferred introduction): [V20261006_018__hmr_099_workflow_state_history.sql](../../src/main/resources/db/migration/V20261006_018__hmr_099_workflow_state_history.sql)
 - Migration mention (not inferred introduction): [V20261118_004__t25_scoped_report_rendering.sql](../../src/main/resources/db/migration/V20261118_004__t25_scoped_report_rendering.sql)
+- Migration mention (not inferred introduction): [V20261121_001__t36_qualified_pressure_restriction_projection.sql](../../src/main/resources/db/migration/V20261121_001__t36_qualified_pressure_restriction_projection.sql)
+- Migration mention (not inferred introduction): [V20261121_002__t36_immutable_workflow_pressure_candidates.sql](../../src/main/resources/db/migration/V20261121_002__t36_immutable_workflow_pressure_candidates.sql)
+- Migration mention (not inferred introduction): [V20261121_003__t36_dispatch_publication_guard_by_row_type.sql](../../src/main/resources/db/migration/V20261121_003__t36_dispatch_publication_guard_by_row_type.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -35106,6 +35458,9 @@ Persisted WorkflowInstanceJpaEntity state; semantic authority remains with workf
 - Migration mention (not inferred introduction): [V20261006_018__hmr_099_workflow_state_history.sql](../../src/main/resources/db/migration/V20261006_018__hmr_099_workflow_state_history.sql)
 - Migration mention (not inferred introduction): [V20261101_002__workflow_topology_characteristic_approval_catalog.sql](../../src/main/resources/db/migration/V20261101_002__workflow_topology_characteristic_approval_catalog.sql)
 - Migration mention (not inferred introduction): [V20261118_004__t25_scoped_report_rendering.sql](../../src/main/resources/db/migration/V20261118_004__t25_scoped_report_rendering.sql)
+- Migration mention (not inferred introduction): [V20261121_001__t36_qualified_pressure_restriction_projection.sql](../../src/main/resources/db/migration/V20261121_001__t36_qualified_pressure_restriction_projection.sql)
+- Migration mention (not inferred introduction): [V20261121_002__t36_immutable_workflow_pressure_candidates.sql](../../src/main/resources/db/migration/V20261121_002__t36_immutable_workflow_pressure_candidates.sql)
+- Migration mention (not inferred introduction): [V20261121_003__t36_dispatch_publication_guard_by_row_type.sql](../../src/main/resources/db/migration/V20261121_003__t36_dispatch_publication_guard_by_row_type.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -35632,6 +35987,7 @@ Persisted WorkflowCatalogEntryJpaEntity state; semantic authority remains with w
 - Migration mention (not inferred introduction): [V20261111_002__topology_engineering_baseline_publication.sql](../../src/main/resources/db/migration/V20261111_002__topology_engineering_baseline_publication.sql)
 - Migration mention (not inferred introduction): [V20261118_004__t25_scoped_report_rendering.sql](../../src/main/resources/db/migration/V20261118_004__t25_scoped_report_rendering.sql)
 - Migration mention (not inferred introduction): [V20261119_003__t30_workflow_configuration_lock.sql](../../src/main/resources/db/migration/V20261119_003__t30_workflow_configuration_lock.sql)
+- Migration mention (not inferred introduction): [V20261121_001__t36_qualified_pressure_restriction_projection.sql](../../src/main/resources/db/migration/V20261121_001__t36_qualified_pressure_restriction_projection.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|

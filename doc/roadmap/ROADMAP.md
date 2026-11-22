@@ -9,7 +9,7 @@
 | Status | ACTIVE |
 | Authority | Sole task register and execution source for HidraAPI |
 | Owner adoption | 2026-11-10 |
-| Active task selection | T37 COMPLETED on exact-SHA CI #1352. T38 selected and registered, implementation pending. |
+| Active task selection | T39 COMPLETED on exact-SHA CI #1358 attempt 2 and recorded by closure commit 9d80b14f3a6f8b3e0c9f81cd5d9efdf1dfb008c6. Owner selected T40 v0.7.0 release alignment; release verification pending. |
 
 The task register controls scope, dependencies, status and acceptance. Existing technical policy and verified implementation evidence retain their applicability. Task status advances only with recorded evidence. The initial status for each task is PLANNED. The first candidate is T01.
 
@@ -150,6 +150,19 @@ recorded before T33 is selected.
 | **T37 · Qualify asset-scoped trusted observations (G5)** | Telemetry with Topology and Identity | T33, T08–T09 | Qualify authorized discovery of relevant commissioned points and trusted latest and historical readings for the selected asset. Preserve applicable binding revision, units, measurement source and time, quality, trust and freshness. | Prove a binding change, stale or unavailable readings, unit or binding incompatibility and revoked scope. Historical reads use the binding valid at the relevant time and enforce current read authority. | COMPLETED |
 | **T38 · Govern restriction decisions and evidence (G6)** | Approved engineering constraint owner with Workflow, Audit, Identity and Organization | T33, T36, T28, T30 | Bind submission, independent review, approval, supersession and withdrawal to the exact restriction revision. Publish the effective owner outcome with exact authorized decision and audit references. Reuse supported Workflow and Audit contracts. | Prove approval and readback, self-review denial, revoked authority, stale version and invalid approval reuse. Decision and owner outcome preserve their applicable transaction guarantees, and audit evidence remains scope-safe. | COMPLETED |
 | **T39 · Qualify the Circle 1 HidraAPI consumer handoff (G7)** | HidraAPI integration and QA with the seven Circle 1 owners | T33–T37 for the read-only milestone. T38 for full Circle 1. | Pin runtime OpenAPI, DTOs and permission/error semantics. Prove the signed HTTP journey on fresh PostgreSQL and provide the synthetic regional fixture and linked evidence required for the HidraWEB browser journey. Reuse protected owner reads where they satisfy the journey. | The exact-SHA API evidence covers regional isolation, revocation, map-to-dossier navigation, qualified constraint and trusted observation distinctions, and scope-safe decision readback. Full acceptance additionally covers the governed decision. HidraWEB independently records matching browser acceptance on its pinned consumer SHA. | COMPLETED |
+
+### Increment 10 — Formal Circle 1 development-software release
+
+The owner selected Phase A for a formal `v0.7.0` milestone following accepted
+T39. The release is a versioned GitHub software record, **not production
+promotion**. The existing seven-module Circle 1 and synthetic GZ2 qualification
+form the capability boundary. Release tagging and development-line transition
+remain separate, explicitly authorized stages.
+
+| Task | Owner | Depends on | Deliverable | Pass condition | Status |
+|---|---|---|---|---|---|
+| **T40 · Prepare v0.7.0 Circle 1 release alignment** | Release owner with HidraAPI integration/QA | T39 accepted at `f0310330ae8eb58f8bf00400b29afeb5baccb869`, closure `9d80b14f3a6f8b3e0c9f81cd5d9efdf1dfb008c6`, CI #1358 attempt 2 | Align Maven project version to `0.7.0`; record milestone scope, limitations and verification obligations in release-history and state documents; do not publish a tag or deploy | Release-alignment commit is on `main` with matching Maven version, exact-SHA CI and Docs green. A separate manual `audit` full CI with `serial_oracle=true` must pass before the release evidence checker may qualify a tag. No GitHub Release publication in this task. | IN PROGRESS |
+
 
 **Decision dependencies.** Before T33 selection, record whether an effective
 Organization responsibility constrains Identity grants or can contribute
@@ -7966,3 +7979,37 @@ also passed on the accepted implementation SHA.
 The [Circle 1 consumer handoff](../api/CIRCLE_1_CONSUMER_HANDOFF.md)
 and this evidence close the HidraAPI gate. HidraWEB browser acceptance
 remains governed separately on the pinned consumer and API SHAs.
+
+### T40 v0.7.0 Circle 1 release alignment — owner-selected Phase A, 2026-11-22
+
+**Selection and authorization.** The owner expressly selected Phase A after
+T39 passed. Only this one T40 release-alignment stage is selected. T39 was
+accepted on implementation `f0310330ae8eb58f8bf00400b29afeb5baccb869`
+by [HidraAPI CI #1358 attempt 2](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44999120757/attempts/2)
+and recorded on `main` by closure `9d80b14f3a6f8b3e0c9f81cd5d9efdf1dfb008c6`.
+The prior formal release is `v0.6.0` and the parent Maven project version is
+`0.7.0-SNAPSHOT`. The accepted T39 commit is a semantic milestone anchor,
+**not** a valid formal tag target for Maven `0.7.0`.
+
+**Exact T40 commit message:** `chore(release): prepare 0.7.0 Circle 1 milestone`.
+
+| Action | Exact file | Bounded role |
+|---|---|---|
+| UPDATE | `pom.xml` | Replace the project version `0.7.0-SNAPSHOT` with `0.7.0` only; no dependency, build plugin or behavior changes. |
+| UPDATE | `VERSIONS.md` | Record the proposed `v0.7.0` Circle 1 development-software milestone and T39 source evidence without inventing the release commit, tag or CI results. |
+| UPDATE | `PROJECT_STATE.md` | Record candidate status, most recent published `v0.6.0`, release gates, excluded industrial and deployment acceptance, and eventual separate development transition. |
+| UPDATE | `doc/roadmap/ROADMAP.md` | Register T40, its owner-approved scope, exact message, file allowlist and actual evidence at the applicable checkpoint; preserve prior task/evidence history. |
+| CREATE / DELETE | None | No new API, schema, migrations, workflow definitions, production configuration, release tags or artifacts. |
+
+**Validation and release gate:** first verify the actual guarded release-alignment
+commit SHA, parent/tree, changed-file allowlist, Maven `0.7.0` and started
+GitHub Actions on that exact SHA. Stop without waiting or selecting a subsequent
+stage. For a formal `v0.7.0` tag, a later explicit verification action must
+confirm exact-SHA Documentation Validation and a successful full `HidraAPI CI`
+run under `workflow_dispatch` using `verification_mode=audit` and
+`serial_oracle=true` (required by the current release evidence checker).
+A normal development push CI alone is not sufficient release evidence.
+The owner then separately creates the immutable tag and publishes the GitHub
+Release targeting the independently verified alignment SHA. The eventual
+`0.8.0-SNAPSHOT` transition and HidraWEB browser acceptance are separate.
+No deployment, live OT, production data or numerical solver is selected.

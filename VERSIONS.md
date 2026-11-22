@@ -1,5 +1,29 @@
 # HidraAPI Version History
 
+**v0.7.0 Circle 1 release-alignment candidate — 2026-11-22.** The owner selected the
+formal Circle 1 development-software milestone after T39 acceptance. This source
+changes the Maven project version from `0.7.0-SNAPSHOT` to `0.7.0`; it is **not
+yet a published Git tag or GitHub Release**. The last published release remains
+`v0.6.0`. The exact candidate commit and required CI/audit evidence are
+resolved from GitHub after publication, not predicted in this file.
+
+- **Milestone anchor:** T39 implementation `f0310330ae8eb58f8bf00400b29afeb5baccb869`,
+  accepted by [HidraAPI CI #1358 attempt 2](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44999120757/attempts/2);
+  T39 evidence closure `9d80b14f3a6f8b3e0c9f81cd5d9efdf1dfb008c6`.
+- **Scope:** Circle 1 regional access, authorized map, protected pipeline
+  dossier, qualified pressure-constraint read, asset-scoped trusted observations,
+  governed restriction decision/evidence, and the API consumer handoff (T33–T39).
+- **Limits:** development-software qualification with synthetic GZ2/approved fresh
+  PostgreSQL only; no HidraWEB browser acceptance, production deployment,
+  industrial calibration, live OT, operational control or numerical solver.
+- **Release gate:** independently verify the new release-alignment SHA under
+  required CI and Documentation Validation, then perform the explicit audit-mode
+  serial-oracle full gate required by the release evidence checker. Only the
+  accepted release-alignment commit containing Maven `0.7.0` may receive
+  `v0.7.0`; do not create the tag or Release during Phase A.
+- **Development transition:** `0.8.0-SNAPSHOT` is separate and may occur only
+  after the actual `v0.7.0` tag/Release exists and is independently verified.
+
 **Current release/development state — 2026-10-09:** `v0.6.0` is the published
 latest formal release at `09bf1cbf82c20f19c50ebb1ff9e27047c7f34856`, verified by
 Documentation #138 and full HidraAPI CI #610. Main is on `0.7.0-SNAPSHOT` at

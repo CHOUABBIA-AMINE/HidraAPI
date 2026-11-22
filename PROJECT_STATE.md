@@ -1,5 +1,31 @@
 # HidraAPI / HyFlo — Project State Handoff
 
+## Current release preparation — 2026-11-22
+
+**Owner-selected stage T40:** prepare the formal `v0.7.0` Circle 1
+development-software baseline from the accepted T39 milestone. This candidate
+changes only the Maven project version and release/governance records; no
+deployment or tag is authorized by the preparation commit.
+
+- T39 implementation: `f0310330ae8eb58f8bf00400b29afeb5baccb869`;
+  [CI #1358 attempt 2](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44999120757/attempts/2)
+  passed. Closure/acceptance record: `9d80b14f3a6f8b3e0c9f81cd5d9efdf1dfb008c6`.
+- **Last published formal release:** [v0.6.0](https://github.com/CHOUABBIA-AMINE/HidraAPI/releases/tag/v0.6.0).
+- **Release candidate Maven version:** `0.7.0`; the formal tag
+  `v0.7.0` and GitHub Release remain **not published**.
+- **Current gate:** exact-SHA release-alignment CI plus the separate
+  explicit audit-mode serial-oracle gate required for release eligibility.
+  Record actual run/attempt and artifacts only after verification.
+- **HidraWEB browser and SITE/OT acceptance:** independent and not
+  represented by this development-software baseline.
+- Next development line `0.8.0-SNAPSHOT` requires a separately authorized
+  post-release transition after the real GitHub Release exists.
+
+The release milestone is governed by [T40](doc/roadmap/ROADMAP.md),
+[AGENTS.md §19](AGENTS.md), and [VERSIONS.md](VERSIONS.md).
+The dated 2026-10-09 state below records the earlier `v0.6.0`
+release/development transition and is preserved as history.
+
 **Owner-confirmed operating scope — 2026-10-20:** HidraAPI is a development API;
 there is no production API deployment or active production database yet. Formal
 GitHub releases and older references to production source/CI/artifacts describe

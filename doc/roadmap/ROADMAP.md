@@ -149,7 +149,7 @@ recorded before T33 is selected.
 | **T36 · Resolve qualified operating constraints (G4)** | Configurable company-scoped engineering restriction authority (logical capability), with Topology as read-only custodian, Identity, Workflow and Audit; Integrity only for separately admitted derived restrictions | T33, applicable T07 sources, approved logical authority/source/decision contract (recorded below) | Resolve approved restrictions for an exact asset or section and effective instant. Preserve pressure basis, units, scope, operating conditions, source revision, qualification and authorized decision references. Use existing qualified sources where proven. | Synthetic cases cover applicability, approved effective and historical reads, supersession, withdrawal, unresolved conflicts, missing evidence and unauthorized scope. Design pressure and unqualified assessments are never returned as approved limits. | COMPLETED |
 | **T37 · Qualify asset-scoped trusted observations (G5)** | Telemetry with Topology and Identity | T33, T08–T09 | Qualify authorized discovery of relevant commissioned points and trusted latest and historical readings for the selected asset. Preserve applicable binding revision, units, measurement source and time, quality, trust and freshness. | Prove a binding change, stale or unavailable readings, unit or binding incompatibility and revoked scope. Historical reads use the binding valid at the relevant time and enforce current read authority. | COMPLETED |
 | **T38 · Govern restriction decisions and evidence (G6)** | Approved engineering constraint owner with Workflow, Audit, Identity and Organization | T33, T36, T28, T30 | Bind submission, independent review, approval, supersession and withdrawal to the exact restriction revision. Publish the effective owner outcome with exact authorized decision and audit references. Reuse supported Workflow and Audit contracts. | Prove approval and readback, self-review denial, revoked authority, stale version and invalid approval reuse. Decision and owner outcome preserve their applicable transaction guarantees, and audit evidence remains scope-safe. | COMPLETED |
-| **T39 · Qualify the Circle 1 HidraAPI consumer handoff (G7)** | HidraAPI integration and QA with the seven Circle 1 owners | T33–T37 for the read-only milestone. T38 for full Circle 1. | Pin runtime OpenAPI, DTOs and permission/error semantics. Prove the signed HTTP journey on fresh PostgreSQL and provide the synthetic regional fixture and linked evidence required for the HidraWEB browser journey. Reuse protected owner reads where they satisfy the journey. | The exact-SHA API evidence covers regional isolation, revocation, map-to-dossier navigation, qualified constraint and trusted observation distinctions, and scope-safe decision readback. Full acceptance additionally covers the governed decision. HidraWEB independently records matching browser acceptance on its pinned consumer SHA. | IN PROGRESS |
+| **T39 · Qualify the Circle 1 HidraAPI consumer handoff (G7)** | HidraAPI integration and QA with the seven Circle 1 owners | T33–T37 for the read-only milestone. T38 for full Circle 1. | Pin runtime OpenAPI, DTOs and permission/error semantics. Prove the signed HTTP journey on fresh PostgreSQL and provide the synthetic regional fixture and linked evidence required for the HidraWEB browser journey. Reuse protected owner reads where they satisfy the journey. | The exact-SHA API evidence covers regional isolation, revocation, map-to-dossier navigation, qualified constraint and trusted observation distinctions, and scope-safe decision readback. Full acceptance additionally covers the governed decision. HidraWEB independently records matching browser acceptance on its pinned consumer SHA. | COMPLETED |
 
 **Decision dependencies.** Before T33 selection, record whether an effective
 Organization responsibility constrains Identity grants or can contribute
@@ -7934,3 +7934,35 @@ backend workflow, SITE or operational sign-off is required. Independent
 HidraWEB browser acceptance on the pinned consumer/backend SHAs remains
 the product integration gate under HidraWEB governance. T39 selects no
 HidraWEB implementation, deployment, live OT or numerical solver work.
+
+### T39 Circle 1 HidraAPI consumer handoff accepted — 2026-11-22
+
+**T39 (G7) — COMPLETED for HidraAPI development software.**
+[HidraAPI CI #1358 attempt 2](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44999120757/attempts/2)
+passed the [Full Verification Gate](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44999120757/job/137141211356)
+on accepted implementation SHA `f0310330ae8eb58f8bf00400b29afeb5baccb869`
+(parent `0f6b563409d6fc6199d2c1efad4f75fc9dde5559`, tree
+`37b0cf68edff5c62188d407b8ce9eb136906edb0`). The
+[combined acceptance artifact](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44999120757/artifacts/14745428477)
+records 4,563 tests across 611 classes, with zero failures, errors or skips.
+The gate receipt uses shard 4 from attempt 2 and the other accepted lane
+evidence from attempt 1 on the same SHA.
+
+The bundled shard-1 report
+`reports/TEST-dz.sh.hidra.qualification.Gz2SignedWorkflowNativeHttpPostgresIntegrationTest.xml`
+contains the passing signed test and its version-1
+`HIDRA_CIRCLE1_HANDOFF_V1` receipt. Its eight checks cover scoped discovery,
+same-token revocation, the map/dossier/facility join, design versus
+qualified pressure, trusted observation states, Workflow approval versus
+owner publication, scoped evidence and independent restart.
+The [runtime OpenAPI artifact](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44999120757/artifacts/14745595446)
+and the API member of the full bundle identify the accepted SHA.
+The bundled raw JSON SHA-256 is
+`386858e3a3e7c78180cdb2d97a58102b973a22bcd723f5ad2ca29c33aaf20bbe`.
+The API gate passed strict OpenAPI and physical dictionary checks.
+[Documentation Validation #1212](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44999120761)
+also passed on the accepted implementation SHA.
+
+The [Circle 1 consumer handoff](../api/CIRCLE_1_CONSUMER_HANDOFF.md)
+and this evidence close the HidraAPI gate. HidraWEB browser acceptance
+remains governed separately on the pinned consumer and API SHAs.

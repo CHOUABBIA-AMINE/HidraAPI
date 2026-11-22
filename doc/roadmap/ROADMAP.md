@@ -148,8 +148,8 @@ recorded before T33 is selected.
 | **T35 · Qualify protected pipeline dossier reads (G3)** | Topology with engineering source owners | T33, T04–T07 | Qualify existing reads for a selected pipeline's design characteristics, route, kilometer points, sections, elevation, connections, installed equipment and published revision provenance. Extend a typed read only for a demonstrated gap. | A scoped client retrieves the agreed available facts with explicit units, source and version. Unavailable values are explicit. Restricted history and linked resource details require their own current authority. | COMPLETED |
 | **T36 · Resolve qualified operating constraints (G4)** | Configurable company-scoped engineering restriction authority (logical capability), with Topology as read-only custodian, Identity, Workflow and Audit; Integrity only for separately admitted derived restrictions | T33, applicable T07 sources, approved logical authority/source/decision contract (recorded below) | Resolve approved restrictions for an exact asset or section and effective instant. Preserve pressure basis, units, scope, operating conditions, source revision, qualification and authorized decision references. Use existing qualified sources where proven. | Synthetic cases cover applicability, approved effective and historical reads, supersession, withdrawal, unresolved conflicts, missing evidence and unauthorized scope. Design pressure and unqualified assessments are never returned as approved limits. | COMPLETED |
 | **T37 · Qualify asset-scoped trusted observations (G5)** | Telemetry with Topology and Identity | T33, T08–T09 | Qualify authorized discovery of relevant commissioned points and trusted latest and historical readings for the selected asset. Preserve applicable binding revision, units, measurement source and time, quality, trust and freshness. | Prove a binding change, stale or unavailable readings, unit or binding incompatibility and revoked scope. Historical reads use the binding valid at the relevant time and enforce current read authority. | COMPLETED |
-| **T38 · Govern restriction decisions and evidence (G6)** | Approved engineering constraint owner with Workflow, Audit, Identity and Organization | T33, T36, T28, T30 | Bind submission, independent review, approval, supersession and withdrawal to the exact restriction revision. Publish the effective owner outcome with exact authorized decision and audit references. Reuse supported Workflow and Audit contracts. | Prove approval and readback, self-review denial, revoked authority, stale version and invalid approval reuse. Decision and owner outcome preserve their applicable transaction guarantees, and audit evidence remains scope-safe. | IN PROGRESS |
-| **T39 · Qualify the Circle 1 HidraAPI consumer handoff (G7)** | HidraAPI integration and QA with the seven Circle 1 owners | T33–T37 for the read-only milestone. T38 for full Circle 1. | Pin runtime OpenAPI, DTOs and permission/error semantics. Prove the signed HTTP journey on fresh PostgreSQL and provide the synthetic regional fixture and linked evidence required for the HidraWEB browser journey. Reuse protected owner reads where they satisfy the journey. | The exact-SHA API evidence covers regional isolation, revocation, map-to-dossier navigation, qualified constraint and trusted observation distinctions, and scope-safe decision readback. Full acceptance additionally covers the governed decision. HidraWEB independently records matching browser acceptance on its pinned consumer SHA. | PLANNED |
+| **T38 · Govern restriction decisions and evidence (G6)** | Approved engineering constraint owner with Workflow, Audit, Identity and Organization | T33, T36, T28, T30 | Bind submission, independent review, approval, supersession and withdrawal to the exact restriction revision. Publish the effective owner outcome with exact authorized decision and audit references. Reuse supported Workflow and Audit contracts. | Prove approval and readback, self-review denial, revoked authority, stale version and invalid approval reuse. Decision and owner outcome preserve their applicable transaction guarantees, and audit evidence remains scope-safe. | COMPLETED |
+| **T39 · Qualify the Circle 1 HidraAPI consumer handoff (G7)** | HidraAPI integration and QA with the seven Circle 1 owners | T33–T37 for the read-only milestone. T38 for full Circle 1. | Pin runtime OpenAPI, DTOs and permission/error semantics. Prove the signed HTTP journey on fresh PostgreSQL and provide the synthetic regional fixture and linked evidence required for the HidraWEB browser journey. Reuse protected owner reads where they satisfy the journey. | The exact-SHA API evidence covers regional isolation, revocation, map-to-dossier navigation, qualified constraint and trusted observation distinctions, and scope-safe decision readback. Full acceptance additionally covers the governed decision. HidraWEB independently records matching browser acceptance on its pinned consumer SHA. | IN PROGRESS |
 
 **Decision dependencies.** Before T33 selection, record whether an effective
 Organization responsibility constrains Identity grants or can contribute
@@ -7818,3 +7818,119 @@ documentation provenance manifest and this append-only record. Use
 `docs(topology): reconcile T38 restriction decision contracts` for the
 artifact-backed follow-up. T38 remains IN PROGRESS pending the exact
 reconciled SHA Full Verification Gate. T39 is subsequent.
+
+### Close T38 and register the T39 Circle 1 consumer handoff — 2026-11-22
+
+**T38 (G6) — COMPLETED for registered development software.**
+[HidraAPI CI #1356 attempt 1](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44987407178/attempts/1)
+passed the [Full Verification Gate](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44987407178/job/137104292642)
+on reconciled source `f0f5fc85178dc7a52110007fb843bde194f54a07`,
+parent `1de513cc02c2ddaeb4c162ede2b8c32c96bd8571`, tree
+`3a9c77404a7b8f5c0391ccb3eb8803a7c5d7b54c`.
+The [combined evidence](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44987407178/artifacts/14740911410)
+contains 611 test classes and 4,563 tests, with zero failures, errors or
+skips. The signed GZ2 HTTP lifecycle and concurrent-publication check
+passed in [PostgreSQL shard 1](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44987407178/job/137100912716).
+All fourteen PostgreSQL shards, Java 21 unit and architecture, static
+validation, and [runtime OpenAPI compatibility and strict OpenAPI and
+physical dictionary equality](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44987407178/job/137100912409)
+passed. The serial oracle was inactive in development-partitioned mode.
+[Documentation Validation #1209](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44987407096)
+also passed on the same SHA. This closes the registered T38 software gate.
+
+**T39 (G7) — selected, implementation envelope registered.**
+HidraAPI Integration and QA own the handoff with the existing Circle 1
+module owners. T33–T38 are complete. Register the full backend handoff,
+including the read-only path and governed restriction path in a single
+synthetic fixture and signed journey. The implementation stage is
+`test(qualification): qualify Circle 1 HidraAPI consumer handoff`.
+The selection commit is `docs(roadmap): close T38 and register T39 consumer handoff`.
+
+#### T39 scope and continuity
+
+The accepted implementation reference is the T38 source above.
+Its [exact runtime OpenAPI](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44987407178/artifacts/14740348799)
+has 491 paths, 536 operations and 586 schemas. The raw JSON SHA-256 sealed
+by the full gate is
+`0c038a5bea92c08db2936805187db9fd1895757a1be52f191bc34f46c1c90cad`.
+The signed qualification suite already proves T35 baseline readback,
+T36 qualified restrictions, T37 asset observations and T38 decisions.
+The separate T33/T34 regional suite already tests authorization before
+counts, paging and geometry. T39 links the owner routes through the
+same selected feature and related asset in the signed qualification
+suite. No new runtime endpoint, permission, policy, DTO, migration or
+engine is required by the admitted scope.
+
+Reuse the existing signed LOCAL authentication and fresh PostgreSQL
+fixture. Add a browser-replayable synthetic region to the same test
+fixture with a map-discoverable GZ2 pipeline/section, a genuinely linked
+equipment/facility target for the commissioned point, a disjoint
+same-company region and a foreign company. Select an authorized map or
+search feature, derive its pipeline and linked target from owner
+responses, and use those returned identifiers for dossier, constraint
+and Telemetry calls. The contract must identify the exact navigation
+fields and any lookup hop. Fixture identifiers can assert correctness
+but must not bypass the navigation.
+Specifically, use the authorized `pipelines` feature's
+`properties.entityId` as the dossier and pipeline-constraint path ID,
+select the section by `items[].id` from the dossier sections response,
+and use an authorized equipment item's `facilityId` for the existing
+`FACILITY` Telemetry discovery route. Use the returned `pointId` for
+latest/history and the returned T38 `requestId` for publication and
+evidence. Verify the chosen section is the equipment association where
+the fixture provides one.
+
+| Operation | Exact repository path | Role and permitted change |
+|---|---|---|
+| CREATE | `doc/api/CIRCLE_1_CONSUMER_HANDOFF.md` | API consumer contract and fixture runbook. Map method, route and operationId to request/response schemas, join identifiers, required current scope/permission, paging, time/units/quality, cache and response semantics. Cover login, regional access, map/search/GeoJSON, dossier and baseline, pipeline/section constraints, commissioned points and trusted latest/history, Workflow discovery/decision and T38 request/publication/evidence. Record supported denial and conflict behavior from source and test. Give the exact artifact selection and digest checks, credential-free fixture receipt format, documented loopback replay, role/test data mapping and the HidraWEB handoff procedure. |
+| UPDATE | `doc/api/README.md` | Link the handoff in canonical API navigation. Preserve historical API publication records. |
+| UPDATE | `.github/documentation-validation.json` | Add the new doc to the canonical inventory and API index with existing metadata inheritance conventions. Preserve the OpenAPI snapshot hash, provenance and archive records. |
+| UPDATE | `src/test/java/dz/sh/hidra/qualification/Gz2SignedWorkflowFixture.java` | Add shared synthetic topology, actor/responsibility/grant and replay wiring for the integrated consumer path. Keep signed authentication and separate publisher/runtime roles. Support an explicit, bounded local-only replay on a loopback port using the same seeded state, with cleanup and credentials delivered locally outside the evidence artifact. CI mode exits normally and rejects local replay activation. Do not alter the defaults or grants of other fixture consumers. |
+| UPDATE | `src/test/java/dz/sh/hidra/qualification/Gz2SignedWorkflowNativeHttpPostgresIntegrationTest.java` | Add the map-driven consumer checkpoint to the existing enrolled method and reuse its setup, precise T36/T37/T38 checks and independent JVM restart. Check returned identifiers connect each hop. Exercise two authorized regions, foreign denial and an already-issued token after revocation. Emit one parseable, versioned, credential-free handoff receipt in the successful Surefire report with synthetic role/ID aliases, navigation identifiers, time windows and the validated scenario outcomes. Invoke local replay only at a documented, usable fixture checkpoint. |
+| UPDATE | `.github/ci-test-inventory.json` | Refresh exact source digests for the enrolled signed suite and fixture only. Keep its existing test method, shard 1 assignment and all gate requirements. |
+| UPDATE AFTER ACCEPTANCE | `doc/roadmap/ROADMAP.md` | Close T39 with implementation SHA, exact run, raw report and runtime artifact references once the single gate passes. This is an evidence-recording step, not another technical acceptance gate. |
+| DELETE | None | The existing generated OpenAPI and physical dictionary, workflow configuration and prior evidence are outside the implementation allowlist. |
+
+#### T39 single backend acceptance gate
+
+One successful **Full Verification Gate** for the T39 implementation SHA
+must include the fresh signed PostgreSQL journey, generated runtime
+OpenAPI and existing strict API/dictionary checks. The reviewed handoff
+must resolve its documented routes and operationIds against that contract.
+The signed suite must check these cases in the same run:
+
+1. A regional user can discover the intended pipeline/section, including
+   authorized feature/GeoJSON output and scoped paging or counts. A second
+   regional user sees their own resources. Foreign or unentitled users
+   cannot discover protected identifiers, geometry or totals from the
+   same collection/detail routes. Recheck discoverability and a protected
+   detail with an already-issued token after revocation.
+2. The discovered identifiers resolve the same pipeline dossier, source
+   or published baseline receipt and linked observation target. Preserve
+   design-pressure meaning, approved effective pressure with basis and
+   units, and an explicit unavailable constraint without falling back to
+   design pressure. Distinguish fresh, stale and unavailable observations
+   from the approved limit. Verify trusted reading source, binding revision,
+   observation time and historical scope, reusing the existing T37 cases.
+3. Verify the admitted Workflow review and Topology publication are
+   distinct. Authorized readback carries the exact candidate/decision,
+   action and Audit event reference and the correct effective owner
+   outcome. Wrong regional/company scope and revoked authority receive
+   the route's opaque denial. Preserve T38's replacement, withdrawal,
+   one-winner race, rollback and post-restart assertions.
+4. The successful shard-1 raw report contains the asserted handoff
+   receipt with enough synthetic fixture locators, roles and timestamps
+   to replay the path. The same full evidence bundle supplies the exact
+   runtime OpenAPI and its digest; use its SHA/run/attempt, gate receipt
+   and artifact manifest to resolve provenance without embedding the
+   future implementation commit SHA in its own source. The same fixture
+   is reusable locally for HidraWEB via the documented bounded harness.
+   Report artifacts must exclude tokens, passwords, signing material and
+   database credentials.
+
+The full-gate bundle, checked-in runbook and test fixture constitute all
+T39 backend acceptance evidence. No separate manual API run, secondary
+backend workflow, SITE or operational sign-off is required. Independent
+HidraWEB browser acceptance on the pinned consumer/backend SHAs remains
+the product integration gate under HidraWEB governance. T39 selects no
+HidraWEB implementation, deployment, live OT or numerical solver work.

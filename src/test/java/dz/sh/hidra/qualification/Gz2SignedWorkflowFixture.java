@@ -520,10 +520,12 @@ class Gz2SignedWorkflowFixture {
         String foreignSystem = seedCircleSystem(foreignCompany, systemType, foreign);
         assignCircleReader(revoked, pipeline);
         for (String actor : List.of(reader, sibling, foreign, revoked)) {
+            permit(actor, "identity:me:read", "IDENTITY_REGIONAL_ACCESS", "GLOBAL", null);
             permit(actor, "topology:regional-map:read", "TOPOLOGY_REGIONAL_MAP", "GLOBAL", null);
             permit(actor, "topology:regional-map:search", "TOPOLOGY_REGIONAL_MAP", "GLOBAL", null);
             permit(actor, "topology:pipeline-dossiers:read", "TOPOLOGY_PIPELINE_DOSSIERS", "GLOBAL", null);
         }
+        global(author, "workflow:definitions:read");
         // The sibling and foreign actors must reach the owner scope check on evidence.
         global(sibling, "topology:operating-constraints:read");
         global(foreign, "topology:operating-constraints:read");

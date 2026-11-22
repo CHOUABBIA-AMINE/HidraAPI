@@ -9,7 +9,7 @@
 | Status | ACTIVE |
 | Authority | Sole task register and execution source for HidraAPI |
 | Owner adoption | 2026-11-10 |
-| Active task selection | T40 COMPLETED for release-alignment **preparation only**, with green original exact-SHA CI/Docs and green repair exact-SHA CI/Docs/audit (CI #1363 serial oracle). The pre-existing published v0.7.0 tag/Release at earlier SHA is **not** release-qualified by the later audit; formal release reconciliation remains open under AGENTS.md §19. Circle 2 T41–T58 remain PLANNED and unselected. |
+| Active task selection | T40 COMPLETED for release-alignment **preparation only**, with green original exact-SHA CI/Docs and green repair exact-SHA CI/Docs/audit (CI #1363 serial oracle). The pre-existing published v0.7.0 tag/Release at earlier SHA is **not** release-qualified by the later audit; formal release reconciliation remains open under AGENTS.md §19. Circle 2 now has nine PLANNED packages (T41,T43,T44,T46,T48,T50,T52,T55,T56) and nine consolidated SKIPPED IDs; none selected. |
 
 The task register controls scope, dependencies, status and acceptance. Existing technical policy and verified implementation evidence retain their applicability. Task status advances only with recorded evidence. The initial status for each task is PLANNED. The first candidate is T01.
 
@@ -52,13 +52,13 @@ The table defines the proposed order of delivery. A row can start once its own p
 | 8. Scenario readiness and configuration (T31–T32) | Add engine-neutral scenario versioning and reconstruction. Deliver historical configuration retirement only for a proven consumer need. | Accepted engineering inputs and a defined capability/validation policy. | Historical scenario reconstructs after supersession. Configuration lookup remains reproducible. FG-19 and FG-20. FG-21 remains deferred. |
 | 9. Circle 1 regional workplace (T33–T39) | Regional authorized GZ2 pipeline, dossier, constraints, telemetry and governed decisions. | Completed regional authority and owner-supported input contracts. | Exact-SHA signed HTTP and PostgreSQL consumer handoff (already recorded). |
 | 10. Circle 1 release alignment (T40) | Maven 0.7.0 candidate, release and audit governance. | T39 accepted and separately governed release publication. | Exact-SHA CI/audit evidence, with unresolved already-published tag/release reconciliation explicitly retained. |
-| 11. Circle 2 supporting references (T41–T58) | Secure Party, Configuration and Documents reference workplace joined to the Circle 1 GZ2 asset context. | C1 protected source interfaces, owner-approved C2 policy, T41–T42 authority and task-specific predecessors. | Authorized end-to-end manufacturer, effective non-secret configuration and controlled-document version/byte evidence; independently verified API and browser handoff. |
+| 11. Circle 2 supporting references (T41–T58) | Secure Party, Configuration and Documents reference workplace joined to the Circle 1 GZ2 asset context. | C1 owner contracts, admitted policy and protected authority in T41, and prerequisites of the nine active C2 packages; SKIPPED IDs require no separate execution. | Authorized end-to-end manufacturer, effective non-secret configuration and controlled-document version/byte evidence; independently verified API and browser handoff. |
 
 Increment 6 is the proposed first integrated development milestone. The remainder is sequenced by functional dependency and risk. Calendar estimates require implementation sizing, staffing and CI feedback.
 
 ## 4. Explicit delivery task register
 
-The roadmap initially contained **32 registered tasks**; T33–T40 added Circle 1 and release work, and the owner now registers **T41–T58 for Circle 2**, for **58 total registered tasks**. Use these IDs for HidraAPI task selection and evidence. Each task delivers a named API capability or a verifiable acceptance result. An owner is the accountable bounded context, with collaborators shown where needed. Dependencies are prerequisites for accepting the result and take precedence over task numbering. “Existing foundation” means the assessed starting capabilities in §2.
+The roadmap initially contained **32 registered tasks**; T33–T40 added Circle 1 and release work. All C2 IDs T41–T58 remain tracked (58 total IDs), with nine active PLANNED C2 packages and nine SKIPPED consolidated-only planning rows. SKIPPED is not implemented or accepted work. Use these IDs for HidraAPI task selection and evidence. Each task delivers a named API capability or a verifiable acceptance result. An owner is the accountable bounded context, with collaborators shown where needed. Dependencies are prerequisites for accepting the result and take precedence over task numbering. “Existing foundation” means the assessed starting capabilities in §2.
 
 A task includes its required authorization, REST contract, persistence, failure handling and tests. Confirm exact routes, payloads and errors during task preparation. Each task inherits the definition of done in §7.
 
@@ -179,16 +179,25 @@ workflow); no duplicate aggregate, authorization model, document registry or
 engineering pressure owner is authorized. Public owner contracts may be
 extended only for demonstrated missing capabilities.
 
-The owner authorizes **registration of T41–T58** as **PLANNED**. These are
-sequential identifiers preserving T01–T40 and mapping exactly to proposed
-C2-01–C2-18. None is selected, implemented, tested or accepted by this
-registration. A future `Next` must refresh main and acceptance, select
-**one eligible task**, pin exact files and one registered message/acceptance
-envelope before mutation; the path families in §7 below are planning
-candidates, not file allowlists. This registration commit changes
-`doc/roadmap/ROADMAP.md` only and uses exact message
-`docs(roadmap): register Circle 2 supporting reference workplace`.
-No branches, PRs, releases or tags are authorized.
+**Original registration (historical) and owner-approved reconciliation.**
+T41–T58 were registered as eighteen PLANNED items on 2026-11-22.
+The owner then approved reworking the overly granular scope into
+**nine coherent Circle 2 packages**. The nine active PLANNED task IDs are
+T41, T43, T44, T46, T48, T50, T52, T55 and T56. The other nine IDs
+T42, T45, T47, T49, T51, T53, T54, T57 and T58 are SKIPPED **only as
+independent planned delivery packages**, with their original requirements
+transferred to surviving tasks, not completed or waived. T01–T58 task
+numbering and the original C2-01–C2-18 mapping remain traceable.
+The original eighteen task rows are retained verbatim in a fenced historical
+snapshot below, and original planning envelopes remain in the roadmap.
+
+This owner-approved, documentation-only reconciliation uses exact message
+`docs(roadmap): consolidate Circle 2 into nine delivery tasks`; `doc/roadmap/ROADMAP.md` is the only change.
+No C2 implementation is selected. A later `Next` must select a single
+eligible PLANNED task after refreshed main/source/CI acceptance and admit
+its **exact** create/update/delete file allowlist, implementation message
+and tests before code changes. Consolidated planning paths are not exact
+allowlists. No release/tag, deployment, PR, branch or solver is selected.
 
 **C1/T40 evidence preserved (not silently closed).** The owner-selected T40
 release-alignment work changed Maven to `0.7.0` on
@@ -208,32 +217,35 @@ separate explicit owner authorization under `AGENTS.md`. The unresolved formal
 release reconciliation must be addressed before asserting a fully qualified
 formal `v0.7.0` milestone; it does not fabricate a C2 runtime dependency.
 
-**C2 stage groups:** A — reference authority (T41–T42);
-B — Party (T43–T45); C — Configuration (T46–T49);
-D — Documents (T50–T55); E — C1/C2 qualification and handoff (T56–T58).
-Once T41/T42 are admitted, owner-specific Party and Configuration tasks may
-run by dependency; Document stages reuse existing T24 and C1 target authority.
+**C2 consolidated stages:** A — ownership, policy and reference security
+(T41); B — Party discovery and manufacturer/role lifecycle (T43, T44);
+C — Configuration safe temporal consumption and flag provenance (T46, T48);
+D — Documents target/link integrity, binary/decision integrity, and scoped
+history with non-destructive preservation policy (T50, T52, T55);
+E — one integrated C1/C2 GZ2 and HidraWEB API handoff (T56).
+Original other nine C2 IDs are visibly SKIPPED and mapped below; existing
+T24, T32, C1 owner contracts and accepted tests are reused.
 
 | Task | Owner | Depends on | Deliverable | Pass condition | Status |
 |---|---|---|---|---|---|
-| **T41 · Reconcile Circle 2 authority and ownership** | Party, Configuration and Documents with Identity, Organization, Topology and Audit | T39 | Inventory existing admin and protected API operations, domain ownership, references, authorization, migration history, tests and C1 consumer reuse. Decide Party disclosure, configuration context, document classification/retention and target types without inventing industrial settings. | Owner-reviewed operation/resource matrix distinguishes existing, proposed and unsupported behavior; protected scope and no-duplicate-ownership contract is recorded with explicit unresolved policy gates. | PLANNED |
-| **T42 · Qualify Circle 2 protected reference authorization** | Identity with Party, Configuration, Documents, Organization and Topology | T41, T33, T34 | Introduce or qualify owner-specific application authorization ports and adapters for privileged administration versus least-privilege C2 consumer reads. Resolve typed company, regional and asset context through C1 public contracts; authorize before detail, existence, history, counts or bytes. | Signed users in two regions, a foreign company, revoked authority, explicit deny and administrator prove non-disclosing denials and preserved administrator compatibility with fresh PostgreSQL. | PLANNED |
-| **T43 · Expose eligible Party reference discovery** | Party with Identity and Organization | T42 | Add narrowly projected, business-purpose, company/resource-qualified Party search and exact eligible reference reads without exposing global Party administration APIs to regional users. Preserve business role versus security role distinction, active state and effective eligibility. | An entitled regional user discovers only eligible Party choices and exact profiles for a supported purpose; unrelated roles, inactive Party and unauthorized totals/existence are denied or hidden. | PLANNED |
-| **T44 · Qualify Party lifecycle and effective role history** | Party with Identity and Audit | T43 | Qualify current Party register/edit/activate/deactivate and assignment/history use cases. Close only demonstrated business role effective-date, concurrency, audit or retrieval gaps. Reuse current PartyAdministrationApplicationService and existing persistence. | Same-company role temporal validity and idempotency or uniqueness as registered policy; stale updates and unauthorized transition denied, and historical Party evidence reconstructs after state change. | PLANNED |
-| **T45 · Qualify manufacturer Party reference in engineering dossier** | Party and Topology with Assets public owner contracts | T43, T44, T35 | Reuse manufacturer eligibility/reference application contracts and qualify the exact as-of Party snapshot exposed by an authorized selected equipment or pipeline dossier. Do not move installed-asset or model ownership to Party. | Eligible manufacturer selection resolves the owner reference and effective eligibility. Deactivation changes new selections without corrupting the historical accepted engineering revision, including foreign/scope denial. | PLANNED |
-| **T46 · Expose safe effective Configuration consumer read** | Configuration with Identity and consuming owners | T42, T32 | Reuse typed definition and effective-resolution logic to expose a least-privilege allowlisted, non-secret consumer view. Distinguish environment from resource/company scope; require policy admission before treating any environment as a business scope. | Authorized consumer obtains a typed value, active definition version, resolution source, effective time and explicit unavailable/redacted state. Secret defaults, unsupported keys and unauthorized scope do not leak. | PLANNED |
-| **T47 · Prove Configuration version and temporal resolution** | Configuration | T46, T32 | Qualify definition activation, version link, default/override selection, effective dating and existing T32 retirement preview/commit with the same consumer read model. Change domain or persistence only to close a demonstrated correctness gap. | Before and after cutoff exact outcomes are deterministic; stale retirement, overlap or unsupported value fails; prior accepted effective interpretation remains reconstructable. | PLANNED |
-| **T48 · Qualify guarded Feature Flag behavior** | Configuration with Identity and target module owners | T46 | Qualify current feature-flag activation/state APIs, owning-module metadata and effective environment semantics. Ensure no flag grants a permission, changes engineering ownership or activates an unavailable numerical/OT capability. | Supported Boolean flags show authorized effective state and traceable changes. Missing, disabled or invalid flags fail closed; forged enabled flags do not bypass Identity or engine capability checks. | PLANNED |
-| **T49 · Qualify Configuration administration and change provenance** | Configuration with Audit and Identity | T47, T48 | Complete scoped administrative readback and provenance of definition activation, value change/retirement and feature state while keeping secrets reference-only. Reuse existing audit contracts; do not create an alternative engineering constraint registry. | Qualified administrator can explain current and historical effective values and who changed admitted metadata; unauthorized users never read protected values or change settings. | PLANNED |
-| **T50 · Admit controlled Documents for typed engineering targets** | Documents with Topology, Assets, Identity and Organization | T42, T35, T24 | Extend existing facility-scoped controlled Documents target/access contract to approved pipeline, section and equipment target classes via owner-issued typed references. Reuse existing Documents lifecycle, not a parallel registry. | Regional user discovers a permitted target's documents, while foreign, unlinked, revoked and wrong-target reads do not reveal existence, counts or binary availability. | PLANNED |
-| **T51 · Qualify controlled Document metadata and target links** | Documents with target owner contract providers | T50 | Qualify canonical document identity, classification, link-role eligibility, target linkage and immutable owner snapshots through existing DocumentTargetLink model and controlled versions. Do not make Documents owner of physical asset state. | Authorized target association survives restart with correct document, version and provenance; foreign, dangling, invalid-role or cross-company link fails without partial persistence. | PLANNED |
-| **T52 · Qualify protected binary upload and read for C2 targets** | Documents with storage adapter and Identity | T50, T51, T24 | Reuse multipart upload, current-grant-gated download, SHA-256 and storage adapter. Extend the protected target route safely; preserve confirmed-rollback cleanup versus unknown-commit preservation and fail closed on byte mismatch. | Exact verified bytes downloaded by authorized principal; altered, missing or incomplete storage and revoked read fail safely. Competing upload and rollback produce no falsely accepted version. | PLANNED |
-| **T53 · Qualify document acceptance and supersession decisions** | Documents with Workflow, Identity and Audit | T52, T30, T28 | Reuse controlled version acceptance/supersession and immutable decision receipts, requiring independent review only for document classes whose approved policy demands it. Preserve expected-head CAS and evidence lineage without treating document approval as engineering limit approval. | Authorized version acceptance and supersession preserve current/old bytes and attribution; replay, stale head, unauthorized/self-review where required and revoked authority cannot advance state. | PLANNED |
-| **T54 · Register document retention and evidence hold rules** | Documents with Audit, HSE and Records/engineering policy owner | T51, T53 | Define classification-based retention, preservation hold, withdrawn/unavailable state and authorized reason semantics. Preserve append-only decision/audit evidence. Implement mutating retention only after owner policy is approved; do not assume physical deletion or production retention duration. | Unapproved retention value cannot trigger destructive behavior; held or decision-linked evidence cannot be silently deleted; historical links and retrieval conditions remain demonstrable in synthetic fixture. | PLANNED |
-| **T55 · Expose asset-context controlled Document discovery and history** | Documents with Topology and Identity | T50, T51, T52, T53, T54 | Deliver consistent scoped document index, exact detail, accepted and superseded versions, classified target links, checksum metadata and availability through one typed asset-context contract. Reuse T24 facility implementation. | Signed GZ2 pipeline/equipment user finds and downloads exactly authorized current/old version; paging, totals, missing/unavailable content and revoked access are correctly represented. | PLANNED |
-| **T56 · Prove C1-C2 linked GZ2 workplace journey** | HidraAPI integration and QA with Party, Configuration, Documents and C1 owners | T45, T49, T55, T39 | Compose the protected region-to-pipeline/asset journey using owner-backed references: eligible manufacturer, applicable non-secret effective configuration and linked controlled drawing/certificate. Keep application authority checks per owner, with no cross-aggregate writes. | Signed regional user navigates exact synthetic resource and retrieves traceable linked references; old revision survives supersession and no cross-region disclosure or privilege inflation occurs. | PLANNED |
-| **T57 · Qualify cross-module security, time and integrity** | HidraAPI integration, Security and QA with owning modules | T56 | Execute independent negative/race/restart tests for protected Party visibility, Configuration effective windows and Documents byte/version decisions. Retain ArchUnit boundaries, transaction concurrency and generated OpenAPI/schema checks. | Complete admitted test inventory passes with synthetic two-region/foreign-company fixtures, denied existence/count/byte leaks, stale-grant cases, immutable history and no weakened CI. | PLANNED |
-| **T58 · Publish verified Circle 2 API consumer handoff** | HidraAPI integration and QA with HidraWEB contract consumer | T57 | Pin runtime OpenAPI, DTO/error semantics, permission/resource matrix, versioned fixtures, consumer journey and API/WEB acceptance boundary at one exact API SHA. Reuse contract generation/dictionary process and explicitly record unsupported features. | Independent client replays accepted C2 journey with exact verified API artifacts and fresh PostgreSQL; HidraWEB browser acceptance remains separately tracked and is not inferred from green API CI. | PLANNED |
+| **T41 · Qualify Circle 2 ownership, policy and protected reference access** | Identity with Party, Configuration, Documents, Organization, Topology and Audit | T39, T33, T34 | Reconcile current module ownership, supported owner/public contracts and Party visibility, Configuration consumer context, Documents target types and preservation policy. Reuse C1 resource scope and current-grant checks for C2 protected list/detail/history/count/byte operations; implement only admitted gaps, without a generic authorization bypass. | Owner-approved resource/operation policy matrix and synthetic signed HTTP/PostgreSQL positive/negative proof for two regions, foreign company, explicit deny, revoked/expired access and separately privileged administrator; no protected existence/count/bytes leak. | PLANNED |
+| **T42 · Qualify Circle 2 protected reference authorization** | Identity with Party, Configuration, Documents, Organization and Topology | T41 | Original authorization and current-grant scope deliverable consolidated into T41, whose acceptance retains the applicable requirements. Original complete row is preserved verbatim in historical snapshot. | SKIPPED indicates no separate task execution; this is neither implementation, testing nor waiver of scope. | SKIPPED |
+| **T43 · Expose eligible scoped Party discovery** | Party with Identity and Organization | T41 | Qualify purpose/role-specific company- and resource-scoped eligible Party search/read without opening global administrator registration/list endpoints to regional users; preserve effective business role rather than Identity permission semantics. | A regional user discovers only eligible Party choices and exact reference detail at an admitted effective instant; foreign/inactive/expired/revoked searches and totals do not disclose protected data. | PLANNED |
+| **T44 · Qualify Party lifecycle, roles and engineering manufacturer evidence** | Party with Identity, Audit and Topology engineering consumer | T43, T35 | Reconcile existing register/edit/activate/deactivate, effective role assignments, history and stale writes with owner-issued manufacturer eligibility/as-of evidence in selected installed equipment or pipeline dossier; no ownership transfer from Topology. | One signed synthetic manufacturer workflow proves role validity, lifecycle/assignment concurrency, changed status and exact historic Party/manufacturer engineering reference after supersession; invalid or foreign changes fail atomically. | PLANNED |
+| **T45 · Qualify manufacturer Party reference in engineering dossier** | Party and Topology with Assets public owner contracts | T44 | Original as-of manufacturer reference deliverable consolidated into T44, whose acceptance retains the applicable requirements. Original complete row is preserved verbatim in historical snapshot. | SKIPPED indicates no separate task execution; this is neither implementation, testing nor waiver of scope. | SKIPPED |
+| **T46 · Expose safe effective and temporal Configuration consumer values** | Configuration with Identity and owning consumers | T41, T32 | Reuse existing definitions/effective value resolver and T32 retirement for allowlisted nonsecret typed consumer reads, exact source/revision/override/default and effective instant. Distinguish environment from tenant, company or industrial-resource authorization. | Signed fresh PostgreSQL proves correct before/after time windows and retirement, stable historical selection, stale/invalid override handling, secret redaction and scoped consumer denial. | PLANNED |
+| **T47 · Prove Configuration version and temporal resolution** | Configuration | T46 | Original effective-date resolution, defaults and retirement deliverable consolidated into T46, whose acceptance retains the applicable requirements. Original complete row is preserved verbatim in historical snapshot. | SKIPPED indicates no separate task execution; this is neither implementation, testing nor waiver of scope. | SKIPPED |
+| **T48 · Qualify guarded feature flags and administration provenance** | Configuration with Identity, Audit and owning modules | T46 | Qualify flag activation/effective state and administrator definitions/values/retirement history and attributed changes. Reuse authoritative Audit; flag state cannot grant Identity rights, modify engineering limits or activate unavailable simulation/OT features. | One synthetic administrator change-and-readback shows exact flag/value history and audit provenance after restart; forged/stale/unauthorized requests fail without secret exposure or permission escalation. | PLANNED |
+| **T49 · Qualify Configuration administration and change provenance** | Configuration with Audit and Identity | T48 | Original administrator audit and provenance deliverable consolidated into T48, whose acceptance retains the applicable requirements. Original complete row is preserved verbatim in historical snapshot. | SKIPPED indicates no separate task execution; this is neither implementation, testing nor waiver of scope. | SKIPPED |
+| **T50 · Admit typed engineering Document targets and metadata links** | Documents with Topology, Assets, Identity and Organization | T41, T35, T24 | Extend the existing facility-controlled Document model only for approved pipeline, section and equipment owner-issued typed references; qualify classification/link roles, immutable target/owner snapshots and atomic scope checks without a duplicate registry. | Signed regional user links and lists a permitted classified engineering document to exact target with immutable provenance; wrong-target/foreign/unlinked role and partial writes fail without revealing existence or count. | PLANNED |
+| **T51 · Qualify controlled Document metadata and target links** | Documents with target owner contract providers | T50 | Original typed links, classification and immutable metadata deliverable consolidated into T50, whose acceptance retains the applicable requirements. Original complete row is preserved verbatim in historical snapshot. | SKIPPED indicates no separate task execution; this is neither implementation, testing nor waiver of scope. | SKIPPED |
+| **T52 · Qualify controlled Document binary and version decisions** | Documents with Identity, Workflow, Audit and binary storage adapter | T50, T24, T30 | Reuse exact multipart and SHA-256/length verified content reads plus controlled accept/supersede decisions, expected-head CAS and independent reviewer where policy requires. Preserve confirmed rollback cleanup and ambiguous-commit content preservation; do not confer engineering-limit qualification. | Signed upload-accept-supersede-download workflow returns unchanged old/current bytes after restart and denies revoked read, tampering, stale head, improper reviewer and storage failure without orphaning accepted state. | PLANNED |
+| **T53 · Qualify document acceptance and supersession decisions** | Documents with Workflow, Identity and Audit | T52 | Original acceptance/supersession and reviewer/CAS deliverable consolidated into T52, whose acceptance retains the applicable requirements. Original complete row is preserved verbatim in historical snapshot. | SKIPPED indicates no separate task execution; this is neither implementation, testing nor waiver of scope. | SKIPPED |
+| **T54 · Register document retention and evidence hold rules** | Documents with Audit, HSE and Records/engineering policy owner | T55 | Original non-destructive retention and hold policy only deliverable consolidated into T55, whose acceptance retains the applicable requirements. Original complete row is preserved verbatim in historical snapshot. | SKIPPED indicates no separate task execution; this is neither implementation, testing nor waiver of scope. | SKIPPED |
+| **T55 · Expose scoped asset Document discovery, history and preservation policy** | Documents with Topology, Identity and records policy owner | T50, T52 | Expose protected typed target catalog, detail, pagination/count, links and current/old versions with verified binary availability using T24 foundations. Document classification-based retention/hold and no-destructive-action default, not automatic deletion/purge or guessed industrial retention duration. | Signed GZ2 user retrieves scoped accepted and superseded document versions, history and bytes; foreign/revoked/unlinked reads reveal no counts. Unapproved retention cannot destroy historical evidence; hold policy remains explicit. | PLANNED |
+| **T56 · Qualify linked C1-C2 GZ2 workplace and HidraWEB API handoff** | HidraAPI integration/QA with C1, Party, Configuration, Documents and HidraWEB | T44, T48, T55, T39 | One signed synthetic region-to-pipeline/equipment journey joins eligible Party manufacturer, applicable versioned non-secret Configuration and linked controlled certificate/drawing. Prove cross-module scope, effective temporal facts, current-grant revocation, immutable bytes, CAS, races/restart and architecture; pin exact runtime OpenAPI/DTO/errors and consumer fixture to verified API SHA. | Fresh PostgreSQL and native signed HTTP end-to-end covers two regions/foreign company, safe counts/history, manufacturer, effective config and old/new doc hashes; exact-SHA CI/architecture/OpenAPI pass and a reproducible HidraWEB handoff is delivered. Browser acceptance remains independent. | PLANNED |
+| **T57 · Qualify cross-module security, time and integrity** | HidraAPI integration, Security and QA with owning modules | T56 | Original cross-module security/concurrency/restart proof deliverable consolidated into T56, whose acceptance retains the applicable requirements. Original complete row is preserved verbatim in historical snapshot. | SKIPPED indicates no separate task execution; this is neither implementation, testing nor waiver of scope. | SKIPPED |
+| **T58 · Publish verified Circle 2 API consumer handoff** | HidraAPI integration and QA with HidraWEB contract consumer | T56 | Original OpenAPI and HidraWEB contract handoff deliverable consolidated into T56, whose acceptance retains the applicable requirements. Original complete row is preserved verbatim in historical snapshot. | SKIPPED indicates no separate task execution; this is neither implementation, testing nor waiver of scope. | SKIPPED |
 
 **C2 security and acceptance invariants.** Server-side Identity grants and
 denies, company and resource scope, current regional authority, authorization
@@ -251,10 +263,13 @@ production or numerical simulation acceptance.
 
 **Policy gates:** T41 records Party consumer visibility, Configuration
 allowlisted non-secret context, admitted Documents target classes,
-classification/acceptance responsibility and a non-destructive retention
-default. T43/T46/T50/T54 may not invent a policy if an owner has not
-authorized the particular behavior. Unresolved industrial measurements never
-block safe, configurable software contracts exercised with synthetic data.
+classification/acceptance responsibility and a non-destructive retention/
+evidence-hold default. T43/T46/T50/T55 may not invent missing resource,
+authorization or retention policy. T55 does **not** authorize purge,
+automatic deletion or industrial retention durations. Such behavior
+requires a separate approved policy and future registered task.
+Unresolved calibration values do not block secure configurable contracts
+tested on synthetic inputs.
 
 **Decision dependencies.** Before T33 selection, record whether an effective
 Organization responsibility constrains Identity grants or can contribute
@@ -8193,7 +8208,210 @@ visible release mismatch and unchanged task numbering/status T01–T39,
 T41–T58. Check exact new commit/parent/tree, then confirm Documentation
 Validation has been created/queued/started on it and STOP without waiting.
 
-### Circle 2 task implementation planning envelopes — registration 2026-11-22
+### Circle 2 consolidated execution planning — owner-approved 2026-11-22
+
+**Nine coherent packages, not eighteen implementation steps.**
+The original register is preserved below. Each surviving package includes
+the authorized Domain/application/REST/persistence/integration behavior and
+the focused positive, negative, concurrency and provenance proof relevant
+to its full capability, rather than separate test-only phases. Required
+auth and database checks are not weakened by reducing task count.
+
+| Group | Active ID | Original obligations transferred | Outcome |
+|---|---|---|---|
+| A · Authority | T41 | T41+T42 | Qualify Circle 2 ownership, policy and protected reference access |
+| B · Party | T43 | T43 | Expose eligible scoped Party discovery |
+| B · Party | T44 | T44+T45 | Qualify Party lifecycle, roles and engineering manufacturer evidence |
+| C · Configuration | T46 | T46+T47 | Expose safe effective and temporal Configuration consumer values |
+| C · Configuration | T48 | T48+T49 | Qualify guarded feature flags and administration provenance |
+| D · Documents | T50 | T50+T51 | Admit typed engineering Document targets and metadata links |
+| D · Documents | T52 | T52+T53 | Qualify controlled Document binary and version decisions |
+| D · Documents | T55 | T54(policy only)+T55 | Expose scoped asset Document discovery, history and preservation policy |
+| E · Qualification and API handoff | T56 | T56+T57+T58 | Qualify linked C1-C2 GZ2 workplace and HidraWEB API handoff |
+
+**Legacy-to-active exact mapping.**
+T41→T41; T42→T41; T43→T43; T44→T44; T45→T44;
+T46→T46; T47→T46; T48→T48; T49→T48;
+T50→T50; T51→T50; T52→T52; T53→T52;
+T54→T55 (policy/hold only, no automatic deletion); T55→T55;
+T56→T56; T57→T56; T58→T56. SKIPPED rows are traceable but
+may **not** be selected as independent work or interpreted as CI-passed.
+
+#### T41 — Qualify Circle 2 ownership, policy and protected reference access
+
+- **Consolidates:** T41+T42. **Owner:** Identity with Party, Configuration, Documents, Organization, Topology and Audit.
+- **Prerequisites:** T39, T33, T34.
+- **Domain and application contract:** Reconcile current module ownership, supported owner/public contracts and Party visibility, Configuration consumer context, Documents target types and preservation policy. Reuse C1 resource scope and current-grant checks for C2 protected list/detail/history/count/byte operations; implement only admitted gaps, without a generic authorization bypass.
+- **REST/consumer contract:** C1 owner public authorization ports; existing module administration; no invented generic bypass REST.
+- **Candidate files/modules (NOT an executable exact file allowlist):** Policy/evidence notes; Party, Configuration, Documents application authorization ports and approved Identity/Organization/Topology adapters if missing; security tests. Exact files to be registered at selection.
+- **Single acceptance outcome:** Owner-approved resource/operation policy matrix and synthetic signed HTTP/PostgreSQL positive/negative proof for two regions, foreign company, explicit deny, revoked/expired access and separately privileged administrator; no protected existence/count/bytes leak.
+- **Focused proof:** Current-grant authorization, foreign/revoked/expired permissions, no count/history/byte disclosure, architecture.
+- **Exact registered future implementation commit message:** `feat(security): qualify Circle 2 protected reference authority`.
+- **Status:** PLANNED; separate stage selection, verified exact files and CI
+  evidence are not supplied by this documentation reconciliation.
+
+#### T43 — Expose eligible scoped Party discovery
+
+- **Consolidates:** T43. **Owner:** Party with Identity and Organization.
+- **Prerequisites:** T41.
+- **Domain and application contract:** Qualify purpose/role-specific company- and resource-scoped eligible Party search/read without opening global administrator registration/list endpoints to regional users; preserve effective business role rather than Identity permission semantics.
+- **REST/consumer contract:** PROPOSED GET /api/v1/party/reference/eligible-parties if inventory proves needed; existing administrator list unchanged.
+- **Candidate files/modules (NOT an executable exact file allowlist):** Party application port, REST DTOs/controllers and mapping, protected adapter and tests as justified.
+- **Single acceptance outcome:** A regional user discovers only eligible Party choices and exact reference detail at an admitted effective instant; foreign/inactive/expired/revoked searches and totals do not disclose protected data.
+- **Focused proof:** Signed scoped HTTP, paging/count, effective role, current grants, PostgreSQL negative fixture.
+- **Exact registered future implementation commit message:** `feat(party): expose scoped eligible party references`.
+- **Status:** PLANNED; separate stage selection, verified exact files and CI
+  evidence are not supplied by this documentation reconciliation.
+
+#### T44 — Qualify Party lifecycle, roles and engineering manufacturer evidence
+
+- **Consolidates:** T44+T45. **Owner:** Party with Identity, Audit and Topology engineering consumer.
+- **Prerequisites:** T43, T35.
+- **Domain and application contract:** Reconcile existing register/edit/activate/deactivate, effective role assignments, history and stale writes with owner-issued manufacturer eligibility/as-of evidence in selected installed equipment or pipeline dossier; no ownership transfer from Topology.
+- **REST/consumer contract:** Reuse existing Party register/roles/history and protected Topology dossier; extend proven missing consumer reference only.
+- **Candidate files/modules (NOT an executable exact file allowlist):** Party domain/application/REST/persistence and Topology public consumer reference adapter only if needed; associated module tests.
+- **Single acceptance outcome:** One signed synthetic manufacturer workflow proves role validity, lifecycle/assignment concurrency, changed status and exact historic Party/manufacturer engineering reference after supersession; invalid or foreign changes fail atomically.
+- **Focused proof:** PostgreSQL stale/CAS and unique role, effective dates, history, asset-reference/region denial, restart.
+- **Exact registered future implementation commit message:** `test(party): qualify lifecycle and manufacturer references`.
+- **Status:** PLANNED; separate stage selection, verified exact files and CI
+  evidence are not supplied by this documentation reconciliation.
+
+#### T46 — Expose safe effective and temporal Configuration consumer values
+
+- **Consolidates:** T46+T47. **Owner:** Configuration with Identity and owning consumers.
+- **Prerequisites:** T41, T32.
+- **Domain and application contract:** Reuse existing definitions/effective value resolver and T32 retirement for allowlisted nonsecret typed consumer reads, exact source/revision/override/default and effective instant. Distinguish environment from tenant, company or industrial-resource authorization.
+- **REST/consumer contract:** PROPOSED GET /api/v1/configuration/consumer/effective if missing; existing administrator and retirement routes preserved.
+- **Candidate files/modules (NOT an executable exact file allowlist):** Configuration resolver/application consumer port, explicit REST DTO, persistence/security adapters and tests if demonstrated gaps.
+- **Single acceptance outcome:** Signed fresh PostgreSQL proves correct before/after time windows and retirement, stable historical selection, stale/invalid override handling, secret redaction and scoped consumer denial.
+- **Focused proof:** Effective dates, T32 preview/retirement, version and override provenance, deny secret/foreign scope.
+- **Exact registered future implementation commit message:** `feat(configuration): expose scoped temporal consumer values`.
+- **Status:** PLANNED; separate stage selection, verified exact files and CI
+  evidence are not supplied by this documentation reconciliation.
+
+#### T48 — Qualify guarded feature flags and administration provenance
+
+- **Consolidates:** T48+T49. **Owner:** Configuration with Identity, Audit and owning modules.
+- **Prerequisites:** T46.
+- **Domain and application contract:** Qualify flag activation/effective state and administrator definitions/values/retirement history and attributed changes. Reuse authoritative Audit; flag state cannot grant Identity rights, modify engineering limits or activate unavailable simulation/OT features.
+- **REST/consumer contract:** Existing feature-flags, state, definitions, effective and retirement routes; any additional fields proven first.
+- **Candidate files/modules (NOT an executable exact file allowlist):** Configuration application/REST/persistence and Audit public adapter only if needed; security and temporal tests.
+- **Single acceptance outcome:** One synthetic administrator change-and-readback shows exact flag/value history and audit provenance after restart; forged/stale/unauthorized requests fail without secret exposure or permission escalation.
+- **Focused proof:** Flag fail-closed, no authorization bypass, concurrent writes, audit/current-vs-history, redaction.
+- **Exact registered future implementation commit message:** `test(configuration): qualify flags and administrative provenance`.
+- **Status:** PLANNED; separate stage selection, verified exact files and CI
+  evidence are not supplied by this documentation reconciliation.
+
+#### T50 — Admit typed engineering Document targets and metadata links
+
+- **Consolidates:** T50+T51. **Owner:** Documents with Topology, Assets, Identity and Organization.
+- **Prerequisites:** T41, T35, T24.
+- **Domain and application contract:** Extend the existing facility-controlled Document model only for approved pipeline, section and equipment owner-issued typed references; qualify classification/link roles, immutable target/owner snapshots and atomic scope checks without a duplicate registry.
+- **REST/consumer contract:** PROPOSED typed target discovery only when current facility endpoint cannot express owner scope; preserve controlled facility routes.
+- **Candidate files/modules (NOT an executable exact file allowlist):** Documents target reference contracts, REST DTOs, owner-backed adapter, persistence and related tests if required.
+- **Single acceptance outcome:** Signed regional user links and lists a permitted classified engineering document to exact target with immutable provenance; wrong-target/foreign/unlinked role and partial writes fail without revealing existence or count.
+- **Focused proof:** PostgreSQL atomic association, foreign scope, link role, immutable version/target history.
+- **Exact registered future implementation commit message:** `feat(documents): authorize typed engineering evidence targets`.
+- **Status:** PLANNED; separate stage selection, verified exact files and CI
+  evidence are not supplied by this documentation reconciliation.
+
+#### T52 — Qualify controlled Document binary and version decisions
+
+- **Consolidates:** T52+T53. **Owner:** Documents with Identity, Workflow, Audit and binary storage adapter.
+- **Prerequisites:** T50, T24, T30.
+- **Domain and application contract:** Reuse exact multipart and SHA-256/length verified content reads plus controlled accept/supersede decisions, expected-head CAS and independent reviewer where policy requires. Preserve confirmed rollback cleanup and ambiguous-commit content preservation; do not confer engineering-limit qualification.
+- **REST/consumer contract:** Existing controlled versions/upload, content GET, versions/{id}/accept and /supersede; target-aware extension only for gap.
+- **Candidate files/modules (NOT an executable exact file allowlist):** Documents domain/application content transfer/decision, REST and storage/persistence as necessary; focused tests.
+- **Single acceptance outcome:** Signed upload-accept-supersede-download workflow returns unchanged old/current bytes after restart and denies revoked read, tampering, stale head, improper reviewer and storage failure without orphaning accepted state.
+- **Focused proof:** Checksum and length, transaction rollback vs unknown commit, reviewer/current grant, PostgreSQL CAS, restart.
+- **Exact registered future implementation commit message:** `test(documents): qualify protected bytes and version decisions`.
+- **Status:** PLANNED; separate stage selection, verified exact files and CI
+  evidence are not supplied by this documentation reconciliation.
+
+#### T55 — Expose scoped asset Document discovery, history and preservation policy
+
+- **Consolidates:** T54(policy only)+T55. **Owner:** Documents with Topology, Identity and records policy owner.
+- **Prerequisites:** T50, T52.
+- **Domain and application contract:** Expose protected typed target catalog, detail, pagination/count, links and current/old versions with verified binary availability using T24 foundations. Document classification-based retention/hold and no-destructive-action default, not automatic deletion/purge or guessed industrial retention duration.
+- **REST/consumer contract:** Proposed typed target list/detail/history only when needed, keeping existing controlled document facility endpoints.
+- **Candidate files/modules (NOT an executable exact file allowlist):** Documents application query/DTO/persistence adapter/tests and owner records policy; no deletion migration by default.
+- **Single acceptance outcome:** Signed GZ2 user retrieves scoped accepted and superseded document versions, history and bytes; foreign/revoked/unlinked reads reveal no counts. Unapproved retention cannot destroy historical evidence; hold policy remains explicit.
+- **Focused proof:** Scope before pagination/count, missing/tampered bytes, historical links, restart and preservation.
+- **Exact registered future implementation commit message:** `feat(documents): expose scoped evidence history and preservation`.
+- **Status:** PLANNED; separate stage selection, verified exact files and CI
+  evidence are not supplied by this documentation reconciliation.
+
+#### T56 — Qualify linked C1-C2 GZ2 workplace and HidraWEB API handoff
+
+- **Consolidates:** T56+T57+T58. **Owner:** HidraAPI integration/QA with C1, Party, Configuration, Documents and HidraWEB.
+- **Prerequisites:** T44, T48, T55, T39.
+- **Domain and application contract:** One signed synthetic region-to-pipeline/equipment journey joins eligible Party manufacturer, applicable versioned non-secret Configuration and linked controlled certificate/drawing. Prove cross-module scope, effective temporal facts, current-grant revocation, immutable bytes, CAS, races/restart and architecture; pin exact runtime OpenAPI/DTO/errors and consumer fixture to verified API SHA.
+- **REST/consumer contract:** C1 protected dossier and accepted C2 owner routes; runtime-generated OpenAPI proves exact contract.
+- **Candidate files/modules (NOT an executable exact file allowlist):** Cross-module qualification suite/fixtures, architecture verification and generated-contract/handoff docs where required; no solver.
+- **Single acceptance outcome:** Fresh PostgreSQL and native signed HTTP end-to-end covers two regions/foreign company, safe counts/history, manufacturer, effective config and old/new doc hashes; exact-SHA CI/architecture/OpenAPI pass and a reproducible HidraWEB handoff is delivered. Browser acceptance remains independent.
+- **Focused proof:** One deterministic synthetic GZ2 end-to-end with negative/temporal/race/restart cases, schema/Swagger and Docs CI.
+- **Exact registered future implementation commit message:** `test(qualification): prove Circle 2 workplace and API handoff`.
+- **Status:** PLANNED; separate stage selection, verified exact files and CI
+  evidence are not supplied by this documentation reconciliation.
+
+
+**Owner-confirmed limits.** Existing Party administration, T32 effective
+Configuration retirement and T24 controlled Documents are reused. C1 retains
+regional resource authority, engineering-limit qualification and equipment/
+Topology ownership. A document's acceptance is not approval of operating
+limits. Configuration flags grant no Identity authority or absent engine/OT
+capability. Only approved target/document classes can acquire scoped reads;
+unresolved policy fails closed. Retention policy is non-destructive by default,
+never a guessed purge workflow. All source behavior must be qualified on a
+fresh synthetic PostgreSQL/Flyway schema with signed HTTP and exact-SHA CI.
+The integrated T56 result pins real OpenAPI, DTOs/errors and the GZ2 synthetic
+consumer fixture; HidraWEB browser acceptance is a separate gate.
+
+**Historical full 18-row snapshot — for traceability, not executable.**
+The original register was committed as
+`5051fd8ee896548dd239a877af3e0892a2a9cef7`. The following is
+verbatim historical text; active task statuses and scope are the live
+Increment 11 rows and the consolidated planning envelopes above.
+
+```text
+| **T41 · Reconcile Circle 2 authority and ownership** | Party, Configuration and Documents with Identity, Organization, Topology and Audit | T39 | Inventory existing admin and protected API operations, domain ownership, references, authorization, migration history, tests and C1 consumer reuse. Decide Party disclosure, configuration context, document classification/retention and target types without inventing industrial settings. | Owner-reviewed operation/resource matrix distinguishes existing, proposed and unsupported behavior; protected scope and no-duplicate-ownership contract is recorded with explicit unresolved policy gates. | PLANNED |
+| **T42 · Qualify Circle 2 protected reference authorization** | Identity with Party, Configuration, Documents, Organization and Topology | T41, T33, T34 | Introduce or qualify owner-specific application authorization ports and adapters for privileged administration versus least-privilege C2 consumer reads. Resolve typed company, regional and asset context through C1 public contracts; authorize before detail, existence, history, counts or bytes. | Signed users in two regions, a foreign company, revoked authority, explicit deny and administrator prove non-disclosing denials and preserved administrator compatibility with fresh PostgreSQL. | PLANNED |
+| **T43 · Expose eligible Party reference discovery** | Party with Identity and Organization | T42 | Add narrowly projected, business-purpose, company/resource-qualified Party search and exact eligible reference reads without exposing global Party administration APIs to regional users. Preserve business role versus security role distinction, active state and effective eligibility. | An entitled regional user discovers only eligible Party choices and exact profiles for a supported purpose; unrelated roles, inactive Party and unauthorized totals/existence are denied or hidden. | PLANNED |
+| **T44 · Qualify Party lifecycle and effective role history** | Party with Identity and Audit | T43 | Qualify current Party register/edit/activate/deactivate and assignment/history use cases. Close only demonstrated business role effective-date, concurrency, audit or retrieval gaps. Reuse current PartyAdministrationApplicationService and existing persistence. | Same-company role temporal validity and idempotency or uniqueness as registered policy; stale updates and unauthorized transition denied, and historical Party evidence reconstructs after state change. | PLANNED |
+| **T45 · Qualify manufacturer Party reference in engineering dossier** | Party and Topology with Assets public owner contracts | T43, T44, T35 | Reuse manufacturer eligibility/reference application contracts and qualify the exact as-of Party snapshot exposed by an authorized selected equipment or pipeline dossier. Do not move installed-asset or model ownership to Party. | Eligible manufacturer selection resolves the owner reference and effective eligibility. Deactivation changes new selections without corrupting the historical accepted engineering revision, including foreign/scope denial. | PLANNED |
+| **T46 · Expose safe effective Configuration consumer read** | Configuration with Identity and consuming owners | T42, T32 | Reuse typed definition and effective-resolution logic to expose a least-privilege allowlisted, non-secret consumer view. Distinguish environment from resource/company scope; require policy admission before treating any environment as a business scope. | Authorized consumer obtains a typed value, active definition version, resolution source, effective time and explicit unavailable/redacted state. Secret defaults, unsupported keys and unauthorized scope do not leak. | PLANNED |
+| **T47 · Prove Configuration version and temporal resolution** | Configuration | T46, T32 | Qualify definition activation, version link, default/override selection, effective dating and existing T32 retirement preview/commit with the same consumer read model. Change domain or persistence only to close a demonstrated correctness gap. | Before and after cutoff exact outcomes are deterministic; stale retirement, overlap or unsupported value fails; prior accepted effective interpretation remains reconstructable. | PLANNED |
+| **T48 · Qualify guarded Feature Flag behavior** | Configuration with Identity and target module owners | T46 | Qualify current feature-flag activation/state APIs, owning-module metadata and effective environment semantics. Ensure no flag grants a permission, changes engineering ownership or activates an unavailable numerical/OT capability. | Supported Boolean flags show authorized effective state and traceable changes. Missing, disabled or invalid flags fail closed; forged enabled flags do not bypass Identity or engine capability checks. | PLANNED |
+| **T49 · Qualify Configuration administration and change provenance** | Configuration with Audit and Identity | T47, T48 | Complete scoped administrative readback and provenance of definition activation, value change/retirement and feature state while keeping secrets reference-only. Reuse existing audit contracts; do not create an alternative engineering constraint registry. | Qualified administrator can explain current and historical effective values and who changed admitted metadata; unauthorized users never read protected values or change settings. | PLANNED |
+| **T50 · Admit controlled Documents for typed engineering targets** | Documents with Topology, Assets, Identity and Organization | T42, T35, T24 | Extend existing facility-scoped controlled Documents target/access contract to approved pipeline, section and equipment target classes via owner-issued typed references. Reuse existing Documents lifecycle, not a parallel registry. | Regional user discovers a permitted target's documents, while foreign, unlinked, revoked and wrong-target reads do not reveal existence, counts or binary availability. | PLANNED |
+| **T51 · Qualify controlled Document metadata and target links** | Documents with target owner contract providers | T50 | Qualify canonical document identity, classification, link-role eligibility, target linkage and immutable owner snapshots through existing DocumentTargetLink model and controlled versions. Do not make Documents owner of physical asset state. | Authorized target association survives restart with correct document, version and provenance; foreign, dangling, invalid-role or cross-company link fails without partial persistence. | PLANNED |
+| **T52 · Qualify protected binary upload and read for C2 targets** | Documents with storage adapter and Identity | T50, T51, T24 | Reuse multipart upload, current-grant-gated download, SHA-256 and storage adapter. Extend the protected target route safely; preserve confirmed-rollback cleanup versus unknown-commit preservation and fail closed on byte mismatch. | Exact verified bytes downloaded by authorized principal; altered, missing or incomplete storage and revoked read fail safely. Competing upload and rollback produce no falsely accepted version. | PLANNED |
+| **T53 · Qualify document acceptance and supersession decisions** | Documents with Workflow, Identity and Audit | T52, T30, T28 | Reuse controlled version acceptance/supersession and immutable decision receipts, requiring independent review only for document classes whose approved policy demands it. Preserve expected-head CAS and evidence lineage without treating document approval as engineering limit approval. | Authorized version acceptance and supersession preserve current/old bytes and attribution; replay, stale head, unauthorized/self-review where required and revoked authority cannot advance state. | PLANNED |
+| **T54 · Register document retention and evidence hold rules** | Documents with Audit, HSE and Records/engineering policy owner | T51, T53 | Define classification-based retention, preservation hold, withdrawn/unavailable state and authorized reason semantics. Preserve append-only decision/audit evidence. Implement mutating retention only after owner policy is approved; do not assume physical deletion or production retention duration. | Unapproved retention value cannot trigger destructive behavior; held or decision-linked evidence cannot be silently deleted; historical links and retrieval conditions remain demonstrable in synthetic fixture. | PLANNED |
+| **T55 · Expose asset-context controlled Document discovery and history** | Documents with Topology and Identity | T50, T51, T52, T53, T54 | Deliver consistent scoped document index, exact detail, accepted and superseded versions, classified target links, checksum metadata and availability through one typed asset-context contract. Reuse T24 facility implementation. | Signed GZ2 pipeline/equipment user finds and downloads exactly authorized current/old version; paging, totals, missing/unavailable content and revoked access are correctly represented. | PLANNED |
+| **T56 · Prove C1-C2 linked GZ2 workplace journey** | HidraAPI integration and QA with Party, Configuration, Documents and C1 owners | T45, T49, T55, T39 | Compose the protected region-to-pipeline/asset journey using owner-backed references: eligible manufacturer, applicable non-secret effective configuration and linked controlled drawing/certificate. Keep application authority checks per owner, with no cross-aggregate writes. | Signed regional user navigates exact synthetic resource and retrieves traceable linked references; old revision survives supersession and no cross-region disclosure or privilege inflation occurs. | PLANNED |
+| **T57 · Qualify cross-module security, time and integrity** | HidraAPI integration, Security and QA with owning modules | T56 | Execute independent negative/race/restart tests for protected Party visibility, Configuration effective windows and Documents byte/version decisions. Retain ArchUnit boundaries, transaction concurrency and generated OpenAPI/schema checks. | Complete admitted test inventory passes with synthetic two-region/foreign-company fixtures, denied existence/count/byte leaks, stale-grant cases, immutable history and no weakened CI. | PLANNED |
+| **T58 · Publish verified Circle 2 API consumer handoff** | HidraAPI integration and QA with HidraWEB contract consumer | T57 | Pin runtime OpenAPI, DTO/error semantics, permission/resource matrix, versioned fixtures, consumer journey and API/WEB acceptance boundary at one exact API SHA. Reuse contract generation/dictionary process and explicitly record unsupported features. | Independent client replays accepted C2 journey with exact verified API artifacts and fresh PostgreSQL; HidraWEB browser acceptance remains separately tracked and is not inferred from green API CI. | PLANNED |
+```
+
+**Registration/STOP rule.** This structural reconciliation authorizes no
+business implementation. On a subsequent `Next`, select T41 as the first
+eligible active task and refresh HEAD, AGENTS, roadmap, owner code, required
+migrations, tests, generated API and exact-SHA CI. Admit a coherent exact
+file-level allowlist before its one bounded direct-main implementation
+commit. Verify the new SHA and applicable CI started, then STOP.
+The historical v0.7.0 tag/Release audit discrepancy remains a separate
+owner-governed release matter.
+
+### Historical Circle 2 planning envelopes — original 18-task registration (SUPERSEDED)
+
+The original per-item candidate file families, scope and pre-registered
+commit messages below remain **historical evidence only**. They do not
+authorize execution under a skipped legacy ID or supersede current
+nine-package scope, prereqs, acceptance and registered messages.
+Any new package requires exact file selection and an individual eligible
+`Next`; no source or migration mutation is admitted here.
+
 
 The following **planning envelopes** are bounded responsibilities and candidate
 file families, not executable exact file allowlists. Every selected task needs

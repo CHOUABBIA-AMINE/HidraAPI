@@ -9,7 +9,7 @@
 | Status | ACTIVE |
 | Authority | Sole task register and execution source for HidraAPI |
 | Owner adoption | 2026-11-10 |
-| Active task selection | T40 IN PROGRESS: manual audit CI #1363 passed on repair SHA 2a76193c85f6c115a36424d69f209d10449f2b45; published v0.7.0 tag/release points to earlier alignment SHA and requires separate owner-governed reconciliation. Circle 2 T41–T58 REGISTERED as PLANNED; no C2 implementation selected. |
+| Active task selection | T40 COMPLETED for release-alignment **preparation only**, with green original exact-SHA CI/Docs and green repair exact-SHA CI/Docs/audit (CI #1363 serial oracle). The pre-existing published v0.7.0 tag/Release at earlier SHA is **not** release-qualified by the later audit; formal release reconciliation remains open under AGENTS.md §19. Circle 2 T41–T58 remain PLANNED and unselected. |
 
 The task register controls scope, dependencies, status and acceptance. Existing technical policy and verified implementation evidence retain their applicability. Task status advances only with recorded evidence. The initial status for each task is PLANNED. The first candidate is T01.
 
@@ -164,7 +164,7 @@ remain separate, explicitly authorized stages.
 
 | Task | Owner | Depends on | Deliverable | Pass condition | Status |
 |---|---|---|---|---|---|
-| **T40 · Prepare v0.7.0 Circle 1 release alignment** | Release owner with HidraAPI integration/QA | T39 accepted at `f0310330ae8eb58f8bf00400b29afeb5baccb869`, closure `9d80b14f3a6f8b3e0c9f81cd5d9efdf1dfb008c6`, CI #1358 attempt 2 | Align Maven project version to `0.7.0`; record milestone scope, limitations and verification obligations in release-history and state documents; do not publish a tag or deploy | Release-alignment commit is on `main` with matching Maven version, exact-SHA CI and Docs green. A separate manual `audit` full CI with `serial_oracle=true` must pass before the release evidence checker may qualify a tag. No GitHub Release publication in this task. | IN PROGRESS |
+| **T40 · Prepare v0.7.0 Circle 1 release alignment** | Release owner with HidraAPI integration/QA | T39 accepted at `f0310330ae8eb58f8bf00400b29afeb5baccb869`, closure `9d80b14f3a6f8b3e0c9f81cd5d9efdf1dfb008c6`, CI #1358 attempt 2 | Align Maven project version to `0.7.0`; record milestone scope, limitations and verification obligations in release-history and state documents; do not publish a tag or deploy | Release-alignment commit is on `main` with matching Maven version, exact-SHA CI and Docs green. A separate manual `audit` full CI with `serial_oracle=true` must pass before the release evidence checker may qualify a tag. No GitHub Release publication in this task. | COMPLETED |
 
 
 ### Increment 11 — Circle 2 supporting reference and engineering evidence workplace
@@ -8137,6 +8137,61 @@ Gate, plus successful documentation validation. An extended timeout is not an
 assertion that the audit will pass. Do not create or move `v0.7.0`, publish
 a GitHub Release, deploy, or advance to a later task in this repair.
 
+
+### T40 release-alignment preparation closure — evidence checked 2026-11-22
+
+**Disposition: T40 COMPLETED — preparation/verification scope only.** This
+closure records the actual evidence, not an approval of the already-published
+formal `v0.7.0` release. The owner requested a status/roadmap check. No code,
+migration, tag, published release, `pom.xml`, `VERSIONS.md` or
+`PROJECT_STATE.md` is changed by this documentation-only checkpoint.
+
+- **T39 prerequisite:** `f0310330ae8eb58f8bf00400b29afeb5baccb869`
+  accepted by [CI #1358 attempt 2](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44999120757/attempts/2);
+  historical closure `9d80b14f3a6f8b3e0c9f81cd5d9efdf1dfb008c6`.
+- **Original T40 alignment:** commit
+  `33a0ec866496c04ba437c4017a5362192523c764`,
+  `chore(release): prepare 0.7.0 Circle 1 milestone`, parent
+  `9d80b14f3a6f8b3e0c9f81cd5d9efdf1dfb008c6`; verified
+  `pom.xml` project version `0.7.0`. Original exact-SHA
+  [HidraAPI CI #1359](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/45008723822)
+  and [Documentation #1214](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/45008723827)
+  passed. Audit CI #1360 attempts 1–2 did not pass because the
+  30-minute `jobs.verify` limit cancelled the mandatory oracle.
+- **Approved CI repair and final verification:** commit
+  `2a76193c85f6c115a36424d69f209d10449f2b45`, parent
+  `33a0ec866496c04ba437c4017a5362192523c764`, changed only
+  `.github/workflows/ci.yml` (`jobs.verify.timeout-minutes` 30 to 90)
+  and this roadmap. The inherited `pom.xml` still declares `0.7.0`.
+  Exact-SHA [HidraAPI CI #1361](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/45019213837)
+  and [Documentation #1215](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/45019213836)
+  passed. Separate [manual audit CI #1363 attempt 1](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/45020902971)
+  succeeded at the **repair SHA** with `verification_mode=audit` and
+  `serial_oracle=true`: `Java 21 Maven verification` and `Full Verification Gate`
+  succeeded, 611 oracle classes/4,563 tests, zero failures, zero errors,
+  zero skips, `release_eligible=true` **for the audited repair SHA only**.
+- **Release publication mismatch — OPEN, not part of T40 preparation closure.**
+  The existing published `v0.7.0` Git tag directly targets
+  `33a0ec866496c04ba437c4017a5362192523c764`, not the
+  audit-passing `2a76193c85f6c115a36424d69f209d10449f2b45`.
+  The public [HidraAPI v0.7.0 Release](https://github.com/CHOUABBIA-AMINE/HidraAPI/releases/tag/v0.7.0)
+  was published on 2026-11-22 at 09:58:18 UTC and still contains
+  placeholder verification fields. **Do not claim exact-tag-SHA audit
+  acceptance, fully qualified release or completed development-line transition.**
+  `AGENTS.md` §19 forbids moving/recreating a published tag or publishing a
+  replacement without separate explicit owner authorization. The next
+  development version is not selected by this closure.
+- **C2 sequencing preserved:** T41–T58 remain PLANNED with no selected
+  implementation package. Only this accepted T40 **preparation** task status
+  changes to COMPLETED; previously recorded T40 attempt/repair and
+  Circle 2 registration notes remain historical evidence.
+
+**Exact closure commit message:** `docs(roadmap): close T40 release-alignment preparation`.
+**Allowed update:** `doc/roadmap/ROADMAP.md` only. Acceptance for this
+documentation checkpoint is truthful two-SHA CI provenance, continued
+visible release mismatch and unchanged task numbering/status T01–T39,
+T41–T58. Check exact new commit/parent/tree, then confirm Documentation
+Validation has been created/queued/started on it and STOP without waiting.
 
 ### Circle 2 task implementation planning envelopes — registration 2026-11-22
 

@@ -26,6 +26,8 @@ import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.net.http.HttpResponse;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -57,6 +59,7 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
 
     @Test
     void signedGz2WorkflowSurvivesSupersessionAndIndependentJvmRestart() throws Exception {
+        var replayDirectory = Gz2SignedWorkflowFixture.circleReplayDirectory();
         try (var postgres = new PostgreSQLContainer<>("postgres:16")
                 .withDatabaseName("hidra_gz2_qualification")
                 .withCommand("postgres", "-c", "track_commit_timestamp=on", "-c", "autovacuum=off")) {
@@ -71,6 +74,10 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
             Instant end = start.plusSeconds(7_200);
             Baselines baselines;
             String dossierPipeline;
+            Gz2SignedWorkflowFixture.CircleFixture circle;
+            CircleSelection circleSelection;
+            String circleConstraint;
+            String circleSectionLimit;
             T31Scenario scenario;
             T37History t37;
             T38Proof t38;
@@ -82,6 +89,7 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
             try (var runtime = fixture.start()) {
                 firstPid = runtime.pid();
                 verifyPublishedOperations(runtime);
+                verifyCircleContract(runtime);
                 String author = runtime.login(fixture.author);
                 String reviewer = runtime.login(fixture.reviewer);
                 String operator = runtime.login(fixture.operator);
@@ -90,9 +98,12 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
                 JsonNode network = publishNetwork(fixture, runtime, author);
                 JsonNode product = publishProduct(fixture, runtime, author, reviewer);
                 dossierPipeline = prepareProtectedDossier(fixture);
+                circle = fixture.seedCircle(dossierPipeline);
+                String dossierReader = runtime.login(fixture.reader);
+                circleSelection = selectCirclePipeline(fixture, runtime, circle, dossierReader);
+                dossierPipeline = circleSelection.pipelineId();
                 String dossierPath = "/api/v1/topology/pipeline-dossiers/" + dossierPipeline
                         + "/baseline?companyPartyId=" + fixture.company;
-                String dossierReader = runtime.login(fixture.reader);
                 JsonNode noPublication = runtime.get(dossierPath, dossierReader);
                 assertEquals("UNAVAILABLE", noPublication.path("availability").asText());
                 assertTrue(noPublication.path("receiptId").isNull()
@@ -103,7 +114,18 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
                 // T35 uses the real T07 receipt and fresh regional authorization.
                 String constraint = qualifiedT36(fixture, runtime, author, reviewer, dossierReader,
                         dossierPipeline, baseline, network);
+                circleConstraint = constraint;
+                circleSectionLimit = query(CIRCLE_LIMITS + dossierPipeline + "/sections/" + circleSelection.sectionId(),
+                        "companyPartyId", fixture.company, "conditionCode", "NOMINAL", "effectiveAt", now().toString());
+                JsonNode sectionLimit = runtime.get(circleSectionLimit, dossierReader);
+                assertEquals("UNAVAILABLE", field(sectionLimit, "status"));
+                assertFalse(sectionLimit.hasNonNull("upperPressure"));
                 t38 = verifyT38Lifecycle(fixture, runtime, author, reviewer, dossierReader, dossierPipeline, baseline);
+                for (String actor : List.of(circle.siblingReader(), fixture.foreign)) {
+                    var denied = runtime.send("GET", t38.evidencePath(), runtime.login(actor), null);
+                    assertEquals(404, denied.statusCode());
+                    noDisclosure(denied, t38.auditId(), t38.actionId(), t38.candidateId());
+                }
                 assertEquals("QUALIFIED", runtime.get(constraint, dossierReader).path("status").asText());
                 JsonNode firstDossierReceipt = runtime.get(dossierPath, dossierReader);
                 assertEquals(field(baseline, "receiptId"),
@@ -141,7 +163,8 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
                 JsonNode stillHistorical = runtime.get(originalReceipt, dossierReader);
                 assertEquals(field(baseline, "receiptId"), stillHistorical.path("receiptId").asText());
 
-                t37 = verifyAssetObservations(fixture, runtime, commissioned, reading, stale, start);
+                t37 = verifyAssetObservations(fixture, runtime, commissioned, reading, stale, start,
+                        circleSelection.facilityId());
                 scenario=appendTransientScenario(fixture,runtime,author,prepared,successor);
                 baselines = new Baselines(baseline, successor, beforeSuccessor, databaseTime(fixture));
                 System.out.printf("GZ2 phase=committed pid=%d baseline=%s successor=%s target=%s trusted=%s evaluation=%s incident=%s%n",
@@ -169,10 +192,151 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
                 assertEquals(t38.actionId(), field(after.path("decisions").get(0), "actionId"));
                 assertEquals(t38.auditId(), field(after.path("decisions").get(0), "auditEventId"));
 
+                var receipt = circleReceipt(fixture, circle, circleSelection, t37.circleObservation(), t38,
+                        circleConstraint, circleSectionLimit, field(baselines.original(), "receiptId"),
+                        field(baselines.successor(), "receiptId"));
+                System.out.println("HIDRA_CIRCLE1_HANDOFF_V1 " + JSON.writeValueAsString(receipt));
+                if (replayDirectory != null) fixture.holdCircleReplay(replayDirectory, restarted, receipt);
+
                 System.out.printf("GZ2 phase=reconstructed pid=%d originalPid=%d scope=foreign,wrong-asset,revoked%n",
                         restarted.pid(), firstPid);
             }
         }
+    }
+
+    private static void verifyCircleContract(Gz2SignedWorkflowFixture.Runtime runtime) throws Exception {
+        var runtimePaths = runtime.get("/v3/api-docs", null).path("paths");
+        // The full gate enforces equality against the generated packaged application.
+        var contractPaths = JSON.readTree(Files.readString(Path.of("doc/api/openapi.yaml"))).path("paths");
+        var routeRow = java.util.regex.Pattern.compile(
+                "^\\| `(GET|POST)` \\| `([^ `]+)` \\| `([^ `]+)` \\|.*$");
+        var runbook = Path.of("doc/api/CIRCLE_1_CONSUMER_HANDOFF.md");
+        int checked = 0;
+        for (String line : Files.readAllLines(runbook)) {
+            var row = routeRow.matcher(line);
+            if (!row.matches()) continue;
+            String method = row.group(1).toLowerCase(java.util.Locale.ROOT);
+            String path = row.group(2);
+            assertTrue(runtimePaths.path(path).has(method), line);
+            assertEquals(row.group(3), contractPaths.path(path).path(method).path("operationId").asText(), line);
+            checked++;
+        }
+        assertEquals(31, checked, "All reviewed Circle 1 route entries must be checked");
+    }
+
+    private static final String CIRCLE_MAP = "/api/v1/topology/regional-map";
+    private static final String CIRCLE_PIPELINES = CIRCLE_MAP + "/layers/pipelines/features";
+    private static final String CIRCLE_DOSSIER = "/api/v1/topology/pipeline-dossiers/";
+    private static final String CIRCLE_LIMITS = "/api/v1/topology/operating-constraints/pipelines/";
+
+    private record CircleSelection(String pipelineId, String sectionId, String facilityId) { }
+
+    private static CircleSelection selectCirclePipeline(Gz2SignedWorkflowFixture f, Gz2SignedWorkflowFixture.Runtime r,
+            Gz2SignedWorkflowFixture.CircleFixture fixture, String reader) throws Exception {
+        String company = f.company;
+        String primary = fixture.primary().pipelineId();
+        String sibling = fixture.sibling().pipelineId();
+        String foreign = fixture.foreignRegion().pipelineId();
+        String siblingToken = r.login(fixture.siblingReader());
+        String foreignToken = r.login(f.foreign);
+        String revokedToken = r.login(fixture.revokedReader());
+        String search = query(CIRCLE_MAP + "/search", "companyPartyId", company, "q", "T35-GZ2-PIPELINE");
+        assertTrue(r.get(search, reader).toString().contains(primary));
+        String selectedId = onlyCirclePipeline(r, reader, company);
+        assertEquals(primary, selectedId);
+        assertEquals(sibling, onlyCirclePipeline(r, siblingToken, company));
+        assertEquals(foreign, onlyCirclePipeline(r, foreignToken, f.foreignCompany));
+        assertEquals(0, r.get(query(CIRCLE_PIPELINES, "companyPartyId", company), foreignToken)
+                .path("totalFeatures").asInt(-1));
+        assertFalse(r.get(search, siblingToken).toString().contains(primary));
+        String geoQuery = query(CIRCLE_MAP + "/geojson", "companyPartyId", company, "layers", "pipelines,pipeline-segments");
+        JsonNode geo = r.get(geoQuery, reader);
+        String geometry = geo.toString();
+        assertEquals(2, geo.path("features").size());
+        assertTrue(geometry.contains(primary));
+        assertTrue(geometry.contains(fixture.primary().sectionId()));
+        for (var region : List.of(fixture.sibling(), fixture.foreignRegion())) {
+            assertFalse(geometry.contains(region.pipelineId()));
+            assertFalse(geometry.contains(region.sectionId()));
+        }
+        String foreignGeometry = r.get(geoQuery, foreignToken).toString();
+        assertFalse(foreignGeometry.contains(primary));
+        assertFalse(foreignGeometry.contains(fixture.primary().sectionId()));
+
+        String feature = query(CIRCLE_PIPELINES + "/" + selectedId, "companyPartyId", company);
+        JsonNode target = r.get(feature, reader);
+        assertEquals("MultiLineString", field(target.path("geometry"), "type"));
+        assertFalse(target.path("geometry").path("coordinates").isEmpty());
+        String pipeline = field(target.path("properties"), "entityId");
+        assertEquals(primary, pipeline);
+        assertEquals(404, r.send("GET", feature, siblingToken, null).statusCode());
+        assertEquals(404, r.send("GET", feature, foreignToken, null).statusCode());
+
+        String regional = query("/api/v1/identity/me/regional-access/PIPELINE/" + pipeline, "companyPartyId", company);
+        assertTrue(r.get(regional, reader).path("permitted").asBoolean());
+        String dossier = CIRCLE_DOSSIER + pipeline;
+        JsonNode design = r.get(query(dossier, "companyPartyId", company), reader);
+        assertEquals(pipeline, field(design, "id"));
+        assertEquals(f.pipeline, field(design, "pipelineSystemId"));
+        assertEquals("DESIGN_PRESSURE", field(design.path("designPressure"), "meaning"));
+        assertEquals("bar", field(design.path("designPressure"), "unit"));
+        assertEquals(70, design.path("designPressure").path("value").intValue());
+        String section = field(r.get(query(dossier + "/sections", "companyPartyId", company), reader)
+                .path("items").get(0), "id");
+        assertEquals(fixture.primary().sectionId(), section);
+        var equipment = r.get(query(dossier + "/equipment", "companyPartyId", company), reader).path("items");
+        assertEquals(1, equipment.size());
+        assertEquals(section, field(equipment.get(0), "sectionId"));
+        String facility = field(equipment.get(0), "facilityId");
+        assertEquals(f.asset, facility);
+
+        assertEquals(primary, onlyCirclePipeline(r, revokedToken, company));
+        r.get(feature, revokedToken);
+        assertEquals(1, f.sql.update("""
+                UPDATE hidra_identity_user_permission_grant SET status='REVOKED',revoked_at=now()
+                WHERE user_id=? AND scope_reference_id=? AND status='ACTIVE'
+                  AND permission_id=(SELECT id FROM hidra_identity_permission WHERE code='topology:regional-resource:read')
+                """, fixture.revokedReader(), f.pipeline));
+        assertEquals(0, r.get(query(CIRCLE_PIPELINES, "companyPartyId", company), revokedToken)
+                .path("totalFeatures").asInt(-1));
+        assertEquals(404, r.send("GET", feature, revokedToken, null).statusCode());
+        assertEquals(404, r.send("GET", regional, revokedToken, null).statusCode());
+        assertEquals(404, r.send("GET", query(dossier, "companyPartyId", company), revokedToken, null).statusCode());
+        return new CircleSelection(pipeline, section, facility);
+    }
+
+    private static String onlyCirclePipeline(Gz2SignedWorkflowFixture.Runtime r, String actor, String company)
+            throws Exception {
+        var page = r.get(query(CIRCLE_PIPELINES, "companyPartyId", company, "size", "1"), actor);
+        assertEquals(1, page.path("totalFeatures").asInt());
+        assertFalse(page.path("hasNext").asBoolean());
+        assertEquals(1, page.path("features").size());
+        return field(page.path("features").get(0).path("properties"), "entityId");
+    }
+
+    private static Map<String, Object> circleReceipt(Gz2SignedWorkflowFixture f,
+            Gz2SignedWorkflowFixture.CircleFixture fixture, CircleSelection selected,
+            Map<String, String> observation, T38Proof decision, String constraint, String sectionLimit,
+            String limitBaselineReceiptId, String currentBaselineReceiptId) {
+        return Map.of("version", 1,
+                "roles", Map.of("primary", f.reader, "sibling", fixture.siblingReader(), "foreign", f.foreign,
+                        "revoked", fixture.revokedReader(), "author", f.author, "reviewer", f.reviewer),
+                "scope", Map.of("companyPartyId", f.company, "foreignCompanyPartyId", f.foreignCompany,
+                        "pipelineId", selected.pipelineId(), "sectionId", selected.sectionId(),
+                        "facilityId", selected.facilityId(), "siblingPipelineId", fixture.sibling().pipelineId(),
+                        "foreignPipelineId", fixture.foreignRegion().pipelineId()),
+                "limits", Map.of("pipeline", constraint, "section", sectionLimit, "limitBaselineReceiptId", limitBaselineReceiptId,
+                        "currentBaselineReceiptId", currentBaselineReceiptId, "pipelineStatus", "QUALIFIED", "sectionStatus", "UNAVAILABLE"),
+                "observation", observation,
+                "decision", Map.of("requestId", decision.requestId(), "candidateId", decision.candidateId(),
+                        "instanceId", decision.instanceId(), "taskId", decision.taskId(), "actionId", decision.actionId(),
+                        "auditEventId", decision.auditId(), "evidence", decision.evidencePath(), "effective", decision.effectivePath()),
+                "currentPublication", decision.currentPublication(),
+                "workflowBinding", Map.of("targetTypeId", decision.review().type(), "workflowPurposeId", decision.review().purpose(),
+                        "definitionId", decision.review().definition(), "firstStepId", decision.review().step()),
+                "checks", List.of("scoped-map", "same-token-revocation", "map-dossier-facility-join",
+                        "design-vs-qualified-limit", "trusted-fresh-stale-unavailable", "workflow-vs-publication",
+                        "scope-safe-evidence", "independent-restart"));
     }
 
     /**
@@ -238,7 +402,9 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
         return pipe;
     }
 
-    private record T38Proof(String evidencePath, String actionId, String auditId) { }
+    private record T38Proof(String requestId, String candidateId, String instanceId, String taskId,
+                            String evidencePath, String effectivePath, String actionId, String auditId,
+                            Gz2SignedWorkflowFixture.Review review, JsonNode currentPublication) { }
 
     private static T38Proof verifyT38Lifecycle(Gz2SignedWorkflowFixture f, Gz2SignedWorkflowFixture.Runtime r,
             String author, String reviewer, String reader, String pipeline, JsonNode baseline) throws Exception {
@@ -252,15 +418,25 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
         String root = topology + "/restriction-requests";
         String receipt = field(baseline, "receiptId");
         var review = f.review("topology", "OPERATING_PRESSURE_RESTRICTION",
-                "OPERATING_PRESSURE_RESTRICTION_APPROVAL", false);
+                "OPERATING_PRESSURE_RESTRICTION_APPROVAL", true);
         Instant initialAt = now().minusSeconds(30);
         Instant replacedAt = initialAt.plusSeconds(10);
         Instant withdrawnAt = replacedAt.plusSeconds(10);
-        String first = id();
-        JsonNode pending = submitT38(r, author, root, f.company, condition, receipt, first, 0,
+        String requestId = id();
+        JsonNode pending = submitT38(r, author, root, f.company, condition, receipt, requestId, 0,
                 Map.of("kind", "INITIAL", "pressure", t38Pressure("64", initialAt)));
+        String first = field(pending, "requestId");
+        assertEquals(requestId, first);
         assertEquals(1, pending.path("candidates").size());
         String original = field(pending.path("candidates").get(0), "candidateId");
+        JsonNode definitions = r.get(query("/api/v1/workflow/definitions", "targetModule", "topology",
+                "targetTypeId", review.type(), "workflowPurposeId", review.purpose(), "targetId", original,
+                "targetLocator", field(pending.path("candidates").get(0), "workflowLocator")), author);
+        JsonNode definition = java.util.stream.StreamSupport.stream(definitions.spliterator(), false)
+                .filter(value -> review.definition().equals(value.path("id").asText()))
+                .findFirst().orElseThrow(() -> new AssertionError("Pressure Workflow definition was not discoverable"));
+        assertTrue(java.util.stream.StreamSupport.stream(definition.path("assignmentChoices").spliterator(), false)
+                .anyMatch(value -> f.reviewer.equals(value.path("actorId").asText())));
         List<Map<String,String>> decision = List.of(t38FirstApproval(f, r, author, reviewer, review, pending));
         assertEquals("UNAVAILABLE", field(r.get(t38Effective(topology, f.company, condition, initialAt), reader), "status"));
         JsonNode published = publishT38(r, author, root, f.company, first, 0, decision);
@@ -329,6 +505,7 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
         var secondPending = submitT38(r, author, root, f.company, condition, receipt, secondCompeting, 3, change);
         var firstDecision = t38Approve(f, r, author, reviewer, review, firstPending);
         var secondDecision = t38Approve(f, r, author, reviewer, review, secondPending);
+        JsonNode currentPublication;
         try (var workers = java.util.concurrent.Executors.newVirtualThreadPerTaskExecutor()) {
             var start = new java.util.concurrent.CountDownLatch(1);
             var left = workers.submit(() -> {
@@ -346,6 +523,9 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
             var two = right.get();
             assertEquals(List.of(200, 409), java.util.stream.Stream.of(one, two).map(response -> response.statusCode())
                     .sorted().toList(), () -> one.body() + " | " + two.body());
+            currentPublication = JSON.readTree(one.statusCode() == 200 ? one.body() : two.body());
+            assertEquals(4, currentPublication.path("streamVersion").asLong());
+            assertFalse(field(currentPublication, "revisionId").isBlank());
         }
         assertEquals(1, f.sql.queryForObject("""
                 SELECT count(*) FROM public.hidra_topology_pressure_decision_publication WHERE request_id IN (?,?)
@@ -363,8 +543,23 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
         }
         assertEquals(404, r.send("GET", query(root + "/" + first, "companyPartyId", f.foreignCompany),
                 author, null).statusCode());
-        return new T38Proof(evidencePath, decision.getFirst().get("actionId"),
-                field(proof.path("decisions").get(0), "auditEventId"));
+        assertEquals(1, f.sql.update("""
+                UPDATE hidra_identity_user_permission_grant SET status='REVOKED',revoked_at=clock_timestamp()
+                WHERE user_id=? AND permission_id='t38_pressure_evidence_read' AND status='ACTIVE'
+                """, f.author));
+        try {
+            noDisclosure(r.send("GET", evidencePath, author, null), original, decision.getFirst().get("actionId"));
+        } finally {
+            f.permit(f.author, "topology:pressure-restriction:evidence-read", "OPERATING_PRESSURE_RESTRICTION",
+                    "PIPELINE_SYSTEM", f.pipeline);
+        }
+        JsonNode witness = proof.path("decisions").get(0);
+        assertEquals(original, field(witness, "candidateId"));
+        assertEquals(decision.getFirst().get("instanceId"), field(witness, "instanceId"));
+        assertEquals(decision.getFirst().get("taskId"), field(witness, "taskId"));
+        assertEquals(first, field(proof.path("publication"), "requestId"));
+        return new T38Proof(first, original, field(witness, "instanceId"), field(witness, "taskId"), evidencePath,
+                t38Effective(topology, f.company, condition, initialAt), field(witness, "actionId"), field(witness, "auditEventId"), review, currentPublication);
     }
 
     private static Map<String,String> t38FirstApproval(Gz2SignedWorkflowFixture f, Gz2SignedWorkflowFixture.Runtime r,
@@ -1189,22 +1384,22 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
         return receipt;
     }
 
-    private record T37History(String route, String trustedId, String bindingId) { }
+    private record T37History(String route, String trustedId, String bindingId, Map<String, String> circleObservation) { }
 
     private static T37History verifyAssetObservations(Gz2SignedWorkflowFixture f, Gz2SignedWorkflowFixture.Runtime r,
-            JsonNode primary, Reading original, Reading stale, Instant start) throws Exception {
+            JsonNode primary, Reading original, Reading stale, Instant start, String facilityId) throws Exception {
         createT37SecondRegion(f);
         for (String actor : List.of(f.reader, f.wrongAsset, f.producer, f.operator, f.foreign, f.reviewer)) {
             f.global(actor, "telemetry:assets:read");
         }
         String producer = r.login(f.producer);
-        String originalPoint = field(primary, "pointId");
+        String commissionedPoint = field(primary, "pointId");
         List<String> requests = List.of("00000000-0000-0000-0037-000000000001",
                 "00000000-0000-0000-0037-000000000002", "00000000-0000-0000-0037-000000000003").stream()
                 .sorted(java.util.Comparator.comparing(Gz2SignedWorkflowNativeHttpPostgresIntegrationTest::t37PointId))
                 .toList();
         String hiddenRequest = requests.get(1);
-        String movableRequest = originalPoint.compareTo(t37PointId(hiddenRequest)) < 0
+        String movableRequest = commissionedPoint.compareTo(t37PointId(hiddenRequest)) < 0
                 ? requests.getLast() : requests.getFirst();
         JsonNode movable = commission(f, r, producer, start, movableRequest, "GZ2-T37-MOVABLE");
         String point = field(movable, "pointId");
@@ -1226,24 +1421,27 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
 
         JsonNode hidden = commission(f, r, producer, start, hiddenRequest, "GZ2-T37-HIDDEN");
         String hiddenPoint = field(hidden, "pointId");
-        String root = t37AssetPoints(f.asset);
+        String root = t37AssetPoints(facilityId);
         String other = t37AssetPoints(f.secondAsset);
         Instant discoveredAt = now();
         String first = query(root, "companyPartyId", f.company, "at", discoveredAt.toString(), "limit", "1");
         JsonNode page = r.get(first, reader);
         assertEquals(1, page.path("points").size());
-        String firstVisible = originalPoint.compareTo(point) < 0 ? originalPoint : point;
+        String firstVisible = commissionedPoint.compareTo(point) < 0 ? commissionedPoint : point;
         assertEquals(firstVisible, field(page.path("points").get(0), "pointId"));
         assertFalse(page.has("total"));
         String next = field(page, "nextPointId");
         assertEquals(firstVisible, next);
         JsonNode secondPage = r.get(first + "&afterPointId=" + next, reader);
         assertEquals(1, secondPage.path("points").size());
-        assertEquals(firstVisible.equals(originalPoint) ? point : originalPoint,
+        assertEquals(firstVisible.equals(commissionedPoint) ? point : commissionedPoint,
                 field(secondPage.path("points").get(0), "pointId"));
         assertFalse(secondPage.hasNonNull("nextPointId"));
         assertFalse(page.toString().contains(hiddenPoint) || secondPage.toString().contains(hiddenPoint));
 
+        String originalPoint = firstVisible.equals(commissionedPoint)
+                ? field(page.path("points").get(0), "pointId") : field(secondPage.path("points").get(0), "pointId");
+        assertEquals(commissionedPoint, originalPoint);
         String latest = t37Latest(root, point, f.company, 120);
         String primaryLatest = t37Latest(root, originalPoint, f.company, 600);
         JsonNode fresh = r.get(primaryLatest, reader);
@@ -1330,6 +1528,12 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
         assertEquals(1, old.path("observations").size());
         assertT37Lineage(f, old.path("observations").get(0), movable, before);
         assertEquals(switchAt, Instant.parse(field(old.path("observations").get(0).path("binding"), "validUntil")));
+        var circleObservation = Map.of(
+                "pointId", originalPoint, "latest", t37Latest(root, originalPoint, f.company, 3600),
+                "stale", t37Latest(root, originalPoint, f.company, 1), "history", originalHistory,
+                "historicalBinding", oldRoute, "bindingId", field(primary, "bindingId"),
+                "observedAt", field(fresh.path("observation"), "observedAt"),
+                "trustedId", original.trusted(), "sourceId", field(primary, "sourceId"));
         var olderScope = r.send("GET", oldRoute, secondReader, null);
         assertEquals(404, olderScope.statusCode(), olderScope::body);
         JsonNode newHistory = r.get(t37History(other, point, f.company, switchAt, until, 20), secondReader);
@@ -1341,7 +1545,7 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
                 secondReader).path("points").get(0), "pointId"));
         assertEquals(0, r.get(query(other, "companyPartyId", f.company,
                 "at", switchAt.minus(1, ChronoUnit.MICROS).toString()), secondReader).path("points").size());
-        return new T37History(oldRoute, before.trusted(), previousBinding);
+        return new T37History(oldRoute, before.trusted(), previousBinding, circleObservation);
     }
 
     private static void createT37SecondRegion(Gz2SignedWorkflowFixture f) {

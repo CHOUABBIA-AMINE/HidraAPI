@@ -148,6 +148,13 @@
       ],
       "status": "CURRENT"
     },
+    "doc/api/CIRCLE_1_CONSUMER_HANDOFF.md": {
+      "metadata_from": [
+        "doc/api/README.md",
+        "doc/governance/DOCUMENT_REGISTER.md"
+      ],
+      "status": "CURRENT"
+    },
     "doc/api/ERROR_MODEL.md": {
       "metadata_from": [
         "doc/api/README.md",
@@ -1048,7 +1055,8 @@
       "doc/api/AUTHENTICATION_AUTHORIZATION.md",
       "doc/api/ERROR_MODEL.md",
       "doc/api/OPENAPI_GOVERNANCE.md",
-      "doc/api/VERSIONING_COMPATIBILITY.md"
+      "doc/api/VERSIONING_COMPATIBILITY.md",
+      "doc/api/CIRCLE_1_CONSUMER_HANDOFF.md"
     ],
     "doc/architecture/README.md": [
       "doc/architecture/ARCHITECTURE_OVERVIEW.md",

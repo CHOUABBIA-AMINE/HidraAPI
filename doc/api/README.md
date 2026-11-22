@@ -55,6 +55,7 @@ The generated server URL is the CI generation endpoint `http://127.0.0.1:8080`; 
 
 ## Canonical Set
 
+- [Circle 1 consumer handoff](CIRCLE_1_CONSUMER_HANDOFF.md) — signed GZ2 contract and replay.
 - `openapi.yaml` — deterministic generated API contract snapshot.
 - `API_OVERVIEW.md` — API boundary and generated-contract summary.
 - `API_CONVENTIONS.md` — current source-visible API conventions.

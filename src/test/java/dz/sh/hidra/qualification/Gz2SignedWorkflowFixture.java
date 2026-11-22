@@ -408,7 +408,7 @@ class Gz2SignedWorkflowFixture {
 
     record Review(String definition, String type, String purpose, String step, String transition) { }
 
-    Review review(String module, String target, String purposeCode, boolean planning) {
+    Review review(String module, String target, String purposeCode, boolean configuredAssignee) {
         String type = workflowType("WORKFLOW_TARGET_TYPE", target);
         String purpose = workflowType("WORKFLOW_PURPOSE", purposeCode);
         String definition = id();
@@ -436,7 +436,7 @@ class Gz2SignedWorkflowFixture {
                     comment_required,created_at,updated_at)
                 VALUES (?,?,?,?,'APPROVE',false,false,now(),now())
                 """, transition, definition, initial, terminal);
-        if (planning) {
+        if (configuredAssignee) {
             sql.update("""
                     INSERT INTO hidra_workflow_step_assignment_rule(id,definition_id,step_id,assignment_mode_id,actor_id,
                         active,created_at,updated_at) VALUES (?,?,?,?,?,true,now(),now())
@@ -502,6 +502,156 @@ class Gz2SignedWorkflowFixture {
                 VALUES (?,?,?,true,0,false,now(),now())
                 """, id, family, code);
         return id;
+    }
+
+    record CircleRegion(String pipelineId, String sectionId) { }
+
+    record CircleFixture(CircleRegion primary, CircleRegion sibling, CircleRegion foreignRegion,
+                         String siblingReader, String revokedReader) { }
+
+    CircleFixture seedCircle(String primaryPipeline) {
+        String type = sql.queryForObject(
+                "SELECT pipeline_type_id FROM hidra_topology_pipeline WHERE id=?", String.class, primaryPipeline);
+        String systemType = sql.queryForObject(
+                "SELECT system_type_id FROM hidra_topology_pipeline_system WHERE id=?", String.class, pipeline);
+        String sibling = human("Circle 1 sibling reader");
+        String revoked = human("Circle 1 revoked reader");
+        String siblingSystem = seedCircleSystem(company, systemType, sibling);
+        String foreignSystem = seedCircleSystem(foreignCompany, systemType, foreign);
+        assignCircleReader(revoked, pipeline);
+        for (String actor : List.of(reader, sibling, foreign, revoked)) {
+            permit(actor, "topology:regional-map:read", "TOPOLOGY_REGIONAL_MAP", "GLOBAL", null);
+            permit(actor, "topology:regional-map:search", "TOPOLOGY_REGIONAL_MAP", "GLOBAL", null);
+            permit(actor, "topology:pipeline-dossiers:read", "TOPOLOGY_PIPELINE_DOSSIERS", "GLOBAL", null);
+        }
+        // The sibling and foreign actors must reach the owner scope check on evidence.
+        global(sibling, "topology:operating-constraints:read");
+        global(foreign, "topology:operating-constraints:read");
+        permit(sibling, "topology:pressure-restriction:evidence-read", "OPERATING_PRESSURE_RESTRICTION",
+                "PIPELINE_SYSTEM", siblingSystem);
+        permit(foreign, "topology:pressure-restriction:evidence-read", "OPERATING_PRESSURE_RESTRICTION",
+                "PIPELINE_SYSTEM", foreignSystem);
+        sql.update("""
+                UPDATE hidra_topology_pipeline SET design_pressure=70,pressure_unit_code='bar' WHERE id=?
+                """, primaryPipeline);
+        CircleRegion primary = seedCircleSection(primaryPipeline, "PRIMARY", 1);
+        String equipmentType = id();
+        sql.update("""
+                INSERT INTO hidra_topology_equipment_type(id,code,name,status,created_at,updated_at)
+                VALUES (?,?,'Synthetic Circle 1 equipment','ACTIVE',now(),now())
+                """, equipmentType, equipmentType);
+        sql.update("""
+                INSERT INTO hidra_topology_equipment
+                  (id,code,facility_id,pipeline_segment_id,equipment_type_id,status,created_at,updated_at)
+                VALUES (?,'GZ2-CIRCLE-EQUIPMENT',?,?,?,'ACTIVE',now(),now())
+                """, id(), asset, primary.sectionId(), equipmentType);
+        return new CircleFixture(primary,
+                seedCircleSection(seedCirclePipeline(siblingSystem, company, type, sibling, "SIBLING"), "SIBLING", 3),
+                seedCircleSection(seedCirclePipeline(foreignSystem, foreignCompany, type, foreign, "FOREIGN"), "FOREIGN", 5),
+                sibling, revoked);
+    }
+
+    private String seedCircleSystem(String owner, String type, String actor) {
+        String system = id();
+        sql.update("""
+                INSERT INTO hidra_topology_pipeline_system(id,code,system_type_id,status,created_at,updated_at)
+                VALUES (?,?,?,'ACTIVE',now(),now())
+                """, system, "GZ2-CIRCLE-" + system, type);
+        sql.update("""
+                INSERT INTO hidra_topology_foundation_system_owner(pipeline_system_id,company_party_id) VALUES (?,?)
+                """, system, owner);
+        assignCircleReader(actor, system);
+        return system;
+    }
+
+    private void assignCircleReader(String actor, String system) {
+        String employee = id();
+        sql.update("""
+                INSERT INTO hidra_org_employee
+                  (id,employee_number,employee_type,status,identity_user_reference,created_at,updated_at)
+                VALUES (?,?,'PERMANENT','ACTIVE',?,now(),now())
+                """, employee, "GZ2-CIRCLE-" + employee, actor);
+        sql.update("UPDATE hidra_identity_user SET employee_reference_id=? WHERE id=?", employee, actor);
+        sql.update("""
+                INSERT INTO hidra_org_operational_scope(scope_type,target_id)
+                SELECT 'PIPELINE_SYSTEM',? WHERE NOT EXISTS
+                    (SELECT 1 FROM hidra_org_operational_scope WHERE scope_type='PIPELINE_SYSTEM' AND target_id=?)
+                """, system, system);
+        sql.update("""
+                INSERT INTO hidra_org_responsibility_assignment
+                  (id,responsibility_type,assignee_type,assignee_id,scope_id,valid_from,valid_to,status,created_at,updated_at)
+                SELECT ?,'RESPONSIBLE','EMPLOYEE',?,id,now()-interval '2 hours',now()+interval '2 hours','ACTIVE',now(),now()
+                FROM hidra_org_operational_scope WHERE scope_type='PIPELINE_SYSTEM' AND target_id=?
+                """, id(), employee, system);
+        permit(actor, "topology:regional-resource:read", "TOPOLOGY_REGIONAL_RESOURCE", "PIPELINE_SYSTEM", system);
+    }
+
+    private String seedCirclePipeline(String system, String owner, String type, String actor, String label) {
+        String pipe = id();
+        String code = "GZ2-CIRCLE-" + label;
+        sql.update("""
+                INSERT INTO hidra_topology_pipeline(id,pipeline_system_id,code,pipeline_type_id,status,created_at,updated_at)
+                VALUES (?,?,?,?,'ACTIVE',now(),now())
+                """, pipe, system, code, type);
+        sql.update("""
+                INSERT INTO hidra_topology_pipeline_authoring_revision
+                  (pipeline_id,revision,company_party_id,pipeline_system_id,code,pipeline_type_id,actor_user_id,recorded_at)
+                VALUES (?,1,?,?,?,?,?,now())
+                """, pipe, owner, system, code, type, actor);
+        return pipe;
+    }
+
+    private CircleRegion seedCircleSection(String pipe, String label, int longitude) {
+        String from = id();
+        String to = id();
+        sql.update("""
+                INSERT INTO hidra_topology_node(id,code,node_type,status,longitude,latitude,created_at,updated_at)
+                VALUES (?,?,'JUNCTION','ACTIVE',?,35,now(),now()), (?,?,'JUNCTION','ACTIVE',?,35,now(),now())
+                """, from, from, longitude, to, to, longitude + 1);
+        String section = id();
+        sql.update("""
+                INSERT INTO hidra_topology_pipeline_segment
+                  (id,pipeline_id,code,segment_type,from_node_id,to_node_id,flow_direction,status,created_at,updated_at)
+                VALUES (?,?,?,'MAINLINE',?,?,'DIRECTED','ACTIVE',now(),now())
+                """, section, pipe, "GZ2-CIRCLE-" + label, from, to);
+        return new CircleRegion(pipe, section);
+    }
+
+    static Path circleReplayDirectory() {
+        String directory = System.getenv("HIDRA_CIRCLE1_REPLAY_DIR");
+        if (directory == null || directory.isBlank()) return null;
+        if ("true".equalsIgnoreCase(System.getenv("CI")) || "true".equalsIgnoreCase(System.getenv("GITHUB_ACTIONS"))) {
+            throw new IllegalStateException("Circle 1 replay is local-only");
+        }
+        Path path = Path.of(directory);
+        var ownerOnly = java.nio.file.attribute.PosixFilePermissions.fromString("rwx------");
+        try {
+            if (!path.isAbsolute() || !Files.isDirectory(path, java.nio.file.LinkOption.NOFOLLOW_LINKS)
+                    || !Files.getPosixFilePermissions(path, java.nio.file.LinkOption.NOFOLLOW_LINKS).equals(ownerOnly)) {
+                throw new IllegalArgumentException("Use an absolute private POSIX directory with mode 0700");
+            }
+        } catch (IOException failure) {
+            throw new IllegalArgumentException("Could not validate Circle 1 replay directory", failure);
+        }
+        return path;
+    }
+
+    void holdCircleReplay(Path directory, Runtime runtime, Map<String, Object> receipt) throws Exception {
+        Path file = directory.resolve("circle1-local.json");
+        var privateFile = java.nio.file.attribute.PosixFilePermissions.asFileAttribute(
+                java.nio.file.attribute.PosixFilePermissions.fromString("rw-------"));
+        Files.createFile(file, privateFile);
+        try {
+            Files.writeString(file, JSON.writeValueAsString(Map.of(
+                    "baseUrl", runtime.base, "providerType", "LOCAL", "password", HUMAN_PASSWORD, "receipt", receipt)));
+            System.out.println("Circle 1 local replay is ready. Delete circle1-local.json to stop, or wait ten minutes.");
+            long deadline = System.nanoTime() + Duration.ofMinutes(10).toNanos();
+            while (System.nanoTime() < deadline && runtime.child.isAlive() && Files.exists(file)) {
+                Thread.sleep(250);
+            }
+        } finally {
+            Files.deleteIfExists(file);
+        }
     }
 
     Runtime start() throws Exception {

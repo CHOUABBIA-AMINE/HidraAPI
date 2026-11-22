@@ -8013,3 +8013,35 @@ The owner then separately creates the immutable tag and publishes the GitHub
 Release targeting the independently verified alignment SHA. The eventual
 `0.8.0-SNAPSHOT` transition and HidraWEB browser acceptance are separate.
 No deployment, live OT, production data or numerical solver is selected.
+
+### T40 audit-CI timeout repair — owner-authorized 2026-11-22
+
+**Failure evidence and disposition.** The v0.7.0 release-alignment commit
+`33a0ec866496c04ba437c4017a5362192523c764` passed standard
+[HidraAPI CI #1359](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/45008723822)
+and [Documentation Validation #1214](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/45008723827).
+The required manual [audit CI #1360, attempts 1 and 2](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/45010727037)
+did not pass: the serial `Java 21 Maven verification` job was cancelled at its
+configured 30-minute job limit on both attempts, leaving the mandatory oracle
+and dependent Full Verification Gate incomplete. Partial negative-test exception
+logs do not establish a passing or failing complete unrestricted oracle.
+
+**Exact repair commit message:** `fix(ci): extend T40 serial audit oracle timeout`.
+
+**Owner-authorized repair allowlist:** only
+`.github/workflows/ci.yml` (`jobs.verify.timeout-minutes` from 30 to 90)
+and this `doc/roadmap/ROADMAP.md` evidence/authorization record. No changes to
+test-class selection, serial execution, 500 ms protected transaction deadlines,
+assertions, Maven flags, evidence checks, migration history, runtime application,
+other jobs or release files are authorized by this repair.
+
+**Acceptance and STOP rule.** Publish one guarded direct-main repair commit and
+observe applicable exact-SHA CI/Documentation Validation creation or startup,
+then stop without waiting for completion. T40 remains **IN PROGRESS**. Formal
+release eligibility requires a separately initiated exact-SHA `HidraAPI CI`
+`workflow_dispatch` with `verification_mode=audit` and
+`serial_oracle=true` to complete successfully, including the Full Verification
+Gate, plus successful documentation validation. An extended timeout is not an
+assertion that the audit will pass. Do not create or move `v0.7.0`, publish
+a GitHub Release, deploy, or advance to a later task in this repair.
+

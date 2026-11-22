@@ -506,7 +506,7 @@ jobs:
     if: github.event_name == 'workflow_dispatch' && inputs.verification_mode == 'audit' && inputs.serial_oracle
     name: Java 21 Maven verification
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 90
     services:
       postgres:
         image: postgres:16

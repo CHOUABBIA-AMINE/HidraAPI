@@ -9,7 +9,7 @@
 | Status | ACTIVE |
 | Authority | Sole task register and execution source for HidraAPI |
 | Owner adoption | 2026-11-10 |
-| Active task selection | T39 COMPLETED on exact-SHA CI #1358 attempt 2 and recorded by closure commit 9d80b14f3a6f8b3e0c9f81cd5d9efdf1dfb008c6. Owner selected T40 v0.7.0 release alignment; release verification pending. |
+| Active task selection | T40 IN PROGRESS: manual audit CI #1363 passed on repair SHA 2a76193c85f6c115a36424d69f209d10449f2b45; published v0.7.0 tag/release points to earlier alignment SHA and requires separate owner-governed reconciliation. Circle 2 T41–T58 REGISTERED as PLANNED; no C2 implementation selected. |
 
 The task register controls scope, dependencies, status and acceptance. Existing technical policy and verified implementation evidence retain their applicability. Task status advances only with recorded evidence. The initial status for each task is PLANNED. The first candidate is T01.
 
@@ -50,12 +50,15 @@ The table defines the proposed order of delivery. A row can start once its own p
 | 6. Integrated GZ2 software acceptance (T15) | Run the complete engineering-to-operator journey on one exact API commit with an independent client. | Required outputs from 1–5 are accepted and compatible. | Fresh PostgreSQL and signed HTTP proof with actual generated OpenAPI, persisted readback, negative cases and independently reviewed evidence. |
 | 7. Remaining business lifecycles (T16–T30) | Complete investigations, maintenance, Custody, Risk, Analytics, Reporting, Documents, Integration, Notification and Audit. | Exact owner prerequisites for each workflow. Documents capability is available before report artifact completion depends on it. | Each selected workflow can be initiated, progressed, completed and retrieved through authorized REST. FG-07–18. |
 | 8. Scenario readiness and configuration (T31–T32) | Add engine-neutral scenario versioning and reconstruction. Deliver historical configuration retirement only for a proven consumer need. | Accepted engineering inputs and a defined capability/validation policy. | Historical scenario reconstructs after supersession. Configuration lookup remains reproducible. FG-19 and FG-20. FG-21 remains deferred. |
+| 9. Circle 1 regional workplace (T33–T39) | Regional authorized GZ2 pipeline, dossier, constraints, telemetry and governed decisions. | Completed regional authority and owner-supported input contracts. | Exact-SHA signed HTTP and PostgreSQL consumer handoff (already recorded). |
+| 10. Circle 1 release alignment (T40) | Maven 0.7.0 candidate, release and audit governance. | T39 accepted and separately governed release publication. | Exact-SHA CI/audit evidence, with unresolved already-published tag/release reconciliation explicitly retained. |
+| 11. Circle 2 supporting references (T41–T58) | Secure Party, Configuration and Documents reference workplace joined to the Circle 1 GZ2 asset context. | C1 protected source interfaces, owner-approved C2 policy, T41–T42 authority and task-specific predecessors. | Authorized end-to-end manufacturer, effective non-secret configuration and controlled-document version/byte evidence; independently verified API and browser handoff. |
 
 Increment 6 is the proposed first integrated development milestone. The remainder is sequenced by functional dependency and risk. Calendar estimates require implementation sizing, staffing and CI feedback.
 
 ## 4. Explicit delivery task register
 
-The roadmap initially contains **32 registered tasks**. Use these IDs for HidraAPI task selection and evidence. Each task delivers a named API capability or a verifiable acceptance result. An owner is the accountable bounded context, with collaborators shown where needed. Dependencies are prerequisites for accepting the result and take precedence over task numbering. “Existing foundation” means the assessed starting capabilities in §2.
+The roadmap initially contained **32 registered tasks**; T33–T40 added Circle 1 and release work, and the owner now registers **T41–T58 for Circle 2**, for **58 total registered tasks**. Use these IDs for HidraAPI task selection and evidence. Each task delivers a named API capability or a verifiable acceptance result. An owner is the accountable bounded context, with collaborators shown where needed. Dependencies are prerequisites for accepting the result and take precedence over task numbering. “Existing foundation” means the assessed starting capabilities in §2.
 
 A task includes its required authorization, REST contract, persistence, failure handling and tests. Confirm exact routes, payloads and errors during task preparation. Each task inherits the definition of done in §7.
 
@@ -163,6 +166,95 @@ remain separate, explicitly authorized stages.
 |---|---|---|---|---|---|
 | **T40 · Prepare v0.7.0 Circle 1 release alignment** | Release owner with HidraAPI integration/QA | T39 accepted at `f0310330ae8eb58f8bf00400b29afeb5baccb869`, closure `9d80b14f3a6f8b3e0c9f81cd5d9efdf1dfb008c6`, CI #1358 attempt 2 | Align Maven project version to `0.7.0`; record milestone scope, limitations and verification obligations in release-history and state documents; do not publish a tag or deploy | Release-alignment commit is on `main` with matching Maven version, exact-SHA CI and Docs green. A separate manual `audit` full CI with `serial_oracle=true` must pass before the release evidence checker may qualify a tag. No GitHub Release publication in this task. | IN PROGRESS |
 
+
+### Increment 11 — Circle 2 supporting reference and engineering evidence workplace
+
+**Owner-approved registration — 2026-11-22 (documentation only).**
+Circle 2 (C2) covers **Party, Configuration and Documents** supporting the
+accepted Circle 1 regional workplace. This is a bounded, gas-first synthetic
+GZ2 software-development scope, not a new production deployment or numerical
+simulation. C2 enhances existing capabilities (Party administration/roles,
+Configuration T32 typed retirement, Documents T24 controlled content/version
+workflow); no duplicate aggregate, authorization model, document registry or
+engineering pressure owner is authorized. Public owner contracts may be
+extended only for demonstrated missing capabilities.
+
+The owner authorizes **registration of T41–T58** as **PLANNED**. These are
+sequential identifiers preserving T01–T40 and mapping exactly to proposed
+C2-01–C2-18. None is selected, implemented, tested or accepted by this
+registration. A future `Next` must refresh main and acceptance, select
+**one eligible task**, pin exact files and one registered message/acceptance
+envelope before mutation; the path families in §7 below are planning
+candidates, not file allowlists. This registration commit changes
+`doc/roadmap/ROADMAP.md` only and uses exact message
+`docs(roadmap): register Circle 2 supporting reference workplace`.
+No branches, PRs, releases or tags are authorized.
+
+**C1/T40 evidence preserved (not silently closed).** The owner-selected T40
+release-alignment work changed Maven to `0.7.0` on
+`33a0ec866496c04ba437c4017a5362192523c764`; its CI timeout repair on
+`2a76193c85f6c115a36424d69f209d10449f2b45` passed
+[Documentation Validation #1215](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/45019213836),
+[development CI #1361](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/45019213837)
+and [manual audit CI #1363](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/45020902971),
+including the mandatory serial oracle and full verification gate. Audit reports
+4,563 tests, zero failures/errors/skips, and `release_eligible=true` **for the
+audited SHA**. Nevertheless the already-published `v0.7.0` tag/GitHub Release
+currently resolve to the earlier `33a0ec866496c04ba437c4017a5362192523c764`
+commit and the published description retains unfilled verification placeholders.
+No tag, release, version, historical acceptance record or T40 status is changed
+by this Circle 2 registration. Any retagging or release replacement requires
+separate explicit owner authorization under `AGENTS.md`. The unresolved formal
+release reconciliation must be addressed before asserting a fully qualified
+formal `v0.7.0` milestone; it does not fabricate a C2 runtime dependency.
+
+**C2 stage groups:** A — reference authority (T41–T42);
+B — Party (T43–T45); C — Configuration (T46–T49);
+D — Documents (T50–T55); E — C1/C2 qualification and handoff (T56–T58).
+Once T41/T42 are admitted, owner-specific Party and Configuration tasks may
+run by dependency; Document stages reuse existing T24 and C1 target authority.
+
+| Task | Owner | Depends on | Deliverable | Pass condition | Status |
+|---|---|---|---|---|---|
+| **T41 · Reconcile Circle 2 authority and ownership** | Party, Configuration and Documents with Identity, Organization, Topology and Audit | T39 | Inventory existing admin and protected API operations, domain ownership, references, authorization, migration history, tests and C1 consumer reuse. Decide Party disclosure, configuration context, document classification/retention and target types without inventing industrial settings. | Owner-reviewed operation/resource matrix distinguishes existing, proposed and unsupported behavior; protected scope and no-duplicate-ownership contract is recorded with explicit unresolved policy gates. | PLANNED |
+| **T42 · Qualify Circle 2 protected reference authorization** | Identity with Party, Configuration, Documents, Organization and Topology | T41, T33, T34 | Introduce or qualify owner-specific application authorization ports and adapters for privileged administration versus least-privilege C2 consumer reads. Resolve typed company, regional and asset context through C1 public contracts; authorize before detail, existence, history, counts or bytes. | Signed users in two regions, a foreign company, revoked authority, explicit deny and administrator prove non-disclosing denials and preserved administrator compatibility with fresh PostgreSQL. | PLANNED |
+| **T43 · Expose eligible Party reference discovery** | Party with Identity and Organization | T42 | Add narrowly projected, business-purpose, company/resource-qualified Party search and exact eligible reference reads without exposing global Party administration APIs to regional users. Preserve business role versus security role distinction, active state and effective eligibility. | An entitled regional user discovers only eligible Party choices and exact profiles for a supported purpose; unrelated roles, inactive Party and unauthorized totals/existence are denied or hidden. | PLANNED |
+| **T44 · Qualify Party lifecycle and effective role history** | Party with Identity and Audit | T43 | Qualify current Party register/edit/activate/deactivate and assignment/history use cases. Close only demonstrated business role effective-date, concurrency, audit or retrieval gaps. Reuse current PartyAdministrationApplicationService and existing persistence. | Same-company role temporal validity and idempotency or uniqueness as registered policy; stale updates and unauthorized transition denied, and historical Party evidence reconstructs after state change. | PLANNED |
+| **T45 · Qualify manufacturer Party reference in engineering dossier** | Party and Topology with Assets public owner contracts | T43, T44, T35 | Reuse manufacturer eligibility/reference application contracts and qualify the exact as-of Party snapshot exposed by an authorized selected equipment or pipeline dossier. Do not move installed-asset or model ownership to Party. | Eligible manufacturer selection resolves the owner reference and effective eligibility. Deactivation changes new selections without corrupting the historical accepted engineering revision, including foreign/scope denial. | PLANNED |
+| **T46 · Expose safe effective Configuration consumer read** | Configuration with Identity and consuming owners | T42, T32 | Reuse typed definition and effective-resolution logic to expose a least-privilege allowlisted, non-secret consumer view. Distinguish environment from resource/company scope; require policy admission before treating any environment as a business scope. | Authorized consumer obtains a typed value, active definition version, resolution source, effective time and explicit unavailable/redacted state. Secret defaults, unsupported keys and unauthorized scope do not leak. | PLANNED |
+| **T47 · Prove Configuration version and temporal resolution** | Configuration | T46, T32 | Qualify definition activation, version link, default/override selection, effective dating and existing T32 retirement preview/commit with the same consumer read model. Change domain or persistence only to close a demonstrated correctness gap. | Before and after cutoff exact outcomes are deterministic; stale retirement, overlap or unsupported value fails; prior accepted effective interpretation remains reconstructable. | PLANNED |
+| **T48 · Qualify guarded Feature Flag behavior** | Configuration with Identity and target module owners | T46 | Qualify current feature-flag activation/state APIs, owning-module metadata and effective environment semantics. Ensure no flag grants a permission, changes engineering ownership or activates an unavailable numerical/OT capability. | Supported Boolean flags show authorized effective state and traceable changes. Missing, disabled or invalid flags fail closed; forged enabled flags do not bypass Identity or engine capability checks. | PLANNED |
+| **T49 · Qualify Configuration administration and change provenance** | Configuration with Audit and Identity | T47, T48 | Complete scoped administrative readback and provenance of definition activation, value change/retirement and feature state while keeping secrets reference-only. Reuse existing audit contracts; do not create an alternative engineering constraint registry. | Qualified administrator can explain current and historical effective values and who changed admitted metadata; unauthorized users never read protected values or change settings. | PLANNED |
+| **T50 · Admit controlled Documents for typed engineering targets** | Documents with Topology, Assets, Identity and Organization | T42, T35, T24 | Extend existing facility-scoped controlled Documents target/access contract to approved pipeline, section and equipment target classes via owner-issued typed references. Reuse existing Documents lifecycle, not a parallel registry. | Regional user discovers a permitted target's documents, while foreign, unlinked, revoked and wrong-target reads do not reveal existence, counts or binary availability. | PLANNED |
+| **T51 · Qualify controlled Document metadata and target links** | Documents with target owner contract providers | T50 | Qualify canonical document identity, classification, link-role eligibility, target linkage and immutable owner snapshots through existing DocumentTargetLink model and controlled versions. Do not make Documents owner of physical asset state. | Authorized target association survives restart with correct document, version and provenance; foreign, dangling, invalid-role or cross-company link fails without partial persistence. | PLANNED |
+| **T52 · Qualify protected binary upload and read for C2 targets** | Documents with storage adapter and Identity | T50, T51, T24 | Reuse multipart upload, current-grant-gated download, SHA-256 and storage adapter. Extend the protected target route safely; preserve confirmed-rollback cleanup versus unknown-commit preservation and fail closed on byte mismatch. | Exact verified bytes downloaded by authorized principal; altered, missing or incomplete storage and revoked read fail safely. Competing upload and rollback produce no falsely accepted version. | PLANNED |
+| **T53 · Qualify document acceptance and supersession decisions** | Documents with Workflow, Identity and Audit | T52, T30, T28 | Reuse controlled version acceptance/supersession and immutable decision receipts, requiring independent review only for document classes whose approved policy demands it. Preserve expected-head CAS and evidence lineage without treating document approval as engineering limit approval. | Authorized version acceptance and supersession preserve current/old bytes and attribution; replay, stale head, unauthorized/self-review where required and revoked authority cannot advance state. | PLANNED |
+| **T54 · Register document retention and evidence hold rules** | Documents with Audit, HSE and Records/engineering policy owner | T51, T53 | Define classification-based retention, preservation hold, withdrawn/unavailable state and authorized reason semantics. Preserve append-only decision/audit evidence. Implement mutating retention only after owner policy is approved; do not assume physical deletion or production retention duration. | Unapproved retention value cannot trigger destructive behavior; held or decision-linked evidence cannot be silently deleted; historical links and retrieval conditions remain demonstrable in synthetic fixture. | PLANNED |
+| **T55 · Expose asset-context controlled Document discovery and history** | Documents with Topology and Identity | T50, T51, T52, T53, T54 | Deliver consistent scoped document index, exact detail, accepted and superseded versions, classified target links, checksum metadata and availability through one typed asset-context contract. Reuse T24 facility implementation. | Signed GZ2 pipeline/equipment user finds and downloads exactly authorized current/old version; paging, totals, missing/unavailable content and revoked access are correctly represented. | PLANNED |
+| **T56 · Prove C1-C2 linked GZ2 workplace journey** | HidraAPI integration and QA with Party, Configuration, Documents and C1 owners | T45, T49, T55, T39 | Compose the protected region-to-pipeline/asset journey using owner-backed references: eligible manufacturer, applicable non-secret effective configuration and linked controlled drawing/certificate. Keep application authority checks per owner, with no cross-aggregate writes. | Signed regional user navigates exact synthetic resource and retrieves traceable linked references; old revision survives supersession and no cross-region disclosure or privilege inflation occurs. | PLANNED |
+| **T57 · Qualify cross-module security, time and integrity** | HidraAPI integration, Security and QA with owning modules | T56 | Execute independent negative/race/restart tests for protected Party visibility, Configuration effective windows and Documents byte/version decisions. Retain ArchUnit boundaries, transaction concurrency and generated OpenAPI/schema checks. | Complete admitted test inventory passes with synthetic two-region/foreign-company fixtures, denied existence/count/byte leaks, stale-grant cases, immutable history and no weakened CI. | PLANNED |
+| **T58 · Publish verified Circle 2 API consumer handoff** | HidraAPI integration and QA with HidraWEB contract consumer | T57 | Pin runtime OpenAPI, DTO/error semantics, permission/resource matrix, versioned fixtures, consumer journey and API/WEB acceptance boundary at one exact API SHA. Reuse contract generation/dictionary process and explicitly record unsupported features. | Independent client replays accepted C2 journey with exact verified API artifacts and fresh PostgreSQL; HidraWEB browser acceptance remains separately tracked and is not inferred from green API CI. | PLANNED |
+
+**C2 security and acceptance invariants.** Server-side Identity grants and
+denies, company and resource scope, current regional authority, authorization
+before protected list/count/history/bytes, independent decisions where
+admitted, optimistic concurrency, exact revision/effective times, verified
+file length/checksum, immutable historical evidence and owner-only aggregate
+mutations are mandatory. Configuration environment and module owner metadata
+do not imply company or industrial-resource authority. Feature flags grant no
+permissions and activate neither OT control nor an absent engine. A controlled
+Document acceptance is not an approval of pressure limits or other engineering
+facts. Use signed HTTP, fresh PostgreSQL/Flyway and synthetic fixtures; skipped
+database tests do not establish persistence acceptance. C2 backend acceptance
+does not establish HidraWEB browser, industrial calibration, SITE, live SCADA,
+production or numerical simulation acceptance.
+
+**Policy gates:** T41 records Party consumer visibility, Configuration
+allowlisted non-secret context, admitted Documents target classes,
+classification/acceptance responsibility and a non-destructive retention
+default. T43/T46/T50/T54 may not invent a policy if an owner has not
+authorized the particular behavior. Unresolved industrial measurements never
+block safe, configurable software contracts exercised with synthetic data.
 
 **Decision dependencies.** Before T33 selection, record whether an effective
 Organization responsibility constrains Identity grants or can contribute
@@ -8045,3 +8137,261 @@ Gate, plus successful documentation validation. An extended timeout is not an
 assertion that the audit will pass. Do not create or move `v0.7.0`, publish
 a GitHub Release, deploy, or advance to a later task in this repair.
 
+
+### Circle 2 task implementation planning envelopes — registration 2026-11-22
+
+The following **planning envelopes** are bounded responsibilities and candidate
+file families, not executable exact file allowlists. Every selected task needs
+one separately registered exact create/update/delete list at its execution
+checkpoint, refreshed HEAD/CI, and current source/provenance proof. Candidate
+REST routes marked PROPOSED require implementation and generated OpenAPI proof;
+the presence of a Java class or a prior test is not acceptance evidence.
+
+#### T41 (C2-01) — Reconcile Circle 2 authority and ownership
+
+- **Owner and prerequisite:** Party, Configuration and Documents with Identity, Organization, Topology and Audit. Requires T39.
+- **Domain/application scope:** Inventory existing admin and protected API operations, domain ownership, references, authorization, migration history, tests and C1 consumer reuse. Decide Party disclosure, configuration context, document classification/retention and target types without inventing industrial settings.
+- **HTTP contract:** No new HTTP endpoint.
+- **Candidate source and evidence paths (not admitted exact allowlist):** `doc/roadmap/ROADMAP.md; doc/modules/party.md, configuration.md, documents.md only if the selected governance stage admits their update; no production source.`.
+- **Acceptance cases:** Owner-reviewed operation/resource matrix distinguishes existing, proposed and unsupported behavior; protected scope and no-duplicate-ownership contract is recorded with explicit unresolved policy gates.
+- **Required validation types:** Documentation consistency and exact current-source/CI applicability, no claim of runtime change.
+- **Pre-registered implementation commit message:** `docs(roadmap): define Circle 2 owner and policy boundaries`.
+- **State:** PLANNED. No implementation, code-change authority, CI pass or
+  industrial acceptance is implied; any source contract, migration, DTO or
+  policy change must be justified from refreshed code before file selection.
+
+#### T42 (C2-02) — Qualify Circle 2 protected reference authorization
+
+- **Owner and prerequisite:** Identity with Party, Configuration, Documents, Organization and Topology. Requires T41, T33, T34.
+- **Domain/application scope:** Introduce or qualify owner-specific application authorization ports and adapters for privileged administration versus least-privilege C2 consumer reads. Resolve typed company, regional and asset context through C1 public contracts; authorize before detail, existence, history, counts or bytes.
+- **HTTP contract:** Reuse C1 public authorization contracts; do not create a generic bypass endpoint.
+- **Candidate source and evidence paths (not admitted exact allowlist):** `src/main/java/dz/sh/hidra/modules/{party,configuration,documents}/application/port; corresponding infrastructure/security or integration adapters; exact owner tests under src/test/java/dz/sh/hidra/modules; no foreign private imports.`.
+- **Acceptance cases:** Signed users in two regions, a foreign company, revoked authority, explicit deny and administrator prove non-disclosing denials and preserved administrator compatibility with fresh PostgreSQL.
+- **Required validation types:** Native signed HTTP, PostgreSQL current-grant and negative scope, architecture boundary.
+- **Pre-registered implementation commit message:** `feat(security): qualify Circle 2 protected reference authority`.
+- **State:** PLANNED. No implementation, code-change authority, CI pass or
+  industrial acceptance is implied; any source contract, migration, DTO or
+  policy change must be justified from refreshed code before file selection.
+
+#### T43 (C2-03) — Expose eligible Party reference discovery
+
+- **Owner and prerequisite:** Party with Identity and Organization. Requires T42.
+- **Domain/application scope:** Add narrowly projected, business-purpose, company/resource-qualified Party search and exact eligible reference reads without exposing global Party administration APIs to regional users. Preserve business role versus security role distinction, active state and effective eligibility.
+- **HTTP contract:** PROPOSED GET /api/v1/party/reference/eligible-parties; existing GET /api/v1/party/parties remains administrator-only.
+- **Candidate source and evidence paths (not admitted exact allowlist):** `src/main/java/dz/sh/hidra/modules/party/{application,api/rest,infrastructure}; Party integration and persistence tests.`.
+- **Acceptance cases:** An entitled regional user discovers only eligible Party choices and exact profiles for a supported purpose; unrelated roles, inactive Party and unauthorized totals/existence are denied or hidden.
+- **Required validation types:** Signed scoped search, pagination/count, foreign company, expiry and revocation.
+- **Pre-registered implementation commit message:** `feat(party): expose scoped eligible party references`.
+- **State:** PLANNED. No implementation, code-change authority, CI pass or
+  industrial acceptance is implied; any source contract, migration, DTO or
+  policy change must be justified from refreshed code before file selection.
+
+#### T44 (C2-04) — Qualify Party lifecycle and effective role history
+
+- **Owner and prerequisite:** Party with Identity and Audit. Requires T43.
+- **Domain/application scope:** Qualify current Party register/edit/activate/deactivate and assignment/history use cases. Close only demonstrated business role effective-date, concurrency, audit or retrieval gaps. Reuse current PartyAdministrationApplicationService and existing persistence.
+- **HTTP contract:** Existing POST /api/v1/party/parties; POST /api/v1/party/roles/assignments; GET /api/v1/party/parties/{id}/history; transitions.
+- **Candidate source and evidence paths (not admitted exact allowlist):** `src/main/java/dz/sh/hidra/modules/party/{domain,application,api/rest,infrastructure}; existing party application/persistence tests; forward-only Flyway only for a proven constraint gap.`.
+- **Acceptance cases:** Same-company role temporal validity and idempotency or uniqueness as registered policy; stale updates and unauthorized transition denied, and historical Party evidence reconstructs after state change.
+- **Required validation types:** Concurrent PostgreSQL writers, valid-from/to, actor provenance, signed administrator boundary.
+- **Pre-registered implementation commit message:** `test(party): qualify party lifecycle and effective roles`.
+- **State:** PLANNED. No implementation, code-change authority, CI pass or
+  industrial acceptance is implied; any source contract, migration, DTO or
+  policy change must be justified from refreshed code before file selection.
+
+#### T45 (C2-05) — Qualify manufacturer Party reference in engineering dossier
+
+- **Owner and prerequisite:** Party and Topology with Assets public owner contracts. Requires T43, T44, T35.
+- **Domain/application scope:** Reuse manufacturer eligibility/reference application contracts and qualify the exact as-of Party snapshot exposed by an authorized selected equipment or pipeline dossier. Do not move installed-asset or model ownership to Party.
+- **HTTP contract:** C1 protected dossier read and existing Party reference ports; PROPOSED consumer reference fields only if missing.
+- **Candidate source and evidence paths (not admitted exact allowlist):** `src/main/java/dz/sh/hidra/modules/party/application/contract and owner adapters; relevant Topology/Assets public consumer contracts only when a proven gap demands; associated tests.`.
+- **Acceptance cases:** Eligible manufacturer selection resolves the owner reference and effective eligibility. Deactivation changes new selections without corrupting the historical accepted engineering revision, including foreign/scope denial.
+- **Required validation types:** GZ2 synthetic equipment/manufacturer, version historical reconstruction, role revocation and cross-owner architecture.
+- **Pre-registered implementation commit message:** `test(party): qualify engineering manufacturer references`.
+- **State:** PLANNED. No implementation, code-change authority, CI pass or
+  industrial acceptance is implied; any source contract, migration, DTO or
+  policy change must be justified from refreshed code before file selection.
+
+#### T46 (C2-06) — Expose safe effective Configuration consumer read
+
+- **Owner and prerequisite:** Configuration with Identity and consuming owners. Requires T42, T32.
+- **Domain/application scope:** Reuse typed definition and effective-resolution logic to expose a least-privilege allowlisted, non-secret consumer view. Distinguish environment from resource/company scope; require policy admission before treating any environment as a business scope.
+- **HTTP contract:** PROPOSED GET /api/v1/configuration/consumer/effective; existing /api/v1/configuration/effective stays administrator-gated.
+- **Candidate source and evidence paths (not admitted exact allowlist):** `src/main/java/dz/sh/hidra/modules/configuration/{application,api/rest,infrastructure}; authorization port/adapter and configuration integration tests.`.
+- **Acceptance cases:** Authorized consumer obtains a typed value, active definition version, resolution source, effective time and explicit unavailable/redacted state. Secret defaults, unsupported keys and unauthorized scope do not leak.
+- **Required validation types:** Signed HTTP and fresh PostgreSQL allowlist/redaction, effective instant and data disclosure.
+- **Pre-registered implementation commit message:** `feat(configuration): expose safe effective consumer values`.
+- **State:** PLANNED. No implementation, code-change authority, CI pass or
+  industrial acceptance is implied; any source contract, migration, DTO or
+  policy change must be justified from refreshed code before file selection.
+
+#### T47 (C2-07) — Prove Configuration version and temporal resolution
+
+- **Owner and prerequisite:** Configuration. Requires T46, T32.
+- **Domain/application scope:** Qualify definition activation, version link, default/override selection, effective dating and existing T32 retirement preview/commit with the same consumer read model. Change domain or persistence only to close a demonstrated correctness gap.
+- **HTTP contract:** Existing GET /api/v1/configuration/effective and POST /values/{valueId}/retirement-preview; PUT /values/{valueId}/retirement.
+- **Candidate source and evidence paths (not admitted exact allowlist):** `src/main/java/dz/sh/hidra/modules/configuration/{domain,application,infrastructure}; src/test/java/dz/sh/hidra/modules/configuration; migration only for fresh-schema proof of required constraint.`.
+- **Acceptance cases:** Before and after cutoff exact outcomes are deterministic; stale retirement, overlap or unsupported value fails; prior accepted effective interpretation remains reconstructable.
+- **Required validation types:** Boundary timestamps, stale CAS, concurrent PostgreSQL retirement, version and default interpretation.
+- **Pre-registered implementation commit message:** `test(configuration): qualify temporal value resolution`.
+- **State:** PLANNED. No implementation, code-change authority, CI pass or
+  industrial acceptance is implied; any source contract, migration, DTO or
+  policy change must be justified from refreshed code before file selection.
+
+#### T48 (C2-08) — Qualify guarded Feature Flag behavior
+
+- **Owner and prerequisite:** Configuration with Identity and target module owners. Requires T46.
+- **Domain/application scope:** Qualify current feature-flag activation/state APIs, owning-module metadata and effective environment semantics. Ensure no flag grants a permission, changes engineering ownership or activates an unavailable numerical/OT capability.
+- **HTTP contract:** Existing GET/POST/PUT /api/v1/configuration/feature-flags and /feature-flags/{id}/state.
+- **Candidate source and evidence paths (not admitted exact allowlist):** `src/main/java/dz/sh/hidra/modules/configuration/{domain,application,api/rest,infrastructure}; configuration security and persistence tests.`.
+- **Acceptance cases:** Supported Boolean flags show authorized effective state and traceable changes. Missing, disabled or invalid flags fail closed; forged enabled flags do not bypass Identity or engine capability checks.
+- **Required validation types:** Signed feature-state authorization, invalid type/status, stale updates and hard permission denial.
+- **Pre-registered implementation commit message:** `test(configuration): qualify guarded feature flags`.
+- **State:** PLANNED. No implementation, code-change authority, CI pass or
+  industrial acceptance is implied; any source contract, migration, DTO or
+  policy change must be justified from refreshed code before file selection.
+
+#### T49 (C2-09) — Qualify Configuration administration and change provenance
+
+- **Owner and prerequisite:** Configuration with Audit and Identity. Requires T47, T48.
+- **Domain/application scope:** Complete scoped administrative readback and provenance of definition activation, value change/retirement and feature state while keeping secrets reference-only. Reuse existing audit contracts; do not create an alternative engineering constraint registry.
+- **HTTP contract:** Existing definitions, values, effective, feature-flags and retirement routes; proposed provenance fields only when evidence gap shown.
+- **Candidate source and evidence paths (not admitted exact allowlist):** `src/main/java/dz/sh/hidra/modules/configuration/{application,api/rest,infrastructure}; approved Audit contract adapter only if missing; relevant tests.`.
+- **Acceptance cases:** Qualified administrator can explain current and historical effective values and who changed admitted metadata; unauthorized users never read protected values or change settings.
+- **Required validation types:** Change history, secret redaction, audit scope and transaction integrity under concurrent writes.
+- **Pre-registered implementation commit message:** `test(configuration): qualify configuration provenance`.
+- **State:** PLANNED. No implementation, code-change authority, CI pass or
+  industrial acceptance is implied; any source contract, migration, DTO or
+  policy change must be justified from refreshed code before file selection.
+
+#### T50 (C2-10) — Admit controlled Documents for typed engineering targets
+
+- **Owner and prerequisite:** Documents with Topology, Assets, Identity and Organization. Requires T42, T35, T24.
+- **Domain/application scope:** Extend existing facility-scoped controlled Documents target/access contract to approved pipeline, section and equipment target classes via owner-issued typed references. Reuse existing Documents lifecycle, not a parallel registry.
+- **HTTP contract:** PROPOSED GET /api/v1/documents/companies/{companyId}/targets/{targetType}/{targetId}/controlled-documents; existing facility routes preserved.
+- **Candidate source and evidence paths (not admitted exact allowlist):** `src/main/java/dz/sh/hidra/modules/documents/{application/contract,application/service,api/rest,infrastructure/integration}; relevant Topology/Assets published contracts only if needed; tests.`.
+- **Acceptance cases:** Regional user discovers a permitted target's documents, while foreign, unlinked, revoked and wrong-target reads do not reveal existence, counts or binary availability.
+- **Required validation types:** Signed region-to-asset and target validation, cross-company disclosure and architecture isolation.
+- **Pre-registered implementation commit message:** `feat(documents): authorize typed engineering evidence targets`.
+- **State:** PLANNED. No implementation, code-change authority, CI pass or
+  industrial acceptance is implied; any source contract, migration, DTO or
+  policy change must be justified from refreshed code before file selection.
+
+#### T51 (C2-11) — Qualify controlled Document metadata and target links
+
+- **Owner and prerequisite:** Documents with target owner contract providers. Requires T50.
+- **Domain/application scope:** Qualify canonical document identity, classification, link-role eligibility, target linkage and immutable owner snapshots through existing DocumentTargetLink model and controlled versions. Do not make Documents owner of physical asset state.
+- **HTTP contract:** Existing /api/v1/documents/target-links and controlled GET .../{documentId}/links; proposed target-specific link request only if necessary.
+- **Candidate source and evidence paths (not admitted exact allowlist):** `src/main/java/dz/sh/hidra/modules/documents/{domain,application,api/rest,infrastructure/persistence}; Documents integration and semantic tests; Flyway only for proven constraint gap.`.
+- **Acceptance cases:** Authorized target association survives restart with correct document, version and provenance; foreign, dangling, invalid-role or cross-company link fails without partial persistence.
+- **Required validation types:** Foreign key and same-target constraint, immutable metadata snapshots, transaction rollback and scope.
+- **Pre-registered implementation commit message:** `test(documents): qualify engineering document links`.
+- **State:** PLANNED. No implementation, code-change authority, CI pass or
+  industrial acceptance is implied; any source contract, migration, DTO or
+  policy change must be justified from refreshed code before file selection.
+
+#### T52 (C2-12) — Qualify protected binary upload and read for C2 targets
+
+- **Owner and prerequisite:** Documents with storage adapter and Identity. Requires T50, T51, T24.
+- **Domain/application scope:** Reuse multipart upload, current-grant-gated download, SHA-256 and storage adapter. Extend the protected target route safely; preserve confirmed-rollback cleanup versus unknown-commit preservation and fail closed on byte mismatch.
+- **HTTP contract:** Existing multipart /api/v1/documents/document-versions/upload and controlled /versions/upload; existing /document-versions/{versionId}/content and controlled content read.
+- **Candidate source and evidence paths (not admitted exact allowlist):** `src/main/java/dz/sh/hidra/modules/documents/{api/rest,application/service,infrastructure/storage,infrastructure/integration}; existing Documents content-transfer and storage tests.`.
+- **Acceptance cases:** Exact verified bytes downloaded by authorized principal; altered, missing or incomplete storage and revoked read fail safely. Competing upload and rollback produce no falsely accepted version.
+- **Required validation types:** Multipart signed HTTP, SHA-256/length verification, failed storage, rollback and revocation at download.
+- **Pre-registered implementation commit message:** `test(documents): qualify protected engineering binaries`.
+- **State:** PLANNED. No implementation, code-change authority, CI pass or
+  industrial acceptance is implied; any source contract, migration, DTO or
+  policy change must be justified from refreshed code before file selection.
+
+#### T53 (C2-13) — Qualify document acceptance and supersession decisions
+
+- **Owner and prerequisite:** Documents with Workflow, Identity and Audit. Requires T52, T30, T28.
+- **Domain/application scope:** Reuse controlled version acceptance/supersession and immutable decision receipts, requiring independent review only for document classes whose approved policy demands it. Preserve expected-head CAS and evidence lineage without treating document approval as engineering limit approval.
+- **HTTP contract:** Existing controlled POST .../{documentId}/versions/{versionId}/accept and /supersede.
+- **Candidate source and evidence paths (not admitted exact allowlist):** `src/main/java/dz/sh/hidra/modules/documents/{domain,application,api/rest,infrastructure/persistence}; Workflow/Audit public contracts only when policy requires; tests.`.
+- **Acceptance cases:** Authorized version acceptance and supersession preserve current/old bytes and attribution; replay, stale head, unauthorized/self-review where required and revoked authority cannot advance state.
+- **Required validation types:** Concurrent PostgreSQL CAS, exact byte evidence, decision provenance, independent reviewer and replay.
+- **Pre-registered implementation commit message:** `test(documents): qualify version decisions`.
+- **State:** PLANNED. No implementation, code-change authority, CI pass or
+  industrial acceptance is implied; any source contract, migration, DTO or
+  policy change must be justified from refreshed code before file selection.
+
+#### T54 (C2-14) — Register document retention and evidence hold rules
+
+- **Owner and prerequisite:** Documents with Audit, HSE and Records/engineering policy owner. Requires T51, T53.
+- **Domain/application scope:** Define classification-based retention, preservation hold, withdrawn/unavailable state and authorized reason semantics. Preserve append-only decision/audit evidence. Implement mutating retention only after owner policy is approved; do not assume physical deletion or production retention duration.
+- **HTTP contract:** No deletion endpoint by default. Any retention/hold API is separately admitted by owner.
+- **Candidate source and evidence paths (not admitted exact allowlist):** `doc/roadmap/ROADMAP.md and Documents policies/tests if selected and approved; Documents domain/application/persistence only where policy is explicit.`.
+- **Acceptance cases:** Unapproved retention value cannot trigger destructive behavior; held or decision-linked evidence cannot be silently deleted; historical links and retrieval conditions remain demonstrable in synthetic fixture.
+- **Required validation types:** Immutable evidence, authorization, transition and no-data-loss negative cases; policy decision documented.
+- **Pre-registered implementation commit message:** `docs(documents): define controlled evidence retention rules`.
+- **State:** PLANNED. No implementation, code-change authority, CI pass or
+  industrial acceptance is implied; any source contract, migration, DTO or
+  policy change must be justified from refreshed code before file selection.
+
+#### T55 (C2-15) — Expose asset-context controlled Document discovery and history
+
+- **Owner and prerequisite:** Documents with Topology and Identity. Requires T50, T51, T52, T53, T54.
+- **Domain/application scope:** Deliver consistent scoped document index, exact detail, accepted and superseded versions, classified target links, checksum metadata and availability through one typed asset-context contract. Reuse T24 facility implementation.
+- **HTTP contract:** Proposed typed target GET list/detail, versions and links reusing existing controlled resource representations.
+- **Candidate source and evidence paths (not admitted exact allowlist):** `src/main/java/dz/sh/hidra/modules/documents/{application,api/rest,infrastructure}; Documents PostgreSQL/HTTP integration tests.`.
+- **Acceptance cases:** Signed GZ2 pipeline/equipment user finds and downloads exactly authorized current/old version; paging, totals, missing/unavailable content and revoked access are correctly represented.
+- **Required validation types:** Foreign region negative counts, pagination, revocation, historical content and restart readback.
+- **Pre-registered implementation commit message:** `feat(documents): expose scoped engineering evidence index`.
+- **State:** PLANNED. No implementation, code-change authority, CI pass or
+  industrial acceptance is implied; any source contract, migration, DTO or
+  policy change must be justified from refreshed code before file selection.
+
+#### T56 (C2-16) — Prove C1-C2 linked GZ2 workplace journey
+
+- **Owner and prerequisite:** HidraAPI integration and QA with Party, Configuration, Documents and C1 owners. Requires T45, T49, T55, T39.
+- **Domain/application scope:** Compose the protected region-to-pipeline/asset journey using owner-backed references: eligible manufacturer, applicable non-secret effective configuration and linked controlled drawing/certificate. Keep application authority checks per owner, with no cross-aggregate writes.
+- **HTTP contract:** Reuse C1 protected topology dossier plus C2 reference/effective/controlled-document HTTP contracts.
+- **Candidate source and evidence paths (not admitted exact allowlist):** `src/test/java/dz/sh/hidra integration/qualification synthetic fixture and narrowly proven participating owner code paths only if missing; no simulation engine.`.
+- **Acceptance cases:** Signed regional user navigates exact synthetic resource and retrieves traceable linked references; old revision survives supersession and no cross-region disclosure or privilege inflation occurs.
+- **Required validation types:** Signed HTTP on fresh PostgreSQL, source/revision/time correlation, current-grant rechecks, restart.
+- **Pre-registered implementation commit message:** `test(qualification): prove Circle 2 linked workplace`.
+- **State:** PLANNED. No implementation, code-change authority, CI pass or
+  industrial acceptance is implied; any source contract, migration, DTO or
+  policy change must be justified from refreshed code before file selection.
+
+#### T57 (C2-17) — Qualify cross-module security, time and integrity
+
+- **Owner and prerequisite:** HidraAPI integration, Security and QA with owning modules. Requires T56.
+- **Domain/application scope:** Execute independent negative/race/restart tests for protected Party visibility, Configuration effective windows and Documents byte/version decisions. Retain ArchUnit boundaries, transaction concurrency and generated OpenAPI/schema checks.
+- **HTTP contract:** No added endpoint required; test existing and C2-delivered contract operations.
+- **Candidate source and evidence paths (not admitted exact allowlist):** `src/test/java/dz/sh/hidra qualified integration and module tests; architecture tests and canonical generated evidence only if required by real changes.`.
+- **Acceptance cases:** Complete admitted test inventory passes with synthetic two-region/foreign-company fixtures, denied existence/count/byte leaks, stale-grant cases, immutable history and no weakened CI.
+- **Required validation types:** Exact-SHA docs, standard CI, fresh PostgreSQL signed HTTP, architecture and concurrency; separate browser acceptance.
+- **Pre-registered implementation commit message:** `test(qualification): qualify Circle 2 security and integrity`.
+- **State:** PLANNED. No implementation, code-change authority, CI pass or
+  industrial acceptance is implied; any source contract, migration, DTO or
+  policy change must be justified from refreshed code before file selection.
+
+#### T58 (C2-18) — Publish verified Circle 2 API consumer handoff
+
+- **Owner and prerequisite:** HidraAPI integration and QA with HidraWEB contract consumer. Requires T57.
+- **Domain/application scope:** Pin runtime OpenAPI, DTO/error semantics, permission/resource matrix, versioned fixtures, consumer journey and API/WEB acceptance boundary at one exact API SHA. Reuse contract generation/dictionary process and explicitly record unsupported features.
+- **HTTP contract:** Existing and newly accepted C2 endpoints only, no invented live OT or solver.
+- **Candidate source and evidence paths (not admitted exact allowlist):** `doc/roadmap/ROADMAP.md and established doc/api/hand-off artifacts/test fixtures only after exact file selection; generated OpenAPI snapshot/dictionary when validators require.`.
+- **Acceptance cases:** Independent client replays accepted C2 journey with exact verified API artifacts and fresh PostgreSQL; HidraWEB browser acceptance remains separately tracked and is not inferred from green API CI.
+- **Required validation types:** Exact-SHA CI, generated OpenAPI and schema consistency, consumer test, provenance of all evidence.
+- **Pre-registered implementation commit message:** `docs(handoff): qualify Circle 2 API consumer contract`.
+- **State:** PLANNED. No implementation, code-change authority, CI pass or
+  industrial acceptance is implied; any source contract, migration, DTO or
+  policy change must be justified from refreshed code before file selection.
+
+
+**Circle 2 handoff / definition of done.** A signed regionally authorized client
+follows one synthetic GZ2 pipeline/equipment identity to an eligible Party
+manufacturer, an applicable non-secret effective configuration and a controlled,
+byte-verified drawing/certificate with correct current and historic version.
+Cross-region scope, expired/revoked authority, stale head, missing content,
+inapplicable setting and historic readback are proved using independent
+signed HTTP and fresh PostgreSQL evidence, with exact-SHA CI and generated
+OpenAPI/schema evidence. HidraWEB tests its own browser journey on the pinned
+consumer contract separately.
+
+**Release separation:** The T40 `v0.7.0` publication/reconciliation is not
+a C2 task, nor is a C2 release version chosen here. No `0.8.0-SNAPSHOT`
+transition, tag, Release, deployment or other Circle is selected.

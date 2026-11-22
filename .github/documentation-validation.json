@@ -1239,9 +1239,9 @@
   ],
   "openapi": {
     "counts": {
-      "operations": 532,
-      "paths": 487,
-      "schemas": 573
+      "operations": 536,
+      "paths": 491,
+      "schemas": 586
     },
     "path": "doc/api/openapi.yaml",
     "prior_reviewed_provenance": {
@@ -2273,6 +2273,53 @@
       "zip_sha256": "f4ce790959340fa5a0a4ae2c6d74f55e5f221f80c765131bc9cd9b1f2c63078f"
     },
     "provenance": {
+      "artifact_id": 14726171601,
+      "artifact_member": "hidra-api.json",
+      "artifact_name": "hidra-api-openapi-1de513cc02c2ddaeb4c162ede2b8c32c96bd8571-44951846192-1-api-contract",
+      "compatibility_review": "Four additive bearer-protected Topology operations and thirteen explicitly named schemas. Previous paths, operations and schemas are preserved.",
+      "conclusion": "success",
+      "conclusion_scope": "Runtime OpenAPI generation and backward compatibility passed. Strict snapshot equality and the signed PostgreSQL concurrent publication assertion failed.",
+      "database_evidence": {
+        "artifact_id": 14726126595,
+        "artifact_member": "DATA_DICTIONARY.md",
+        "artifact_name": "hidra-database-schema-1de513cc02c2ddaeb4c162ede2b8c32c96bd8571-44951846192-1-api-contract",
+        "catalog_sha256": "c89b59a08249a325463c7da7ea326702ba09816aa2d7185b8378a507957046d9",
+        "conclusion_scope": "Fresh migrated PostgreSQL capture passed. Hosted strict dictionary equality was skipped after the prior OpenAPI snapshot mismatch.",
+        "dictionary_sha256": "02be85dbe9633a73a7a2772248c56a335c9fd11ac88868d37fd456641de07b0d",
+        "job_conclusion": "failure",
+        "job_id": 136991309410,
+        "jpa_mappings": 471,
+        "migrations": 239,
+        "relations": 623,
+        "reviewed_dictionary_checked": false,
+        "run_attempt": 1,
+        "run_id": 44951846192,
+        "server_version": "16.16 (Debian 16.16-1.pgdg13+1)",
+        "source_bundle_sha256": "eb71ee6deaf679517edb12d45b6c67b111404bd99cc3ad823464241963680b73",
+        "source_sha": "1de513cc02c2ddaeb4c162ede2b8c32c96bd8571",
+        "unresolved_owners": [],
+        "workflow_conclusion": "failure",
+        "zip_sha256": "a2ff6e9ef8a01fd0410d19272e7aae526e922aba82d6e1f30ac2210e0a630687"
+      },
+      "failed_step": "Enforce canonical OpenAPI snapshot equality",
+      "generation_step": "Publish deterministic OpenAPI contract",
+      "generation_step_conclusion": "success",
+      "generation_step_number": 9,
+      "job_conclusion": "failure",
+      "job_id": 136991309410,
+      "json_sha256": "270266c2b9d4365eb6d45b51c17ca66611ef4791058cea1c1419227767acfea5",
+      "remaining_gates": [
+        "Exact reconciled SHA Full Verification Gate including the signed PostgreSQL pressure restriction lifecycle and strict OpenAPI and physical dictionary equality"
+      ],
+      "run_attempt": 1,
+      "run_id": 44951846192,
+      "source_sha": "1de513cc02c2ddaeb4c162ede2b8c32c96bd8571",
+      "workflow_conclusion": "failure",
+      "zip_sha256": "3326eb65782bf0221883e3ecc7b7a89bdab9f8fc4951207c5723aa58210d200b"
+    },
+    "sha256": "9d54ae7601a6425adac6ab86da4769c81b5dff7d115cd24048aced22fcdf3231",
+    "source_sha": "1de513cc02c2ddaeb4c162ede2b8c32c96bd8571",
+    "t37_reviewed_provenance": {
       "artifact_id": 14712266122,
       "artifact_member": "hidra-api.json",
       "artifact_name": "hidra-api-openapi-dad778c5d4f02c9d6213105560227b963d4fe913-44916009574-1-api-contract",
@@ -2294,9 +2341,7 @@
       "source_sha": "dad778c5d4f02c9d6213105560227b963d4fe913",
       "workflow_conclusion": "failure",
       "zip_sha256": "d11f87474ed10d296b6707534ae592212778cd85dd1f4b484882150c3bb306fd"
-    },
-    "sha256": "78699ff13066969246f18e50ac733040771c24a29c97f3566cf08684f57d3018",
-    "source_sha": "dad778c5d4f02c9d6213105560227b963d4fe913"
+    }
   },
   "register": "doc/governance/DOCUMENT_REGISTER.md",
   "register_areas": {

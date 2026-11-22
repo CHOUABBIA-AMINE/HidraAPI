@@ -35,6 +35,7 @@ import dz.sh.hidra.modules.topology.domain.model.PressureRestrictionDecisionRequ
 import dz.sh.hidra.modules.topology.domain.model.QualifiedPressureRestriction.Scope;
 import dz.sh.hidra.modules.topology.domain.model.QualifiedPressureWorkflowCandidate;
 import dz.sh.hidra.platform.persistence.ProtectedTransactionExecutor;
+import java.sql.SQLException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -43,6 +44,7 @@ import java.util.NoSuchElementException;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
+import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -179,6 +181,9 @@ public final class PressureRestrictionDecisionApplicationService implements Pres
         try {
             baseline = baselines.read(new EngineeringBaselineReadUseCase.Query(EngineeringBaselineReadUseCase.Action.EXACT,
                     scope.companyPartyId(), system, receiptId, null, null, 0, null)).primary();
+        } catch (ProtectedTransactionExecutor.ExecutionFailure failure) {
+            if (lockConflict(failure)) throw new Conflict();
+            throw failure;
         } catch (AccessDeniedException denied) {
             throw unavailable();
         } catch (EngineeringBaselineDraftFailure failure) {
@@ -244,14 +249,24 @@ public final class PressureRestrictionDecisionApplicationService implements Pres
                 if (expected == null || !store.guard(expected.request(), expected.streamVersion())) throw new Conflict();
             });
         } catch (ProtectedTransactionExecutor.ExecutionFailure failure) {
+            if (lockConflict(failure)) throw new Conflict();
             if (failure.outcome() == ProtectedTransactionExecutor.Outcome.REJECTED_BEFORE_COMMIT
                     && failure.getCause() instanceof RuntimeException cause) {
-                if (cause instanceof org.springframework.dao.PessimisticLockingFailureException) throw new Conflict();
                 if (cause instanceof Conflict || cause instanceof NoSuchElementException
                         || cause instanceof IllegalArgumentException) throw cause;
             }
             throw failure;
         }
+    }
+
+    private static boolean lockConflict(ProtectedTransactionExecutor.ExecutionFailure failure) {
+        if (failure.outcome() != ProtectedTransactionExecutor.Outcome.REJECTED_BEFORE_COMMIT) return false;
+        for (Throwable cause = failure.getCause(); cause != null; cause = cause.getCause()) {
+            // Both the protected baseline read and the stream lock can reject contention.
+            if (cause instanceof PessimisticLockingFailureException
+                    || (cause instanceof SQLException sql && "55P03".equals(sql.getSQLState()))) return true;
+        }
+        return false;
     }
 
     private record Guard(StoredRequest request, long streamVersion) { }

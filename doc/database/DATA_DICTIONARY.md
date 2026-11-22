@@ -6,10 +6,10 @@ CURRENT
 
 ## Generation basis
 
-Captured source SHA: `f499d8c8b94a580037f921924c9f1302f58801e8`
+Captured source SHA: `1de513cc02c2ddaeb4c162ede2b8c32c96bd8571`
 PostgreSQL server: `16.16 (Debian 16.16-1.pgdg13+1)`; disposable database: `hidra_test`.
-Generator format: 1; source bundle SHA-256: `746d19848404de895544e0ef266f39ea3fda97ae32b2a408e3157a57a70c74e1`.
-Migrations: 238; JPA mappings: 471; catalog relations: 619; unresolved owners: 0.
+Generator format: 1; source bundle SHA-256: `eb71ee6deaf679517edb12d45b6c67b111404bd99cc3ad823464241963680b73`.
+Migrations: 239; JPA mappings: 471; catalog relations: 623; unresolved owners: 0.
 
 Catalog facts describe the full source migration chain in disposable CI, not deployed data.
 No business rows or production acceptance are established. Ownership/source links are separate from SQL facts.
@@ -4122,6 +4122,7 @@ Persisted AuditCatalogEntryJpaEntity state; semantic authority remains with audi
 - Migration mention (not inferred introduction): [V20261008_006__provision_risk_assessment_audit_taxonomy.sql](../../src/main/resources/db/migration/V20261008_006__provision_risk_assessment_audit_taxonomy.sql)
 - Migration mention (not inferred introduction): [V20261119_002__t28_scoped_audit_evidence.sql](../../src/main/resources/db/migration/V20261119_002__t28_scoped_audit_evidence.sql)
 - Migration mention (not inferred introduction): [V20261121_001__t36_qualified_pressure_restriction_projection.sql](../../src/main/resources/db/migration/V20261121_001__t36_qualified_pressure_restriction_projection.sql)
+- Migration mention (not inferred introduction): [V20261121_004__t38_pressure_restriction_decision_governance.sql](../../src/main/resources/db/migration/V20261121_004__t38_pressure_restriction_decision_governance.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -4321,6 +4322,7 @@ Persisted AuditEventJpaEntity state; semantic authority remains with audit.
 - Migration mention (not inferred introduction): [V20261007_009__hmr_102_audit_before_after_value.sql](../../src/main/resources/db/migration/V20261007_009__hmr_102_audit_before_after_value.sql)
 - Migration mention (not inferred introduction): [V20261119_002__t28_scoped_audit_evidence.sql](../../src/main/resources/db/migration/V20261119_002__t28_scoped_audit_evidence.sql)
 - Migration mention (not inferred introduction): [V20261121_001__t36_qualified_pressure_restriction_projection.sql](../../src/main/resources/db/migration/V20261121_001__t36_qualified_pressure_restriction_projection.sql)
+- Migration mention (not inferred introduction): [V20261121_004__t38_pressure_restriction_decision_governance.sql](../../src/main/resources/db/migration/V20261121_004__t38_pressure_restriction_decision_governance.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -4434,6 +4436,9 @@ Persisted AuditEventJpaEntity state; semantic authority remains with audit.
 - `hmr095_event_insert`: CREATE TRIGGER hmr095_event_insert BEFORE INSERT ON hidra_audit_event FOR EACH ROW EXECUTE FUNCTION hmr095_event_guard()
   - Catalog attributes: {"enabled": "O", "function_identity": "public.hmr095_event_guard()"}
   - Function evidence: CREATE OR REPLACE FUNCTION public.hmr095_event_guard()<br> RETURNS trigger<br> LANGUAGE plpgsql<br>AS $function$<br>BEGIN<br>    PERFORM hmr083_require_catalog(NEW.event_type_id,'EVENT_TYPE');<br>    PERFORM hmr083_require_catalog(NEW.event_category_id,'EVENT_CATEGORY');<br>    IF NEW.severity_id IS NOT NULL THEN PERFORM hmr083_require_catalog(NEW.severity_id,'SEVERITY'); END IF;<br>    IF NEW.reason_id IS NOT NULL THEN PERFORM hmr083_require_catalog(NEW.reason_id,'DECISION_REASON'); END IF;<br>    RETURN NEW;<br>END $function$<br>
+- `t38_audit_protected_pressure_witness`: CREATE TRIGGER t38_audit_protected_pressure_witness BEFORE INSERT ON hidra_audit_event FOR EACH ROW EXECUTE FUNCTION hidra_t38_guard_pressure_audit_event()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_t38_guard_pressure_audit_event()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_t38_guard_pressure_audit_event()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SECURITY DEFINER<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN<br> IF NOT COALESCE(NEW.target_type='OPERATING_PRESSURE_RESTRICTION',false)<br>    AND NOT COALESCE(NEW.event_type_id IN ('t38_pressure_revision','t38_pressure_supersede','t38_pressure_withdraw'),false)<br>    AND NOT COALESCE(NEW.action_code IN ('APPROVE_OPERATING_PRESSURE_RESTRICTION',<br>                                        'SUPERSEDE_OPERATING_PRESSURE_RESTRICTION',<br>                                        'WITHDRAW_OPERATING_PRESSURE_RESTRICTION'),false) THEN<br>    RETURN NEW;<br> END IF;<br> IF NOT pg_catalog.has_function_privilege(session_user,<br>     'public.hidra_topology_t38_publish(uuid,bigint,timestamptz,varchar[],varchar[],varchar[],varchar[],varchar[],timestamptz[])',<br>     'EXECUTE') THEN<br>    RAISE EXCEPTION 'Pressure Audit evidence requires the protected publication credential' USING ERRCODE='42501';<br> END IF;<br> RETURN NEW;<br>END;<br>$function$<br>
 
 ### public.hidra_audit_evidence_link
 
@@ -11239,6 +11244,7 @@ Persisted AuthorizationPolicyJpaEntity state; semantic authority remains with id
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261121_004__t38_pressure_restriction_decision_governance.sql](../../src/main/resources/db/migration/V20261121_004__t38_pressure_restriction_decision_governance.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -11291,6 +11297,7 @@ Persisted AuthorizationPolicyRuleJpaEntity state; semantic authority remains wit
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261121_004__t38_pressure_restriction_decision_governance.sql](../../src/main/resources/db/migration/V20261121_004__t38_pressure_restriction_decision_governance.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -11347,6 +11354,7 @@ Persisted AuthorizationPolicyVersionJpaEntity state; semantic authority remains 
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261121_004__t38_pressure_restriction_decision_governance.sql](../../src/main/resources/db/migration/V20261121_004__t38_pressure_restriction_decision_governance.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -11804,6 +11812,7 @@ Persisted GroupJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261121_004__t38_pressure_restriction_decision_governance.sql](../../src/main/resources/db/migration/V20261121_004__t38_pressure_restriction_decision_governance.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -11861,6 +11870,7 @@ Persisted GroupRoleGrantJpaEntity state; semantic authority remains with identit
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261121_004__t38_pressure_restriction_decision_governance.sql](../../src/main/resources/db/migration/V20261121_004__t38_pressure_restriction_decision_governance.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -11977,6 +11987,7 @@ Identity-owned LOCAL credentials with database-enforced monotonic security gener
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261108_001__identity_refresh_token_rotation.sql](../../src/main/resources/db/migration/V20261108_001__identity_refresh_token_rotation.sql)
+- Migration mention (not inferred introduction): [V20261121_004__t38_pressure_restriction_decision_governance.sql](../../src/main/resources/db/migration/V20261121_004__t38_pressure_restriction_decision_governance.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -12044,6 +12055,7 @@ Persisted LoginSessionJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261108_001__identity_refresh_token_rotation.sql](../../src/main/resources/db/migration/V20261108_001__identity_refresh_token_rotation.sql)
+- Migration mention (not inferred introduction): [V20261121_004__t38_pressure_restriction_decision_governance.sql](../../src/main/resources/db/migration/V20261121_004__t38_pressure_restriction_decision_governance.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -12422,6 +12434,7 @@ Persisted PermissionJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261119_001__t27_recipient_scoped_notification_inbox.sql](../../src/main/resources/db/migration/V20261119_001__t27_recipient_scoped_notification_inbox.sql)
 - Migration mention (not inferred introduction): [V20261119_002__t28_scoped_audit_evidence.sql](../../src/main/resources/db/migration/V20261119_002__t28_scoped_audit_evidence.sql)
 - Migration mention (not inferred introduction): [V20261119_004__t31_scenario_input_revisions.sql](../../src/main/resources/db/migration/V20261119_004__t31_scenario_input_revisions.sql)
+- Migration mention (not inferred introduction): [V20261121_004__t38_pressure_restriction_decision_governance.sql](../../src/main/resources/db/migration/V20261121_004__t38_pressure_restriction_decision_governance.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -12711,6 +12724,7 @@ Persisted RoleJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261121_004__t38_pressure_restriction_decision_governance.sql](../../src/main/resources/db/migration/V20261121_004__t38_pressure_restriction_decision_governance.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -12769,6 +12783,7 @@ Persisted RolePermissionGrantJpaEntity state; semantic authority remains with id
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261103_002__foundation_identity_lifecycle.sql](../../src/main/resources/db/migration/V20261103_002__foundation_identity_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261121_004__t38_pressure_restriction_decision_governance.sql](../../src/main/resources/db/migration/V20261121_004__t38_pressure_restriction_decision_governance.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -12830,6 +12845,7 @@ Persisted SubjectSecurityAttributeJpaEntity state; semantic authority remains wi
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261121_004__t38_pressure_restriction_decision_governance.sql](../../src/main/resources/db/migration/V20261121_004__t38_pressure_restriction_decision_governance.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -12990,6 +13006,7 @@ Persisted UserJpaEntity state; semantic authority remains with identity.
 - Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261103_002__foundation_identity_lifecycle.sql](../../src/main/resources/db/migration/V20261103_002__foundation_identity_lifecycle.sql)
 - Migration mention (not inferred introduction): [V20261108_001__identity_refresh_token_rotation.sql](../../src/main/resources/db/migration/V20261108_001__identity_refresh_token_rotation.sql)
+- Migration mention (not inferred introduction): [V20261121_004__t38_pressure_restriction_decision_governance.sql](../../src/main/resources/db/migration/V20261121_004__t38_pressure_restriction_decision_governance.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -13059,6 +13076,7 @@ Persisted UserGroupMembershipJpaEntity state; semantic authority remains with id
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261121_004__t38_pressure_restriction_decision_governance.sql](../../src/main/resources/db/migration/V20261121_004__t38_pressure_restriction_decision_governance.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -13127,6 +13145,7 @@ Persisted UserPermissionGrantJpaEntity state; semantic authority remains with id
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261103_002__foundation_identity_lifecycle.sql](../../src/main/resources/db/migration/V20261103_002__foundation_identity_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261121_004__t38_pressure_restriction_decision_governance.sql](../../src/main/resources/db/migration/V20261121_004__t38_pressure_restriction_decision_governance.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -13203,6 +13222,7 @@ Persisted UserRoleGrantJpaEntity state; semantic authority remains with identity
 - Migration mention (not inferred introduction): [V20261024_002__organization_appointment_journal_receipt_alias.sql](../../src/main/resources/db/migration/V20261024_002__organization_appointment_journal_receipt_alias.sql)
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
+- Migration mention (not inferred introduction): [V20261121_004__t38_pressure_restriction_decision_governance.sql](../../src/main/resources/db/migration/V20261121_004__t38_pressure_restriction_decision_governance.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -21715,6 +21735,7 @@ Persisted EmployeeJpaEntity state; semantic authority remains with organization.
 - Migration mention (not inferred introduction): [V20261024_003__organization_appointment_replay_read_guard.sql](../../src/main/resources/db/migration/V20261024_003__organization_appointment_replay_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261025_001__organization_appointment_current_read_guard.sql](../../src/main/resources/db/migration/V20261025_001__organization_appointment_current_read_guard.sql)
 - Migration mention (not inferred introduction): [V20261103_004__foundation_organization_lifecycle.sql](../../src/main/resources/db/migration/V20261103_004__foundation_organization_lifecycle.sql)
+- Migration mention (not inferred introduction): [V20261121_004__t38_pressure_restriction_decision_governance.sql](../../src/main/resources/db/migration/V20261121_004__t38_pressure_restriction_decision_governance.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -22006,6 +22027,7 @@ Organization-owned operational-scope registry identity; referenced target state 
 
 - Evidence: [OperationalScopeJpaEntity.java](../../src/main/java/dz/sh/hidra/modules/organization/infrastructure/persistence/entity/OperationalScopeJpaEntity.java)
 - Migration mention (not inferred introduction): [V20260927_001__add_operational_scope_registry.sql](../../src/main/resources/db/migration/V20260927_001__add_operational_scope_registry.sql)
+- Migration mention (not inferred introduction): [V20261121_004__t38_pressure_restriction_decision_governance.sql](../../src/main/resources/db/migration/V20261121_004__t38_pressure_restriction_decision_governance.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -22236,6 +22258,7 @@ Persisted ResponsibilityAssignmentJpaEntity state; semantic authority remains wi
 - Migration mention (not inferred introduction): [V20260927_004__enforce_organization_internal_reference_integrity.sql](../../src/main/resources/db/migration/V20260927_004__enforce_organization_internal_reference_integrity.sql)
 - Migration mention (not inferred introduction): [V20260929_003__harden_operational_scope_responsibility_concurrency.sql](../../src/main/resources/db/migration/V20260929_003__harden_operational_scope_responsibility_concurrency.sql)
 - Migration mention (not inferred introduction): [V20260929_006__retire_legacy_operational_scope_columns.sql](../../src/main/resources/db/migration/V20260929_006__retire_legacy_operational_scope_columns.sql)
+- Migration mention (not inferred introduction): [V20261121_004__t38_pressure_restriction_decision_governance.sql](../../src/main/resources/db/migration/V20261121_004__t38_pressure_restriction_decision_governance.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -23383,6 +23406,7 @@ Persisted PartyJpaEntity state; semantic authority remains with party.
 - Migration mention (not inferred introduction): [V20261110_002__planning_company_scope.sql](../../src/main/resources/db/migration/V20261110_002__planning_company_scope.sql)
 - Migration mention (not inferred introduction): [V20261121_001__t36_qualified_pressure_restriction_projection.sql](../../src/main/resources/db/migration/V20261121_001__t36_qualified_pressure_restriction_projection.sql)
 - Migration mention (not inferred introduction): [V20261121_002__t36_immutable_workflow_pressure_candidates.sql](../../src/main/resources/db/migration/V20261121_002__t36_immutable_workflow_pressure_candidates.sql)
+- Migration mention (not inferred introduction): [V20261121_004__t38_pressure_restriction_decision_governance.sql](../../src/main/resources/db/migration/V20261121_004__t38_pressure_restriction_decision_governance.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -31324,6 +31348,7 @@ Append-only approved baseline publications and request receipts. The greatest co
 - Migration mention (not inferred introduction): [V20261111_002__topology_engineering_baseline_publication.sql](../../src/main/resources/db/migration/V20261111_002__topology_engineering_baseline_publication.sql)
 - Migration mention (not inferred introduction): [V20261121_001__t36_qualified_pressure_restriction_projection.sql](../../src/main/resources/db/migration/V20261121_001__t36_qualified_pressure_restriction_projection.sql)
 - Migration mention (not inferred introduction): [V20261121_002__t36_immutable_workflow_pressure_candidates.sql](../../src/main/resources/db/migration/V20261121_002__t36_immutable_workflow_pressure_candidates.sql)
+- Migration mention (not inferred introduction): [V20261121_004__t38_pressure_restriction_decision_governance.sql](../../src/main/resources/db/migration/V20261121_004__t38_pressure_restriction_decision_governance.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -31391,6 +31416,7 @@ Exact baseline submission tied to one immutable company/pipeline manifest revisi
 - Migration mention (not inferred introduction): [V20261111_002__topology_engineering_baseline_publication.sql](../../src/main/resources/db/migration/V20261111_002__topology_engineering_baseline_publication.sql)
 - Migration mention (not inferred introduction): [V20261121_001__t36_qualified_pressure_restriction_projection.sql](../../src/main/resources/db/migration/V20261121_001__t36_qualified_pressure_restriction_projection.sql)
 - Migration mention (not inferred introduction): [V20261121_002__t36_immutable_workflow_pressure_candidates.sql](../../src/main/resources/db/migration/V20261121_002__t36_immutable_workflow_pressure_candidates.sql)
+- Migration mention (not inferred introduction): [V20261121_004__t38_pressure_restriction_decision_governance.sql](../../src/main/resources/db/migration/V20261121_004__t38_pressure_restriction_decision_governance.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -32911,6 +32937,7 @@ Explicit immutable company ownership for newly registered foundation systems; no
 - Migration mention (not inferred introduction): [V20261105_001__topology_foundation_setup.sql](../../src/main/resources/db/migration/V20261105_001__topology_foundation_setup.sql)
 - Migration mention (not inferred introduction): [V20261121_001__t36_qualified_pressure_restriction_projection.sql](../../src/main/resources/db/migration/V20261121_001__t36_qualified_pressure_restriction_projection.sql)
 - Migration mention (not inferred introduction): [V20261121_002__t36_immutable_workflow_pressure_candidates.sql](../../src/main/resources/db/migration/V20261121_002__t36_immutable_workflow_pressure_candidates.sql)
+- Migration mention (not inferred introduction): [V20261121_004__t38_pressure_restriction_decision_governance.sql](../../src/main/resources/db/migration/V20261121_004__t38_pressure_restriction_decision_governance.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -33644,6 +33671,7 @@ Persisted PipelineJpaEntity state; semantic authority remains with topology.
 - Migration mention (not inferred introduction): [V20261103_005__foundation_pipeline_graph_associations.sql](../../src/main/resources/db/migration/V20261103_005__foundation_pipeline_graph_associations.sql)
 - Migration mention (not inferred introduction): [V20261121_001__t36_qualified_pressure_restriction_projection.sql](../../src/main/resources/db/migration/V20261121_001__t36_qualified_pressure_restriction_projection.sql)
 - Migration mention (not inferred introduction): [V20261121_002__t36_immutable_workflow_pressure_candidates.sql](../../src/main/resources/db/migration/V20261121_002__t36_immutable_workflow_pressure_candidates.sql)
+- Migration mention (not inferred introduction): [V20261121_004__t38_pressure_restriction_decision_governance.sql](../../src/main/resources/db/migration/V20261121_004__t38_pressure_restriction_decision_governance.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -33704,6 +33732,7 @@ Immutable canonical Pipeline owner/identity and authored label revisions; no eng
 - Migration mention (not inferred introduction): [V20261103_005__foundation_pipeline_graph_associations.sql](../../src/main/resources/db/migration/V20261103_005__foundation_pipeline_graph_associations.sql)
 - Migration mention (not inferred introduction): [V20261121_001__t36_qualified_pressure_restriction_projection.sql](../../src/main/resources/db/migration/V20261121_001__t36_qualified_pressure_restriction_projection.sql)
 - Migration mention (not inferred introduction): [V20261121_002__t36_immutable_workflow_pressure_candidates.sql](../../src/main/resources/db/migration/V20261121_002__t36_immutable_workflow_pressure_candidates.sql)
+- Migration mention (not inferred introduction): [V20261121_004__t38_pressure_restriction_decision_governance.sql](../../src/main/resources/db/migration/V20261121_004__t38_pressure_restriction_decision_governance.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -33879,6 +33908,7 @@ Persisted PipelineSegmentJpaEntity state; semantic authority remains with topolo
 - Migration mention (not inferred introduction): [V20261103_005__foundation_pipeline_graph_associations.sql](../../src/main/resources/db/migration/V20261103_005__foundation_pipeline_graph_associations.sql)
 - Migration mention (not inferred introduction): [V20261121_001__t36_qualified_pressure_restriction_projection.sql](../../src/main/resources/db/migration/V20261121_001__t36_qualified_pressure_restriction_projection.sql)
 - Migration mention (not inferred introduction): [V20261121_002__t36_immutable_workflow_pressure_candidates.sql](../../src/main/resources/db/migration/V20261121_002__t36_immutable_workflow_pressure_candidates.sql)
+- Migration mention (not inferred introduction): [V20261121_004__t38_pressure_restriction_decision_governance.sql](../../src/main/resources/db/migration/V20261121_004__t38_pressure_restriction_decision_governance.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -33946,6 +33976,7 @@ Persisted PipelineSystemJpaEntity state; semantic authority remains with topolog
 - Migration mention (not inferred introduction): [V20261105_001__topology_foundation_setup.sql](../../src/main/resources/db/migration/V20261105_001__topology_foundation_setup.sql)
 - Migration mention (not inferred introduction): [V20261121_001__t36_qualified_pressure_restriction_projection.sql](../../src/main/resources/db/migration/V20261121_001__t36_qualified_pressure_restriction_projection.sql)
 - Migration mention (not inferred introduction): [V20261121_002__t36_immutable_workflow_pressure_candidates.sql](../../src/main/resources/db/migration/V20261121_002__t36_immutable_workflow_pressure_candidates.sql)
+- Migration mention (not inferred introduction): [V20261121_004__t38_pressure_restriction_decision_governance.sql](../../src/main/resources/db/migration/V20261121_004__t38_pressure_restriction_decision_governance.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -34115,6 +34146,216 @@ Persisted PipelineTypeJpaEntity state; semantic authority remains with topology.
 #### Triggers
 
 None captured in this catalog category.
+
+### public.hidra_topology_pressure_decision_publication
+
+Owner: **topology**; relation kind: `r`.
+
+Immutable Topology publication receipt bound to the exact request and committed T36 revision and termination.
+
+- Evidence: [V20261121_004__t38_pressure_restriction_decision_governance.sql](../../src/main/resources/db/migration/V20261121_004__t38_pressure_restriction_decision_governance.sql)
+- Migration mention (not inferred introduction): [V20261121_004__t38_pressure_restriction_decision_governance.sql](../../src/main/resources/db/migration/V20261121_004__t38_pressure_restriction_decision_governance.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| request_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| stream_version | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| revision_id | uuid | True | None; identity=; generated= | No current mapped Java column | — |
+| termination_id | uuid | True | None; identity=; generated= | No current mapped Java column | — |
+| recorded_at | timestamp with time zone | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_topology_pressure_decision_publicati_stream_version_check`: CHECK (stream_version &gt; 0)
+  - Catalog attributes: {"columns": ["stream_version"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_pressure_decision_publicatio_termination_id_fkey`: FOREIGN KEY (termination_id) REFERENCES hidra_topology_t36_pressure_termination(event_id)
+  - Catalog attributes: {"columns": ["termination_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["event_id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_t36_pressure_termination"}, "type": "f", "validated": true}
+- `hidra_topology_pressure_decision_publication_check`: CHECK (revision_id IS NOT NULL OR termination_id IS NOT NULL)
+  - Catalog attributes: {"columns": ["revision_id", "termination_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_pressure_decision_publication_pkey`: PRIMARY KEY (request_id)
+  - Catalog attributes: {"columns": ["request_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_topology_pressure_decision_publication_request_id_fkey`: FOREIGN KEY (request_id) REFERENCES hidra_topology_pressure_decision_request(request_id)
+  - Catalog attributes: {"columns": ["request_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["request_id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_pressure_decision_request"}, "type": "f", "validated": true}
+- `hidra_topology_pressure_decision_publication_revision_id_fkey`: FOREIGN KEY (revision_id) REFERENCES hidra_topology_t36_pressure_revision(revision_id)
+  - Catalog attributes: {"columns": ["revision_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["revision_id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_t36_pressure_revision"}, "type": "f", "validated": true}
+- `hidra_topology_pressure_decision_publication_revision_id_key`: UNIQUE (revision_id)
+  - Catalog attributes: {"columns": ["revision_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_topology_pressure_decision_publication_termination_id_key`: UNIQUE (termination_id)
+  - Catalog attributes: {"columns": ["termination_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+
+#### Indexes
+
+- `hidra_topology_pressure_decision_publication_pkey`: CREATE UNIQUE INDEX hidra_topology_pressure_decision_publication_pkey ON public.hidra_topology_pressure_decision_publication USING btree (request_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+- `hidra_topology_pressure_decision_publication_revision_id_key`: CREATE UNIQUE INDEX hidra_topology_pressure_decision_publication_revision_id_key ON public.hidra_topology_pressure_decision_publication USING btree (revision_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_topology_pressure_decision_publication_termination_id_key`: CREATE UNIQUE INDEX hidra_topology_pressure_decision_publication_termination_id_key ON public.hidra_topology_pressure_decision_publication USING btree (termination_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `t38_publications_immutable`: CREATE TRIGGER t38_publications_immutable BEFORE DELETE OR UPDATE ON hidra_topology_pressure_decision_publication FOR EACH ROW EXECUTE FUNCTION hidra_topology_t36_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_t36_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_t36_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN RAISE EXCEPTION 'T36 qualified restriction history is immutable' USING ERRCODE='23514';<br>END; $function$<br>
+- `t38_publications_no_truncate`: CREATE TRIGGER t38_publications_no_truncate BEFORE TRUNCATE ON hidra_topology_pressure_decision_publication FOR EACH STATEMENT EXECUTE FUNCTION hidra_topology_t36_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_t36_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_t36_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN RAISE EXCEPTION 'T36 qualified restriction history is immutable' USING ERRCODE='23514';<br>END; $function$<br>
+
+### public.hidra_topology_pressure_decision_request
+
+Owner: **topology**; relation kind: `r`.
+
+Immutable Topology submission identity, expected stream version and ordered candidate references.
+
+- Evidence: [V20261121_004__t38_pressure_restriction_decision_governance.sql](../../src/main/resources/db/migration/V20261121_004__t38_pressure_restriction_decision_governance.sql)
+- Migration mention (not inferred introduction): [V20261121_004__t38_pressure_restriction_decision_governance.sql](../../src/main/resources/db/migration/V20261121_004__t38_pressure_restriction_decision_governance.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| request_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| pipeline_system_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| pipeline_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| section_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| condition_code | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| expected_version | bigint | False | None; identity=; generated= | No current mapped Java column | — |
+| revision_candidate_id | uuid | True | None; identity=; generated= | No current mapped Java column | — |
+| termination_candidate_id | uuid | True | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_topology_pressure_decis_company_party_id_pipeline_sy_fkey`: FOREIGN KEY (company_party_id, pipeline_system_id, pipeline_id, section_id, condition_code) REFERENCES hidra_topology_pressure_decision_stream(company_party_id, pipeline_system_id, pipeline_id, section_id, condition_code)
+  - Catalog attributes: {"columns": ["company_party_id", "pipeline_system_id", "pipeline_id", "section_id", "condition_code"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["company_party_id", "pipeline_system_id", "pipeline_id", "section_id", "condition_code"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_pressure_decision_stream"}, "type": "f", "validated": true}
+- `hidra_topology_pressure_decision__termination_candidate_id_fkey`: FOREIGN KEY (termination_candidate_id) REFERENCES hidra_topology_t36_pressure_candidate(candidate_id)
+  - Catalog attributes: {"columns": ["termination_candidate_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["candidate_id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_t36_pressure_candidate"}, "type": "f", "validated": true}
+- `hidra_topology_pressure_decision_r_termination_candidate_id_key`: UNIQUE (termination_candidate_id)
+  - Catalog attributes: {"columns": ["termination_candidate_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_topology_pressure_decision_req_revision_candidate_id_fkey`: FOREIGN KEY (revision_candidate_id) REFERENCES hidra_topology_t36_pressure_candidate(candidate_id)
+  - Catalog attributes: {"columns": ["revision_candidate_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["candidate_id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_t36_pressure_candidate"}, "type": "f", "validated": true}
+- `hidra_topology_pressure_decision_requ_revision_candidate_id_key`: UNIQUE (revision_candidate_id)
+  - Catalog attributes: {"columns": ["revision_candidate_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_topology_pressure_decision_request_check`: CHECK (revision_candidate_id IS NOT NULL OR termination_candidate_id IS NOT NULL)
+  - Catalog attributes: {"columns": ["revision_candidate_id", "termination_candidate_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_pressure_decision_request_check1`: CHECK (revision_candidate_id IS NULL OR termination_candidate_id IS NULL OR revision_candidate_id &lt;&gt; termination_candidate_id)
+  - Catalog attributes: {"columns": ["revision_candidate_id", "termination_candidate_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_pressure_decision_request_expected_version_check`: CHECK (expected_version &gt;= 0)
+  - Catalog attributes: {"columns": ["expected_version"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_pressure_decision_request_pkey`: PRIMARY KEY (request_id)
+  - Catalog attributes: {"columns": ["request_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+
+#### Indexes
+
+- `hidra_topology_pressure_decision_r_termination_candidate_id_key`: CREATE UNIQUE INDEX hidra_topology_pressure_decision_r_termination_candidate_id_key ON public.hidra_topology_pressure_decision_request USING btree (termination_candidate_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_topology_pressure_decision_requ_revision_candidate_id_key`: CREATE UNIQUE INDEX hidra_topology_pressure_decision_requ_revision_candidate_id_key ON public.hidra_topology_pressure_decision_request USING btree (revision_candidate_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_topology_pressure_decision_request_pkey`: CREATE UNIQUE INDEX hidra_topology_pressure_decision_request_pkey ON public.hidra_topology_pressure_decision_request USING btree (request_id)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `t38_requests_immutable`: CREATE TRIGGER t38_requests_immutable BEFORE DELETE OR UPDATE ON hidra_topology_pressure_decision_request FOR EACH ROW EXECUTE FUNCTION hidra_topology_t36_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_t36_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_t36_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN RAISE EXCEPTION 'T36 qualified restriction history is immutable' USING ERRCODE='23514';<br>END; $function$<br>
+- `t38_requests_no_truncate`: CREATE TRIGGER t38_requests_no_truncate BEFORE TRUNCATE ON hidra_topology_pressure_decision_request FOR EACH STATEMENT EXECUTE FUNCTION hidra_topology_t36_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_t36_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_t36_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN RAISE EXCEPTION 'T36 qualified restriction history is immutable' USING ERRCODE='23514';<br>END; $function$<br>
+
+### public.hidra_topology_pressure_decision_stream
+
+Owner: **topology**; relation kind: `r`.
+
+Topology-owned serialization key and publication version per exact company, system, pipeline, section and condition.
+
+- Evidence: [V20261121_004__t38_pressure_restriction_decision_governance.sql](../../src/main/resources/db/migration/V20261121_004__t38_pressure_restriction_decision_governance.sql)
+- Migration mention (not inferred introduction): [V20261121_004__t38_pressure_restriction_decision_governance.sql](../../src/main/resources/db/migration/V20261121_004__t38_pressure_restriction_decision_governance.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| company_party_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| pipeline_system_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| pipeline_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| section_id | character varying(80) | False | ''::character varying; identity=; generated= | No current mapped Java column | — |
+| condition_code | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| publication_version | bigint | False | 0; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_topology_pressure_decision_stre_publication_version_check`: CHECK (publication_version &gt;= 0)
+  - Catalog attributes: {"columns": ["publication_version"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_pressure_decision_stream_company_party_id_fkey`: FOREIGN KEY (company_party_id) REFERENCES hidra_party_party(id)
+  - Catalog attributes: {"columns": ["company_party_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_party_party"}, "type": "f", "validated": true}
+- `hidra_topology_pressure_decision_stream_pipeline_id_fkey`: FOREIGN KEY (pipeline_id) REFERENCES hidra_topology_pipeline(id)
+  - Catalog attributes: {"columns": ["pipeline_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_pipeline"}, "type": "f", "validated": true}
+- `hidra_topology_pressure_decision_stream_pipeline_system_id_fkey`: FOREIGN KEY (pipeline_system_id) REFERENCES hidra_topology_pipeline_system(id)
+  - Catalog attributes: {"columns": ["pipeline_system_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_pipeline_system"}, "type": "f", "validated": true}
+- `hidra_topology_pressure_decision_stream_pkey`: PRIMARY KEY (company_party_id, pipeline_system_id, pipeline_id, section_id, condition_code)
+  - Catalog attributes: {"columns": ["company_party_id", "pipeline_system_id", "pipeline_id", "section_id", "condition_code"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+
+#### Indexes
+
+- `hidra_topology_pressure_decision_stream_pkey`: CREATE UNIQUE INDEX hidra_topology_pressure_decision_stream_pkey ON public.hidra_topology_pressure_decision_stream USING btree (company_party_id, pipeline_system_id, pipeline_id, section_id, condition_code)
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+None captured in this catalog category.
+
+### public.hidra_topology_pressure_decision_witness
+
+Owner: **topology**; relation kind: `r`.
+
+Exact Workflow and Audit references for a published Topology candidate, with unique action and Audit consumption.
+
+- Evidence: [V20261121_004__t38_pressure_restriction_decision_governance.sql](../../src/main/resources/db/migration/V20261121_004__t38_pressure_restriction_decision_governance.sql)
+- Migration mention (not inferred introduction): [V20261121_004__t38_pressure_restriction_decision_governance.sql](../../src/main/resources/db/migration/V20261121_004__t38_pressure_restriction_decision_governance.sql)
+
+| Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
+|---|---|---|---|---|---|
+| request_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| position | smallint | False | None; identity=; generated= | No current mapped Java column | — |
+| candidate_id | uuid | False | None; identity=; generated= | No current mapped Java column | — |
+| instance_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| task_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| action_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+| audit_event_id | character varying(80) | False | None; identity=; generated= | No current mapped Java column | — |
+
+#### Constraints
+
+- `hidra_topology_pressure_decision_witness_action_id_key`: UNIQUE (action_id)
+  - Catalog attributes: {"columns": ["action_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_topology_pressure_decision_witness_audit_event_id_key`: UNIQUE (audit_event_id)
+  - Catalog attributes: {"columns": ["audit_event_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_topology_pressure_decision_witness_candidate_id_fkey`: FOREIGN KEY (candidate_id) REFERENCES hidra_topology_t36_pressure_candidate(candidate_id)
+  - Catalog attributes: {"columns": ["candidate_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["candidate_id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_t36_pressure_candidate"}, "type": "f", "validated": true}
+- `hidra_topology_pressure_decision_witness_candidate_id_key`: UNIQUE (candidate_id)
+  - Catalog attributes: {"columns": ["candidate_id"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "u", "validated": true}
+- `hidra_topology_pressure_decision_witness_pkey`: PRIMARY KEY (request_id, "position")
+  - Catalog attributes: {"columns": ["request_id", "position"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "p", "validated": true}
+- `hidra_topology_pressure_decision_witness_position_check`: CHECK ("position" = ANY (ARRAY[1, 2]))
+  - Catalog attributes: {"columns": ["position"], "deferrable": false, "initially_deferred": false, "reference": null, "type": "c", "validated": true}
+- `hidra_topology_pressure_decision_witness_request_id_fkey`: FOREIGN KEY (request_id) REFERENCES hidra_topology_pressure_decision_publication(request_id)
+  - Catalog attributes: {"columns": ["request_id"], "deferrable": false, "initially_deferred": false, "reference": {"columns": ["request_id"], "match": "s", "on_delete": "a", "on_update": "a", "schema": "public", "table": "hidra_topology_pressure_decision_publication"}, "type": "f", "validated": true}
+
+#### Indexes
+
+- `hidra_topology_pressure_decision_witness_action_id_key`: CREATE UNIQUE INDEX hidra_topology_pressure_decision_witness_action_id_key ON public.hidra_topology_pressure_decision_witness USING btree (action_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_topology_pressure_decision_witness_audit_event_id_key`: CREATE UNIQUE INDEX hidra_topology_pressure_decision_witness_audit_event_id_key ON public.hidra_topology_pressure_decision_witness USING btree (audit_event_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_topology_pressure_decision_witness_candidate_id_key`: CREATE UNIQUE INDEX hidra_topology_pressure_decision_witness_candidate_id_key ON public.hidra_topology_pressure_decision_witness USING btree (candidate_id)
+  - Catalog attributes: {"primary": false, "ready": true, "unique": true, "valid": true}
+- `hidra_topology_pressure_decision_witness_pkey`: CREATE UNIQUE INDEX hidra_topology_pressure_decision_witness_pkey ON public.hidra_topology_pressure_decision_witness USING btree (request_id, "position")
+  - Catalog attributes: {"primary": true, "ready": true, "unique": true, "valid": true}
+
+#### Triggers
+
+- `t38_witnesses_immutable`: CREATE TRIGGER t38_witnesses_immutable BEFORE DELETE OR UPDATE ON hidra_topology_pressure_decision_witness FOR EACH ROW EXECUTE FUNCTION hidra_topology_t36_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_t36_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_t36_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN RAISE EXCEPTION 'T36 qualified restriction history is immutable' USING ERRCODE='23514';<br>END; $function$<br>
+- `t38_witnesses_no_truncate`: CREATE TRIGGER t38_witnesses_no_truncate BEFORE TRUNCATE ON hidra_topology_pressure_decision_witness FOR EACH STATEMENT EXECUTE FUNCTION hidra_topology_t36_immutable()
+  - Catalog attributes: {"enabled": "O", "function_identity": "public.hidra_topology_t36_immutable()"}
+  - Function evidence: CREATE OR REPLACE FUNCTION public.hidra_topology_t36_immutable()<br> RETURNS trigger<br> LANGUAGE plpgsql<br> SET search_path TO 'pg_catalog', 'pg_temp'<br>AS $function$<br>BEGIN RAISE EXCEPTION 'T36 qualified restriction history is immutable' USING ERRCODE='23514';<br>END; $function$<br>
 
 ### public.hidra_topology_snapshot
 
@@ -34631,6 +34872,7 @@ Immutable, unapproved exact prospective pressure or termination target; T36 Work
 - Evidence: [V20261121_002__t36_immutable_workflow_pressure_candidates.sql](../../src/main/resources/db/migration/V20261121_002__t36_immutable_workflow_pressure_candidates.sql)
 - Migration mention (not inferred introduction): [V20261121_002__t36_immutable_workflow_pressure_candidates.sql](../../src/main/resources/db/migration/V20261121_002__t36_immutable_workflow_pressure_candidates.sql)
 - Migration mention (not inferred introduction): [V20261121_003__t36_dispatch_publication_guard_by_row_type.sql](../../src/main/resources/db/migration/V20261121_003__t36_dispatch_publication_guard_by_row_type.sql)
+- Migration mention (not inferred introduction): [V20261121_004__t38_pressure_restriction_decision_governance.sql](../../src/main/resources/db/migration/V20261121_004__t38_pressure_restriction_decision_governance.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -34714,6 +34956,7 @@ Append-only, typed exact-scope qualified upper operating-pressure declaration; s
 - Migration mention (not inferred introduction): [V20261121_001__t36_qualified_pressure_restriction_projection.sql](../../src/main/resources/db/migration/V20261121_001__t36_qualified_pressure_restriction_projection.sql)
 - Migration mention (not inferred introduction): [V20261121_002__t36_immutable_workflow_pressure_candidates.sql](../../src/main/resources/db/migration/V20261121_002__t36_immutable_workflow_pressure_candidates.sql)
 - Migration mention (not inferred introduction): [V20261121_003__t36_dispatch_publication_guard_by_row_type.sql](../../src/main/resources/db/migration/V20261121_003__t36_dispatch_publication_guard_by_row_type.sql)
+- Migration mention (not inferred introduction): [V20261121_004__t38_pressure_restriction_decision_governance.sql](../../src/main/resources/db/migration/V20261121_004__t38_pressure_restriction_decision_governance.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -34822,6 +35065,7 @@ Immutable, separately approved supersession and withdrawal event timeline. Histo
 - Migration mention (not inferred introduction): [V20261121_001__t36_qualified_pressure_restriction_projection.sql](../../src/main/resources/db/migration/V20261121_001__t36_qualified_pressure_restriction_projection.sql)
 - Migration mention (not inferred introduction): [V20261121_002__t36_immutable_workflow_pressure_candidates.sql](../../src/main/resources/db/migration/V20261121_002__t36_immutable_workflow_pressure_candidates.sql)
 - Migration mention (not inferred introduction): [V20261121_003__t36_dispatch_publication_guard_by_row_type.sql](../../src/main/resources/db/migration/V20261121_003__t36_dispatch_publication_guard_by_row_type.sql)
+- Migration mention (not inferred introduction): [V20261121_004__t38_pressure_restriction_decision_governance.sql](../../src/main/resources/db/migration/V20261121_004__t38_pressure_restriction_decision_governance.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|
@@ -34923,6 +35167,7 @@ Persisted WorkflowActionJpaEntity state; semantic authority remains with workflo
 - Migration mention (not inferred introduction): [V20261121_001__t36_qualified_pressure_restriction_projection.sql](../../src/main/resources/db/migration/V20261121_001__t36_qualified_pressure_restriction_projection.sql)
 - Migration mention (not inferred introduction): [V20261121_002__t36_immutable_workflow_pressure_candidates.sql](../../src/main/resources/db/migration/V20261121_002__t36_immutable_workflow_pressure_candidates.sql)
 - Migration mention (not inferred introduction): [V20261121_003__t36_dispatch_publication_guard_by_row_type.sql](../../src/main/resources/db/migration/V20261121_003__t36_dispatch_publication_guard_by_row_type.sql)
+- Migration mention (not inferred introduction): [V20261121_004__t38_pressure_restriction_decision_governance.sql](../../src/main/resources/db/migration/V20261121_004__t38_pressure_restriction_decision_governance.sql)
 
 | Column | PostgreSQL type | Nullable | Default / identity / generated | JPA field/type and declared attributes | Comment |
 |---|---|---|---|---|---|

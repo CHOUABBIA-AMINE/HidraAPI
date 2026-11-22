@@ -7779,3 +7779,42 @@ The repair uses the registered source commit message
 `feat(topology): govern pressure restriction decisions and evidence`.
 T38 remains IN PROGRESS until the exact reconciled SHA passes the Full
 Verification Gate.
+
+### T38 CI #1355 contract reconciliation and publication contention repair
+
+[CI #1355 attempt 1](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44951846192/attempts/1)
+on `1de513cc02c2ddaeb4c162ede2b8c32c96bd8571` passed static validation,
+Java 21 unit and architecture, and thirteen PostgreSQL shards. The
+[signed GZ2 test in shard 1](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44951846192/job/136991309443)
+passed submission and advanced through the initial publication,
+supersession and withdrawal. In the two-request publication race it
+observed HTTP 200 and 500 instead of the required HTTP 200 and 409.
+The retained assertion identifies the failed request but omits the
+underlying SQLSTATE.
+
+Two requests can contend during the protected exact baseline lookup
+before entering T38's protected write, or during the write's stream or
+source locking. The baseline lookup uses an incompatible NOWAIT lock on
+the shared baseline tables. T38 now maps lock failures with SQLSTATE
+`55P03` or Spring's pessimistic-lock translation to the existing
+conflict response at both boundaries when rollback before commit is
+confirmed. Scope and authority checks, lock modes, and all signed test
+assertions are preserved. Indeterminate outcomes retain their existing
+error behavior.
+
+Promote the [runtime OpenAPI](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44951846192/artifacts/14726171601)
+and [fresh PostgreSQL catalog dictionary](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/44951846192/artifacts/14726126595)
+from the exact source SHA. Runtime backward compatibility passed. The
+OpenAPI adds four bearer-protected operations and thirteen distinct T38
+schemas, preserving the existing paths and schemas. The captured
+dictionary covers 239 migrations, 471 JPA mappings, 623 relations and
+zero unresolved owners. Hosted strict dictionary equality was skipped
+following canonical OpenAPI mismatch. The checked-in dictionary is
+compared against the captured catalog before publication.
+
+The bounded contention correction updates the registered T38 owner
+service only. Reconciliation updates the two canonical artifacts, the
+documentation provenance manifest and this append-only record. Use
+`docs(topology): reconcile T38 restriction decision contracts` for the
+artifact-backed follow-up. T38 remains IN PROGRESS pending the exact
+reconciled SHA Full Verification Gate. T39 is subsequent.

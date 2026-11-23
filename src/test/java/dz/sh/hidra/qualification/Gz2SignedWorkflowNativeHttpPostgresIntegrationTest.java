@@ -422,22 +422,53 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
         Instant initialAt = now().minusSeconds(30);
         Instant replacedAt = initialAt.plusSeconds(10);
         Instant withdrawnAt = replacedAt.plusSeconds(10);
+        String streamPath = query(root + "/stream", "companyPartyId", f.company, "conditionCode", condition);
+        var initialStream = r.get(streamPath, author);
+        assertEquals(f.company, field(initialStream, "companyPartyId"));
+        assertEquals(pipeline, field(initialStream, "pipelineId"));
+        assertEquals(condition, field(initialStream, "conditionCode"));
+        int initialVersion = initialStream.path("expectedVersion").asInt(-1);
+        assertEquals(0, initialVersion);
+        assertEquals(0, f.sql.queryForObject("""
+                SELECT count(*) FROM public.hidra_topology_pressure_decision_stream
+                WHERE company_party_id=? AND pipeline_id=? AND condition_code=?
+                """, Integer.class, f.company, pipeline, condition));
+        assertEquals(404, r.send("GET", streamPath, reviewer, null).statusCode());
+        String wrongCompanyStream = query(root + "/stream", "companyPartyId", f.foreignCompany,
+                "conditionCode", condition);
+        assertEquals(404, r.send("GET", wrongCompanyStream, author, null).statusCode());
+        String unknownConditionStream = query(root + "/stream", "companyPartyId", f.company,
+                "conditionCode", "UNKNOWN-T59");
+        assertEquals(404, r.send("GET", unknownConditionStream, author, null).statusCode());
         String requestId = id();
-        JsonNode pending = submitT38(r, author, root, f.company, condition, receipt, requestId, 0,
+        JsonNode pending = submitT38(r, author, root, f.company, condition, receipt, requestId, initialVersion,
                 Map.of("kind", "INITIAL", "pressure", t38Pressure("64", initialAt)));
         String first = field(pending, "requestId");
         assertEquals(requestId, first);
         assertEquals(1, pending.path("candidates").size());
-        String original = field(pending.path("candidates").get(0), "candidateId");
-        JsonNode definitions = r.get(query("/api/v1/workflow/definitions", "targetModule", "topology",
-                "targetTypeId", review.type(), "workflowPurposeId", review.purpose(), "targetId", original,
-                "targetLocator", field(pending.path("candidates").get(0), "workflowLocator")), author);
+        var candidate = pending.path("candidates").get(0);
+        String original = field(candidate, "candidateId");
+        String locator = field(candidate, "workflowLocator");
+        String handoffRoute = "/api/v1/workflow/definitions/pressure-restriction-target";
+        JsonNode handoff = r.get(query(handoffRoute, "targetId", original, "targetLocator", locator), author);
+        assertEquals("topology", field(handoff, "targetModule"));
+        assertEquals(review.type(), field(handoff, "targetTypeId"));
+        assertEquals(review.purpose(), field(handoff, "workflowPurposeId"));
+        assertEquals(original, field(handoff, "targetId"));
+        assertEquals(locator, field(handoff, "targetLocator"));
+        String wrongLocator = query(handoffRoute, "targetId", original, "targetLocator", "t36-v1:" + id());
+        assertEquals(404, r.send("GET", wrongLocator, author, null).statusCode());
+        JsonNode definitions = r.get(query("/api/v1/workflow/definitions",
+                "targetModule", field(handoff, "targetModule"),
+                "targetTypeId", field(handoff, "targetTypeId"),
+                "workflowPurposeId", field(handoff, "workflowPurposeId"),
+                "targetId", field(handoff, "targetId"), "targetLocator", field(handoff, "targetLocator")), author);
         JsonNode definition = java.util.stream.StreamSupport.stream(definitions.spliterator(), false)
                 .filter(value -> review.definition().equals(value.path("id").asText()))
                 .findFirst().orElseThrow(() -> new AssertionError("Pressure Workflow definition was not discoverable"));
         assertTrue(java.util.stream.StreamSupport.stream(definition.path("assignmentChoices").spliterator(), false)
                 .anyMatch(value -> f.reviewer.equals(value.path("actorId").asText())));
-        List<Map<String,String>> decision = List.of(t38FirstApproval(f, r, author, reviewer, review, pending));
+        List<Map<String,String>> decision = List.of(t38FirstApproval(f, r, author, reviewer, review, handoff));
         assertEquals("UNAVAILABLE", field(r.get(t38Effective(topology, f.company, condition, initialAt), reader), "status"));
         JsonNode published = publishT38(r, author, root, f.company, first, 0, decision);
         assertEquals(original, field(published, "revisionId"));
@@ -451,8 +482,15 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
         assertEquals("QUALIFIED", field(r.get(t38Effective(topology, f.company, condition, initialAt), reader), "status"));
 
         String second = id();
-        JsonNode replacement = submitT38(r, author, root, f.company, condition, receipt, second, 1,
-                Map.of("kind", "REPLACEMENT", "predecessorId", original, "pressure", t38Pressure("55", replacedAt)));
+        var replacementChange = Map.of("kind", "REPLACEMENT", "predecessorId", original,
+                "pressure", t38Pressure("55", replacedAt));
+        int publishedVersion = r.get(streamPath, author).path("expectedVersion").asInt(-1);
+        assertEquals(1, publishedVersion);
+        assertEquals(409, r.send("POST", root, author, Map.of("requestId", second, "companyPartyId", f.company,
+                "conditionCode", condition, "baselineReceiptId", receipt, "expectedVersion", initialVersion,
+                "change", replacementChange)).statusCode());
+        JsonNode replacement = submitT38(r, author, root, f.company, condition, receipt, second, publishedVersion,
+                replacementChange);
         assertEquals(2, replacement.path("candidates").size());
         var successorApprovals = t38Approve(f, r, author, reviewer, review, replacement);
         assertEquals(409, r.send("POST", root + "/" + second + "/publication", author,
@@ -497,6 +535,8 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
         publishT38(r, author, root, f.company, third, 2, withdrawalApprovals);
         assertEquals("UNAVAILABLE", field(r.get(t38Effective(topology, f.company, condition, withdrawnAt), reader), "status"));
         assertEquals(successor, field(r.get(t38Effective(topology, f.company, condition, replacedAt), reader), "revisionId"));
+
+        assertEquals(3, r.get(streamPath, author).path("expectedVersion").asInt(-1));
 
         String firstCompeting = id();
         String secondCompeting = id();
@@ -563,13 +603,13 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
     }
 
     private static Map<String,String> t38FirstApproval(Gz2SignedWorkflowFixture f, Gz2SignedWorkflowFixture.Runtime r,
-            String author, String reviewer, Gz2SignedWorkflowFixture.Review review, JsonNode submission) throws Exception {
-        var candidate = submission.path("candidates").get(0);
-        String candidateId = field(candidate, "candidateId");
+            String author, String reviewer, Gz2SignedWorkflowFixture.Review review, JsonNode handoff) throws Exception {
+        String candidateId = field(handoff, "targetId");
         String correlation = id();
         var start = Map.of("definitionId", review.definition(), "definitionVersion", 1,
-                "workflowPurposeId", review.purpose(), "targetModule", "topology", "targetTypeId", review.type(),
-                "targetId", candidateId, "targetCodeSnapshot", field(candidate, "workflowLocator"),
+                "workflowPurposeId", field(handoff, "workflowPurposeId"), "targetModule", field(handoff, "targetModule"),
+                "targetTypeId", field(handoff, "targetTypeId"), "targetId", candidateId,
+                "targetCodeSnapshot", field(handoff, "targetLocator"),
                 "currentStepId", review.step(), "startedByActorId", f.author, "correlationId", correlation);
         String instance = field(r.json("POST", "/api/v1/workflow/instances", author, start, 200), "id");
         String tasks = "/api/v1/workflow/tasks";
@@ -1992,6 +2032,8 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
                 POINT + "{pointId}/trusted-readings/{trustedId}", ASSET_POINTS,
                 ASSET_POINTS + "/{pointId}/trusted-readings/latest", ASSET_POINTS + "/{pointId}/trusted-readings/history",
                 RULE + "/{id}/evaluations/{evaluationId}",
+                "/api/v1/topology/operating-constraints/pipelines/{pipelineId}/restriction-requests/stream",
+                "/api/v1/workflow/definitions/pressure-restriction-target",
                 ALARM + "/{id}/evidence", LEAK + "/{id}/evidence", INCIDENT + "/{id}/timeline")) {
             assertTrue(paths.path(route).has("get"), () -> "Runtime OpenAPI omits GET " + route);
         }

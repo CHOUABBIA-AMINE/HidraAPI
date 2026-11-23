@@ -26,6 +26,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import java.util.Objects;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -51,6 +52,19 @@ public final class WorkflowDefinitionDiscoveryController {
                         t.targetModule(),t.targetTypeId(),t.workflowPurposeId(),t.targetId(),
                         t.targetLocator(),t.revisionId(),t.digestFormat())))
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/pressure-restriction-target")
+    @Operation(operationId = "readPressureRestrictionWorkflowTarget",
+            summary = "Read Workflow target addressing for an exact admitted pressure restriction candidate")
+    public ResponseEntity<WorkflowDefinitionDiscoveryResponses.PressureTargetHandoff> pressureRestrictionTarget(
+            @RequestParam String targetId, @RequestParam String targetLocator) {
+        return discovery.pressureRestrictionTarget(targetId, targetLocator)
+                .map(target -> ResponseEntity.ok().cacheControl(CacheControl.noStore().cachePrivate())
+                        .body(new WorkflowDefinitionDiscoveryResponses.PressureTargetHandoff(
+                                target.targetModule(), target.targetTypeId(), target.workflowPurposeId(),
+                                target.targetId(), target.targetLocator())))
+                .orElseGet(() -> ResponseEntity.notFound().cacheControl(CacheControl.noStore().cachePrivate()).build());
     }
 
     @GetMapping

@@ -29,6 +29,11 @@ public interface WorkflowDefinitionDiscoveryUseCase {
     Optional<TargetHandoff> installedCharacteristicLinkTarget(String companyPartyId,
             String installedUnitId, String linkId, long revisionId);
 
+    Optional<PressureTargetHandoff> pressureRestrictionTarget(String targetId, String targetLocator);
+
+    record PressureTargetHandoff(String targetModule, String targetTypeId, String workflowPurposeId,
+            String targetId, String targetLocator) { }
+
     record TargetHandoff(String targetModule, String targetTypeId, String workflowPurposeId,
             String targetId, String targetLocator, long revisionId, String digestFormat) {}
 

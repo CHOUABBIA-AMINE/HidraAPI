@@ -20,6 +20,7 @@
 package dz.sh.hidra.modules.topology.application.port.in;
 
 import dz.sh.hidra.modules.topology.domain.model.PressureRestrictionDecisionRequest;
+import dz.sh.hidra.modules.topology.domain.model.QualifiedPressureRestriction.Scope;
 import dz.sh.hidra.modules.topology.domain.model.QualifiedPressureWorkflowCandidate.Kind;
 import java.time.Instant;
 import java.util.HashSet;
@@ -92,6 +93,7 @@ public interface PressureRestrictionDecisionUseCase {
         }
     }
 
+    long currentStreamVersion(Scope scope);
     RequestView submit(PressureRestrictionDecisionRequest request);
     RequestView request(Target target);
     Published publish(Publish command);

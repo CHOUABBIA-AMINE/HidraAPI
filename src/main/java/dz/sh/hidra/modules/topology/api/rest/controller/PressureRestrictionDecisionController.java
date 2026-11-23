@@ -70,6 +70,17 @@ public final class PressureRestrictionDecisionController {
         return result(PressureRestrictionDecisionResponses.Request.from(owner.submit(submission)));
     }
 
+    @GetMapping("/stream")
+    @Operation(operationId = "readPressureRestrictionStreamVersion",
+            summary = "Read the current submission version for an exact restriction scope")
+    public ResponseEntity<PressureRestrictionDecisionResponses.Stream> stream(@PathVariable String pipelineId,
+            @RequestParam String companyPartyId, @RequestParam(required = false) String sectionId,
+            @RequestParam String conditionCode) {
+        var scope = new Scope(companyPartyId, pipelineId, sectionId, conditionCode);
+        return result(new PressureRestrictionDecisionResponses.Stream(scope.companyPartyId(), scope.pipelineId(),
+                scope.sectionId(), scope.conditionCode(), owner.currentStreamVersion(scope)));
+    }
+
     @GetMapping("/{requestId}")
     @Operation(operationId = "getPressureRestrictionRequest")
     public ResponseEntity<PressureRestrictionDecisionResponses.Request> request(

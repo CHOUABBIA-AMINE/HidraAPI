@@ -29,6 +29,11 @@ public final class WorkflowDefinitionDiscoveryResponses {
     public record TargetHandoff(String targetModule, String targetTypeId, String workflowPurposeId,
             String targetId, String targetLocator, long revisionId, String digestFormat) {}
 
+    @Schema(name = "PressureRestrictionWorkflowTargetHandoff",
+            description = "Current owner-authorized addressing for one exact pressure candidate.")
+    public record PressureTargetHandoff(String targetModule, String targetTypeId, String workflowPurposeId,
+            String targetId, String targetLocator) { }
+
     @Schema(description = "One currently supported, owner-authorized Workflow process binding.")
     public record Definition(String id, String code, String nameFr, int version,
             String targetModule, String targetTypeId, String workflowPurposeId,

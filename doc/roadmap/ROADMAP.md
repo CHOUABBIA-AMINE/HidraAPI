@@ -9,7 +9,7 @@
 | Status | ACTIVE |
 | Authority | Sole task register and execution source for HidraAPI |
 | Owner adoption | 2026-11-10 |
-| Active task selection | T40 COMPLETED for release-alignment **preparation only**, with green original exact-SHA CI/Docs and green repair exact-SHA CI/Docs/audit (CI #1363 serial oracle). The pre-existing published v0.7.0 tag/Release at earlier SHA is **not** release-qualified by the later audit; formal release reconciliation remains open under AGENTS.md §19. Circle 2 now has nine PLANNED packages (T41,T43,T44,T46,T48,T50,T52,T55,T56) and nine consolidated SKIPPED IDs; none selected. |
+| Active task selection | T59 IN PROGRESS for the UXR-26 pressure restriction consumer inputs. T40 COMPLETED for release-alignment **preparation only**, with green original exact-SHA CI/Docs and green repair exact-SHA CI/Docs/audit (CI #1363 serial oracle). The pre-existing published v0.7.0 tag/Release at earlier SHA is **not** release-qualified by the later audit; formal release reconciliation remains open under AGENTS.md §19. Circle 2 now has nine PLANNED packages (T41,T43,T44,T46,T48,T50,T52,T55,T56) and nine consolidated SKIPPED IDs; none selected. |
 
 The task register controls scope, dependencies, status and acceptance. Existing technical policy and verified implementation evidence retain their applicability. Task status advances only with recorded evidence. The initial status for each task is PLANNED. The first candidate is T01.
 
@@ -8668,3 +8668,28 @@ consumer contract separately.
 **Release separation:** The T40 `v0.7.0` publication/reconciliation is not
 a C2 task, nor is a C2 release version chosen here. No `0.8.0-SNAPSHOT`
 transition, tag, Release, deployment or other Circle is selected.
+
+### T59 — Supply the UXR-26 pressure restriction submission and review inputs
+
+| Task | Owner | Depends on | Deliverable | Pass condition | Status |
+|---|---|---|---|---|---|
+| **T59 · Expose pressure restriction submission and Workflow inputs** | Topology and Workflow | T38, T39 | Protected exact-scope stream version and exact-candidate Workflow addressing | Signed HTTP on fresh PostgreSQL, denial and stale conflict coverage, and verified exact-SHA OpenAPI handoff | IN PROGRESS |
+
+**Authorized and selected.** The owner authorized this bounded C1 follow-up to accepted T38 and T39 in response to the [HidraWEB UXR-26 contract preflight](https://github.com/CHOUABBIA-AMINE/HidraWEB/commit/ac2c831d40f916933ee447fe4c94f34788fba371). Topology owns the restriction stream and its submission version. Workflow owns resolution of the active catalog identifiers for candidate review. This task addresses those two reads under existing authority and retains the Circle 2 sequence.
+
+**Implementation commit:** `feat(topology): expose pressure restriction submission and workflow inputs`.
+
+| UPDATE | Exact scope |
+|---|---|
+| `doc/roadmap/ROADMAP.md` | Register T59, source checks, stage, and acceptance. |
+| `src/main/java/dz/sh/hidra/modules/topology/application/port/in/PressureRestrictionDecisionUseCase.java` | Add a version read for the existing exact restriction scope. |
+| `src/main/java/dz/sh/hidra/modules/topology/application/port/out/PressureRestrictionDecisionPort.java` | Add the read-only stream lookup, including explicit absence for an unknown condition. |
+| `src/main/java/dz/sh/hidra/modules/topology/application/service/PressureRestrictionDecisionApplicationService.java` | Require current submission authority and exact admitted scope before reading and recheck current authority and system before disclosure. |
+| `src/main/java/dz/sh/hidra/modules/topology/infrastructure/persistence/adapter/JdbcPressureRestrictionDecisionAdapter.java` | Read the configured condition and exact publication counter. Return zero for a configured scope without a stream row, without inserting or locking a stream. |
+| `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/PressureRestrictionDecisionController.java`, `src/main/java/dz/sh/hidra/modules/topology/api/rest/response/PressureRestrictionDecisionResponses.java` | Expose GET `/api/v1/topology/operating-constraints/pipelines/{pipelineId}/restriction-requests/stream` with company, optional section and condition. Return exact scope and `expectedVersion`, with ordinary route admission and owner denial before disclosure. |
+| `src/main/java/dz/sh/hidra/modules/workflow/application/port/in/WorkflowDefinitionDiscoveryUseCase.java`, `src/main/java/dz/sh/hidra/modules/workflow/infrastructure/query/JpaWorkflowDefinitionDiscoveryAdapter.java` | Resolve the exact pressure candidate ID and locator through the existing Topology owner start check, then resolve one active target-type ID and one active purpose ID from the Workflow catalog. |
+| `src/main/java/dz/sh/hidra/modules/workflow/api/rest/controller/WorkflowDefinitionDiscoveryController.java`, `src/main/java/dz/sh/hidra/modules/workflow/api/rest/response/WorkflowDefinitionDiscoveryResponses.java` | Expose GET `/api/v1/workflow/definitions/pressure-restriction-target` with candidate ID and locator under ordinary Workflow route admission. Reply with candidate addressing or opaque 404. |
+| `src/test/java/dz/sh/hidra/qualification/Gz2SignedWorkflowNativeHttpPostgresIntegrationTest.java` | Extend the enrolled signed PostgreSQL journey to obtain both inputs through HTTP, drive review with the returned IDs, and verify wrong-scope and wrong-locator denial, the post-publication counter and stale submission rejection. Require both runtime OpenAPI operations. |
+| `.github/ci-test-inventory.json` | Refresh only the fingerprint of the already-enrolled signed case. |
+
+**Acceptance.** Require exact-SHA signed HTTP against fresh PostgreSQL, architecture/permission checks and verified runtime OpenAPI. The implementation stage keeps the last generated snapshot until the hosted artifact can be reconciled under `docs(topology): reconcile pressure restriction consumer input contracts`, with exact OpenAPI verification then required on the reconciled SHA. Status is IN PROGRESS. T59 adds no migrations. UXR-26 browser work can resume when the backend handoff is accepted.

@@ -29,6 +29,7 @@ import dz.sh.hidra.modules.topology.domain.model.QualifiedPressureWorkflowCandid
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalLong;
 import java.util.UUID;
 
 public interface PressureRestrictionDecisionPort {
@@ -59,6 +60,9 @@ public interface PressureRestrictionDecisionPort {
 
     /** Single scalar check executed during the protected executor's final guard phase. */
     boolean guard(StoredRequest request, long streamVersion);
+
+    /** Empty for an unconfigured condition. A configured scope without a stream starts at zero. */
+    OptionalLong currentStreamVersion(Scope scope, String pipelineSystemId);
 
     long lockStream(Scope scope, String pipelineSystemId);
 

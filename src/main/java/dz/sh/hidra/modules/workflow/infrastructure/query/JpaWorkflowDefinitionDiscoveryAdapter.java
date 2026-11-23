@@ -87,6 +87,27 @@ public class JpaWorkflowDefinitionDiscoveryAdapter implements WorkflowDefinition
                 revision.target().id(),revision.target().code(),revision.revisionId(),revision.digestFormat()));
     }
 
+    @Override
+    public Optional<PressureTargetHandoff> pressureRestrictionTarget(String targetId, String targetLocator) {
+        var principal = security.currentPrincipal().filter(p -> p.authenticated()).orElse(null);
+        if (principal == null) return Optional.empty();
+        String actor = principal.actorId().value();
+        if (actors.eligibleActor(actor, Instant.now()).filter(a -> actor.equals(a.id())).isEmpty())
+            return Optional.empty();
+
+        String targetCode = WorkflowOwnedTargetLookup.OPERATING_PRESSURE_TARGET;
+        var matching = owners.stream().filter(owner -> "topology".equals(owner.module())
+                && owner.targetTypeCodes().contains(targetCode)).toList();
+        if (matching.size() != 1 || !matching.getFirst().pressureStartAllowed(targetId, targetLocator, actor))
+            return Optional.empty();
+
+        var types = activeCatalog("WORKFLOW_TARGET_TYPE", targetCode);
+        var purposes = activeCatalog("WORKFLOW_PURPOSE", WorkflowOwnedTargetLookup.OPERATING_PRESSURE_PURPOSE);
+        if (types.size() != 1 || purposes.size() != 1) return Optional.empty();
+        return Optional.of(new PressureTargetHandoff("topology", types.getFirst().id(), purposes.getFirst().id(),
+                targetId, targetLocator));
+    }
+
     private List<WorkflowCatalogEntryJpaEntity> activeCatalog(String catalog,String code) {
         return entities.createQuery("select c from WorkflowCatalogEntryJpaEntity c "
                     + "where c.catalogName = :catalog and c.code = :code and c.active = true",

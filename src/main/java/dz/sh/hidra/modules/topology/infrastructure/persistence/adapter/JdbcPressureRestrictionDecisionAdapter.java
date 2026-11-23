@@ -37,6 +37,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalLong;
 import java.util.UUID;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -70,6 +71,23 @@ public class JdbcPressureRestrictionDecisionAdapter implements PressureRestricti
     public Optional<StoredRequest> requestByCandidate(UUID candidateId) {
         return jdbc.query(REQUEST_COLUMNS + "WHERE revision_candidate_id=? OR termination_candidate_id=? LIMIT 2",
                 this::mapRequest, candidateId, candidateId).stream().reduce((first, second) -> { throw new Conflict(); });
+    }
+
+    @Override
+    public OptionalLong currentStreamVersion(Scope scope, String systemId) {
+        return jdbc.query("""
+                SELECT COALESCE((
+                    SELECT publication_version FROM public.hidra_topology_pressure_decision_stream
+                    WHERE pipeline_system_id=? AND pipeline_id=? AND section_id=?
+                      AND company_party_id=? AND condition_code=?
+                ), 0)
+                WHERE EXISTS (
+                    SELECT 1 FROM public.hidra_topology_t36_condition_policy
+                    WHERE company_party_id=? AND condition_code=?
+                )
+                """, rows -> rows.next() ? OptionalLong.of(rows.getLong(1)) : OptionalLong.empty(),
+                systemId, scope.pipelineId(), section(scope), scope.companyPartyId(), scope.conditionCode(),
+                scope.companyPartyId(), scope.conditionCode());
     }
 
     @Override

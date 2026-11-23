@@ -28,6 +28,10 @@ import java.util.UUID;
 public final class PressureRestrictionDecisionResponses {
     private PressureRestrictionDecisionResponses() { }
 
+    @Schema(name = "PressureRestrictionStreamVersion")
+    public record Stream(String companyPartyId, String pipelineId, String sectionId,
+                         String conditionCode, long expectedVersion) { }
+
     @Schema(name = "PressureRestrictionCandidate")
     public record Candidate(UUID candidateId, String kind, String workflowLocator) { }
 

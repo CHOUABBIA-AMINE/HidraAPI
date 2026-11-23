@@ -67,6 +67,16 @@ public final class PressureRestrictionDecisionApplicationService implements Pres
     }
 
     @Override
+    public long currentStreamVersion(Scope scope) {
+        String actor = require(scope, Operation.SUBMIT);
+        String system = targetSystem(scope.companyPartyId(), scope.pipelineId(), scope.sectionId());
+        long version = store.currentStreamVersion(scope, system).orElseThrow(this::unavailable);
+        String currentSystem = targetSystem(scope.companyPartyId(), scope.pipelineId(), scope.sectionId());
+        if (!system.equals(currentSystem) || !actor.equals(require(scope, Operation.SUBMIT))) throw unavailable();
+        return version;
+    }
+
+    @Override
     public RequestView submit(PressureRestrictionDecisionRequest request) {
         Scope scope = request.scope();
         String actor = require(scope, Operation.SUBMIT);

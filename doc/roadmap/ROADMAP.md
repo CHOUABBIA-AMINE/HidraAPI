@@ -8729,3 +8729,13 @@ Implementation commit: `feat(topology): expose restriction review and publicatio
 The generated runtime artifact must be reconciled under `docs(topology): reconcile restriction review and publication contracts`, followed by exact-SHA Full Verification Gate. No migration is needed. UXR-26 browser acceptance follows the backend gate.
 
 The reviewer GET uses the candidate ID, exact Workflow locator and assigned task ID. The publisher GET returns the submitted stream version and all candidate references together once eligible, an empty list while approvals are pending, or the existing publication receipt after publication. A stale unpublished request returns conflict.
+
+### T60 CI #1366 OpenAPI reconciliation — 2026-11-23
+
+[HidraAPI CI #1366 attempt 1](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/45240571390/attempts/1) on implementation SHA `5381f5bf492e64299b515a17b9287febd26e25be` generated runtime OpenAPI and passed backward compatibility. The API lane failed strict comparison with the preceding snapshot. The real [runtime artifact](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/45240571390/artifacts/14852245897) adds two bearer-protected GET operations and three named schemas. Exact comparison preserves all prior contract objects. The canonical snapshot now has 495 paths, 540 operations and 591 schemas.
+
+The hosted strict dictionary comparison was skipped after the OpenAPI failure. The repository comparator independently passed against the exact-SHA [migrated PostgreSQL capture](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/45240571390/artifacts/14851681865). The rendered dictionary matched the hosted output, with 239 migrations, 471 JPA mappings, 623 relations and zero unresolved owners.
+
+The [signed T60 lifecycle report](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/45240571390/artifacts/14852241949) on shard 1 records one test with zero failures, errors or skips. Shard 4 separately recorded HTTP 503 during the signed Custody product publication prerequisite in `Gz2CustodyMeasurementNativeHttpPostgresIntegrationTest`. A [targeted shard 4 retry](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/45240571390/job/137986699271) was requested on the implementation SHA. The recorded response does not identify the underlying cause. The reconciled commit requires a fresh Full Verification Gate, including both shards and both strict contract comparisons.
+
+Scope for `docs(topology): reconcile restriction review and publication contracts` is `doc/api/openapi.yaml`, `.github/documentation-validation.json` and this roadmap record. T60 remains IN PROGRESS. UXR-26 browser acceptance follows the backend gate.

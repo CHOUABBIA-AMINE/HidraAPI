@@ -1247,9 +1247,9 @@
   ],
   "openapi": {
     "counts": {
-      "operations": 536,
-      "paths": 491,
-      "schemas": 586
+      "paths": 493,
+      "operations": 538,
+      "schemas": 588
     },
     "path": "doc/api/openapi.yaml",
     "prior_reviewed_provenance": {
@@ -2281,6 +2281,76 @@
       "zip_sha256": "f4ce790959340fa5a0a4ae2c6d74f55e5f221f80c765131bc9cd9b1f2c63078f"
     },
     "provenance": {
+      "artifact_id": 14826513135,
+      "artifact_member": "hidra-api.json",
+      "artifact_name": "hidra-api-openapi-7ac83393bd81fba7bbaea56788f46f57b294953f-45192740649-1-api-contract",
+      "compatibility_review": "Exactly two additive bearer-protected GET operations and two named response schemas. All prior contract objects are preserved.",
+      "conclusion": "success",
+      "conclusion_scope": "Runtime artifact generation and backward compatibility passed. The API lane failed strict equality against the preceding checked-in snapshot.",
+      "database_evidence": {
+        "artifact_id": 14826193638,
+        "artifact_name": "hidra-ci-diagnostics-7ac83393bd81fba7bbaea56788f46f57b294953f-45192740649-1-api-contract",
+        "artifact_member": "database/DATA_DICTIONARY.md",
+        "catalog_sha256": "4acfb058d54e4f1fcc177c96a17861cafbf53db300525f0b3b02b57ebdbcfb91",
+        "conclusion_scope": "Hosted strict comparison was skipped. The repository comparator independently passed against the captured catalog and checked-in dictionary. The reproduced render equals the hosted dictionary.",
+        "dictionary_sha256": "bc9ef3baf9eff8f7478439b74fac389a035ade5ea3f5d633b13c84b533323b2f",
+        "job_conclusion": "failure",
+        "job_id": 137755075586,
+        "jpa_mappings": 471,
+        "migrations": 239,
+        "relations": 623,
+        "reviewed_dictionary_checked": false,
+        "run_attempt": 1,
+        "run_id": 45192740649,
+        "server_version": "16.16 (Debian 16.16-1.pgdg13+1)",
+        "source_bundle_sha256": "eb71ee6deaf679517edb12d45b6c67b111404bd99cc3ad823464241963680b73",
+        "source_sha": "7ac83393bd81fba7bbaea56788f46f57b294953f",
+        "unresolved_owners": [],
+        "workflow_conclusion": "failure",
+        "zip_sha256": "abdd5e07d76b77bea15fadbb167a735086da8881a5d40d735c3606a27d08bd1b"
+      },
+      "failed_step": "Enforce canonical OpenAPI snapshot equality",
+      "generation_step": "Publish deterministic OpenAPI contract",
+      "generation_step_conclusion": "success",
+      "generation_step_number": 9,
+      "job_conclusion": "failure",
+      "job_id": 137755075586,
+      "json_sha256": "137bd8601bbc682a7221582b678e42679e77f96e710043ba0a61a09fece9780d",
+      "remaining_gates": [
+        "Exact reconciled SHA Full Verification Gate including signed PostgreSQL and strict OpenAPI and physical dictionary equality"
+      ],
+      "run_attempt": 1,
+      "run_id": 45192740649,
+      "source_sha": "7ac83393bd81fba7bbaea56788f46f57b294953f",
+      "workflow_conclusion": "failure",
+      "zip_sha256": "161a1b60e14ae121863a1e18a2f9e77bc6aa9ad732a91a8eca709e19827221c8"
+    },
+    "sha256": "ae080a56530fa54c23d805e2c729f0a60d78d4196d38178d9a031da155293dce",
+    "source_sha": "7ac83393bd81fba7bbaea56788f46f57b294953f",
+    "t37_reviewed_provenance": {
+      "artifact_id": 14712266122,
+      "artifact_member": "hidra-api.json",
+      "artifact_name": "hidra-api-openapi-dad778c5d4f02c9d6213105560227b963d4fe913-44916009574-1-api-contract",
+      "compatibility_review": "Three additive bearer-protected Asset Telemetry GETs and seven typed schemas. All prior operations and schemas are preserved. Runtime backward compatibility passed.",
+      "conclusion": "success",
+      "conclusion_scope": "Only deterministic OpenAPI generation and compatibility passed. API job and workflow failed strict snapshot equality. All fourteen PostgreSQL shards passed. Hosted dictionary equality was skipped and later verified separately against the captured artifact.",
+      "failed_step": "Enforce canonical OpenAPI snapshot equality",
+      "generation_step": "Publish deterministic OpenAPI contract",
+      "generation_step_conclusion": "success",
+      "generation_step_number": 9,
+      "job_conclusion": "failure",
+      "job_id": 136881648782,
+      "json_sha256": "eb5e60ec4c0c4a4820cc9465bd51d77926f03017c4c4e03d66c25f6517442470",
+      "remaining_gates": [
+        "Exact-final-SHA Full Verification Gate including the registered signed PostgreSQL journey, OpenAPI equality and physical dictionary equality"
+      ],
+      "run_attempt": 1,
+      "run_id": 44916009574,
+      "source_sha": "dad778c5d4f02c9d6213105560227b963d4fe913",
+      "workflow_conclusion": "failure",
+      "zip_sha256": "d11f87474ed10d296b6707534ae592212778cd85dd1f4b484882150c3bb306fd"
+    },
+    "prior_reviewed_provenance_t38": {
       "artifact_id": 14726171601,
       "artifact_member": "hidra-api.json",
       "artifact_name": "hidra-api-openapi-1de513cc02c2ddaeb4c162ede2b8c32c96bd8571-44951846192-1-api-contract",
@@ -2324,31 +2394,6 @@
       "source_sha": "1de513cc02c2ddaeb4c162ede2b8c32c96bd8571",
       "workflow_conclusion": "failure",
       "zip_sha256": "3326eb65782bf0221883e3ecc7b7a89bdab9f8fc4951207c5723aa58210d200b"
-    },
-    "sha256": "9d54ae7601a6425adac6ab86da4769c81b5dff7d115cd24048aced22fcdf3231",
-    "source_sha": "1de513cc02c2ddaeb4c162ede2b8c32c96bd8571",
-    "t37_reviewed_provenance": {
-      "artifact_id": 14712266122,
-      "artifact_member": "hidra-api.json",
-      "artifact_name": "hidra-api-openapi-dad778c5d4f02c9d6213105560227b963d4fe913-44916009574-1-api-contract",
-      "compatibility_review": "Three additive bearer-protected Asset Telemetry GETs and seven typed schemas. All prior operations and schemas are preserved. Runtime backward compatibility passed.",
-      "conclusion": "success",
-      "conclusion_scope": "Only deterministic OpenAPI generation and compatibility passed. API job and workflow failed strict snapshot equality. All fourteen PostgreSQL shards passed. Hosted dictionary equality was skipped and later verified separately against the captured artifact.",
-      "failed_step": "Enforce canonical OpenAPI snapshot equality",
-      "generation_step": "Publish deterministic OpenAPI contract",
-      "generation_step_conclusion": "success",
-      "generation_step_number": 9,
-      "job_conclusion": "failure",
-      "job_id": 136881648782,
-      "json_sha256": "eb5e60ec4c0c4a4820cc9465bd51d77926f03017c4c4e03d66c25f6517442470",
-      "remaining_gates": [
-        "Exact-final-SHA Full Verification Gate including the registered signed PostgreSQL journey, OpenAPI equality and physical dictionary equality"
-      ],
-      "run_attempt": 1,
-      "run_id": 44916009574,
-      "source_sha": "dad778c5d4f02c9d6213105560227b963d4fe913",
-      "workflow_conclusion": "failure",
-      "zip_sha256": "d11f87474ed10d296b6707534ae592212778cd85dd1f4b484882150c3bb306fd"
     }
   },
   "register": "doc/governance/DOCUMENT_REGISTER.md",

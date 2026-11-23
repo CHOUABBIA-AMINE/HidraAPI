@@ -9,7 +9,7 @@
 | Status | ACTIVE |
 | Authority | Sole task register and execution source for HidraAPI |
 | Owner adoption | 2026-11-10 |
-| Active task selection | T60 IN PROGRESS for the UXR-26 reviewer and publisher handoff. T59 COMPLETED for the UXR-26 pressure restriction consumer inputs. T40 COMPLETED for release-alignment **preparation only**, with green original exact-SHA CI/Docs and green repair exact-SHA CI/Docs/audit (CI #1363 serial oracle). The pre-existing published v0.7.0 tag/Release at earlier SHA is **not** release-qualified by the later audit; formal release reconciliation remains open under AGENTS.md §19. Circle 2 now has nine PLANNED packages (T41,T43,T44,T46,T48,T50,T52,T55,T56) and nine consolidated SKIPPED IDs; none selected. |
+| Active task selection | T60 COMPLETED for the UXR-26 reviewer and publisher handoff. T59 COMPLETED for the UXR-26 pressure restriction consumer inputs. T40 COMPLETED for release-alignment **preparation only**, with green original exact-SHA CI/Docs and green repair exact-SHA CI/Docs/audit (CI #1363 serial oracle). The pre-existing published v0.7.0 tag/Release at earlier SHA is **not** release-qualified by the later audit; formal release reconciliation remains open under AGENTS.md §19. Circle 2 now has nine PLANNED packages (T41,T43,T44,T46,T48,T50,T52,T55,T56) and nine consolidated SKIPPED IDs; none selected. |
 
 The task register controls scope, dependencies, status and acceptance. Existing technical policy and verified implementation evidence retain their applicability. Task status advances only with recorded evidence. The initial status for each task is PLANNED. The first candidate is T01.
 
@@ -8712,7 +8712,7 @@ The registered reconciliation commit `docs(topology): reconcile pressure restric
 
 | Task | Owner | Depends on | Deliverable | Pass condition | Status |
 |---|---|---|---|---|---|
-| **T60 · Expose scoped restriction review and publication inputs** | Topology and Workflow | T38, T39, T59 | Immutable reviewer proposal and publisher decision references | Signed GZ2 author/reviewer/publisher journey and verified runtime OpenAPI on an accepted SHA | IN PROGRESS |
+| **T60 · Expose scoped restriction review and publication inputs** | Topology and Workflow | T38, T39, T59 | Immutable reviewer proposal and publisher decision references | Signed GZ2 author/reviewer/publisher journey and verified runtime OpenAPI on an accepted SHA | COMPLETED |
 
 Owner-approved UXR-26 backend follow-up. Topology owns immutable proposal terms, source provenance, request version and publication. Workflow owns task assignment and exact final approval evidence. Both new reads are advisory to the existing guarded commands. Publication still checks the current locked version, approvals, reviewer eligibility and Audit under existing transaction semantics.
 
@@ -8739,3 +8739,11 @@ The hosted strict dictionary comparison was skipped after the OpenAPI failure. T
 The [signed T60 lifecycle report](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/45240571390/artifacts/14852241949) on shard 1 records one test with zero failures, errors or skips. Shard 4 separately recorded HTTP 503 during the signed Custody product publication prerequisite in `Gz2CustodyMeasurementNativeHttpPostgresIntegrationTest`. A [targeted shard 4 retry](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/45240571390/job/137986699271) was requested on the implementation SHA. The recorded response does not identify the underlying cause. The reconciled commit requires a fresh Full Verification Gate, including both shards and both strict contract comparisons.
 
 Scope for `docs(topology): reconcile restriction review and publication contracts` is `doc/api/openapi.yaml`, `.github/documentation-validation.json` and this roadmap record. T60 remains IN PROGRESS. UXR-26 browser acceptance follows the backend gate.
+
+### T60 acceptance and HidraWEB UXR-26 handoff — 2026-11-23
+
+**T60 COMPLETED for the synthetic GZ2 development scope.** Implementation `5381f5bf492e64299b515a17b9287febd26e25be` was reconciled in `4dcb9e092a715d9942a2b19ad86b3dea9f6bd96f`. The reconciled SHA passed [HidraAPI CI #1367 attempt 1](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/45259016300/attempts/1), the [Full Verification Gate](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/45259016300/job/137997856565) and [Documentation Validation #1223](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/45259016347). Java 21 unit and architecture checks, all 14 PostgreSQL integration shards including the previously failing shard 4, and strict OpenAPI and database dictionary comparisons passed. The cause of the earlier Custody HTTP 503 remains undetermined.
+
+The [signed lifecycle report](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/45259016300/artifacts/14859874594) records one test with zero failures, errors or skips. It exercises immutable proposal readback by an assigned reviewer and publication using references obtained by a separate publisher.
+
+**Consumer pin.** The [standalone runtime OpenAPI artifact](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/45259016300/artifacts/14860210574) matches the runtime JSON in the [sealed API evidence](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/45259016300/artifacts/14860290417) byte for byte. Raw JSON SHA-256 is `c5ccc56154b1147ad1ac2d215a7ba442fdbd5e1c15e9426df30c9483d857733c`. The repository validator confirmed snapshot equality. Next is the HidraWEB UXR-26 integration of the accepted backend contract and the independent browser journey. This roadmap-only closeout uses `docs(roadmap): accept T60 restriction review and publication inputs`.

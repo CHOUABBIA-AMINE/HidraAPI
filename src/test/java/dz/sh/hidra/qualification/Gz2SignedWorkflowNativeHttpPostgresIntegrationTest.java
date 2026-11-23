@@ -409,6 +409,10 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
     private static T38Proof verifyT38Lifecycle(Gz2SignedWorkflowFixture f, Gz2SignedWorkflowFixture.Runtime r,
             String author, String reviewer, String reader, String pipeline, JsonNode baseline) throws Exception {
         String condition = "T38-NOMINAL";
+        f.permit(f.reader, "topology:pressure-restriction:publish", "OPERATING_PRESSURE_RESTRICTION",
+                "PIPELINE_SYSTEM", f.pipeline);
+        f.global(f.reader, "topology:operating-constraints:execute");
+        String publisher = r.login(f.reader);
         f.sql.update("""
                 INSERT INTO public.hidra_topology_t36_condition_policy
                     (company_party_id,condition_code,pressure_unit,recorded_at)
@@ -468,9 +472,18 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
                 .findFirst().orElseThrow(() -> new AssertionError("Pressure Workflow definition was not discoverable"));
         assertTrue(java.util.stream.StreamSupport.stream(definition.path("assignmentChoices").spliterator(), false)
                 .anyMatch(value -> f.reviewer.equals(value.path("actorId").asText())));
-        List<Map<String,String>> decision = List.of(t38FirstApproval(f, r, author, reviewer, review, handoff));
+        String inputs = publicationInputsPath(root, first, f.company);
+        assertEquals(0, r.get(inputs, publisher).path("decisions").size());
+        assertEquals(404, r.send("GET", inputs, reviewer, null).statusCode());
+        List<Map<String,String>> decision = List.of(t38FirstApproval(f, r, author, reviewer, review, handoff, receipt));
+        String workflowTask = "/api/v1/workflow/tasks/" + decision.getFirst().get("taskId");
+        assertTrue(java.util.Set.of(403, 404).contains(r.send("GET", workflowTask, publisher, null).statusCode()));
+        assertEquals(404, r.send("GET", reviewProposalPath(original, locator, decision.getFirst().get("taskId")),
+                reviewer, null).statusCode());
         assertEquals("UNAVAILABLE", field(r.get(t38Effective(topology, f.company, condition, initialAt), reader), "status"));
-        JsonNode published = publishT38(r, author, root, f.company, first, 0, decision);
+        JsonNode published = publishT38(r, publisher, root, f.company, first, 0,
+                publicationReferences(r, publisher, root, f.company, first, 0, decision));
+        assertEquals(published, r.get(inputs, publisher).path("publication"));
         assertEquals(original, field(published, "revisionId"));
         assertEquals(published, publishT38(r, author, root, f.company, first, 0, decision));
         String evidencePath = query(root + "/" + first + "/evidence", "companyPartyId", f.company);
@@ -521,7 +534,8 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
                     Integer.class, approval.get("actionId")));
         }
         assertEquals(original, field(r.get(t38Effective(topology, f.company, condition, replacedAt), reader), "revisionId"));
-        JsonNode updated = publishT38(r, author, root, f.company, second, 1, successorApprovals);
+        JsonNode updated = publishT38(r, publisher, root, f.company, second, 1,
+                publicationReferences(r, publisher, root, f.company, second, 1, successorApprovals));
         String successor = field(updated, "revisionId");
         assertFalse(field(updated, "terminationId").isBlank());
         assertEquals(original, field(r.get(t38Effective(topology, f.company, condition, replacedAt.minusNanos(1000)), reader),
@@ -532,7 +546,8 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
         JsonNode withdrawal = submitT38(r, author, root, f.company, condition, receipt, third, 2,
                 Map.of("kind", "WITHDRAWAL", "predecessorId", successor, "effectiveAt", withdrawnAt.toString()));
         var withdrawalApprovals = t38Approve(f, r, author, reviewer, review, withdrawal);
-        publishT38(r, author, root, f.company, third, 2, withdrawalApprovals);
+        publishT38(r, publisher, root, f.company, third, 2,
+                publicationReferences(r, publisher, root, f.company, third, 2, withdrawalApprovals));
         assertEquals("UNAVAILABLE", field(r.get(t38Effective(topology, f.company, condition, withdrawnAt), reader), "status"));
         assertEquals(successor, field(r.get(t38Effective(topology, f.company, condition, replacedAt), reader), "revisionId"));
 
@@ -566,6 +581,9 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
             currentPublication = JSON.readTree(one.statusCode() == 200 ? one.body() : two.body());
             assertEquals(4, currentPublication.path("streamVersion").asLong());
             assertFalse(field(currentPublication, "revisionId").isBlank());
+            String stale = one.statusCode() == 200 ? secondCompeting : firstCompeting;
+            assertEquals(409, r.send("GET", publicationInputsPath(root, stale, f.company),
+                    publisher, null).statusCode());
         }
         assertEquals(1, f.sql.queryForObject("""
                 SELECT count(*) FROM public.hidra_topology_pressure_decision_publication WHERE request_id IN (?,?)
@@ -603,7 +621,8 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
     }
 
     private static Map<String,String> t38FirstApproval(Gz2SignedWorkflowFixture f, Gz2SignedWorkflowFixture.Runtime r,
-            String author, String reviewer, Gz2SignedWorkflowFixture.Review review, JsonNode handoff) throws Exception {
+            String author, String reviewer, Gz2SignedWorkflowFixture.Review review, JsonNode handoff,
+            String receipt) throws Exception {
         String candidateId = field(handoff, "targetId");
         String correlation = id();
         var start = Map.of("definitionId", review.definition(), "definitionVersion", 1,
@@ -618,6 +637,20 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
         assertTrue(self.statusCode() >= 400 && self.statusCode() < 500, self::body);
         String task = field(r.json("POST", tasks, author, Map.of("instanceId", instance, "stepId", review.step(),
                 "assignedActorId", f.reviewer, "taskLabelSnapshot", "Synthetic restriction review"), 200), "id");
+        String locator = field(handoff, "targetLocator");
+        String proposalPath = reviewProposalPath(candidateId, locator, task);
+        JsonNode proposal = r.get(proposalPath, reviewer);
+        assertEquals(candidateId, field(proposal, "candidateId"));
+        assertEquals("REVISION", field(proposal, "kind"));
+        assertEquals("T38-NOMINAL", field(proposal, "conditionCode"));
+        assertEquals(0, new java.math.BigDecimal(field(proposal, "upperPressure")).compareTo(new java.math.BigDecimal("64")));
+        assertEquals("bar", field(proposal, "pressureUnit"));
+        assertEquals("GAUGE", field(proposal, "pressureBasis"));
+        assertEquals(receipt, field(proposal, "baselineReceiptId"));
+        assertEquals(404, r.send("GET", proposalPath, author, null).statusCode());
+        assertEquals(404, r.send("GET", reviewProposalPath(candidateId, locator, id()), reviewer, null).statusCode());
+        assertEquals(404, r.send("GET", reviewProposalPath(candidateId, "t36-v1:" + id(), task),
+                reviewer, null).statusCode());
         String taskPath = tasks + "/" + task;
         String execute = taskPath + "/transitions/" + review.transition() + "/execute";
         var command = Map.of("expectedTaskUpdatedAt", field(r.get(taskPath, reviewer), "updatedAt"),
@@ -627,6 +660,7 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
                 WHERE user_id=? AND permission_id='t38_pressure_review'
                 """, f.reviewer);
         try {
+            assertEquals(404, r.send("GET", proposalPath, reviewer, null).statusCode());
             var denied = r.send("POST", execute, reviewer, command);
             assertTrue(denied.statusCode() == 403 || denied.statusCode() == 404, denied::body);
         } finally {
@@ -659,13 +693,38 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
                 Map.of("companyPartyId",company,"expectedVersion",version,"decisions",decisions), 200);
     }
 
+    private static String reviewProposalPath(String candidateId, String locator, String taskId) {
+        return query("/api/v1/topology/operating-constraints/pressure-restriction-review-proposals/" + candidateId,
+                "targetLocator", locator, "taskId", taskId);
+    }
+
+    private static String publicationInputsPath(String root, String requestId, String company) {
+        return query(root + "/" + requestId + "/publication-inputs", "companyPartyId", company);
+    }
+
+    private static List<Map<String,String>> publicationReferences(Gz2SignedWorkflowFixture.Runtime runtime,
+            String actor, String root, String company, String requestId, int version,
+            List<Map<String,String>> expected) throws Exception {
+        JsonNode inputs = runtime.get(publicationInputsPath(root, requestId, company), actor);
+        assertEquals(requestId, field(inputs, "requestId"));
+        assertEquals(version, inputs.path("expectedVersion").asInt(-1));
+        assertFalse(inputs.hasNonNull("publication"));
+        var references = new java.util.ArrayList<Map<String,String>>();
+        for (JsonNode decision : inputs.path("decisions")) {
+            references.add(Map.of("candidateId", field(decision, "candidateId"), "instanceId", field(decision, "instanceId"),
+                    "taskId", field(decision, "taskId"), "actionId", field(decision, "actionId")));
+        }
+        assertEquals(expected, references);
+        return List.copyOf(references);
+    }
+
     private static List<Map<String,String>> t38Approve(Gz2SignedWorkflowFixture f, Gz2SignedWorkflowFixture.Runtime r,
             String author, String reviewer, Gz2SignedWorkflowFixture.Review review, JsonNode submission) throws Exception {
         var complete = new java.util.ArrayList<Map<String,String>>();
         for (JsonNode candidate : submission.path("candidates")) {
             String id = field(candidate, "candidateId");
             var reference = new java.util.HashMap<>(workflowDecision(f, r, author, reviewer, review, "topology", id,
-                    field(candidate, "workflowLocator"), id()));
+                    field(candidate, "workflowLocator"), id(), field(candidate, "kind")));
             reference.put("candidateId", id);
             complete.add(Map.copyOf(reference));
         }
@@ -1355,6 +1414,12 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
     private static Map<String, String> workflowDecision(Gz2SignedWorkflowFixture f, Gz2SignedWorkflowFixture.Runtime r,
             String author, String reviewer, Gz2SignedWorkflowFixture.Review review, String module,
             String target, String locator, String correlation) throws Exception {
+        return workflowDecision(f, r, author, reviewer, review, module, target, locator, correlation, null);
+    }
+
+    private static Map<String, String> workflowDecision(Gz2SignedWorkflowFixture f, Gz2SignedWorkflowFixture.Runtime r,
+            String author, String reviewer, Gz2SignedWorkflowFixture.Review review, String module,
+            String target, String locator, String correlation, String pressureKind) throws Exception {
         String instance = field(r.json("POST", "/api/v1/workflow/instances", author, Map.of(
                 "definitionId", review.definition(), "definitionVersion", 1, "workflowPurposeId", review.purpose(),
                 "targetModule", module, "targetTypeId", review.type(), "targetId", target, "targetCodeSnapshot", locator,
@@ -1362,6 +1427,15 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
         String task = field(r.json("POST", "/api/v1/workflow/tasks", author, Map.of("instanceId", instance,
                 "stepId", review.step(), "assignedActorId", f.reviewer, "taskLabelSnapshot", "Synthetic review"), 200), "id");
         String taskPath = "/api/v1/workflow/tasks/" + task;
+        if (pressureKind != null) {
+            JsonNode proposal = r.get(reviewProposalPath(target, locator, task), reviewer);
+            assertEquals(target, field(proposal, "candidateId"));
+            assertEquals(pressureKind, field(proposal, "kind"));
+            assertEquals("T38-NOMINAL", field(proposal, "conditionCode"));
+            assertEquals("REVISION".equals(pressureKind), proposal.hasNonNull("upperPressure"));
+            assertEquals("SUPERSEDE".equals(pressureKind), proposal.hasNonNull("successorId"));
+            if (!"REVISION".equals(pressureKind)) assertFalse(field(proposal, "predecessorId").isBlank());
+        }
         JsonNode current = r.get(taskPath, reviewer);
         JsonNode result = r.json("POST", taskPath + "/transitions/" + review.transition() + "/execute", reviewer,
                 Map.of("expectedTaskUpdatedAt", field(current, "updatedAt"), "correlationId", correlation), 200);
@@ -2034,6 +2108,8 @@ class Gz2SignedWorkflowNativeHttpPostgresIntegrationTest {
                 RULE + "/{id}/evaluations/{evaluationId}",
                 "/api/v1/topology/operating-constraints/pipelines/{pipelineId}/restriction-requests/stream",
                 "/api/v1/workflow/definitions/pressure-restriction-target",
+                "/api/v1/topology/operating-constraints/pressure-restriction-review-proposals/{candidateId}",
+                "/api/v1/topology/operating-constraints/pipelines/{pipelineId}/restriction-requests/{requestId}/publication-inputs",
                 ALARM + "/{id}/evidence", LEAK + "/{id}/evidence", INCIDENT + "/{id}/timeline")) {
             assertTrue(paths.path(route).has("get"), () -> "Runtime OpenAPI omits GET " + route);
         }

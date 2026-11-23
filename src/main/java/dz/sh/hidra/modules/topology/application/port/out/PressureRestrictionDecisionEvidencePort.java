@@ -23,6 +23,7 @@ import dz.sh.hidra.modules.topology.application.port.in.PressureRestrictionDecis
 import dz.sh.hidra.modules.topology.domain.model.QualifiedPressureRestriction.Scope;
 import dz.sh.hidra.modules.topology.domain.model.QualifiedPressureWorkflowCandidate;
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -37,6 +38,8 @@ public interface PressureRestrictionDecisionEvidencePort {
     /** Revalidate an already recorded reviewer's current eligibility in the target scope. */
     boolean reviewerEligible(Scope scope, String reviewerId);
 
+    boolean assignedReviewTask(QualifiedPressureWorkflowCandidate candidate, String taskId, String actor);
+    List<Approval> discoverApprovals(QualifiedPressureWorkflowCandidate candidate);
     Optional<Approval> finalApproval(QualifiedPressureWorkflowCandidate candidate, DecisionReference reference);
 
     /** Append with the same transaction and physical owner publication connection. */

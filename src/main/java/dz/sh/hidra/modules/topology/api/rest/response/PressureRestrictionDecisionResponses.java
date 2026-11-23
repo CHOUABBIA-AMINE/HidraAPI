@@ -32,6 +32,37 @@ public final class PressureRestrictionDecisionResponses {
     public record Stream(String companyPartyId, String pipelineId, String sectionId,
                          String conditionCode, long expectedVersion) { }
 
+    @Schema(name = "PressureRestrictionReviewProposal")
+    public record ReviewProposal(UUID requestId, UUID candidateId, String kind, String companyPartyId,
+            String pipelineId, String sectionId, String conditionCode, java.math.BigDecimal upperPressure,
+            String pressureUnit, String pressureBasis, Instant effectiveFrom, Instant effectiveUntil,
+            UUID predecessorId, UUID successorId, UUID baselineReceiptId, String baselineDigest,
+            String engineeringSourceRevision) {
+        public static ReviewProposal from(PressureRestrictionDecisionUseCase.ReviewProposal view) {
+            var item = view.candidate();
+            var scope = item.scope();
+            return new ReviewProposal(view.requestId(), item.id(), item.kind().name(), scope.companyPartyId(),
+                    scope.pipelineId(), scope.sectionId(), scope.conditionCode(), item.upperPressure(),
+                    item.pressureUnit(), item.pressureBasis() == null ? null : item.pressureBasis().name(),
+                    item.effectiveFrom(), item.effectiveUntil(), item.retiredRevisionId(), item.successorRevisionId(),
+                    item.baselineReceiptId(), item.baselineDigest(), item.engineeringSourceRevision());
+        }
+    }
+
+    @Schema(name = "PressureRestrictionPublicationDecisionReference")
+    public record PublicationDecisionReference(UUID candidateId, String instanceId, String taskId, String actionId) { }
+
+    @Schema(name = "PressureRestrictionPublicationInputs")
+    public record PublicationInputs(UUID requestId, long expectedVersion,
+            List<PublicationDecisionReference> decisions, Publication publication) {
+        public static PublicationInputs from(PressureRestrictionDecisionUseCase.PublicationInputs view) {
+            return new PublicationInputs(view.requestId(), view.expectedVersion(),
+                    view.decisions().stream().map(ref -> new PublicationDecisionReference(
+                            ref.candidateId(), ref.instanceId(), ref.taskId(), ref.actionId())).toList(),
+                    view.publication() == null ? null : Publication.from(view.publication()));
+        }
+    }
+
     @Schema(name = "PressureRestrictionCandidate")
     public record Candidate(UUID candidateId, String kind, String workflowLocator) { }
 

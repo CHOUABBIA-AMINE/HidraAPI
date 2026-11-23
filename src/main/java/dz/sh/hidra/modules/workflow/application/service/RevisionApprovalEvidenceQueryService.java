@@ -26,6 +26,9 @@ import dz.sh.hidra.modules.workflow.application.port.out.WorkflowConfigurationPo
 import dz.sh.hidra.modules.workflow.application.port.out.WorkflowInstanceRepositoryPort;
 import dz.sh.hidra.modules.workflow.application.port.out.WorkflowTaskRepositoryPort;
 import dz.sh.hidra.modules.workflow.domain.exception.InvalidWorkflowValueException;
+import dz.sh.hidra.modules.workflow.domain.model.WorkflowInstance;
+import java.util.List;
+import java.util.Set;
 import dz.sh.hidra.modules.workflow.domain.value.WorkflowActionType;
 import dz.sh.hidra.modules.workflow.domain.value.WorkflowDecision;
 import dz.sh.hidra.modules.workflow.domain.value.WorkflowInstanceStatus;
@@ -91,24 +94,38 @@ public class RevisionApprovalEvidenceQueryService implements RevisionApprovalEvi
                 || blank(request.actionId()) || blank(request.submitterId()) || manufacturerFence == null)
             return Optional.empty();
         manufacturerFence.lockCurrentTopologyApprovalEvidence();
+        return pressureEvidence(request, true);
+    }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<Evidence> discoverPressureApprovals(PressureCandidate candidate) {
+        return actions.findPressureApprovals(candidate.candidateId().toString(), candidate.submitterId()).stream()
+                .map(action -> new PressureRequest(candidate.candidateId(), action.instanceId(), action.taskId(),
+                        action.id(), candidate.submitterId(), candidate.submittedAt(), candidate.evaluationAt()))
+                .flatMap(request -> pressureEvidence(request, false).stream()).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean pressureReviewTask(PressureCandidate candidate, String taskId, String actorId) {
+        if (blank(actorId) || actorId.equals(candidate.submitterId()) || blank(taskId)) return false;
+        var task = tasks.findById(taskId).orElse(null);
+        if (task == null || !actorId.equals(task.assignedActorId()) || task.completedAt() != null
+                || !Set.of(WorkflowTaskStatus.OPEN, WorkflowTaskStatus.CLAIMED, WorkflowTaskStatus.IN_REVIEW)
+                        .contains(task.status())) return false;
+        var instance = instances.findById(task.instanceId()).orElse(null);
+        return pressureTarget(instance, candidate.candidateId().toString(), candidate.submitterId())
+                && Set.of(WorkflowInstanceStatus.STARTED, WorkflowInstanceStatus.IN_PROGRESS, WorkflowInstanceStatus.WAITING)
+                        .contains(instance.status())
+                && task.stepId().equals(instance.currentStepId()) && pressureConfiguration(instance, false);
+    }
+
+    private Optional<Evidence> pressureEvidence(PressureRequest request, boolean lockConfiguration) {
         var instance = instances.findById(request.instanceId()).orElse(null);
-        String candidateId = request.candidateId().toString();
-        if (instance == null || !"topology".equals(instance.targetModule())
-                || !candidateId.equals(instance.targetId()) || !("t36-v1:" + candidateId).equals(instance.targetCodeSnapshot())
-                || !request.submitterId().equals(instance.startedByActorId())
-                || instance.status() != WorkflowInstanceStatus.COMPLETED) return Optional.empty();
-        try {
-            var type = configuration.requireActiveCatalog(instance.targetTypeId(), "WORKFLOW_TARGET_TYPE");
-            var purpose = configuration.requireActiveCatalog(instance.workflowPurposeId(), "WORKFLOW_PURPOSE");
-            if (!WorkflowOwnedTargetLookup.OPERATING_PRESSURE_TARGET.equals(type.code())
-                    || !WorkflowOwnedTargetLookup.OPERATING_PRESSURE_PURPOSE.equals(purpose.code())
-                    || !configuration.lockCurrentInstanceConfiguration(instance.definitionId(),
-                            instance.definitionVersion(), instance.targetModule(), instance.targetTypeId(),
-                            instance.workflowPurposeId())) return Optional.empty();
-        } catch (InvalidWorkflowValueException unavailableConfiguration) {
-            return Optional.empty();
-        }
+        if (!pressureTarget(instance, request.candidateId().toString(), request.submitterId())
+                || instance.status() != WorkflowInstanceStatus.COMPLETED
+                || !pressureConfiguration(instance, lockConfiguration)) return Optional.empty();
 
         var task = tasks.findById(request.taskId()).orElse(null);
         var action = actions.findById(request.actionId()).orElse(null);
@@ -125,6 +142,28 @@ public class RevisionApprovalEvidenceQueryService implements RevisionApprovalEvi
         return Optional.of(new Evidence(instance.id(), task.id(), action.id(), instance.definitionId(),
                 instance.definitionVersion(), instance.targetTypeId(), instance.workflowPurposeId(),
                 action.actorId(), action.actorDisplayNameSnapshot(), action.actedAt()));
+    }
+
+    private static boolean pressureTarget(WorkflowInstance instance, String candidateId, String submitterId) {
+        return instance != null && "topology".equals(instance.targetModule())
+                && candidateId.equals(instance.targetId()) && ("t36-v1:" + candidateId).equals(instance.targetCodeSnapshot())
+                && submitterId.equals(instance.startedByActorId());
+    }
+
+    private boolean pressureConfiguration(WorkflowInstance instance, boolean lock) {
+        try {
+            var type = configuration.requireActiveCatalog(instance.targetTypeId(), "WORKFLOW_TARGET_TYPE");
+            var purpose = configuration.requireActiveCatalog(instance.workflowPurposeId(), "WORKFLOW_PURPOSE");
+            if (!WorkflowOwnedTargetLookup.OPERATING_PRESSURE_TARGET.equals(type.code())
+                    || !WorkflowOwnedTargetLookup.OPERATING_PRESSURE_PURPOSE.equals(purpose.code())) return false;
+            return lock
+                    ? configuration.lockCurrentInstanceConfiguration(instance.definitionId(), instance.definitionVersion(),
+                            instance.targetModule(), instance.targetTypeId(), instance.workflowPurposeId())
+                    : configuration.currentInstanceConfiguration(instance.definitionId(), instance.definitionVersion(),
+                            instance.targetModule(), instance.targetTypeId(), instance.workflowPurposeId());
+        } catch (InvalidWorkflowValueException unavailableConfiguration) {
+            return false;
+        }
     }
 
     private Optional<Evidence> resolve(Request r, BaselineBinding baseline) {

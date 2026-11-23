@@ -23,6 +23,7 @@ import dz.sh.hidra.modules.topology.application.model.EngineeringBaselineDraftFa
 import dz.sh.hidra.modules.topology.application.port.in.EngineeringBaselineReadUseCase;
 import dz.sh.hidra.modules.topology.application.port.in.PipelineDossierReadUseCase;
 import dz.sh.hidra.modules.topology.application.port.in.PressureRestrictionDecisionUseCase;
+import dz.sh.hidra.modules.topology.application.port.in.QualifiedPressureWorkflowCandidateReadUseCase;
 import dz.sh.hidra.modules.topology.application.port.out.PressureRestrictionDecisionEvidencePort;
 import dz.sh.hidra.modules.topology.application.port.out.PressureRestrictionDecisionEvidencePort.Approval;
 import dz.sh.hidra.modules.topology.application.port.out.PressureRestrictionDecisionEvidencePort.Operation;
@@ -55,15 +56,59 @@ public final class PressureRestrictionDecisionApplicationService implements Pres
     private final PipelineDossierReadUseCase dossier;
     private final EngineeringBaselineReadUseCase baselines;
     private final ProtectedTransactionExecutor executor;
+    private final QualifiedPressureWorkflowCandidateReadUseCase candidateReads;
 
     public PressureRestrictionDecisionApplicationService(PressureRestrictionDecisionPort store,
             PressureRestrictionDecisionEvidencePort authority, PipelineDossierReadUseCase dossier,
-            EngineeringBaselineReadUseCase baselines, ProtectedTransactionExecutor executor) {
+            EngineeringBaselineReadUseCase baselines, ProtectedTransactionExecutor executor,
+            QualifiedPressureWorkflowCandidateReadUseCase candidateReads) {
         this.store = store;
         this.authority = authority;
         this.dossier = dossier;
         this.baselines = baselines;
         this.executor = executor;
+        this.candidateReads = candidateReads;
+    }
+
+    @Override
+    public ReviewProposal reviewProposal(UUID candidateId, String locator, String taskId) {
+        var request = store.requestByCandidate(candidateId).orElseThrow(this::unavailable);
+        var candidate = request.candidates().stream()
+                .filter(item -> item.id().equals(candidateId) && item.workflowLocator().equals(locator))
+                .findFirst().orElseThrow(this::unavailable);
+        String actor = require(candidate.scope(), Operation.REVIEW);
+        if (!candidateReads.permitsReview(candidateId, actor)
+                || !authority.assignedReviewTask(candidate, taskId, actor)
+                || !actor.equals(require(candidate.scope(), Operation.REVIEW))) throw unavailable();
+        return new ReviewProposal(request.request().requestId(), candidate);
+    }
+
+    @Override
+    public PublicationInputs publicationInputs(Target target) {
+        var request = authorizedRequest(target, Operation.PUBLISH);
+        var scope = request.request().scope();
+        String actor = require(scope, Operation.PUBLISH);
+        long version = request.request().expectedVersion();
+        var published = store.publication(target.requestId()).map(PressureRestrictionDecisionPort.StoredPublication::receipt);
+        var decisions = new ArrayList<DecisionReference>(request.candidates().size());
+        if (published.isEmpty()) {
+            if (!request.source().equals(source(scope, request.source().receiptId()))) throw unavailable();
+            if (store.currentStreamVersion(scope, request.source().pipelineSystemId()).orElseThrow(this::unavailable)
+                    != version) throw new Conflict();
+            for (var candidate : request.candidates()) {
+                var approval = authority.discoverApprovals(candidate).stream()
+                        .filter(item -> exact(candidate, reference(item), item)
+                                && authority.reviewerEligible(scope, item.reviewerId()))
+                        .findFirst();
+                if (approval.isEmpty()) {
+                    decisions.clear();
+                    break;
+                }
+                decisions.add(reference(approval.get()));
+            }
+        }
+        if (!actor.equals(require(scope, Operation.PUBLISH))) throw unavailable();
+        return new PublicationInputs(target.requestId(), version, decisions, published.orElse(null));
     }
 
     @Override

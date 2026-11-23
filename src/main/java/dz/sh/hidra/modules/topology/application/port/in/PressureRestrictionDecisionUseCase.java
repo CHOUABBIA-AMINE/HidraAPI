@@ -64,6 +64,15 @@ public interface PressureRestrictionDecisionUseCase {
         }
     }
 
+    record ReviewProposal(UUID requestId, dz.sh.hidra.modules.topology.domain.model.QualifiedPressureWorkflowCandidate candidate) { }
+
+    record PublicationInputs(UUID requestId, long expectedVersion, List<DecisionReference> decisions,
+                             Published publication) {
+        public PublicationInputs {
+            decisions = List.copyOf(decisions);
+        }
+    }
+
     record Candidate(UUID id, Kind kind, String workflowLocator) { }
 
     record RequestView(UUID requestId, long expectedVersion, Instant submittedAt,
@@ -93,6 +102,8 @@ public interface PressureRestrictionDecisionUseCase {
         }
     }
 
+    ReviewProposal reviewProposal(UUID candidateId, String locator, String taskId);
+    PublicationInputs publicationInputs(Target target);
     long currentStreamVersion(Scope scope);
     RequestView submit(PressureRestrictionDecisionRequest request);
     RequestView request(Target target);

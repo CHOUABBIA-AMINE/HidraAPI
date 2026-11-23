@@ -44,15 +44,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/topology/operating-constraints/pipelines/{pipelineId}/restriction-requests")
+@RequestMapping("/api/v1/topology/operating-constraints")
 public final class PressureRestrictionDecisionController {
+    private static final String REQUESTS = "/pipelines/{pipelineId}/restriction-requests";
     private final PressureRestrictionDecisionUseCase owner;
 
     public PressureRestrictionDecisionController(PressureRestrictionDecisionUseCase owner) {
         this.owner = owner;
     }
 
-    @PostMapping
+    @PostMapping(REQUESTS)
     @Operation(operationId = "submitPressureRestrictionRequest")
     public ResponseEntity<PressureRestrictionDecisionResponses.Request> submit(
             @PathVariable String pipelineId, @Valid @RequestBody PressureRestrictionDecisionRequests.Submission body) {
@@ -70,7 +71,7 @@ public final class PressureRestrictionDecisionController {
         return result(PressureRestrictionDecisionResponses.Request.from(owner.submit(submission)));
     }
 
-    @GetMapping("/stream")
+    @GetMapping(REQUESTS + "/stream")
     @Operation(operationId = "readPressureRestrictionStreamVersion",
             summary = "Read the current submission version for an exact restriction scope")
     public ResponseEntity<PressureRestrictionDecisionResponses.Stream> stream(@PathVariable String pipelineId,
@@ -81,7 +82,26 @@ public final class PressureRestrictionDecisionController {
                 scope.sectionId(), scope.conditionCode(), owner.currentStreamVersion(scope)));
     }
 
-    @GetMapping("/{requestId}")
+    // Reviewers receive candidate coordinates from the authorized Workflow instance.
+    @GetMapping("/pressure-restriction-review-proposals/{candidateId}")
+    @Operation(operationId = "readPressureRestrictionReviewProposal")
+    public ResponseEntity<PressureRestrictionDecisionResponses.ReviewProposal> reviewProposal(
+            @PathVariable UUID candidateId, @RequestParam String targetLocator,
+            @RequestParam String taskId) {
+        return result(PressureRestrictionDecisionResponses.ReviewProposal.from(
+                owner.reviewProposal(candidateId, targetLocator, taskId)));
+    }
+
+    @GetMapping(REQUESTS + "/{requestId}/publication-inputs")
+    @Operation(operationId = "readPressureRestrictionPublicationInputs")
+    public ResponseEntity<PressureRestrictionDecisionResponses.PublicationInputs> publicationInputs(
+            @PathVariable String pipelineId, @PathVariable UUID requestId, @RequestParam String companyPartyId,
+            @RequestParam(required = false) String sectionId) {
+        return result(PressureRestrictionDecisionResponses.PublicationInputs.from(
+                owner.publicationInputs(new Target(companyPartyId, pipelineId, sectionId, requestId))));
+    }
+
+    @GetMapping(REQUESTS + "/{requestId}")
     @Operation(operationId = "getPressureRestrictionRequest")
     public ResponseEntity<PressureRestrictionDecisionResponses.Request> request(
             @PathVariable String pipelineId, @PathVariable UUID requestId, @RequestParam String companyPartyId,
@@ -90,7 +110,7 @@ public final class PressureRestrictionDecisionController {
         return result(PressureRestrictionDecisionResponses.Request.from(owner.request(target)));
     }
 
-    @PostMapping("/{requestId}/publication")
+    @PostMapping(REQUESTS + "/{requestId}/publication")
     @Operation(operationId = "publishPressureRestrictionRequest")
     public ResponseEntity<PressureRestrictionDecisionResponses.Publication> publish(
             @PathVariable String pipelineId, @PathVariable UUID requestId,
@@ -102,7 +122,7 @@ public final class PressureRestrictionDecisionController {
         return result(PressureRestrictionDecisionResponses.Publication.from(owner.publish(publication)));
     }
 
-    @GetMapping("/{requestId}/evidence")
+    @GetMapping(REQUESTS + "/{requestId}/evidence")
     @Operation(operationId = "getPressureRestrictionDecisionEvidence")
     public ResponseEntity<PressureRestrictionDecisionResponses.Evidence> evidence(
             @PathVariable String pipelineId, @PathVariable UUID requestId, @RequestParam String companyPartyId,

@@ -21,8 +21,12 @@ package dz.sh.hidra.modules.workflow.infrastructure.persistence.adapter;
 
 import dz.sh.hidra.modules.workflow.application.port.out.WorkflowActionRepositoryPort;
 import dz.sh.hidra.modules.workflow.domain.model.WorkflowAction;
+import dz.sh.hidra.modules.workflow.domain.value.WorkflowActionType;
+import dz.sh.hidra.modules.workflow.domain.value.WorkflowInstanceStatus;
+import dz.sh.hidra.modules.workflow.infrastructure.persistence.entity.WorkflowActionJpaEntity;
 import dz.sh.hidra.modules.workflow.infrastructure.persistence.mapper.WorkflowPersistenceMapper;
 import dz.sh.hidra.modules.workflow.infrastructure.persistence.repository.WorkflowActionJpaRepository;
+import java.util.List;
 import java.util.Objects;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
@@ -59,6 +63,24 @@ public class JpaWorkflowActionRepositoryAdapter implements WorkflowActionReposit
     @Override
     public Optional<WorkflowAction> findById(String id) {
         return repository.findById(id).map(WorkflowPersistenceMapper::toDomain);
+    }
+
+    @Override
+    public List<WorkflowAction> findPressureApprovals(String candidateId, String submitterId) {
+        return em.createQuery("""
+                SELECT a FROM WorkflowActionJpaEntity a, WorkflowInstanceJpaEntity i
+                WHERE a.instanceId = i.id AND i.targetModule = 'topology'
+                  AND i.targetId = :candidate AND i.targetCodeSnapshot = :locator
+                  AND i.startedByActorId = :submitter AND i.status = :completed
+                  AND a.actionType = :approve AND a.taskId IS NOT NULL
+                ORDER BY a.actedAt, a.id
+                """, WorkflowActionJpaEntity.class)
+                .setParameter("candidate", candidateId)
+                .setParameter("locator", "t36-v1:" + candidateId)
+                .setParameter("submitter", submitterId)
+                .setParameter("completed", WorkflowInstanceStatus.COMPLETED)
+                .setParameter("approve", WorkflowActionType.APPROVE)
+                .getResultList().stream().map(WorkflowPersistenceMapper::toDomain).toList();
     }
 
     @Override

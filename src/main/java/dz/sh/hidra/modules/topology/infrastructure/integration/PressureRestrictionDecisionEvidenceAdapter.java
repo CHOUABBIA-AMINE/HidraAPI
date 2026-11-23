@@ -27,6 +27,7 @@ import dz.sh.hidra.modules.topology.domain.model.QualifiedPressureRestriction.Sc
 import dz.sh.hidra.modules.topology.domain.model.QualifiedPressureWorkflowCandidate;
 import dz.sh.hidra.modules.workflow.application.contract.target.RevisionApprovalEvidenceContract;
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.security.access.AccessDeniedException;
@@ -58,12 +59,32 @@ public class PressureRestrictionDecisionEvidenceAdapter implements PressureRestr
     }
 
     @Override
+    public boolean assignedReviewTask(QualifiedPressureWorkflowCandidate candidate, String taskId, String actor) {
+        return workflow.getObject().pressureReviewTask(pressureCandidate(candidate), taskId, actor);
+    }
+
+    @Override
+    public List<Approval> discoverApprovals(QualifiedPressureWorkflowCandidate candidate) {
+        return workflow.getObject().discoverPressureApprovals(pressureCandidate(candidate)).stream()
+                .map(evidence -> approval(candidate, evidence)).toList();
+    }
+
+    private static RevisionApprovalEvidenceContract.PressureCandidate pressureCandidate(QualifiedPressureWorkflowCandidate candidate) {
+        return new RevisionApprovalEvidenceContract.PressureCandidate(candidate.id(), candidate.submittedBy(),
+                candidate.createdAt(), Instant.now());
+    }
+
+    @Override
     public Optional<Approval> finalApproval(QualifiedPressureWorkflowCandidate candidate, DecisionReference reference) {
         return workflow.getObject().resolvePressure(new RevisionApprovalEvidenceContract.PressureRequest(
                 candidate.id(), reference.instanceId(), reference.taskId(), reference.actionId(),
                 candidate.submittedBy(), candidate.createdAt(), Instant.now()))
-                .map(evidence -> new Approval(candidate.id(), candidate.workflowLocator(), evidence.instanceId(),
-                        evidence.taskId(), evidence.actionId(), candidate.submittedBy(), evidence.actorId(), evidence.actedAt()));
+                .map(evidence -> approval(candidate, evidence));
+    }
+
+    private static Approval approval(QualifiedPressureWorkflowCandidate candidate, RevisionApprovalEvidenceContract.Evidence evidence) {
+        return new Approval(candidate.id(), candidate.workflowLocator(), evidence.instanceId(),
+                evidence.taskId(), evidence.actionId(), candidate.submittedBy(), evidence.actorId(), evidence.actedAt());
     }
 
     @Override

@@ -9,7 +9,7 @@
 | Status | ACTIVE |
 | Authority | Sole task register and execution source for HidraAPI |
 | Owner adoption | 2026-11-10 |
-| Active task selection | T59 COMPLETED for the UXR-26 pressure restriction consumer inputs. T40 COMPLETED for release-alignment **preparation only**, with green original exact-SHA CI/Docs and green repair exact-SHA CI/Docs/audit (CI #1363 serial oracle). The pre-existing published v0.7.0 tag/Release at earlier SHA is **not** release-qualified by the later audit; formal release reconciliation remains open under AGENTS.md §19. Circle 2 now has nine PLANNED packages (T41,T43,T44,T46,T48,T50,T52,T55,T56) and nine consolidated SKIPPED IDs; none selected. |
+| Active task selection | T60 IN PROGRESS for the UXR-26 reviewer and publisher handoff. T59 COMPLETED for the UXR-26 pressure restriction consumer inputs. T40 COMPLETED for release-alignment **preparation only**, with green original exact-SHA CI/Docs and green repair exact-SHA CI/Docs/audit (CI #1363 serial oracle). The pre-existing published v0.7.0 tag/Release at earlier SHA is **not** release-qualified by the later audit; formal release reconciliation remains open under AGENTS.md §19. Circle 2 now has nine PLANNED packages (T41,T43,T44,T46,T48,T50,T52,T55,T56) and nine consolidated SKIPPED IDs; none selected. |
 
 The task register controls scope, dependencies, status and acceptance. Existing technical policy and verified implementation evidence retain their applicability. Task status advances only with recorded evidence. The initial status for each task is PLANNED. The first candidate is T01.
 
@@ -8707,3 +8707,25 @@ The registered reconciliation commit `docs(topology): reconcile pressure restric
 **T59 COMPLETED for the registered development software scope.** The implementation commit is `7ac83393bd81fba7bbaea56788f46f57b294953f`. The reconciled backend source `6c1b854dc61b6bc06ff276ddccabdc2608785d6d` passed [HidraAPI CI #1365 attempt 1](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/45196137084/attempts/1), the [Full Verification Gate](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/45196137084/job/137776139656), and [Documentation Validation #1220](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/45196136991) on that same SHA. All fourteen PostgreSQL shards, Java 21 unit and architecture checks, and the strict OpenAPI and physical dictionary comparisons passed. The sealed report for the signed GZ2 journey records one test with zero failures, errors or skips. It covers the exact-scope stream version, candidate-bound Workflow discovery, denied lookups and stale submission conflict.
 
 **Consumer pin.** The [sealed evidence bundle](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/45196137084/artifacts/14827987978) has ZIP SHA-256 `007fd55a441ece4efcfb065ab82763777e118db5ed18e30f197c6ae8c31dead5`. Its runtime JSON matches the [standalone OpenAPI artifact](https://github.com/CHOUABBIA-AMINE/HidraAPI/actions/runs/45196137084/artifacts/14828941417) byte for byte, with raw SHA-256 `91a58ec95b653c4742b9fe1ef95354ecc27ff80db21229ad7f5b2fa3c10ebc73`. The repository snapshot validator confirmed runtime equality. HidraWEB UXR-26 is the next consumer stage. Its independent browser acceptance remains separate. This roadmap closeout uses `docs(roadmap): accept T59 pressure restriction consumer inputs`.
+
+### T60 — Complete the UXR-26 reviewer and publisher handoff
+
+| Task | Owner | Depends on | Deliverable | Pass condition | Status |
+|---|---|---|---|---|---|
+| **T60 · Expose scoped restriction review and publication inputs** | Topology and Workflow | T38, T39, T59 | Immutable reviewer proposal and publisher decision references | Signed GZ2 author/reviewer/publisher journey and verified runtime OpenAPI on an accepted SHA | IN PROGRESS |
+
+Owner-approved UXR-26 backend follow-up. Topology owns immutable proposal terms, source provenance, request version and publication. Workflow owns task assignment and exact final approval evidence. Both new reads are advisory to the existing guarded commands. Publication still checks the current locked version, approvals, reviewer eligibility and Audit under existing transaction semantics.
+
+Implementation commit: `feat(topology): expose restriction review and publication inputs`.
+
+| UPDATE | Exact scope |
+|---|---|
+| `doc/roadmap/ROADMAP.md` | Register and track T60. |
+| `src/main/java/dz/sh/hidra/modules/topology/application/port/in/PressureRestrictionDecisionUseCase.java`, `src/main/java/dz/sh/hidra/modules/topology/application/port/out/PressureRestrictionDecisionEvidencePort.java`, `src/main/java/dz/sh/hidra/modules/topology/application/service/PressureRestrictionDecisionApplicationService.java`, `src/main/java/dz/sh/hidra/modules/topology/infrastructure/integration/PressureRestrictionDecisionEvidenceAdapter.java` | Scope and revalidate the exact candidate with the current assigned independent reviewer and the exact request with the authorized publisher. |
+| `src/main/java/dz/sh/hidra/modules/topology/api/rest/controller/PressureRestrictionDecisionController.java`, `src/main/java/dz/sh/hidra/modules/topology/api/rest/response/PressureRestrictionDecisionResponses.java` | Add protected GETs for candidate review and publication inputs, with named DTOs and existing ordinary route permission. |
+| `src/main/java/dz/sh/hidra/modules/workflow/application/contract/target/RevisionApprovalEvidenceContract.java`, `src/main/java/dz/sh/hidra/modules/workflow/application/service/RevisionApprovalEvidenceQueryService.java`, `src/main/java/dz/sh/hidra/modules/workflow/application/port/out/WorkflowActionRepositoryPort.java`, `src/main/java/dz/sh/hidra/modules/workflow/infrastructure/persistence/adapter/JpaWorkflowActionRepositoryAdapter.java` | Resolve exact reviewer task and read eligible approval references with existing Workflow invariants, preserving command-time locks. |
+| `src/test/java/dz/sh/hidra/qualification/Gz2SignedWorkflowNativeHttpPostgresIntegrationTest.java`, `.github/ci-test-inventory.json` | Extend the enrolled fresh-PostgreSQL signed lifecycle to read terms before approval and acquire references as a separate publisher. Retain wrong-scope, revocation, stale rejection, replacement and withdrawal, and evidence readback. |
+
+The generated runtime artifact must be reconciled under `docs(topology): reconcile restriction review and publication contracts`, followed by exact-SHA Full Verification Gate. No migration is needed. UXR-26 browser acceptance follows the backend gate.
+
+The reviewer GET uses the candidate ID, exact Workflow locator and assigned task ID. The publisher GET returns the submitted stream version and all candidate references together once eligible, an empty list while approvals are pending, or the existing publication receipt after publication. A stale unpublished request returns conflict.

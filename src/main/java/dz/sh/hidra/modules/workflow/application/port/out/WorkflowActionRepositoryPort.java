@@ -20,6 +20,7 @@
 package dz.sh.hidra.modules.workflow.application.port.out;
 
 import dz.sh.hidra.modules.workflow.domain.model.WorkflowAction;
+import java.util.List;
 import java.util.Optional;
 
 public interface WorkflowActionRepositoryPort {
@@ -27,6 +28,8 @@ public interface WorkflowActionRepositoryPort {
     WorkflowAction save(WorkflowAction model);
 
     Optional<WorkflowAction> findById(String id);
+
+    List<WorkflowAction> findPressureApprovals(String candidateId, String submitterId);
 
     long nextSequence(String instanceId);
 }

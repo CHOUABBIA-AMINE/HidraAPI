@@ -7,7 +7,7 @@
  *
  * @Name        : JpaResponsibilityAssignmentRepositoryAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-27
+ * @UpdatedOn   : 2026-11-24
  *
  * @Type        : Class
  * @Layer       : Infrastructure
@@ -70,6 +70,12 @@ public class JpaResponsibilityAssignmentRepositoryAdapter implements Responsibil
         return repository.findAll().stream()
                 .map(ResponsibilityAssignmentPersistenceMapper::toDomain)
                 .toList();
+    }
+
+    @Override
+    public List<ResponsibilityAssignment> findCurrentCandidatesForEmployee(String employeeId, java.time.Instant at) {
+        return repository.findCurrentCandidatesForEmployee(employeeId, at).stream()
+                .map(ResponsibilityAssignmentPersistenceMapper::toDomain).toList();
     }
 
     @Override

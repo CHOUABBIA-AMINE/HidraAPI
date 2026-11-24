@@ -7,7 +7,7 @@
  *
  * @Name        : ResponsibilityAssignmentRepositoryPort
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-27
+ * @UpdatedOn   : 2026-11-24
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -52,6 +52,12 @@ public interface ResponsibilityAssignmentRepositoryPort {
      * entities and does not authorize mutation or repair.</p>
      */
     default List<ResponsibilityAssignment> findAll() {
+        return List.of();
+    }
+
+    /** Employee-specific direct or unit-held candidates; the owner revalidates current membership. */
+    default List<ResponsibilityAssignment> findCurrentCandidatesForEmployee(
+            String employeeId, java.time.Instant at) {
         return List.of();
     }
 

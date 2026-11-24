@@ -7,7 +7,7 @@
  *
  * @Name        : RegionalAccessPostgresIntegrationTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-20
+ * @UpdatedOn   : 2026-11-24
  *
  * @Type        : Class
  * @Layer       : Test
@@ -63,6 +63,8 @@ class RegionalAccessPostgresIntegrationTest {
             f.permit(f.foreign, READ, "TOPOLOGY_REGIONAL_RESOURCE",
                     "PIPELINE_SYSTEM", foreignSystem);
             explicitlyDeny(f, f.author, f.pipeline);
+            // An ordinary route grant must not confer administrative wildcard authority.
+            f.permit(f.reader, "organization:responsibilities:read", "ORGANIZATION_RESPONSIBILITIES", "GLOBAL", null);
 
             try (var client = f.start()) {
                 String reader = client.login(f.reader);
@@ -103,7 +105,39 @@ class RegionalAccessPostgresIntegrationTest {
                 assertEquals(401, status(client, system, null));
                 assertEquals(403, status(client, system, noRoute));
 
+                // T61: exact current company-scoped discovery, no caller-selected employee.
+                String scopes = "/api/v1/identity/me/regional-access/scopes?companyPartyId=" + f.company;
+                String foreignScopes = "/api/v1/identity/me/regional-access/scopes?companyPartyId=" + f.foreignCompany;
+                Long registryId = f.sql.queryForObject(
+                        "SELECT id FROM hidra_org_operational_scope WHERE scope_type='PIPELINE_SYSTEM' AND target_id=?",
+                        Long.class, f.pipeline);
+                var discovered = client.get(scopes, reader);
+                assertTrue(discovered.isArray());
+                assertEquals(1, discovered.size());
+                var own = discovered.get(0);
+                assertEquals(3, own.size());
+                assertEquals(registryId.longValue(), own.path("id").asLong());
+                assertEquals("PIPELINE_SYSTEM", own.path("type").asText());
+                assertEquals(f.pipeline, own.path("targetId").asText());
+                assertTrue(client.send("GET", scopes, reader, null).headers()
+                        .firstValue("cache-control").orElse("").contains("no-store"));
+                assertTrue(client.get(scopes, foreign).isEmpty());
+                assertTrue(client.get(foreignScopes, reader).isEmpty());
+                assertEquals(foreignSystem, client.get(foreignScopes, foreign).get(0).path("targetId").asText());
+                for (String actor : List.of(expired, denied, unlinked)) {
+                    assertTrue(client.get(scopes, actor).isEmpty());
+                }
+                assertEquals(401, status(client, scopes, null));
+                assertEquals(403, status(client, scopes, noRoute));
+                String foreignEmployee = f.sql.queryForObject(
+                        "SELECT employee_reference_id FROM hidra_identity_user WHERE id=?", String.class, f.foreign);
+                assertEquals(discovered, client.get(scopes + "&employeeId=" + foreignEmployee, reader),
+                        "A client-supplied employee identifier cannot select another employee");
+                assertEquals(403, status(client, "/api/v1/organization/responsibilities?assigneeType=EMPLOYEE&assigneeId="
+                        + foreignEmployee, reader));
+
                 assertTrue(client.get(system, revoked).path("permitted").asBoolean());
+                assertEquals(1, client.get(scopes, revoked).size());
                 f.sql.update("""
                         UPDATE hidra_identity_user_permission_grant SET status='REVOKED',revoked_at=now()
                         WHERE user_id=? AND scope_type='PIPELINE_SYSTEM' AND scope_reference_id=?
@@ -111,6 +145,7 @@ class RegionalAccessPostgresIntegrationTest {
                         """, f.revoked, f.pipeline, READ);
                 assertEquals(404, status(client, system, revoked),
                         "A signed bearer issued before revocation never preserves G1 access");
+                assertTrue(client.get(scopes, revoked).isEmpty());
 
                 // An active physical association to another system makes the facility
                 // and dual-linked equipment ambiguous; the system read is unaffected.
@@ -122,6 +157,16 @@ class RegionalAccessPostgresIntegrationTest {
                 assertEquals(404, status(client, path("FACILITY", f.asset, f.company), reader));
                 assertEquals(404, status(client, path("EQUIPMENT", equipment, f.company), reader));
                 assertTrue(client.get(system, reader).path("permitted").asBoolean());
+                // Same signed token and unchanged Identity grant: ended Organization
+                // responsibility independently removes discovery and T33 resource admission.
+                String readerEmployee = f.sql.queryForObject(
+                        "SELECT employee_reference_id FROM hidra_identity_user WHERE id=?", String.class, f.reader);
+                assertEquals(1, f.sql.update("""
+                        UPDATE hidra_org_responsibility_assignment SET status='ENDED', valid_to=now(),updated_at=now()
+                        WHERE assignee_type='EMPLOYEE' AND assignee_id=? AND scope_id=?
+                        """, readerEmployee, registryId));
+                assertTrue(client.get(scopes, reader).isEmpty());
+                assertEquals(404, status(client, system, reader));
             }
         }
     }

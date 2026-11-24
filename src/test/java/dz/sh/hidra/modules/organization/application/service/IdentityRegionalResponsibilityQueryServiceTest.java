@@ -7,7 +7,7 @@
  *
  * @Name        : IdentityRegionalResponsibilityQueryServiceTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-20
+ * @UpdatedOn   : 2026-11-24
  *
  * @Type        : Class
  * @Layer       : Test
@@ -84,6 +84,25 @@ class IdentityRegionalResponsibilityQueryServiceTest {
         assertTrue(service.eligibleScopes("u", "emp", List.of(request), NOW).isEmpty());
         when(members.eligibleMember("emp", "unit", NOW)).thenReturn(true);
         assertEquals(List.of(request), service.eligibleScopes("u", "emp", List.of(request), NOW));
+    }
+
+    @Test void currentDiscoveryUsesOnlyBoundEmployeeAndEffectivePhysicalAssignments() {
+        var direct = responsibility(ResponsibilityAssigneeType.EMPLOYEE, "emp", AssignmentStatus.ACTIVE, NOW.plusSeconds(10));
+        var unit = responsibility(ResponsibilityAssigneeType.ORGANIZATION_UNIT, "unit", AssignmentStatus.ACTIVE, NOW.plusSeconds(10));
+        var expired = responsibility(ResponsibilityAssigneeType.EMPLOYEE, "emp", AssignmentStatus.ACTIVE, NOW);
+        var ended = responsibility(ResponsibilityAssigneeType.EMPLOYEE, "emp", AssignmentStatus.ENDED, NOW.plusSeconds(10));
+        var foreign = responsibility(ResponsibilityAssigneeType.EMPLOYEE, "other", AssignmentStatus.ACTIVE, NOW.plusSeconds(10));
+        var expected = new IdentityRegionalResponsibilityContract.Candidate(17L, "PIPELINE_SYSTEM", "sys");
+        when(registry.findById(17L)).thenReturn(Optional.of(new OperationalScope(17L, OperationalScopeType.PIPELINE_SYSTEM, "sys")));
+        when(assignments.findCurrentCandidatesForEmployee("emp", NOW)).thenReturn(List.of(expired, ended, foreign, unit));
+        assertTrue(service.currentCandidates("u", "emp", NOW).isEmpty());
+        when(members.eligibleMember("emp", "unit", NOW)).thenReturn(true);
+        assertEquals(List.of(expected), service.currentCandidates("u", "emp", NOW));
+        when(assignments.findCurrentCandidatesForEmployee("emp", NOW)).thenReturn(List.of(unit, direct));
+        assertEquals(List.of(expected), service.currentCandidates("u", "emp", NOW));
+        assertTrue(service.currentCandidates("other", "emp", NOW).isEmpty());
+        when(registry.findById(17L)).thenReturn(Optional.of(new OperationalScope(17L, OperationalScopeType.GLOBAL, null)));
+        assertTrue(service.currentCandidates("u", "emp", NOW).isEmpty());
     }
 
     @Test void suspendedOrUnsupportedResponsibilityDoesNotGrantRegionalRead() {

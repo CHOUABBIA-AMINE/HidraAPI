@@ -7,7 +7,7 @@
  *
  * @Name        : IdentityRegionalResponsibilityContract
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-20
+ * @UpdatedOn   : 2026-11-24
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -31,4 +31,17 @@ public interface IdentityRegionalResponsibilityContract {
         }
     }
     List<Scope> eligibleScopes(String userId, String employeeId, List<Scope> ancestry, Instant at);
+
+    /** Internal candidates only; Identity must independently establish company/resource permission. */
+    record Candidate(long id, String type, String targetId) {
+        public Candidate {
+            if (id <= 0 || type == null || type.isBlank() || targetId == null || targetId.isBlank())
+                throw new IllegalArgumentException("Registered physical scope required");
+        }
+    }
+
+    /** A legacy implementation cannot grant discovery by omission. */
+    default List<Candidate> currentCandidates(String userId, String employeeId, Instant at) {
+        return List.of();
+    }
 }

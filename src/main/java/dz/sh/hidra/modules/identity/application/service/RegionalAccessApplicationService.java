@@ -7,7 +7,7 @@
  *
  * @Name        : RegionalAccessApplicationService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-20
+ * @UpdatedOn   : 2026-11-24
  *
  * @Type        : Class
  * @Layer       : Application
@@ -124,6 +124,29 @@ public class RegionalAccessApplicationService
             // No exception reason or owner existence crosses this protected read boundary.
             return false;
         }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public List<ScopeView> currentScopes(String companyPartyId) {
+        // Same validation as the single-resource T33 decision.
+        new Query(ResourceKind.PIPELINE_SYSTEM, "validation", companyPartyId);
+        var actor = actors.currentActor();
+        if (actor.isEmpty()) return List.of();
+        String userId = actor.orElseThrow().userId();
+        var principal = principals.principal(userId, List.of());
+        if (!userId.equals(principal.userId()) || principal.employeeReferenceId() == null
+                || principal.employeeReferenceId().isBlank()) return List.of();
+        var result = new ArrayList<ScopeView>();
+        for (var candidate : responsibilities.currentCandidates(
+                userId, principal.employeeReferenceId(), clock.instant())) {
+            var kind = ResourceKind.valueOf(candidate.type());
+            // Candidate membership is not authority. Reuse the complete T33 check.
+            if (permitted(new Query(kind, candidate.targetId(), companyPartyId))) {
+                result.add(new ScopeView(candidate.id(), kind, candidate.targetId()));
+            }
+        }
+        return List.copyOf(result);
     }
 
     @Override

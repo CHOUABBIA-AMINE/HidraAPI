@@ -7,7 +7,7 @@
  *
  * @Name        : RegionalAccessController
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-20
+ * @UpdatedOn   : 2026-11-24
  *
  * @Type        : Class
  * @Layer       : API
@@ -20,12 +20,16 @@
 package dz.sh.hidra.modules.identity.api.rest.controller;
 
 import dz.sh.hidra.modules.identity.api.rest.response.RegionalAccessResponse;
+import dz.sh.hidra.modules.identity.api.rest.response.RegionalOperationalScopeResponse;
 import dz.sh.hidra.modules.identity.application.port.in.ResolveRegionalAccessUseCase;
 import dz.sh.hidra.modules.identity.application.port.in.ResolveRegionalAccessUseCase.Query;
 import dz.sh.hidra.modules.identity.application.port.in.ResolveRegionalAccessUseCase.ResourceKind;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.CacheControl;
+import org.springframework.http.ResponseEntity;
+import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,6 +47,19 @@ public final class RegionalAccessController {
     public RegionalAccessController(ResolveRegionalAccessUseCase access) {
         this.access = Objects.requireNonNull(access, "regional access");
     }
+    @GetMapping("/scopes")
+    @Operation(summary = "List current employee operational scopes qualified for the exact company")
+    public ResponseEntity<List<RegionalOperationalScopeResponse>> currentScopes(@RequestParam String companyPartyId) {
+        try {
+            var result = access.currentScopes(companyPartyId).stream()
+                    .map(scope -> new RegionalOperationalScopeResponse(scope.id(), scope.type().name(), scope.targetId()))
+                    .toList();
+            return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(result);
+        } catch (RuntimeException unavailable) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+    }
+
     @GetMapping("/{resourceKind}/{resourceId}")
     @Operation(summary = "Resolve current regional employee access to a specific Topology resource")
     public RegionalAccessResponse current(@PathVariable ResourceKind resourceKind,

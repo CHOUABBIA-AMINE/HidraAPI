@@ -7,7 +7,7 @@
  *
  * @Name        : ResponsibilityAssignmentJpaRepository
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-09-27
+ * @UpdatedOn   : 2026-11-24
  *
  * @Type        : Interface
  * @Layer       : Infrastructure
@@ -44,6 +44,23 @@ public interface ResponsibilityAssignmentJpaRepository
     Optional<ResponsibilityAssignmentJpaEntity> findByIdForUpdate(@Param("id") String id);
 
     List<ResponsibilityAssignmentJpaEntity> findByScopeId(Long scopeId);
+
+    // Never scan or export the administrative responsibility directory.
+    @Query(value = """
+            SELECT r.* FROM public.hidra_org_responsibility_assignment r
+            WHERE r.status = 'ACTIVE'
+              AND r.responsibility_type IN ('OWNER','ACCOUNTABLE','RESPONSIBLE')
+              AND r.valid_from <= :at AND (r.valid_to IS NULL OR r.valid_to > :at)
+              AND ((r.assignee_type = 'EMPLOYEE' AND r.assignee_id = :employeeId)
+                OR (r.assignee_type = 'ORGANIZATION_UNIT' AND EXISTS (
+                    SELECT 1 FROM public.hidra_org_employee_assignment a
+                    WHERE a.employee_id = :employeeId AND a.organization_unit_id = r.assignee_id
+                      AND a.status = 'ACTIVE'
+                      AND a.valid_from <= :at AND (a.valid_to IS NULL OR a.valid_to > :at))))
+            ORDER BY r.scope_id, r.id
+            """, nativeQuery = true)
+    List<ResponsibilityAssignmentJpaEntity> findCurrentCandidatesForEmployee(
+            @Param("employeeId") String employeeId, @Param("at") java.time.Instant at);
 
     List<ResponsibilityAssignmentJpaEntity> findByAssigneeTypeAndAssigneeId(
             ResponsibilityAssigneeType assigneeType,

@@ -7,7 +7,7 @@
  *
  * @Name        : ResolveRegionalAccessUseCase
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-20
+ * @UpdatedOn   : 2026-11-24
  *
  * @Type        : Interface
  * @Layer       : Application
@@ -38,4 +38,12 @@ public interface ResolveRegionalAccessUseCase {
         }
     }
     boolean permitted(Query query);
+
+    /** Minimal owner-qualified registry coordinates, not an authorization grant. */
+    record ScopeView(long id, ResourceKind type, String targetId) { }
+
+    /** Resolve only the current authenticated employee for the requested company. */
+    default java.util.List<ScopeView> currentScopes(String companyPartyId) {
+        return java.util.List.of();
+    }
 }

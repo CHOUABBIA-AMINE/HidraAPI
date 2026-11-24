@@ -7,7 +7,7 @@
  *
  * @Name        : IdentityRegionalResponsibilityQueryService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-20
+ * @UpdatedOn   : 2026-11-24
  *
  * @Type        : Class
  * @Layer       : Application
@@ -34,6 +34,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.TreeMap;
 import java.util.Objects;
 import org.springframework.stereotype.Service;
 
@@ -57,13 +58,7 @@ public final class IdentityRegionalResponsibilityQueryService implements Identit
 
     @Override
     public List<Scope> eligibleScopes(String userId, String employeeId, List<Scope> ancestry, Instant at) {
-        if (userId == null || userId.isBlank() || employeeId == null || employeeId.isBlank()
-                || ancestry == null || at == null) return List.of();
-        var employee = employees.findById(employeeId);
-        if (employee.isEmpty() || employee.get().status() != EmployeeStatus.ACTIVE
-                || (employee.get().terminatedAt() != null && !at.isBefore(employee.get().terminatedAt()))
-                || (employee.get().identityUserReference() != null
-                    && !userId.equals(employee.get().identityUserReference()))) return List.of();
+        if (ancestry == null || !currentEmployee(userId, employeeId, at)) return List.of();
         var admitted = new LinkedHashSet<Scope>();
         for (Scope request : ancestry) {
             if (request == null) continue;
@@ -77,21 +72,51 @@ public final class IdentityRegionalResponsibilityQueryService implements Identit
             var scope = registry.findByTypeAndTargetId(type, request.targetId());
             if (scope.isEmpty()) continue;
             for (ResponsibilityAssignment a : responsibilities.findByScopeId(scope.get().id())) {
-                if (a.scopeId() == null || !a.scopeId().equals(scope.get().id())
-                        || a.status() != AssignmentStatus.ACTIVE || at.isBefore(a.validFrom())
-                        || (a.validTo() != null && !at.isBefore(a.validTo()))
-                        || !qualifying(a.responsibilityType())) continue;
-                boolean direct = a.assigneeType() == ResponsibilityAssigneeType.EMPLOYEE
-                        && employeeId.equals(a.assigneeId());
-                boolean unit = a.assigneeType() == ResponsibilityAssigneeType.ORGANIZATION_UNIT
-                        && memberships.eligibleMember(employeeId, a.assigneeId(), at);
-                if (direct || unit) {
+                if (scope.get().id().equals(a.scopeId()) && currentAssignment(a, employeeId, at)) {
                     admitted.add(request);
                     break;
                 }
             }
         }
         return new ArrayList<>(admitted);
+    }
+
+    @Override
+    public List<Candidate> currentCandidates(String userId, String employeeId, Instant at) {
+        if (!currentEmployee(userId, employeeId, at)) return List.of();
+        var result = new TreeMap<Long, Candidate>();
+        for (var assignment : responsibilities.findCurrentCandidatesForEmployee(employeeId, at)) {
+            if (!currentAssignment(assignment, employeeId, at)) continue;
+            var registered = registry.findById(assignment.scopeId());
+            if (registered.isEmpty()) continue;
+            var scope = registered.orElseThrow();
+            if (!assignment.scopeId().equals(scope.id())) continue;
+            if (scope.type() != OperationalScopeType.PIPELINE_SYSTEM
+                    && scope.type() != OperationalScopeType.PIPELINE
+                    && scope.type() != OperationalScopeType.FACILITY
+                    && scope.type() != OperationalScopeType.EQUIPMENT) continue;
+            result.put(scope.id(), new Candidate(scope.id(), scope.type().name(), scope.targetId()));
+        }
+        return List.copyOf(result.values());
+    }
+
+    private boolean currentEmployee(String userId, String employeeId, Instant at) {
+        if (userId == null || userId.isBlank() || employeeId == null || employeeId.isBlank()
+                || at == null) return false;
+        var employee = employees.findById(employeeId);
+        return employee.isPresent() && employee.get().status() == EmployeeStatus.ACTIVE
+                && (employee.get().terminatedAt() == null || at.isBefore(employee.get().terminatedAt()))
+                && (employee.get().identityUserReference() == null
+                    || userId.equals(employee.get().identityUserReference()));
+    }
+
+    private boolean currentAssignment(ResponsibilityAssignment a, String employeeId, Instant at) {
+        if (a.status() != AssignmentStatus.ACTIVE || at.isBefore(a.validFrom())
+                || (a.validTo() != null && !at.isBefore(a.validTo()))
+                || !qualifying(a.responsibilityType())) return false;
+        return (a.assigneeType() == ResponsibilityAssigneeType.EMPLOYEE && employeeId.equals(a.assigneeId()))
+                || (a.assigneeType() == ResponsibilityAssigneeType.ORGANIZATION_UNIT
+                    && memberships.eligibleMember(employeeId, a.assigneeId(), at));
     }
 
     private static boolean qualifying(ResponsibilityType type) {

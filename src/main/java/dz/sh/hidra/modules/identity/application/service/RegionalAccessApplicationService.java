@@ -130,7 +130,7 @@ public class RegionalAccessApplicationService
     @Transactional(rollbackFor = Exception.class)
     public List<ScopeView> currentScopes(String companyPartyId) {
         // Same validation as the single-resource T33 decision.
-        new Query(ResourceKind.PIPELINE_SYSTEM, "validation", companyPartyId);
+        new Query(ResolveRegionalAccessUseCase.ResourceKind.PIPELINE_SYSTEM, "validation", companyPartyId);
         var actor = actors.currentActor();
         if (actor.isEmpty()) return List.of();
         String userId = actor.orElseThrow().userId();
@@ -140,7 +140,7 @@ public class RegionalAccessApplicationService
         var result = new ArrayList<ScopeView>();
         for (var candidate : responsibilities.currentCandidates(
                 userId, principal.employeeReferenceId(), clock.instant())) {
-            var kind = ResourceKind.valueOf(candidate.type());
+            var kind = ResolveRegionalAccessUseCase.ResourceKind.valueOf(candidate.type());
             // Candidate membership is not authority. Reuse the complete T33 check.
             if (permitted(new Query(kind, candidate.targetId(), companyPartyId))) {
                 result.add(new ScopeView(candidate.id(), kind, candidate.targetId()));

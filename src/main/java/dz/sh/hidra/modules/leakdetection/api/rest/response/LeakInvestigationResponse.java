@@ -5,7 +5,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  * @Name        : LeakInvestigationResponse
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-15
+ * @UpdatedOn   : 2026-11-25
  * @Type        : Class
  * @Layer       : API
  * @Module      : leakdetection
@@ -14,12 +14,14 @@
  */
 package dz.sh.hidra.modules.leakdetection.api.rest.response;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import dz.sh.hidra.modules.leakdetection.application.port.in.LeakInvestigationUseCase;
 import java.time.Instant;
 import java.util.List;
 
 public final class LeakInvestigationResponse {
     private LeakInvestigationResponse() {}
+    @Schema(name = "LeakInvestigationReceipt")
     public record Receipt(String caseId,String eventId,String operation,long version,
             String investigationState,String actorId,Instant recordedAt,boolean replayed) {
         public static Receipt from(LeakInvestigationUseCase.Receipt v) {
@@ -27,6 +29,7 @@ public final class LeakInvestigationResponse {
                     v.investigationState(),v.actorId(),v.recordedAt(),v.replayed());
         }
     }
+    @Schema(name = "LeakInvestigationEvent")
     public record Event(String id,long version,String operation,String actorId,
             String requestId,String referenceType,String referenceId,String direction,
             String detail,String stateBefore,String stateAfter,Instant recordedAt) {
@@ -36,6 +39,7 @@ public final class LeakInvestigationResponse {
                     e.stateBefore(),e.stateAfter(),e.recordedAt());
         }
     }
+    @Schema(name = "LeakInvestigationView")
     public record View(String caseId,String candidateId,String caseStatus,String investigationState,
             long version,String investigatorId,String submittedById,String reviewedById,
             String disposition,List<Event> history) {

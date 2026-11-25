@@ -55,6 +55,108 @@ def approved_credential_response_correction(
             and cur_schemas.get("IdentityLocalCredentialState") == REVIEWED_CREDENTIAL_STATE)
 
 
+
+# T62: the exact accepted T61 document contains colliding investigation DTOs.
+# The second digest differs only by the existing 8081 base-generation port.
+REVIEWED_INVESTIGATION_BASES = frozenset({
+    "137b770e70906ab61c2841a4e03e5d825eb0e1588b812dbfed33d44146683890",
+    "a28ccef4922facf1a9194fea27cff083d3c67179b7c3ba09856847d4c43da065",
+})
+INCIDENT_INVESTIGATION = "/api/v1/incident/incidents/{id}/investigation"
+LEAK_INVESTIGATION = "/api/v1/leakdetection/cases/{id}/investigation"
+INVESTIGATION_RESPONSES = {
+    (INCIDENT_INVESTIGATION, "get"): ("View", "IncidentInvestigationView"),
+    (LEAK_INVESTIGATION, "get"): ("View", "LeakInvestigationView"),
+    **{(INCIDENT_INVESTIGATION + "/" + action, "post"):
+       ("Receipt", "IncidentInvestigationReceipt")
+       for action in ("assign", "evidence", "actions", "resolution", "review", "close")},
+    **{(LEAK_INVESTIGATION + "/" + action, "post"):
+       ("Receipt", "LeakInvestigationReceipt")
+       for action in ("assign", "evidence", "actions", "disposition", "review")},
+    ("/api/v1/leakdetection/cases/from-candidate", "post"): ("Receipt", "LeakInvestigationReceipt"),
+}
+
+
+def investigation_ref(name: str) -> dict[str, str]:
+    return {"$ref": "#/components/schemas/" + name}
+
+
+def reviewed_investigation_schema(base_schemas: dict[str, Any], name: str) -> dict[str, Any]:
+    """Expected owner schema; derived only from the fingerprinted T61 baseline and Java record fields."""
+    incident = name.startswith("IncidentInvestigation")
+    prefix = "IncidentInvestigation" if incident else "LeakInvestigation"
+    if name == prefix + "Event":
+        return base_schemas["Event"]
+    if name == prefix + "View":
+        value = json.loads(json.dumps(base_schemas["View"]))
+        props = value["properties"]
+        props["history"]["items"] = investigation_ref(prefix + "Event")
+        if incident:
+            props["incidentId"] = props.pop("caseId")
+            props["incidentStatus"] = props.pop("caseStatus")
+            props["resolutionSummary"] = props.pop("disposition")
+            del props["candidateId"]
+        return value
+    if name == prefix + "Receipt":
+        return {"type": "object", "properties": {
+            ("incidentId" if incident else "caseId"): {"type": "string"},
+            **{field: {"type": "string"} for field in ("eventId", "operation", "investigationState", "actorId")},
+            "version": {"type": "integer", "format": "int64"},
+            "recordedAt": {"type": "string", "format": "date-time"},
+            "replayed": {"type": "boolean"},
+        }}
+    if name == prefix + "EvidenceRequest":
+        value = json.loads(json.dumps(base_schemas["Evidence"]))
+        if incident:
+            props = value["properties"]
+            source = props.pop("evaluationId")
+            props["sourceId"] = source
+            props["sourceType"] = dict(source)
+            value["required"] = sorted((set(value["required"]) - {"evaluationId"}) | {"sourceId", "sourceType"})
+        return value
+    raise ValueError("Unregistered investigation schema: " + name)
+
+
+def approved_investigation_response_correction(
+    base_doc: dict[str, Any], cur_doc: dict[str, Any], path: str, method: str,
+    code: str, media: str, before: Any, after: Any,
+) -> bool:
+    pair = INVESTIGATION_RESPONSES.get((path, method))
+    if pair is None or code != "200" or media != "*/*":
+        return False
+    old_name, new_name = pair
+    if before != investigation_ref(old_name) or after != investigation_ref(new_name):
+        return False
+    if contract_digest(base_doc) not in REVIEWED_INVESTIGATION_BASES:
+        return False
+    base_schemas = base_doc.get("components", {}).get("schemas", {})
+    cur_schemas = cur_doc.get("components", {}).get("schemas", {})
+    # Other owners still reference Receipt; no exemption for modifying that shared schema.
+    if cur_schemas.get("Receipt") != base_schemas.get("Receipt"):
+        return False
+    if cur_schemas.get(new_name) != reviewed_investigation_schema(base_schemas, new_name):
+        return False
+    if new_name.endswith("View"):
+        event_name = new_name.removesuffix("View") + "Event"
+        return cur_schemas.get(event_name) == reviewed_investigation_schema(base_schemas, event_name)
+    return True
+
+
+def approved_investigation_request_correction(
+    base_doc: dict[str, Any], cur_doc: dict[str, Any], path: str, method: str,
+    media: str, before: Any, after: Any,
+) -> bool:
+    # Only Incident evidence acquired previously undocumented required fields.
+    name = "IncidentInvestigationEvidenceRequest"
+    if (path != INCIDENT_INVESTIGATION + "/evidence" or method != "post" or media != "application/json"
+            or before != investigation_ref("Evidence") or after != investigation_ref(name)
+            or contract_digest(base_doc) not in REVIEWED_INVESTIGATION_BASES):
+        return False
+    base_schemas = base_doc.get("components", {}).get("schemas", {})
+    cur_schemas = cur_doc.get("components", {}).get("schemas", {})
+    return cur_schemas.get(name) == reviewed_investigation_schema(base_schemas, name)
+
+
 def load(path: str) -> dict[str, Any]:
     return json.loads(Path(path).read_text(encoding="utf-8"))
 
@@ -237,6 +339,12 @@ def compare_operation(
             if removed_types:
                 breaks.append(f"{where}: request content types removed: {removed_types}")
             for media in sorted(set(base_content) & set(cur_content)):
+                if approved_investigation_request_correction(
+                    base_doc, cur_doc, path, method, media,
+                    base_content[media].get("schema", {}), cur_content[media].get("schema", {}),
+                ):
+                    print(f"Owner-approved T62 schema correction: {where} request {media}")
+                    continue
                 compare_schema(
                     base_doc,
                     cur_doc,
@@ -274,6 +382,12 @@ def compare_operation(
                         base_content[media].get("schema", {}), cur_content[media].get("schema", {}),
                     ):
                         print(f"Owner-approved HAPI-923 schema correction: {where} response {code} {media}")
+                        continue
+                    if approved_investigation_response_correction(
+                        base_doc, cur_doc, path, method, code, media,
+                        base_content[media].get("schema", {}), cur_content[media].get("schema", {}),
+                    ):
+                        print(f"Owner-approved T62 schema correction: {where} response {code} {media}")
                         continue
                     compare_schema(
                         base_doc,

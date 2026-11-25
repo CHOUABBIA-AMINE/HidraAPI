@@ -189,5 +189,108 @@ class CredentialCompatibilityTests(unittest.TestCase):
         self.assertIn("securityVersion", errors)
 
 
+
+class InvestigationCompatibilityTests(unittest.TestCase):
+    compare = CredentialCompatibilityTests.compare
+
+    def setUp(self):
+        string = {"type": "string"}
+        base_schemas = {
+            "View": {"type": "object", "properties": {
+                "caseId": string, "caseStatus": string, "candidateId": string, "disposition": string,
+                "history": {"type": "array", "items": checker.investigation_ref("Event")},
+            }},
+            "Event": {"type": "object", "properties": {"operation": string, "recordedAt": string}},
+            "Receipt": {"type": "object", "properties": {"payloadSha256": string, "revisionId": string}},
+            "Evidence": {"type": "object", "required": ["direction", "evaluationId", "explanation", "requestId"],
+                         "properties": {field: {"type": "string", "minLength": 1}
+                                        for field in ("direction", "evaluationId", "explanation", "requestId")}},
+        }
+        self.base = {"openapi": "3.1.0", "paths": {}, "components": {"schemas": base_schemas}}
+        for (route, method), (old_name, _) in checker.INVESTIGATION_RESPONSES.items():
+            self.base["paths"].setdefault(route, {})[method] = {
+                "security": [{"hidraBearerJwt": []}],
+                "responses": {"200": {"content": {"*/*": {"schema": checker.investigation_ref(old_name)}}}},
+            }
+        evidence = checker.INCIDENT_INVESTIGATION + "/evidence"
+        self.base["paths"][evidence]["post"]["requestBody"] = {
+            "required": True, "content": {"application/json": {"schema": checker.investigation_ref("Evidence")}}}
+        self.base["paths"]["/other-owner"] = {"post": {
+            "responses": {"200": {"content": {"*/*": {"schema": checker.investigation_ref("Receipt")}}}}}}
+        self.current = copy.deepcopy(self.base)
+        schemas = self.current["components"]["schemas"]
+        for owner in ("IncidentInvestigation", "LeakInvestigation"):
+            for kind in ("View", "Event", "Receipt", "EvidenceRequest"):
+                name = owner + kind
+                schemas[name] = copy.deepcopy(checker.reviewed_investigation_schema(base_schemas, name))
+        for (route, method), (_, new_name) in checker.INVESTIGATION_RESPONSES.items():
+            self.current["paths"][route][method]["responses"]["200"]["content"]["*/*"]["schema"] = checker.investigation_ref(new_name)
+        self.current["paths"][evidence]["post"]["requestBody"]["content"]["application/json"]["schema"] = checker.investigation_ref("IncidentInvestigationEvidenceRequest")
+        pin = patch.object(checker, "REVIEWED_INVESTIGATION_BASES", frozenset({checker.contract_digest(self.base)}))
+        pin.start()
+        self.addCleanup(pin.stop)
+
+    def test_exact_investigation_corrections_and_existing_compatibility(self):
+        code, output, errors = self.compare()
+        self.assertEqual(code, 0, errors)
+        self.assertEqual(output.count("Owner-approved T62 schema correction:"), len(checker.INVESTIGATION_RESPONSES) + 1)
+        schemas = self.current["components"]["schemas"]
+        self.assertEqual(set(schemas["IncidentInvestigationReceipt"]["properties"]),
+                         {"incidentId", "eventId", "operation", "version", "investigationState", "actorId", "recordedAt", "replayed"})
+        self.assertIn("sourceType", schemas["IncidentInvestigationEvidenceRequest"]["required"])
+        self.assertNotIn("evaluationId", schemas["IncidentInvestigationEvidenceRequest"]["properties"])
+
+    def test_wrong_base_or_wrong_nested_shape_is_rejected(self):
+        changed = copy.deepcopy(self.base)
+        changed["info"] = {"title": "Unknown base"}
+        self.assertEqual(self.compare(base=changed)[0], 1)
+        for name, field in (("IncidentInvestigationView", "incidentId"),
+                            ("IncidentInvestigationEvent", "operation"),
+                            ("LeakInvestigationReceipt", "caseId")):
+            with self.subTest(name=name):
+                changed = copy.deepcopy(self.current)
+                del changed["components"]["schemas"][name]["properties"][field]
+                self.assertEqual(self.compare(current=changed)[0], 1)
+
+    def test_unrelated_receipt_regression_and_future_regression_are_rejected(self):
+        changed = copy.deepcopy(self.current)
+        del changed["components"]["schemas"]["Receipt"]["properties"]["payloadSha256"]
+        code, _, errors = self.compare(current=changed)
+        self.assertEqual(code, 1)
+        self.assertIn("/other-owner", errors)
+        changed = copy.deepcopy(self.current)
+        del changed["components"]["schemas"]["IncidentInvestigationReceipt"]["properties"]["actorId"]
+        code, output, errors = self.compare(base=self.current, current=changed)
+        self.assertEqual(code, 1)
+        self.assertNotIn("Owner-approved T62", output)
+        self.assertIn("actorId", errors)
+
+    def test_request_exception_rejects_wrong_route_media_and_shape(self):
+        route = checker.INCIDENT_INVESTIGATION + "/evidence"
+        old = checker.investigation_ref("Evidence")
+        new = checker.investigation_ref("IncidentInvestigationEvidenceRequest")
+        for path, method, media in ((route, "get", "application/json"),
+                                    (checker.LEAK_INVESTIGATION + "/evidence", "post", "application/json"),
+                                    (route, "post", "*/*")):
+            self.assertFalse(checker.approved_investigation_request_correction(
+                self.base, self.current, path, method, media, old, new))
+        changed = copy.deepcopy(self.current)
+        changed["components"]["schemas"]["IncidentInvestigationEvidenceRequest"]["required"].append("unexpected")
+        self.assertFalse(checker.approved_investigation_request_correction(
+            self.base, changed, route, "post", "application/json", old, new))
+        self.assertEqual(self.compare(current=changed)[0], 1)
+
+    def test_response_exception_does_not_admit_unlisted_route_status_or_media(self):
+        old = checker.investigation_ref("View")
+        new = checker.investigation_ref("IncidentInvestigationView")
+        for route, method, code, media in (
+                ("/other-owner", "get", "200", "*/*"),
+                (checker.INCIDENT_INVESTIGATION, "post", "200", "*/*"),
+                (checker.INCIDENT_INVESTIGATION, "get", "201", "*/*"),
+                (checker.INCIDENT_INVESTIGATION, "get", "200", "application/json")):
+            self.assertFalse(checker.approved_investigation_response_correction(
+                self.base, self.current, route, method, code, media, old, new))
+
+
 if __name__ == "__main__":
     unittest.main()

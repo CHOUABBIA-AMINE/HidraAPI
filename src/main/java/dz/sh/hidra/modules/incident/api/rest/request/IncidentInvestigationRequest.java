@@ -5,7 +5,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  * @Name        : IncidentInvestigationRequest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-15
+ * @UpdatedOn   : 2026-11-25
  * @Type        : Class
  * @Layer       : API
  * @Module      : incident
@@ -14,12 +14,14 @@
  */
 package dz.sh.hidra.modules.incident.api.rest.request;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
 
 public final class IncidentInvestigationRequest {
     private IncidentInvestigationRequest() {}
     public record Assign(@NotBlank String requestId,@PositiveOrZero long expectedVersion,@NotBlank String reason) {}
+    @Schema(name = "IncidentInvestigationEvidenceRequest")
     public record Evidence(@NotBlank String requestId,@PositiveOrZero long expectedVersion,
             @NotBlank String sourceType,@NotBlank String sourceId,@NotBlank String direction,
             @NotBlank String explanation) {}

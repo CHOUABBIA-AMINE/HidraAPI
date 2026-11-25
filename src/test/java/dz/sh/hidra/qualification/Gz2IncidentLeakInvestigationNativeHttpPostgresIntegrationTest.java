@@ -7,7 +7,7 @@
  *
  * @Name        : Gz2IncidentLeakInvestigationNativeHttpPostgresIntegrationTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-15
+ * @UpdatedOn   : 2026-11-25
  *
  * @Type        : Class
  * @Layer       : Test
@@ -30,6 +30,8 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 import static dz.sh.hidra.qualification.Gz2SignedWorkflowFixture.id;
 import static dz.sh.hidra.qualification.Gz2SignedWorkflowFixture.query;
@@ -649,6 +651,7 @@ class Gz2IncidentLeakInvestigationNativeHttpPostgresIntegrationTest {
 
         var first=r.json("POST",leakBase+"/from-candidate",operator,
                 Map.of("candidateId",chain.candidate(),"requestId","t16-open-"+chain.candidate()),201);
+        assertWireFields(first, receiptFields("caseId"), "caseId", "eventId", "operation", "version", "recordedAt", "replayed");
         String caseId=field(first,"caseId");
         assertEquals("NEW",field(first,"investigationState"));
         var reopened=r.json("POST",leakBase+"/from-candidate",operator,
@@ -712,6 +715,8 @@ class Gz2IncidentLeakInvestigationNativeHttpPostgresIntegrationTest {
         var ie=r.json("POST",incidentPath+"/evidence",operator,Map.of("requestId",id(),
                 "expectedVersion",1,"sourceType","ALARM","sourceId",chain.alarm(),
                 "direction","SUPPORTING","explanation","Existing operator-acknowledged Alarm evidence"),200);
+        assertWireFields(ie, receiptFields("incidentId"), "incidentId", "eventId", "operation", "version", "recordedAt", "replayed");
+        assertEquals(chain.incident(), field(ie, "incidentId"));
         assertEquals(2,ie.path("version").asInt(-1));
         var actionRequest=Map.of("requestId",id(),"expectedVersion",2,"actionTypeId",actionType,
                 "description","Synthetic operator incident response and investigation");
@@ -776,6 +781,9 @@ class Gz2IncidentLeakInvestigationNativeHttpPostgresIntegrationTest {
         String incident=INCIDENT+"/"+chain.incident()+"/investigation";
         String leak="/api/v1/leakdetection/cases/"+completed.caseId()+"/investigation";
         var incidentView=r.get(incident,reviewer);
+        assertWireFields(incidentView, INCIDENT_VIEW_FIELDS, "incidentId", "incidentStatus", "history", "version");
+        assertEquals(completed.incidentId(), field(incidentView, "incidentId"));
+        incidentView.path("history").forEach(event -> assertWireFields(event, EVENT_FIELDS, "id", "version", "operation", "recordedAt"));
         assertEquals("CLOSED",field(incidentView,"incidentStatus"));
         assertEquals("CLOSED",field(incidentView,"investigationState"));
         assertEquals(6,incidentView.path("version").asInt(-1));
@@ -785,6 +793,10 @@ class Gz2IncidentLeakInvestigationNativeHttpPostgresIntegrationTest {
         assertTrue(incidentView.path("history").toString().contains(completed.incidentReviewId()));
         assertTrue(incidentView.path("history").toString().contains(completed.closureId()));
         var leakView=r.get(leak,reviewer);
+        assertWireFields(leakView, LEAK_VIEW_FIELDS, "caseId", "candidateId", "caseStatus", "history", "version");
+        assertEquals(completed.caseId(), field(leakView, "caseId"));
+        assertEquals(chain.candidate(), field(leakView, "candidateId"));
+        leakView.path("history").forEach(event -> assertWireFields(event, EVENT_FIELDS, "id", "version", "operation", "recordedAt"));
         assertEquals("DISMISSED",field(leakView,"caseStatus"));
         assertEquals("REVIEWED",field(leakView,"investigationState"));
         assertEquals(5,leakView.path("version").asInt(-1));
@@ -833,8 +845,94 @@ class Gz2IncidentLeakInvestigationNativeHttpPostgresIntegrationTest {
         assertTrue(status == 403 || status == 404, "Expected authority denial, received " + status);
     }
 
+
+    private static final Set<String> EVENT_FIELDS = Set.of("id", "version", "operation", "actorId",
+            "requestId", "referenceType", "referenceId", "direction", "detail", "stateBefore",
+            "stateAfter", "recordedAt");
+    private static final Set<String> INCIDENT_VIEW_FIELDS = Set.of("incidentId", "incidentStatus",
+            "investigationState", "version", "investigatorId", "submittedById", "reviewedById",
+            "resolutionSummary", "history");
+    private static final Set<String> LEAK_VIEW_FIELDS = Set.of("caseId", "candidateId", "caseStatus",
+            "investigationState", "version", "investigatorId", "submittedById", "reviewedById",
+            "disposition", "history");
+
+    private static Set<String> receiptFields(String ownerId) {
+        return Set.of(ownerId, "eventId", "operation", "version", "investigationState",
+                "actorId", "recordedAt", "replayed");
+    }
+
+    private static Set<String> fieldNames(JsonNode value) {
+        var fields = new HashSet<String>();
+        value.fieldNames().forEachRemaining(fields::add);
+        return fields;
+    }
+
+    private static void assertWireFields(JsonNode value, Set<String> published, String... mandatory) {
+        assertTrue(value.isObject());
+        assertTrue(published.containsAll(fieldNames(value)), "Wire fields must belong to the exact owner schema");
+        for (String name : mandatory) assertTrue(value.hasNonNull(name), "Missing wire field: " + name);
+    }
+
+    private static String responseRef(JsonNode paths, String route, String method) {
+        return paths.path(route).path(method).path("responses").path("200").path("content")
+                .path("*/*").path("schema").path("$ref").asText();
+    }
+
+    private static String schemaRef(String name) {
+        return "#/components/schemas/" + name;
+    }
+
+    private static void verifyInvestigationSchemas(JsonNode paths, JsonNode schemas) {
+        String incident = INCIDENT + "/{id}/investigation";
+        String leak = "/api/v1/leakdetection/cases/{id}/investigation";
+        for (boolean isIncident : List.of(true, false)) {
+            String owner = isIncident ? "IncidentInvestigation" : "LeakInvestigation";
+            String route = isIncident ? incident : leak;
+            String ownerId = isIncident ? "incidentId" : "caseId";
+            String viewName = owner + "View", receiptName = owner + "Receipt", eventName = owner + "Event";
+            assertEquals(schemaRef(viewName), responseRef(paths, route, "get"));
+            JsonNode view = schemas.path(viewName).path("properties");
+            assertEquals(isIncident ? INCIDENT_VIEW_FIELDS : LEAK_VIEW_FIELDS, fieldNames(view));
+            assertEquals(schemaRef(eventName), view.path("history").path("items").path("$ref").asText());
+            JsonNode event = schemas.path(eventName).path("properties");
+            assertEquals(EVENT_FIELDS, fieldNames(event));
+            assertEquals("int64", event.path("version").path("format").asText());
+            assertEquals("date-time", event.path("recordedAt").path("format").asText());
+            JsonNode receipt = schemas.path(receiptName).path("properties");
+            assertEquals(receiptFields(ownerId), fieldNames(receipt));
+            assertEquals("int64", receipt.path("version").path("format").asText());
+            assertEquals("date-time", receipt.path("recordedAt").path("format").asText());
+            assertEquals("boolean", receipt.path("replayed").path("type").asText());
+            for (String action : isIncident
+                    ? List.of("assign", "evidence", "actions", "resolution", "review", "close")
+                    : List.of("assign", "evidence", "actions", "disposition", "review")) {
+                assertEquals(schemaRef(receiptName), responseRef(paths, route + "/" + action, "post"));
+            }
+            if (!isIncident) {
+                assertEquals(schemaRef(receiptName),
+                        responseRef(paths, "/api/v1/leakdetection/cases/from-candidate", "post"));
+            }
+            String requestName = owner + "EvidenceRequest";
+            assertEquals(schemaRef(requestName), paths.path(route + "/evidence").path("post")
+                    .path("requestBody").path("content").path("application/json").path("schema").path("$ref").asText());
+            JsonNode request = schemas.path(requestName);
+            Set<String> required = isIncident
+                    ? Set.of("requestId", "sourceType", "sourceId", "direction", "explanation")
+                    : Set.of("requestId", "evaluationId", "direction", "explanation");
+            var properties = new HashSet<>(required);
+            properties.add("expectedVersion");
+            assertEquals(properties, fieldNames(request.path("properties")));
+            var actualRequired = new HashSet<String>();
+            request.path("required").forEach(value -> actualRequired.add(value.asText()));
+            assertEquals(required, actualRequired);
+            assertEquals("int64", request.path("properties").path("expectedVersion").path("format").asText());
+        }
+    }
+
     private static void verifyPublishedOperations(Gz2SignedWorkflowFixture.Runtime runtime) throws Exception {
-        JsonNode paths = runtime.get("/v3/api-docs", null).path("paths");
+        JsonNode document = runtime.get("/v3/api-docs", null);
+        JsonNode paths = document.path("paths");
+        verifyInvestigationSchemas(paths, document.path("components").path("schemas"));
 
         JsonNode t16=paths.path(INCIDENT+"/{id}/investigation");
         assertTrue(t16.has("get"),"Missing typed Incident investigation history");

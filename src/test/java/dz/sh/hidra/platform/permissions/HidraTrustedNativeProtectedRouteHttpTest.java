@@ -7,7 +7,7 @@
  *
  * @Name        : HidraTrustedNativeProtectedRouteHttpTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-15
+ * @UpdatedOn   : 2026-11-26
  *
  * @Type        : Class
  * @Layer       : Test
@@ -100,7 +100,7 @@ class HidraTrustedNativeProtectedRouteHttpTest {
  }
  @Test void t36QualifiedOperatingConstraintsUseOrdinaryRouteAuthorizationOnly() {
    var registry = new HidraTrustedNativeProtectedRouteRegistry();
-   assertEquals(159,registry.candidates().size());
+   assertEquals(163,registry.candidates().size());
    assertTrue(registry.candidates().stream().noneMatch(r ->
         r.pattern().startsWith("/api/v1/topology/operating-constraints/")));
    try {
@@ -136,7 +136,7 @@ class HidraTrustedNativeProtectedRouteHttpTest {
      assertEquals("telemetry:assets:read", naming.permissionFor(path, "GET", handler));
      assertFalse(registry.isTrusted(handler, "GET", path));
    }
-   assertEquals(159, registry.candidates().size());
+   assertEquals(163, registry.candidates().size());
    assertTrue(registry.candidates().stream().anyMatch(route ->
        route.controller().getSimpleName().equals("TelemetryQualityController")));
  }
@@ -164,7 +164,7 @@ class HidraTrustedNativeProtectedRouteHttpTest {
 
  @Test void t33RegionalAccessIsNotTrustedNativeDelegationOrPermissionBypass() {
    var registry = new HidraTrustedNativeProtectedRouteRegistry();
-   assertEquals(159, registry.candidates().size());
+   assertEquals(163, registry.candidates().size());
    assertTrue(registry.candidates().stream().noneMatch(r ->
        r.pattern().startsWith("/api/v1/identity/me/regional-access")));
    // The ordinary route requires identity:me:read before Identity independently
@@ -189,7 +189,7 @@ class HidraTrustedNativeProtectedRouteHttpTest {
     var routes=new HidraTrustedNativeProtectedRouteRegistry().candidates();
     String base="/api/v1/simulation/companies/{companyId}/pipeline-systems/{pipelineSystemId}/scenarios";
     var own=routes.stream().filter(x->x.controller().getSimpleName().equals("ScenarioInputRevisionController")).toList();
-    assertEquals(159,routes.size());assertEquals(4,own.size());
+    assertEquals(163,routes.size());assertEquals(4,own.size());
     assertEquals(java.util.Set.of("POST "+base,"POST "+base+"/{scenarioId}/revisions",
           "GET "+base+"/{scenarioId}/revisions/{revision}",
           "GET "+base+"/{scenarioId}/revisions/{revision}/validation"),
@@ -201,7 +201,7 @@ class HidraTrustedNativeProtectedRouteHttpTest {
     String base="/api/v1/audit/companies/{companyId}/facilities/{facilityId}";
     var t28=routes.stream().filter(x->x.controller().getSimpleName()
             .equals("ScopedAuditEvidenceController")).toList();
-    assertEquals(159,routes.size());assertEquals(4,t28.size());
+    assertEquals(163,routes.size());assertEquals(4,t28.size());
     var declared=t28.stream().map(x->x.verb()+" "+x.pattern())
             .collect(java.util.stream.Collectors.toSet());
     assertEquals(java.util.Set.of("GET "+base+"/events","POST "+base+"/exports",
@@ -215,7 +215,7 @@ class HidraTrustedNativeProtectedRouteHttpTest {
     String base="/api/v1/notification/companies/{companyId}/facilities/{facilityId}/inbox";
     var routes=registry.candidates().stream()
         .filter(r->r.controller().getSimpleName().equals("WorkflowInboxController")).toList();
-    assertEquals(159,registry.candidates().size());
+    assertEquals(163,registry.candidates().size());
     assertEquals(3,routes.size());
     var declared=routes.stream().map(r->r.verb()+" "+r.pattern())
         .collect(java.util.stream.Collectors.toSet());
@@ -292,7 +292,7 @@ class HidraTrustedNativeProtectedRouteHttpTest {
    var resolver = org.mockito.Mockito.mock(HidraEffectivePermissionResolver.class);
    authenticated();
    var registry = new HidraTrustedNativeProtectedRouteRegistry();
-   assertEquals(159,registry.candidates().size());
+   assertEquals(163,registry.candidates().size());
    var mvc = mvc(owner, new UntrustedController(), resolver,registry);
    assertThrows(Exception.class, () ->
       mvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post(TRUSTED)));
@@ -301,7 +301,7 @@ class HidraTrustedNativeProtectedRouteHttpTest {
  @Test void realManufacturerTupleRegistryRejectsWrongVerbAndSiblingPattern() throws Exception {
    var registry=new HidraTrustedNativeProtectedRouteRegistry();
    var routes=registry.candidates();
-   assertEquals(159,routes.size());
+   assertEquals(163,routes.size());
    var expected=java.util.Set.of(
      "GET /api/v1/audit/companies/{companyId}/facilities/{facilityId}/events",
      "POST /api/v1/audit/companies/{companyId}/facilities/{facilityId}/exports",
@@ -352,6 +352,10 @@ class HidraTrustedNativeProtectedRouteHttpTest {
      "GET /api/v1/planning/nominations/{id}/history",
      "POST /api/v1/integrity/findings/{findingId}/maintenance-approvals",
      "GET /api/v1/integrity/findings/{findingId}/maintenance-handoffs/{approvalId}",
+     "GET /api/v1/custody/companies/{companyId}/facilities/{facilityId}/transfer-points",
+     "GET /api/v1/custody/companies/{companyId}/transfer-points/{transferPointId}/measurement-periods",
+     "GET /api/v1/custody/measurement-periods/{periodId}/transfer-tickets",
+     "GET /api/v1/custody/measurement-periods/{periodId}/measurements",
      "GET /api/v1/custody/measurement-periods/{periodId}",
      "GET /api/v1/custody/measurement-periods/{periodId}/reconciliations",
      "POST /api/v1/custody/measurement-periods/{periodId}/reconciliations",
@@ -569,11 +573,11 @@ class HidraTrustedNativeProtectedRouteHttpTest {
     var t26=new dz.sh.hidra.modules.integration.api.rest.controller.SyntheticExchangesController(
         org.mockito.Mockito.mock(dz.sh.hidra.modules.integration.application.port.in.SyntheticExchangeUseCase.class));
     owners.put(t26.getClass(),t26);
-    // T27 exact native WEB inbox handler must participate in the full 159-route proof.
+    // T27 exact native WEB inbox handler must participate in the full 163-route proof.
     var t27=new dz.sh.hidra.modules.notification.api.rest.controller.WorkflowInboxController(
         org.mockito.Mockito.mock(dz.sh.hidra.modules.notification.application.port.in.WorkflowInboxUseCase.class));
     owners.put(t27.getClass(),t27);
-    // T28 participates in the entire 159-tuple real-MVC startup inventory.
+    // T28 participates in the entire 163-tuple real-MVC startup inventory.
     var t28=new dz.sh.hidra.modules.audit.api.rest.controller.ScopedAuditEvidenceController(
         org.mockito.Mockito.mock(dz.sh.hidra.modules.audit.application.port.in.ScopedAuditEvidenceUseCase.class));
     owners.put(t28.getClass(),t28);
@@ -617,7 +621,7 @@ class HidraTrustedNativeProtectedRouteHttpTest {
 
  @Test void t34RegionalMapUsesOrdinaryRouteCodesWithoutNativeDelegation() throws Exception {
     var registry = new HidraTrustedNativeProtectedRouteRegistry();
-    assertEquals(159, registry.candidates().size());
+    assertEquals(163, registry.candidates().size());
     assertTrue(registry.candidates().stream().noneMatch(
             route -> route.pattern().startsWith("/api/v1/topology/regional-map")));
     var controller = new dz.sh.hidra.modules.topology.api.rest.controller.RegionalTopologyMapController(
@@ -647,7 +651,7 @@ class HidraTrustedNativeProtectedRouteHttpTest {
 
  @Test void t35DossierRoutesUseOnlyOrdinaryResourcePermissions() throws Exception {
     var registry = new HidraTrustedNativeProtectedRouteRegistry();
-    assertEquals(159, registry.candidates().size());
+    assertEquals(163, registry.candidates().size());
     String root = "/api/v1/topology/pipeline-dossiers/{pipelineId}";
     assertTrue(registry.candidates().stream().noneMatch(route -> route.pattern().startsWith(root)));
     var queries = org.mockito.Mockito.mock(

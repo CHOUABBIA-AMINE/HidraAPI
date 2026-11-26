@@ -5,7 +5,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  * @Name        : CustodyTransferLifecycleUseCase
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-17
+ * @UpdatedOn   : 2026-11-26
  * @Type        : Interface
  * @Layer       : Application
  * @Module      : custody
@@ -51,4 +51,19 @@ public interface CustodyTransferLifecycleUseCase {
     List<Discrepancy> discrepancies(String reconciliationId);
     Discrepancy discrepancy(String id);
     Discrepancy dispose(String id,DispositionCommand command);
+
+    record DiscoveryPage<T>(List<T> items,int page,int size,long total) {
+        public DiscoveryPage { items=List.copyOf(items); }
+        public long totalPages(){return total/size+(total%size==0?0:1);}
+    }
+    record TransferPoint(String id,String code,String companyId,String facilityId){}
+    record DiscoveredPeriod(String id,String periodCode,String agreementId,String transferPointId,
+                            String companyId,String status,Instant periodStart,Instant periodEnd){}
+    static long offset(int page,int size){
+        if(page<0||size<1||size>200)throw new IllegalArgumentException("Invalid custody page.");
+        return Math.multiplyExact((long)page,size);
+    }
+    DiscoveryPage<TransferPoint> discoverTransferPoints(String companyId,String facilityId,int page,int size);
+    DiscoveryPage<DiscoveredPeriod> discoverPeriods(String companyId,String transferPointId,String periodCode,int page,int size);
+    DiscoveryPage<Ticket> listTickets(String periodId,int page,int size);
 }

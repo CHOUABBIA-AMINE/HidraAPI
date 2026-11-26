@@ -5,7 +5,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  * @Name        : JdbcCustodyTransferLifecycleAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-17
+ * @UpdatedOn   : 2026-11-26
  * @Type        : Class
  * @Layer       : Infrastructure
  * @Module      : custody
@@ -291,5 +291,96 @@ public class JdbcCustodyTransferLifecycleAdapter implements CustodyTransferLifec
         try{identity.require("custody:tickets:finalize",t[1],t[2]);}
         catch(NoSuchElementException denied){return Optional.empty();}
         return Optional.of(new Target(targetDigest,t[0],"Custody software ticket "+t[0]));
+    }
+
+    @Override public Optional<PointScope> lockPoint(String id){
+        var rows=jdbc.query("""
+            SELECT id,code,topology_asset_type_code,topology_asset_id
+              FROM public.hidra_custody_transfer_point WHERE id=? FOR SHARE
+            """,(row,n)->new PointScope(row.getString(1),row.getString(2),row.getString(3),row.getString(4)),id);
+        return rows.size()==1?Optional.of(rows.getFirst()):Optional.empty();
+    }
+    @Override public Optional<Scope> lockReadScope(String id){
+        return scopeQuery("""
+            SELECT p.id AS period_id,p.agreement_id,p.transfer_point_id,p.status,p.period_start,p.period_end,
+                   tp.topology_asset_type_code,tp.topology_asset_id,NULL::varchar AS stored_company_id
+              FROM public.hidra_custody_measurement_period p
+              JOIN public.hidra_custody_transfer_point tp ON tp.id=p.transfer_point_id
+             WHERE p.id=? FOR SHARE OF p,tp
+            """,id);
+    }
+    @Override public void visitFacilityPoints(String facilityId,java.util.function.Consumer<PointScope> visitor){
+        jdbc.query(connection->{
+            var statement=connection.prepareStatement("""
+                SELECT id,code,topology_asset_type_code,topology_asset_id
+                  FROM public.hidra_custody_transfer_point
+                 WHERE topology_asset_type_code='FACILITY' AND topology_asset_id=?
+                 ORDER BY code,id FOR SHARE
+                """);
+            statement.setString(1,facilityId);
+            statement.setFetchSize(128);
+            return statement;
+        },(org.springframework.jdbc.core.RowCallbackHandler) row->
+            visitor.accept(new PointScope(row.getString(1),row.getString(2),row.getString(3),row.getString(4))));
+    }
+    @Override public DiscoveryPage<DiscoveredPeriod> periods(PointScope point,String company,String code,int page,int size,long offset){
+        String sql="""
+            WITH eligible AS MATERIALIZED (
+              SELECT p.id,p.period_code,p.agreement_id,p.transfer_point_id,p.status,p.period_start,p.period_end
+                FROM public.hidra_custody_measurement_period p
+               WHERE p.transfer_point_id=?
+                 AND EXISTS(SELECT 1 FROM public.hidra_custody_measurement_receipt r
+                   JOIN public.hidra_custody_agreement_party ap ON ap.id=r.agreement_party_id
+                   WHERE r.period_id=p.id AND r.company_id=? AND r.transfer_point_id=p.transfer_point_id
+                     AND r.asset_type=? AND r.asset_id=? AND ap.agreement_id=p.agreement_id)
+                 AND NOT EXISTS(SELECT 1 FROM public.hidra_custody_measurement_receipt r
+                   JOIN public.hidra_custody_agreement_party ap ON ap.id=r.agreement_party_id
+                   WHERE r.period_id=p.id AND (r.company_id<>? OR r.transfer_point_id<>p.transfer_point_id
+                     OR r.asset_type<>? OR r.asset_id<>? OR ap.agreement_id<>p.agreement_id))
+                 AND NOT EXISTS(SELECT 1 FROM public.hidra_custody_t21_reconciliation r
+                   WHERE r.period_id=p.id AND (r.company_id<>? OR r.transfer_point_id<>p.transfer_point_id
+                     OR r.agreement_id<>p.agreement_id))
+            """;
+        var args=new ArrayList<Object>(List.of(point.id(),company,point.assetType(),point.assetId(),
+            company,point.assetType(),point.assetId(),company));
+        if(code!=null){sql+=" AND p.period_code=?";args.add(code);}
+        sql+="""
+             FOR SHARE OF p
+            ), slice AS (
+              SELECT * FROM eligible ORDER BY period_start,id LIMIT ? OFFSET ?
+            ), tally AS (SELECT count(*) AS total FROM eligible)
+            SELECT slice.*,tally.total FROM tally LEFT JOIN slice ON true ORDER BY slice.period_start,slice.id
+            """;
+        args.add(size);args.add(offset);
+        return jdbc.query(sql,(org.springframework.jdbc.core.ResultSetExtractor<DiscoveryPage<DiscoveredPeriod>>) row->{
+            var items=new ArrayList<DiscoveredPeriod>();long total=0;
+            while(row.next()){
+                total=row.getLong("total");
+                if(row.getString("id")!=null)items.add(new DiscoveredPeriod(row.getString("id"),row.getString("period_code"),
+                    row.getString("agreement_id"),row.getString("transfer_point_id"),company,row.getString("status"),
+                    time(row,"period_start"),time(row,"period_end")));
+            }
+            return new DiscoveryPage<>(items,page,size,total);
+        },args.toArray());
+    }
+    @Override public DiscoveryPage<Ticket> tickets(Scope scope,String company,int page,int size,long offset){
+        String sql="WITH eligible AS MATERIALIZED ("+TICKET_QUERY+"""
+            JOIN public.hidra_custody_t21_reconciliation rec ON rec.id=t.reconciliation_id
+            WHERE t.period_id=? AND t.company_id=? AND t.transfer_point_id=? AND t.agreement_id=?
+              AND rec.period_id=t.period_id AND rec.company_id=t.company_id AND rec.transfer_point_id=t.transfer_point_id
+              AND rec.agreement_id=t.agreement_id
+            ), slice AS (
+              SELECT * FROM eligible ORDER BY version,id LIMIT ? OFFSET ?
+            ), tally AS (SELECT count(*) AS total FROM eligible)
+            SELECT slice.*,tally.total FROM tally LEFT JOIN slice ON true ORDER BY slice.version,slice.id
+            """;
+        return jdbc.query(sql,(org.springframework.jdbc.core.ResultSetExtractor<DiscoveryPage<Ticket>>) row->{
+            var items=new ArrayList<Ticket>();long total=0;
+            while(row.next()){
+                total=row.getLong("total");
+                if(row.getString("id")!=null)items.add(mapTicket(row));
+            }
+            return new DiscoveryPage<>(items,page,size,total);
+        },scope.periodId(),company,scope.transferPointId(),scope.agreementId(),size,offset);
     }
 }

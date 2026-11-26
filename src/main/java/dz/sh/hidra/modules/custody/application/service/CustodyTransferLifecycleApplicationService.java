@@ -5,7 +5,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  * @Name        : CustodyTransferLifecycleApplicationService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-17
+ * @UpdatedOn   : 2026-11-26
  * @Type        : Class
  * @Layer       : Application
  * @Module      : custody
@@ -48,6 +48,7 @@ public class CustodyTransferLifecycleApplicationService implements CustodyTransf
     private final CustodyMeasurementAssetOwnershipContract ownership;
     private final CustodyMeasurementScopedAuthorizationContract identity;
     private final CustodyTransferTicketApprovalEvidenceContract workflow;
+    private final org.springframework.transaction.support.TransactionTemplate pointProbe;
     private final CustodyReconciliationPolicy reconciliationPolicy=new CustodyReconciliationPolicy();
     private final CustodyTicketFinalizationPolicy finalizationPolicy=new CustodyTicketFinalizationPolicy();
     private final CustodyTicketCorrectionPolicy correctionPolicy=new CustodyTicketCorrectionPolicy();
@@ -55,10 +56,13 @@ public class CustodyTransferLifecycleApplicationService implements CustodyTransf
     public CustodyTransferLifecycleApplicationService(CustodyTransferLifecyclePort persistence,
            CustodyMeasurementCapturePort capture,CustodyMeasurementAssetOwnershipContract ownership,
            CustodyMeasurementScopedAuthorizationContract identity,
-           CustodyTransferTicketApprovalEvidenceContract workflow){
+           CustodyTransferTicketApprovalEvidenceContract workflow,
+           org.springframework.transaction.PlatformTransactionManager manager){
         this.persistence=Objects.requireNonNull(persistence);this.capture=Objects.requireNonNull(capture);
         this.ownership=Objects.requireNonNull(ownership);this.identity=Objects.requireNonNull(identity);
         this.workflow=Objects.requireNonNull(workflow);
+        pointProbe=new org.springframework.transaction.support.TransactionTemplate(manager);
+        pointProbe.setPropagationBehavior(org.springframework.transaction.TransactionDefinition.PROPAGATION_REQUIRES_NEW);
     }
     private static NoSuchElementException unavailable(){return new NoSuchElementException("Protected custody transfer unavailable.");}
     private static IllegalStateException conflict(String reason){return new IllegalStateException(reason);}
@@ -194,8 +198,16 @@ public class CustodyTransferLifecycleApplicationService implements CustodyTransf
     }
     @Override @Transactional
     public List<Reconciliation> reconciliations(String periodId){
-        visible(persistence.scopeForPeriod(required(periodId)),RECON_READ);
-        return persistence.reconciliations(periodId);
+        var scope=visible(persistence.lockReadScope(required(periodId)),RECON_READ);
+        String company=owner(scope);
+        var rows=persistence.reconciliations(periodId);
+        for(var row:rows){
+            var snapshot=row.snapshot();
+            if(!periodId.equals(snapshot.periodId())||!scope.agreementId().equals(snapshot.agreementId())
+                    ||!company.equals(snapshot.companyId())||!scope.transferPointId().equals(snapshot.transferPointId()))
+                throw unavailable();
+        }
+        return rows;
     }
     @Override @Transactional
     public Reconciliation reconcile(String periodId,ReconcileCommand command){
@@ -228,8 +240,18 @@ public class CustodyTransferLifecycleApplicationService implements CustodyTransf
     }
     @Override @Transactional
     public List<Ticket> history(String id){
-        visible(persistence.scopeForTicket(required(id)),TICKET_READ);
-        return persistence.history(id);
+        var original=visible(persistence.scopeForTicket(required(id)),TICKET_READ);
+        var scope=visible(persistence.lockReadScope(original.periodId()),TICKET_READ);
+        String company=owner(scope);
+        if(!original.transferPointId().equals(scope.transferPointId())||!original.agreementId().equals(scope.agreementId())
+                ||!company.equals(original.storedCompanyId()))throw unavailable();
+        var rows=persistence.history(id);
+        if(rows.stream().noneMatch(t->id.equals(t.id())))throw unavailable();
+        for(var row:rows)
+            if(!scope.periodId().equals(row.periodId())||!scope.agreementId().equals(row.agreementId())
+                    ||!company.equals(row.companyId())||!scope.transferPointId().equals(row.transferPointId()))
+                throw unavailable();
+        return rows;
     }
     private void sameFrozenSelection(Reconciliation prior,CustodyTransferLifecyclePort.Scope scope,String company){
         var current=select(scope,company,prior.snapshot().ticketTotal(),identity.actor());
@@ -337,5 +359,55 @@ public class CustodyTransferLifecycleApplicationService implements CustodyTransf
         persistence.insertDisposition(id,cmd.disposition(),cmd.reason(),cmd.evidenceReference(),actor,now(),
             receipt("DISPOSE",key,actor,fingerprint,scope.periodId(),id));
         return persistence.discrepancy(id).orElseThrow(CustodyTransferLifecycleApplicationService::unavailable);
+    }
+
+    private String owner(CustodyTransferLifecyclePort.Scope scope){
+        return ownership.activeOwner(scope.assetType(),scope.assetId()).orElseThrow(CustodyTransferLifecycleApplicationService::unavailable);
+    }
+    // A denied MANDATORY check marks its transaction rollback-only. Isolate the
+    // candidate probe, then retain the grant locks by reauthorizing every admitted point
+    // in the enclosing transaction before it can contribute to the page or count.
+    private boolean admittedPoint(String company,String point){
+        try{
+            pointProbe.executeWithoutResult(status->identity.require(PERIOD_READ,company,point));
+        }catch(NoSuchElementException denial){
+            if(!"Protected custody measurement unavailable.".equals(denial.getMessage()))throw denial;
+            return false;
+        }
+        identity.require(PERIOD_READ,company,point);
+        return true;
+    }
+    @Override @Transactional
+    public DiscoveryPage<TransferPoint> discoverTransferPoints(String companyId,String facilityId,int page,int size){
+        required(companyId);required(facilityId);
+        if(!companyId.equals(ownership.activeOwner("FACILITY",facilityId).orElseThrow(CustodyTransferLifecycleApplicationService::unavailable)))
+            throw unavailable();
+        var items=new ArrayList<TransferPoint>();
+        long[] total={0};
+        persistence.visitFacilityPoints(facilityId,point->{
+            if(!"FACILITY".equals(point.assetType())||!facilityId.equals(point.assetId()))throw unavailable();
+            if(!admittedPoint(companyId,point.id()))return;
+            long offset=CustodyTransferLifecycleUseCase.offset(page,size);
+            long index=total[0]++;
+            if(index>=offset&&items.size()<size)
+                items.add(new TransferPoint(point.id(),point.code(),companyId,facilityId));
+        });
+        if(total[0]==0)throw unavailable();
+        return new DiscoveryPage<>(items,page,size,total[0]);
+    }
+    @Override @Transactional
+    public DiscoveryPage<DiscoveredPeriod> discoverPeriods(String companyId,String transferPointId,String periodCode,int page,int size){
+        required(companyId);required(transferPointId);
+        var point=persistence.lockPoint(transferPointId).orElseThrow(CustodyTransferLifecycleApplicationService::unavailable);
+        if(!companyId.equals(ownership.activeOwner(point.assetType(),point.assetId()).orElseThrow(CustodyTransferLifecycleApplicationService::unavailable)))
+            throw unavailable();
+        identity.require(PERIOD_READ,companyId,point.id());
+        if(periodCode!=null)required(periodCode);
+        return persistence.periods(point,companyId,periodCode,page,size,CustodyTransferLifecycleUseCase.offset(page,size));
+    }
+    @Override @Transactional
+    public DiscoveryPage<Ticket> listTickets(String periodId,int page,int size){
+        var scope=visible(persistence.lockReadScope(required(periodId)),TICKET_READ);
+        return persistence.tickets(scope,owner(scope),page,size,CustodyTransferLifecycleUseCase.offset(page,size));
     }
 }

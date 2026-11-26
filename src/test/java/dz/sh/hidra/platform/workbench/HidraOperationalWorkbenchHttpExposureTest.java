@@ -7,7 +7,7 @@
  *
  * @Name        : HidraOperationalWorkbenchHttpExposureTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-05
+ * @UpdatedOn   : 2026-11-26
  *
  * @Type        : Class
  * @Layer       : Platform Test
@@ -233,6 +233,24 @@ class HidraOperationalWorkbenchHttpExposureTest {
 
         verify(entityManager, never()).find(LocalCredentialJpaEntity.class, "credential-1");
         verify(entityManager, never()).getCriteriaBuilder();
+        // Real metamodel resource name, both public Workbench aliases.
+        var custodyManager=mock(EntityManager.class);
+        var custodyType=dz.sh.hidra.modules.custody.infrastructure.persistence.entity.CustodyMeasurementPeriodJpaEntity.class;
+        var custodyMvc=mockMvc(service(custodyManager,"identity/users=id",UserJpaEntity.class,custodyType));
+        for(String prefix:List.of("/api/v1/workbench/custody","/api/v1/custody/workbench")){
+            var resources=custodyMvc.perform(get(prefix+"/resources")).andExpect(status().isOk()).andReturn();
+            assertThat(OBJECT_MAPPER.readTree(resources.getResponse().getContentAsString())).isEmpty();
+            String path=prefix+"/custody-measurement-periods";
+            for(var request:List.of(get(path),get(path+"/protected-period"),post(path+"/search")
+                    .contentType(MediaType.APPLICATION_JSON).content("{}"))){
+                var denied=custodyMvc.perform(request).andExpect(status().isBadRequest()).andReturn();
+                assertThat(denied.getResponse().getContentAsString()).doesNotContain("\"items\"","\"total\"");
+            }
+        }
+        verify(custodyManager,never()).getCriteriaBuilder();
+        verify(custodyManager,never()).find(custodyType,"protected-period");
+        assertThat(custodyMvc.perform(get("/api/v1/workbench/identity/resources")).andExpect(status().isOk())
+            .andReturn().getResponse().getContentAsString()).contains("users");
     }
 
     private static void assertSensitiveMarkerAbsent(MvcResult result) throws Exception {

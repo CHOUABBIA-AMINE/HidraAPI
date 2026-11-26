@@ -5,7 +5,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  * @Name        : CustodyMeasurementCapturePort
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-15
+ * @UpdatedOn   : 2026-11-26
  * @Type        : Interface
  * @Layer       : Application
  * @Module      : custody
@@ -34,4 +34,8 @@ public interface CustodyMeasurementCapturePort {
     boolean sourceExists(String periodId,String meterRunId,String measurementTypeId,String intervalEvidenceId);
     void append(CustodyMeasurementCaptureUseCase.Receipt receipt,String fingerprint);
     record Stored(CustodyMeasurementCaptureUseCase.Receipt receipt,String fingerprint){}
+
+    Optional<Scope> lockReadScope(String periodId);
+    dz.sh.hidra.modules.custody.application.port.in.CustodyTransferLifecycleUseCase.DiscoveryPage<CustodyMeasurementCaptureUseCase.Receipt>
+        list(String periodId,Scope scope,String companyId,int page,int size,long offset);
 }

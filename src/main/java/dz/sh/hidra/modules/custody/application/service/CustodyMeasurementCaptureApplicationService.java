@@ -5,7 +5,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  * @Name        : CustodyMeasurementCaptureApplicationService
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-15
+ * @UpdatedOn   : 2026-11-26
  * @Type        : Class
  * @Layer       : Application
  * @Module      : custody
@@ -145,5 +145,17 @@ public class CustodyMeasurementCaptureApplicationService implements CustodyMeasu
             }
             return HexFormat.of().formatHex(md.digest());
         } catch(NoSuchAlgorithmException e){throw new IllegalStateException("SHA-256 unavailable",e);}
+    }
+
+    @Override @Transactional
+    public dz.sh.hidra.modules.custody.application.port.in.CustodyTransferLifecycleUseCase.DiscoveryPage<Receipt>
+            list(String periodId,int page,int size){
+        CustodyMeasurementCapturePolicy.required(periodId);
+        var scope=storage.lockReadScope(periodId).orElseThrow(CustodyMeasurementCaptureApplicationService::unavailable);
+        String company=ownership.activeOwner(scope.assetType(),scope.assetId())
+                .orElseThrow(CustodyMeasurementCaptureApplicationService::unavailable);
+        authorization.require(READ,company,scope.transferPointId());
+        long offset=dz.sh.hidra.modules.custody.application.port.in.CustodyTransferLifecycleUseCase.offset(page,size);
+        return storage.list(periodId,scope,company,page,size,offset);
     }
 }

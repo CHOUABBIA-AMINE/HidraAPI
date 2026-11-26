@@ -7,7 +7,7 @@
  *
  * @Name        : HidraOperationalWorkbenchExposurePolicy
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-05
+ * @UpdatedOn   : 2026-11-26
  *
  * @Type        : Class
  * @Layer       : Platform
@@ -45,6 +45,25 @@ public final class HidraOperationalWorkbenchExposurePolicy {
             "hse:hse-case-status-histories", "hse:hse-case-evidence-links",
             "hse:hse-impact-assessments", "hse:hse-closures");
 
+    private static final Set<String> PROTECTED_CUSTODY_RESOURCES = Set.of(
+            "custody:custody-agreement-parties",
+            "custody:custody-agreements",
+            "custody:custody-approval-references",
+            "custody:custody-batchs",
+            "custody:custody-correction-factors",
+            "custody:custody-discrepancies",
+            "custody:custody-document-references",
+            "custody:custody-measurement-periods",
+            "custody:custody-measurement-snapshots",
+            "custody:custody-meter-run-snapshots",
+            "custody:custody-metering-systems",
+            "custody:custody-quality-certificates",
+            "custody:custody-quality-samples",
+            "custody:custody-quantity-calculations",
+            "custody:custody-reconciliations",
+            "custody:custody-ticket-lines",
+            "custody:custody-transfer-points",
+            "custody:custody-transfer-tickets");
     private final Map<String, Set<String>> approvedFieldsByResource;
 
     public HidraOperationalWorkbenchExposurePolicy(
@@ -124,6 +143,7 @@ public final class HidraOperationalWorkbenchExposurePolicy {
         }
         String normalized = key.toLowerCase(Locale.ROOT);
         return PROTECTED_HSE_RESOURCES.contains(normalized)
+                || PROTECTED_CUSTODY_RESOURCES.contains(normalized)
                 || normalized.startsWith("documents:")
                 || normalized.contains("credential") || normalized.contains("secret");
     }

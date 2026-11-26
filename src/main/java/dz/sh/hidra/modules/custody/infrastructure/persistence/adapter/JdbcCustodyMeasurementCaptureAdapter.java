@@ -5,7 +5,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  * @Name        : JdbcCustodyMeasurementCaptureAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-15
+ * @UpdatedOn   : 2026-11-26
  * @Type        : Class
  * @Layer       : Infrastructure
  * @Module      : custody
@@ -177,5 +177,36 @@ public class JdbcCustodyMeasurementCaptureAdapter implements CustodyMeasurementC
             r.getObject("interval_end",OffsetDateTime.class).toInstant(),
             r.getString("actor_id"),r.getObject("captured_at",OffsetDateTime.class).toInstant(),
             false,replay);
+    }
+
+    @Override public Optional<Scope> lockReadScope(String period){
+        var rows=jdbc.query("""
+            SELECT tp.id,tp.topology_asset_type_code,tp.topology_asset_id
+              FROM public.hidra_custody_measurement_period p
+              JOIN public.hidra_custody_transfer_point tp ON tp.id=p.transfer_point_id
+             WHERE p.id=? FOR SHARE OF p,tp
+            """,(row,n)->new Scope(row.getString(1),row.getString(2),row.getString(3)),period);
+        return rows.size()==1?Optional.of(rows.getFirst()):Optional.empty();
+    }
+    @Override public dz.sh.hidra.modules.custody.application.port.in.CustodyTransferLifecycleUseCase.DiscoveryPage<Receipt>
+            list(String period,Scope scope,String company,int page,int size,long offset){
+        return jdbc.query("""
+            WITH eligible AS MATERIALIZED (
+                SELECT r.* FROM public.hidra_custody_measurement_receipt r
+                WHERE r.period_id=? AND r.company_id=? AND r.transfer_point_id=?
+                  AND r.asset_type=? AND r.asset_id=?
+            ), slice AS (
+                SELECT * FROM eligible ORDER BY interval_start,interval_end,measurement_id LIMIT ? OFFSET ?
+            ), tally AS (SELECT count(*) AS total FROM eligible)
+            SELECT slice.*,tally.total FROM tally LEFT JOIN slice ON true
+            ORDER BY slice.interval_start,slice.interval_end,slice.measurement_id
+            """,(org.springframework.jdbc.core.ResultSetExtractor<dz.sh.hidra.modules.custody.application.port.in.CustodyTransferLifecycleUseCase.DiscoveryPage<Receipt>>) row->{
+                var items=new java.util.ArrayList<Receipt>();long total=0;
+                while(row.next()){
+                    total=row.getLong("total");
+                    if(row.getString("measurement_id")!=null)items.add(receipt(row,false));
+                }
+                return new dz.sh.hidra.modules.custody.application.port.in.CustodyTransferLifecycleUseCase.DiscoveryPage<>(items,page,size,total);
+            },period,company,scope.transferPointId(),scope.assetType(),scope.assetId(),size,offset);
     }
 }

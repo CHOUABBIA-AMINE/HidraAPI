@@ -5,7 +5,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  * @Name        : Gz2CustodyMeasurementNativeHttpPostgresIntegrationTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-15
+ * @UpdatedOn   : 2026-11-26
  * @Type        : Class
  * @Layer       : Test
  * @Module      : qualification
@@ -87,6 +87,11 @@ class Gz2CustodyMeasurementNativeHttpPostgresIntegrationTest {
                     java.sql.Timestamp.from(observed.minusSeconds(60)),
                     java.sql.Timestamp.from(observed));
                 String route="/api/v1/custody/measurement-periods/"+period+"/measurements";
+                assertEquals(0,runtime.get(route,reader).path("total").asInt(-1));
+                assertEquals(0,runtime.get(route,reader).path("items").size());
+                runtime.json("GET",route,foreign,null,404);
+                runtime.json("GET",route,wrong,null,404);
+                assertEquals(401,runtime.send("GET",route,null,null).statusCode());
                 Map<String,Object> cmd=Map.of(
                     "commandId",id(),"meterRunSnapshotId",run,"measurementTypeId",
                     f.catalog("custody","MEASUREMENT_TYPE","T20_VOLUME_TOTAL"),
@@ -139,6 +144,23 @@ class Gz2CustodyMeasurementNativeHttpPostgresIntegrationTest {
                 assertFalse(created.path("replay").asBoolean());
                 String getRoute=route+"/"+measurement;
                 assertEquals(created,runtime.get(getRoute,reader));
+                var page=runtime.get(route+"?page=0&size=1",reader);
+                assertEquals(1,page.path("total").asInt(-1));
+                assertEquals(1,page.path("totalPages").asInt(-1));
+                assertEquals(created,page.path("items").get(0));
+                assertEquals(50,runtime.get(route,reader).path("size").asInt(-1));
+                assertEquals(1,runtime.get(route+"?page=1&size=1",reader).path("total").asInt(-1));
+                assertEquals(0,runtime.get(route+"?page=1&size=1",reader).path("items").size());
+                assertTrue(runtime.send("GET",route,reader,null).headers().firstValue("Cache-Control").orElse("").contains("no-store"));
+                runtime.json("GET",route+"?size=201",reader,null,400);
+                runtime.json("GET",route+"?page=-1",reader,null,400);
+                runtime.json("GET",route+"?size=0",reader,null,400);
+                var denied=runtime.send("GET",route+"?size=0",foreign,null);
+                assertEquals(404,denied.statusCode());
+                assertFalse(denied.body().contains(measurement));
+                assertFalse(denied.body().contains("\"total\""));
+                runtime.json("GET","/api/v1/custody/measurement-periods/"+id()+"/measurements",reader,null,404);
+                assertEquals(1,f.sql.queryForObject("SELECT count(*) FROM hidra_custody_measurement_receipt",Integer.class));
                 assertEquals(404,runtime.send("GET",getRoute,foreign,null).statusCode());
                 assertEquals(404,runtime.send("GET",getRoute,wrong,null).statusCode());
                 // A new command conflicts with the already captured eligible source.
@@ -167,6 +189,7 @@ class Gz2CustodyMeasurementNativeHttpPostgresIntegrationTest {
                        AND scope_reference_id IN (?,?)
                     """,f.revoked,companyGrant,pointGrant);
                 assertEquals(404,runtime.send("GET",getRoute,revoked,null).statusCode());
+                runtime.json("GET",route,revoked,null,404);
                 assertEquals(200,runtime.send("GET",getRoute,reader,null).statusCode());
             }
         }

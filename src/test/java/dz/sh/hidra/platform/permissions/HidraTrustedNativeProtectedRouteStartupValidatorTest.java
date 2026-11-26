@@ -7,7 +7,7 @@
  *
  * @Name        : HidraTrustedNativeProtectedRouteStartupValidatorTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-15
+ * @UpdatedOn   : 2026-11-26
  *
  * @Type        : Class
  * @Layer       : Test
@@ -63,7 +63,18 @@ class HidraTrustedNativeProtectedRouteStartupValidatorTest {
         var routes=new HidraTrustedNativeProtectedRouteRegistry().candidates();
         String base="/api/v1/simulation/companies/{companyId}/pipeline-systems/{pipelineSystemId}/scenarios";
         var t31=routes.stream().filter(r->r.controller().getSimpleName().equals("ScenarioInputRevisionController")).toList();
-        assertEquals(159,routes.size());assertEquals(4,t31.size());
+        assertEquals(163,routes.size());assertEquals(4,t31.size());
+        var t63=routes.stream().filter(r->java.util.Set.of("discoverTransferPoints","discoverPeriods","listTickets").contains(r.method().getName())
+            &&r.controller().getSimpleName().equals("CustodyTransferLifecycleController")
+            ||r.method().getName().equals("list")&&r.controller().getSimpleName().equals("CustodyMeasurementCaptureController")).toList();
+        assertEquals(4,t63.size());
+        assertEquals(java.util.Set.of(
+            "GET /api/v1/custody/companies/{companyId}/facilities/{facilityId}/transfer-points",
+            "GET /api/v1/custody/companies/{companyId}/transfer-points/{transferPointId}/measurement-periods",
+            "GET /api/v1/custody/measurement-periods/{periodId}/transfer-tickets",
+            "GET /api/v1/custody/measurement-periods/{periodId}/measurements"),
+            t63.stream().map(r->r.verb()+" "+r.pattern()).collect(java.util.stream.Collectors.toSet()));
+        assertTrue(t63.stream().allMatch(r->r.method().isAnnotationPresent(NativeProtectedOperation.class)));
         assertTrue(t31.stream().allMatch(r->r.method().isAnnotationPresent(NativeProtectedOperation.class)));
         assertEquals(4,t31.stream().map(r->r.verb()+" "+r.pattern()).distinct().count());
         assertTrue(t31.stream().allMatch(r->r.pattern().equals(base)
@@ -73,7 +84,7 @@ class HidraTrustedNativeProtectedRouteStartupValidatorTest {
         var registry=new HidraTrustedNativeProtectedRouteRegistry();
         var rows=registry.candidates().stream()
             .filter(x->x.controller().getSimpleName().equals("ScopedAuditEvidenceController")).toList();
-        assertEquals(159,registry.candidates().size());assertEquals(4,rows.size());
+        assertEquals(163,registry.candidates().size());assertEquals(4,rows.size());
         assertTrue(rows.stream().allMatch(x->x.method().isAnnotationPresent(NativeProtectedOperation.class)));
         assertEquals(4,rows.stream().map(x->x.verb()+" "+x.pattern()).distinct().count());
     }
@@ -81,7 +92,7 @@ class HidraTrustedNativeProtectedRouteStartupValidatorTest {
         var registry=new HidraTrustedNativeProtectedRouteRegistry();
         var routes=registry.candidates().stream()
                 .filter(r->r.controller().getSimpleName().equals("WorkflowInboxController")).toList();
-        assertEquals(159,registry.candidates().size());
+        assertEquals(163,registry.candidates().size());
         assertEquals(3,routes.size());
         assertTrue(routes.stream().allMatch(r->r.method().isAnnotationPresent(NativeProtectedOperation.class)));
         assertEquals(3,routes.stream().map(r->r.verb()+" "+r.pattern()).distinct().count());
@@ -89,7 +100,7 @@ class HidraTrustedNativeProtectedRouteStartupValidatorTest {
 
     @Test void productionNativeExactRoutesFailWithoutCompiledMappings() {
         var registry = new HidraTrustedNativeProtectedRouteRegistry();
-        assertEquals(159, registry.candidates().size());
+        assertEquals(163, registry.candidates().size());
         assertThrows(IllegalStateException.class, ()->
                 new HidraTrustedNativeProtectedRouteStartupValidator(
                     new RequestMappingHandlerMapping(), registry).validate());

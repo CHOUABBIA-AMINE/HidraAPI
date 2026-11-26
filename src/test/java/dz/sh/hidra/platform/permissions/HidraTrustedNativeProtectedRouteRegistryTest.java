@@ -7,7 +7,7 @@
  *
  * @Name        : HidraTrustedNativeProtectedRouteRegistryTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-11
+ * @UpdatedOn   : 2026-11-26
  *
  * @Type        : Class
  * @Layer       : Test
@@ -70,7 +70,7 @@ class HidraTrustedNativeProtectedRouteRegistryTest {
         String base="/api/v1/audit/companies/{companyId}/facilities/{facilityId}";
         var rows=all.stream().filter(x->x.controller().getSimpleName()
                 .equals("ScopedAuditEvidenceController")).toList();
-        assertEquals(159,all.size());assertEquals(4,rows.size());
+        assertEquals(163,all.size());assertEquals(4,rows.size());
         assertEquals(java.util.Set.of("GET "+base+"/events","POST "+base+"/exports",
                 "GET "+base+"/exports/{exportId}","GET "+base+"/exports/{exportId}/content"),
                 rows.stream().map(x->x.verb()+" "+x.pattern())
@@ -95,7 +95,7 @@ class HidraTrustedNativeProtectedRouteRegistryTest {
         var routes=registry.candidates().stream()
                 .filter(route->route.controller().getSimpleName().equals("WorkflowInboxController")).toList();
         String base="/api/v1/notification/companies/{companyId}/facilities/{facilityId}/inbox";
-        assertEquals(159,registry.candidates().size());
+        assertEquals(163,registry.candidates().size());
         assertEquals(3,routes.size());
         assertEquals(java.util.Set.of("GET "+base,"GET "+base+"/{notificationId}",
                 "POST "+base+"/{notificationId}/acknowledgement"),
@@ -197,8 +197,9 @@ class HidraTrustedNativeProtectedRouteRegistryTest {
     @Test void t20ExactCustodyRoutesHaveOnlyTwoCompiledNativeBindings() {
         var rows=new HidraTrustedNativeProtectedRouteRegistry().candidates().stream()
           .filter(r->r.controller().getSimpleName().equals("CustodyMeasurementCaptureController")).toList();
-        assertEquals(2,rows.size());
+        assertEquals(3,rows.size());
         assertEquals(java.util.Set.of(
+          "GET /api/v1/custody/measurement-periods/{periodId}/measurements",
           "POST /api/v1/custody/measurement-periods/{periodId}/measurements",
           "GET /api/v1/custody/measurement-periods/{periodId}/measurements/{measurementId}"),
             rows.stream().map(r->r.verb()+" "+r.pattern()).collect(java.util.stream.Collectors.toSet()));
@@ -207,11 +208,17 @@ class HidraTrustedNativeProtectedRouteRegistryTest {
     @Test void t21ExactCustodyLifecycleRegistersElevenNativeBindings() {
         var entries=new HidraTrustedNativeProtectedRouteRegistry().candidates().stream()
             .filter(row->row.controller().getSimpleName().equals("CustodyTransferLifecycleController")).toList();
-        assertEquals(11,entries.size());
-        assertEquals(7,entries.stream().filter(row->row.verb().equals("GET")).count());
+        assertEquals(14,entries.size());
+        assertEquals(10,entries.stream().filter(row->row.verb().equals("GET")).count());
         assertEquals(4,entries.stream().filter(row->row.verb().equals("POST")).count());
         assertTrue(entries.stream().allMatch(row->row.method().isAnnotationPresent(NativeProtectedOperation.class)));
-        assertEquals(11,entries.stream().map(row->row.verb()+" "+row.pattern()).distinct().count());
+        assertEquals(14,entries.stream().map(row->row.verb()+" "+row.pattern()).distinct().count());
+        assertEquals(java.util.Set.of(
+            "GET /api/v1/custody/companies/{companyId}/facilities/{facilityId}/transfer-points",
+            "GET /api/v1/custody/companies/{companyId}/transfer-points/{transferPointId}/measurement-periods",
+            "GET /api/v1/custody/measurement-periods/{periodId}/transfer-tickets"),
+            entries.stream().filter(row->java.util.Set.of("discoverTransferPoints","discoverPeriods","listTickets").contains(row.method().getName()))
+                .map(row->row.verb()+" "+row.pattern()).collect(java.util.stream.Collectors.toSet()));
     }
     @Test void t19RegistersOnlyExactNominationCommandAndHistoryTuples() {
         var routes = new HidraTrustedNativeProtectedRouteRegistry().candidates().stream()
@@ -242,7 +249,7 @@ class HidraTrustedNativeProtectedRouteRegistryTest {
 
     @Test void baselineRoutesDeclareOnlyFiveExactCompiledTuples(){
         var registry=new HidraTrustedNativeProtectedRouteRegistry();
-        assertEquals(159,registry.candidates().size());
+        assertEquals(163,registry.candidates().size());
         var rows=registry.candidates().stream().filter(r->r.controller().getSimpleName().equals("EngineeringBaselineDraftController")).toList();
         assertEquals(5,rows.size());
         assertEquals(java.util.Set.of("POST /api/v1/topology/engineering-baselines","PUT /api/v1/topology/engineering-baselines/{manifestId}",

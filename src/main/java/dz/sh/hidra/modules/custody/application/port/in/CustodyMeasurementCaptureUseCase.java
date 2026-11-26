@@ -5,7 +5,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  * @Name        : CustodyMeasurementCaptureUseCase
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-15
+ * @UpdatedOn   : 2026-11-26
  * @Type        : Interface
  * @Layer       : Application
  * @Module      : custody
@@ -37,4 +37,6 @@ public interface CustodyMeasurementCaptureUseCase {
     }
     Receipt capture(String periodId,Command command);
     Receipt read(String periodId,String measurementId);
+
+    CustodyTransferLifecycleUseCase.DiscoveryPage<Receipt> list(String periodId,int page,int size);
 }

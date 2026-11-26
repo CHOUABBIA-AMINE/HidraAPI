@@ -5,7 +5,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  * @Name        : CustodyTransferLifecycleController
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-17
+ * @UpdatedOn   : 2026-11-26
  * @Type        : Class
  * @Layer       : REST Adapter
  * @Module      : custody
@@ -16,6 +16,7 @@ package dz.sh.hidra.modules.custody.api.rest.controller;
 import dz.sh.hidra.modules.custody.application.port.in.CustodyTransferLifecycleUseCase;
 import dz.sh.hidra.modules.custody.api.rest.request.CustodyTransferLifecycleRequests;
 import dz.sh.hidra.modules.custody.api.rest.response.CustodyTransferLifecycleResponses;
+import dz.sh.hidra.modules.custody.api.rest.response.CustodyDiscoveryResponses;
 import dz.sh.hidra.platform.permissions.NativeProtectedOperation;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -102,4 +103,29 @@ public final class CustodyTransferLifecycleController {
     ProblemDetail conflict(){return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT,"Custody lifecycle state or command conflict.");}
     @ExceptionHandler(IllegalArgumentException.class)
     ProblemDetail invalid(){return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,"Invalid custody lifecycle command.");}
+
+    @NativeProtectedOperation @Operation(operationId="custodyT63DiscoverTransferPoints",summary="Discover authorized custody transfer points")
+    @GetMapping("/companies/{companyId}/facilities/{facilityId}/transfer-points")
+    public ResponseEntity<CustodyDiscoveryResponses.TransferPointPage> discoverTransferPoints(
+            @PathVariable String companyId,@PathVariable String facilityId,
+            @RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="50") int size){
+        return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(
+            CustodyDiscoveryResponses.TransferPointPage.from(useCase.discoverTransferPoints(companyId,facilityId,page,size)));
+    }
+    @NativeProtectedOperation @Operation(operationId="custodyT63DiscoverPeriods",summary="Discover authorized enrolled custody periods")
+    @GetMapping("/companies/{companyId}/transfer-points/{transferPointId}/measurement-periods")
+    public ResponseEntity<CustodyDiscoveryResponses.PeriodPage> discoverPeriods(
+            @PathVariable String companyId,@PathVariable String transferPointId,
+            @RequestParam(required=false) String periodCode,
+            @RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="50") int size){
+        return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(
+            CustodyDiscoveryResponses.PeriodPage.from(useCase.discoverPeriods(companyId,transferPointId,periodCode,page,size)));
+    }
+    @NativeProtectedOperation @Operation(operationId="custodyT63ListTickets",summary="List authorized immutable software custody tickets")
+    @GetMapping("/measurement-periods/{periodId}/transfer-tickets")
+    public ResponseEntity<CustodyDiscoveryResponses.TicketPage> listTickets(
+            @PathVariable String periodId,@RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="50") int size){
+        return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(
+            CustodyDiscoveryResponses.TicketPage.from(useCase.listTickets(periodId,page,size)));
+    }
 }

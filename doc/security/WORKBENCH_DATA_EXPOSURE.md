@@ -104,3 +104,28 @@ Security behavior:
 - filters and sort keys are limited to approved fields.
 
 No default resource catalogue was added because current repository evidence does not define an approved generic Workbench resource/field inventory, while dedicated Identity and Organization query APIs now exist.
+
+
+## T63 — Custody protected operational discovery
+
+The generic Workbench is not a Custody authorization boundary. The following
+metamodel resources are prohibited regardless of explicit exposure configuration
+or generic route grant:
+
+- custody-agreement-parties, custody-agreements, custody-approval-references;
+- custody-batchs (the actual generated resource name), custody-correction-factors,
+  custody-discrepancies, custody-document-references;
+- custody-measurement-periods, custody-measurement-snapshots,
+  custody-meter-run-snapshots, custody-metering-systems;
+- custody-quality-certificates, custody-quality-samples,
+  custody-quantity-calculations, custody-reconciliations, custody-ticket-lines,
+  custody-transfer-points, custody-transfer-tickets.
+
+Both generic Workbench URL aliases use the same fail-closed exposure policy.
+These resources cannot be configured, discovered, listed, counted, searched or
+read by ID through the generic service. Custody catalog entries and translations
+remain subject to the existing explicit resource/field allowlist. Use the
+dedicated native Custody read routes and their current paired company/transfer-point
+permissions and Topology owner checks; no UI-side authorization or global fallback.
+This restriction does not qualify separate legacy creation commands, historical
+Party labels, or unenrolled periods for UXR-30.

@@ -5,7 +5,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  * @Name        : CustodyMeasurementCaptureController
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-15
+ * @UpdatedOn   : 2026-11-26
  * @Type        : Class
  * @Layer       : REST Adapter
  * @Module      : custody
@@ -16,6 +16,7 @@ package dz.sh.hidra.modules.custody.api.rest.controller;
 
 import dz.sh.hidra.modules.custody.api.rest.request.CustodyMeasurementCaptureRequest;
 import dz.sh.hidra.modules.custody.api.rest.response.CustodyMeasurementCaptureResponse;
+import dz.sh.hidra.modules.custody.api.rest.response.CustodyDiscoveryResponses;
 import dz.sh.hidra.modules.custody.application.port.in.CustodyMeasurementCaptureUseCase;
 import dz.sh.hidra.modules.custody.domain.service.CustodyMeasurementCapturePolicy;
 import dz.sh.hidra.platform.permissions.NativeProtectedOperation;
@@ -56,4 +57,15 @@ public class CustodyMeasurementCaptureController {
     ProblemDetail conflict(CustodyMeasurementCapturePolicy.Conflict failure){
         return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT,failure.getMessage());
     }
+
+    @NativeProtectedOperation
+    @Operation(operationId="custodyT63ListMeasurements",summary="List authorized immutable observed measurement receipts")
+    @GetMapping
+    public ResponseEntity<CustodyDiscoveryResponses.MeasurementPage> list(@PathVariable String periodId,
+            @RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="50") int size){
+        return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(
+            CustodyDiscoveryResponses.MeasurementPage.from(useCase.list(periodId,page,size)));
+    }
+    @ExceptionHandler(IllegalArgumentException.class)
+    ProblemDetail invalidPage(){return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,"Invalid custody measurement page.");}
 }

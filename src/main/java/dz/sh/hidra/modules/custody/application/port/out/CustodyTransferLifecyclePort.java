@@ -5,7 +5,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  * @Name        : CustodyTransferLifecyclePort
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-17
+ * @UpdatedOn   : 2026-11-26
  * @Type        : Interface
  * @Layer       : Application
  * @Module      : custody
@@ -45,4 +45,11 @@ public interface CustodyTransferLifecyclePort {
     void insertFinalization(String ticketId,Decision approval,Instant at,Stored command);
     void insertCorrection(String originalId,String reason,String evidenceReference,
                     Reconciliation reconciliation,Ticket ticket,Discrepancy discrepancy,Stored command);
+
+    record PointScope(String id,String code,String assetType,String assetId){}
+    Optional<PointScope> lockPoint(String transferPointId);
+    Optional<Scope> lockReadScope(String periodId);
+    void visitFacilityPoints(String facilityId,java.util.function.Consumer<PointScope> visitor);
+    DiscoveryPage<DiscoveredPeriod> periods(PointScope point,String companyId,String periodCode,int page,int size,long offset);
+    DiscoveryPage<Ticket> tickets(Scope scope,String companyId,int page,int size,long offset);
 }

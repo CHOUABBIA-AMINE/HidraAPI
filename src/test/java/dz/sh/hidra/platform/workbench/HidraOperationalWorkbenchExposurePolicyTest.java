@@ -7,7 +7,7 @@
  *
  * @Name        : HidraOperationalWorkbenchExposurePolicyTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-10-05
+ * @UpdatedOn   : 2026-11-26
  *
  * @Type        : Class
  * @Layer       : Platform Test
@@ -93,6 +93,32 @@ class HidraOperationalWorkbenchExposurePolicyTest {
         assertThat(policy.approvedFields("identity", "users")).isPresent();
         assertThat(new HidraOperationalWorkbenchExposurePolicy("hse/safety-observations=id")
                 .approvedFields("hse", "safety-observations")).isPresent();
+        for(String resource:java.util.List.of(
+                "custody-agreement-parties",
+                "custody-agreements",
+                "custody-approval-references",
+                "custody-batchs",
+                "custody-correction-factors",
+                "custody-discrepancies",
+                "custody-document-references",
+                "custody-measurement-periods",
+                "custody-measurement-snapshots",
+                "custody-meter-run-snapshots",
+                "custody-metering-systems",
+                "custody-quality-certificates",
+                "custody-quality-samples",
+                "custody-quantity-calculations",
+                "custody-reconciliations",
+                "custody-ticket-lines",
+                "custody-transfer-points",
+                "custody-transfer-tickets")){
+            assertThat(policy.approvedFields("CUSTODY",resource)).isEmpty();
+            assertThatThrownBy(()->new HidraOperationalWorkbenchExposurePolicy("custody/"+resource+"=id"))
+                .isInstanceOf(IllegalArgumentException.class);
+        }
+        var catalogs=new HidraOperationalWorkbenchExposurePolicy("custody/custody-catalog-entries=id;custody/custody-catalog-translations=id");
+        assertThat(catalogs.approvedFields("custody","custody-catalog-entries")).isPresent();
+        assertThat(catalogs.approvedFields("custody","custody-catalog-translations")).isPresent();
     }
 
     @Test

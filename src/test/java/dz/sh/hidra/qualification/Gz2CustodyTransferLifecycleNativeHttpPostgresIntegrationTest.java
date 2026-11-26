@@ -5,7 +5,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  * @Name        : Gz2CustodyTransferLifecycleNativeHttpPostgresIntegrationTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-15
+ * @UpdatedOn   : 2026-11-26
  * @Type        : Class
  * @Layer       : Test
  * @Module      : qualification
@@ -53,6 +53,15 @@ class Gz2CustodyTransferLifecycleNativeHttpPostgresIntegrationTest {
             grantProduct(f);
             String transfer=id(),agreement=id(),period=id(),run=id(),meter=id(),partyRole=id(),agreementParty=id();
             setupCustody(f,transfer,agreement,period,run,meter,partyRole,agreementParty);
+            String sibling=id(),secondAllowed=id(),emptyPoint=id();
+            for(String candidate:List.of(sibling,secondAllowed,emptyPoint)){
+                f.sql.update("""
+                    INSERT INTO public.hidra_custody_transfer_point
+                    (id,code,name_fr,topology_asset_type_code,topology_asset_id,direction,
+                     product_type_id,status,effective_from,created_at,updated_at)
+                    VALUES (?,?,'Synthetic GZ2 discovery','FACILITY',?,'OUTBOUND',?,'ACTIVE',now()-interval '1 hour',now(),now())
+                    """,candidate,transfer,f.asset,f.product);
+            }
             String companyGrant="custody-company:"+f.company;
             String pointGrant="custody-transfer-point:"+transfer;
             f.paired(f.author,"custody:measurements","MEASUREMENT",companyGrant,pointGrant,"capture","read");
@@ -72,6 +81,21 @@ class Gz2CustodyTransferLifecycleNativeHttpPostgresIntegrationTest {
             f.paired(f.reader,"custody:reconciliations","RECONCILIATION",companyGrant,pointGrant,"read");
             f.paired(f.reader,"custody:tickets","TRANSFER_TICKET",companyGrant,pointGrant,"read");
             f.paired(f.reader,"custody:discrepancies","DISCREPANCY",companyGrant,pointGrant,"read");
+            f.permit(f.reader,"custody:periods:read","MEASUREMENT_PERIOD","CUSTOM","custody-transfer-point:"+secondAllowed);
+            f.permit(f.reader,"custody:periods:read","MEASUREMENT_PERIOD","CUSTOM","custody-transfer-point:"+emptyPoint);
+            f.paired(f.foreign,"custody:periods","MEASUREMENT_PERIOD","custody-company:"+f.foreignCompany,pointGrant,"read");
+            f.paired(f.wrongAsset,"custody:periods","MEASUREMENT_PERIOD",companyGrant,"custody-transfer-point:"+sibling,"read");
+            f.paired(f.revoked,"custody:periods","MEASUREMENT_PERIOD",companyGrant,pointGrant,"read");
+            f.paired(f.foreign,"custody:tickets","TRANSFER_TICKET","custody-company:"+f.foreignCompany,pointGrant,"read");
+            f.paired(f.foreign,"custody:reconciliations","RECONCILIATION","custody-company:"+f.foreignCompany,pointGrant,"read");
+            f.paired(f.wrongAsset,"custody:tickets","TRANSFER_TICKET",companyGrant,"custody-transfer-point:"+sibling,"read");
+            f.paired(f.revoked,"custody:tickets","TRANSFER_TICKET",companyGrant,pointGrant,"read");
+            for(String principal:List.of(f.reader,f.foreign,f.wrongAsset,f.revoked)){
+                f.global(principal,"custody:periods:read","custody:measurements:read","custody:tickets:read","custody:reconciliations:read");
+            }
+            String pointList="/api/v1/custody/companies/"+f.company+"/facilities/"+f.asset+"/transfer-points";
+            String periodList="/api/v1/custody/companies/"+f.company+"/transfer-points/"+transfer+"/measurement-periods";
+            String tickets="/api/v1/custody/measurement-periods/"+period+"/transfer-tickets";
             f.permit(f.producer,"telemetry:commission:manage","TELEMETRY_COMMISSIONING",
                     "CUSTOM","telemetry-company:"+f.company);
             f.global(f.producer,"telemetry:points:execute","telemetry:points:read");
@@ -81,6 +105,43 @@ class Gz2CustodyTransferLifecycleNativeHttpPostgresIntegrationTest {
                 String producer=runtime.login(f.producer),reader=runtime.login(f.reader);
                 String foreign=runtime.login(f.foreign),wrong=runtime.login(f.wrongAsset);
                 String revoked=runtime.login(f.revoked);
+                var pointPage=runtime.get(pointList+"?size=1",reader);
+                assertEquals(3,pointPage.path("total").asInt(-1));
+                var ordered=java.util.stream.Stream.of(transfer,secondAllowed,emptyPoint).sorted().toList();
+                for(int i=0;i<ordered.size();i++){
+                    var slice=runtime.get(pointList+"?size=1&page="+i,reader);
+                    assertEquals(3,slice.path("total").asInt(-1));
+                    assertEquals(ordered.get(i),field(slice.path("items").get(0),"id"));
+                }
+                assertEquals(0,runtime.get(pointList+"?size=1&page=3",reader).path("items").size());
+                assertFalse(runtime.get(pointList,reader).toString().contains(sibling));
+                assertEquals(1,runtime.get(pointList,wrong).path("total").asInt(-1));
+                runtime.json("GET",pointList,foreign,null,404);
+                runtime.json("GET",pointList.replace(f.asset,id()),reader,null,404);
+                runtime.json("GET",pointList.replace(f.asset,f.secondAsset),reader,null,404);
+                runtime.json("GET",pointList+"?size=201",reader,null,400);
+                f.sql.update("UPDATE hidra_topology_facility SET status='SUSPENDED' WHERE id=?",f.asset);
+                runtime.json("GET",pointList,reader,null,404);
+                runtime.json("GET",periodList,reader,null,404);
+                f.sql.update("UPDATE hidra_topology_facility SET status='ACTIVE' WHERE id=?",f.asset);
+                f.sql.update("""
+                    UPDATE hidra_identity_user_permission_grant SET effect='DENY'
+                    WHERE user_id=? AND scope_reference_id=? AND permission_id IN
+                    (SELECT id FROM hidra_identity_permission WHERE code='custody:periods:read')
+                    """,f.reader,"custody-transfer-point:"+secondAllowed);
+                assertEquals(2,runtime.get(pointList,reader).path("total").asInt(-1));
+                assertFalse(runtime.get(pointList,reader).toString().contains(secondAllowed));
+                f.sql.update("""
+                    UPDATE hidra_identity_user_permission_grant SET effect='GRANT'
+                    WHERE user_id=? AND scope_reference_id=? AND permission_id IN
+                    (SELECT id FROM hidra_identity_permission WHERE code='custody:periods:read')
+                    """,f.reader,"custody-transfer-point:"+secondAllowed);
+                assertEquals(0,runtime.get(periodList.replace(transfer,emptyPoint),reader).path("total").asInt(-1));
+                assertEquals(0,runtime.get(periodList,reader).path("total").asInt(-1));
+                assertEquals(0,runtime.get(tickets,reader).path("total").asInt(-1));
+                runtime.json("GET",periodList.replace(transfer,sibling),reader,null,404);
+                runtime.json("GET",periodList,foreign,null,404);
+                runtime.json("GET",tickets,wrong,null,404);
                 JsonNode pin=publishProduct(f,runtime,author,reviewer);
                 String publication=field(pin,"revisionId");
                 JsonNode commissioned=commission(f,runtime,producer,observed.minusSeconds(600));
@@ -147,6 +208,15 @@ class Gz2CustodyTransferLifecycleNativeHttpPostgresIntegrationTest {
                 assertEquals(reading.trusted(),field(created,"trustedReadingId"));
                 assertEquals("false",created.path("acceptedForCustody").asText());
                 assertFalse(created.path("replay").asBoolean());
+                var periods=runtime.get(periodList,reader);
+                assertEquals(1,periods.path("total").asInt(-1));
+                assertEquals(period,field(periods.path("items").get(0),"id"));
+                assertEquals(period,field(periods.path("items").get(0),"periodCode"));
+                assertEquals(1,runtime.get(query(periodList,"periodCode",period),reader).path("total").asInt(-1));
+                assertEquals(0,runtime.get(query(periodList,"periodCode",id()),reader).path("total").asInt(-1));
+                assertEquals(0,runtime.get(periodList+"?size=1&page=1",reader).path("items").size());
+                runtime.json("GET",periodList+"?page=-1",reader,null,400);
+                runtime.json("GET",periodList+"?periodCode=",reader,null,400);
                 // One native HTTP journey: signed T20 source -> immutable T21 reconciliation
                 // -> independent Workflow decision -> software finalization -> correction.
                 String reconciliationRoute="/api/v1/custody/measurement-periods/"+period+"/reconciliations";
@@ -213,6 +283,17 @@ class Gz2CustodyTransferLifecycleNativeHttpPostgresIntegrationTest {
                 JsonNode finalCorrection=runtime.json("POST",correctedRoute+"/finalizations",author,finalizeTwo,200);
                 assertEquals("SOFTWARE_FINALIZED",field(finalCorrection,"status"));
                 assertEquals(2,runtime.get(firstTicketRoute+"/history",author).size());
+                var firstPage=runtime.get(tickets+"?size=1",reader);
+                assertEquals(2,firstPage.path("total").asInt(-1));
+                assertEquals(runtime.get(firstTicketRoute,reader),firstPage.path("items").get(0));
+                assertEquals(runtime.get(correctedRoute,reader),runtime.get(tickets+"?size=1&page=1",reader).path("items").get(0));
+                assertEquals(2,runtime.get(tickets+"?size=1&page=2",reader).path("total").asInt(-1));
+                assertEquals(0,runtime.get(tickets+"?size=1&page=2",reader).path("items").size());
+                runtime.json("GET",tickets+"?size=0",reader,null,400);
+                var denied=runtime.send("GET",tickets,foreign,null);
+                assertEquals(404,denied.statusCode());
+                assertFalse(denied.body().contains(firstTicketId));
+                assertFalse(denied.body().contains("\"total\""));
                 assertEquals(2,f.sql.queryForObject(
                     "SELECT count(*) FROM public.hidra_custody_t21_finalization",Integer.class));
                 assertEquals(1,f.sql.queryForObject(
@@ -251,6 +332,34 @@ class Gz2CustodyTransferLifecycleNativeHttpPostgresIntegrationTest {
                     """,f.revoked,companyGrant,pointGrant);
                 assertEquals(404,runtime.send("GET",getRoute,revoked,null).statusCode());
                 assertEquals(200,runtime.send("GET",getRoute,reader,null).statusCode());
+                runtime.json("GET",pointList,revoked,null,404);
+                runtime.json("GET",periodList,revoked,null,404);
+                runtime.json("GET",tickets,revoked,null,404);
+                // Reassignment retains historical immutable company, not the new owner.
+                f.sql.update("UPDATE hidra_topology_facility SET owner_party_id=? WHERE id=?",f.foreignCompany,f.asset);
+                runtime.json("GET",pointList,reader,null,404);
+                runtime.json("GET",periodList,reader,null,404);
+                runtime.json("GET",tickets,reader,null,404);
+                String newOwnerPeriods=periodList.replace(f.company,f.foreignCompany);
+                assertEquals(0,runtime.get(newOwnerPeriods,foreign).path("total").asInt(-1));
+                assertEquals(0,runtime.get(tickets,foreign).path("total").asInt(-1));
+                assertEquals(0,runtime.get(tickets,foreign).path("items").size());
+                runtime.json("GET",reconciliationRoute,foreign,null,404);
+                runtime.json("GET",firstTicketRoute,foreign,null,404);
+                f.sql.update("UPDATE hidra_topology_facility SET owner_party_id=? WHERE id=?",f.company,f.asset);
+                assertEquals(2,runtime.get(tickets,reader).path("total").asInt(-1));
+            }
+            try(var restarted=f.start()){
+                String reader=restarted.login(f.reader);
+                assertEquals(3,restarted.get(pointList,reader).path("total").asInt(-1));
+                assertEquals(period,field(restarted.get(periodList,reader).path("items").get(0),"id"));
+                var page=restarted.get(tickets,reader);
+                assertEquals(2,page.path("total").asInt(-1));
+                for(JsonNode row:page.path("items")){
+                    assertEquals(row,restarted.get("/api/v1/custody/transfer-tickets/"+field(row,"id"),reader));
+                    assertFalse(row.path("official").asBoolean());
+                }
+                assertEquals(1,restarted.get("/api/v1/custody/measurement-periods/"+period+"/measurements",reader).path("total").asInt(-1));
             }
         }
     }

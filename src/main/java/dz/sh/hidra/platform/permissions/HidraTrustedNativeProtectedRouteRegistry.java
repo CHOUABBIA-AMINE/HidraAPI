@@ -7,7 +7,7 @@
  *
  * @Name        : HidraTrustedNativeProtectedRouteRegistry
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-11
+ * @UpdatedOn   : 2026-11-26
  *
  * @Type        : Class
  * @Layer       : Platform
@@ -306,6 +306,10 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
                     "/api/v1/risk/assessments/{id}"),
                 new Route(t22,t22.getDeclaredMethod("decisionHistory",String.class),"GET",
                     "/api/v1/risk/assessments/{id}/decision-history"),
+                new Route(t21,t21.getDeclaredMethod("discoverTransferPoints",String.class,String.class,int.class,int.class),"GET","/api/v1/custody/companies/{companyId}/facilities/{facilityId}/transfer-points"),
+                new Route(t21,t21.getDeclaredMethod("discoverPeriods",String.class,String.class,String.class,int.class,int.class),"GET","/api/v1/custody/companies/{companyId}/transfer-points/{transferPointId}/measurement-periods"),
+                new Route(t21,t21.getDeclaredMethod("listTickets",String.class,int.class,int.class),"GET","/api/v1/custody/measurement-periods/{periodId}/transfer-tickets"),
+                new Route(custodyController,custodyController.getDeclaredMethod("list",String.class,int.class,int.class),"GET","/api/v1/custody/measurement-periods/{periodId}/measurements"),
                 new Route(t21,t21.getDeclaredMethod("period",String.class),"GET",t21Periods),
                 new Route(t21,t21.getDeclaredMethod("reconciliations",String.class),"GET",t21Periods+"/reconciliations"),
                 new Route(t21,t21.getDeclaredMethod("reconcile",String.class,t21Reconcile),"POST",t21Periods+"/reconciliations"),

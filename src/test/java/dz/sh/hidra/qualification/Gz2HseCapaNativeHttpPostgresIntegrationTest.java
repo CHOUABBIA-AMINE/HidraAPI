@@ -5,7 +5,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  * @Name        : Gz2HseCapaNativeHttpPostgresIntegrationTest
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-18
+ * @UpdatedOn   : 2026-11-26
  * @Type        : Class
  * @Layer       : Test
  * @Module      : hse
@@ -27,6 +27,21 @@ class Gz2HseCapaNativeHttpPostgresIntegrationTest {
     }
     private static void denied(int status){
         assertTrue(status==403||status==404,"HSE protected resource must not be disclosed: "+status);
+    }
+    private static void deniedPage(java.net.http.HttpResponse<String> response,String... protectedIds){
+        denied(response.statusCode());
+        String body=response.body();
+        assertFalse(body.contains("\"items\"")||body.contains("\"total\"")||body.contains("\"totalElements\""));
+        for(String protectedId:protectedIds)assertFalse(body.contains(protectedId));
+    }
+    private static void page(JsonNode value,int page,int size,int total,String... expectedIds){
+        assertEquals(page,value.path("page").asInt(-1));
+        assertEquals(size,value.path("size").asInt(-1));
+        assertEquals(total,value.path("total").asInt(-1));
+        JsonNode rows=value.path("items");
+        assertTrue(rows.isArray());
+        assertEquals(expectedIds.length,rows.size());
+        for(int i=0;i<expectedIds.length;i++)assertEquals(expectedIds[i],required(rows.get(i),"id"));
     }
     @Test void signedCompanyAndFacilityReadsConcealNonexistentCasesAndRejectWrongScope() throws Exception {
         try(var postgres=new PostgreSQLContainer<>("postgres:16")
@@ -163,6 +178,9 @@ class Gz2HseCapaNativeHttpPostgresIntegrationTest {
                         "title","Second synthetic case","caseTypeId",caseType,
                         "severityId",severity),201).path("value"),"id");
                 String otherPath=route(f)+"/"+otherId;
+                // No actionNumber parameter: an admitted empty parent is distinct from denial.
+                page(runtime.get(otherPath+"/capas",author),0,25,0);
+                page(runtime.get(otherPath+"/capas?page=1&size=1",author),1,1,0);
                 var matched=runtime.get(route(f)+"?caseNumber="+caseNumber+"&page=0&size=1",author);
                 assertEquals(2,matched.path("total").asInt());
                 assertEquals(1,matched.path("items").size());
@@ -190,6 +208,24 @@ class Gz2HseCapaNativeHttpPostgresIntegrationTest {
                         "actionTypeId",actionType,"title","Duplicate CAPA two","ownerActorId",f.author),201);
                 String firstCapa=required(added1.path("value"),"id");
                 String secondCapa=required(added2.path("value"),"id");
+                // Unfiltered and filtered snapshots must preserve exact owner IDs,
+                // stable order, full totals, and empty/beyond-end semantics.
+                var unfiltered=runtime.get(otherPath+"/capas",author);
+                page(unfiltered,0,25,2,firstCapa,secondCapa);
+                for(var item:unfiltered.path("items"))assertEquals(otherId,required(item,"caseId"));
+                page(runtime.get(otherPath+"/capas?page=0&size=1",author),0,1,2,firstCapa);
+                page(runtime.get(otherPath+"/capas?page=1&size=1",author),1,1,2,secondCapa);
+                page(runtime.get(otherPath+"/capas?page=2&size=1",author),2,1,2);
+                page(runtime.get(otherPath+"/capas?actionNumber=NOT-FOUND",author),0,25,0);
+                page(runtime.get(casePath+"/capas",author),0,25,1,priorCapaId);
+                assertEquals(400,runtime.send("GET",otherPath+"/capas?page=-1",author,null).statusCode());
+                assertEquals(400,runtime.send("GET",otherPath+"/capas?size=0",author,null).statusCode());
+                assertEquals(400,runtime.send("GET",otherPath+"/capas?size=101",author,null).statusCode());
+                assertEquals(400,runtime.send("GET",otherPath+"/capas?actionNumber="+"X".repeat(81),author,null).statusCode());
+                deniedPage(runtime.send("GET",otherPath+"/capas",runtime.login(f.foreign),null),firstCapa,secondCapa);
+                deniedPage(runtime.send("GET",otherPath.replace(f.company,f.foreignCompany)+"/capas",author,null),firstCapa,secondCapa);
+                deniedPage(runtime.send("GET",otherPath.replace(f.asset,f.secondAsset)+"/capas",author,null),firstCapa,secondCapa);
+                deniedPage(runtime.send("GET",route(f)+"/"+id()+"/capas",author,null),firstCapa,secondCapa);
                 var selectedCapas=runtime.get(otherPath+"/capas?actionNumber="+number+"&page=0&size=1",author);
                 assertEquals(2,selectedCapas.path("total").asInt());
                 assertEquals(firstCapa,required(selectedCapas.path("items").get(0),"id"));
@@ -214,6 +250,7 @@ class Gz2HseCapaNativeHttpPostgresIntegrationTest {
                             WHERE code='hse:capa:read') AND valid_to>now()
                         """,f.revoked);
                 denied(runtime.send("GET",route(f)+"?caseNumber="+caseNumber,revokedReader,null).statusCode());
+                deniedPage(runtime.send("GET",otherPath+"/capas",revokedReader,null),firstCapa,secondCapa);
                 // The generic legacy routes must not enumerate T17-enrolled rows or
                 // distinguish an enrolled exact ID from an unknown well-formed ID.
                 JsonNode legacyCases=runtime.get("/api/v1/hse/cases?page=0&size=20",author);
@@ -237,6 +274,9 @@ class Gz2HseCapaNativeHttpPostgresIntegrationTest {
                 denied(runtime.send("GET",route(f)+"?caseNumber="+caseNumber+"&page=0&size=1",
                         author,null).statusCode());
                 denied(runtime.send("GET",otherPath,author,null).statusCode());
+                deniedPage(runtime.send("GET",otherPath+"/capas",author,null),firstCapa,secondCapa);
+                deniedPage(runtime.send("GET",otherPath+"/capas?actionNumber="+number,author,null),firstCapa,secondCapa);
+                deniedPage(runtime.send("GET",otherPath+"/history",author,null),firstCapa,secondCapa);
             }
             try (var restarted = f.start(objects, provider)) {
                 assertNotEquals(originalPid, restarted.pid());
@@ -245,6 +285,12 @@ class Gz2HseCapaNativeHttpPostgresIntegrationTest {
                 assertEquals("CLOSED", required(restarted.get(closed.casePath(), author), "status"));
                 assertEquals(closed.closureId(), required(restarted.get(closed.casePath(), author), "closureId"));
                 assertEquals("CLOSED", required(restarted.get(closed.capaPath(), author), "status"));
+                String persistedCapa=closed.capaPath().substring(closed.capaPath().lastIndexOf('/')+1);
+                var persistedPage=restarted.get(casePath+"/capas?page=0&size=25",author);
+                page(persistedPage,0,25,1,persistedCapa);
+                assertEquals(restarted.get(closed.capaPath(),author),persistedPage.path("items").get(0));
+                assertEquals("CLOSED",required(persistedPage.path("items").get(0),"status"));
+                assertFalse(required(persistedPage.path("items").get(0),"evidenceId").isBlank());
                 var content = restarted.download(closed.contentPath(), author);
                 assertEquals(200, content.statusCode());
                 assertArrayEquals(closed.bytes(), content.body());

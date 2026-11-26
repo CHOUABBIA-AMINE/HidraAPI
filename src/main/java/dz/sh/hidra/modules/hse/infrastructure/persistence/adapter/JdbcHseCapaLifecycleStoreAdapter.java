@@ -5,7 +5,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  * @Name        : JdbcHseCapaLifecycleStoreAdapter
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-18
+ * @UpdatedOn   : 2026-11-26
  * @Type        : Class
  * @Layer       : Infrastructure
  * @Module      : hse
@@ -162,16 +162,23 @@ public class JdbcHseCapaLifecycleStoreAdapter implements HseCapaLifecycleStorePo
         String sql="WITH eligible AS ("+
                 " SELECT s.*,c.action_number,c.title,c.created_at AS sort_created_at FROM "+H+
                 " s JOIN public.hidra_hse_capa c ON c.id=s.capa_id"+
-                " WHERE s.case_id=? AND (? IS NULL OR c.action_number=?)"+
+                " WHERE s.case_id=?"+(actionNumber==null?"":" AND c.action_number=?")+
                 "), tally AS (SELECT count(*) AS total FROM eligible),"+
                 " sliced AS (SELECT * FROM eligible ORDER BY sort_created_at,capa_id LIMIT ? OFFSET ?)"+
-                " SELECT tally.total,sliced.* FROM tally LEFT JOIN sliced ON TRUE";
+                " SELECT tally.total,sliced.* FROM tally LEFT JOIN sliced ON TRUE"+
+                " ORDER BY sliced.sort_created_at,sliced.capa_id";
+        // An absent filter has no bind at all: PostgreSQL must not infer an
+        // untyped NULL in a standalone IS NULL predicate. The same eligible
+        // snapshot supplies the tally and page; order the final rows explicitly.
+        Object[] parameters=actionNumber==null
+                ?new Object[]{caseId,size,(long)page*size}
+                :new Object[]{caseId,actionNumber,size,(long)page*size};
         List<CapaView> views=new ArrayList<>();
         long[] total={0};
         jdbc.query(sql,(RowCallbackHandler) row->{
             total[0]=row.getLong("total");
             if(row.getString("capa_id")!=null)views.add(capaView(row));
-        },caseId,actionNumber,actionNumber,size,(long)page*size);
+        },parameters);
         return new Page<>(List.copyOf(views),total[0],page,size);
     }
     @Override @Transactional(propagation=Propagation.MANDATORY)

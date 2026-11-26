@@ -34,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CustodyTransferLifecycleApplicationService implements CustodyTransferLifecycleUseCase {
+    private static final String PERIOD_CREATE="custody:periods:create";
     private static final String PERIOD_READ="custody:periods:read";
     private static final String RECON_READ="custody:reconciliations:read";
     private static final String RECON_WRITE="custody:reconciliations:reconcile";
@@ -80,6 +81,8 @@ public class CustodyTransferLifecycleApplicationService implements CustodyTransf
         String company=ownership.activeOwner(s.assetType(),s.assetId())
                 .orElseThrow(CustodyTransferLifecycleApplicationService::unavailable);
         if(s.storedCompanyId()!=null&&!s.storedCompanyId().equals(company))throw unavailable();
+        if(s.admissionCompanyId()!=null&&(!s.admissionCompanyId().equals(company)
+                ||!"FACILITY".equals(s.assetType())||!s.admissionFacilityId().equals(s.assetId())))throw unavailable();
         identity.require(operation,company,s.transferPointId());
         return s;
     }
@@ -409,5 +412,53 @@ public class CustodyTransferLifecycleApplicationService implements CustodyTransf
     public DiscoveryPage<Ticket> listTickets(String periodId,int page,int size){
         var scope=visible(persistence.lockReadScope(required(periodId)),TICKET_READ);
         return persistence.tickets(scope,owner(scope),page,size,CustodyTransferLifecycleUseCase.offset(page,size));
+    }
+
+    private CustodyTransferLifecyclePort.AdmissionPoint admissionPoint(String companyId,String pointId,boolean exclusive){
+        required(companyId);required(pointId);
+        var point=persistence.admissionPoint(pointId,exclusive).orElseThrow(CustodyTransferLifecycleApplicationService::unavailable);
+        if(!"FACILITY".equals(point.assetType())||!companyId.equals(ownership.activeOwner(point.assetType(),point.assetId())
+                .orElseThrow(CustodyTransferLifecycleApplicationService::unavailable)))throw unavailable();
+        identity.require(PERIOD_CREATE,companyId,pointId);
+        return point;
+    }
+    @Override @Transactional
+    public DiscoveryPage<AdmissionAgreement> discoverAdmissionAgreements(String companyId,String transferPointId,
+            String agreementNumber,int page,int size){
+        admissionPoint(companyId,transferPointId,false);
+        if(agreementNumber!=null)required(agreementNumber);
+        return persistence.admissionAgreements(transferPointId,agreementNumber,page,size,
+            CustodyTransferLifecycleUseCase.offset(page,size));
+    }
+    @Override @Transactional
+    public AdmissionReceipt openPeriod(String companyId,String transferPointId,OpenPeriodCommand command){
+        var point=admissionPoint(companyId,transferPointId,true);
+        if(command==null||command.commandId()==null)throw new IllegalArgumentException("Exact admission command required.");
+        required(command.agreementId());required(command.periodCode());
+        dz.sh.hidra.modules.custody.domain.model.CustodyPeriodAdmission.interval(command.periodStart(),command.periodEnd());
+        String actor=required(identity.actor());
+        String fingerprint=hash("T64-ADMISSION-1",companyId,point.assetId(),transferPointId,actor,
+            command.commandId(),command.agreementId(),command.periodCode(),command.periodStart(),command.periodEnd());
+        var prior=persistence.admissionByCommand(companyId,transferPointId,command.commandId());
+        if(prior.isPresent()){
+            var a=prior.get();
+            if(!point.assetId().equals(a.facilityId()))throw unavailable();
+            if(!actor.equals(a.actorId())||!fingerprint.equals(a.fingerprint()))
+                throw conflict("Admission command ID already bound to different evidence.");
+            return admissionReceipt(a,true);
+        }
+        var agreement=persistence.lockAdmissionAgreement(transferPointId,command.agreementId())
+            .orElseThrow(CustodyTransferLifecycleApplicationService::unavailable);
+        var a=new dz.sh.hidra.modules.custody.domain.model.CustodyPeriodAdmission(UUID.randomUUID().toString(),
+            companyId,point.assetId(),transferPointId,agreement.id(),command.periodCode(),command.periodStart(),
+            command.periodEnd(),command.commandId(),actor,now(),fingerprint);
+        a.requireWindow(point.effectiveFrom(),point.effectiveTo());
+        a.requireWindow(agreement.validFrom(),agreement.validTo());
+        persistence.insertAdmission(a);
+        return admissionReceipt(a,false);
+    }
+    private static AdmissionReceipt admissionReceipt(dz.sh.hidra.modules.custody.domain.model.CustodyPeriodAdmission a,boolean replay){
+        return new AdmissionReceipt(a.periodId(),a.companyId(),a.facilityId(),a.transferPointId(),a.agreementId(),
+            a.periodCode(),a.periodStart(),a.periodEnd(),"OPEN",a.commandId(),a.actorId(),a.admittedAt(),replay);
     }
 }

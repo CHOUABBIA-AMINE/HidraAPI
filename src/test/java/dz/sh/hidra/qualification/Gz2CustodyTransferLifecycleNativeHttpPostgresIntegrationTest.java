@@ -72,7 +72,7 @@ class Gz2CustodyTransferLifecycleNativeHttpPostgresIntegrationTest {
             f.paired(f.wrongAsset,"custody:measurements","MEASUREMENT",
                     companyGrant,"custody-transfer-point:"+f.secondAsset,"capture","read");
             // T21 authority is independent for each company/transfer-point resource.
-            f.paired(f.author,"custody:periods","MEASUREMENT_PERIOD",companyGrant,pointGrant,"read");
+            f.paired(f.author,"custody:periods","MEASUREMENT_PERIOD",companyGrant,pointGrant,"read","create");
             f.paired(f.author,"custody:reconciliations","RECONCILIATION",companyGrant,pointGrant,"read","reconcile");
             f.paired(f.author,"custody:tickets","TRANSFER_TICKET",companyGrant,pointGrant,"read","finalize","correct");
             f.paired(f.author,"custody:discrepancies","DISCREPANCY",companyGrant,pointGrant,"read","dispose");
@@ -348,11 +348,134 @@ class Gz2CustodyTransferLifecycleNativeHttpPostgresIntegrationTest {
                 runtime.json("GET",firstTicketRoute,foreign,null,404);
                 f.sql.update("UPDATE hidra_topology_facility SET owner_party_id=? WHERE id=?",f.company,f.asset);
                 assertEquals(2,runtime.get(tickets,reader).path("total").asInt(-1));
+                // New protected period, independent from the unchanged T20/T21 legacy witness.
+                String newCode="T64-"+period;
+                var open=Map.of("commandId",id(),"agreementId",agreement,"periodCode",newCode,
+                    "periodStart",observed.minusSeconds(600).toString(),"periodEnd",observed.plusSeconds(600).toString());
+                String admittedId=field(runtime.json("POST",periodList,author,open,200),"periodId");
+                String admittedPath="/api/v1/custody/measurement-periods/"+admittedId;
+                assertEquals(admittedId,field(runtime.get(admittedPath,reader),"id"));
+                assertEquals(2,runtime.get(periodList,reader).path("total").asInt(-1));
+                assertEquals(admittedId,field(runtime.get(query(periodList,"periodCode",newCode),reader).path("items").get(0),"id"));
+                assertEquals(0,runtime.get(admittedPath+"/measurements",reader).path("total").asInt(-1));
+                assertEquals(0,runtime.get(admittedPath+"/transfer-tickets",reader).path("total").asInt(-1));
+                assertEquals(0,runtime.get(admittedPath+"/reconciliations",reader).size());
+                var legacyTicketFailure=assertThrows(org.springframework.dao.DataAccessException.class,()->f.sql.update("""
+                    INSERT INTO public.hidra_custody_transfer_ticket
+                    (id,ticket_number,measurement_period_id,agreement_id,transfer_point_id,status,ticket_date,created_at,updated_at)
+                    VALUES (?,?,?,?,?,'DRAFT',now(),now(),now())
+                    """,id(),id(),admittedId,agreement,transfer));
+                assertTrue(legacyTicketFailure.getMostSpecificCause().getMessage().contains("Legacy Custody writes not admitted"));
+                var legacyReconFailure=assertThrows(org.springframework.dao.DataAccessException.class,()->f.sql.update("""
+                    INSERT INTO public.hidra_custody_reconciliation
+                    (id,reconciliation_number,measurement_period_id,agreement_id,status,created_at,updated_at)
+                    VALUES (?,?,?,?,'OPEN',now(),now())
+                    """,id(),id(),admittedId,agreement));
+                assertTrue(legacyReconFailure.getMostSpecificCause().getMessage().contains("Legacy Custody writes not admitted"));
+                f.sql.update("UPDATE hidra_custody_metering_system SET active=true WHERE id=?",meter);
+                String admittedRun=id(),admittedEvidence=id();
+                f.sql.update("""
+                    INSERT INTO public.hidra_custody_meter_run_snapshot
+                    (id,measurement_period_id,metering_system_id,meter_run_code_snapshot,snapshot_at,created_at)
+                    VALUES (?,?,?,'T64-RUN',now(),now())
+                    """,admittedRun,admittedId,meter);
+                f.sql.update("""
+                    INSERT INTO public.hidra_telemetry_custody_interval_evidence
+                    (id,trusted_reading_id,meter_run_snapshot_id,metering_system_id,asset_type,asset_id,
+                     measurement_kind,observed_quantity,unit_id,interval_start,interval_end)
+                    VALUES (?,?,?,?,'FACILITY',?,'INTERVAL_VOLUME_TOTAL',75.500000,?,?,?)
+                    """,admittedEvidence,reading.trusted(),admittedRun,meter,f.asset,VOLUME,
+                    java.sql.Timestamp.from(observed.minusSeconds(60)),java.sql.Timestamp.from(observed));
+                var captureNew=new java.util.HashMap<String,Object>(cmd);
+                captureNew.put("commandId",id());captureNew.put("meterRunSnapshotId",admittedRun);
+                captureNew.put("intervalEvidenceId",admittedEvidence);
+                var captured=runtime.json("POST",admittedPath+"/measurements",author,captureNew,201);
+                String capturedId=field(captured,"measurementId");
+                var wrongReceipt=assertThrows(org.springframework.dao.DataAccessException.class,()->f.sql.update("""
+                    INSERT INTO public.hidra_custody_measurement_receipt
+                    SELECT (jsonb_populate_record(NULL::public.hidra_custody_measurement_receipt,
+                        to_jsonb(r)||jsonb_build_object('measurement_id',?::text,'company_id',?::text,'command_id',?::uuid))).*
+                    FROM public.hidra_custody_measurement_receipt r WHERE measurement_id=?
+                    """,id(),f.foreignCompany,id(),capturedId));
+                assertTrue(wrongReceipt.getMostSpecificCause().getMessage().contains("Protected period evidence scope mismatch"));
+                var recNew=runtime.json("POST",admittedPath+"/reconciliations",author,Map.of("commandId",id()),200);
+                assertEquals(capturedId,recNew.path("receiptIds").get(0).asText());
+                String recNewId=field(recNew,"id"),ticketNewId=field(recNew,"ticketId");
+                var wrongRecon=assertThrows(org.springframework.dao.DataAccessException.class,()->f.sql.update("""
+                    INSERT INTO public.hidra_custody_t21_reconciliation
+                    SELECT (jsonb_populate_record(NULL::public.hidra_custody_t21_reconciliation,
+                        to_jsonb(r)||jsonb_build_object('id',?::text,'ticket_id',?::text,'company_id',?::text))).*
+                    FROM public.hidra_custody_t21_reconciliation r WHERE id=?
+                    """,id(),id(),f.foreignCompany,recNewId));
+                assertTrue(wrongRecon.getMostSpecificCause().getMessage().contains("Protected period evidence scope mismatch"));
+                var legacyIssue=assertThrows(org.springframework.dao.DataAccessException.class,()->f.sql.update("""
+                    INSERT INTO public.hidra_custody_discrepancy
+                    (id,discrepancy_number,reconciliation_id,discrepancy_type_id,status,opened_at,created_at,updated_at)
+                    VALUES (?,?,?,?,'OPEN',now(),now(),now())
+                    """,id(),id(),recNewId,id()));
+                assertTrue(legacyIssue.getMostSpecificCause().getMessage().contains("Legacy Custody writes not admitted"));
+                String newTicket="/api/v1/custody/transfer-tickets/"+ticketNewId;
+                var newTicketView=runtime.get(newTicket,author);
+                var newReview=f.review("custody","CUSTODY_TRANSFER_TICKET","CUSTODY_TRANSFER_TICKET_APPROVAL",false);
+                var newDecision=workflowDecision(f,runtime,author,reviewer,newReview,"custody",
+                    field(newTicketView,"approvalTargetDigest"),ticketNewId,id());
+                var newFinal=runtime.json("POST",newTicket+"/finalizations",author,finalizationRequest(newDecision,1),200);
+                assertEquals("SOFTWARE_FINALIZED",field(newFinal,"status"));
+                assertFalse(newFinal.path("official").asBoolean());
+                assertFalse(newFinal.path("acceptedForCustody").asBoolean());
+                // Freeze admission scope across owner changes. Neither owner may reinterpret
+                // the old record while current owner and immutable admission disagree.
+                f.sql.update("UPDATE hidra_topology_facility SET owner_party_id=? WHERE id=?",f.foreignCompany,f.asset);
+                runtime.json("GET",admittedPath,reader,null,404);
+                runtime.json("GET",admittedPath,foreign,null,404);
+                runtime.json("GET",admittedPath+"/measurements",foreign,null,404);
+                runtime.json("GET",admittedPath+"/transfer-tickets",foreign,null,404);
+                runtime.json("GET",newTicket,foreign,null,404);
+                runtime.json("POST",admittedPath+"/measurements",foreign,captureNew,404);
+                assertEquals(0,runtime.get(newOwnerPeriods,foreign).path("total").asInt(-1));
+                runtime.json("POST",periodList,author,open,404);
+                f.sql.update("UPDATE hidra_topology_facility SET owner_party_id=? WHERE id=?",f.company,f.asset);
+                // Same company alone is insufficient when the point is rebound.
+                f.sql.update("UPDATE hidra_custody_transfer_point SET topology_asset_id=? WHERE id=?",f.secondAsset,transfer);
+                runtime.json("GET",admittedPath,reader,null,404);
+                runtime.json("GET",admittedPath+"/measurements/"+capturedId,reader,null,404);
+                runtime.json("GET",newTicket,reader,null,404);
+                runtime.json("POST",periodList,author,open,404);
+                assertEquals(0,runtime.get(query(periodList,"periodCode",newCode),reader).path("total").asInt(-1));
+                f.sql.update("UPDATE hidra_custody_transfer_point SET topology_asset_id=? WHERE id=?",f.asset,transfer);
+                assertEquals(newFinal,runtime.get(newTicket,reader));
+                // Race a different admission against reassignment. Either serialization order
+                // is valid; no admission may be created in the new company by the old owner.
+                String raceCode="T64-RACE-"+id();
+                var race=new java.util.HashMap<>(open);race.put("commandId",id());race.put("periodCode",raceCode);
+                try(var pool=java.util.concurrent.Executors.newVirtualThreadPerTaskExecutor()){
+                    var start=new java.util.concurrent.CountDownLatch(1);
+                    var create=pool.submit(()->{start.await();return runtime.send("POST",periodList,author,race);});
+                    var transferOwner=pool.submit(()->{start.await();return f.sql.update(
+                        "UPDATE hidra_topology_facility SET owner_party_id=? WHERE id=?",f.foreignCompany,f.asset);});
+                    start.countDown();
+                    var response=create.get(60,java.util.concurrent.TimeUnit.SECONDS);
+                    assertEquals(1,transferOwner.get(60,java.util.concurrent.TimeUnit.SECONDS));
+                    assertTrue(response.statusCode()==200||response.statusCode()==404);
+                    var raceRows=f.sql.queryForList("""
+                        SELECT ad.period_id,ad.company_id,ad.facility_id FROM hidra_custody_period_admission ad
+                        JOIN hidra_custody_measurement_period p ON p.id=ad.period_id WHERE p.period_code=?
+                        """,raceCode);
+                    assertEquals(response.statusCode()==200?1:0,raceRows.size());
+                    if(!raceRows.isEmpty()){
+                        var row=raceRows.getFirst();
+                        assertEquals(f.company,row.get("company_id"));
+                        assertEquals(f.asset,row.get("facility_id"));
+                        runtime.json("GET","/api/v1/custody/measurement-periods/"+row.get("period_id"),foreign,null,404);
+                    }
+                }finally{
+                    f.sql.update("UPDATE hidra_topology_facility SET owner_party_id=? WHERE id=?",f.company,f.asset);
+                }
             }
             try(var restarted=f.start()){
                 String reader=restarted.login(f.reader);
                 assertEquals(3,restarted.get(pointList,reader).path("total").asInt(-1));
-                assertEquals(period,field(restarted.get(periodList,reader).path("items").get(0),"id"));
+                assertEquals(period,field(restarted.get(query(periodList,"periodCode",period),reader).path("items").get(0),"id"));
                 var page=restarted.get(tickets,reader);
                 assertEquals(2,page.path("total").asInt(-1));
                 for(JsonNode row:page.path("items")){
@@ -360,6 +483,16 @@ class Gz2CustodyTransferLifecycleNativeHttpPostgresIntegrationTest {
                     assertFalse(row.path("official").asBoolean());
                 }
                 assertEquals(1,restarted.get("/api/v1/custody/measurement-periods/"+period+"/measurements",reader).path("total").asInt(-1));
+                var admitted=restarted.get(query(periodList,"periodCode","T64-"+period),reader);
+                assertEquals(1,admitted.path("total").asInt(-1));
+                String admittedId=field(admitted.path("items").get(0),"id");
+                String admittedPath="/api/v1/custody/measurement-periods/"+admittedId;
+                assertEquals(1,restarted.get(admittedPath+"/measurements",reader).path("total").asInt(-1));
+                var admittedTickets=restarted.get(admittedPath+"/transfer-tickets",reader);
+                assertEquals(1,admittedTickets.path("total").asInt(-1));
+                var finalTicket=admittedTickets.path("items").get(0);
+                assertEquals("SOFTWARE_FINALIZED",field(finalTicket,"status"));
+                assertEquals(finalTicket,restarted.get("/api/v1/custody/transfer-tickets/"+field(finalTicket,"id"),reader));
             }
         }
     }

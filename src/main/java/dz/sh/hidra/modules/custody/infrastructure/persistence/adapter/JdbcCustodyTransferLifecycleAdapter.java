@@ -19,6 +19,7 @@ import dz.sh.hidra.modules.custody.domain.model.CustodyReconciliationSnapshot;
 import dz.sh.hidra.modules.identity.application.contract.custody.CustodyMeasurementScopedAuthorizationContract;
 import dz.sh.hidra.modules.topology.application.contract.custody.CustodyMeasurementAssetOwnershipContract;
 import dz.sh.hidra.modules.workflow.application.contract.target.WorkflowOwnedTargetLookup;
+import dz.sh.hidra.modules.custody.domain.model.CustodyPeriodAdmission;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.time.*;
@@ -47,51 +48,69 @@ public class JdbcCustodyTransferLifecycleAdapter implements CustodyTransferLifec
     private static Scope scope(ResultSet r)throws SQLException{
         return new Scope(r.getString("period_id"),r.getString("agreement_id"),r.getString("transfer_point_id"),
             r.getString("topology_asset_type_code"),r.getString("topology_asset_id"),
-            r.getString("status"),time(r,"period_start"),time(r,"period_end"),r.getString("stored_company_id"));
+            r.getString("status"),time(r,"period_start"),time(r,"period_end"),r.getString("stored_company_id"),r.getString("admission_company_id"),r.getString("admission_facility_id"));
     }
+    // All parent operations acquire point before period. Replay under the exclusive
+    // point lock reads immutable admission facts without acquiring the parent lock.
     private Optional<Scope> scopeQuery(String sql,String id){
+        return scopeQuery(sql,id,true);
+    }
+    private Optional<Scope> scopeQuery(String sql,String id,boolean write){
         var rows=jdbc.query(sql,(row,n)->scope(row),id);
-        return rows.size()==1?Optional.of(rows.getFirst()):Optional.empty();
+        if(rows.size()!=1)return Optional.empty();
+        Scope initial=rows.getFirst();
+        if(lockPoint(initial.transferPointId()).isEmpty())return Optional.empty();
+        var parent=jdbc.queryForList("SELECT id FROM public.hidra_custody_measurement_period WHERE id=? "+
+            (write?"FOR UPDATE":"FOR SHARE"),String.class,initial.periodId());
+        if(parent.size()!=1)return Optional.empty();
+        var locked=jdbc.query(sql,(row,n)->scope(row),id);
+        if(locked.size()!=1||!locked.getFirst().periodId().equals(initial.periodId())
+                ||!locked.getFirst().transferPointId().equals(initial.transferPointId()))return Optional.empty();
+        return Optional.of(locked.getFirst());
     }
     @Override public Optional<Scope> scopeForPeriod(String id){
         return scopeQuery("""
            SELECT p.id AS period_id,p.agreement_id,p.transfer_point_id,p.status,
                   p.period_start,p.period_end,tp.topology_asset_type_code,tp.topology_asset_id,
-                  NULL::varchar AS stored_company_id
+                  NULL::varchar AS stored_company_id,ad.company_id AS admission_company_id,ad.facility_id AS admission_facility_id
              FROM public.hidra_custody_measurement_period p
              JOIN public.hidra_custody_transfer_point tp ON tp.id=p.transfer_point_id
+             LEFT JOIN public.hidra_custody_period_admission ad ON ad.period_id=p.id
             WHERE p.id=?
         """,id);
     }
     @Override public Optional<Scope> scopeForTicket(String id){
         return scopeQuery("""
            SELECT p.id AS period_id,p.agreement_id,p.transfer_point_id,p.status,p.period_start,p.period_end,
-                  tp.topology_asset_type_code,tp.topology_asset_id,r.company_id AS stored_company_id
+                  tp.topology_asset_type_code,tp.topology_asset_id,r.company_id AS stored_company_id,ad.company_id AS admission_company_id,ad.facility_id AS admission_facility_id
              FROM public.hidra_custody_t21_ticket t
              JOIN public.hidra_custody_t21_reconciliation r ON r.id=t.reconciliation_id
              JOIN public.hidra_custody_measurement_period p ON p.id=r.period_id
              JOIN public.hidra_custody_transfer_point tp ON tp.id=p.transfer_point_id
+             LEFT JOIN public.hidra_custody_period_admission ad ON ad.period_id=p.id
             WHERE t.id=?
         """,id);
     }
     @Override public Optional<Scope> scopeForReconciliation(String id){
         return scopeQuery("""
            SELECT p.id AS period_id,p.agreement_id,p.transfer_point_id,p.status,p.period_start,p.period_end,
-                  tp.topology_asset_type_code,tp.topology_asset_id,r.company_id AS stored_company_id
+                  tp.topology_asset_type_code,tp.topology_asset_id,r.company_id AS stored_company_id,ad.company_id AS admission_company_id,ad.facility_id AS admission_facility_id
              FROM public.hidra_custody_t21_reconciliation r
              JOIN public.hidra_custody_measurement_period p ON p.id=r.period_id
              JOIN public.hidra_custody_transfer_point tp ON tp.id=p.transfer_point_id
+             LEFT JOIN public.hidra_custody_period_admission ad ON ad.period_id=p.id
             WHERE r.id=?
         """,id);
     }
     @Override public Optional<Scope> scopeForDiscrepancy(String id){
         return scopeQuery("""
            SELECT p.id AS period_id,p.agreement_id,p.transfer_point_id,p.status,p.period_start,p.period_end,
-                  tp.topology_asset_type_code,tp.topology_asset_id,r.company_id AS stored_company_id
+                  tp.topology_asset_type_code,tp.topology_asset_id,r.company_id AS stored_company_id,ad.company_id AS admission_company_id,ad.facility_id AS admission_facility_id
              FROM public.hidra_custody_t21_discrepancy d
              JOIN public.hidra_custody_t21_reconciliation r ON r.id=d.reconciliation_id
              JOIN public.hidra_custody_measurement_period p ON p.id=r.period_id
              JOIN public.hidra_custody_transfer_point tp ON tp.id=p.transfer_point_id
+             LEFT JOIN public.hidra_custody_period_admission ad ON ad.period_id=p.id
             WHERE d.id=?
         """,id);
     }
@@ -286,8 +305,14 @@ public class JdbcCustodyTransferLifecycleAdapter implements CustodyTransferLifec
                  row.getString(4),row.getString(5)},targetDigest);
         if(rows.size()!=1)return Optional.empty();
         String[] t=rows.getFirst();
-        String currentOwner=ownership.activeOwner(t[3],t[4]).orElse(null);
-        if(!t[1].equals(currentOwner))return Optional.empty();
+        var scoped=scopeForTicket(t[0]);
+        if(scoped.isEmpty())return Optional.empty();
+        var scope=scoped.get();
+        String currentOwner=ownership.activeOwner(scope.assetType(),scope.assetId()).orElse(null);
+        if(!t[1].equals(currentOwner)||!t[2].equals(scope.transferPointId())
+                ||(scope.admissionCompanyId()!=null&&(!scope.admissionCompanyId().equals(currentOwner)
+                    ||!"FACILITY".equals(scope.assetType())||!scope.admissionFacilityId().equals(scope.assetId()))))
+            return Optional.empty();
         try{identity.require("custody:tickets:finalize",t[1],t[2]);}
         catch(NoSuchElementException denied){return Optional.empty();}
         return Optional.of(new Target(targetDigest,t[0],"Custody software ticket "+t[0]));
@@ -303,11 +328,12 @@ public class JdbcCustodyTransferLifecycleAdapter implements CustodyTransferLifec
     @Override public Optional<Scope> lockReadScope(String id){
         return scopeQuery("""
             SELECT p.id AS period_id,p.agreement_id,p.transfer_point_id,p.status,p.period_start,p.period_end,
-                   tp.topology_asset_type_code,tp.topology_asset_id,NULL::varchar AS stored_company_id
+                   tp.topology_asset_type_code,tp.topology_asset_id,NULL::varchar AS stored_company_id,ad.company_id AS admission_company_id,ad.facility_id AS admission_facility_id
               FROM public.hidra_custody_measurement_period p
               JOIN public.hidra_custody_transfer_point tp ON tp.id=p.transfer_point_id
-             WHERE p.id=? FOR SHARE OF p,tp
-            """,id);
+             LEFT JOIN public.hidra_custody_period_admission ad ON ad.period_id=p.id
+             WHERE p.id=?
+            """,id,false);
     }
     @Override public void visitFacilityPoints(String facilityId,java.util.function.Consumer<PointScope> visitor){
         jdbc.query(connection->{
@@ -328,11 +354,14 @@ public class JdbcCustodyTransferLifecycleAdapter implements CustodyTransferLifec
             WITH eligible AS MATERIALIZED (
               SELECT p.id,p.period_code,p.agreement_id,p.transfer_point_id,p.status,p.period_start,p.period_end
                 FROM public.hidra_custody_measurement_period p
+                LEFT JOIN public.hidra_custody_period_admission ad ON ad.period_id=p.id
                WHERE p.transfer_point_id=?
-                 AND EXISTS(SELECT 1 FROM public.hidra_custody_measurement_receipt r
+                 AND ((ad.period_id IS NOT NULL AND ad.company_id=? AND ad.facility_id=?
+                       AND ad.transfer_point_id=p.transfer_point_id AND ad.agreement_id=p.agreement_id)
+                   OR (ad.period_id IS NULL AND EXISTS(SELECT 1 FROM public.hidra_custody_measurement_receipt r
                    JOIN public.hidra_custody_agreement_party ap ON ap.id=r.agreement_party_id
                    WHERE r.period_id=p.id AND r.company_id=? AND r.transfer_point_id=p.transfer_point_id
-                     AND r.asset_type=? AND r.asset_id=? AND ap.agreement_id=p.agreement_id)
+                     AND r.asset_type=? AND r.asset_id=? AND ap.agreement_id=p.agreement_id)))
                  AND NOT EXISTS(SELECT 1 FROM public.hidra_custody_measurement_receipt r
                    JOIN public.hidra_custody_agreement_party ap ON ap.id=r.agreement_party_id
                    WHERE r.period_id=p.id AND (r.company_id<>? OR r.transfer_point_id<>p.transfer_point_id
@@ -341,7 +370,7 @@ public class JdbcCustodyTransferLifecycleAdapter implements CustodyTransferLifec
                    WHERE r.period_id=p.id AND (r.company_id<>? OR r.transfer_point_id<>p.transfer_point_id
                      OR r.agreement_id<>p.agreement_id))
             """;
-        var args=new ArrayList<Object>(List.of(point.id(),company,point.assetType(),point.assetId(),
+        var args=new ArrayList<Object>(List.of(point.id(),company,point.assetId(),company,point.assetType(),point.assetId(),
             company,point.assetType(),point.assetId(),company));
         if(code!=null){sql+=" AND p.period_code=?";args.add(code);}
         sql+="""
@@ -382,5 +411,75 @@ public class JdbcCustodyTransferLifecycleAdapter implements CustodyTransferLifec
             }
             return new DiscoveryPage<>(items,page,size,total);
         },scope.periodId(),company,scope.transferPointId(),scope.agreementId(),size,offset);
+    }
+
+    @Override public Optional<AdmissionPoint> admissionPoint(String pointId,boolean exclusive){
+        var rows=jdbc.query("""
+            SELECT id,topology_asset_type_code,topology_asset_id,effective_from,effective_to
+              FROM public.hidra_custody_transfer_point
+             WHERE id=? AND status='ACTIVE' AND topology_asset_type_code='FACILITY'
+            """+(exclusive?" FOR UPDATE":" FOR SHARE"),
+            (row,n)->new AdmissionPoint(row.getString("id"),row.getString("topology_asset_type_code"),
+                row.getString("topology_asset_id"),time(row,"effective_from"),time(row,"effective_to")),pointId);
+        return rows.size()==1?Optional.of(rows.getFirst()):Optional.empty();
+    }
+    private static AdmissionAgreement agreement(ResultSet row)throws SQLException{
+        return new AdmissionAgreement(row.getString("id"),row.getString("agreement_number"),row.getString("transfer_point_id"),
+            time(row,"valid_from"),time(row,"valid_to"),row.getString("status"));
+    }
+    @Override public Optional<AdmissionAgreement> lockAdmissionAgreement(String pointId,String agreementId){
+        var rows=jdbc.query("""
+            SELECT id,agreement_number,transfer_point_id,valid_from,valid_to,status
+              FROM public.hidra_custody_agreement
+             WHERE transfer_point_id=? AND id=? AND status='ACTIVE' FOR SHARE
+            """,(row,n)->agreement(row),pointId,agreementId);
+        return rows.size()==1?Optional.of(rows.getFirst()):Optional.empty();
+    }
+    @Override public DiscoveryPage<AdmissionAgreement> admissionAgreements(String pointId,String number,int page,int size,long offset){
+        String sql="""
+            WITH eligible AS MATERIALIZED (
+              SELECT id,agreement_number,transfer_point_id,valid_from,valid_to,status
+              FROM public.hidra_custody_agreement WHERE transfer_point_id=? AND status='ACTIVE'
+            """;
+        var args=new ArrayList<Object>();args.add(pointId);
+        if(number!=null){sql+=" AND agreement_number=?";args.add(number);}
+        sql+="""
+            ), slice AS (SELECT * FROM eligible ORDER BY agreement_number,id LIMIT ? OFFSET ?),
+            tally AS (SELECT count(*) AS total FROM eligible)
+            SELECT slice.*,tally.total FROM tally LEFT JOIN slice ON true ORDER BY slice.agreement_number,slice.id
+            """;
+        args.add(size);args.add(offset);
+        return jdbc.query(sql,(org.springframework.jdbc.core.ResultSetExtractor<DiscoveryPage<AdmissionAgreement>>)row->{
+            var items=new ArrayList<AdmissionAgreement>();long total=0;
+            while(row.next()){total=row.getLong("total");if(row.getString("id")!=null)items.add(agreement(row));}
+            return new DiscoveryPage<>(items,page,size,total);
+        },args.toArray());
+    }
+    @Override public Optional<CustodyPeriodAdmission> admissionByCommand(String company,String point,UUID command){
+        var rows=jdbc.query("""
+            SELECT ad.*,p.period_code,p.period_start,p.period_end
+              FROM public.hidra_custody_period_admission ad
+              JOIN public.hidra_custody_measurement_period p ON p.id=ad.period_id
+             WHERE ad.company_id=? AND ad.transfer_point_id=? AND ad.command_id=?
+            """,(row,n)->new CustodyPeriodAdmission(row.getString("period_id"),row.getString("company_id"),
+                row.getString("facility_id"),row.getString("transfer_point_id"),row.getString("agreement_id"),
+                row.getString("period_code"),time(row,"period_start"),time(row,"period_end"),
+                row.getObject("command_id",UUID.class),row.getString("actor_id"),time(row,"admitted_at"),
+                row.getString("payload_fingerprint")),company,point,command);
+        return rows.size()==1?Optional.of(rows.getFirst()):Optional.empty();
+    }
+    @Override public void insertAdmission(CustodyPeriodAdmission a){
+        jdbc.update("""
+            INSERT INTO public.hidra_custody_measurement_period
+                (id,period_code,agreement_id,transfer_point_id,period_start,period_end,status,created_at,updated_at)
+            VALUES (?,?,?,?,?,?,'OPEN',?,?)
+            """,a.periodId(),a.periodCode(),a.agreementId(),a.transferPointId(),Timestamp.from(a.periodStart()),
+            Timestamp.from(a.periodEnd()),Timestamp.from(a.admittedAt()),Timestamp.from(a.admittedAt()));
+        jdbc.update("""
+            INSERT INTO public.hidra_custody_period_admission
+                (period_id,agreement_id,transfer_point_id,company_id,facility_id,command_id,actor_id,admitted_at,payload_fingerprint)
+            VALUES (?,?,?,?,?,?,?,?,?)
+            """,a.periodId(),a.agreementId(),a.transferPointId(),a.companyId(),a.facilityId(),a.commandId(),a.actorId(),
+            Timestamp.from(a.admittedAt()),a.fingerprint());
     }
 }

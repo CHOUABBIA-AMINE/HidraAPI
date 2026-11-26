@@ -14,12 +14,13 @@
  */
 package dz.sh.hidra.modules.custody.application.port.out;
 import dz.sh.hidra.modules.custody.application.port.in.CustodyTransferLifecycleUseCase.*;
+import dz.sh.hidra.modules.custody.domain.model.CustodyPeriodAdmission;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.*;
 public interface CustodyTransferLifecyclePort {
     record Scope(String periodId,String agreementId,String transferPointId,String assetType,String assetId,
-                 String status,Instant periodStart,Instant periodEnd,String storedCompanyId){}
+                 String status,Instant periodStart,Instant periodEnd,String storedCompanyId,String admissionCompanyId,String admissionFacilityId){}
     record Receipt(String id,String periodId,String companyId,String transferPointId,String meterRunId,
                  String productPublicationId,String agreementPartyId,String measurementTypeId,
                  String unitId,String quantityBasis,Instant intervalStart,Instant intervalEnd,
@@ -52,4 +53,11 @@ public interface CustodyTransferLifecyclePort {
     void visitFacilityPoints(String facilityId,java.util.function.Consumer<PointScope> visitor);
     DiscoveryPage<DiscoveredPeriod> periods(PointScope point,String companyId,String periodCode,int page,int size,long offset);
     DiscoveryPage<Ticket> tickets(Scope scope,String companyId,int page,int size,long offset);
+
+    record AdmissionPoint(String id,String assetType,String assetId,Instant effectiveFrom,Instant effectiveTo){}
+    Optional<AdmissionPoint> admissionPoint(String pointId,boolean exclusive);
+    Optional<AdmissionAgreement> lockAdmissionAgreement(String pointId,String agreementId);
+    DiscoveryPage<AdmissionAgreement> admissionAgreements(String pointId,String agreementNumber,int page,int size,long offset);
+    Optional<CustodyPeriodAdmission> admissionByCommand(String companyId,String pointId,UUID commandId);
+    void insertAdmission(CustodyPeriodAdmission admission);
 }

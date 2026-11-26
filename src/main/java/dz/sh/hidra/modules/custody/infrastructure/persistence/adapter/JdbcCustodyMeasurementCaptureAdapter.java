@@ -36,13 +36,7 @@ public class JdbcCustodyMeasurementCaptureAdapter implements CustodyMeasurementC
         this.jdbc=jdbc;this.named=new NamedParameterJdbcTemplate(jdbc);
     }
     @Override public Optional<Scope> scope(String id) {
-        var results=jdbc.query("""
-            SELECT tp.id,tp.topology_asset_type_code,tp.topology_asset_id
-              FROM public.hidra_custody_measurement_period p
-              JOIN public.hidra_custody_transfer_point tp ON tp.id=p.transfer_point_id
-             WHERE p.id=? FOR UPDATE OF p
-            """,(row,n)->new Scope(row.getString(1),row.getString(2),row.getString(3)),id);
-        return results.size()==1?Optional.of(results.getFirst()):Optional.empty();
+        return lockedScope(id,true);
     }
     @Override public Optional<Context> lockContext(String period,String run,String agreementParty) {
         var rows=jdbc.query("""
@@ -180,13 +174,7 @@ public class JdbcCustodyMeasurementCaptureAdapter implements CustodyMeasurementC
     }
 
     @Override public Optional<Scope> lockReadScope(String period){
-        var rows=jdbc.query("""
-            SELECT tp.id,tp.topology_asset_type_code,tp.topology_asset_id
-              FROM public.hidra_custody_measurement_period p
-              JOIN public.hidra_custody_transfer_point tp ON tp.id=p.transfer_point_id
-             WHERE p.id=? FOR SHARE OF p,tp
-            """,(row,n)->new Scope(row.getString(1),row.getString(2),row.getString(3)),period);
-        return rows.size()==1?Optional.of(rows.getFirst()):Optional.empty();
+        return lockedScope(period,false);
     }
     @Override public dz.sh.hidra.modules.custody.application.port.in.CustodyTransferLifecycleUseCase.DiscoveryPage<Receipt>
             list(String period,Scope scope,String company,int page,int size,long offset){
@@ -208,5 +196,24 @@ public class JdbcCustodyMeasurementCaptureAdapter implements CustodyMeasurementC
                 }
                 return new dz.sh.hidra.modules.custody.application.port.in.CustodyTransferLifecycleUseCase.DiscoveryPage<>(items,page,size,total);
             },period,company,scope.transferPointId(),scope.assetType(),scope.assetId(),size,offset);
+    }
+
+    private Optional<Scope> lockedScope(String period,boolean write){
+        var points=jdbc.queryForList("""
+            SELECT tp.id FROM public.hidra_custody_measurement_period p
+              JOIN public.hidra_custody_transfer_point tp ON tp.id=p.transfer_point_id
+             WHERE p.id=? FOR SHARE OF tp
+            """,String.class,period);
+        if(points.size()!=1)return Optional.empty();
+        var rows=jdbc.query("""
+            SELECT tp.id,tp.topology_asset_type_code,tp.topology_asset_id,ad.company_id,ad.facility_id
+              FROM public.hidra_custody_measurement_period p
+              JOIN public.hidra_custody_transfer_point tp ON tp.id=p.transfer_point_id
+              LEFT JOIN public.hidra_custody_period_admission ad ON ad.period_id=p.id
+             WHERE p.id=? AND tp.id=?
+            """+(write?" FOR UPDATE OF p":" FOR SHARE OF p"),
+            (row,n)->new Scope(row.getString(1),row.getString(2),row.getString(3),row.getString(4),row.getString(5)),
+            period,points.getFirst());
+        return rows.size()==1?Optional.of(rows.getFirst()):Optional.empty();
     }
 }

@@ -175,6 +175,7 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
             Class<?> t21Finalize=Class.forName(t21Root+"request.CustodyTransferLifecycleRequests$Finalize");
             Class<?> t21Correct=Class.forName(t21Root+"request.CustodyTransferLifecycleRequests$Correct");
             Class<?> t21Disposition=Class.forName(t21Root+"request.CustodyTransferLifecycleRequests$Disposition");
+            Class<?> t64Open=Class.forName(t21Root+"request.CustodyTransferLifecycleRequests$OpenPeriod");
             String t21Periods="/api/v1/custody/measurement-periods/{periodId}";
             String t21Reconciliations="/api/v1/custody/reconciliations/{reconciliationId}";
             String t21Tickets="/api/v1/custody/transfer-tickets/{ticketId}";
@@ -306,6 +307,8 @@ public final class HidraTrustedNativeProtectedRouteRegistry {
                     "/api/v1/risk/assessments/{id}"),
                 new Route(t22,t22.getDeclaredMethod("decisionHistory",String.class),"GET",
                     "/api/v1/risk/assessments/{id}/decision-history"),
+                new Route(t21,t21.getDeclaredMethod("discoverAdmissionAgreements",String.class,String.class,String.class,int.class,int.class),"GET","/api/v1/custody/companies/{companyId}/transfer-points/{transferPointId}/agreements"),
+                new Route(t21,t21.getDeclaredMethod("openPeriod",String.class,String.class,t64Open),"POST","/api/v1/custody/companies/{companyId}/transfer-points/{transferPointId}/measurement-periods"),
                 new Route(t21,t21.getDeclaredMethod("discoverTransferPoints",String.class,String.class,int.class,int.class),"GET","/api/v1/custody/companies/{companyId}/facilities/{facilityId}/transfer-points"),
                 new Route(t21,t21.getDeclaredMethod("discoverPeriods",String.class,String.class,String.class,int.class,int.class),"GET","/api/v1/custody/companies/{companyId}/transfer-points/{transferPointId}/measurement-periods"),
                 new Route(t21,t21.getDeclaredMethod("listTickets",String.class,int.class,int.class),"GET","/api/v1/custody/measurement-periods/{periodId}/transfer-tickets"),

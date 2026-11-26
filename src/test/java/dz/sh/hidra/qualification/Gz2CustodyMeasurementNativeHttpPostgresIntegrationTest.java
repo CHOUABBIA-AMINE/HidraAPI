@@ -55,6 +55,13 @@ class Gz2CustodyMeasurementNativeHttpPostgresIntegrationTest {
             setupCustody(f,transfer,agreement,period,run,meter,partyRole,agreementParty);
             String companyGrant="custody-company:"+f.company;
             String pointGrant="custody-transfer-point:"+transfer;
+            f.paired(f.author,"custody:periods","MEASUREMENT_PERIOD",companyGrant,pointGrant,"create","read");
+            f.paired(f.reader,"custody:periods","MEASUREMENT_PERIOD",companyGrant,pointGrant,"read");
+            f.paired(f.reviewer,"custody:periods","MEASUREMENT_PERIOD",companyGrant,pointGrant,"create");
+            f.paired(f.foreign,"custody:periods","MEASUREMENT_PERIOD","custody-company:"+f.foreignCompany,pointGrant,"create");
+            f.paired(f.wrongAsset,"custody:periods","MEASUREMENT_PERIOD",companyGrant,"custody-transfer-point:"+f.secondAsset,"create");
+            f.paired(f.revoked,"custody:periods","MEASUREMENT_PERIOD",companyGrant,pointGrant,"create");
+            f.global(f.reader,"custody:periods:create");
             f.paired(f.author,"custody:measurements","MEASUREMENT",companyGrant,pointGrant,"capture","read");
             f.paired(f.reader,"custody:measurements","MEASUREMENT",companyGrant,pointGrant,"read");
             f.paired(f.revoked,"custody:measurements","MEASUREMENT",companyGrant,pointGrant,"read");
@@ -191,6 +198,142 @@ class Gz2CustodyMeasurementNativeHttpPostgresIntegrationTest {
                 assertEquals(404,runtime.send("GET",getRoute,revoked,null).statusCode());
                 runtime.json("GET",route,revoked,null,404);
                 assertEquals(200,runtime.send("GET",getRoute,reader,null).statusCode());
+                // Keep the original T20 fixture and assertions. The new period must be created
+                // through signed native HTTP before provisioning its synthetic meter snapshot.
+                String pointPath="/api/v1/custody/companies/"+f.company+"/transfer-points/"+transfer;
+                String periods=pointPath+"/measurement-periods",agreements=pointPath+"/agreements";
+                assertEquals(agreement,field(runtime.get(agreements,author).path("items").get(0),"id"));
+                // Duplicate display numbers are not identifiers. Stable pagination uses exact ID as tie-break.
+                String duplicateAgreement=id();
+                f.sql.update("""
+                    INSERT INTO public.hidra_custody_agreement
+                    (id,agreement_number,agreement_type_id,title,transfer_point_id,status,valid_from,valid_to,created_at,updated_at)
+                    SELECT ?,agreement_number,agreement_type_id,title,transfer_point_id,status,valid_from,valid_to,now(),now()
+                    FROM public.hidra_custody_agreement WHERE id=?
+                    """,duplicateAgreement,agreement);
+                var agreementOrder=java.util.stream.Stream.of(agreement,duplicateAgreement).sorted().toList();
+                for(int i=0;i<agreementOrder.size();i++){
+                    var slice=runtime.get(query(agreements,"agreementNumber",agreement)+"&size=1&page="+i,author);
+                    assertEquals(2,slice.path("total").asInt(-1));
+                    assertEquals(agreementOrder.get(i),field(slice.path("items").get(0),"id"));
+                }
+                assertEquals(50,runtime.get(agreements,author).path("size").asInt());
+                assertEquals(0,runtime.get(agreements+"?size=1&page=2",author).path("items").size());
+                assertEquals(0,runtime.get(query(agreements,"agreementNumber",id()),author).path("total").asInt(-1));
+                runtime.json("GET",agreements+"?size=201",author,null,400);
+                runtime.json("GET",agreements,reader,null,404);
+                runtime.json("GET",agreements,foreign,null,404);
+                runtime.json("GET",agreements,wrong,null,404);
+                runtime.json("GET",agreements,revoked,null,404);
+                runtime.json("GET",agreements,null,null,401);
+                String code=id();
+                var open=Map.<String,Object>of("commandId",id(),"agreementId",agreement,"periodCode",code,
+                    "periodStart",observed.minusSeconds(600).toString(),"periodEnd",observed.plusSeconds(600).toString());
+                runtime.json("POST",periods,reader,open,404);
+                runtime.json("POST",periods,foreign,open,404);
+                runtime.json("POST",periods,wrong,open,404);
+                runtime.json("POST",periods,revoked,open,404);
+                var invalid=new java.util.HashMap<>(open);
+                invalid.put("periodEnd",open.get("periodStart"));
+                runtime.json("POST",periods,author,invalid,400);
+                invalid=new java.util.HashMap<>(open);invalid.put("periodStart",observed.minusSeconds(7200).toString());
+                runtime.json("POST",periods,author,invalid,400);
+                invalid=new java.util.HashMap<>(open);invalid.put("agreementId",id());
+                runtime.json("POST",periods,author,invalid,404);
+                f.sql.update("UPDATE hidra_custody_transfer_point SET status='INACTIVE' WHERE id=?",transfer);
+                runtime.json("POST",periods,author,open,404);
+                f.sql.update("UPDATE hidra_custody_transfer_point SET status='ACTIVE' WHERE id=?",transfer);
+                // Concurrent exact commands must serialize on the point and append only once.
+                try(var pool=java.util.concurrent.Executors.newVirtualThreadPerTaskExecutor()){
+                    var first=pool.submit(()->runtime.json("POST",periods,author,open,200));
+                    var second=pool.submit(()->runtime.json("POST",periods,author,open,200));
+                    var a=first.get(60,java.util.concurrent.TimeUnit.SECONDS);
+                    var b=second.get(60,java.util.concurrent.TimeUnit.SECONDS);
+                    assertEquals(field(a,"periodId"),field(b,"periodId"));
+                    assertNotEquals(a.path("replayed").asBoolean(),b.path("replayed").asBoolean());
+                }
+                var admitted=runtime.json("POST",periods,author,open,200);
+                String admittedId=field(admitted,"periodId");
+                assertTrue(admitted.path("replayed").asBoolean());
+                assertEquals(f.author,field(admitted,"openedByActorId"));
+                assertEquals(f.company,field(admitted,"companyId"));
+                assertEquals(f.asset,field(admitted,"facilityId"));
+                assertEquals("OPEN",field(admitted,"initialStatus"));
+                assertTrue(runtime.send("POST",periods,author,open).headers().firstValue("Cache-Control").orElse("").contains("no-store"));
+                invalid=new java.util.HashMap<>(open);invalid.put("periodCode",id());
+                runtime.json("POST",periods,author,invalid,409);
+                runtime.json("POST",periods,reviewer,open,409);
+                String admittedPath="/api/v1/custody/measurement-periods/"+admittedId;
+                assertEquals(admittedId,field(runtime.get(admittedPath,reader),"id"));
+                runtime.json("GET",admittedPath,reviewer,null,404);
+                assertEquals(admittedId,field(runtime.get(query(periods,"periodCode",code),reader).path("items").get(0),"id"));
+                assertEquals(0,runtime.get(admittedPath+"/measurements",reader).path("total").asInt(-1));
+                assertEquals(1,f.sql.queryForObject("SELECT count(*) FROM hidra_custody_period_admission WHERE period_id=? AND actor_id=? AND company_id=?",
+                    Integer.class,admittedId,f.author,f.company));
+                assertEquals(0,f.sql.queryForObject("SELECT count(*) FROM hidra_custody_period_admission WHERE period_id=?",Integer.class,period));
+                assertThrows(org.springframework.dao.DataAccessException.class,()->f.sql.update(
+                    "UPDATE hidra_custody_period_admission SET actor_id=? WHERE period_id=?",id(),admittedId));
+                assertThrows(org.springframework.dao.DataAccessException.class,()->f.sql.update(
+                    "DELETE FROM hidra_custody_period_admission WHERE period_id=?",admittedId));
+                assertThrows(org.springframework.dao.DataAccessException.class,()->f.sql.execute(
+                    "TRUNCATE hidra_custody_period_admission"));
+                // Direct contradictory parent references and malformed immutable evidence fail closed.
+                assertThrows(org.springframework.dao.DataAccessException.class,()->f.sql.update("""
+                    INSERT INTO public.hidra_custody_period_admission
+                    (period_id,agreement_id,transfer_point_id,company_id,facility_id,command_id,actor_id,admitted_at,payload_fingerprint)
+                    VALUES (?,?,?,?,?,?::uuid,?,now(),repeat('a',64))
+                    """,id(),agreement,transfer,f.company,f.asset,id(),f.author));
+                assertThrows(org.springframework.dao.DataAccessException.class,()->f.sql.update("""
+                    INSERT INTO public.hidra_custody_period_admission
+                    (period_id,agreement_id,transfer_point_id,company_id,facility_id,command_id,actor_id,admitted_at,payload_fingerprint)
+                    SELECT period_id,agreement_id,transfer_point_id,company_id,facility_id,?::uuid,actor_id,admitted_at,'invalid'
+                    FROM public.hidra_custody_period_admission WHERE period_id=?
+                    """,id(),admittedId));
+                assertThrows(org.springframework.dao.DataAccessException.class,()->f.sql.update(
+                    "UPDATE hidra_custody_measurement_period SET period_code=? WHERE id=?",id(),admittedId));
+                // Force the second insert to fail using a disposable constraint, proving rollback
+                // of the first insert and preserving the existing migration-owned guards.
+                String rejectedKey=id(),rejectedCode=id();
+                f.sql.execute("ALTER TABLE hidra_custody_period_admission ADD CONSTRAINT t64_fixture_reject CHECK(command_id<>'"+rejectedKey+"'::uuid)");
+                try{
+                    var rejected=new java.util.HashMap<>(open);rejected.put("commandId",rejectedKey);rejected.put("periodCode",rejectedCode);
+                    runtime.json("POST",periods,author,rejected,409);
+                    assertEquals(0,f.sql.queryForObject("SELECT count(*) FROM hidra_custody_measurement_period WHERE period_code=?",Integer.class,rejectedCode));
+                }finally{f.sql.execute("ALTER TABLE hidra_custody_period_admission DROP CONSTRAINT t64_fixture_reject");}
+                // A distinct key can create a distinct period without relabeling existing evidence.
+                var distinct=new java.util.HashMap<>(open);distinct.put("commandId",id());distinct.put("periodCode",id());
+                assertNotEquals(admittedId,field(runtime.json("POST",periods,author,distinct,200),"periodId"));
+                // Provision only a synthetic meter snapshot and attestation, never an admission row.
+                f.sql.update("UPDATE hidra_custody_metering_system SET active=true WHERE id=?",meter);
+                String admittedRun=id(),admittedEvidence=id();
+                f.sql.update("""
+                    INSERT INTO public.hidra_custody_meter_run_snapshot
+                    (id,measurement_period_id,metering_system_id,meter_run_code_snapshot,snapshot_at,created_at)
+                    VALUES (?,?,?,'T64-RUN',now(),now())
+                    """,admittedRun,admittedId,meter);
+                f.sql.update("""
+                    INSERT INTO public.hidra_telemetry_custody_interval_evidence
+                    (id,trusted_reading_id,meter_run_snapshot_id,metering_system_id,asset_type,asset_id,
+                     measurement_kind,observed_quantity,unit_id,interval_start,interval_end)
+                    VALUES (?,?,?,?,'FACILITY',?,'INTERVAL_VOLUME_TOTAL',75.500000,?,?,?)
+                    """,admittedEvidence,reading.trusted(),admittedRun,meter,f.asset,VOLUME,
+                    java.sql.Timestamp.from(observed.minusSeconds(60)),java.sql.Timestamp.from(observed));
+                var captureNew=new java.util.HashMap<String,Object>(cmd);
+                captureNew.put("commandId",id());captureNew.put("meterRunSnapshotId",admittedRun);
+                captureNew.put("intervalEvidenceId",admittedEvidence);
+                runtime.json("POST",admittedPath+"/measurements",reviewer,captureNew,404);
+                var captured=runtime.json("POST",admittedPath+"/measurements",author,captureNew,201);
+                assertEquals(f.company,field(captured,"companyId"));
+                assertEquals(1,runtime.get(admittedPath+"/measurements",reader).path("total").asInt(-1));
+                // Revocation on the same token must deny the original admission command.
+                f.sql.update("""
+                    UPDATE hidra_identity_user_permission_grant SET status='REVOKED',revoked_at=now()
+                     WHERE user_id=? AND scope_reference_id=? AND permission_id IN
+                       (SELECT id FROM hidra_identity_permission WHERE code='custody:periods:create')
+                    """,f.author,pointGrant);
+                runtime.json("POST",periods,author,open,404);
+                runtime.json("GET",agreements,author,null,404);
+                assertEquals(admittedId,field(runtime.get(admittedPath,reader),"id"));
             }
         }
     }

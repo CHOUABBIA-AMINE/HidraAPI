@@ -128,4 +128,25 @@ public final class CustodyTransferLifecycleController {
         return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(
             CustodyDiscoveryResponses.TicketPage.from(useCase.listTickets(periodId,page,size)));
     }
+
+    @NativeProtectedOperation @Operation(operationId="custodyT64DiscoverAdmissionAgreements",summary="Discover authorized agreements for period admission")
+    @GetMapping("/companies/{companyId}/transfer-points/{transferPointId}/agreements")
+    public ResponseEntity<CustodyDiscoveryResponses.AdmissionAgreementPage> discoverAdmissionAgreements(
+            @PathVariable String companyId,@PathVariable String transferPointId,
+            @RequestParam(required=false) String agreementNumber,
+            @RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="50") int size){
+        return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(
+            CustodyDiscoveryResponses.AdmissionAgreementPage.from(
+                useCase.discoverAdmissionAgreements(companyId,transferPointId,agreementNumber,page,size)));
+    }
+    @NativeProtectedOperation @Operation(operationId="custodyT64OpenPeriod",summary="Admit a protected pre-capture Custody period")
+    @PostMapping("/companies/{companyId}/transfer-points/{transferPointId}/measurement-periods")
+    public ResponseEntity<CustodyDiscoveryResponses.PeriodAdmissionReceipt> openPeriod(
+            @PathVariable String companyId,@PathVariable String transferPointId,
+            @Valid @RequestBody CustodyTransferLifecycleRequests.OpenPeriod request){
+        return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(
+            CustodyDiscoveryResponses.PeriodAdmissionReceipt.from(useCase.openPeriod(companyId,transferPointId,
+                new CustodyTransferLifecycleUseCase.OpenPeriodCommand(request.commandId(),request.agreementId(),
+                    request.periodCode(),request.periodStart(),request.periodEnd()))));
+    }
 }

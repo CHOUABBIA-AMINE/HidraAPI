@@ -66,4 +66,14 @@ public interface CustodyTransferLifecycleUseCase {
     DiscoveryPage<TransferPoint> discoverTransferPoints(String companyId,String facilityId,int page,int size);
     DiscoveryPage<DiscoveredPeriod> discoverPeriods(String companyId,String transferPointId,String periodCode,int page,int size);
     DiscoveryPage<Ticket> listTickets(String periodId,int page,int size);
+
+    record AdmissionAgreement(String id,String agreementNumber,String transferPointId,
+                              Instant validFrom,Instant validTo,String status){}
+    record OpenPeriodCommand(UUID commandId,String agreementId,String periodCode,Instant periodStart,Instant periodEnd){}
+    record AdmissionReceipt(String periodId,String companyId,String facilityId,String transferPointId,String agreementId,
+            String periodCode,Instant periodStart,Instant periodEnd,String initialStatus,UUID commandId,
+            String openedByActorId,Instant admittedAt,boolean replayed){}
+    DiscoveryPage<AdmissionAgreement> discoverAdmissionAgreements(String companyId,String transferPointId,
+        String agreementNumber,int page,int size);
+    AdmissionReceipt openPeriod(String companyId,String transferPointId,OpenPeriodCommand command);
 }

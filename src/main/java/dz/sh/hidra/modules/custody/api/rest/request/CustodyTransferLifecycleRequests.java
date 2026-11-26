@@ -5,7 +5,7 @@
  * @Owner       : Sonatrach / TRC : Digitalization Initiative
  * @Name        : CustodyTransferLifecycleRequests
  * @CreatedOn   : 2025-06-26
- * @UpdatedOn   : 2026-11-17
+ * @UpdatedOn   : 2026-11-26
  * @Type        : Class
  * @Layer       : REST Adapter
  * @Module      : custody
@@ -15,6 +15,7 @@
 package dz.sh.hidra.modules.custody.api.rest.request;
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.UUID;
 public final class CustodyTransferLifecycleRequests {
     private CustodyTransferLifecycleRequests(){}
@@ -28,4 +29,7 @@ public final class CustodyTransferLifecycleRequests {
         @NotBlank String reason,@NotBlank String evidenceReference){}
     public record Disposition(@NotNull UUID commandId,@NotBlank String disposition,
         @NotBlank String reason,@NotBlank String evidenceReference){}
+
+    public record OpenPeriod(@NotNull UUID commandId,@NotBlank @Size(max=80) String agreementId,
+        @NotBlank @Size(max=80) String periodCode,@NotNull Instant periodStart,@NotNull Instant periodEnd){}
 }

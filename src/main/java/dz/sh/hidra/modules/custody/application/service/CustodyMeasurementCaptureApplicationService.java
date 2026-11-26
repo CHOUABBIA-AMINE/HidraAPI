@@ -63,6 +63,7 @@ public class CustodyMeasurementCaptureApplicationService implements CustodyMeasu
         var scope=storage.scope(periodId).orElseThrow(CustodyMeasurementCaptureApplicationService::unavailable);
         String company=ownership.activeOwner(scope.assetType(),scope.assetId())
                 .orElseThrow(CustodyMeasurementCaptureApplicationService::unavailable);
+        checkAdmission(scope,company);
         authorization.require(CAPTURE,company,scope.transferPointId());
         String actor=authorization.actor();
         String hash=fingerprint(actor,periodId,cmd.commandId(),cmd.meterRunSnapshotId(),
@@ -73,7 +74,9 @@ public class CustodyMeasurementCaptureApplicationService implements CustodyMeasu
             var previous=replay.get();
             if(!previous.fingerprint().equals(hash) || !actor.equals(previous.receipt().actorId())
                     || !company.equals(previous.receipt().companyId())
-                    || !scope.transferPointId().equals(previous.receipt().transferPointId()))
+                    || !scope.transferPointId().equals(previous.receipt().transferPointId())
+                    || (scope.admissionCompanyId()!=null&&(!scope.assetType().equals(previous.receipt().assetType())
+                        ||!scope.assetId().equals(previous.receipt().assetId()))))
                 throw new CustodyMeasurementCapturePolicy.Conflict("Command ID already belongs to different capture.");
             return previous.receipt().replayed();
         }
@@ -123,7 +126,17 @@ public class CustodyMeasurementCaptureApplicationService implements CustodyMeasu
     public Receipt read(String periodId,String measurementId){
         CustodyMeasurementCapturePolicy.required(periodId);
         CustodyMeasurementCapturePolicy.required(measurementId);
+        var scope=storage.lockReadScope(periodId).orElseThrow(CustodyMeasurementCaptureApplicationService::unavailable);
+        if(scope.admissionCompanyId()!=null){
+            String current=ownership.activeOwner(scope.assetType(),scope.assetId())
+                .orElseThrow(CustodyMeasurementCaptureApplicationService::unavailable);
+            checkAdmission(scope,current);
+            authorization.require(READ,current,scope.transferPointId());
+        }
         var r=storage.read(periodId,measurementId).orElseThrow(CustodyMeasurementCaptureApplicationService::unavailable);
+        if(scope.admissionCompanyId()!=null&&(!scope.admissionCompanyId().equals(r.companyId())
+                ||!scope.transferPointId().equals(r.transferPointId())
+                ||!scope.assetType().equals(r.assetType())||!scope.assetId().equals(r.assetId())))throw unavailable();
         String owner=ownership.activeOwner(r.assetType(),r.assetId())
                 .orElseThrow(CustodyMeasurementCaptureApplicationService::unavailable);
         if(!owner.equals(r.companyId()))throw unavailable();
@@ -154,8 +167,15 @@ public class CustodyMeasurementCaptureApplicationService implements CustodyMeasu
         var scope=storage.lockReadScope(periodId).orElseThrow(CustodyMeasurementCaptureApplicationService::unavailable);
         String company=ownership.activeOwner(scope.assetType(),scope.assetId())
                 .orElseThrow(CustodyMeasurementCaptureApplicationService::unavailable);
+        checkAdmission(scope,company);
         authorization.require(READ,company,scope.transferPointId());
         long offset=dz.sh.hidra.modules.custody.application.port.in.CustodyTransferLifecycleUseCase.offset(page,size);
         return storage.list(periodId,scope,company,page,size,offset);
+    }
+
+    private static void checkAdmission(CustodyMeasurementCapturePort.Scope scope,String company){
+        if(scope.admissionCompanyId()!=null&&(!scope.admissionCompanyId().equals(company)
+                ||!"FACILITY".equals(scope.assetType())||!scope.admissionFacilityId().equals(scope.assetId())))
+            throw unavailable();
     }
 }

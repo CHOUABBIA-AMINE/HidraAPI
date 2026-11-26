@@ -120,6 +120,15 @@
     "owner": "custody",
     "purpose": "Immutable supplied gas method applicability; source declaration does not establish an executing property algorithm."
   },
+  "public.hidra_custody_period_admission": {
+    "evidence": [
+      "src/main/resources/db/migration/V20261126_001__t64_custody_period_admission.sql",
+      "src/main/java/dz/sh/hidra/modules/custody/domain/model/CustodyPeriodAdmission.java",
+      "src/main/java/dz/sh/hidra/modules/custody/infrastructure/persistence/adapter/JdbcCustodyTransferLifecycleAdapter.java"
+    ],
+    "owner": "custody",
+    "purpose": "Immutable protected period admission and authenticated opening evidence; canonical period retains code and interval."
+  },
   "public.hidra_custody_measurement_receipt": {
     "evidence": [
       "src/main/resources/db/migration/V20261115_005__t20_qualified_custody_measurement_capture.sql",

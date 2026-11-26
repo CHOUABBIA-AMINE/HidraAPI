@@ -24,7 +24,7 @@ public interface CustodyMeasurementCapturePort {
         String partyRoleId,String productTypeId,Instant periodStart,Instant periodEnd,
         Instant agreementStart,Instant agreementEnd,Instant transferStart,Instant transferEnd,
         Instant meterStart,Instant meterEnd,Instant partyStart,Instant partyEnd) {}
-    record Scope(String transferPointId,String assetType,String assetId) {}
+    record Scope(String transferPointId,String assetType,String assetId,String admissionCompanyId,String admissionFacilityId) {}
     Optional<Scope> scope(String periodId);
     Optional<Context> lockContext(String periodId,String meterRunId,String agreementPartyId);
     boolean currentProduct(Context context,String companyId,UUID publicationId);
